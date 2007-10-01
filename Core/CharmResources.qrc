@@ -1,0 +1,21 @@
+<RCC>
+    <qresource prefix="/Charm">
+	<file alias="go.png">Icons/player_play.png</file>
+	<file alias="stop.png">Icons/player_stop.png</file>
+	<file alias="active.png">Icons/1rightarrow.png</file>
+	<file alias="check.png">Icons/apply.png</file>
+	<file alias="new.png">Icons/filenew.png</file>
+	<file alias="deletetask.png">Icons/editdelete.png</file>
+	<file alias="next.png">Icons/forward.png</file>
+	<file alias="previous.png">Icons/back.png</file>
+	<file alias="charmicon.png">Icons/xclock.png</file>
+        <file alias="quitcharm.png">Icons/exit.png</file>
+        <file alias="clearfilter.png">Icons/locationbar_erase.png</file>
+        <file alias="configure.png">Icons/configure.png</file>
+	<file alias="editor_dirty.png">Icons/knewstuff.png</file>
+	<file alias="editor_locked.png">Icons/encrypted.png</file>
+	<file alias="report_stylesheet.sty">Reports/report_stylesheet.sty</file>
+    </qresource>
+</RCC>
+
+
