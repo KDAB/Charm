@@ -4,7 +4,7 @@
 #include <QtDebug>
 #include <QDateTime>
 
-#include "Charm.h"
+#include "CharmConstants.h"
 #include "Configuration.h"
 #include "CharmDataModel.h"
 #include "Commands/CommandModifyEvent.h"
@@ -380,7 +380,8 @@ void CharmDataModel::startEventRequested( const Task& task )
     // the command will call activateEvent in finalize, this will
     // notify the task view to update
     CharmCommand* command = new CommandMakeAndActivateEvent( task, this );
-    VIEW.sendCommand( command );
+    // FIXME TEMP_REM
+    // VIEW.sendCommand( command );
 }
 
 void CharmDataModel::endEventRequested( const Task& task )
@@ -412,7 +413,8 @@ void CharmDataModel::endEventRequested( const Task& task )
     Event& event = findEvent( eventId );
     event.setEndDateTime( QDateTime::currentDateTime() );
     CommandModifyEvent* command = new CommandModifyEvent( event, this );
-    VIEW.sendCommand( command );
+    // FIXME TEMP_REM
+    // VIEW.sendCommand( command );
 
     if ( m_activeEventIds.isEmpty() ) m_timer.stop();
 }
@@ -432,7 +434,8 @@ void CharmDataModel::endAllEventsRequested()
         Event& event = findEvent( eventId );
         event.setEndDateTime( currentDateTime );
         CommandModifyEvent* command = new CommandModifyEvent( event, this );
-        VIEW.sendCommand( command );
+        // FIXME TEMP_REM
+        // VIEW.sendCommand( command );
     }
 
     m_timer.stop();
@@ -444,7 +447,8 @@ void CharmDataModel::eventUpdateTimerEvent()
         Event& event = findEvent( id );
         event.setEndDateTime( QDateTime::currentDateTime() );
         CommandModifyEvent* command = new CommandModifyEvent( event, this );
-        VIEW.sendCommand( command );
+        // FIXME TEMP_REM
+        // VIEW.sendCommand( command );
     }
 }
 

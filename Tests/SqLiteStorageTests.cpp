@@ -3,7 +3,7 @@
 #include <QtTest/QtTest>
 
 #include <User.h>
-#include <Charm.h>
+#include <CharmConstants.h>
 #include <Installation.h>
 #include <SqLiteStorage.h>
 

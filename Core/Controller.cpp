@@ -2,9 +2,9 @@
 
 #include "Task.h"
 #include "Event.h"
-#include "Charm.h"
+#include "CharmConstants.h"
 #include "Controller.h"
-#include "Application.h"
+// #include "Application.h"
 #include "SqLiteStorage.h"
 #include "StorageInterface.h"
 #include "Commands/CharmCommand.h"

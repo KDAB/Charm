@@ -1,7 +1,7 @@
 #ifndef COMMANDDELETEEVENT_H
 #define COMMANDDELETEEVENT_H
 
-#include "Event.h"
+#include "../Event.h"
 #include "CharmCommand.h"
 
 class CommandDeleteEvent : public CharmCommand

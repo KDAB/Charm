@@ -1,7 +1,7 @@
 #ifndef COMMANDDELETETASK_H
 #define COMMANDDELETETASK_H
 
-#include "Task.h"
+#include "../Task.h"
 #include "CharmCommand.h"
 
 class CommandDeleteTask : public CharmCommand

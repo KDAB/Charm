@@ -1,8 +1,8 @@
 #ifndef COMMANDMAKEEVENT_H
 #define COMMANDMAKEEVENT_H
 
-#include "Task.h"
-#include "Event.h"
+#include "../Task.h"
+#include "../Event.h"
 #include "CharmCommand.h"
 
 class QObject;

@@ -1,7 +1,8 @@
 #include <QtDebug>
 #include <QDateTime>
 
-#include "EventEditor.h"
+// FIXME TEMP_REM
+// #include "EventEditor.h"
 #include "ControllerInterface.h"
 #include "CommandMakeEvent.h"
 
@@ -45,9 +46,10 @@ bool CommandMakeEvent::finalize()
 {
     qDebug() << "CommandMakeEvent::finalize: activating event";
     if ( m_event.isValid() ) {
-        EventEditor* editor = dynamic_cast<EventEditor*>( owner() );
-        Q_ASSERT( editor ); // this command is "owned" by the editor
-        editor->makeVisibleAndCurrent( m_event );
+        // FIXME TEMP_REM
+//         EventEditor* editor = dynamic_cast<EventEditor*>( owner() );
+//         Q_ASSERT( editor ); // this command is "owned" by the editor
+//         editor->makeVisibleAndCurrent( m_event );
         return true;
     } else {
         return false;

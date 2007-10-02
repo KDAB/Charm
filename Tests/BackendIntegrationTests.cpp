@@ -3,7 +3,7 @@
 #include <QtDebug>
 #include <QtTest/QtTest>
 
-#include "Charm.h"
+#include "CharmConstants.h"
 #include "Controller.h"
 #include "TaskTreeItem.h"
 #include "Configuration.h"

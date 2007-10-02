@@ -20,43 +20,35 @@ IF ( QT4_FOUND )
    ENDIF (CMAKE_COMPILER_IS_GNUCXX)
 
    SET( CharmCore_SRCS 
-		       Application.cpp
-		       Charm.cpp
+#		       Application.cpp
+		       CharmConstants.cpp
 		       Controller.cpp
 		       SqLiteStorage.cpp
-		       TaskIdDialog.cpp
+#		       TaskIdDialog.cpp
 		       Configuration.cpp
-		       Data.cpp
+#		       Data.cpp
 		       SqlStorage.cpp
-		       modeltest.cpp
-		       ConfigurationDialog.cpp 
-		       CharmPreferences.cpp
+#		       ConfigurationDialog.cpp 
+#		       CharmPreferences.cpp
 		       Event.cpp
 		       Task.cpp
 		       State.cpp
-		       View.cpp
-		       StatusBarWidget.cpp
-		       GUIState.cpp
-		       EventEditor.cpp 
-		       EventEditorDelegate.cpp 
-		       SelectTaskDialog.cpp
-		       Model.cpp
+#		       View.cpp
+#		       StatusBarWidget.cpp
+#		       GUIState.cpp
+#		       EventEditor.cpp 
+#		       EventEditorDelegate.cpp 
+#		       SelectTaskDialog.cpp
+#		       Model.cpp
 		       CharmDataModel.cpp
-		       ViewFilter.cpp
-		       TaskModelAdapter.cpp
-		       EventModelAdapter.cpp
-		       EventModelFilter.cpp
+#		       ViewFilter.cpp
+#		       TaskModelAdapter.cpp
+#		       EventModelAdapter.cpp
+#		       EventModelFilter.cpp
 		       TaskTreeItem.cpp 
 		       TimeSpans.cpp
-		       ChattyItemDelegate.cpp 
-		       CharmAboutDialog.cpp
-		       Reports/ReportDialog.cpp
-		       Reports/CharmReport.cpp
-		       Reports/ActivityReport.cpp 
-		       Reports/WeeklyTimeSheet.cpp
-		       Reports/WeeklyTimeSheet-OldSchool.cpp
-		       Reports/ReportPreviewWindow.cpp 
-		       Reports/ParagraphFormatCollection.cpp
+#		       ChattyItemDelegate.cpp 
+#		       CharmAboutDialog.cpp
 
 		       Commands/CharmCommand.cpp
 		       Commands/CommandRelayCommand.cpp
@@ -70,26 +62,13 @@ IF ( QT4_FOUND )
     
     QT4_AUTOMOC ( ${CharmCore_SRCS} )
 
-    QT4_WRAP_UI( UiGenerated_SRCS
-    		       ConfigurationDialog.ui
-		       CharmPreferences.ui
-		       TaskIdDialog.ui
-		       Reports/ReportDialog.ui
-		       Reports/ActivityReportConfigurationPage.ui
-		       Reports/WeeklyTimeSheetConfigurationPage.ui
-		       Reports/ReportPreviewWindow.ui
-		       View.ui
-		       StatusBarWidget.ui
-		       EventEditor.ui 
-		       SelectTaskDialog.ui
-		       CharmAboutDialog.ui )
-
-    QT4_ADD_RESOURCES ( Resources_SRCS CharmResources.qrc )
+#    QT4_ADD_RESOURCES ( Resources_SRCS CharmResources.qrc )
 
     ADD_LIBRARY( CharmCore STATIC 
 		       ${CharmCore_SRCS}
-		       ${UiGenerated_SRCS} 
-		       ${Resources_SRCS} )
+#		       ${UiGenerated_SRCS} 
+#		       ${Resources_SRCS} 
+)
 ENDIF ( QT4_FOUND )
 
 IF ( NOT QT4_FOUND )
