@@ -19,10 +19,10 @@ IF ( QT4_FOUND )
    LINK_LIBRARIES( ${QT_QTGUI_LIBRARY} )
    LINK_LIBRARIES( ${QT_QTSQL_LIBRARY} )
 
-   LINK_DIRECTORIES( ../Core )
-   LINK_LIBRARIES( CharmCore )
    LINK_DIRECTORIES( ../View )
    LINK_LIBRARIES( CharmView )
+   LINK_DIRECTORIES( ../Core )
+   LINK_LIBRARIES( CharmCore )
 
    SET( Charm_SRCS Charm.cpp )
     
