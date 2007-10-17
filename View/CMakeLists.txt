@@ -2,13 +2,12 @@ IF ( QT4_FOUND )
    INCLUDE_DIRECTORIES( ${QT_INCLUDE_DIR} )
    INCLUDE_DIRECTORIES( ${QT_QTCORE_INCLUDE_DIR} )
    INCLUDE_DIRECTORIES( ${QT_QTGUI_INCLUDE_DIR} )
-#  INCLUDE_DIRECTORIES( ${QT_QTSQL_INCLUDE_DIR} )
+   INCLUDE_DIRECTORIES( ${QT_QTSQL_INCLUDE_DIR} )
    INCLUDE_DIRECTORIES( ${QT_QTXML_INCLUDE_DIR} )
    INCLUDE_DIRECTORIES( .. )
 
    LINK_LIBRARIES( ${QT_QTCORE_LIBRARY} )
    LINK_LIBRARIES( ${QT_QTGUI_LIBRARY} )
-#  LINK_LIBRARIES( ${QT_QTSQL_LIBRARY} )
    LINK_LIBRARIES( ${QT_QTXML_LIBRARY} )
    
    IF (CMAKE_COMPILER_IS_GNUCXX)
@@ -23,33 +22,21 @@ IF ( QT4_FOUND )
    SET( CharmView_SRCS 
 		       Application.cpp
 		       ViewHelpers.cpp
-#		       Charm.cpp
-#		       Controller.cpp
-#		       SqLiteStorage.cpp
 		       TaskIdDialog.cpp
-#		       Configuration.cpp
 		       Data.cpp
-#		       SqlStorage.cpp
-#		       modeltest.cpp
 		       ConfigurationDialog.cpp 
 		       CharmPreferences.cpp
-#		       Event.cpp
-#		       Task.cpp
-#		       State.cpp
 		       View.cpp
 		       StatusBarWidget.cpp
 		       GUIState.cpp
 		       EventEditor.cpp 
 		       EventEditorDelegate.cpp 
 		       SelectTaskDialog.cpp
-		       Model.cpp
-#		       CharmDataModel.cpp
+		       ModelConnector.cpp
 		       ViewFilter.cpp
 		       TaskModelAdapter.cpp
 		       EventModelAdapter.cpp
 		       EventModelFilter.cpp
-#		       TaskTreeItem.cpp 
-#		       TimeSpans.cpp
 		       ChattyItemDelegate.cpp 
 		       CharmAboutDialog.cpp
 		       Reports/ReportDialog.cpp
@@ -58,7 +45,16 @@ IF ( QT4_FOUND )
 		       Reports/WeeklyTimeSheet.cpp
 		       Reports/WeeklyTimeSheet-OldSchool.cpp
 		       Reports/ReportPreviewWindow.cpp 
-		       Reports/ParagraphFormatCollection.cpp )
+		       Reports/ParagraphFormatCollection.cpp
+		       Commands/CommandRelayCommand.cpp
+		       Commands/CommandModifyEvent.cpp
+		       Commands/CommandDeleteEvent.cpp
+		       Commands/CommandAddTask.cpp
+		       Commands/CommandModifyTask.cpp
+		       Commands/CommandDeleteTask.cpp
+		       Commands/CommandMakeEvent.cpp
+		       Commands/CommandMakeAndActivateEvent.cpp 
+)
     
     QT4_AUTOMOC ( ${CharmView_SRCS} )
 

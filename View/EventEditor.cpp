@@ -19,9 +19,9 @@
 #include "Core/CharmDataModel.h"
 #include "SelectTaskDialog.h"
 #include "EventModelFilter.h"
-#include "Core/Commands/CommandMakeEvent.h"
-#include "Core/Commands/CommandModifyEvent.h"
-#include "Core/Commands/CommandDeleteEvent.h"
+#include "Commands/CommandMakeEvent.h"
+#include "Commands/CommandModifyEvent.h"
+#include "Commands/CommandDeleteEvent.h"
 
 #include "ui_EventEditor.h"
 

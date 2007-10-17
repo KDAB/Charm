@@ -4,10 +4,9 @@
 #include "Event.h"
 #include "CharmConstants.h"
 #include "Controller.h"
-// #include "Application.h"
 #include "SqLiteStorage.h"
 #include "StorageInterface.h"
-#include "Commands/CharmCommand.h"
+#include "CharmCommand.h"
 
 Controller::Controller( QObject* parent_ )
     : QObject( parent_ )
@@ -134,6 +133,8 @@ void Controller::stateChanged( State previous, State next )
     break;
     case Disconnecting:
     {   // end all events:
+
+// FIXME retry that?
 //         while ( !m_activeEvents.isEmpty() )
 //             endEvent( m_activeEvents.last().task() );
         emit readyToQuit();

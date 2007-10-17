@@ -50,7 +50,6 @@ private slots:
     void slotUpdateTimeSpans();
 
 private:
-    // QDate m_lastToday;
     NamedTimeSpan m_today;
     NamedTimeSpan m_yesterday;
     NamedTimeSpan m_dayBeforeYesterday;

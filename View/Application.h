@@ -19,7 +19,7 @@
 #include "View.h"
 #include "Core/User.h"
 #include "Core/State.h"
-#include "Model.h"
+#include "ModelConnector.h"
 #include "Core/TimeSpans.h"
 #include "Core/Controller.h"
 #include "Core/Configuration.h"
@@ -46,7 +46,7 @@ public:
     bool configure();
 
     /** Access to the model. */
-    Model& model();
+    ModelConnector& model();
 
     /** Access to the view. */
     View& view();
@@ -80,7 +80,7 @@ private:
 
     State m_state;
     QApplication m_app;
-    Model m_model;
+    ModelConnector m_model;
     Controller m_controller;
     View m_view;
     TimeSpans m_timeSpans;

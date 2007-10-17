@@ -1,7 +1,7 @@
 #include <QApplication>
+#include <Core/CommandEmitterInterface.h>
 
 #include "CommandRelayCommand.h"
-#include "CommandEmitterInterface.h"
 
 CommandRelayCommand::CommandRelayCommand( QObject* parent )
     : CharmCommand( parent )

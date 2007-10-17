@@ -1,8 +1,8 @@
 #ifndef COMMANDMODIFYEVENT_H
 #define COMMANDMODIFYEVENT_H
 
-#include "../Event.h"
-#include "CharmCommand.h"
+#include <Core/Event.h>
+#include <Core/CharmCommand.h>
 
 class CommandModifyEvent : public CharmCommand
 {

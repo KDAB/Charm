@@ -1,6 +1,7 @@
+#include <Core/ControllerInterface.h>
+#include <Core/StorageInterface.h>
+
 #include "CommandModifyEvent.h"
-#include "ControllerInterface.h"
-#include "StorageInterface.h"
 
 CommandModifyEvent::CommandModifyEvent( const Event& event, QObject* parent )
     : CharmCommand( parent )

@@ -1,6 +1,7 @@
-#include "Core/CharmDataModel.h"
+#include <Core/CharmDataModel.h>
+#include <Core/CharmCommand.h>
+
 #include "EventModelAdapter.h"
-#include "Core/Commands/CharmCommand.h"
 
 EventModelAdapter::EventModelAdapter( CharmDataModel* parent )
     : QAbstractListModel( parent )

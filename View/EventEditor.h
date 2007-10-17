@@ -7,7 +7,7 @@
 
 #include "Core/Event.h"
 #include "Core/TimeSpans.h"
-#include "Core/Commands/CommandEmitterInterface.h"
+#include "Core/CommandEmitterInterface.h"
 
 class QModelIndex;
 

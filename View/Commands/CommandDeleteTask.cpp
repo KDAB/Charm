@@ -1,10 +1,11 @@
-// FIXME TEMP_REM
-// #include <QMessageBox>
+#include <QMessageBox>
 
-#include "CharmConstants.h"
+#include <Core/CharmConstants.h>
+#include <Core/ControllerInterface.h>
+#include <Core/CommandEmitterInterface.h>
+
+#include "ViewHelpers.h"
 #include "CommandDeleteTask.h"
-#include "ControllerInterface.h"
-#include "CommandEmitterInterface.h"
 
 CommandDeleteTask::CommandDeleteTask( const Task& task, QObject* parent )
     : CharmCommand( parent )
@@ -31,9 +32,8 @@ bool CommandDeleteTask::execute( ControllerInterface* controller )
 bool CommandDeleteTask::finalize()
 {
     if ( !m_success ) {
-// FIXME TEMP_REM
-//         QMessageBox::information( &VIEW, tr( "Unable to delete task" ),
-//                                   tr( "Deleting the task failed" ) );
+        QMessageBox::information( &VIEW, tr( "Unable to delete task" ),
+                                  tr( "Deleting the task failed" ) );
     }
     return m_success;
 }

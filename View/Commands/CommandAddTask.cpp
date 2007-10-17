@@ -1,9 +1,10 @@
 #include <QWidget>
 #include <QMessageBox>
 
+#include <Core/ControllerInterface.h>
+#include <Core/CommandEmitterInterface.h>
+
 #include "CommandAddTask.h"
-#include "ControllerInterface.h"
-#include "CommandEmitterInterface.h"
 
 CommandAddTask::CommandAddTask( const Task& task, QObject* parent )
     : CharmCommand( parent )

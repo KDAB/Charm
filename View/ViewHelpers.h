@@ -4,7 +4,7 @@
 #include "Core/CharmConstants.h"
 
 #include "Application.h"
-#include "Model.h"
+#include "ModelConnector.h"
 
 #define MODEL ( Application::instance().model() )
 #define DATAMODEL ( MODEL.charmDataModel() )

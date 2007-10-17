@@ -7,8 +7,6 @@
 #include "CharmConstants.h"
 #include "Configuration.h"
 #include "CharmDataModel.h"
-#include "Commands/CommandModifyEvent.h"
-#include "Commands/CommandMakeAndActivateEvent.h"
 
 CharmDataModel::CharmDataModel()
     : QObject()
@@ -342,7 +340,7 @@ bool CharmDataModel::eventExists( EventId id )
 }
 
 bool CharmDataModel::isTaskActive( TaskId id ) const
-{   // FIXME this may have to be optimized (profile first!)
+{
     for ( int i = 0; i < m_activeEventIds.size(); ++i )
     {
         const Event& e = eventForId( m_activeEventIds[i] );
@@ -356,7 +354,7 @@ bool CharmDataModel::isTaskActive( TaskId id ) const
 }
 
 const Event& CharmDataModel::activeEventFor ( TaskId id ) const
-{   // FIXME this may have to be optimized (profile first!)
+{
     static Event InvalidEvent;
 
     for ( int i = 0; i < m_activeEventIds.size(); ++i )
@@ -377,11 +375,7 @@ void CharmDataModel::startEventRequested( const Task& task )
         endAllEventsRequested();
     }
 
-    // the command will call activateEvent in finalize, this will
-    // notify the task view to update
-    CharmCommand* command = new CommandMakeAndActivateEvent( task, this );
-    // FIXME TEMP_REM
-    // VIEW.sendCommand( command );
+    emit makeAndActivateEvent( task );
 }
 
 void CharmDataModel::endEventRequested( const Task& task )
@@ -401,20 +395,11 @@ void CharmDataModel::endEventRequested( const Task& task )
         }
     }
 
-    // FIXME this may be an inconsistency: we deactivate the event before
-    // we tell the controller about the change: make a
-    // CommandEndEvent, and add a deactivateEvent function that is
-    // called from finalize()
-    // on the other hand, the event IS deactivated when we delete it
-    // from the list, we only have to persist it's state
-    // (CommandModifyEvent)
-
     Q_ASSERT( eventId != 0 );
     Event& event = findEvent( eventId );
     event.setEndDateTime( QDateTime::currentDateTime() );
-    CommandModifyEvent* command = new CommandModifyEvent( event, this );
-    // FIXME TEMP_REM
-    // VIEW.sendCommand( command );
+
+    emit requestEventModification( event );
 
     if ( m_activeEventIds.isEmpty() ) m_timer.stop();
 }
@@ -423,7 +408,6 @@ void CharmDataModel::endAllEventsRequested()
 {
     QDateTime currentDateTime = QDateTime::currentDateTime();
     while ( ! m_activeEventIds.isEmpty() ) {
-        // for ( int i = 0; i < m_activeEventIds.size(); ++i )
         EventId eventId = m_activeEventIds.first();
         m_activeEventIds.pop_front();
         Q_FOREACH( CharmDataModelAdapterInterface* adapter, m_adapters ) {
@@ -433,9 +417,8 @@ void CharmDataModel::endAllEventsRequested()
         Q_ASSERT( eventId != 0 );
         Event& event = findEvent( eventId );
         event.setEndDateTime( currentDateTime );
-        CommandModifyEvent* command = new CommandModifyEvent( event, this );
-        // FIXME TEMP_REM
-        // VIEW.sendCommand( command );
+
+        emit requestEventModification( event );
     }
 
     m_timer.stop();
@@ -446,20 +429,9 @@ void CharmDataModel::eventUpdateTimerEvent()
     Q_FOREACH( EventId id, m_activeEventIds ) {
         Event& event = findEvent( id );
         event.setEndDateTime( QDateTime::currentDateTime() );
-        CommandModifyEvent* command = new CommandModifyEvent( event, this );
-        // FIXME TEMP_REM
-        // VIEW.sendCommand( command );
-    }
-}
 
-void CharmDataModel::commitCommand( CharmCommand* command )
-{
-    if ( ! command->finalize() ) {
-        qDebug() << "CharmDataModel::commitCommand:"
-                 << command->metaObject()->className()
-                 << "command has failed";
+        emit requestEventModification( event );
     }
-    delete command;
 }
 
 const EventMap& CharmDataModel::eventMap() const

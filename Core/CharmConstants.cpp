@@ -13,7 +13,6 @@ const QString MetaKey_MainWindowGUIStateExpandedTasks = "MainWindowGUIStateExpan
 const QString TrueString( "true" );
 const QString FalseString( "false" );
 
-
 const QString& stringForBool ( bool value )
 {
     if ( value ) {

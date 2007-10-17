@@ -20,55 +20,24 @@ IF ( QT4_FOUND )
    ENDIF (CMAKE_COMPILER_IS_GNUCXX)
 
    SET( CharmCore_SRCS 
-#		       Application.cpp
 		       CharmConstants.cpp
 		       Controller.cpp
 		       SqLiteStorage.cpp
-#		       TaskIdDialog.cpp
 		       Configuration.cpp
-#		       Data.cpp
 		       SqlStorage.cpp
-#		       ConfigurationDialog.cpp 
-#		       CharmPreferences.cpp
 		       Event.cpp
 		       Task.cpp
 		       State.cpp
-#		       View.cpp
-#		       StatusBarWidget.cpp
-#		       GUIState.cpp
-#		       EventEditor.cpp 
-#		       EventEditorDelegate.cpp 
-#		       SelectTaskDialog.cpp
-#		       Model.cpp
 		       CharmDataModel.cpp
-#		       ViewFilter.cpp
-#		       TaskModelAdapter.cpp
-#		       EventModelAdapter.cpp
-#		       EventModelFilter.cpp
 		       TaskTreeItem.cpp 
 		       TimeSpans.cpp
-#		       ChattyItemDelegate.cpp 
-#		       CharmAboutDialog.cpp
-
-		       Commands/CharmCommand.cpp
-		       Commands/CommandRelayCommand.cpp
-		       Commands/CommandModifyEvent.cpp
-		       Commands/CommandDeleteEvent.cpp
-		       Commands/CommandAddTask.cpp
-		       Commands/CommandModifyTask.cpp
-		       Commands/CommandDeleteTask.cpp
-		       Commands/CommandMakeEvent.cpp
-		       Commands/CommandMakeAndActivateEvent.cpp )
+		       CharmCommand.cpp
+)
     
     QT4_AUTOMOC ( ${CharmCore_SRCS} )
 
-#    QT4_ADD_RESOURCES ( Resources_SRCS CharmResources.qrc )
+    ADD_LIBRARY( CharmCore STATIC ${CharmCore_SRCS} )
 
-    ADD_LIBRARY( CharmCore STATIC 
-		       ${CharmCore_SRCS}
-#		       ${UiGenerated_SRCS} 
-#		       ${Resources_SRCS} 
-)
 ENDIF ( QT4_FOUND )
 
 IF ( NOT QT4_FOUND )

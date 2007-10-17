@@ -6,7 +6,7 @@
 #include "Core/Event.h"
 #include "Core/EventModelInterface.h"
 #include "Core/CharmDataModelAdapterInterface.h"
-#include "Core/Commands/CommandEmitterInterface.h"
+#include "Core/CommandEmitterInterface.h"
 
 class CharmDataModel;
 

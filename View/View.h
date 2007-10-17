@@ -7,7 +7,7 @@
 #include <QSystemTrayIcon>
 
 #include "Core/ViewInterface.h"
-#include "Core/Commands/CommandEmitterInterface.h"
+#include "Core/CommandEmitterInterface.h"
 #include "EventEditor.h"
 #include "Reports/ReportDialog.h"
 

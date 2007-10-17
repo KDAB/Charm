@@ -1,7 +1,7 @@
 #include <QtDebug>
 
 #include "Core/CharmConstants.h"
-#include "Model.h"
+#include "ModelConnector.h"
 #include "Application.h"
 #include "ViewHelpers.h"
 #include "CharmReport.h"

@@ -4,9 +4,10 @@
 #include <QDate>
 #include <QSortFilterProxyModel>
 
+#include <Core/EventModelInterface.h>
+#include <Core/CommandEmitterInterface.h>
+
 #include "EventModelAdapter.h"
-#include "Core/EventModelInterface.h"
-#include "Core/Commands/CommandEmitterInterface.h"
 
 class CharmDataModel;
 

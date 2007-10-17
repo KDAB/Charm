@@ -1,5 +1,6 @@
+#include <Core/ControllerInterface.h>
+
 #include "CommandDeleteEvent.h"
-#include "ControllerInterface.h"
 
 CommandDeleteEvent::CommandDeleteEvent( const Event& event, QObject* parent )
     : CharmCommand( parent )

@@ -13,13 +13,12 @@
 #include <QMetaType>
 #include <QMessageBox>
 
-#include "Core/CharmConstants.h"
+#include <Core/CharmConstants.h>
+#include <Core/SqLiteStorage.h>
 
 #include "ViewHelpers.h"
 #include "Data.h"
 #include "Application.h"
-// FIXME TEMP_REM
-// #include "SqLiteStorage.h"
 #include "ConfigurationDialog.h"
 
 Application* Application::m_instance = 0;
@@ -181,9 +180,8 @@ void Application::leaveStartingUpState()
 
 void Application::enterConnectingState()
 {
-// FIXME TEMP_REM
-//     if ( !m_controller.initializeBackEnd( CHARM_SQLITE_BACKEND_DESCRIPTOR ) )
-//         m_app.quit();
+    if ( !m_controller.initializeBackEnd( CHARM_SQLITE_BACKEND_DESCRIPTOR ) )
+        m_app.quit();
     // tell storage to connect to database
     CONFIGURATION.failure = false;
     if ( m_controller.connectToBackend() )
@@ -304,7 +302,7 @@ void Application::slotCurrentBackendStatusChanged( const QString& text )
     // m_trayIcon.setToolTip( title );
 }
 
-Model& Application::model()
+ModelConnector& Application::model()
 {
     return m_model;
 }

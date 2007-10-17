@@ -3,6 +3,7 @@
 #include <QtDebug>
 #include <QFileInfo>
 #include <QSettings>
+#include <QSqlDatabase>
 
 // FIXME move dump<shit> to SqlStorage
 #include "Event.h"

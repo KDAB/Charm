@@ -5,7 +5,7 @@
 
 #include "TaskModelAdapter.h"
 #include "Core/TaskModelInterface.h"
-#include "Core/Commands/CommandEmitterInterface.h"
+#include "Core/CommandEmitterInterface.h"
 
 class CharmDataModel;
 class CharmCommand;

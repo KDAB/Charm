@@ -1,6 +1,7 @@
 #include <QtSql>
 #include <QFile>
 #include <QtDebug>
+#include <QSqlDatabase>
 #include <QSettings>
 #include <QStringList>
 #include <QTextStream>
@@ -248,7 +249,7 @@ bool SqlStorage::deleteTask( const Task& task )
 }
 
 
-Event SqlStorage::makeEventFromRecord( QSqlRecord record )
+Event SqlStorage::makeEventFromRecord( const QSqlRecord& record )
 {
     Event event;
 
@@ -670,7 +671,8 @@ Installation SqlStorage::createInstallation( const QString& name)
                         "database implementation error (SELECT)" );
         }
     }
-    if ( result ) {   // modify the created record to make sure event_id is unique
+    if ( result ) {
+        // modify the created record to make sure event_id is unique
         // within the installation:
         const char* statement =
             "UPDATE Installations SET inst_id = :inst_id WHERE id = :id;";

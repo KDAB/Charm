@@ -4,10 +4,10 @@
 #include "Core/CharmConstants.h"
 #include "ViewHelpers.h"
 // #include "Reports/CharmReport.h"
-#include "Core/Commands/CharmCommand.h"
-#include "Core/Commands/CommandModifyTask.h"
-#include "Core/Commands/CommandModifyEvent.h"
-#include "Core/Configuration.h"
+#include <Core/Configuration.h>
+#include <Core/CharmCommand.h>
+#include "Commands/CommandModifyTask.h"
+#include "Commands/CommandModifyEvent.h"
 #include "TaskModelAdapter.h"
 
 TaskModelAdapter::TaskModelAdapter( CharmDataModel* parent )

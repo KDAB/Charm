@@ -2,9 +2,12 @@
 #define SQLSTORAGE_H
 
 #include <QString>
-#include <QSqlDatabase>
 
 #include "StorageInterface.h"
+
+class QSqlDatabase;
+class QSqlQuery;
+class QSqlRecord;
 
 class SqlStorage : public StorageInterface
 {
@@ -15,10 +18,6 @@ public:
     void stateChanged( State previous );
 
     int makeEventId();
-
-    // leave as pure virtual here:
-    // bool connect();
-    // bool disconnect();
 
     virtual QSqlDatabase& database() = 0;
 
@@ -67,7 +66,7 @@ private:
     // run the query and process possible errors
     bool runQuery( QSqlQuery& );
 
-    Event makeEventFromRecord( QSqlRecord );
+    Event makeEventFromRecord( const QSqlRecord& );
 };
 
 #endif

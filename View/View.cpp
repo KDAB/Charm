@@ -25,10 +25,10 @@
 #include "ChattyItemDelegate.h"
 #include "CharmAboutDialog.h"
 
-#include "Core/Commands/CharmCommand.h"
-#include "Core/Commands/CommandRelayCommand.h"
-#include "Core/Commands/CommandAddTask.h"
-#include "Core/Commands/CommandDeleteTask.h"
+#include "Core/CharmCommand.h"
+#include "Commands/CommandRelayCommand.h"
+#include "Commands/CommandAddTask.h"
+#include "Commands/CommandDeleteTask.h"
 
 #include "ui_View.h"
 
@@ -180,9 +180,7 @@ void View::restore()
 
 void View::actionSelectedEventStarted( bool b ) // bool triggered
 {
-    // FIXME TEMP_REM
-    ViewFilter* filter = 0x0;
-    // Application::instance().model().taskModel();
+    ViewFilter* filter = Application::instance().model().taskModel();
     Task task = selectedTask();
     // respect configuration:
     if ( CONFIGURATION.eventsInLeafsOnly && filter->taskHasChildren( task ) )
@@ -223,9 +221,7 @@ void View::configureUi( const QModelIndex& current )
         return;
     }
 
-    // FIXME TEMP_REM
-    ViewFilter* filter = 0x0;
-    // Application::instance().model().taskModel();
+    ViewFilter* filter = Application::instance().model().taskModel();
 
     bool editing = m_delegate->isEditing();
 
@@ -285,9 +281,7 @@ void View::stateChanged( State previous )
 {
     if ( previous == Constructed ) {
         // set model on view:
-        // FIXME TEMP_REM
-        ViewFilter* filter = 0x0;
-        // Application::instance().model().taskModel();
+        ViewFilter* filter = Application::instance().model().taskModel();
         m_ui->treeView->setModel( filter );
         connect( m_ui->treeView->selectionModel(),
                  SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ),
@@ -334,9 +328,7 @@ void View::stateChanged( State previous )
 
 void View::slotFiltertextChanged( const QString& filtertextRaw )
 {
-    // FIXME TEMP_REM
-    ViewFilter* filter = 0x0;
-    // Application::instance().model().taskModel();
+    ViewFilter* filter = Application::instance().model().taskModel();
     QString filtertext = filtertextRaw.simplified();
     filtertext.replace( ' ', '*' );
     filter->setFilterWildcard( filtertext );
@@ -347,9 +339,7 @@ void View::slotFiltertextChanged( const QString& filtertextRaw )
 
 void View::subscribedOnlyModeChanged( int index )
 {
-    // FIXME TEMP_REM
-    ViewFilter* filter = 0x0;
-    // Application::instance().model().taskModel();
+    ViewFilter* filter = Application::instance().model().taskModel();
     bool on = ( index == 1 );
     filter->setSubscribedTasksOnlyMode( on );
     CONFIGURATION.showOnlySubscribedTasks = on;
@@ -358,9 +348,7 @@ void View::subscribedOnlyModeChanged( int index )
 
 void View::slotContextMenuRequested( const QPoint& point )
 {
-    // FIXME TEMP_REM
-    ViewFilter* filter = 0x0;
-    // MODEL.taskModel();
+    ViewFilter* filter = MODEL.taskModel();
 
     // prepare the menu:
     QMenu menu( m_ui->treeView );
@@ -452,9 +440,7 @@ void View::slotEditPreferences( bool )
 
 void View::slotItemDoubleClicked( const QModelIndex& index )
 {
-    // FIXME TEMP_REM
-    ViewFilter* filter = 0x0;
-    // Application::instance().model().taskModel();
+    ViewFilter* filter = Application::instance().model().taskModel();
 
     if ( !index.isValid() ) return;
     if ( index.column() == Column_TaskSessionTime ) {
@@ -575,9 +561,7 @@ void View::slotStopAllTasks()
 Task View::selectedTask()
 {
     Q_ASSERT( m_ui->treeView );
-    // FIXME TEMP_REM
-    ViewFilter* filter = 0x0;
-    // ViewFilter* filter = Application::instance().model().taskModel();
+    ViewFilter* filter = Application::instance().model().taskModel();
     Q_ASSERT( filter );
     // find current selection
     QItemSelection selection = m_ui->treeView->selectionModel()->selection();
@@ -593,9 +577,7 @@ Task View::selectedTask()
 void View::saveGuiState()
 {
     Q_ASSERT( m_ui->treeView );
-    // FIXME TEMP_REM
-    ViewFilter* filter = 0x0;
-    // ViewFilter* filter = Application::instance().model().taskModel();
+    ViewFilter* filter = Application::instance().model().taskModel();
     Q_ASSERT( filter );
     QSettings settings;
     // save geometry
@@ -623,9 +605,7 @@ void View::saveGuiState()
 void View::restoreGuiState()
 {
     Q_ASSERT( m_ui->treeView );
-    // FIXME TEMP_REM
-    ViewFilter* filter = 0x0;
-    // ViewFilter* filter = Application::instance().model().taskModel();
+    ViewFilter* filter = Application::instance().model().taskModel();
     Q_ASSERT( filter );
     // restore geometry
     QSettings settings;

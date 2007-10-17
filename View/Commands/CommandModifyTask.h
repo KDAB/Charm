@@ -1,8 +1,8 @@
 #ifndef COMMANDMODIFYTASK_H
 #define COMMANDMODIFYTASK_H
 
-#include "../Task.h"
-#include "CharmCommand.h"
+#include <Core/Task.h>
+#include <Core/CharmCommand.h>
 
 class CommandModifyTask : public CharmCommand
 {

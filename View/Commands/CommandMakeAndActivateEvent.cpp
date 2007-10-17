@@ -1,7 +1,10 @@
 #include <QDateTime>
 
-#include "CharmDataModel.h"
-#include "ControllerInterface.h"
+#include <Core/CharmDataModel.h>
+#include <Core/CommandEmitterInterface.h>
+#include <Core/ControllerInterface.h>
+
+#include "ModelConnector.h"
 #include "CommandMakeAndActivateEvent.h"
 
 CommandMakeAndActivateEvent::CommandMakeAndActivateEvent( const Task& task,
@@ -35,9 +38,9 @@ bool CommandMakeAndActivateEvent::execute( ControllerInterface* controller )
 bool CommandMakeAndActivateEvent::finalize()
 {
     if ( m_event.isValid() ) {
-        CharmDataModel* model = dynamic_cast<CharmDataModel*>( owner() );
+        ModelConnector* model = dynamic_cast<ModelConnector*>( owner() );
         Q_ASSERT( model ); // this command is "owned" by the model
-        model->activateEvent( m_event );
+        model->charmDataModel()->activateEvent( m_event );
         return true;
     } else {
         return false;

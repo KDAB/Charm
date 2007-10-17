@@ -7,7 +7,7 @@
 #include "Configuration.h"
 
 // FIXME this may have to go into some plugin configuration later:
-// FIXME alsowe may need some verbose descriptors for configuration
+// FIXME also, we may need some verbose descriptors for configuration
 #define CHARM_SQLITE_BACKEND_DESCRIPTOR "sqlite"
 #define CHARM_MYSQL_BACKEND_DESCRIPTOR "mysql"
 

@@ -2,9 +2,11 @@
 #include <QPushButton>
 #include <QDialogButtonBox>
 
+#include <Core/CharmConstants.h>
+
+#include "ViewHelpers.h"
 #include "Data.h"
-#include "Model.h"
-#include "Core/CharmConstants.h"
+#include "ModelConnector.h"
 #include "ViewFilter.h"
 #include "Application.h"
 #include "Core/CharmDataModel.h"
@@ -62,8 +64,7 @@ SelectTaskDialog::SelectTaskDialog( QWidget* parent )
 {
     m_ui.setupUi( this );
     m_ui.treeView->setModel( &m_proxy );
-    // FIXME TEMP_REM
-    // m_proxy.setSourceModel( MODEL.taskModel() );
+    m_proxy.setSourceModel( MODEL.taskModel() );
     connect( m_ui.treeView->selectionModel(),
              SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ),
              SLOT( slotCurrentItemChanged( const QModelIndex&, const QModelIndex& ) ) );

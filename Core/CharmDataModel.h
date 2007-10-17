@@ -8,7 +8,6 @@
 #include "State.h"
 #include "Event.h"
 #include "TaskTreeItem.h"
-#include "Commands/CommandEmitterInterface.h"
 #include "CharmDataModelAdapterInterface.h"
 
 class QAbstractItemModel;
@@ -20,8 +19,7 @@ class QAbstractItemModel;
     It provides QAbstractItemModel interfaces for the View's item view
     to use.
 */
-class CharmDataModel : public QObject,
-                       public CommandEmitterInterface
+class CharmDataModel : public QObject
 {
     Q_OBJECT
 
@@ -65,8 +63,12 @@ public:
     void endAllEventsRequested();
     /** Activate this event. */
     bool activateEvent( const Event& );
-    // implement CommandEmitterInterface
-    void commitCommand( CharmCommand* );
+
+signals:
+    // these need to be implemented in the respective application to
+    // be able to track time:
+    void makeAndActivateEvent( const Task& );
+    void requestEventModification( const Event& );
 
 public slots:
     void setAllTasks( const TaskList& tasks );
@@ -75,7 +77,6 @@ public slots:
     void deleteTask( const Task& );
     void clearTasks();
 
-    // FIXME we may not want *all* events
     void setAllEvents( const EventList& events );
     void addEvent( const Event& );
     void modifyEvent( const Event& );

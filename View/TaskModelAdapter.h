@@ -6,7 +6,7 @@
 #include "Core/TaskModelInterface.h"
 #include "Core/CharmDataModel.h"
 #include "Core/CharmDataModelAdapterInterface.h"
-#include "Core/Commands/CommandEmitterInterface.h"
+#include "Core/CommandEmitterInterface.h"
 
 enum ViewColumns {
     Column_TaskId,

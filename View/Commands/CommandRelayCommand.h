@@ -1,7 +1,7 @@
 #ifndef COMMANDRELAYCOMMAND_H
 #define COMMANDRELAYCOMMAND_H
 
-#include "CharmCommand.h"
+#include <Core/CharmCommand.h>
 
 class CommandEmitterInterface;
 

@@ -15,7 +15,7 @@ public:
     virtual bool taskIsActive( const Task& task ) const = 0;
     virtual bool taskHasChildren( const Task& task ) const = 0;
     virtual bool taskIdExists( TaskId taskId ) const = 0;
-    // releayed model signals, in lack of notification in the view:
+    // relayed model signals, in lack of notification in the view:
     // eventActivated was already taken by CharmDataModelAdapterInterface
     virtual void eventActivationNotice( EventId id ) = 0;
     virtual void eventDeactivationNotice( EventId id ) = 0;

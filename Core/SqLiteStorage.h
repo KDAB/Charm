@@ -1,6 +1,8 @@
 #ifndef SQLITESTORAGE_H
 #define SQLITESTORAGE_H
 
+#include <QSqlDatabase>
+
 #include "SqlStorage.h"
 
 class Configuration;

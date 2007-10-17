@@ -81,10 +81,6 @@ void Event::setEndDateTime( const QDateTime& end )
     m_end = end;
 }
 
-
-
-
-
 int Event::duration() const
 {
     if ( m_start.isValid() && m_end.isValid() )
