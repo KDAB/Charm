@@ -21,6 +21,8 @@ public:
     static const QIcon& configureIcon();
     static const QPixmap& editorLockedPixmap();
     static const QPixmap& editorDirtyPixmap();
+
+    static const QPixmap& backdropPixmap();
 };
 
 #endif

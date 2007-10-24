@@ -4,9 +4,11 @@ IF ( QT4_FOUND )
    INCLUDE_DIRECTORIES( ${QT_QTGUI_INCLUDE_DIR} )
    INCLUDE_DIRECTORIES( ${QT_QTSQL_INCLUDE_DIR} )
    INCLUDE_DIRECTORIES( ${QT_QTXML_INCLUDE_DIR} )
+   INCLUDE_DIRECTORIES( ${QT_QTOPENGL_INCLUDE_DIR} )
    INCLUDE_DIRECTORIES( .. )
 
    LINK_LIBRARIES( ${QT_QTCORE_LIBRARY} )
+   LINK_LIBRARIES( ${QT_QTOPENGL_LIBRARY} )
    LINK_LIBRARIES( ${QT_QTGUI_LIBRARY} )
    LINK_LIBRARIES( ${QT_QTXML_LIBRARY} )
    
@@ -19,15 +21,15 @@ IF ( QT4_FOUND )
 #  -Wnon-virtual-dtor # Qt has too many of those already
    ENDIF (CMAKE_COMPILER_IS_GNUCXX)
 
-   SET( CharmView_SRCS 
+   SET( CharmApplication_SRCS 
+		       MainWindow.cpp
 		       Application.cpp
 		       ViewHelpers.cpp
 		       TaskIdDialog.cpp
 		       Data.cpp
 		       ConfigurationDialog.cpp 
 		       CharmPreferences.cpp
-		       View.cpp
-		       StatusBarWidget.cpp
+		       TasksView.cpp
 		       GUIState.cpp
 		       EventEditor.cpp 
 		       EventEditorDelegate.cpp 
@@ -39,6 +41,8 @@ IF ( QT4_FOUND )
 		       EventModelFilter.cpp
 		       ChattyItemDelegate.cpp 
 		       CharmAboutDialog.cpp
+		       # OpeningScene.cpp
+		       IdleWidget.cpp
 		       Reports/ReportDialog.cpp
 		       Reports/CharmReport.cpp
 		       Reports/ActivityReport.cpp 
@@ -56,9 +60,10 @@ IF ( QT4_FOUND )
 		       Commands/CommandMakeAndActivateEvent.cpp 
 )
     
-    QT4_AUTOMOC ( ${CharmView_SRCS} )
+    QT4_AUTOMOC ( ${CharmApplication_SRCS} )
 
     QT4_WRAP_UI( UiGenerated_SRCS
+		       MainWindow.ui 
     		       ConfigurationDialog.ui
 		       CharmPreferences.ui
 		       TaskIdDialog.ui
@@ -66,16 +71,15 @@ IF ( QT4_FOUND )
 		       Reports/ActivityReportConfigurationPage.ui
 		       Reports/WeeklyTimeSheetConfigurationPage.ui
 		       Reports/ReportPreviewWindow.ui
-		       View.ui
-		       StatusBarWidget.ui
+		       TasksView.ui
 		       EventEditor.ui 
 		       SelectTaskDialog.ui
 		       CharmAboutDialog.ui )
 
     QT4_ADD_RESOURCES ( Resources_SRCS CharmResources.qrc )
 
-    ADD_LIBRARY( CharmView STATIC 
-		       ${CharmView_SRCS}
+    ADD_LIBRARY( CharmApplication STATIC 
+		       ${CharmApplication_SRCS}
 		       ${UiGenerated_SRCS} 
 		       ${Resources_SRCS} )
 
@@ -83,7 +87,7 @@ IF ( QT4_FOUND )
     QT4_AUTOMOC (${Charm_SRCS} )
 
     ADD_EXECUTABLE( Charm MACOSX_BUNDLE ${Charm_SRCS} )
-    TARGET_LINK_LIBRARIES( Charm CharmView )
+    TARGET_LINK_LIBRARIES( Charm CharmApplication )
     TARGET_LINK_LIBRARIES( Charm CharmCore )
     INSTALL( TARGETS Charm DESTINATION bin )
 

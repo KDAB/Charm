@@ -1,12 +1,14 @@
 #include <QtDebug>
 #include <QPainter>
 
+#include <Core/Event.h>
+#include <Core/CharmConstants.h>
+
 #include "Data.h"
-#include "Core/Event.h"
 #include "ViewHelpers.h"
-#include "Core/CharmConstants.h"
 #include "EventModelFilter.h"
 #include "EventEditorDelegate.h"
+#include "Reports/CharmReport.h"
 
 EventEditorDelegate::EventEditorDelegate( EventModelFilter* model,
                                           QObject* parent )

@@ -5,7 +5,7 @@
 #include <QMessageBox>
 #include <QDateTimeEdit>
 
-#include "View.h"
+#include "TasksView.h"
 #include "ViewHelpers.h"
 #include "Data.h"
 #include "Core/Event.h"
@@ -25,8 +25,8 @@
 
 #include "ui_EventEditor.h"
 
-EventEditor::EventEditor( View* parent )
-    : QDialog( parent )
+EventEditor::EventEditor( MainWindow* parent )
+    : QWidget( parent )
     , m_ui( new Ui::EventEditor )
     , m_view( parent )
     , m_selectedTask( 0 )
@@ -176,46 +176,6 @@ void EventEditor::slotCommitTimeout()
 //     }
     qDebug() << "EventEditor::slotCommitTimeout: auto-update deactivated, verify"
         " crash with later Qt version";
-}
-
-void EventEditor::setModel( EventModelFilter* model )
-{
-    m_ui->listView->setModel( model );
-    m_ui->listView->setSelectionBehavior( QAbstractItemView::SelectRows );
-    m_ui->listView->setSelectionMode( QAbstractItemView::SingleSelection );
-
-    connect( m_ui->listView->selectionModel(),
-             SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ),
-             SLOT( slotCurrentItemChanged( const QModelIndex&, const QModelIndex& ) ) );
-
-    connect( model, SIGNAL( eventActivationNotice( EventId ) ),
-             SLOT( slotEventActivated( EventId ) ) );
-    connect( model, SIGNAL( eventDeactivationNotice( EventId ) ),
-             SLOT( slotEventDeactivated( EventId ) ) );
-
-    connect( model, SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ),
-             SLOT( slotUpdateCurrent() ) );
-    connect( model, SIGNAL( rowsInserted( const QModelIndex&, int, int ) ),
-             SLOT( slotUpdateTotal() ) );
-    connect( model, SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ),
-             SLOT( slotUpdateTotal() ) );
-    connect( model, SIGNAL( rowsInserted( const QModelIndex&, int, int ) ),
-             SLOT( slotConfigureUi() ) );
-    connect( model, SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ),
-             SLOT( slotConfigureUi() ) );
-    connect( model, SIGNAL( layoutChanged() ),
-             SLOT( slotUpdateCurrent() ) );
-    connect( model, SIGNAL( modelReset() ),
-             SLOT( slotUpdateTotal() ) );
-
-    m_model = model;
-    // normally, the model is set only once, so this should be no problem:
-    EventEditorDelegate* delegate =
-        new EventEditorDelegate( model, m_ui->listView );
-    m_ui->listView->setItemDelegate( delegate );
-
-
-    m_dirty = false;
 }
 
 void EventEditor::slotCurrentItemChanged( const QModelIndex& start,
@@ -477,5 +437,58 @@ void EventEditor::slotUpdateTotal()
         m_ui->labelTotal->setText( total );
     }
 }
+
+// ViewModeInterface:
+void EventEditor::saveGuiState() {}
+void EventEditor::restoreGuiState() {}
+void EventEditor::stateChanged( State previous ) {}
+
+void EventEditor::configurationChanged()
+{
+    slotConfigureUi();
+}
+
+void EventEditor::setModel( ModelConnector* connector )
+{
+    Q_ASSERT( m_ui );
+    EventModelFilter* model = connector->eventModel();
+    m_ui->listView->setModel( model );
+    m_ui->listView->setSelectionBehavior( QAbstractItemView::SelectRows );
+    m_ui->listView->setSelectionMode( QAbstractItemView::SingleSelection );
+
+    connect( m_ui->listView->selectionModel(),
+             SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ),
+             SLOT( slotCurrentItemChanged( const QModelIndex&, const QModelIndex& ) ) );
+
+    connect( model, SIGNAL( eventActivationNotice( EventId ) ),
+             SLOT( slotEventActivated( EventId ) ) );
+    connect( model, SIGNAL( eventDeactivationNotice( EventId ) ),
+             SLOT( slotEventDeactivated( EventId ) ) );
+
+    connect( model, SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ),
+             SLOT( slotUpdateCurrent() ) );
+    connect( model, SIGNAL( rowsInserted( const QModelIndex&, int, int ) ),
+             SLOT( slotUpdateTotal() ) );
+    connect( model, SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ),
+             SLOT( slotUpdateTotal() ) );
+    connect( model, SIGNAL( rowsInserted( const QModelIndex&, int, int ) ),
+             SLOT( slotConfigureUi() ) );
+    connect( model, SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ),
+             SLOT( slotConfigureUi() ) );
+    connect( model, SIGNAL( layoutChanged() ),
+             SLOT( slotUpdateCurrent() ) );
+    connect( model, SIGNAL( modelReset() ),
+             SLOT( slotUpdateTotal() ) );
+
+    m_model = model;
+    // normally, the model is set only once, so this should be no problem:
+    EventEditorDelegate* delegate =
+        new EventEditorDelegate( model, m_ui->listView );
+    m_ui->listView->setItemDelegate( delegate );
+
+
+    m_dirty = false;
+}
+
 
 #include "EventEditor.moc"

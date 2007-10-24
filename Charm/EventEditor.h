@@ -1,7 +1,7 @@
 #ifndef EVENTEDITOR_H
 #define EVENTEDITOR_H
 
-#include <QDialog>
+#include <QWidget>
 #include <QAction>
 #include <QTimer>
 
@@ -9,9 +9,11 @@
 #include "Core/TimeSpans.h"
 #include "Core/CommandEmitterInterface.h"
 
+#include "ViewModeInterface.h"
+
 class QModelIndex;
 
-class View;
+class MainWindow;
 class CharmCommand;
 class QAbstractItemModel;
 class EventModelFilter;
@@ -20,22 +22,28 @@ namespace Ui {
     class EventEditor;
 }
 
-class EventEditor : public QDialog,
+class EventEditor : public QWidget,
+                    public ViewModeInterface,
                     public CommandEmitterInterface
 {
     Q_OBJECT
 
 public:
-    explicit EventEditor( View* parent );
+    explicit EventEditor( MainWindow* parent );
     ~EventEditor();
 
     void closeEvent( QCloseEvent* );
 
     void reject();
 
-    void setModel( EventModelFilter* );
-
     void makeVisibleAndCurrent( const Event& );
+
+    // implement ViewModeInterface:
+    void saveGuiState();
+    void restoreGuiState();
+    void stateChanged( State previous );
+    void configurationChanged();
+    void setModel( ModelConnector* );
 
 signals:
     void visible( bool );
@@ -69,7 +77,7 @@ private:
 
     QList<NamedTimeSpan> m_timeSpans;
     Ui::EventEditor* m_ui;
-    View* m_view;
+    MainWindow* m_view;
     Event m_event;
     TaskId m_selectedTask;
     bool m_dirty;

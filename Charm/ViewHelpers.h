@@ -10,6 +10,6 @@
 #define DATAMODEL ( MODEL.charmDataModel() )
 #define VIEW ( Application::instance().view() )
 
-void connectControllerAndView( Controller*, View* );
+void connectControllerAndView( Controller*, MainWindow* );
 
 #endif

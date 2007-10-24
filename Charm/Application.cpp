@@ -28,8 +28,7 @@ Application::Application( int argc,  char** argv )
     , m_state( Constructed )
     , m_app( argc, argv )
     , m_controller()
-    , m_view()
-    , m_closing( false )
+    , m_mainWindow()
 {
     // QApplication setup
     m_app.setQuitOnLastWindowClosed( false );
@@ -44,18 +43,12 @@ Application::Application( int argc,  char** argv )
                 "Application is a singleton and cannot be created more than once" );
     m_instance = this;
     qRegisterMetaType<State>( "State" );
-    // qRegisterMetaType<TaskId>( "TaskId" ); // unnecessary, only used in QVariant
-    // qRegisterMetaType<TaskIdList>( "TaskIdList" );
-
-    // window title updates
-    connect( &m_controller, SIGNAL( currentBackendStatus( const QString& ) ),
-             SLOT( slotCurrentBackendStatusChanged( const QString& ) ) );
 
     // save the configuration (configuration is managed by the application)
-    connect( &m_view, SIGNAL( saveConfiguration() ),
+    connect( &m_mainWindow, SIGNAL( saveConfiguration() ),
              SLOT( slotSaveConfiguration() ) );
     // the exit process (close goes to systray, app->quit exits)
-    connect( &m_view, SIGNAL( quit() ),
+    connect( &m_mainWindow, SIGNAL( quit() ),
              SLOT( slotQuitApplication() ) );
 
     // exit process (app will only exit once controller says it is ready)
@@ -63,7 +56,7 @@ Application::Application( int argc,  char** argv )
              SLOT( slotControllerReadyToQuit() ) );
 
     connectControllerAndModel( &m_controller, m_model.charmDataModel() );
-    connectControllerAndView( &m_controller, &m_view );
+    connectControllerAndView( &m_controller, &m_mainWindow );
 
     // my own signals:
     connect( this, SIGNAL( goToState( State ) ), SLOT( setState(State ) ),
@@ -118,7 +111,7 @@ void Application::setState( State state )
     m_state = state;
     m_model.charmDataModel()->stateChanged( previous, state );
     m_controller.stateChanged( previous, state );
-    m_view.stateChanged( previous );
+    m_mainWindow.stateChanged( previous );
 
     switch( m_state ) {
     case StartingUp:
@@ -157,7 +150,7 @@ Application& Application::instance()
 void Application::enterStartingUpState()
 {
     // show view  (view is never invisible)
-    m_view.show();
+    m_mainWindow.show();
     // load configuration
     // ...
     // verify configuration
@@ -187,7 +180,8 @@ void Application::enterConnectingState()
     if ( m_controller.connectToBackend() )
     {
         slotSaveConfiguration();
-        emit goToState( Connected );
+        // delay switch to Connected state a bit to show the start screen:
+        QTimer::singleShot( 1200, this, SLOT( slotGoToConnectedState()));
     } else {
         // go back to StartingUp state and reconfigure
         emit goToState( StartingUp );
@@ -218,21 +212,26 @@ void Application::leaveDisconnectingState()
 void Application::enterShuttingDownState()
 {
     // prevent all modules from accepting any user commands
-    m_view.setEnabled( false );
-    // quit
-    m_app.quit();
+    m_mainWindow.setEnabled( false );
+    QTimer::singleShot( 1200, &m_app, SLOT( quit() ) );
 }
 
 void Application::leaveShuttingDownState()
 {
 }
 
+void Application::slotGoToConnectedState()
+{
+    if ( state() == Connecting ) {
+        emit goToState( Connected );
+    }
+}
 bool Application::configure()
 {
     if ( CONFIGURATION.failure == true ) {
         qDebug() << "Application::configure: an error was found within the configuration.";
         if ( ! CONFIGURATION.failureMessage.isEmpty() ) {
-            QMessageBox::information( &m_view, tr( "Configuration Problem" ),
+            QMessageBox::information( &m_mainWindow, tr( "Configuration Problem" ),
                                       CONFIGURATION.failureMessage,
                                       tr( "Ok" ) );
             CONFIGURATION.failureMessage.clear();
@@ -254,13 +253,13 @@ bool Application::configure()
 #else
         CONFIGURATION.localStorageDatabase = QDir::homePath() + QDir::separator() + ".Charm/Charm_debug.db";
 #endif
-        ConfigurationDialog dialog( CONFIGURATION, &m_view );
+        ConfigurationDialog dialog( CONFIGURATION, &m_mainWindow );
         if ( dialog.exec() ) {
             CONFIGURATION = dialog.configuration();
             CONFIGURATION.writeTo( settings );
         } else {
             qDebug() << "Application::configure: user cancelled configuration. Exiting.";
-            m_app.quit();
+            // m_app.quit();
             return false;
         }
     }
@@ -270,7 +269,6 @@ bool Application::configure()
 
 void Application::slotQuitApplication()
 {
-    m_closing = true;
     emit goToState( Disconnecting );
 }
 
@@ -289,27 +287,14 @@ void Application::slotSaveConfiguration()
     }
 }
 
-void Application::slotCurrentBackendStatusChanged( const QString& text )
-{
-    QString title;
-    QTextStream stream( &title );
-    stream << "Charm ("
-           << CONFIGURATION.user.name()
-           << " - " << text << ")";
-
-    m_view.setWindowTitle( title );
-    // FIXME make work with systrayicon in view
-    // m_trayIcon.setToolTip( title );
-}
-
 ModelConnector& Application::model()
 {
     return m_model;
 }
 
-View& Application::view()
+MainWindow& Application::view()
 {
-    return m_view;
+    return m_mainWindow;
 }
 
 TimeSpans& Application::timeSpans()

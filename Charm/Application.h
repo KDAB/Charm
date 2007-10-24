@@ -16,14 +16,15 @@
 
 // this is an application, not a library:
 // no pimpling, and data members instead of forward declarations
-#include "View.h"
 #include "Core/User.h"
 #include "Core/State.h"
-#include "ModelConnector.h"
 #include "Core/TimeSpans.h"
 #include "Core/Controller.h"
 #include "Core/Configuration.h"
 #include "Core/StorageInterface.h"
+
+#include "MainWindow.h"
+#include "ModelConnector.h"
 
 // FIXME read configuration name from command line
 
@@ -39,6 +40,7 @@ public:
 
     int exec();
 
+    // FIXME broken by design?
     /** Configure the application.
         Returns true if configuring failed.
         The application can only leave StartingUp state once a valid
@@ -49,7 +51,7 @@ public:
     ModelConnector& model();
 
     /** Access to the view. */
-    View& view();
+    MainWindow& view();
 
     /** Access to the time spans object. */
     TimeSpans& timeSpans();
@@ -61,7 +63,7 @@ public slots:
     void slotQuitApplication();
     void slotControllerReadyToQuit();
     void slotSaveConfiguration();
-    void slotCurrentBackendStatusChanged( const QString& text );
+    void slotGoToConnectedState();
 
 signals:
     void goToState( State state );
@@ -82,10 +84,11 @@ private:
     QApplication m_app;
     ModelConnector m_model;
     Controller m_controller;
-    View m_view;
+    MainWindow m_mainWindow;
+    // All statics are created as members of Application. This is
+    // supposed to help on Windows, where constructors for statics
+    // do not seem to called correctly.
     TimeSpans m_timeSpans;
-
-    bool m_closing;
     static Application* m_instance;
 };
 

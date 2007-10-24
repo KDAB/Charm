@@ -1,6 +1,6 @@
 #include "ViewHelpers.h"
 
-void connectControllerAndView( Controller* controller, View* view )
+void connectControllerAndView( Controller* controller, MainWindow* view )
 {
     // connect view and controller:
     // make controller process commands send by the view:
@@ -9,5 +9,9 @@ void connectControllerAndView( Controller* controller, View* view )
     // make view receive done commands from the controller:
     QObject::connect( controller, SIGNAL( commandCompleted( CharmCommand* ) ),
                       view, SLOT( commitCommand( CharmCommand* ) ) );
+    // window title updates
+    QObject::connect( controller, SIGNAL( currentBackendStatus( const QString& ) ),
+                      view, SLOT( slotCurrentBackendStatusChanged( const QString& ) ) );
+
 }
 

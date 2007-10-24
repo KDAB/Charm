@@ -16,6 +16,9 @@
 	<file alias="editor_locked.png">Icons/encrypted.png</file>
 	<file alias="report_stylesheet.sty">Reports/report_stylesheet.sty</file>
     </qresource>
+    <qresource prefix="/Backdrops">
+	<file alias="backdrop1.jpg">Icons/CharmBackdrop600.jpg</file>
+    </qresource>
 </RCC>
 
 

@@ -13,28 +13,25 @@
 #include "Data.h"
 #include "Core/Task.h"
 #include "Core/CharmConstants.h"
-#include "View.h"
+#include "TasksView.h"
 #include "ViewHelpers.h"
 #include "Core/State.h"
 #include "GUIState.h"
 #include "ViewFilter.h"
-#include "StatusBarWidget.h"
 #include "Application.h"
 #include "TaskIdDialog.h"
-#include "CharmPreferences.h"
 #include "ChattyItemDelegate.h"
-#include "CharmAboutDialog.h"
 
 #include "Core/CharmCommand.h"
 #include "Commands/CommandRelayCommand.h"
 #include "Commands/CommandAddTask.h"
 #include "Commands/CommandDeleteTask.h"
 
-#include "ui_View.h"
+#include "ui_TasksView.h"
 
 View::View( QWidget* parent )
-    : QMainWindow( parent )
-    , ViewInterface()
+    : QWidget( parent )
+    // , ViewInterface()
     , m_ui( new Ui::View )
     , m_delegate( new ChattyItemDelegate( this ) )
     , m_actionEventStarted( this )
@@ -44,15 +41,7 @@ View::View( QWidget* parent )
     , m_actionNewTask( this )
     , m_actionNewSubTask( this )
     , m_actionDeleteTask( this )
-    , m_actionQuit( this )
-    , m_actionPreferences( this )
-    , m_actionReporting( this )
-    , m_actionEventEditor( this )
-    , m_actionAboutDialog( this )
-    , m_actionShowHideView( this )
     , m_actionStopAllTasks( this )
-    , m_eventEditor( this )
-    , m_reportDialog( this )
 {
     m_ui->setupUi( this );
     setWindowIcon( Data::charmIcon() );
@@ -63,11 +52,6 @@ View::View( QWidget* parent )
     m_ui->buttonClearFilter->setIcon( Data::clearFilterIcon() );
     // set up actions
     // (no menu icons, please) m_actionAboutDialog.setIcon( Data::charmIcon() );
-    m_actionAboutDialog.setText( tr( "About Charm" ) );
-    connect( &m_actionAboutDialog, SIGNAL( triggered() ),
-             SLOT( slotAboutDialog() ) );
-    connect( &m_actionShowHideView, SIGNAL( triggered() ),
-             SLOT( slotShowHideView() ) );
     m_actionStopAllTasks.setText( tr( "Stop All Active Tasks" ) );
     connect( &m_actionStopAllTasks, SIGNAL( triggered() ),
              SLOT( slotStopAllTasks() ) );
@@ -97,63 +81,6 @@ View::View( QWidget* parent )
     m_actionDeleteTask.setText( tr( "Delete Task" ) );
     m_actionDeleteTask.setIcon( Data::deleteTaskIcon() );
 
-    m_actionQuit.setText( tr( "Quit" ) );
-    m_actionQuit.setIcon( Data::quitCharmIcon() );
-    connect( &m_actionQuit, SIGNAL( triggered( bool ) ),
-             SLOT( slotQuit() ) );
-
-    m_actionPreferences.setText( tr( "Preferences" ) );
-    m_actionPreferences.setIcon( Data::configureIcon() );
-    connect( &m_actionPreferences, SIGNAL( triggered( bool ) ),
-             SLOT( slotEditPreferences( bool ) ) );
-
-    m_actionReporting.setText( tr( "Reports..." ) );
-    m_actionReporting.setCheckable( true );
-    m_actionReporting.setChecked( false );
-    m_reportDialog.hide();
-    connect( &m_actionReporting, SIGNAL( triggered( bool ) ),
-             &m_reportDialog, SLOT( setVisible( bool ) ) );
-    connect( &m_reportDialog, SIGNAL( visible( bool ) ),
-             &m_actionReporting, SLOT( setChecked( bool ) ) );
-
-    m_actionEventEditor.setText( tr( "Event Editor" ) );
-    m_actionEventEditor.setCheckable( true );
-    m_eventEditor.setVisible( m_actionEventEditor.isChecked() );
-    connect( &m_actionEventEditor, SIGNAL( toggled( bool ) ),
-             &m_eventEditor, SLOT( setVisible( bool ) ) );
-    connect( &m_eventEditor, SIGNAL( visible( bool ) ),
-             &m_actionEventEditor, SLOT( setChecked( bool ) ) );
-    // setup Charm menu:
-    QMenu* appMenu = new QMenu( tr( "Charm" ), menuBar() );
-    appMenu->addAction( &m_actionPreferences );
-    m_actionPreferences.setEnabled( true );
-    appMenu->addAction( &m_actionAboutDialog );
-    appMenu->addAction( &m_actionQuit );
-
-    QMenu* viewMenu = new QMenu( tr( "View" ), menuBar() );
-    viewMenu->addAction( &m_actionEventEditor );
-    viewMenu->addAction( &m_actionReporting );
-//     QMenu* taskMenu = new QMenu ( tr( "Task" ), menuBar() );
-//     taskMenu->addAction( &m_actionEventStarted );
-//     taskMenu->addAction( &m_actionEventEnded );
-    menuBar()->addMenu( appMenu );
-    menuBar()->addMenu( viewMenu );
-
-    // system tray icon:
-    m_trayIcon.setIcon( Data::charmIcon() );
-    m_trayIcon.show();
-    connect( &m_trayIcon, SIGNAL( activated( QSystemTrayIcon::ActivationReason ) ),
-             SLOT( slotTrayIconActivated( QSystemTrayIcon::ActivationReason ) ) );
-    m_systrayContextMenu.addAction( &m_actionShowHideView );
-    m_systrayContextMenu.addAction( &m_actionStopAllTasks );
-    m_systrayContextMenu.addSeparator();
-    m_systrayContextMenu.addAction( &m_actionQuit );
-    m_trayIcon.setContextMenu( &m_systrayContextMenu );
-
-    // status bar:
-    // m_statusBarWidget = new StatusBarWidget( statusBar() );
-    // statusBar()->addWidget( m_statusBarWidget, 1 );
-
     // filter setup
     connect( m_ui->filterLineEdit, SIGNAL( textChanged( const QString& ) ),
              SLOT( slotFiltertextChanged( const QString& ) ) );
@@ -171,11 +98,6 @@ View::View( QWidget* parent )
 View::~View()
 {
     delete m_ui; m_ui = 0;
-}
-
-void View::restore()
-{
-    show();
 }
 
 void View::actionSelectedEventStarted( bool b ) // bool triggered
@@ -252,10 +174,9 @@ void View::configureUi( const QModelIndex& current )
     }
 }
 
-void View::closeEvent( QCloseEvent* e )
+void View::closeEvent( QCloseEvent* )
 {
     saveGuiState();
-    QMainWindow::closeEvent( e );
 }
 
 void View::showEvent( QShowEvent* )
@@ -264,17 +185,13 @@ void View::showEvent( QShowEvent* )
     bool on = CONFIGURATION.showOnlySubscribedTasks;
     m_ui->tasksCombo->setCurrentIndex( on == true ? 1 : 0 );
     slotConfigureUi();
-    m_actionShowHideView.setText( tr( "Hide All Windows" ) );
-}
-
-void View::hideEvent( QHideEvent* )
-{
-    m_actionShowHideView.setText( tr( "Show Task Window" ) );
 }
 
 void View::slotConfigureUi()
 {
-    configureUi( m_ui->treeView->selectionModel()->currentIndex() );
+    if ( QItemSelectionModel* smodel = m_ui->treeView->selectionModel() ) {
+        configureUi( smodel->currentIndex() );
+    }
 }
 
 void View::stateChanged( State previous )
@@ -291,8 +208,6 @@ void View::stateChanged( State previous )
         connect( filter, SIGNAL( eventDeactivationNotice( EventId ) ),
                  SLOT( slotEventDeactivated( EventId ) ) );
 
-        // set the model for the event editor:
-        m_eventEditor.setModel( MODEL.eventModel() );
         // column resize behaviour:
         QHeaderView* header = m_ui->treeView->header();
         header->setResizeMode( Column_TaskId, QHeaderView::ResizeToContents );
@@ -310,20 +225,45 @@ void View::stateChanged( State previous )
     }
     break;
     case Connected:
-        configurePermanentUiSettings();
-        restoreGuiState();
+        configurationChanged();;
         break;
     case Disconnecting:
-        saveGuiState();
-        // fallthrough intended
     case ShuttingDown:
     case Dead:
-        setEnabled( false );
-        break;
     default:
         break;
     };
 
+}
+
+void View::saveGuiState() {}
+void View::restoreGuiState() {}
+void View::configurationChanged()
+{
+    QTreeView treeView; // temp, to get default treeView font
+    QFont font = treeView.font();
+
+    switch( CONFIGURATION.taskTrackerFontSize ) {
+    case Configuration::TaskTrackerFont_Small:
+        font.setPointSizeF( 0.9 * font.pointSize() );
+        break;
+    case Configuration::TaskTrackerFont_Regular:
+        break;
+    case Configuration::TaskTrackerFont_Large:
+        font.setPointSizeF( 1.2 * font.pointSize() );
+        break;
+    default:
+        break;
+    };
+    m_ui->treeView->setFont( font );
+
+    slotConfigureUi();
+}
+
+void View::setModel( ModelConnector* connector )
+{
+    Q_ASSERT( m_ui );
+    m_ui->treeView->setModel( connector->taskModel() );
 }
 
 void View::slotFiltertextChanged( const QString& filtertextRaw )
@@ -403,7 +343,7 @@ void View::slotContextMenuRequested( const QPoint& point )
         if ( dialog.exec() ) {
             newTask.setId( dialog.selectedId() );
             CommandAddTask* cmd = new CommandAddTask( newTask, this );
-            sendCommand( cmd );
+            emit emitCommand( cmd );
         }
     } else if ( result == &m_actionDeleteTask ) {
         Q_ASSERT( task.isValid() );
@@ -413,7 +353,7 @@ void View::slotContextMenuRequested( const QPoint& point )
                                     QMessageBox::Ok )
              == QMessageBox::Ok ) {
             CommandDeleteTask* cmd = new CommandDeleteTask( task, this );
-            sendCommand( cmd );
+            emit emitCommand( cmd );
         }
     }
 }
@@ -421,21 +361,6 @@ void View::slotContextMenuRequested( const QPoint& point )
 void View::actionNewTask( bool )
 {
     // ... nothing done here, but in the context menu method
-}
-
-void View::slotEditPreferences( bool )
-{
-    CharmPreferences dialog( CONFIGURATION, this );
-
-    if ( dialog.exec() ) {
-        CONFIGURATION.eventsInLeafsOnly = dialog.eventsInLeafsOnly();
-        CONFIGURATION.oneEventAtATime = dialog.oneEventAtATime();
-        CONFIGURATION.taskTrackerFontSize = dialog.taskTrackerFontSize();
-        CONFIGURATION.always24hEditing = dialog.always24hEditing();
-        configurePermanentUiSettings();
-        slotConfigureUi();
-        emit saveConfiguration();
-    }
 }
 
 void View::slotItemDoubleClicked( const QModelIndex& index )
@@ -465,14 +390,6 @@ void View::commitCommand( CharmCommand* command )
     delete command;
 }
 
-void View::sendCommand( CharmCommand* cmd )
-{
-    cmd->prepare();
-    CommandRelayCommand* relay = new CommandRelayCommand( this );
-    relay->setCommand( cmd );
-    emit emitCommand( relay );
-}
-
 void View::slotEventActivated( EventId )
 {
     slotConfigureUi();
@@ -481,75 +398,6 @@ void View::slotEventActivated( EventId )
 void View::slotEventDeactivated( EventId )
 {
     slotConfigureUi();
-}
-
-void View::slotQuit()
-{
-    // this saves changes:
-    m_eventEditor.close();
-    m_reportDialog.close();
-    emit quit();
-}
-
-void View::configurePermanentUiSettings()
-{
-    QTreeView treeView; // temp, to get default treeView font
-    QFont font = treeView.font();
-
-    switch( CONFIGURATION.taskTrackerFontSize ) {
-    case Configuration::TaskTrackerFont_Small:
-        font.setPointSizeF( 0.9 * font.pointSize() );
-        break;
-    case Configuration::TaskTrackerFont_Regular:
-        break;
-    case Configuration::TaskTrackerFont_Large:
-        font.setPointSizeF( 1.2 * font.pointSize() );
-        break;
-    default:
-        break;
-    };
-    m_ui->treeView->setFont( font );
-
-    m_eventEditor.slotConfigureUi();
-}
-
-void View::slotAboutDialog()
-{
-    CharmAboutDialog dialog( this );
-    dialog.exec();
-}
-
-void View::slotTrayIconActivated( QSystemTrayIcon::ActivationReason reason )
-{
-    switch( reason ) {
-    case QSystemTrayIcon::Context:
-        // show context menu
-        // m_contextMenu.show();
-        break;
-    case QSystemTrayIcon::DoubleClick:
-        slotShowHideView();
-        break;
-    case QSystemTrayIcon::Trigger:
-        // single click
-        break;
-    case QSystemTrayIcon::MiddleClick:
-        // ...
-        break;
-    case QSystemTrayIcon::Unknown:
-    default:
-        break;
-    }
-}
-
-void View::slotShowHideView()
-{   // restore the view
-    if ( isVisible() ) {
-        hide();
-        m_eventEditor.hide();
-        m_reportDialog.hide();
-    } else {
-        restore();
-    }
 }
 
 void View::slotStopAllTasks()
@@ -573,63 +421,9 @@ Task View::selectedTask()
     }
 }
 
-
-void View::saveGuiState()
+QAction* View::actionStopAllTasks()
 {
-    Q_ASSERT( m_ui->treeView );
-    ViewFilter* filter = Application::instance().model().taskModel();
-    Q_ASSERT( filter );
-    QSettings settings;
-    // save geometry
-    settings.setValue( MetaKey_MainWindowGeometry, saveGeometry() );
-    // save user settings
-    if ( Application::instance().state() == Connected ||
-         Application::instance().state() == Disconnecting ) {
-        GUIState state;
-        // selected task
-        state.setSelectedTask( selectedTask().id() );
-        // expanded tasks
-        TaskList tasks = MODEL.charmDataModel()->getAllTasks();
-        TaskIdList expandedTasks;
-        Q_FOREACH( Task task, tasks ) {
-            QModelIndex index( filter->indexForTaskId( task.id() ) );
-            if ( m_ui->treeView->isExpanded( index ) ) {
-                expandedTasks << task.id();
-            }
-        }
-        state.setExpandedTasks( expandedTasks );
-        state.saveTo( settings );
-    }
+    return &m_actionStopAllTasks;
 }
 
-void View::restoreGuiState()
-{
-    Q_ASSERT( m_ui->treeView );
-    ViewFilter* filter = Application::instance().model().taskModel();
-    Q_ASSERT( filter );
-    // restore geometry
-    QSettings settings;
-    if ( settings.contains( MetaKey_MainWindowGeometry ) ) {
-        restoreGeometry( settings.value( MetaKey_MainWindowGeometry ).toByteArray() );
-    }
-    // restore user settings, but only when we are connected
-    // (otherwise, we do not have any user data):
-    if ( Application::instance().state() == Connected ) {
-        GUIState state;
-        state.loadFrom( settings );
-        QModelIndex index( filter->indexForTaskId( state.selectedTask() ) );
-        if ( index.isValid() ) {
-            m_ui->treeView->selectionModel()->select(
-                index, QItemSelectionModel::Select | QItemSelectionModel::Rows );
-        }
-
-        Q_FOREACH( TaskId id, state.expandedTasks() ) {
-            QModelIndex index( filter->indexForTaskId( id ) );
-            if ( index.isValid() ) {
-                m_ui->treeView->expand( index );
-            }
-        }
-    }
-}
-
-#include "View.moc"
+#include "TasksView.moc"

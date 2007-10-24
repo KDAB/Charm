@@ -3,7 +3,7 @@
 
 #include <QDialog>
 
-#include "View.h"
+#include "TasksView.h"
 #include "Core/TaskModelInterface.h"
 #include "ui_TaskIdDialog.h"
 
