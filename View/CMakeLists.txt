@@ -78,6 +78,15 @@ IF ( QT4_FOUND )
 		       ${CharmView_SRCS}
 		       ${UiGenerated_SRCS} 
 		       ${Resources_SRCS} )
+
+    SET( Charm_SRCS Charm.cpp )
+    QT4_AUTOMOC (${Charm_SRCS} )
+
+    ADD_EXECUTABLE( Charm MACOSX_BUNDLE ${Charm_SRCS} )
+    TARGET_LINK_LIBRARIES( Charm CharmView )
+    TARGET_LINK_LIBRARIES( Charm CharmCore )
+    INSTALL( TARGETS Charm DESTINATION bin )
+
 ENDIF ( QT4_FOUND )
 
 IF ( NOT QT4_FOUND )
