@@ -236,8 +236,59 @@ void View::stateChanged( State previous )
 
 }
 
-void View::saveGuiState() {}
-void View::restoreGuiState() {}
+void View::saveGuiState()
+{
+    Q_ASSERT( m_ui->treeView );
+    ViewFilter* filter = Application::instance().model().taskModel();
+    Q_ASSERT( filter );
+    QSettings settings;
+    // save user settings
+    if ( Application::instance().state() == Connected ||
+         Application::instance().state() == Disconnecting ) {
+        GUIState state;
+        // selected task
+        state.setSelectedTask( selectedTask().id() );
+        // expanded tasks
+        TaskList tasks = MODEL.charmDataModel()->getAllTasks();
+        TaskIdList expandedTasks;
+        Q_FOREACH( Task task, tasks ) {
+            QModelIndex index( filter->indexForTaskId( task.id() ) );
+            if ( m_ui->treeView->isExpanded( index ) ) {
+                expandedTasks << task.id();
+            }
+        }
+        state.setExpandedTasks( expandedTasks );
+        state.saveTo( settings );
+    }
+}
+
+void View::restoreGuiState()
+{
+    Q_ASSERT( m_ui->treeView );
+    ViewFilter* filter = Application::instance().model().taskModel();
+    Q_ASSERT( filter );
+    QSettings settings;
+    // restore user settings, but only when we are connected
+    // (otherwise, we do not have any user data):
+    if ( Application::instance().state() == Connected ) {
+        GUIState state;
+        state.loadFrom( settings );
+        QModelIndex index( filter->indexForTaskId( state.selectedTask() ) );
+        if ( index.isValid() ) {
+            m_ui->treeView->selectionModel()->select(
+                index, QItemSelectionModel::Select | QItemSelectionModel::Rows );
+        }
+
+        Q_FOREACH( TaskId id, state.expandedTasks() ) {
+            QModelIndex index( filter->indexForTaskId( id ) );
+            if ( index.isValid() ) {
+                m_ui->treeView->expand( index );
+            }
+        }
+    }
+
+}
+
 void View::configurationChanged()
 {
     QTreeView treeView; // temp, to get default treeView font
