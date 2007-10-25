@@ -231,7 +231,7 @@ void EventEditor::slotNewEvent()
         if ( item.task().isValid() ) {
             CommandMakeEvent* command =
                 new CommandMakeEvent( item.task(), this );
-            VIEW.sendCommand( command );
+            emitCommand( command );
         }
     }
 }
@@ -246,7 +246,7 @@ void EventEditor::slotDeleteEvent()
          == QMessageBox::Ok ) {
         CommandDeleteEvent* command = new CommandDeleteEvent( m_event, this );
         command->prepare();
-        VIEW.sendCommand( command );
+        emitCommand( command );
     }
 }
 
@@ -297,7 +297,7 @@ void EventEditor::commitChanges()
         CommandModifyEvent* command =
             new CommandModifyEvent( newSettings(), this );
         m_dirty = false;
-        VIEW.sendCommand( command );
+        emitCommand( command );
     }
 }
 
@@ -360,7 +360,7 @@ void EventEditor::timeFrameChanged( int index )
     if ( dirty ) {
         CommandModifyEvent* command =
             new CommandModifyEvent( event, this );
-        VIEW.sendCommand( command );
+        emitCommand( command );
     }
 }
 

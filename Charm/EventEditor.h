@@ -47,6 +47,7 @@ public:
 
 signals:
     void visible( bool );
+    void emitCommand( CharmCommand* );
 
 public slots:
     void commitCommand( CharmCommand* );

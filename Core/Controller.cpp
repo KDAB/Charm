@@ -57,7 +57,7 @@ bool Controller::deleteEvent( const Event& e )
 bool Controller::addTask( const Task& task )
 {
     qDebug() << "Controller::addTask: adding task" << task.id()
-             << " to parent" << task.parent();
+             << "to parent" << task.parent();
     if ( m_storage->addTask( task ) ) {
         updateSubscriptionForTask( task );
         emit taskAdded( task );

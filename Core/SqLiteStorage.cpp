@@ -63,7 +63,7 @@ bool SqLiteStorage::connect( Configuration& configuration )
         configuration.failureMessage = QObject::tr(
             "<html><head><meta name=\"qrichtext\" content=\"1\" /></head>"
             "<body><p>The configuration seems to be valid, but the database "
-            "file did not exist.</p>"
+            "file does not exist.</p>"
             "<p>The file will automatically be generated. Please verify "
             "the configuration.</p>"
             "<p>If the configuration is correct, just close the dialog.</p>"

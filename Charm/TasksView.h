@@ -59,7 +59,7 @@ signals:
 private slots:
     void actionSelectedEventStarted( bool );
     void actionSelectedEventEnded( bool );
-    void actionNewTask( bool );
+    // void actionNewTask( bool );
     void viewCurrentChanged( const QModelIndex&, const QModelIndex& );
     void slotFiltertextChanged( const QString& filtertext );
     void subscribedOnlyModeChanged( int );

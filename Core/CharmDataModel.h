@@ -16,8 +16,9 @@ class QAbstractItemModel;
     CharmDataModel holds all data that makes up the application's
     current data space: the list of tasks, the list of events, and the
     list of active (currently timed) events.
-    It provides QAbstractItemModel interfaces for the View's item view
-    to use.
+    It will notify all registered CharmDataModelAdapterInterfaces
+    about changes in the model. Those interfaces could, for example,
+    implement QAbstractItemModel.
 */
 class CharmDataModel : public QObject
 {

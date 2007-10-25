@@ -73,8 +73,6 @@ View::View( QWidget* parent )
 
     m_actionNewTask.setText( tr( "New Task" ) );
     m_actionNewTask.setIcon( Data::newTaskIcon() );
-    connect( &m_actionNewTask, SIGNAL( triggered( bool ) ),
-             SLOT( actionNewTask( bool ) ) );
     m_actionNewSubTask.setText( tr( "New Subtask" ) );
     m_actionNewSubTask.setIcon( Data::newTaskIcon() );
 
@@ -409,10 +407,11 @@ void View::slotContextMenuRequested( const QPoint& point )
     }
 }
 
-void View::actionNewTask( bool )
-{
-    // ... nothing done here, but in the context menu method
-}
+// FIXME remove?
+// void View::actionNewTask( bool )
+// {
+//     // ... nothing done here, but in the context menu method
+// }
 
 void View::slotItemDoubleClicked( const QModelIndex& index )
 {

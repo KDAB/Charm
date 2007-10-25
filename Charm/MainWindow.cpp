@@ -41,6 +41,14 @@ MainWindow::MainWindow()
     m_modes << &m_tasksView << &m_eventEditor;
     m_ui->viewStack->addWidget( &m_tasksView );
     m_ui->viewStack->addWidget( &m_eventEditor );
+    Q_FOREACH( ViewModeInterface* mode, m_modes ) {
+        QWidget* modeWidget = dynamic_cast<QWidget*>( mode );
+        Q_ASSERT( modeWidget );
+        if ( modeWidget ) {
+            connect( modeWidget, SIGNAL( emitCommand( CharmCommand* ) ),
+                     SLOT( sendCommand( CharmCommand* ) ) );
+        }
+    }
 
     // set up actions
     connect( &m_actionShowHideView, SIGNAL( triggered() ),
