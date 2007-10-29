@@ -6,6 +6,7 @@
 #include <QTextStream>
 #include <QPushButton>
 #include <QTextBlock>
+#include <QTextCursor>
 #include <QTextDocument>
 #include <QTextTableCell>
 

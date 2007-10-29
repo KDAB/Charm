@@ -5,31 +5,19 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>473</width>
-    <height>377</height>
+    <width>493</width>
+    <height>310</height>
    </rect>
   </property>
   <property name="windowTitle" >
    <string>Report Preview</string>
   </property>
   <layout class="QVBoxLayout" >
-   <property name="margin" >
-    <number>9</number>
-   </property>
-   <property name="spacing" >
-    <number>6</number>
-   </property>
    <item>
     <widget class="QTextBrowser" name="textBrowser" />
    </item>
    <item>
     <layout class="QHBoxLayout" >
-     <property name="margin" >
-      <number>0</number>
-     </property>
-     <property name="spacing" >
-      <number>6</number>
-     </property>
      <item>
       <widget class="QPushButton" name="pushButtonClose" >
        <property name="text" >
@@ -49,6 +37,20 @@
         </size>
        </property>
       </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButtonUpdate" >
+       <property name="text" >
+        <string>Update</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButtonSave" >
+       <property name="text" >
+        <string>Save</string>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QPushButton" name="pushButtonPrint" >

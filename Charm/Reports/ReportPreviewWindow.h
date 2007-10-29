@@ -2,9 +2,12 @@
 #define REPORTPREVIEWWINDOW_H
 
 #include <QDialog>
+#include <QDomDocument>x
 #include <QTextDocument>
 
-#include "ui_ReportPreviewWindow.h"
+namespace Ui {
+    class ReportPreviewWindow;
+}
 
 class ReportPreviewWindow : public QDialog
 {
@@ -14,14 +17,18 @@ public:
     explicit ReportPreviewWindow( QWidget* parent = 0 );
     ~ReportPreviewWindow();
 
+protected:
     void setDocument( const QTextDocument* document );
+    QDomDocument createReportTemplate();
 
-public slots:
-    void on_pushButtonClose_clicked();
-    void on_pushButtonPrint_clicked();
+private slots:
+    virtual void slotSaveToXml();
+    virtual void slotPrint();
+    virtual void slotUpdate();
+    virtual void slotClose();
 
 private:
-    Ui::ReportPreviewWindow m_ui;
+    Ui::ReportPreviewWindow* m_ui;
     QTextDocument* m_document;
 };
 

@@ -28,7 +28,8 @@ void CharmReport::makeReportPreviewWindow()
     if ( prepare() && create() ) {
         qDebug() << "CharmReport::makeReportPreviewWindow: making it";
         ReportPreviewWindow* window = new ReportPreviewWindow( &VIEW );
-        window->setDocument( report() );
+        // FIXME TEMP_REM
+        // window->setDocument( report() );
         window->show();
     } else {
         qDebug() << "CharmReport::makeReportPreviewWindow: prepare or create failed" ;

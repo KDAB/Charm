@@ -1,68 +1,173 @@
-#include <QtDebug>
-
-#include <QMap>
 #include <QFile>
 #include <QTimer>
-#include <QVector>
 #include <QDomElement>
 #include <QtAlgorithms>
 #include <QDomDocument>
 
-#include "Core/CharmConstants.h"
-
 #include "ViewHelpers.h"
-#include "ReportDialog.h"
 #include "SelectTaskDialog.h"
-#include "WeeklyTimeSheet.h"
-#include "ReportPreviewWindow.h"
-#include "ParagraphFormatCollection.h"
+#include "WeeklyTimeSheet3.h"
+#include "CharmReport.h"
 
-WeeklyTimeSheet::WeeklyTimeSheet( QObject* parent )
-    : CharmReport( parent )
+#include "ui_WeeklyTimeSheetConfigurationPage.h"
+
+WTSConfigurationPage::WTSConfigurationPage( ReportDialog* parent )
+    : ReportConfigurationPage( parent )
+    , m_ui( new Ui::WeeklyTimeSheetConfigurationPage )
+{
+    m_ui->setupUi( this );
+
+    connect( m_ui->pushButtonBack, SIGNAL( clicked() ),
+             SIGNAL( back() ) );
+    connect( m_ui->pushButtonReport, SIGNAL( clicked() ),
+             SIGNAL( accept() ) );
+    connect( m_ui->comboBoxWeek, SIGNAL( currentIndexChanged( int ) ),
+             SLOT( slotWeekComboItemSelected( int ) ) );
+    connect( m_ui->toolButtonSelectTask, SIGNAL( clicked() ),
+             SLOT( slotSelectTask() ) );
+    connect( m_ui->checkBoxSubTasksOnly, SIGNAL( toggled( bool ) ),
+             SLOT( slotCheckboxSubtasksOnlyChecked( bool ) ) );
+
+    m_ui->comboBoxWeek->setCurrentIndex( 1 );
+    m_ui->checkBoxSubTasksOnly->setChecked( false );
+    m_ui->checkBoxSubscribedOnly->setChecked( true );
+    slotCheckboxSubtasksOnlyChecked( m_ui->checkBoxSubTasksOnly->isChecked() );
+
+    QTimer::singleShot( 0, this, SLOT( slotDelayedInitialization() ) );
+}
+
+WTSConfigurationPage::~WTSConfigurationPage()
+{
+    delete m_ui; m_ui = 0;
+}
+
+void WTSConfigurationPage::slotDelayedInitialization()
+{
+    slotStandardTimeSpansChanged();
+    connect( &Application::instance().timeSpans(),
+             SIGNAL( timeSpansChanged() ),
+             SLOT( slotStandardTimeSpansChanged() ) );
+}
+
+QDialog* WTSConfigurationPage::makeReportPreviewDialog( QWidget* parent )
+{
+    QDate start, end;
+    int index = m_ui->comboBoxWeek->currentIndex();
+    if ( index == m_weekInfo.size() -1 ) {
+        // manual selection
+        QDate selectedDate = m_ui->dateEditDay->date();
+        start = selectedDate.addDays( - selectedDate.dayOfWeek() + 1 );
+        end = start.addDays( 7 );
+    } else {
+        start = m_weekInfo[index].timespan.first;
+        end = m_weekInfo[index].timespan.second;
+    }
+    int weekNumber = start.weekNumber();
+    bool activeOnly = m_ui->checkBoxActiveOnly->isChecked();
+    bool subscribedOnly = m_ui->checkBoxSubscribedOnly->isChecked();
+    WeeklyTimeSheetReport* report = new WeeklyTimeSheetReport( parent );
+    report->setReportProperties( start, end, weekNumber, m_rootTask, activeOnly, subscribedOnly );
+    return report;
+}
+
+QString WTSConfigurationPage::name()
+{
+    return tr( "Weekly Time Sheet" );
+}
+
+QString WTSConfigurationPage::description()
+{
+    return tr (
+        "Creates a tabular report on all activity within a week. "
+        "The report is summarized by task and by day." );
+}
+
+void WTSConfigurationPage::slotCheckboxSubtasksOnlyChecked( bool checked )
+{
+    if ( checked && m_rootTask == 0 ) {
+        slotSelectTask();
+    }
+
+    if ( ! checked ) {
+        m_rootTask = 0;
+        m_ui->labelTaskName->setText( tr( "(All Tasks)" ) );
+    }
+}
+
+void WTSConfigurationPage::slotStandardTimeSpansChanged()
+{
+    m_weekInfo = Application::instance().timeSpans().last4Weeks();
+    NamedTimeSpan custom = {
+        tr( "Manual Selection" ),
+        Application::instance().timeSpans().thisWeek().timespan
+    };
+    m_weekInfo << custom;
+    m_ui->comboBoxWeek->clear();
+    for ( int i = 0; i < m_weekInfo.size(); ++i )
+    {
+        m_ui->comboBoxWeek->addItem( m_weekInfo[i].name );
+    }
+}
+
+void WTSConfigurationPage::slotWeekComboItemSelected( int index )
+{
+    // wait for the next update, in this case:
+    if ( m_ui->comboBoxWeek->count() == 0 || index == -1 ) return;
+    Q_ASSERT( m_ui->comboBoxWeek->count() > index );
+
+    if ( index == m_weekInfo.size() - 1 ) { // manual selection
+        m_ui->groupBox->setEnabled( true );
+    } else {
+        m_ui->dateEditDay->setDate( m_weekInfo[index].timespan.first );
+        m_ui->groupBox->setEnabled( false );
+    }
+}
+
+void WTSConfigurationPage::slotSelectTask()
+{
+    SelectTaskDialog dialog( this );
+    if ( dialog.exec() ) {
+        m_rootTask = dialog.selectedTask();
+        const TaskTreeItem& item = DATAMODEL->taskTreeItem( m_rootTask );
+        m_ui->labelTaskName->setText( tasknameWithParents( item.task() ) );
+    } else {
+        if ( m_rootTask == 0 )
+            m_ui->checkBoxSubTasksOnly->setChecked( false );
+    }
+}
+
+// here begins ... the actual report:
+
+WeeklyTimeSheetReport::WeeklyTimeSheetReport( QWidget* parent )
+    : ReportPreviewWindow( parent )
+    , m_weekNumber( 0 )
     , m_rootTask( 0 )
-    , m_configurationPage( 0 )
+    , m_activeTasksOnly( false )
+    , m_subscribedOnly( false )
     , m_report( 0 )
 {
 }
 
-QString WeeklyTimeSheet::name()
+WeeklyTimeSheetReport::~WeeklyTimeSheetReport()
 {
-    return QObject::tr( "Weekly Time Sheet" );
 }
 
-QString WeeklyTimeSheet::description()
+void WeeklyTimeSheetReport::setReportProperties(
+    const QDate& start, const QDate& end,
+    int weekNumber, TaskId rootTask,
+    bool activeTasksOnly, bool subscribedOnly )
 {
-    return QObject::tr
-        ( "Creates a tabular report on all activity within a week. "
-          "The report is summarized by task and by day." );
+    m_start = start;
+    m_end = end;
+    m_weekNumber = weekNumber;
+    m_rootTask = rootTask;
+    m_activeTasksOnly = activeTasksOnly;
+    m_subscribedOnly = subscribedOnly;
+
+    slotUpdate();
 }
 
-bool WeeklyTimeSheet::prepare()
-{
-    int index = m_ui.comboBoxWeek->currentIndex();
-    if ( index == m_weekInfo.size() -1 ) {
-        // manual selection
-        QDate selectedDate = m_ui.dateEditDay->date();
-        m_start = selectedDate.addDays( - selectedDate.dayOfWeek() + 1 );
-        m_end = m_start.addDays( 7 );
-    } else {
-        m_start = m_weekInfo[index].timespan.first;
-        m_end = m_weekInfo[index].timespan.second;
-    }
-
-    m_matchingEvents = eventsThatStartInTimeFrame( QDateTime( m_start ),
-                                                   QDateTime( m_end ) );
-
-    // the week number
-    m_weekNumber = m_start.weekNumber();
-
-    qDebug() << "WeeklyTimeSheet::prepare: start:"  << m_start
-             << ", end:" << m_end << ", week number:"
-             << m_weekNumber;
-
-    return true;
-}
-
+// helper functions:
 typedef QMap< TaskId, QVector<int> > SecondsMap;
 
 class TimeSheetInfo {
@@ -159,14 +264,23 @@ static TimeSheetInfoList taskWithSubTasks( TaskId id,
     return result;
 }
 
-bool WeeklyTimeSheet::create()
+void WeeklyTimeSheetReport::slotUpdate()
 {
+    delete m_report; m_report = 0;
+
+    // retrieve matching events:
+    EventIdList matchingEvents = eventsThatStartInTimeFrame(
+        QDateTime( m_start ), QDateTime( m_end ) );
+    // ...
+    // FIXME ^^^
+
     const int DaysInWeek = 7;
     SecondsMap secondsMap;
+
     // for every task, make a vector that includes a number of seconds
     // for every day of the week ( int seconds[7]), and store those in
     // a map by their task id
-    Q_FOREACH( EventId id, m_matchingEvents ) {
+    Q_FOREACH( EventId id, matchingEvents ) {
         const Event& event = DATAMODEL->eventForId( id );
         QVector<int> seconds( DaysInWeek );
         if ( secondsMap.contains( event.taskId() ) ) {
@@ -181,12 +295,12 @@ bool WeeklyTimeSheet::create()
     }
     // now the reporting:
     // headline first:
-    m_report = new QTextDocument;
+    m_report = new QTextDocument( this );
     QDomDocument doc = createReportTemplate();
     QDomElement root = doc.documentElement();
     QDomElement body = root.firstChildElement( "body" );
 
-    QTextCursor cursor( m_report );
+//     QTextCursor cursor( m_report );
     TimeSheetInfo totalsLine;
     // create the caption:
     {
@@ -213,7 +327,7 @@ bool WeeklyTimeSheet::create()
         // retrieve the information for the report:
         TimeSheetInfoList timeSheetInfo = taskWithSubTasks( m_rootTask, secondsMap );
 
-        if ( m_ui.checkBoxActiveOnly->isChecked() ) {
+        if ( m_activeTasksOnly ) {
             TimeSheetInfoList nonZero;
             // FIXME use algorithm (I just hate to lug the fat book around)
             for ( int i = 0; i < timeSheetInfo.size(); ++i )
@@ -225,7 +339,7 @@ bool WeeklyTimeSheet::create()
             timeSheetInfo = nonZero;
         }
 
-        if ( m_ui.checkBoxSubscribedOnly->isChecked() ) {
+        if ( m_subscribedOnly ) {
             TimeSheetInfoList subscribed;
             for ( int i = 0; i < timeSheetInfo.size(); ++i ) {
                 const TaskTreeItem& item = DATAMODEL->taskTreeItem( timeSheetInfo[i].taskId );
@@ -362,133 +476,9 @@ bool WeeklyTimeSheet::create()
     } else {
         qDebug() << "WeeklyTimeSheet::create: cannot load report style sheet";
     }
+
     m_report->setHtml( doc.toString() );
-
-    // temp:
-    createXmlExport();
-    return true;
+    setDocument( m_report );
 }
 
-QTextDocument* WeeklyTimeSheet::report()
-{
-    return m_report;
-}
-
-QWidget* WeeklyTimeSheet::configurationPage( ReportDialog* dialog )
-{
-    if ( m_configurationPage == 0 ) {
-        m_configurationPage = new QWidget;
-        m_ui.setupUi( m_configurationPage );
-        connect( m_ui.pushButtonBack, SIGNAL( clicked() ),
-                 dialog, SLOT( back() ) );
-        connect( m_ui.pushButtonReport, SIGNAL( clicked() ),
-                 SLOT( makeReportPreviewWindow() ) );
-        connect( m_ui.comboBoxWeek, SIGNAL( currentIndexChanged( int ) ),
-                 SLOT( slotWeekComboItemSelected( int ) ) );
-        connect( m_ui.toolButtonSelectTask, SIGNAL( clicked() ),
-                 SLOT( slotSelectTask() ) );
-        connect( m_ui.checkBoxSubTasksOnly, SIGNAL( toggled( bool ) ),
-                 SLOT( slotCheckboxSubtasksOnlyChecked( bool ) ) );
-
-        m_ui.comboBoxWeek->setCurrentIndex( 1 );
-        m_ui.checkBoxSubTasksOnly->setChecked( false );
-        m_ui.checkBoxSubscribedOnly->setChecked( true );
-        slotCheckboxSubtasksOnlyChecked( m_ui.checkBoxSubTasksOnly->isChecked() );
-
-        QTimer::singleShot( 0, this, SLOT( slotDelayedInitialization() ) );
-    }
-    return m_configurationPage;
-}
-
-void WeeklyTimeSheet::slotDelayedInitialization()
-{
-    slotStandardTimeSpansChanged();
-    connect( &Application::instance().timeSpans(),
-             SIGNAL( timeSpansChanged() ),
-             SLOT( slotStandardTimeSpansChanged() ) );
-}
-
-void WeeklyTimeSheet::slotStandardTimeSpansChanged()
-{
-    m_weekInfo = Application::instance().timeSpans().last4Weeks();
-    NamedTimeSpan custom = {
-        tr( "Manual Selection" ),
-        Application::instance().timeSpans().thisWeek().timespan
-    };
-    m_weekInfo << custom;
-
-    m_ui.comboBoxWeek->clear();
-    for ( int i = 0; i < m_weekInfo.size(); ++i )
-    {
-        m_ui.comboBoxWeek->addItem( m_weekInfo[i].name );
-    }
-}
-
-void WeeklyTimeSheet::slotWeekComboItemSelected( int index )
-{
-    // wait for the next update, in this case:
-    if ( m_ui.comboBoxWeek->count() == 0 || index == -1 ) return;
-    Q_ASSERT( m_ui.comboBoxWeek->count() > index );
-
-    if ( index == m_weekInfo.size() - 1 ) { // manual selection
-        m_ui.groupBox->setEnabled( true );
-    } else {
-        m_ui.dateEditDay->setDate( m_weekInfo[index].timespan.first );
-        m_ui.groupBox->setEnabled( false );
-    }
-}
-
-void WeeklyTimeSheet::slotSelectTask()
-{
-    SelectTaskDialog dialog( m_configurationPage );
-    if ( dialog.exec() ) {
-        m_rootTask = dialog.selectedTask();
-        const TaskTreeItem& item = DATAMODEL->taskTreeItem( m_rootTask );
-        m_ui.labelTaskName->setText( tasknameWithParents( item.task() ) );
-    } else {
-        if ( m_rootTask == 0 )
-            m_ui.checkBoxSubTasksOnly->setChecked( false );
-    }
-}
-
-void WeeklyTimeSheet::slotCheckboxSubtasksOnlyChecked( bool checked )
-{
-    if ( checked && m_rootTask == 0 ) {
-        slotSelectTask();
-    }
-
-    if ( ! checked ) {
-        m_rootTask = 0;
-        m_ui.labelTaskName->setText( tr( "(All Tasks)" ) );
-    }
-}
-
-QDomDocument WeeklyTimeSheet::createReportTemplate()
-{
-    // create XHTML v1.0 structure:
-    QDomDocument doc( "html" );
-    // FIXME this is only a rudimentary subset of a valid xhtml 1 document
-
-    // html element
-    QDomElement html = doc.createElement( "html" );
-    html.setAttribute( "xmlns", "http://www.w3.org/1999/xhtml" );
-    doc.appendChild( html );
-
-    // head and body, children of html
-    QDomElement head = doc.createElement( "head" );
-    html.appendChild( head );
-    QDomElement body = doc.createElement( "body" );
-    html.appendChild( body );
-
-    return doc;
-}
-
-bool WeeklyTimeSheet::createXmlExport()
-{
-    qDebug() << "WeeklyTimeSheet::createXmlExport: exporting XML time sheet";
-    return false;
-}
-
-
-#include "WeeklyTimeSheet.moc"
-
+#include "WeeklyTimeSheet3.moc"
