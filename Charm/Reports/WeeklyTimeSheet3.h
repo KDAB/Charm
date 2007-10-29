@@ -67,6 +67,8 @@ private:
 
     // reimpl
     void slotUpdate();
+    // reimpl
+    void slotSaveToXml();
 
     // properties of the report:
     QDate m_start;

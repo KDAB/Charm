@@ -265,14 +265,12 @@ static TimeSheetInfoList taskWithSubTasks( TaskId id,
 }
 
 void WeeklyTimeSheetReport::slotUpdate()
-{
+{   // this creates the time sheet
     delete m_report; m_report = 0;
 
     // retrieve matching events:
     EventIdList matchingEvents = eventsThatStartInTimeFrame(
         QDateTime( m_start ), QDateTime( m_end ) );
-    // ...
-    // FIXME ^^^
 
     const int DaysInWeek = 7;
     SecondsMap secondsMap;
@@ -479,6 +477,12 @@ void WeeklyTimeSheetReport::slotUpdate()
 
     m_report->setHtml( doc.toString() );
     setDocument( m_report );
+}
+
+void  WeeklyTimeSheetReport::slotSaveToXml()
+{
+    qDebug() << "WeeklyTimeSheet::slotSaveToXml: creating XML time sheet";
+
 }
 
 #include "WeeklyTimeSheet3.moc"
