@@ -44,10 +44,11 @@ IF ( QT4_FOUND )
 		       # OpeningScene.cpp
 		       IdleWidget.cpp
 		       Reports/ReportDialog.cpp
+		       Reports/ReportConfigurationPage.cpp
 		       Reports/CharmReport.cpp
 		       Reports/ActivityReport.cpp 
-		       Reports/WeeklyTimeSheet.cpp
-		       Reports/WeeklyTimeSheet-OldSchool.cpp
+		       Reports/WeeklyTimeSheet3.cpp
+#		       Reports/WeeklyTimeSheet-OldSchool.cpp
 		       Reports/ReportPreviewWindow.cpp 
 		       Reports/ParagraphFormatCollection.cpp
 		       Commands/CommandRelayCommand.cpp

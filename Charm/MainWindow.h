@@ -48,6 +48,7 @@ public slots:
 
     void restore();
     void slotAboutDialog();
+    void slotReportDialog();
 
 protected:
     void showEvent( QShowEvent* );

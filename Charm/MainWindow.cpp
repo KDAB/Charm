@@ -11,6 +11,7 @@
 #include "Application.h"
 #include "CharmAboutDialog.h"
 #include "Commands/CommandRelayCommand.h"
+#include "Reports/ReportConfigurationPage.h"
 #include "CharmPreferences.h"
 
 #include "ui_MainWindow.h"
@@ -68,13 +69,8 @@ MainWindow::MainWindow()
              SLOT( slotEditPreferences( bool ) ) );
 
     m_actionReporting.setText( tr( "Reports..." ) );
-    m_actionReporting.setCheckable( true );
-    m_actionReporting.setChecked( false );
-    m_reportDialog.hide();
-    connect( &m_actionReporting, SIGNAL( triggered( bool ) ),
-             &m_reportDialog, SLOT( setVisible( bool ) ) );
-    connect( &m_reportDialog, SIGNAL( visible( bool ) ),
-             &m_actionReporting, SLOT( setChecked( bool ) ) );
+    connect( &m_actionReporting, SIGNAL( triggered() ),
+             SLOT( slotReportDialog() ) );
 
     m_actionEventEditor.setText( tr( "Event Editor" ) );
     m_actionTasksView.setText( tr( "Tasks View" ) );
@@ -306,6 +302,15 @@ void MainWindow::slotCurrentBackendStatusChanged( const QString& text )
 
     setWindowTitle( title );
     m_trayIcon.setToolTip( title );
+}
+
+void MainWindow::slotReportDialog()
+{
+    m_reportDialog.back();
+    if ( m_reportDialog.exec() ) {
+        qDebug() << "MainWindow::slotReportDialog: report of type"
+                 << m_reportDialog.selectedPage()->name() << "selected";
+    }
 }
 
 #include "MainWindow.moc"

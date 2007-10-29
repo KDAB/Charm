@@ -1,3 +1,5 @@
+#include <QtDebug>
+
 #include <QMap>
 #include <QFile>
 #include <QTimer>
@@ -361,6 +363,9 @@ bool WeeklyTimeSheet::create()
         qDebug() << "WeeklyTimeSheet::create: cannot load report style sheet";
     }
     m_report->setHtml( doc.toString() );
+
+    // temp:
+    createXmlExport();
     return true;
 }
 
@@ -476,6 +481,12 @@ QDomDocument WeeklyTimeSheet::createReportTemplate()
     html.appendChild( body );
 
     return doc;
+}
+
+bool WeeklyTimeSheet::createXmlExport()
+{
+    qDebug() << "WeeklyTimeSheet::createXmlExport: exporting XML time sheet";
+    return false;
 }
 
 

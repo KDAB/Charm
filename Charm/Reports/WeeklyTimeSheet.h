@@ -51,6 +51,8 @@ private:
         NumberOfColumns
     };
 
+    bool createXmlExport();
+
     // this may be elevated to a default document generator:
     QDomDocument createReportTemplate();
 

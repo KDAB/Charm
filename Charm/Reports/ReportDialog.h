@@ -3,11 +3,13 @@
 
 #include <QDialog>
 
-#include "CharmReport.h"
+// #include "CharmReport.h"
 
 namespace Ui {
     class ReportDialog;
 }
+
+class ReportConfigurationPage;
 
 class ReportDialog : public QDialog
 {
@@ -17,13 +19,12 @@ public:
     explicit ReportDialog( QWidget* parent = 0 );
     ~ReportDialog();
 
-    CharmReport* selectedReport();
+    ReportConfigurationPage* selectedPage();
 
-    void showEvent( QShowEvent* );
-    void closeEvent( QCloseEvent* );
-
-    // reimpl
-    void reject();
+// CharmReport* selectedReport();
+//     void showEvent( QShowEvent* );
+//     void closeEvent( QCloseEvent* );
+//     void reject();
 
 public slots:
     void on_comboReportSelector_currentIndexChanged( int );
@@ -36,7 +37,7 @@ signals:
 
 private:
     Ui::ReportDialog* m_ui;
-    QList<CharmReport*> m_reports;
+    QList<ReportConfigurationPage*> m_reports;
 };
 
 #endif
