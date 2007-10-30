@@ -1,6 +1,10 @@
 #include <QFile>
 #include <QTimer>
+#include <QSettings>
 #include <QDomElement>
+#include <QTextStream>
+#include <QMessageBox>
+#include <QFileDialog>
 #include <QtAlgorithms>
 #include <QDomDocument>
 
@@ -264,6 +268,37 @@ static TimeSheetInfoList taskWithSubTasks( TaskId id,
     return result;
 }
 
+// retrieve events that match the settings (active, subscribed, ...):
+TimeSheetInfoList filteredTaskWithSubTasks(
+    TimeSheetInfoList timeSheetInfo,
+    bool activeTasksOnly, bool subscribedOnly )
+{
+    if ( activeTasksOnly ) {
+        TimeSheetInfoList nonZero;
+        // FIXME use algorithm (I just hate to lug the fat book around)
+        for ( int i = 0; i < timeSheetInfo.size(); ++i )
+        {
+            if ( timeSheetInfo[i].total() > 0 ) {
+                nonZero << timeSheetInfo[i];
+            }
+        }
+        timeSheetInfo = nonZero;
+    }
+
+    if ( subscribedOnly ) {
+        TimeSheetInfoList subscribed;
+        for ( int i = 0; i < timeSheetInfo.size(); ++i ) {
+            const TaskTreeItem& item = DATAMODEL->taskTreeItem( timeSheetInfo[i].taskId );
+            if ( item.task().subscribed() || timeSheetInfo[i].total() > 0 && timeSheetInfo[i].aggregated ) {
+                subscribed << timeSheetInfo[i];
+            }
+        }
+        timeSheetInfo = subscribed;
+    }
+
+    return timeSheetInfo;
+}
+
 void WeeklyTimeSheetReport::slotUpdate()
 {   // this creates the time sheet
     delete m_report; m_report = 0;
@@ -323,30 +358,10 @@ void WeeklyTimeSheetReport::slotUpdate()
     {
         // now for a table
         // retrieve the information for the report:
-        TimeSheetInfoList timeSheetInfo = taskWithSubTasks( m_rootTask, secondsMap );
-
-        if ( m_activeTasksOnly ) {
-            TimeSheetInfoList nonZero;
-            // FIXME use algorithm (I just hate to lug the fat book around)
-            for ( int i = 0; i < timeSheetInfo.size(); ++i )
-            {
-                if ( timeSheetInfo[i].total() > 0 ) {
-                    nonZero << timeSheetInfo[i];
-                }
-            }
-            timeSheetInfo = nonZero;
-        }
-
-        if ( m_subscribedOnly ) {
-            TimeSheetInfoList subscribed;
-            for ( int i = 0; i < timeSheetInfo.size(); ++i ) {
-                const TaskTreeItem& item = DATAMODEL->taskTreeItem( timeSheetInfo[i].taskId );
-                if ( item.task().subscribed() || timeSheetInfo[i].total() > 0 && timeSheetInfo[i].aggregated ) {
-                    subscribed << timeSheetInfo[i];
-                }
-            }
-            timeSheetInfo = subscribed;
-        }
+        // TimeSheetInfoList timeSheetInfo = taskWithSubTasks( m_rootTask, secondsMap );
+        TimeSheetInfoList timeSheetInfo = filteredTaskWithSubTasks(
+            taskWithSubTasks( m_rootTask, secondsMap ),
+            m_activeTasksOnly, m_subscribedOnly );
 
         QDomElement table = doc.createElement( "table" );
         table.setAttribute( "width", "100%" );
@@ -482,7 +497,27 @@ void WeeklyTimeSheetReport::slotUpdate()
 void  WeeklyTimeSheetReport::slotSaveToXml()
 {
     qDebug() << "WeeklyTimeSheet::slotSaveToXml: creating XML time sheet";
-    QDomDocument document = createExportTemplate();
+    // first, ask for a file name:
+    QSettings settings;
+    QString path;
+    if ( settings.contains( MetaKey_ReportsRecentSavePath ) ) {
+        path = settings.value( MetaKey_ReportsRecentSavePath ).toString();
+        QDir dir( path );
+        if ( !dir.exists() ) path = QString();
+    }
+    QString filename = QFileDialog::getSaveFileName( this, tr( "Enter File Name" ), path );
+    if ( filename.isEmpty() ) return;
+    QFileInfo fileinfo( filename );
+    path = fileinfo.absolutePath();
+    if ( !path.isEmpty() ) {
+        settings.setValue( MetaKey_ReportsRecentSavePath, path );
+    }
+    if ( fileinfo.suffix().isEmpty() ) {
+        filename+=".charmreport";
+    }
+
+    // now create the report:
+    QDomDocument document = createExportTemplate( "weekly-timesheet" );
 
     // find metadata and report element:
     QDomElement root = document.documentElement();
@@ -508,7 +543,9 @@ void  WeeklyTimeSheetReport::slotSaveToXml()
         QDomElement tasks = document.createElement( "tasks" );
         report.appendChild( tasks );
         SecondsMap secondsMap;
-        TimeSheetInfoList timeSheetInfo = taskWithSubTasks( m_rootTask, secondsMap );
+        TimeSheetInfoList timeSheetInfo = filteredTaskWithSubTasks(
+            taskWithSubTasks( m_rootTask, secondsMap ),
+            false, m_subscribedOnly ); // here, we don't care about active or not, because we only report on the tasks
         Q_FOREACH( TimeSheetInfo info, timeSheetInfo ) {
             if ( info.taskId == 0 ) // the root task
                 continue;
@@ -532,17 +569,46 @@ void  WeeklyTimeSheetReport::slotSaveToXml()
         // retrieve it:
         EventIdList matchingEvents = eventsThatStartInTimeFrame(
             QDateTime( m_start ), QDateTime( m_end ) );
-        // aggregate (group by day):
-        // ...
-        // create elements:
+        // aggregate (group by task and day):
+        typedef QPair<TaskId, QDate> Key;
+        QMap< Key, Event> events;
         Q_FOREACH( EventId id, matchingEvents ) {
             const Event& event = DATAMODEL->eventForId( id );
+            Key key( event.taskId(), event.startDateTime().date() );
+            if ( events.contains( key ) ) {
+                // add to previous events:
+                int seconds = events[key].duration() + event.duration();
+                QDateTime end( events[key].startDateTime().addSecs( seconds ) );
+                events[key].setEndDateTime( end );
+                Q_ASSERT( events[key].duration() == seconds );
+            } else {
+                // add this event:
+                events[key] = event;
+                // move to start at midnight:
+                QDateTime start( event.startDateTime() );
+                start.setTime( QTime() );
+                QDateTime end( start.addSecs( event.duration() ) );
+                events[key].setStartDateTime( start );
+                events[key].setEndDateTime( end );
+                Q_ASSERT( events[key].duration() == event.duration() );
+            }
+        }
+        // create elements:
+        Q_FOREACH( Event event, events ) {
             effort.appendChild( event.toXml( document ) );
         }
     }
 
-    qDebug() << "WeeklyTimeSheetReport::slotSaveToXml: generated XML:" << endl
-             << document.toString( 4 );
+    QFile file( filename );
+    if ( file.open( QIODevice::WriteOnly ) ) {
+        QTextStream stream( &file );
+        stream << document.toString( 4 );
+    } else {
+        QMessageBox::critical( this, tr( "Error saving report" ),
+                               tr( "Cannot write to selected location." ) );
+    }
+//     qDebug() << "WeeklyTimeSheetReport::slotSaveToXml: generated XML:" << endl
+//              << document.toString( 4 );
 }
 
 #include "WeeklyTimeSheet3.moc"

@@ -63,12 +63,13 @@ QDomDocument ReportPreviewWindow::createReportTemplate()
     return doc;
 }
 
-QDomDocument ReportPreviewWindow::createExportTemplate()
+QDomDocument ReportPreviewWindow::createExportTemplate( QString reportType )
 {
     QDomDocument doc( "charmreport" );
 
     // root element:
     QDomElement root = doc.createElement( "charmreport" );
+    root.setAttribute( "type", reportType );
     doc.appendChild( root );
 
     // metadata:

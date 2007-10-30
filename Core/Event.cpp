@@ -41,7 +41,7 @@ int Event::installationId() const
 }
 
 bool Event::isValid() const
-{
+{   // negative values are allowed and indicate calculated values
     return id() != 0 && m_installationId != 0;
 }
 

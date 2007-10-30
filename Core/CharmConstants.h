@@ -16,6 +16,7 @@ extern const QString MetaKey_OneEventAtATime;
 extern const QString MetaKey_MainWindowGeometry;
 extern const QString MetaKey_MainWindowGUIStateSelectedTask;
 extern const QString MetaKey_MainWindowGUIStateExpandedTasks;
+extern const QString MetaKey_ReportsRecentSavePath;
 
 #define CONFIGURATION ( Configuration::instance() )
 #define DATAMODEL ( MODEL.charmDataModel() )
