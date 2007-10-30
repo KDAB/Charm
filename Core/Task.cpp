@@ -88,3 +88,38 @@ void dumpTaskList( const TaskList& tasks )
     }
 }
 
+const QString TaskElement( "task" );
+const QString TaskIdElement( "taskid" );
+const QString TaskParentId( "parentid" );
+const QString TaskSubscribed( "subscribed" );
+
+QDomElement Task::toXml( QDomDocument document ) const
+{
+    QDomElement element = document.createElement( TaskElement );
+    element.setAttribute( TaskIdElement, id() );
+    element.setAttribute( TaskParentId, parent() );
+    element.setAttribute( TaskSubscribed, ( subscribed() ? 1 : 0 ) );
+    if ( !name().isEmpty() ) {
+        QDomText taskName = document.createTextNode( name() );
+        element.appendChild( taskName );
+    }
+    return element;
+}
+
+Task Task::fromXml( const QDomElement& element ) throw( XmlSerializationException )
+{   // in case any task object creates trouble with
+    // serialization/deserialization, add an object of it to
+    // void XmlSerializationTests::testTaskSerialization()
+    Task task;
+    bool ok;
+    task.setName( element.text() );
+    task.setId( element.attribute( TaskIdElement ).toInt( &ok ) );
+    if ( !ok ) throw XmlSerializationException( "Task::fromXml: invalid task id" );
+    task.setParent( element.attribute( TaskParentId ).toInt( &ok ) );
+    if ( !ok ) throw XmlSerializationException( "Task::fromXml: invalid parent task id" );
+    task.setSubscribed( element.attribute( TaskSubscribed ).toInt( &ok ) == 1 );
+    if ( !ok ) throw XmlSerializationException( "Task::fromXml: invalid subscription setting" );
+    return task;
+}
+
+

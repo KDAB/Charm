@@ -42,6 +42,37 @@ void XmlSerializationTests::testEventSerialization()
     }
 }
 
+void XmlSerializationTests::testTaskSerialization()
+{
+    // set up test candidates:
+    TaskList tasksToTest;
+    Task task;
+    task.setName( "A task" );
+    task.setId( 42 );
+    task.setParent( 4711 );
+    task.setSubscribed( true );
+    Task task2;
+    task2.setName( "Another task" );
+    task2.setId( -1 );
+    task2.setParent( 1000000000 );
+    task2.setSubscribed( false );
+
+    tasksToTest << Task() << task << task2;
+
+    QDomDocument document( "testdocument" );
+    Q_FOREACH( Task task, tasksToTest ) {
+        QDomElement element = task.toXml( document );
+        try {
+            Task readTask = Task::fromXml( element );
+            QVERIFY( task == readTask );
+        } catch( std::exception& e ) {
+            qDebug() << "XmlSerializationTests::testTaskSerialization: exception caught ("
+                     << e.what() << ")";
+            QFAIL( "Task Serialization throws" );
+        }
+    }
+}
+
 void XmlSerializationTests::testQDateTimeToFromString()
 {
     // test regular QDate::toString:

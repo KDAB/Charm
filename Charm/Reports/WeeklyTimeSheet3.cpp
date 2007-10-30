@@ -599,15 +599,16 @@ void  WeeklyTimeSheetReport::slotSaveToXml()
             if ( info.taskId == 0 ) // the root task
                 continue;
             const Task& modelTask = DATAMODEL->getTask( info.taskId );
-            TaskId parentTask = DATAMODEL->parentItem( modelTask ).task().id();
-            QDomElement task = document.createElement( "task" );
-            task.setAttribute( "taskid", QString().setNum( info.taskId ) );
-            if ( parentTask != 0 )
-                task.setAttribute( "parent", QString().setNum( parentTask ) );
+            tasks.appendChild( modelTask.toXml( document ) );
+//             TaskId parentTask = DATAMODEL->parentItem( modelTask ).task().id();
+//             QDomElement task = document.createElement( "task" );
+//             task.setAttribute( "taskid", QString().setNum( info.taskId ) );
+//             if ( parentTask != 0 )
+//                 task.setAttribute( "parent", QString().setNum( parentTask ) );
 
-            QDomText name = document.createTextNode( modelTask.name() );
-            task.appendChild( name );
-            tasks.appendChild( task );
+//             QDomText name = document.createTextNode( modelTask.name() );
+//             task.appendChild( name );
+//             tasks.appendChild( task );
         }
     }
     {   // effort

@@ -12,6 +12,7 @@ public:
 
 private slots:
     void testEventSerialization();
+    void testTaskSerialization();
     void testQDateTimeToFromString();
 };
 

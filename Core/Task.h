@@ -7,6 +7,10 @@
 #include <QString>
 #include <QtDebug>
 #include <QMetaType>
+#include <QDomElement>
+#include <QDomDocument>
+
+#include "CharmExceptions.h"
 
 typedef int TaskId;
 Q_DECLARE_METATYPE( TaskId )
@@ -40,6 +44,10 @@ public:
     void setSubscribed( bool value );
 
     void dump() const;
+
+    QDomElement toXml( QDomDocument ) const;
+
+    static Task fromXml( const QDomElement& ) throw( XmlSerializationException );
 
 private:
     int m_id;

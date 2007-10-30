@@ -143,7 +143,7 @@ QDomElement Event::toXml( QDomDocument document ) const
     return element;
 }
 
-Event Event::fromXml( const QDomElement& element ) throw ( Event::XmlSerializationException )
+Event Event::fromXml( const QDomElement& element ) throw ( XmlSerializationException )
 {   // in case any event object creates trouble with
     // serialization/deserialization, add an object of it to
     // void XmlSerializationTests::testEventSerialization()
@@ -151,19 +151,19 @@ Event Event::fromXml( const QDomElement& element ) throw ( Event::XmlSerializati
     bool ok;
     event.setComment( element.text() );
     event.setId( element.attribute( EventIdAttribute ).toInt( &ok ) );
-    if ( !ok ) throw Event::XmlSerializationException( "Event::fromXml: invalid event id" );
+    if ( !ok ) throw XmlSerializationException( "Event::fromXml: invalid event id" );
     event.setInstallationId( element.attribute( EventInstallationIdAttribute ).toInt( &ok ) );
-    if ( !ok ) throw Event::XmlSerializationException( "Event::fromXml: invalid installation id" );
+    if ( !ok ) throw XmlSerializationException( "Event::fromXml: invalid installation id" );
     event.setTaskId( element.attribute( EventTaskIdAttribute ).toInt( &ok ) );
-    if ( !ok ) throw Event::XmlSerializationException( "Event::fromXml: invalid task id" );
+    if ( !ok ) throw XmlSerializationException( "Event::fromXml: invalid task id" );
     if ( element.hasAttribute( EventStartAttribute ) ) {
         QDateTime start = QDateTime::fromString( element.attribute( EventStartAttribute ), Qt::ISODate );
-        if ( !start.isValid() ) throw Event::XmlSerializationException( "Event::fromXml: invalid start date" );
+        if ( !start.isValid() ) throw XmlSerializationException( "Event::fromXml: invalid start date" );
         event.setStartDateTime( start );
     }
     if ( element.hasAttribute( EventEndAttribute ) ) {
         QDateTime end = QDateTime::fromString( element.attribute( EventEndAttribute ), Qt::ISODate );
-        if ( !end.isValid() ) throw Event::XmlSerializationException( "Event::fromXml: invalid end date" );
+        if ( !end.isValid() ) throw XmlSerializationException( "Event::fromXml: invalid end date" );
         event.setEndDateTime( end );
     }
     event.setComment( element.text() );
