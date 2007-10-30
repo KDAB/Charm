@@ -341,6 +341,7 @@ void EventEditor::timeFrameChanged( int index )
 {
     // wait for the next update, in this case:
     if ( m_ui->comboBox->count() == 0 ) return;
+	if ( !m_model ) return;
     // this is kind-of strange - we have to clear the dirty flag,
     // and this will change the current index, triggering a commit
     // halfway during the change:

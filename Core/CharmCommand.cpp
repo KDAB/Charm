@@ -1,5 +1,5 @@
 // #include "View.h"
-#include "CommandEmitterInterface.h"x
+#include "CommandEmitterInterface.h"
 #include "CharmCommand.h"
 
 CharmCommand::CharmCommand( QObject* parent )
