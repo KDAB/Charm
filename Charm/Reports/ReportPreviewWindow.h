@@ -2,7 +2,7 @@
 #define REPORTPREVIEWWINDOW_H
 
 #include <QDialog>
-#include <QDomDocument>x
+#include <QDomDocument>
 #include <QTextDocument>
 
 namespace Ui {
