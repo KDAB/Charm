@@ -23,8 +23,11 @@ public:
     QString name();
     QString description();
 
+    void showEvent( QShowEvent* );
+
 private slots:
     void slotDelayedInitialization();
+    void slotOkClicked();
     void slotCheckboxSubtasksOnlyChecked( bool );
     void slotStandardTimeSpansChanged();
     void slotWeekComboItemSelected( int );

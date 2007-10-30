@@ -24,7 +24,7 @@ WTSConfigurationPage::WTSConfigurationPage( ReportDialog* parent )
     connect( m_ui->pushButtonBack, SIGNAL( clicked() ),
              SIGNAL( back() ) );
     connect( m_ui->pushButtonReport, SIGNAL( clicked() ),
-             SIGNAL( accept() ) );
+             SLOT( slotOkClicked() ) );
     connect( m_ui->comboBoxWeek, SIGNAL( currentIndexChanged( int ) ),
              SLOT( slotWeekComboItemSelected( int ) ) );
     connect( m_ui->toolButtonSelectTask, SIGNAL( clicked() ),
@@ -33,8 +33,6 @@ WTSConfigurationPage::WTSConfigurationPage( ReportDialog* parent )
              SLOT( slotCheckboxSubtasksOnlyChecked( bool ) ) );
 
     m_ui->comboBoxWeek->setCurrentIndex( 1 );
-    m_ui->checkBoxSubTasksOnly->setChecked( false );
-    m_ui->checkBoxSubscribedOnly->setChecked( true );
     slotCheckboxSubtasksOnlyChecked( m_ui->checkBoxSubTasksOnly->isChecked() );
 
     QTimer::singleShot( 0, this, SLOT( slotDelayedInitialization() ) );
@@ -51,6 +49,33 @@ void WTSConfigurationPage::slotDelayedInitialization()
     connect( &Application::instance().timeSpans(),
              SIGNAL( timeSpansChanged() ),
              SLOT( slotStandardTimeSpansChanged() ) );
+
+    // load settings:
+    QSettings settings;
+    if ( settings.contains( MetaKey_TimesheetSubscribedOnly ) ) {
+        m_ui->checkBoxSubscribedOnly->setChecked( settings.value( MetaKey_TimesheetSubscribedOnly ).toBool() );
+    } else {
+        m_ui->checkBoxSubscribedOnly->setChecked( false );
+    }
+    if ( settings.contains( MetaKey_TimesheetActiveOnly ) ) {
+        m_ui->checkBoxActiveOnly->setChecked( settings.value( MetaKey_TimesheetActiveOnly ).toBool() );
+    } else {
+        m_ui->checkBoxActiveOnly->setChecked( true );
+    }
+}
+
+void WTSConfigurationPage::slotOkClicked()
+{
+    // save settings:
+    QSettings settings;
+    settings.setValue( MetaKey_TimesheetSubscribedOnly,
+                       m_ui->checkBoxSubscribedOnly->isChecked() );
+    settings.setValue( MetaKey_TimesheetActiveOnly,
+                       m_ui->checkBoxActiveOnly->isChecked() );
+    settings.setValue( MetaKey_TimesheetRootTask,
+                       m_rootTask );
+
+    emit accept();
 }
 
 QDialog* WTSConfigurationPage::makeReportPreviewDialog( QWidget* parent )
@@ -77,6 +102,23 @@ QDialog* WTSConfigurationPage::makeReportPreviewDialog( QWidget* parent )
 QString WTSConfigurationPage::name()
 {
     return tr( "Weekly Time Sheet" );
+}
+
+void WTSConfigurationPage::showEvent( QShowEvent* )
+{
+    QSettings settings;
+
+    // we only want to do this once a backend is loaded, and we ignore
+    // the saved root task if it does not exist anymore
+    if ( settings.contains( MetaKey_TimesheetRootTask ) ) {
+        TaskId root = settings.value( MetaKey_TimesheetRootTask ).toInt();
+        const TaskTreeItem& item = DATAMODEL->taskTreeItem( root );
+        if ( item.isValid() ) {
+            m_rootTask = root;
+            m_ui->labelTaskName->setText( tasknameWithParents( item.task() ) );
+            m_ui->checkBoxSubTasksOnly->setChecked( true );
+        }
+    }
 }
 
 QString WTSConfigurationPage::description()
@@ -505,6 +547,12 @@ void  WeeklyTimeSheetReport::slotSaveToXml()
         QDir dir( path );
         if ( !dir.exists() ) path = QString();
     }
+    // suggest file name:
+    QString suggestedFilename = tr( "WeeklyTimeSheet-%1-%2" )
+                                .arg( m_start.year() )
+                                .arg( m_weekNumber );
+    path += QDir::separator() + suggestedFilename;
+    // ask:
     QString filename = QFileDialog::getSaveFileName( this, tr( "Enter File Name" ), path );
     if ( filename.isEmpty() ) return;
     QFileInfo fileinfo( filename );
