@@ -2,20 +2,35 @@
 #define EVENT_H
 
 #include <map>
+#include <exception>
 
 #include <QList>
 #include <QtDebug>
 #include <QDateTime>
+#include <QDomElement>
 
 #include "Task.h"
 
 typedef int EventId;
+class QDomDocument;
 
 /** An event is a recorded time for a task.
     It records the according task, the duration and a possible
     comment. */
 class Event {
 public:
+    class XmlSerializationException : public std::exception {
+    public:
+        XmlSerializationException( const char* message = 0 )
+            : m_message( message )
+        {}
+        const char* what() const throw() {
+            return m_message;
+        }
+    private:
+        const char* m_message;
+    };
+
     Event();
 
     bool operator == ( const Event& other ) const;
@@ -53,6 +68,10 @@ public:
     int duration () const;
 
     void dump() const;
+
+    QDomElement toXml( QDomDocument ) const;
+
+    static Event fromXml( const QDomElement& ) throw ( XmlSerializationException );
 
 private:
     /** The installation-unique id of the event. */

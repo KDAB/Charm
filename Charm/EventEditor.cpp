@@ -174,8 +174,6 @@ void EventEditor::slotCommitTimeout()
     if ( m_dirty ) {
         commitChanges();
     }
-//     qDebug() << "EventEditor::slotCommitTimeout: auto-update deactivated, verify"
-//         " crash with later Qt version";
 }
 
 void EventEditor::slotCurrentItemChanged( const QModelIndex& start,

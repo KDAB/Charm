@@ -48,7 +48,6 @@ IF ( QT4_FOUND )
 		       Reports/CharmReport.cpp
 		       Reports/ActivityReport.cpp 
 		       Reports/WeeklyTimeSheet3.cpp
-#		       Reports/WeeklyTimeSheet-OldSchool.cpp
 		       Reports/ReportPreviewWindow.cpp 
 		       Reports/ParagraphFormatCollection.cpp
 		       Commands/CommandRelayCommand.cpp

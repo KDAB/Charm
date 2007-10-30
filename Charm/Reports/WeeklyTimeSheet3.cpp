@@ -482,7 +482,67 @@ void WeeklyTimeSheetReport::slotUpdate()
 void  WeeklyTimeSheetReport::slotSaveToXml()
 {
     qDebug() << "WeeklyTimeSheet::slotSaveToXml: creating XML time sheet";
+    QDomDocument document = createExportTemplate();
 
+    // find metadata and report element:
+    QDomElement root = document.documentElement();
+    QDomElement metadata = root.firstChildElement( "metadata" );
+    QDomElement report = root.firstChildElement( "report" );
+    Q_ASSERT( !root.isNull() && !metadata.isNull() && !report.isNull() );
+
+    // extend metadata tag: add year, and serial (week) number:
+    {
+        QDomElement yearElement = document.createElement( "year" );
+        metadata.appendChild( yearElement );
+        QDomText text = document.createTextNode( QString().setNum( m_start.year() ) );
+        yearElement.appendChild( text );
+        QDomElement weekElement = document.createElement( "serial-number" );
+        weekElement.setAttribute( "semantics", "week-number" );
+        metadata.appendChild( weekElement );
+        QDomText weektext = document.createTextNode( QString().setNum( m_weekNumber ) );
+        weekElement.appendChild( weektext );
+    }
+
+    // extend report tag: add tasks and effort structure
+    {   // tasks
+        QDomElement tasks = document.createElement( "tasks" );
+        report.appendChild( tasks );
+        SecondsMap secondsMap;
+        TimeSheetInfoList timeSheetInfo = taskWithSubTasks( m_rootTask, secondsMap );
+        Q_FOREACH( TimeSheetInfo info, timeSheetInfo ) {
+            if ( info.taskId == 0 ) // the root task
+                continue;
+            const Task& modelTask = DATAMODEL->getTask( info.taskId );
+            TaskId parentTask = DATAMODEL->parentItem( modelTask ).task().id();
+            QDomElement task = document.createElement( "task" );
+            task.setAttribute( "taskid", QString().setNum( info.taskId ) );
+            if ( parentTask != 0 )
+                task.setAttribute( "parent", QString().setNum( parentTask ) );
+
+            QDomText name = document.createTextNode( modelTask.name() );
+            task.appendChild( name );
+            tasks.appendChild( task );
+        }
+    }
+    {   // effort
+        // make effort element:
+        QDomElement effort = document.createElement( "effort" );
+        report.appendChild( effort );
+
+        // retrieve it:
+        EventIdList matchingEvents = eventsThatStartInTimeFrame(
+            QDateTime( m_start ), QDateTime( m_end ) );
+        // aggregate (group by day):
+        // ...
+        // create elements:
+        Q_FOREACH( EventId id, matchingEvents ) {
+            const Event& event = DATAMODEL->eventForId( id );
+            effort.appendChild( event.toXml( document ) );
+        }
+    }
+
+    qDebug() << "WeeklyTimeSheetReport::slotSaveToXml: generated XML:" << endl
+             << document.toString( 4 );
 }
 
 #include "WeeklyTimeSheet3.moc"

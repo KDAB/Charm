@@ -24,7 +24,8 @@ bool CommandAddTask::prepare()
 
 bool CommandAddTask::execute( ControllerInterface* controller )
 {
-    return controller->addTask( m_task );
+    m_success = controller->addTask( m_task );
+    return m_success;
 }
 
 bool CommandAddTask::finalize()
