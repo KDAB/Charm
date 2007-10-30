@@ -538,14 +538,15 @@ void  WeeklyTimeSheetReport::slotSaveToXml()
         weekElement.appendChild( weektext );
     }
 
+    SecondsMap secondsMap;
+    TimeSheetInfoList timeSheetInfo = filteredTaskWithSubTasks(
+        taskWithSubTasks( m_rootTask, secondsMap ),
+        false, m_subscribedOnly ); // here, we don't care about active or not, because we only report on the tasks
+
     // extend report tag: add tasks and effort structure
     {   // tasks
         QDomElement tasks = document.createElement( "tasks" );
         report.appendChild( tasks );
-        SecondsMap secondsMap;
-        TimeSheetInfoList timeSheetInfo = filteredTaskWithSubTasks(
-            taskWithSubTasks( m_rootTask, secondsMap ),
-            false, m_subscribedOnly ); // here, we don't care about active or not, because we only report on the tasks
         Q_FOREACH( TimeSheetInfo info, timeSheetInfo ) {
             if ( info.taskId == 0 ) // the root task
                 continue;
@@ -574,6 +575,11 @@ void  WeeklyTimeSheetReport::slotSaveToXml()
         QMap< Key, Event> events;
         Q_FOREACH( EventId id, matchingEvents ) {
             const Event& event = DATAMODEL->eventForId( id );
+            TimeSheetInfoList::iterator it;
+            for ( it = timeSheetInfo.begin(); it != timeSheetInfo.end(); ++it )
+                if ( ( *it ).taskId == event.taskId() ) break;
+            if ( it == timeSheetInfo.end() )
+                continue;
             Key key( event.taskId(), event.startDateTime().date() );
             if ( events.contains( key ) ) {
                 // add to previous events:
