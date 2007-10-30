@@ -580,10 +580,19 @@ void  WeeklyTimeSheetReport::slotSaveToXml()
                 int seconds = events[key].duration() + event.duration();
                 QDateTime end( events[key].startDateTime().addSecs( seconds ) );
                 events[key].setEndDateTime( end );
+                QString comment = events[key].comment();
+                if ( ! event.comment().isEmpty() ) {
+                    if ( !comment.isEmpty() ) { // make separator
+                        comment += " / ";
+                    }
+                    comment += event.comment();
+                    events[key].setComment( comment );
+                }
                 Q_ASSERT( events[key].duration() == seconds );
             } else {
                 // add this event:
                 events[key] = event;
+                events[key].setId( -events[key].id() ); // "synthetic" :-)
                 // move to start at midnight:
                 QDateTime start( event.startDateTime() );
                 start.setTime( QTime() );
