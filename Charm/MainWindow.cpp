@@ -26,6 +26,7 @@ MainWindow::MainWindow()
     , m_actionPreferences( this )
     , m_actionEventEditor( &m_viewActionsGroup )
     , m_actionTasksView( &m_viewActionsGroup )
+    , m_actionToggleView( this )
     , m_eventEditor( this )
     , m_actionReporting( this )
     , m_reportDialog( this )
@@ -68,12 +69,6 @@ MainWindow::MainWindow()
     connect( &m_actionPreferences, SIGNAL( triggered( bool ) ),
              SLOT( slotEditPreferences( bool ) ) );
 
-    m_actionReporting.setText( tr( "Reports..." ) );
-    connect( &m_actionReporting, SIGNAL( triggered() ),
-             SLOT( slotReportDialog() ) );
-
-    m_actionEventEditor.setText( tr( "Event Editor" ) );
-    m_actionTasksView.setText( tr( "Tasks View" ) );
     // m_actionEventEditor.setCheckable( true );
 //     m_eventEditor.setVisible( m_actionEventEditor.isChecked() );
 //     connect( &m_actionEventEditor, SIGNAL( toggled( bool ) ),
@@ -89,6 +84,12 @@ MainWindow::MainWindow()
     appMenu->addAction( &m_actionQuit );
 
     // set up view menu:
+    m_actionReporting.setText( tr( "Reports..." ) );
+    connect( &m_actionReporting, SIGNAL( triggered() ),
+             SLOT( slotReportDialog() ) );
+
+    m_actionEventEditor.setText( tr( "Event Editor" ) );
+    m_actionTasksView.setText( tr( "Tasks View" ) );
     Q_FOREACH( QAction* action, m_viewActionsGroup.actions() ) {
         action->setCheckable( true );
     }
@@ -104,6 +105,11 @@ MainWindow::MainWindow()
 
     QMenu* viewMenu = new QMenu( tr( "View" ), menuBar() );
     viewMenu->addActions( m_viewActionsGroup.actions() );
+    viewMenu->addSeparator();
+    m_actionToggleView.setShortcut( Qt::CTRL + Qt::Key_V );
+    m_actionToggleView.setText( tr( "Toggle View" ) );
+    connect( &m_actionToggleView, SIGNAL( triggered() ), SLOT( slotToggleView() ) );
+    viewMenu->addAction( &m_actionToggleView );
     viewMenu->addSeparator();
     viewMenu->addAction( &m_actionReporting );
 
@@ -314,6 +320,29 @@ void MainWindow::slotReportDialog()
         QDialog* preview = page->makeReportPreviewDialog( this );
         // preview is destroy-on-close and non-modal:
         preview->show();
+    }
+}
+
+void MainWindow::slotToggleView()
+{
+    ViewModeInterface* current = dynamic_cast<ViewModeInterface*>( m_ui->viewStack->currentWidget() );
+    if ( current ) {
+        Q_ASSERT( m_modes.size() == m_ui->viewStack->count() -1 ); // -1: startup page, never shown again
+        QList<ViewModeInterface*>::iterator mode = std::find( m_modes.begin(), m_modes.end(), current );
+        Q_ASSERT( mode != m_modes.end() ); // how could that be if m_modes is not empty?
+        ++mode;
+        if ( mode == m_modes.end() ) {
+            mode = m_modes.begin();
+        }
+        QWidget* widget = dynamic_cast<QWidget*>( *mode );
+        // baah:
+        if ( widget == &m_eventEditor ) {
+            m_actionEventEditor.trigger();
+        } else if ( widget == &m_tasksView ) {
+            m_actionTasksView.trigger();
+        } else { // cannot happen:
+            Q_ASSERT( widget && false );
+        }
     }
 }
 

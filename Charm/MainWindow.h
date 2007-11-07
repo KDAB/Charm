@@ -40,6 +40,7 @@ public slots:
     void slotEditPreferences( bool ); // show prefs dialog
     void slotConfigurationChanged();
     void slotSelectViewMode( QAction* );
+    void slotToggleView();
     void slotCurrentBackendStatusChanged( const QString& text );
 
     // CommandEmitterInterface:
@@ -75,6 +76,7 @@ private:
     QAction m_actionPreferences;
     QAction m_actionEventEditor;
     QAction m_actionTasksView;
+    QAction m_actionToggleView;
     View m_tasksView;
     EventEditor m_eventEditor;
     QAction m_actionReporting;
