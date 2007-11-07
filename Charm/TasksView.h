@@ -18,7 +18,7 @@ class StatusBarWidget;
 
 namespace Ui {
     class View;
-};
+}
 
 class View : public QWidget,
              public ViewModeInterface,

@@ -5,7 +5,7 @@
 
 namespace Ui {
     class CharmAboutDialog;
-};
+}
 
 class CharmAboutDialog : public QDialog
 {
