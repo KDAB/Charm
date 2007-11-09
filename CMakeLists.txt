@@ -1,6 +1,7 @@
 # this is the CMake Project File for Charm
 PROJECT( Charm )
 
+SET(QT_MIN_VERSION "4.3.1")
 FIND_PACKAGE( Qt4 REQUIRED )
 ENABLE_TESTING()
 # we do not set this anymore, turn it of by providing the option on
