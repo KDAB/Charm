@@ -8,6 +8,8 @@
 #include <QtAlgorithms>
 #include <QDomDocument>
 
+#include <Core/CharmExceptions.h>
+
 #include "ViewHelpers.h"
 #include "SelectTaskDialog.h"
 #include "WeeklyTimeSheet3.h"
@@ -564,6 +566,7 @@ void  WeeklyTimeSheetReport::slotSaveToXml()
         filename+=".charmreport";
     }
 
+    try {
     // now create the report:
     QDomDocument document = createExportTemplate( "weekly-timesheet" );
 
@@ -673,6 +676,10 @@ void  WeeklyTimeSheetReport::slotSaveToXml()
     }
 //     qDebug() << "WeeklyTimeSheetReport::slotSaveToXml: generated XML:" << endl
 //              << document.toString( 4 );
+    } catch ( XmlSerializationException& e ) {
+        QMessageBox::critical( this, tr( "Error exporting the report" ),
+                               QString::fromLatin1( e.what() ) );
+    }
 }
 
 #include "WeeklyTimeSheet3.moc"
