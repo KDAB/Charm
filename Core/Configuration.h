@@ -55,7 +55,6 @@ private:
     friend class SqLiteStorageTests;
 
     Configuration();
-
 };
 
 

@@ -5,7 +5,6 @@
 #include <QSettings>
 #include <QSqlDatabase>
 
-// FIXME move dump<shit> to SqlStorage
 #include "Event.h"
 #include "Configuration.h"
 #include "SqLiteStorage.h"
@@ -27,8 +26,6 @@ QString SqLiteStorage::description() const
     return QObject::tr( "local database" );
 }
 
-// FIXME Application should adjust the path, storage should simply
-// accept it (rationale: no app logic in the storage)
 bool SqLiteStorage::connect( Configuration& configuration )
 {   // make sure the database folder exits:
     m_installationId = configuration.installationId;
@@ -45,6 +42,7 @@ bool SqLiteStorage::connect( Configuration& configuration )
         if ( ! QDir().mkpath( fileInfo.absolutePath() ) )
             Q_ASSERT_X( false, "SqLiteStorage::configure",
                         "Cannot make database directory" );
+        return false;
 //         qDebug() << "SqLiteStorage::configure: data folder created";
     }
 

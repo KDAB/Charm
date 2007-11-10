@@ -132,11 +132,7 @@ void Controller::stateChanged( State previous, State next )
     }
     break;
     case Disconnecting:
-    {   // end all events:
-
-// FIXME retry that?
-//         while ( !m_activeEvents.isEmpty() )
-//             endEvent( m_activeEvents.last().task() );
+    {
         emit readyToQuit();
         if ( m_storage ) {
 // this will still leave Qt complaining about a repeated connection
@@ -172,6 +168,9 @@ void Controller::persistMetaData( Configuration& configuration )
 
 void Controller::provideMetaData( Configuration& configuration)
 {
+    // FIXME atm, config settings partly are stored in QSettings, and
+    // partly in DB metadata, refactor to use a common scheme
+    // FIXME: is this a controller task, or application specific?
     Q_ASSERT_X( m_storage != 0, "Controller::provideMetaData",
                 "No storage interface available" );
     configuration.oneEventAtATime = boolForString(

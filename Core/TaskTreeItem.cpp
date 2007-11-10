@@ -56,8 +56,7 @@ const TaskTreeItem& TaskTreeItem::child( int row ) const
     if ( row >= 0 && row < m_children.size() ) {
         return * m_children.at( row );
     } else {
-        Q_ASSERT_X( false, "TaskTreeItem::child",
-                    "Invalid item position" );
+        Q_ASSERT_X( false, "TaskTreeItem::child", "Invalid item position" );
         return InvalidItem;
     }
 }

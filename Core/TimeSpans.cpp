@@ -15,7 +15,7 @@ TimeSpans::TimeSpans( QObject* parent )
     slotUpdateTimeSpans();
 
     connect( &m_timer, SIGNAL( timeout() ), SLOT( slotUpdateTimeSpans() ) );
-    m_timer.start( 1000* 60 );
+    m_timer.start( 1000 * 60 );
 }
 
 const NamedTimeSpan& TimeSpans::today() const
@@ -79,18 +79,17 @@ void TimeSpans::slotUpdateTimeSpans()
     if ( m_today.timespan.first == QDate::currentDate() )
         return;
 
-    // if we are just starting up, continue
-    if ( ! m_today.timespan.first.isValid() ) {
+//     // if we are just starting up, continue
+//     if ( ! m_today.timespan.first.isValid() ) {
 //         qDebug() << "TimeSpans::slotUpdateTimeSpans: today is"
 //                  << "today. The world is round.";
-    } else { // today has passed (for example, the computer was suspended)
+//     } else {
+//         // today has passed (for example, the computer was suspended)
 //         qDebug() << "TimeSpans::slotUpdateTimeSpans: today is yesterday."
 //                  << "Slavery is freedom. The world is flat.";
-    }
+//     }
 
     QTime now = QTime::currentTime();
-//     qDebug() << "TimeSpans::slotUpdateTimeSpans: it is now"
-//              << now << ", updating timespans.";
 
     QDate today = QDate::currentDate();
 

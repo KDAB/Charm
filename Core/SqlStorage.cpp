@@ -112,7 +112,8 @@ bool SqlStorage::verifyDatabase()
     }
 
     // check database metadata:
-    // ...
+    // ... FIXME do it
+    // ^^^
     return hasAllTables && versionMatches;
 }
 
@@ -154,7 +155,8 @@ bool SqlStorage::createDatabase()
     populateDatabase();
 
     // fill in metadata:
-    // ...
+    // ... FIXME do it
+    // ^^^
 
     return ! error;
 }

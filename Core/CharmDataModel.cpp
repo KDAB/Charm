@@ -269,7 +269,7 @@ const Event& CharmDataModel::eventForId( EventId id ) const
 
 Event& CharmDataModel::findEvent( int id )
 {
-    // in this method,the event has to exist
+    // in this method, the event has to exist
     EventMap::iterator it = m_events.find( id );
     Q_ASSERT( it != m_events.end() );
     return it->second;

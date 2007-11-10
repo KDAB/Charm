@@ -9,3 +9,4 @@ const char* StateNames[] = {
     "ShuttingDown",
     "Dead", // bad :-)
 };
+
