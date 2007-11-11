@@ -226,4 +226,117 @@ StorageInterface* Controller::storage()
     return m_storage;
 }
 
+const QString MetaDataElement ( "metadata" );
+const QString ExportRootElement( "charmdatabase" );
+const QString VersionElement( "version" );
+const QString TasksElement( "tasks" );
+const QString EventsElement( "events" );
+
+QDomDocument Controller::exportDatabasetoXml() const
+{ // FIXME: error handling - how?
+    QDomDocument document( "charmdatabase" );
+    try {
+        // root element:
+        QDomElement root = document.createElement( ExportRootElement );
+        root.setAttribute( VersionElement, CHARM_DATABASE_VERSION );
+        document.appendChild( root );
+        // metadata:
+        QDomElement metadata = document.createElement( MetaDataElement );
+        // I am not so sure what kind of metadata needs to be stored
+        root.appendChild( metadata );
+        // tasks element:
+        QDomElement tasksElement = document.createElement( TasksElement );
+        TaskList tasks = m_storage->getAllTasks();
+        Q_FOREACH( Task task, tasks ) {
+            QDomElement element = task.toXml( document );
+            tasksElement.appendChild( element );
+        }
+        root.appendChild( tasksElement );
+        // events element:
+        QDomElement eventsElement = document.createElement( EventsElement );
+        EventList events = m_storage->getAllEvents();
+        Q_FOREACH( Event event, events ) {
+            QDomElement element = event.toXml( document );
+            eventsElement.appendChild( element );
+        }
+        root.appendChild( eventsElement );
+    } catch ( XmlSerializationException& e ) {
+        qDebug() << "Controller::exportDatabasetoXml: things fucked up:" << e.what();
+    }
+    qDebug() << document.toString( 4 );
+    return document;
+}
+
+bool Controller::importDatabaseFromXml( const QDomDocument& document )
+{
+    // first, parse the XML document, and break if there is an error
+    // (not touching the DB contents):
+    TaskList importedTasks;
+    EventList importedEvents;
+    try {
+        QDomElement rootElement = document.documentElement();
+        QDomElement metadataElement = rootElement.firstChildElement( MetaDataElement );
+        QDomElement tasksElement = rootElement.firstChildElement( TasksElement );
+        // FIXME refactor XML element names into CharmConstants or
+        // static members:
+        for ( QDomElement element = tasksElement.firstChildElement( "task" );
+              !element.isNull(); element = element.nextSiblingElement( "task" ) ) {
+            Task task = Task::fromXml( element );
+            importedTasks.append( task );
+        }
+        QDomElement eventsElement = rootElement.firstChildElement( EventsElement );
+        for ( QDomElement element = eventsElement.firstChildElement( "event" );
+              !element.isNull(); element = element.nextSiblingElement( "event" ) ) {
+            Event event = Event::fromXml( element );
+            importedEvents.append( event );
+        }
+    // FIXME needs better error handling:
+    //
+    } catch ( XmlSerializationException& e ) {
+        qDebug() << "Controller::exportDatabasetoXml: things fucked up:" << e.what();
+    }
+    qDebug() << "Controller::importDatabaseFromXml:" << importedTasks.size() << "tasks parsed from Xml file,"
+             << importedEvents.size() << "events parsed from Xml file.";
+    // clear subscriptions, tasks and events:
+    {
+        EventList events = m_storage->getAllEvents();
+        Q_FOREACH( Event event, events ) {
+            if ( ! deleteEvent( event ) )
+                return false;
+        }
+        TaskList tasks = m_storage->getAllTasks();
+        Q_FOREACH( Task task, tasks ) {
+            if ( ! deleteTask( task ) ) {
+                return false;
+            }
+        }
+        Q_ASSERT( m_storage->getAllTasks().isEmpty() );
+        Q_ASSERT( m_storage->getAllEvents().isEmpty() );
+    }
+    // now import Events and Tasks from the XML document:
+    Q_FOREACH( Task task, importedTasks ) {
+        if ( !addTask( task ) ) {
+            return false;
+        }
+    }
+    Q_FOREACH( Event event, importedEvents ) {
+        if ( ! event.isValid() ) continue;
+        Task task = m_storage->getTask( event.taskId() );
+        if ( !task.isValid() ) {
+            // semantical error
+            continue;
+        }
+        Event newEvent = makeEvent( task );
+        int id = newEvent.id();
+        newEvent = event;
+        newEvent.setId( id );
+        if ( !modifyEvent( newEvent ) ) {
+            return false;
+        }
+    }
+    // done
+    return true;
+}
+
+
 #include "Controller.moc"

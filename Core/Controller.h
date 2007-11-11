@@ -36,6 +36,9 @@ public:
     bool addTask( const Task& parent );
     bool modifyTask( const Task& );
     bool deleteTask( const Task& );
+    QDomDocument exportDatabasetoXml() const;
+    bool importDatabaseFromXml( const QDomDocument& );
+
 
 public slots:
 

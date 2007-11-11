@@ -567,42 +567,42 @@ void  WeeklyTimeSheetReport::slotSaveToXml()
     }
 
     try {
-    // now create the report:
-    QDomDocument document = createExportTemplate( "weekly-timesheet" );
+        // now create the report:
+        QDomDocument document = createExportTemplate( "weekly-timesheet" );
 
-    // find metadata and report element:
-    QDomElement root = document.documentElement();
-    QDomElement metadata = root.firstChildElement( "metadata" );
-    QDomElement report = root.firstChildElement( "report" );
-    Q_ASSERT( !root.isNull() && !metadata.isNull() && !report.isNull() );
+        // find metadata and report element:
+        QDomElement root = document.documentElement();
+        QDomElement metadata = root.firstChildElement( "metadata" );
+        QDomElement report = root.firstChildElement( "report" );
+        Q_ASSERT( !root.isNull() && !metadata.isNull() && !report.isNull() );
 
-    // extend metadata tag: add year, and serial (week) number:
-    {
-        QDomElement yearElement = document.createElement( "year" );
-        metadata.appendChild( yearElement );
-        QDomText text = document.createTextNode( QString().setNum( m_start.year() ) );
-        yearElement.appendChild( text );
-        QDomElement weekElement = document.createElement( "serial-number" );
-        weekElement.setAttribute( "semantics", "week-number" );
-        metadata.appendChild( weekElement );
-        QDomText weektext = document.createTextNode( QString().setNum( m_weekNumber ) );
-        weekElement.appendChild( weektext );
-    }
+        // extend metadata tag: add year, and serial (week) number:
+        {
+            QDomElement yearElement = document.createElement( "year" );
+            metadata.appendChild( yearElement );
+            QDomText text = document.createTextNode( QString().setNum( m_start.year() ) );
+            yearElement.appendChild( text );
+            QDomElement weekElement = document.createElement( "serial-number" );
+            weekElement.setAttribute( "semantics", "week-number" );
+            metadata.appendChild( weekElement );
+            QDomText weektext = document.createTextNode( QString().setNum( m_weekNumber ) );
+            weekElement.appendChild( weektext );
+        }
 
-    SecondsMap secondsMap;
-    TimeSheetInfoList timeSheetInfo = filteredTaskWithSubTasks(
-        taskWithSubTasks( m_rootTask, secondsMap ),
-        false, m_subscribedOnly ); // here, we don't care about active or not, because we only report on the tasks
+        SecondsMap secondsMap;
+        TimeSheetInfoList timeSheetInfo = filteredTaskWithSubTasks(
+            taskWithSubTasks( m_rootTask, secondsMap ),
+            false, m_subscribedOnly ); // here, we don't care about active or not, because we only report on the tasks
 
-    // extend report tag: add tasks and effort structure
-    {   // tasks
-        QDomElement tasks = document.createElement( "tasks" );
-        report.appendChild( tasks );
-        Q_FOREACH( TimeSheetInfo info, timeSheetInfo ) {
-            if ( info.taskId == 0 ) // the root task
-                continue;
-            const Task& modelTask = DATAMODEL->getTask( info.taskId );
-            tasks.appendChild( modelTask.toXml( document ) );
+        // extend report tag: add tasks and effort structure
+        {   // tasks
+            QDomElement tasks = document.createElement( "tasks" );
+            report.appendChild( tasks );
+            Q_FOREACH( TimeSheetInfo info, timeSheetInfo ) {
+                if ( info.taskId == 0 ) // the root task
+                    continue;
+                const Task& modelTask = DATAMODEL->getTask( info.taskId );
+                tasks.appendChild( modelTask.toXml( document ) );
 //             TaskId parentTask = DATAMODEL->parentItem( modelTask ).task().id();
 //             QDomElement task = document.createElement( "task" );
 //             task.setAttribute( "taskid", QString().setNum( info.taskId ) );
@@ -612,68 +612,68 @@ void  WeeklyTimeSheetReport::slotSaveToXml()
 //             QDomText name = document.createTextNode( modelTask.name() );
 //             task.appendChild( name );
 //             tasks.appendChild( task );
-        }
-    }
-    {   // effort
-        // make effort element:
-        QDomElement effort = document.createElement( "effort" );
-        report.appendChild( effort );
-
-        // retrieve it:
-        EventIdList matchingEvents = eventsThatStartInTimeFrame(
-            QDateTime( m_start ), QDateTime( m_end ) );
-        // aggregate (group by task and day):
-        typedef QPair<TaskId, QDate> Key;
-        QMap< Key, Event> events;
-        Q_FOREACH( EventId id, matchingEvents ) {
-            const Event& event = DATAMODEL->eventForId( id );
-            TimeSheetInfoList::iterator it;
-            for ( it = timeSheetInfo.begin(); it != timeSheetInfo.end(); ++it )
-                if ( ( *it ).taskId == event.taskId() ) break;
-            if ( it == timeSheetInfo.end() )
-                continue;
-            Key key( event.taskId(), event.startDateTime().date() );
-            if ( events.contains( key ) ) {
-                // add to previous events:
-                int seconds = events[key].duration() + event.duration();
-                QDateTime end( events[key].startDateTime().addSecs( seconds ) );
-                events[key].setEndDateTime( end );
-                QString comment = events[key].comment();
-                if ( ! event.comment().isEmpty() ) {
-                    if ( !comment.isEmpty() ) { // make separator
-                        comment += " / ";
-                    }
-                    comment += event.comment();
-                    events[key].setComment( comment );
-                }
-                Q_ASSERT( events[key].duration() == seconds );
-            } else {
-                // add this event:
-                events[key] = event;
-                events[key].setId( -events[key].id() ); // "synthetic" :-)
-                // move to start at midnight:
-                QDateTime start( event.startDateTime() );
-                start.setTime( QTime() );
-                QDateTime end( start.addSecs( event.duration() ) );
-                events[key].setStartDateTime( start );
-                events[key].setEndDateTime( end );
-                Q_ASSERT( events[key].duration() == event.duration() );
             }
         }
-        // create elements:
-        Q_FOREACH( Event event, events ) {
-            effort.appendChild( event.toXml( document ) );
-        }
-    }
+        {   // effort
+            // make effort element:
+            QDomElement effort = document.createElement( "effort" );
+            report.appendChild( effort );
 
-    QFile file( filename );
-    if ( file.open( QIODevice::WriteOnly ) ) {
-        QTextStream stream( &file );
-        stream << document.toString( 4 );
-    } else {
-        QMessageBox::critical( this, tr( "Error saving report" ),
-                               tr( "Cannot write to selected location." ) );
-    }
+            // retrieve it:
+            EventIdList matchingEvents = eventsThatStartInTimeFrame(
+                QDateTime( m_start ), QDateTime( m_end ) );
+            // aggregate (group by task and day):
+            typedef QPair<TaskId, QDate> Key;
+            QMap< Key, Event> events;
+            Q_FOREACH( EventId id, matchingEvents ) {
+                const Event& event = DATAMODEL->eventForId( id );
+                TimeSheetInfoList::iterator it;
+                for ( it = timeSheetInfo.begin(); it != timeSheetInfo.end(); ++it )
+                    if ( ( *it ).taskId == event.taskId() ) break;
+                if ( it == timeSheetInfo.end() )
+                    continue;
+                Key key( event.taskId(), event.startDateTime().date() );
+                if ( events.contains( key ) ) {
+                    // add to previous events:
+                    int seconds = events[key].duration() + event.duration();
+                    QDateTime end( events[key].startDateTime().addSecs( seconds ) );
+                    events[key].setEndDateTime( end );
+                    QString comment = events[key].comment();
+                    if ( ! event.comment().isEmpty() ) {
+                        if ( !comment.isEmpty() ) { // make separator
+                            comment += " / ";
+                        }
+                        comment += event.comment();
+                        events[key].setComment( comment );
+                    }
+                    Q_ASSERT( events[key].duration() == seconds );
+                } else {
+                    // add this event:
+                    events[key] = event;
+                    events[key].setId( -events[key].id() ); // "synthetic" :-)
+                    // move to start at midnight:
+                    QDateTime start( event.startDateTime() );
+                    start.setTime( QTime() );
+                    QDateTime end( start.addSecs( event.duration() ) );
+                    events[key].setStartDateTime( start );
+                    events[key].setEndDateTime( end );
+                    Q_ASSERT( events[key].duration() == event.duration() );
+                }
+            }
+            // create elements:
+            Q_FOREACH( Event event, events ) {
+                effort.appendChild( event.toXml( document ) );
+            }
+        }
+
+        QFile file( filename );
+        if ( file.open( QIODevice::WriteOnly ) ) {
+            QTextStream stream( &file );
+            stream << document.toString( 4 );
+        } else {
+            QMessageBox::critical( this, tr( "Error saving report" ),
+                                   tr( "Cannot write to selected location." ) );
+        }
 //     qDebug() << "WeeklyTimeSheetReport::slotSaveToXml: generated XML:" << endl
 //              << document.toString( 4 );
     } catch ( XmlSerializationException& e ) {

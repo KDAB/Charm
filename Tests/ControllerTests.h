@@ -34,6 +34,8 @@ private slots:
 
     void addModifyDeleteTaskTest();
 
+    void toAndFromXmlTest();
+
     // this is now done by the model:
     // void startModifyEndEventTest();
 

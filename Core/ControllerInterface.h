@@ -1,6 +1,8 @@
 #ifndef CONTROLLERINTERFACE_H
 #define CONTROLLERINTERFACE_H
 
+#include <QDomDocument>
+
 #include "Task.h"
 #include "Event.h"
 #include "State.h"
@@ -37,6 +39,13 @@ public:
     virtual bool deleteTask( const Task& ) = 0;
     /** Receive a command from the view. */
     virtual void executeCommand( CharmCommand* ) = 0;
+    /** Export the database contents into a XML document. */
+    virtual QDomDocument exportDatabasetoXml() const = 0;
+    /** Import the content of the Xml document into the currently open database.
+     *  This will modify the database.
+     */
+    virtual bool importDatabaseFromXml( const QDomDocument& ) = 0;
+
 
     // supposed to be implemented as signals:
     /** Added an event. */

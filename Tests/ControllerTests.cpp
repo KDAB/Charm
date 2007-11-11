@@ -3,6 +3,7 @@
 #include <QtDebug>
 #include <QtTest/QtTest>
 
+#include <StorageInterface.h>
 #include <CharmConstants.h>
 #include <Controller.h>
 
@@ -197,6 +198,41 @@ void ControllerTests::addModifyDeleteTaskTest()
     QVERIFY( m_definedTasks.size() == 1 );
     m_controller->addTask( task1 );
     QVERIFY( m_definedTasks.size() == 2 );
+}
+
+void ControllerTests::toAndFromXmlTest()
+{
+    // make sure we have some tasks and associated events:
+    TaskList tasks = m_controller->storage()->getAllTasks();
+    QVERIFY( tasks.size() > 0 ); // just to be sure nobody fucks it up
+    Event e1 = m_controller->storage()->makeEvent();
+    e1.setTaskId( tasks[0].id() );
+    e1.setComment( "Event-1-Comment" );
+    e1.setStartDateTime();
+    m_controller->modifyEvent( e1 );
+    Event e2 = m_controller->storage()->makeEvent();
+    e2.setTaskId( tasks.last().id() );
+    e2.setComment( "Event-2-Comment" );
+    e2.setStartDateTime();
+    m_controller->modifyEvent( e2 );
+
+    Q_ASSERT( m_controller );
+    TaskList tasksBefore = m_controller->storage()->getAllTasks();
+    EventList eventsBefore = m_controller->storage()->getAllEvents();
+    QVERIFY( tasksBefore == tasks );
+    QDomDocument document = m_controller->exportDatabasetoXml();
+    if ( ! m_controller->importDatabaseFromXml( document ) ) {
+        QFAIL( "Cannot reimport exported Xml Database Dump" );
+    } else {
+        TaskList tasksAfter = m_controller->storage()->getAllTasks();
+        QVERIFY( tasksBefore == tasksAfter );
+        EventList eventsAfter = m_controller->storage()->getAllEvents();
+        // this is brittle, and may easily fail, because the event ids are auto-increment
+        QVERIFY( eventsBefore == eventsAfter );
+    }
+    QDomDocument document2 = m_controller->exportDatabasetoXml();
+
+    // QVERIFY( document == document2 ); unfortunately, this seems to always fail
 }
 
 // void ControllerTests::startModifyEndEventTest()

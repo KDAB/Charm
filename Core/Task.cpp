@@ -88,6 +88,7 @@ void dumpTaskList( const TaskList& tasks )
     }
 }
 
+// FIXME make XmlSerializable interface, with tagName/toXml/fromXml:
 const QString TaskElement( "task" );
 const QString TaskIdElement( "taskid" );
 const QString TaskParentId( "parentid" );
