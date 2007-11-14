@@ -1,6 +1,8 @@
 #include <algorithm>
 
 #include <QSettings>
+#include <QFileDialog>
+#include <QMessageBox>
 
 #include <Core/CharmCommand.h>
 #include <Core/CharmConstants.h>
@@ -11,6 +13,8 @@
 #include "Application.h"
 #include "CharmAboutDialog.h"
 #include "Commands/CommandRelayCommand.h"
+#include "Commands/CommandExportToXml.h"
+#include "Commands/CommandImportFromXml.h"
 #include "Reports/ReportConfigurationPage.h"
 #include "CharmPreferences.h"
 
@@ -27,6 +31,8 @@ MainWindow::MainWindow()
     , m_actionEventEditor( &m_viewActionsGroup )
     , m_actionTasksView( &m_viewActionsGroup )
     , m_actionToggleView( this )
+    , m_actionExportToXml( this )
+    , m_actionImportFromXml( this )
     , m_eventEditor( this )
     , m_actionReporting( this )
     , m_reportDialog( this )
@@ -76,11 +82,21 @@ MainWindow::MainWindow()
 //     connect( &m_eventEditor, SIGNAL( visible( bool ) ),
 //              &m_actionEventEditor, SLOT( setChecked( bool ) ) );
 
+    m_actionImportFromXml.setText( tr( "Import from Previous Export..." ) );
+    connect( &m_actionImportFromXml, SIGNAL( triggered() ),
+             SLOT( slotImportFromXml() ) );
+    m_actionExportToXml.setText( tr( "Export..." ) );
+    connect( &m_actionExportToXml, SIGNAL( triggered() ),
+             SLOT( slotExportToXml() ) );
     // set up Charm menu:
-    QMenu* appMenu = new QMenu( tr( "Charm" ), menuBar() );
+    QMenu* appMenu = new QMenu( tr( "File" ), menuBar() );
     appMenu->addAction( &m_actionPreferences );
     m_actionPreferences.setEnabled( true );
     appMenu->addAction( &m_actionAboutDialog );
+    appMenu->addSeparator();
+    appMenu->addAction( &m_actionExportToXml );
+    appMenu->addAction( &m_actionImportFromXml );
+    appMenu->addSeparator();
     appMenu->addAction( &m_actionQuit );
 
     // set up view menu:
@@ -344,6 +360,64 @@ void MainWindow::slotToggleView()
             Q_ASSERT( widget && false );
         }
     }
+}
+
+void MainWindow::slotExportToXml()
+{
+    // ask for a filename:
+    QSettings settings;
+    QString path;
+    if ( settings.contains( MetaKey_ExportToXmlRecentSavePath ) ) {
+        path = settings.value( MetaKey_ExportToXmlRecentSavePath ).toString();
+        QDir dir( path );
+        if ( !dir.exists() ) path = QString();
+    }
+
+    QString filename = QFileDialog::getSaveFileName( this, tr( "Enter File Name" ), path );
+    if ( filename.isEmpty() ) return;
+
+    QFileInfo fileinfo( filename );
+    path = fileinfo.absolutePath();
+
+    if ( !path.isEmpty() ) {
+        settings.setValue( MetaKey_ExportToXmlRecentSavePath, path );
+    }
+
+    if ( fileinfo.suffix().isEmpty() ) {
+        filename+=".charmdatabaseexport";
+    }
+
+    // get a XML export:
+    CommandExportToXml* command = new CommandExportToXml( filename, this );
+    sendCommand( command );
+}
+
+void MainWindow::slotImportFromXml()
+{
+    // ask for the filename:
+    QSettings settings;
+    QString path;
+    if ( settings.contains( MetaKey_ExportToXmlRecentSavePath ) ) {
+        path = settings.value( MetaKey_ExportToXmlRecentSavePath ).toString();
+        QDir dir( path );
+        if ( !dir.exists() ) path = QString();
+    }
+
+    QString filename = QFileDialog::getOpenFileName( this, tr( "Please Select File" ), path );
+    if ( filename.isEmpty() ) return;
+    QFileInfo fileinfo( filename );
+    Q_ASSERT( fileinfo.exists() );
+
+    // warn the user about the consequences:
+    if ( QMessageBox::warning( this, tr("Watch out!" ),
+                               tr("During import, all existing tasks and events will be deleted"
+                                  " and replaced with the imported ones. Are you sure?" ),
+                               QMessageBox::Yes | QMessageBox::No ) != QMessageBox::Yes )
+        return;
+
+    // ask the controller to import the file:
+    CommandImportFromXml* cmd = new CommandImportFromXml( filename, this );
+    sendCommand( cmd );
 }
 
 #include "MainWindow.moc"

@@ -46,6 +46,8 @@ QVariant EventModelAdapter::data( const QModelIndex& index, int role ) const
 
 void EventModelAdapter::resetEvents()
 {
+    m_events.clear();
+
     for ( EventMap::const_iterator it = m_dataModel->eventMap().begin();
           it != m_dataModel->eventMap().end(); ++it ) {
         m_events.append( it->first );

@@ -250,6 +250,12 @@ bool SqlStorage::deleteTask( const Task& task )
     return runQuery( query );
 }
 
+bool SqlStorage::deleteAllTasks()
+{
+    QSqlQuery query( database() );
+    query.prepare( "DELETE from Tasks;" );
+    return runQuery( query );
+}
 
 Event SqlStorage::makeEventFromRecord( const QSqlRecord& record )
 {
@@ -390,6 +396,13 @@ bool SqlStorage::deleteEvent( const Event& event )
     query.prepare( "DELETE from Events where event_id = :id;" );
     query.bindValue( ":id", event.id() );
 
+    return runQuery( query );
+}
+
+bool SqlStorage::deleteAllEvents()
+{
+    QSqlQuery query( database() );
+    query.prepare( "DELETE from Events;" );
     return runQuery( query );
 }
 

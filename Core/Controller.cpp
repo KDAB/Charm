@@ -232,38 +232,34 @@ const QString VersionElement( "version" );
 const QString TasksElement( "tasks" );
 const QString EventsElement( "events" );
 
-QDomDocument Controller::exportDatabasetoXml() const
-{ // FIXME: error handling - how?
+QDomDocument Controller::exportDatabasetoXml() const throw ( XmlSerializationException )
+{
     QDomDocument document( "charmdatabase" );
-    try {
-        // root element:
-        QDomElement root = document.createElement( ExportRootElement );
-        root.setAttribute( VersionElement, CHARM_DATABASE_VERSION );
-        document.appendChild( root );
-        // metadata:
-        QDomElement metadata = document.createElement( MetaDataElement );
-        // I am not so sure what kind of metadata needs to be stored
-        root.appendChild( metadata );
-        // tasks element:
-        QDomElement tasksElement = document.createElement( TasksElement );
-        TaskList tasks = m_storage->getAllTasks();
-        Q_FOREACH( Task task, tasks ) {
-            QDomElement element = task.toXml( document );
-            tasksElement.appendChild( element );
-        }
-        root.appendChild( tasksElement );
-        // events element:
-        QDomElement eventsElement = document.createElement( EventsElement );
-        EventList events = m_storage->getAllEvents();
-        Q_FOREACH( Event event, events ) {
-            QDomElement element = event.toXml( document );
-            eventsElement.appendChild( element );
-        }
-        root.appendChild( eventsElement );
-    } catch ( XmlSerializationException& e ) {
-        qDebug() << "Controller::exportDatabasetoXml: things fucked up:" << e.what();
+    // root element:
+    QDomElement root = document.createElement( ExportRootElement );
+    root.setAttribute( VersionElement, CHARM_DATABASE_VERSION );
+    document.appendChild( root );
+    // metadata:
+    QDomElement metadata = document.createElement( MetaDataElement );
+    // I am not so sure what kind of metadata needs to be stored
+    root.appendChild( metadata );
+    // tasks element:
+    QDomElement tasksElement = document.createElement( TasksElement );
+    TaskList tasks = m_storage->getAllTasks();
+    Q_FOREACH( Task task, tasks ) {
+        QDomElement element = task.toXml( document );
+        tasksElement.appendChild( element );
     }
-    qDebug() << document.toString( 4 );
+    root.appendChild( tasksElement );
+    // events element:
+    QDomElement eventsElement = document.createElement( EventsElement );
+    EventList events = m_storage->getAllEvents();
+    Q_FOREACH( Event event, events ) {
+        QDomElement element = event.toXml( document );
+        eventsElement.appendChild( element );
+    }
+    root.appendChild( eventsElement );
+    // qDebug() << document.toString( 4 );
     return document;
 }
 
@@ -282,40 +278,42 @@ bool Controller::importDatabaseFromXml( const QDomDocument& document )
         for ( QDomElement element = tasksElement.firstChildElement( "task" );
               !element.isNull(); element = element.nextSiblingElement( "task" ) ) {
             Task task = Task::fromXml( element );
+            if ( ! task.isValid() ) return false;
             importedTasks.append( task );
         }
         QDomElement eventsElement = rootElement.firstChildElement( EventsElement );
         for ( QDomElement element = eventsElement.firstChildElement( "event" );
               !element.isNull(); element = element.nextSiblingElement( "event" ) ) {
             Event event = Event::fromXml( element );
+            if ( ! event.isValid() ) return false;
             importedEvents.append( event );
         }
-    // FIXME needs better error handling:
-    //
+        // FIXME needs better error handling:
+        //
     } catch ( XmlSerializationException& e ) {
         qDebug() << "Controller::exportDatabasetoXml: things fucked up:" << e.what();
+        return false; //
     }
     qDebug() << "Controller::importDatabaseFromXml:" << importedTasks.size() << "tasks parsed from Xml file,"
              << importedEvents.size() << "events parsed from Xml file.";
+
     // clear subscriptions, tasks and events:
-    {
-        EventList events = m_storage->getAllEvents();
-        Q_FOREACH( Event event, events ) {
-            if ( ! deleteEvent( event ) )
-                return false;
-        }
-        TaskList tasks = m_storage->getAllTasks();
-        Q_FOREACH( Task task, tasks ) {
-            if ( ! deleteTask( task ) ) {
-                return false;
-            }
-        }
-        Q_ASSERT( m_storage->getAllTasks().isEmpty() );
-        Q_ASSERT( m_storage->getAllEvents().isEmpty() );
-    }
+    if ( !m_storage->deleteAllEvents() ) return false;
+    Q_ASSERT( m_storage->getAllEvents().isEmpty() );
+    if ( !m_storage->deleteAllTasks() ) return false;
+    Q_ASSERT( m_storage->getAllTasks().isEmpty() );
+
+    // tell the model that the tasks and events have vanished:
+    emit allEvents( EventList() );
+    emit definedTasks( TaskList() );
+
     // now import Events and Tasks from the XML document:
     Q_FOREACH( Task task, importedTasks ) {
-        if ( !addTask( task ) ) {
+        // don't use our own addTask method, it emits signals and that
+        // confuses the model, because the task tree is not inserted depth-first:
+        if ( m_storage->addTask( task ) ) {
+            updateSubscriptionForTask( task );
+        } else {
             return false;
         }
     }
@@ -334,6 +332,14 @@ bool Controller::importDatabaseFromXml( const QDomDocument& document )
             return false;
         }
     }
+    // now tell the data model that things have changed:
+    // FIXME what happens if we never get here?
+    TaskList tasks = m_storage->getAllTasks();
+    // tell the view about the existing tasks;
+    emit definedTasks( tasks );
+    EventList events = m_storage->getAllEvents();
+    emit allEvents( events );
+
     // done
     return true;
 }

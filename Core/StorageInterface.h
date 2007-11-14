@@ -48,6 +48,7 @@ public:
     virtual Task getTask( int taskId ) = 0;
     virtual bool modifyTask( const Task& task ) = 0;
     virtual bool deleteTask( const Task& task ) = 0;
+    virtual bool deleteAllTasks() = 0;
 
     // event database functions:
     virtual EventList getAllEvents() = 0;
@@ -56,6 +57,7 @@ public:
     virtual Event getEvent( int eventId )= 0;
     virtual bool modifyEvent( const Event& event ) = 0;
     virtual bool deleteEvent( const Event& event ) = 0;
+    virtual bool deleteAllEvents() = 0;
 
     // subscription management functions
     // (subscriptions cannot be modified, they are just boolean flags)

@@ -216,7 +216,7 @@ void ControllerTests::toAndFromXmlTest()
     e2.setStartDateTime();
     m_controller->modifyEvent( e2 );
 
-    Q_ASSERT( m_controller );
+    Q_ASSERT( m_controller ); // just to be sure
     TaskList tasksBefore = m_controller->storage()->getAllTasks();
     EventList eventsBefore = m_controller->storage()->getAllEvents();
     QVERIFY( tasksBefore == tasks );

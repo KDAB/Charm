@@ -57,6 +57,8 @@ IF ( QT4_FOUND )
 		       Commands/CommandModifyTask.cpp
 		       Commands/CommandDeleteTask.cpp
 		       Commands/CommandMakeEvent.cpp
+		       Commands/CommandExportToXml.cpp
+		       Commands/CommandImportFromXml.cpp
 		       Commands/CommandMakeAndActivateEvent.cpp 
 )
     

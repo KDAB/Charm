@@ -19,6 +19,7 @@ extern const QString MetaKey_MainWindowGeometry;
 extern const QString MetaKey_MainWindowGUIStateSelectedTask;
 extern const QString MetaKey_MainWindowGUIStateExpandedTasks;
 extern const QString MetaKey_ReportsRecentSavePath;
+extern const QString MetaKey_ExportToXmlRecentSavePath;
 extern const QString MetaKey_TimesheetActiveOnly;
 extern const QString MetaKey_TimesheetSubscribedOnly;
 extern const QString MetaKey_TimesheetRootTask;

@@ -39,6 +39,7 @@ public:
     Task getTask( int taskid );
     bool modifyTask( const Task& task );
     bool deleteTask( const Task& task );
+    bool deleteAllTasks();
 
     // implement event database functions:
     EventList getAllEvents();
@@ -46,6 +47,7 @@ public:
     Event getEvent( int eventid );
     bool modifyEvent( const Event& event );
     bool deleteEvent( const Event& event );
+    bool deleteAllEvents();
 
     // implement subscription management functions:
     bool addSubscription( User, Task );
