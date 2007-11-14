@@ -44,8 +44,9 @@ public:
     virtual QDomDocument exportDatabasetoXml() const throw ( XmlSerializationException ) = 0 ;
     /** Import the content of the Xml document into the currently open database.
      *  This will modify the database.
+     *  @return An empty string on no error, an human-readable error message otherwise.
      */
-    virtual bool importDatabaseFromXml( const QDomDocument& ) = 0;
+    virtual QString importDatabaseFromXml( const QDomDocument& ) = 0;
 
 
     // supposed to be implemented as signals:

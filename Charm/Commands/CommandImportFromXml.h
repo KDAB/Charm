@@ -17,7 +17,7 @@ public:
     bool finalize();
 
 private:
-    bool m_error;
+    QString m_error;
     QString m_filename;
 };
 

@@ -221,7 +221,7 @@ void ControllerTests::toAndFromXmlTest()
     EventList eventsBefore = m_controller->storage()->getAllEvents();
     QVERIFY( tasksBefore == tasks );
     QDomDocument document = m_controller->exportDatabasetoXml();
-    if ( ! m_controller->importDatabaseFromXml( document ) ) {
+    if ( ! m_controller->importDatabaseFromXml( document ).isEmpty() ) {
         QFAIL( "Cannot reimport exported Xml Database Dump" );
     } else {
         TaskList tasksAfter = m_controller->storage()->getAllTasks();

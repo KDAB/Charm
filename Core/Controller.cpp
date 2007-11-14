@@ -263,8 +263,26 @@ QDomDocument Controller::exportDatabasetoXml() const throw ( XmlSerializationExc
     return document;
 }
 
-bool Controller::importDatabaseFromXml( const QDomDocument& document )
+class MakeSureTheModelIsUpdated {
+public:
+    explicit MakeSureTheModelIsUpdated( Controller* controller )
+        : m_controller( controller )
+    {}
+
+    ~MakeSureTheModelIsUpdated()
+    {
+        // now tell the data model that things have changed:
+        m_controller->updateModelEventsAndTasks();
+    }
+
+private:
+    Controller* m_controller;
+};
+
+QString Controller::importDatabaseFromXml( const QDomDocument& document )
 {
+    MakeSureTheModelIsUpdated m( this );
+
     // first, parse the XML document, and break if there is an error
     // (not touching the DB contents):
     TaskList importedTasks;
@@ -278,29 +296,37 @@ bool Controller::importDatabaseFromXml( const QDomDocument& document )
         for ( QDomElement element = tasksElement.firstChildElement( "task" );
               !element.isNull(); element = element.nextSiblingElement( "task" ) ) {
             Task task = Task::fromXml( element );
-            if ( ! task.isValid() ) return false;
+            if ( ! task.isValid() ) {
+                return tr( "The Export file contains at least one invalid task." );
+            }
             importedTasks.append( task );
         }
         QDomElement eventsElement = rootElement.firstChildElement( EventsElement );
         for ( QDomElement element = eventsElement.firstChildElement( "event" );
               !element.isNull(); element = element.nextSiblingElement( "event" ) ) {
             Event event = Event::fromXml( element );
-            if ( ! event.isValid() ) return false;
+            if ( ! event.isValid() ) {
+                return tr( "The Export file contains at least one invalid event." );
+            }
             importedEvents.append( event );
         }
         // FIXME needs better error handling:
         //
     } catch ( XmlSerializationException& e ) {
         qDebug() << "Controller::exportDatabasetoXml: things fucked up:" << e.what();
-        return false; //
+        return tr( "The Export file is invalid." );
     }
     qDebug() << "Controller::importDatabaseFromXml:" << importedTasks.size() << "tasks parsed from Xml file,"
              << importedEvents.size() << "events parsed from Xml file.";
 
     // clear subscriptions, tasks and events:
-    if ( !m_storage->deleteAllEvents() ) return false;
+    if ( !m_storage->deleteAllEvents() ) {
+        return tr( "Error deleting the existing events." );
+    }
     Q_ASSERT( m_storage->getAllEvents().isEmpty() );
-    if ( !m_storage->deleteAllTasks() ) return false;
+    if ( !m_storage->deleteAllTasks() ) {
+        return tr( "Error deleting the existing tasks." );
+    }
     Q_ASSERT( m_storage->getAllTasks().isEmpty() );
 
     // tell the model that the tasks and events have vanished:
@@ -314,7 +340,7 @@ bool Controller::importDatabaseFromXml( const QDomDocument& document )
         if ( m_storage->addTask( task ) ) {
             updateSubscriptionForTask( task );
         } else {
-            return false;
+            return tr( "Cannot add imported tasks." );
         }
     }
     Q_FOREACH( Event event, importedEvents ) {
@@ -329,20 +355,21 @@ bool Controller::importDatabaseFromXml( const QDomDocument& document )
         newEvent = event;
         newEvent.setId( id );
         if ( !modifyEvent( newEvent ) ) {
-            return false;
+            return tr( "Error adding imported event." );
         }
     }
-    // now tell the data model that things have changed:
-    // FIXME what happens if we never get here?
+
+    // done
+    return QString();
+}
+
+void Controller::updateModelEventsAndTasks()
+{
     TaskList tasks = m_storage->getAllTasks();
     // tell the view about the existing tasks;
     emit definedTasks( tasks );
     EventList events = m_storage->getAllEvents();
     emit allEvents( events );
-
-    // done
-    return true;
 }
-
 
 #include "Controller.moc"

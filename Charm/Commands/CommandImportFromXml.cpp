@@ -11,7 +11,6 @@
 
 CommandImportFromXml::CommandImportFromXml( QString filename, QObject* parent )
     : CharmCommand( parent )
-    , m_error( false )
     , m_filename( filename )
 {
 }
@@ -33,23 +32,22 @@ bool CommandImportFromXml::execute( ControllerInterface* controller )
         if ( document.setContent( &file ) ) {
             m_error = controller->importDatabaseFromXml( document );
         } else {
-            m_error = true;
+            m_error = tr( "Cannot read the XML syntax of the specified file." );
         }
     } else {
-        m_error = true;
+        m_error = tr( "Cannot opened the specified file" );;
     }
-    m_error = true;
     return true;
 }
 
 bool CommandImportFromXml::finalize()
 {
     // any errors?
-    if ( m_error ) {
+    if ( ! m_error.isEmpty() ) {
         MainWindow* view = dynamic_cast<MainWindow*>( owner() );
         Q_ASSERT( view ); // this command is "owned" by the MainWindow
         QMessageBox::critical( view, tr( "Error importing the Database" ),
-                               tr("The database could not be imported, sorry." ) );
+                               tr("An error has occurred:\n%1" ).arg( m_error ) );
     }
     return true;
 }
