@@ -3,7 +3,7 @@
 
 #include <QWidget>
 #include <QAction>
-#include <QTimer>
+// #include <QTimer>
 
 #include "Core/Event.h"
 #include "Core/TimeSpans.h"
@@ -87,7 +87,7 @@ private:
     QAction m_actionDeleteEvent;
     QAction m_actionPreviousEvent;
     QAction m_actionNextEvent;
-    QTimer m_commitTimer;
+    // QTimer m_commitTimer;
 };
 
 #endif

@@ -53,9 +53,9 @@ EventEditor::EventEditor( MainWindow* parent )
              SLOT( slotNewEvent() ) );
     connect( &m_actionDeleteEvent, SIGNAL( triggered() ),
              SLOT( slotDeleteEvent() ) );
-    connect( &m_commitTimer, SIGNAL( timeout() ),
-             SLOT( slotCommitTimeout() ) );
-    m_commitTimer.setSingleShot( true );
+//     connect( &m_commitTimer, SIGNAL( timeout() ),
+//              SLOT( slotCommitTimeout() ) );
+//     m_commitTimer.setSingleShot( true );
 
 
     m_actionNewEvent.setText( tr( "Create New Event..." ) );
@@ -164,8 +164,7 @@ void EventEditor::slotEventChanged()
             m_ui->dateTimeEnd->setMinimumTime( start.time() );
             m_ui->dateTimeEnd->setMinimumDate( start.date() );
         }
-
-        m_commitTimer.start( 10000 );
+//         m_commitTimer.start( 10000 );
     }
 }
 
