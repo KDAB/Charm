@@ -68,6 +68,7 @@ void Configuration::writeTo( QSettings& settings )
     settings.setValue( MetaKey_Key_UserId, user.id() );
     settings.setValue( MetaKey_Key_LocalStorageType, localStorageType );
     settings.setValue( MetaKey_Key_LocalStorageDatabase, localStorageDatabase );
+    // FIXME these go into the DB, not QSettings:
     settings.setValue( MetaKey_Key_SubscribedTasksOnly, showOnlySubscribedTasks );
     settings.setValue( MetaKey_Key_TaskTrackerFontSize, static_cast<int>( taskTrackerFontSize ) );
     settings.setValue( MetaKey_Key_24hEditing, always24hEditing );

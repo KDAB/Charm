@@ -82,15 +82,19 @@ bool SqLiteStorage::connect( Configuration& configuration )
             }
 
         }
-        int userid = configuration.user.id();
-        User user = getUser( userid );
+
+        if ( !configuration.newDatabase ) {
+            int userid = configuration.user.id();
+            User user = getUser( userid );
 //         qDebug() << "SqLiteStorage::connect: found user" << user.name()
 //                  << "for id" << userid << ( user.isValid() ? "(valid)" : "(invalid)");
-        if ( user.isValid() ) {
-            configuration.user = user;
-        } else {
-            return false;
+            if ( user.isValid() ) {
+                configuration.user = user;
+            } else {
+                return false;
+            }
         }
+        // FIXME verify that a database user id has been generated
     } else {
         qDebug() << "SqLiteStorage::connect: FAILURE - cannot connect to database";
         return false;

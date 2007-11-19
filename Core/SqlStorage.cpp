@@ -154,10 +154,6 @@ bool SqlStorage::createDatabase()
     // FIXME temp remove this:
     populateDatabase();
 
-    // fill in metadata:
-    // ... FIXME do it
-    // ^^^
-
     return ! error;
 }
 

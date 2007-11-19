@@ -242,7 +242,7 @@ bool Controller::connectToBackend()
 
     // the user id in the database, and the installation id, do not
     // have to be 1 and 1, as we have guessed --> persist configuration
-    if ( result ) {
+    if ( result && ! CONFIGURATION.newDatabase ) {
         provideMetaData( CONFIGURATION );
     }
 

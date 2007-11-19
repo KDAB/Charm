@@ -179,7 +179,6 @@ void Application::enterConnectingState()
     CONFIGURATION.failure = false;
     if ( m_controller.connectToBackend() )
     {
-        slotSaveConfiguration();
         // delay switch to Connected state a bit to show the start screen:
         QTimer::singleShot( 1200, this, SLOT( slotGoToConnectedState()));
     } else {
@@ -194,10 +193,12 @@ void Application::leaveConnectingState()
 
 void Application::enterConnectedState()
 {
+    slotSaveConfiguration();
 }
 
 void Application::leaveConnectedState()
 {
+    m_controller.persistMetaData( CONFIGURATION );
 }
 
 void Application::enterDisconnectingState()
