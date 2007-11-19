@@ -331,8 +331,6 @@ void MainWindow::slotReportDialog()
     m_reportDialog.back();
     if ( m_reportDialog.exec() ) {
         ReportConfigurationPage* page = m_reportDialog.selectedPage();
-        qDebug() << "MainWindow::slotReportDialog: report of type"
-                 << page->name() << "selected";
         QDialog* preview = page->makeReportPreviewDialog( this );
         // preview is destroy-on-close and non-modal:
         preview->show();

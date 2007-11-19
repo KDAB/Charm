@@ -24,7 +24,6 @@ bool CommandMakeEvent::prepare()
 
 bool CommandMakeEvent::execute( ControllerInterface* controller )
 {
-    qDebug() << "CommandMakeEvent::execute: creating event";
     Event event = controller->makeEvent( m_task );
     if ( event.isValid() ) {
         QDateTime start( QDateTime::currentDateTime() );
@@ -44,7 +43,6 @@ bool CommandMakeEvent::execute( ControllerInterface* controller )
 
 bool CommandMakeEvent::finalize()
 {
-    qDebug() << "CommandMakeEvent::finalize: activating event";
     if ( m_event.isValid() ) {
         EventEditor* editor = dynamic_cast<EventEditor*>( owner() );
         Q_ASSERT( editor ); // this command is "owned" by the editor
