@@ -153,30 +153,70 @@ void Controller::stateChanged( State previous, State next )
     }
 }
 
+struct Setting {
+    QString key;
+    QString value;
+};
+
 void Controller::persistMetaData( Configuration& configuration )
 {
     Q_ASSERT_X( m_storage != 0, "Controller::persistMetaData",
                 "No storage interface available" );
-    const QString& events( stringForBool( configuration.eventsInLeafsOnly ) );
-    const QString& one( stringForBool( configuration.oneEventAtATime ) );
-    bool result =
-        m_storage->setMetaData( MetaKey_EventsInLeafsOnly, events )
-        && m_storage->setMetaData( MetaKey_OneEventAtATime, one );
-    Q_ASSERT_X( result, "Controller::persistMetaData", "Controller assumes write "
+    Setting settings[] = {
+        { MetaKey_EventsInLeafsOnly,
+          stringForBool( configuration.eventsInLeafsOnly ) },
+        { MetaKey_OneEventAtATime,
+          stringForBool( configuration.oneEventAtATime ) },
+        { MetaKey_Key_UserName,
+          configuration.user.name() },
+        { MetaKey_Key_SubscribedTasksOnly,
+          stringForBool( configuration.showOnlySubscribedTasks ) },
+        { MetaKey_Key_TaskTrackerFontSize,
+          QString().setNum( configuration.taskTrackerFontSize ) },
+        { MetaKey_Key_24hEditing,
+          stringForBool( configuration.always24hEditing ) }
+    };
+    int NumberOfSettings = sizeof settings / sizeof settings[0];
+
+    bool good = true;
+    for ( int i = 0; i < NumberOfSettings; ++i ) {
+        good = good && m_storage->setMetaData( settings[i].key, settings[i].value );
+    }
+    Q_ASSERT_X( good, "Controller::persistMetaData", "Controller assumes write "
                 "permissions in meta data table if persistMetaData is called" );
 }
 
 void Controller::provideMetaData( Configuration& configuration)
 {
-    // FIXME atm, config settings partly are stored in QSettings, and
-    // partly in DB metadata, refactor to use a common scheme
-    // FIXME: is this a controller task, or application specific?
     Q_ASSERT_X( m_storage != 0, "Controller::provideMetaData",
                 "No storage interface available" );
     configuration.oneEventAtATime = boolForString(
         m_storage->getMetaData( MetaKey_OneEventAtATime ) );
     configuration.eventsInLeafsOnly = boolForString(
         m_storage->getMetaData( MetaKey_EventsInLeafsOnly ) );
+    configuration.user.setName( m_storage->getMetaData( MetaKey_Key_UserName ) );
+    configuration.showOnlySubscribedTasks = boolForString(
+        m_storage->getMetaData( MetaKey_Key_SubscribedTasksOnly ) );
+    int fontSize;
+    bool ok;
+    fontSize = m_storage->getMetaData( MetaKey_Key_TaskTrackerFontSize ).toInt( &ok );
+    if ( !ok ) {
+        configuration.taskTrackerFontSize = Configuration::TaskTrackerFont_Regular;
+    } else {
+        switch( fontSize ) {
+        case Configuration::TaskTrackerFont_Small:
+            configuration.taskTrackerFontSize = Configuration::TaskTrackerFont_Small;
+            break;
+        case Configuration::TaskTrackerFont_Large:
+            configuration.taskTrackerFontSize = Configuration::TaskTrackerFont_Large;
+            break;
+        default:
+        case Configuration::TaskTrackerFont_Regular:
+            configuration.taskTrackerFontSize = Configuration::TaskTrackerFont_Regular;
+        }
+    }
+    configuration.always24hEditing = boolForString(
+        m_storage->getMetaData( MetaKey_Key_24hEditing ) );
 }
 
 bool Controller::initializeBackEnd( const QString& name )

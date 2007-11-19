@@ -15,6 +15,7 @@ const QString MetaKey_TimesheetSubscribedOnly = "TimesheetSubscribedOnly";
 const QString MetaKey_TimesheetActiveOnly = "TimesheetActiveOnly";
 const QString MetaKey_TimesheetRootTask = "TimesheetRootTask";
 const QString MetaKey_Key_InstallationId = "InstallationId";
+const QString MetaKey_Key_UserName = "UserName";
 const QString MetaKey_Key_UserId = "UserId";
 const QString MetaKey_Key_LocalStorageDatabase = "LocalStorageDatabase";
 const QString MetaKey_Key_LocalStorageType = "LocalStorageType";

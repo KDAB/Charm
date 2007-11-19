@@ -54,26 +54,22 @@ void ControllerTests::initializeConnectBackendTest()
 }
 
 void ControllerTests:: persistProvideMetaDataTest()
-{
-    const int NumberOfSettings = 4;
-    bool Settings[NumberOfSettings][2] = {
-        { false, false },
-        { false, true },
-        { true, false },
-        { true, true }
+{   // stick with user id 0, it is not persisted in the DB, and 0 is the default
+    Configuration configs[] = {
+        Configuration( true, true, User( "bla", 0 ), true, Configuration::TaskTrackerFont_Small, true ),
+        Configuration( true, false, User( "blub", 0 ), false, Configuration::TaskTrackerFont_Regular, true ),
+        Configuration( false, true, User(), true, Configuration::TaskTrackerFont_Large, false ),
     };
-    for ( int i = 0; i < NumberOfSettings; ++i )
+    const int NumberOfConfigurations = sizeof configs / sizeof configs[0];
+
+    for ( int i = 0; i < NumberOfConfigurations; ++i )
     {
-        // save some settings, modify the config values, read the settings
-        // back, see if the values are what we stored
-        m_configuration.eventsInLeafsOnly = Settings[i][0];
-        m_configuration.oneEventAtATime = Settings[i][1];
-        m_controller->persistMetaData( m_configuration );
-        m_configuration.eventsInLeafsOnly = ! Settings[i][0];
-        m_configuration.oneEventAtATime = ! Settings[i][1];
+        m_controller->persistMetaData( configs[i] );
+        m_configuration = Configuration();
         m_controller->provideMetaData( m_configuration );
-        QVERIFY( m_configuration.eventsInLeafsOnly == Settings[i][0] );
-        QVERIFY( m_configuration.oneEventAtATime == Settings[i][1] );
+        m_configuration.dump();
+        configs[i].dump();
+        QVERIFY( m_configuration == configs[i] );
         // and repeat, with some different values
     }
 }

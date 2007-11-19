@@ -17,6 +17,8 @@ public:
         TaskTrackerFont_Large
     };
 
+    bool operator== ( const Configuration& other ) const;
+
     static Configuration& instance();
 
     void writeTo( QSettings& );
@@ -53,7 +55,10 @@ private:
     // the only  application that can have (test) multiple
     // configurations):
     friend class SqLiteStorageTests;
-
+    friend class ControllerTests;
+    // these are all the persisted metadata settings, and the constructor is only used during test runs:
+    Configuration( bool eventsInLeafsOnly, bool oneEventAtATime, User user,
+                   bool showOnlySubscribedTasks, TaskTrackerFontSize, bool always24hEditing );
     Configuration();
 };
 

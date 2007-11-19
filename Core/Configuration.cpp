@@ -30,6 +30,38 @@ Configuration::Configuration()
 {
 }
 
+Configuration::Configuration( bool _eventsInLeafsOnly, bool _oneEventAtATime, User _user,
+                              bool _showOnlySubscribedTasks,
+                              TaskTrackerFontSize _taskTrackerFontSize,
+                              bool _always24hEditing )
+    : eventsInLeafsOnly( _eventsInLeafsOnly )
+    , oneEventAtATime( _oneEventAtATime )
+    , showOnlySubscribedTasks( _showOnlySubscribedTasks )
+    , taskTrackerFontSize( _taskTrackerFontSize )
+    , always24hEditing( _always24hEditing )
+    , configurationName( DEFAULT_CONFIG_GROUP )
+    , installationId( 0 )
+    , newDatabase( false )
+    , failure( false )
+    , taskPaddingLength( 6 ) // arbitrary
+{
+}
+
+bool Configuration::operator==( const Configuration& other ) const
+{
+    return
+        eventsInLeafsOnly == other.eventsInLeafsOnly &&
+        oneEventAtATime == other.oneEventAtATime &&
+        user == other.user &&
+        showOnlySubscribedTasks == other.showOnlySubscribedTasks &&
+        taskTrackerFontSize == other.taskTrackerFontSize &&
+        always24hEditing == other.always24hEditing &&
+        configurationName == other.configurationName &&
+        installationId == other.installationId &&
+        localStorageType == other.localStorageType &&
+        localStorageDatabase == other.localStorageDatabase;
+}
+
 void Configuration::writeTo( QSettings& settings )
 {
     settings.setValue( MetaKey_Key_InstallationId, installationId );
@@ -84,16 +116,19 @@ bool Configuration::readFrom( QSettings& settings )
 void Configuration::dump( const QString& why )
 {
     // dump configuration:
-    return; // disable debug output
-    qDebug() << "Application::enterStartingUpState: configuration:"
+    // return; // disable debug output
+    qDebug() << "Configuration: configuration:"
              << ( why.isEmpty() ? QString() : why )
              << endl
              << "--> installation id:        " << installationId << endl
              << "--> userid:                 " << user.id() << endl
              << "--> local storage type:     " << localStorageType << endl
              << "--> local storage database: " << localStorageDatabase << endl
+             << "--> events in leaf nodes only: " << eventsInLeafsOnly << endl
+             << "--> one event at a time:       " << oneEventAtATime << endl
+             << "--> showOnlySubscribedTasks:   " << showOnlySubscribedTasks << endl
              << "--> subscribed tasks only:  " << showOnlySubscribedTasks << endl
-             << "--> task tracker font size: " << taskTrackerFontSize
+             << "--> task tracker font size: " << taskTrackerFontSize << endl
              << "--> 24h time editing:       " << always24hEditing;
 }
 
