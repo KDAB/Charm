@@ -32,10 +32,14 @@ public:
     // database metainformation
     bool eventsInLeafsOnly;
     bool oneEventAtATime;
+    User user;  // this user's id
+    bool showOnlySubscribedTasks;
+    TaskTrackerFontSize taskTrackerFontSize;
+    bool always24hEditing;
 
+    // these are stored in QSettings, since we need this information to locate and open the database:
     QString configurationName;
     int installationId;
-    User user;  // this user's id
     QString localStorageType; // SqLite, MySql, ...
     QString localStorageDatabase; // database name (path, with sqlite)
     bool newDatabase; // true if the configuration has just been created
@@ -44,10 +48,6 @@ public:
 
     // appearance properties
     int taskPaddingLength; // auto-determined
-    bool showOnlySubscribedTasks;
-    TaskTrackerFontSize taskTrackerFontSize;
-    bool always24hEditing;
-
 private:
     // allow test classes to create configuration objects (tests are
     // the only  application that can have (test) multiple

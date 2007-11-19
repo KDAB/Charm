@@ -14,6 +14,14 @@ const QString MetaKey_ExportToXmlRecentSavePath = "ExportToXmlSavePath";
 const QString MetaKey_TimesheetSubscribedOnly = "TimesheetSubscribedOnly";
 const QString MetaKey_TimesheetActiveOnly = "TimesheetActiveOnly";
 const QString MetaKey_TimesheetRootTask = "TimesheetRootTask";
+const QString MetaKey_Key_InstallationId = "InstallationId";
+const QString MetaKey_Key_UserId = "UserId";
+const QString MetaKey_Key_LocalStorageDatabase = "LocalStorageDatabase";
+const QString MetaKey_Key_LocalStorageType = "LocalStorageType";
+const QString MetaKey_Key_SubscribedTasksOnly = "SubscribedTasksOnly";
+const QString MetaKey_Key_TaskTrackerFontSize = "TaskTrackerFontSize";
+const QString MetaKey_Key_24hEditing = "Key24hEditing";
+
 
 const QString TrueString( "true" );
 const QString FalseString( "false" );

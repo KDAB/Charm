@@ -13,6 +13,7 @@
 #define CHARM_SQLITE_BACKEND_DESCRIPTOR "sqlite"
 #define CHARM_MYSQL_BACKEND_DESCRIPTOR "mysql"
 
+// Metadata and QSettings Keys:
 extern const QString MetaKey_EventsInLeafsOnly;
 extern const QString MetaKey_OneEventAtATime;
 extern const QString MetaKey_MainWindowGeometry;
@@ -23,6 +24,13 @@ extern const QString MetaKey_ExportToXmlRecentSavePath;
 extern const QString MetaKey_TimesheetActiveOnly;
 extern const QString MetaKey_TimesheetSubscribedOnly;
 extern const QString MetaKey_TimesheetRootTask;
+extern const QString MetaKey_Key_InstallationId;
+extern const QString MetaKey_Key_UserId;
+extern const QString MetaKey_Key_LocalStorageDatabase;
+extern const QString MetaKey_Key_LocalStorageType;
+extern const QString MetaKey_Key_SubscribedTasksOnly;
+extern const QString MetaKey_Key_TaskTrackerFontSize;
+extern const QString MetaKey_Key_24hEditing;
 
 #define CONFIGURATION ( Configuration::instance() )
 #define DATAMODEL ( MODEL.charmDataModel() )
