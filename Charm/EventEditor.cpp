@@ -159,11 +159,14 @@ void EventEditor::slotEventChanged()
     if ( m_event != event ) {
         m_dirty = true;
 
+#if 0
         const QDateTime& start = m_ui->dateTimeStart->dateTime();
         if ( start != m_event.startDateTime() ) {
             m_ui->dateTimeEnd->setMinimumTime( start.time() );
             m_ui->dateTimeEnd->setMinimumDate( start.date() );
         }
+#endif
+
 //         m_commitTimer.start( 10000 );
     }
 }
@@ -206,9 +209,12 @@ void EventEditor::setCurrentEvent( const Event& event )
 
     const QDateTime& start = m_event.startDateTime();
     m_ui->dateTimeStart->setDateTime( start );
+#if 0
     m_ui->dateTimeEnd->setMinimumDate( start.date() );
     m_ui->dateTimeEnd->setMinimumTime( start.time() );
     m_ui->dateTimeEnd->setDateTime( qMax( start, m_event.endDateTime() ) );
+#endif
+    m_ui->dateTimeEnd->setDateTime( m_event.endDateTime() );
     m_ui->textEditComment->setText( m_event.comment() );
     QString name = tasknameWithParents( taskTreeItem.task() );
     m_ui->labelTaskName->setText( name );
