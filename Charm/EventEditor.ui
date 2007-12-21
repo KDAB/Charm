@@ -625,6 +625,9 @@ p, li { white-space: pre-wrap; }
          <property name="autoRepeat" >
           <bool>true</bool>
          </property>
+         <property name="toolButtonStyle" >
+          <enum>Qt::ToolButtonTextUnderIcon</enum>
+         </property>
         </widget>
        </item>
        <item>
@@ -635,6 +638,9 @@ p, li { white-space: pre-wrap; }
          <property name="autoRepeat" >
           <bool>true</bool>
          </property>
+         <property name="toolButtonStyle" >
+          <enum>Qt::ToolButtonTextUnderIcon</enum>
+         </property>
         </widget>
        </item>
        <item>
@@ -642,12 +648,18 @@ p, li { white-space: pre-wrap; }
          <property name="text" >
           <string>...</string>
          </property>
+         <property name="toolButtonStyle" >
+          <enum>Qt::ToolButtonTextUnderIcon</enum>
+         </property>
         </widget>
        </item>
        <item>
         <widget class="QToolButton" name="toolButtonDeleteEvent" >
          <property name="text" >
           <string>...</string>
+         </property>
+         <property name="toolButtonStyle" >
+          <enum>Qt::ToolButtonTextUnderIcon</enum>
          </property>
         </widget>
        </item>

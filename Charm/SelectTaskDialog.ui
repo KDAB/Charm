@@ -5,7 +5,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>352</width>
+    <width>440</width>
     <height>202</height>
    </rect>
   </property>
@@ -13,29 +13,14 @@
    <string>Select Task...</string>
   </property>
   <layout class="QGridLayout" >
-   <property name="margin" >
-    <number>9</number>
-   </property>
-   <property name="spacing" >
-    <number>6</number>
-   </property>
-   <item row="1" column="0" colspan="2" >
-    <widget class="QTreeView" name="treeView" />
-   </item>
-   <item rowspan="2" row="0" column="2" >
-    <widget class="QDialogButtonBox" name="buttonBox" >
-     <property name="orientation" >
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="standardButtons" >
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::NoButton|QDialogButtonBox::Ok</set>
+   <item row="0" column="0" >
+    <widget class="QLabel" name="label" >
+     <property name="text" >
+      <string>Filter:</string>
      </property>
     </widget>
    </item>
    <item row="0" column="1" >
-    <widget class="QLineEdit" name="lineEditFilter" />
-   </item>
-   <item row="0" column="0" >
     <widget class="QToolButton" name="buttonClearFilter" >
      <property name="enabled" >
       <bool>false</bool>
@@ -47,6 +32,22 @@
       <bool>true</bool>
      </property>
     </widget>
+   </item>
+   <item row="0" column="2" >
+    <widget class="QLineEdit" name="lineEditFilter" />
+   </item>
+   <item rowspan="2" row="0" column="3" >
+    <widget class="QDialogButtonBox" name="buttonBox" >
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="standardButtons" >
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::NoButton|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0" colspan="3" >
+    <widget class="QTreeView" name="treeView" />
    </item>
   </layout>
  </widget>

@@ -184,9 +184,10 @@ void EventEditor::slotCurrentItemChanged( const QModelIndex& start,
         m_ui->stackedWidget->setCurrentWidget( m_ui->pageNoEvent );
         m_event = Event();
         m_selectedTask = 0;
+        m_actionDeleteEvent.setEnabled(false);
     } else {
         m_ui->stackedWidget->setCurrentWidget( m_ui->pageEvent );
-
+        m_actionDeleteEvent.setEnabled(true);
         Event event = m_model->eventForIndex( start );
         Q_ASSERT( event.isValid() ); // index is valid,  so...
 
@@ -235,9 +236,18 @@ void EventEditor::slotNewEvent()
 
 void EventEditor::slotDeleteEvent()
 {
+    const TaskTreeItem& taskTreeItem =
+        MODEL.charmDataModel()->taskTreeItem( m_event.taskId() );
+    const QString name = tasknameWithParents( taskTreeItem.task() );
+    const QDate date = m_event.startDateTime().date();
+    const QTime time = m_event.startDateTime().time();
+    const QString dateAndDuration = date.toString( Qt::SystemLocaleDate )
+           + ' ' + time.toString( Qt::SystemLocaleDate )
+           + ' ' + hoursAndMinutes( m_event.duration() );
+    const QString eventDescription = name + ' ' + dateAndDuration;
     if ( QMessageBox::question(
              this, tr( "Delete Event?" ),
-             tr( "Do you really want to delete this event?" ),
+             tr( "<html>Do you really want to delete the event <b>%1</b>?" ).arg(eventDescription),
              QMessageBox::Ok | QMessageBox::Cancel,
              QMessageBox::Ok )
          == QMessageBox::Ok ) {
