@@ -348,7 +348,7 @@ void WeeklyTimeSheetReport::slotUpdate()
     delete m_report; m_report = 0;
 
     // retrieve matching events:
-    EventIdList matchingEvents = eventsThatStartInTimeFrame(
+    EventIdList matchingEvents = DATAMODEL->eventsThatStartInTimeFrame(
         QDateTime( m_start ), QDateTime( m_end ) );
 
     const int DaysInWeek = 7;
@@ -620,7 +620,7 @@ void  WeeklyTimeSheetReport::slotSaveToXml()
             report.appendChild( effort );
 
             // retrieve it:
-            EventIdList matchingEvents = eventsThatStartInTimeFrame(
+            EventIdList matchingEvents = DATAMODEL->eventsThatStartInTimeFrame(
                 QDateTime( m_start ), QDateTime( m_end ) );
             // aggregate (group by task and day):
             typedef QPair<TaskId, QDate> Key;

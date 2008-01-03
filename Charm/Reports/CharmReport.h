@@ -68,9 +68,6 @@ protected:
 bool StartsEarlier( EventId firstId, EventId secondId );
 /** Make a task name that includes the parent task's name.*/
 QString tasknameWithParents( const Task& );
-/** Return all events that start at or after start, and start before end. */
-EventIdList eventsThatStartInTimeFrame( const QDateTime& start,
-                                        const QDateTime& end );
 /** Returns true if the task p is a possibly indirect parent of the c. */
 bool isIndirectParent( const Task& p, const Task& c );
 

@@ -46,6 +46,12 @@ public:
     const Event& eventForId( EventId id ) const;
     /** Constant access to the map of events. */
     const EventMap& eventMap() const;
+    /**
+     * Get all events that start in a given time frame (e.g. a given day, a given week etc.)
+     * More precisely, all events that start at or after @p start, and start before @p end
+     */
+    EventIdList eventsThatStartInTimeFrame( const QDateTime& start,
+                                            const QDateTime& end ) const;
 
     const Event& activeEventFor ( TaskId id ) const;
     TaskTreeItem& parentItem( const Task& task ); // FIXME const???

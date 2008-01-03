@@ -82,7 +82,7 @@ typedef QList<Event> EventList;
 /** A list of event ids. */
 typedef QList<EventId> EventIdList;
 
-/** A mapof events. */
+/** A map of events. */
 typedef std::map<EventId, Event> EventMap;
 
 void dumpEvents( const EventList& events );

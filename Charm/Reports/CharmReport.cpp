@@ -158,25 +158,6 @@ QString tasknameWithParents( const Task& task )
     }
 }
 
-EventIdList eventsThatStartInTimeFrame( const QDateTime& start,
-                                        const QDateTime& end )
-{
-    EventIdList events;
-    EventMap::const_iterator it;
-
-    for ( it = DATAMODEL->eventMap().begin();
-          it != DATAMODEL->eventMap().end(); ++it )
-    {
-        const Event& event ( it->second );
-        if ( event.startDateTime() >= start && event.startDateTime() < end ) {
-            events << event.id();
-        }
-    }
-
-    return events;
-}
-
-
 bool StartsEarlier( EventId firstId, EventId secondId )
 {
     const Event& first = DATAMODEL->eventForId( firstId );

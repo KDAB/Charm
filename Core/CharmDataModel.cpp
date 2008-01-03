@@ -444,6 +444,22 @@ bool CharmDataModel::isEventActive( EventId id ) const
     return m_activeEventIds.contains( id );
 }
 
+EventIdList CharmDataModel::eventsThatStartInTimeFrame( const QDateTime& start,
+                                                        const QDateTime& end ) const
+{
+    EventIdList events;
+    EventMap::const_iterator it;
+    for ( it = m_events.begin();
+          it != m_events.end(); ++it ) {
+        const Event& event( it->second );
+        if ( event.startDateTime() >= start && event.startDateTime() < end ) {
+            events << event.id();
+        }
+    }
+
+    return events;
+}
+
 #include "CharmDataModel.moc"
 
 

@@ -43,7 +43,7 @@ bool ActivityReport::prepare()
 {
     m_start = m_ui.dateEditStart->dateTime();
     m_end = m_ui.dateEditEnd->dateTime();
-    m_matchingEvents = eventsThatStartInTimeFrame( m_start, m_end );
+    m_matchingEvents = DATAMODEL->eventsThatStartInTimeFrame( m_start, m_end );
 
     qDebug() << "ActivityReport::prepare:" << m_matchingEvents.size() << "events";
     qStableSort( m_matchingEvents.begin(), m_matchingEvents.end(),
