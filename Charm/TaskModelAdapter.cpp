@@ -201,8 +201,10 @@ Qt::ItemFlags TaskModelAdapter::flags( const QModelIndex & index ) const
             flags = Qt::ItemIsEditable;
         } else if ( index.column() == Column_TaskSubscriptions ) {
             flags = Qt::ItemIsUserCheckable;
-        } else if ( index.column() == Column_TaskName ) {
-            flags = Qt::ItemIsEditable;
+
+// Task name isn't editable in-place anymore, we have RMB/Rename Task now, and double-click should start the timer.
+//        } else if ( index.column() == Column_TaskName ) {
+//            flags = Qt::ItemIsEditable;
         }
     }
 
