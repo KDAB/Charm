@@ -34,7 +34,6 @@ extern const QString MetaKey_Key_TaskTrackerFontSize;
 extern const QString MetaKey_Key_24hEditing;
 
 #define CONFIGURATION ( Configuration::instance() )
-#define DATAMODEL ( MODEL.charmDataModel() )
 
 // two helper functions to persist meta data:
 bool boolForString( const QString& );

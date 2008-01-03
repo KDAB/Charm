@@ -1,6 +1,7 @@
 #ifndef CHARM_MAINWINDOW_H
 #define CHARM_MAINWINDOW_H
 
+#include <QLabel>
 #include <QMenu>
 #include <QList>
 #include <QAction>
@@ -50,8 +51,11 @@ public slots:
     void sendCommand( CharmCommand* );
 
     void restore();
+
+private slots:
     void slotAboutDialog();
     void slotReportDialog();
+    void slotUpdateTotal();
 
 protected:
     void showEvent( QShowEvent* );
@@ -85,6 +89,8 @@ private:
     EventEditor m_eventEditor;
     QAction m_actionReporting;
     ReportDialog m_reportDialog;
+    QLabel m_statusBarLabelWeekTotal;
+    QLabel m_statusBarLabelDayTotal;
 };
 
 #endif

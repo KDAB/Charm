@@ -3,6 +3,7 @@
 #include <QSettings>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QStatusBar>
 
 #include <Core/CharmCommand.h>
 #include <Core/CharmConstants.h>
@@ -136,6 +137,10 @@ MainWindow::MainWindow()
     menuBar()->addMenu( appMenu );
     menuBar()->addMenu( viewMenu );
 
+    // status bar:
+    statusBar()->addPermanentWidget( &m_statusBarLabelDayTotal );
+    statusBar()->addPermanentWidget( &m_statusBarLabelWeekTotal );
+
     // system tray icon:
     m_trayIcon.setIcon( Data::charmIcon() );
     m_trayIcon.show();
@@ -199,6 +204,20 @@ void MainWindow::stateChanged( State previous )
         mode->stateChanged( previous );
     }
 
+    if ( previous == Constructed ) {
+        QAbstractItemModel* model = Application::instance().model().eventModel();
+        connect( model, SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ),
+                 SLOT( slotUpdateTotal() ) );
+        connect( model, SIGNAL( rowsInserted( const QModelIndex&, int, int ) ),
+                 SLOT( slotUpdateTotal() ) );
+        connect( model, SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ),
+                 SLOT( slotUpdateTotal() ) );
+        connect( model, SIGNAL( layoutChanged() ),
+                 SLOT( slotUpdateTotal() ) );
+        connect( model, SIGNAL( modelReset() ),
+                 SLOT( slotUpdateTotal() ) );
+    }
+
     switch( Application::instance().state() ) {
     case Connected:
         // FIXME remember in Gui state:
@@ -210,7 +229,6 @@ void MainWindow::stateChanged( State previous )
         saveGuiState();
         m_ui->viewStack->setCurrentWidget( m_ui->openingPage );
         break;
-        // fallthrough intended
     case StartingUp:
         m_ui->viewStack->setCurrentWidget( m_ui->openingPage );
         restoreGuiState();
@@ -418,6 +436,30 @@ void MainWindow::slotImportFromXml()
     // ask the controller to import the file:
     CommandImportFromXml* cmd = new CommandImportFromXml( filename, this );
     sendCommand( cmd );
+}
+
+static int totalDuration( const EventIdList& eventList )
+{
+    int total = 0;
+    Q_FOREACH( EventId id, eventList ) {
+        const Event& event = DATAMODEL->eventForId( id );
+        total += event.duration();
+    }
+    return total;
+}
+
+void MainWindow::slotUpdateTotal()
+{
+    const QDate today = QDate::currentDate();
+    const EventIdList todayEvents = DATAMODEL->eventsThatStartInTimeFrame(
+        QDateTime( today ), QDateTime( today.addDays(1) ) );
+    m_statusBarLabelDayTotal.setText( tr("Day total: %1").arg(hoursAndMinutes(totalDuration(todayEvents))) );
+
+    const TimeSpan thisWeek( today.addDays( - today.dayOfWeek() + 1 ),
+                             today.addDays( 7 - today.dayOfWeek() + 1 ) );
+    const EventIdList weekEvents = DATAMODEL->eventsThatStartInTimeFrame(
+        QDateTime( thisWeek.first ), QDateTime( thisWeek.second ) );
+    m_statusBarLabelWeekTotal.setText( tr("Week total: %1").arg(hoursAndMinutes(totalDuration(weekEvents))) );
 }
 
 #include "MainWindow.moc"
