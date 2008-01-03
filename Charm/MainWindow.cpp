@@ -316,12 +316,14 @@ void MainWindow::slotSelectViewMode( QAction* action )
 
 void MainWindow::slotCurrentBackendStatusChanged( const QString& text )
 {
-    QString title;
-    QTextStream stream( &title );
-    stream << "Charm ("
-           << CONFIGURATION.user.name()
-           << " - " << text << ")";
+    QString dbInfo;
+    const QString userName = CONFIGURATION.user.name();
+    if (!userName.isEmpty())
+        dbInfo = QString("%1 - %2").arg(userName, text);
+    else
+        dbInfo = text;
 
+    const QString title = tr("Charm (%1)").arg(dbInfo);
     setWindowTitle( title );
     m_trayIcon.setToolTip( title );
 }
