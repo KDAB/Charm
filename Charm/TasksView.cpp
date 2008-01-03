@@ -400,6 +400,7 @@ void View::slotContextMenuRequested( const QPoint& point )
         dialog.setSuggestedId( suggestedId );
         if ( dialog.exec() ) {
             newTask.setId( dialog.selectedId() );
+            newTask.setName( dialog.taskName() );
             CommandAddTask* cmd = new CommandAddTask( newTask, this );
             emit emitCommand( cmd );
         }

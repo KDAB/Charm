@@ -16,6 +16,7 @@ TaskIdDialog::~TaskIdDialog()
 void TaskIdDialog::setSuggestedId( int id )
 {
     m_ui.spinBox->setValue( id );
+    m_ui.spinBox->selectAll();
 }
 
 void TaskIdDialog::on_spinBox_valueChanged( int value )
@@ -32,6 +33,11 @@ void TaskIdDialog::on_spinBox_valueChanged( int value )
 int TaskIdDialog::selectedId() const
 {
     return m_ui.spinBox->value();
+}
+
+QString TaskIdDialog::taskName() const
+{
+    return m_ui.taskName->text();
 }
 
 #include "TaskIdDialog.moc"

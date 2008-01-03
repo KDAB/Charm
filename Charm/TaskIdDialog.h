@@ -7,6 +7,9 @@
 #include "Core/TaskModelInterface.h"
 #include "ui_TaskIdDialog.h"
 
+/**
+ * Dialog shown when creating a task
+ */
 class TaskIdDialog : public QDialog
 {
     Q_OBJECT
@@ -17,6 +20,8 @@ public:
 
     void setSuggestedId( int );
     int selectedId() const;
+
+    QString taskName() const;
 
 private slots:
     void on_spinBox_valueChanged( int );
