@@ -67,9 +67,11 @@ View::View( QWidget* parent )
     m_actionEventEnded.setText( tr( "Stop Task" ) );
     m_actionSelectedEventEnded.setIcon( m_actionEventEnded.icon() );
     m_actionSelectedEventEnded.setText( m_actionEventEnded.text() );
+    m_actionSelectedEventEnded.setShortcut( Qt::Key_Escape );
     m_ui->stopButton->setDefaultAction( &m_actionSelectedEventEnded );
     connect( &m_actionSelectedEventEnded, SIGNAL( triggered( bool ) ),
              SLOT( actionSelectedEventEnded( bool ) ) );
+
 
     m_actionNewTask.setText( tr( "New Task" ) );
     m_actionNewTask.setIcon( Data::newTaskIcon() );
