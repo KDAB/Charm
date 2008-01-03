@@ -56,6 +56,8 @@ View::View( QWidget* parent )
     // set up actions
     // (no menu icons, please) m_actionAboutDialog.setIcon( Data::charmIcon() );
     m_actionStopAllTasks.setText( tr( "Stop All Active Tasks" ) );
+    m_actionStopAllTasks.setShortcut( Qt::Key_Escape );
+    addAction(&m_actionStopAllTasks); // for the shortcut to work
     connect( &m_actionStopAllTasks, SIGNAL( triggered() ),
              SLOT( slotStopAllTasks() ) );
     m_actionEventStarted.setIcon( Data::goIcon() );
@@ -70,7 +72,6 @@ View::View( QWidget* parent )
     m_actionEventEnded.setText( tr( "Stop Task" ) );
     m_actionSelectedEventEnded.setIcon( m_actionEventEnded.icon() );
     m_actionSelectedEventEnded.setText( m_actionEventEnded.text() );
-    m_actionSelectedEventEnded.setShortcut( Qt::Key_Escape );
     m_ui->stopButton->setDefaultAction( &m_actionSelectedEventEnded );
     connect( &m_actionSelectedEventEnded, SIGNAL( triggered( bool ) ),
              SLOT( actionSelectedEventEnded( bool ) ) );
