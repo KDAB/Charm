@@ -20,6 +20,8 @@ ReportPreviewWindow::ReportPreviewWindow( QWidget* parent )
              SLOT( slotUpdate() ) );
     connect( m_ui->pushButtonSave, SIGNAL( clicked() ),
              SLOT( slotSaveToXml() ) );
+    connect( m_ui->pushButtonSaveTotals, SIGNAL( clicked() ),
+             SLOT( slotSaveToText() ) );
     connect( m_ui->pushButtonPrint, SIGNAL( clicked() ),
              SLOT( slotPrint() ) );
 }
@@ -95,6 +97,10 @@ QDomDocument ReportPreviewWindow::createExportTemplate( QString reportType )
 }
 
 void ReportPreviewWindow::slotSaveToXml()
+{
+}
+
+void ReportPreviewWindow::slotSaveToText()
 {
 }
 

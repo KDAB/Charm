@@ -54,6 +54,8 @@ public:
                               bool activeTasksOnly,
                               bool subscribedOnly );
 
+    typedef QMap< TaskId, QVector<int> > SecondsMap;
+
 private:
         enum TimeSheetTableColumns {
         Column_Task,
@@ -68,10 +70,14 @@ private:
         NumberOfColumns
     };
 
+    QString getFileName();
+
     // reimpl
     void slotUpdate();
     // reimpl
     void slotSaveToXml();
+    // reimpl
+    void slotSaveToText();
 
     // properties of the report:
     QDate m_start;
@@ -81,6 +87,7 @@ private:
     bool m_activeTasksOnly;
     bool m_subscribedOnly;
     QTextDocument* m_report; // FIXME unnecessary
+    SecondsMap m_secondsMap;
 };
 
 #endif

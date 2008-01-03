@@ -48,7 +48,14 @@
      <item>
       <widget class="QPushButton" name="pushButtonSave" >
        <property name="text" >
-        <string>Save</string>
+        <string>Save as XML...</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButtonSaveTotals" >
+       <property name="text" >
+        <string>Save Totals...</string>
        </property>
       </widget>
      </item>

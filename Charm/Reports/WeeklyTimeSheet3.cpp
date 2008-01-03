@@ -216,7 +216,6 @@ void WeeklyTimeSheetReport::setReportProperties(
 }
 
 // helper functions:
-typedef QMap< TaskId, QVector<int> > SecondsMap;
 
 class TimeSheetInfo {
 public:
@@ -258,8 +257,8 @@ typedef QList<TimeSheetInfo> TimeSheetInfoList;
 
 // make the list, aggregate the seconds in the subtask:
 static TimeSheetInfoList taskWithSubTasks( TaskId id,
-                                    const SecondsMap& secondsMap,
-                                    TimeSheetInfo* addTo = 0 )
+                                           const WeeklyTimeSheetReport::SecondsMap& m_secondsMap,
+                                           TimeSheetInfo* addTo = 0 )
 {
     TimeSheetInfoList result;
     TimeSheetInfoList children;
@@ -271,8 +270,8 @@ static TimeSheetInfoList taskWithSubTasks( TaskId id,
 
     if ( id != 0 ) {
         // add totals for task itself:
-        if ( secondsMap.contains( id ) ) {
-            myInformation.seconds = secondsMap[id];
+        if ( m_secondsMap.contains( id ) ) {
+            myInformation.seconds = m_secondsMap.value(id);
         }
         // add name:
         QTextStream stream( &myInformation.taskname );
@@ -295,7 +294,7 @@ static TimeSheetInfoList taskWithSubTasks( TaskId id,
     qSort( childIds );
     // recursively add those to myself:
     Q_FOREACH( TaskId id, childIds ) {
-        children << taskWithSubTasks( id, secondsMap, &myInformation );
+        children << taskWithSubTasks( id, m_secondsMap, &myInformation );
     }
 
     // add to parent:
@@ -352,7 +351,7 @@ void WeeklyTimeSheetReport::slotUpdate()
         QDateTime( m_start ), QDateTime( m_end ) );
 
     const int DaysInWeek = 7;
-    SecondsMap secondsMap;
+    m_secondsMap.clear();
 
     // for every task, make a vector that includes a number of seconds
     // for every day of the week ( int seconds[7]), and store those in
@@ -360,15 +359,15 @@ void WeeklyTimeSheetReport::slotUpdate()
     Q_FOREACH( EventId id, matchingEvents ) {
         const Event& event = DATAMODEL->eventForId( id );
         QVector<int> seconds( DaysInWeek );
-        if ( secondsMap.contains( event.taskId() ) ) {
-            seconds = secondsMap[event.taskId()];
+        if ( m_secondsMap.contains( event.taskId() ) ) {
+            seconds = m_secondsMap.value(event.taskId());
         }
         // what day in the week is the event (normalized to vector indexes):
         int dayOfWeek = event.startDateTime().date().dayOfWeek() - 1;
         Q_ASSERT( dayOfWeek >= 0 && dayOfWeek < DaysInWeek );
         seconds[dayOfWeek] += event.duration();
         // store in minute map:
-        secondsMap[event.taskId()] = seconds;
+        m_secondsMap[event.taskId()] = seconds;
     }
     // now the reporting:
     // headline first:
@@ -378,7 +377,6 @@ void WeeklyTimeSheetReport::slotUpdate()
     QDomElement body = root.firstChildElement( "body" );
 
 //     QTextCursor cursor( m_report );
-    TimeSheetInfo totalsLine;
     // create the caption:
     {
         QDomElement headline = doc.createElement( "h1" );
@@ -402,9 +400,9 @@ void WeeklyTimeSheetReport::slotUpdate()
     {
         // now for a table
         // retrieve the information for the report:
-        // TimeSheetInfoList timeSheetInfo = taskWithSubTasks( m_rootTask, secondsMap );
+        // TimeSheetInfoList timeSheetInfo = taskWithSubTasks( m_rootTask, m_secondsMap );
         TimeSheetInfoList timeSheetInfo = filteredTaskWithSubTasks(
-            taskWithSubTasks( m_rootTask, secondsMap ),
+            taskWithSubTasks( m_rootTask, m_secondsMap ),
             m_activeTasksOnly, m_subscribedOnly );
 
         QDomElement table = doc.createElement( "table" );
@@ -414,6 +412,7 @@ void WeeklyTimeSheetReport::slotUpdate()
         table.setAttribute( "cellspacing", "0" );
         body.appendChild( table );
 
+        TimeSheetInfo totalsLine;
         if ( ! timeSheetInfo.isEmpty() ) {
             totalsLine = timeSheetInfo.first();
             if( m_rootTask == 0 ) {
@@ -542,28 +541,13 @@ void  WeeklyTimeSheetReport::slotSaveToXml()
 {
     qDebug() << "WeeklyTimeSheet::slotSaveToXml: creating XML time sheet";
     // first, ask for a file name:
-    QSettings settings;
-    QString path;
-    if ( settings.contains( MetaKey_ReportsRecentSavePath ) ) {
-        path = settings.value( MetaKey_ReportsRecentSavePath ).toString();
-        QDir dir( path );
-        if ( !dir.exists() ) path = QString();
-    }
-    // suggest file name:
-    QString suggestedFilename = tr( "WeeklyTimeSheet-%1-%2" )
-                                .arg( m_start.year() )
-                                .arg( m_weekNumber );
-    path += QDir::separator() + suggestedFilename;
-    // ask:
-    QString filename = QFileDialog::getSaveFileName( this, tr( "Enter File Name" ), path );
-    if ( filename.isEmpty() ) return;
+    QString filename = getFileName();
+    if (filename.isEmpty())
+        return;
+
     QFileInfo fileinfo( filename );
-    path = fileinfo.absolutePath();
-    if ( !path.isEmpty() ) {
-        settings.setValue( MetaKey_ReportsRecentSavePath, path );
-    }
     if ( fileinfo.suffix().isEmpty() ) {
-        filename+=".charmreport";
+        filename += ".charmreport";
     }
 
     try {
@@ -589,9 +573,9 @@ void  WeeklyTimeSheetReport::slotSaveToXml()
             weekElement.appendChild( weektext );
         }
 
-        SecondsMap secondsMap;
+        SecondsMap m_secondsMap;
         TimeSheetInfoList timeSheetInfo = filteredTaskWithSubTasks(
-            taskWithSubTasks( m_rootTask, secondsMap ),
+            taskWithSubTasks( m_rootTask, m_secondsMap ),
             false, m_subscribedOnly ); // here, we don't care about active or not, because we only report on the tasks
 
         // extend report tag: add tasks and effort structure
@@ -669,7 +653,7 @@ void  WeeklyTimeSheetReport::slotSaveToXml()
         QFile file( filename );
         if ( file.open( QIODevice::WriteOnly ) ) {
             QTextStream stream( &file );
-            stream << document.toString( 4 );
+            document.save( stream, 4 );
         } else {
             QMessageBox::critical( this, tr( "Error saving report" ),
                                    tr( "Cannot write to selected location." ) );
@@ -680,6 +664,74 @@ void  WeeklyTimeSheetReport::slotSaveToXml()
         QMessageBox::critical( this, tr( "Error exporting the report" ),
                                QString::fromLatin1( e.what() ) );
     }
+}
+
+QString WeeklyTimeSheetReport::getFileName()
+{
+    QSettings settings;
+    QString path;
+    if ( settings.contains( MetaKey_ReportsRecentSavePath ) ) {
+        path = settings.value( MetaKey_ReportsRecentSavePath ).toString();
+        QDir dir( path );
+        if ( !dir.exists() ) path = QString();
+    }
+    // suggest file name:
+    QString suggestedFilename = tr( "WeeklyTimeSheet-%1-%2" )
+                                .arg( m_start.year() )
+                                .arg( m_weekNumber );
+    path += QDir::separator() + suggestedFilename;
+    // ask:
+    QString filename = QFileDialog::getSaveFileName( this, tr( "Enter File Name" ), path );
+    if ( filename.isEmpty() )
+        return QString();
+    QFileInfo fileinfo( filename );
+    path = fileinfo.absolutePath();
+    if ( !path.isEmpty() ) {
+        settings.setValue( MetaKey_ReportsRecentSavePath, path );
+    }
+    return filename;
+}
+
+void WeeklyTimeSheetReport::slotSaveToText()
+{
+    qDebug() << "WeeklyTimeSheet::slotSaveToText: creating text file with totals";
+    // first, ask for a file name:
+    const QString filename = getFileName();
+    if (filename.isEmpty())
+        return;
+
+    QFile file( filename );
+    if ( !file.open( QIODevice::WriteOnly ) ) {
+        QMessageBox::critical( this, tr( "Error saving report" ),
+                               tr( "Cannot write to selected location." ) );
+        return;
+    }
+
+    QTextStream stream( &file );
+    QString content = tr( "Report for %1, Week %2 (%3 to %4)" )
+                      .arg( CONFIGURATION.user.name() )
+                      .arg( m_weekNumber )
+                      .arg( m_start.toString( Qt::TextDate ) )
+                      .arg( m_end.addDays( -1 ).toString( Qt::TextDate ) );
+    stream << content << '\n';
+    stream << '\n';
+    TimeSheetInfoList timeSheetInfo = filteredTaskWithSubTasks(
+        taskWithSubTasks( m_rootTask, m_secondsMap ),
+        m_activeTasksOnly, m_subscribedOnly );
+
+    TimeSheetInfo totalsLine;
+    if ( ! timeSheetInfo.isEmpty() ) {
+        totalsLine = timeSheetInfo.first();
+        if( m_rootTask == 0 ) {
+            timeSheetInfo.removeAt( 0 ); // there is always one, because there is always the root item
+        }
+    }
+
+    for (int i = 0; i < timeSheetInfo.size(); ++i ) {
+        stream << timeSheetInfo[i].taskname << "\t" << hoursAndMinutes( timeSheetInfo[i].total() ) << '\n';
+    }
+    stream << '\n';
+    stream << "Week total: " << hoursAndMinutes( totalsLine.total() ) << '\n';
 }
 
 #include "WeeklyTimeSheet3.moc"

@@ -24,6 +24,7 @@ protected:
 
 private slots:
     virtual void slotSaveToXml();
+    virtual void slotSaveToText();
     virtual void slotPrint();
     virtual void slotUpdate();
     virtual void slotClose();
