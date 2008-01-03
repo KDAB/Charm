@@ -91,6 +91,7 @@ private:
     ReportDialog m_reportDialog;
     QLabel m_statusBarLabelWeekTotal;
     QLabel m_statusBarLabelDayTotal;
+    bool m_statusBarWidgetsAdded;
 };
 
 #endif

@@ -37,6 +37,7 @@ MainWindow::MainWindow()
     , m_eventEditor( this )
     , m_actionReporting( this )
     , m_reportDialog( this )
+    , m_statusBarWidgetsAdded( false )
 {
     m_ui->setupUi( this );
 
@@ -136,10 +137,6 @@ MainWindow::MainWindow()
 //     taskMenu->addAction( &m_actionEventEnded );
     menuBar()->addMenu( appMenu );
     menuBar()->addMenu( viewMenu );
-
-    // status bar:
-    statusBar()->addPermanentWidget( &m_statusBarLabelDayTotal );
-    statusBar()->addPermanentWidget( &m_statusBarLabelWeekTotal );
 
     // system tray icon:
     m_trayIcon.setIcon( Data::charmIcon() );
@@ -450,6 +447,12 @@ static int totalDuration( const EventIdList& eventList )
 
 void MainWindow::slotUpdateTotal()
 {
+    if ( !m_statusBarWidgetsAdded ) {
+        m_statusBarWidgetsAdded = true;
+        statusBar()->addPermanentWidget( &m_statusBarLabelDayTotal );
+        statusBar()->addPermanentWidget( &m_statusBarLabelWeekTotal );
+    }
+
     const QDate today = QDate::currentDate();
     const EventIdList todayEvents = DATAMODEL->eventsThatStartInTimeFrame(
         QDateTime( today ), QDateTime( today.addDays(1) ) );
