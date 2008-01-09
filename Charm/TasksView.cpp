@@ -232,7 +232,7 @@ void View::stateChanged( State previous )
     }
     break;
     case Connected:
-        configurationChanged();;
+        configurationChanged();
         break;
     case Disconnecting:
     case ShuttingDown:
@@ -282,8 +282,7 @@ void View::restoreGuiState()
         state.loadFrom( settings );
         QModelIndex index( filter->indexForTaskId( state.selectedTask() ) );
         if ( index.isValid() ) {
-            m_ui->treeView->selectionModel()->select(
-                index, QItemSelectionModel::Select | QItemSelectionModel::Rows );
+            m_ui->treeView->setCurrentIndex(index);
         }
 
         Q_FOREACH( TaskId id, state.expandedTasks() ) {
