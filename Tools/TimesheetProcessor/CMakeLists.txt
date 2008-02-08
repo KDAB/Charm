@@ -3,7 +3,7 @@ IF ( QT4_FOUND )
    INCLUDE_DIRECTORIES( ${QT_QTCORE_INCLUDE_DIR} )
    INCLUDE_DIRECTORIES( ${QT_QTSQL_INCLUDE_DIR} )
    INCLUDE_DIRECTORIES( ${QT_QTXML_INCLUDE_DIR} )
-   INCLUDE_DIRECTORIES( .. )
+   INCLUDE_DIRECTORIES( ../.. ) # Charm root
 
    LINK_LIBRARIES( ${QT_QTCORE_LIBRARY} )
    LINK_LIBRARIES( ${QT_QTXML_LIBRARY} )
@@ -18,7 +18,8 @@ IF ( QT4_FOUND )
 #  -Wnon-virtual-dtor # Qt has too many of those already
    ENDIF (CMAKE_COMPILER_IS_GNUCXX)
 
-    SET( TimesheetProcessor_SRCS main.cpp )
+    SET( TimesheetProcessor_SRCS main.cpp 
+    		CommandLine.cpp )
     QT4_AUTOMOC ( ${TimesheetProcessor_SRCS} )
 
     ADD_EXECUTABLE( TimesheetProcessor ${TimesheetProcessor_SRCS} )
