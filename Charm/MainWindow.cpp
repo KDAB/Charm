@@ -41,6 +41,7 @@ MainWindow::MainWindow()
 {
     m_ui->setupUi( this );
 
+    setWindowIcon( Data::charmIcon() );
     // view corrections:
     centralWidget()->layout()->setMargin( 0 );
     centralWidget()->layout()->setSpacing( 0 );
