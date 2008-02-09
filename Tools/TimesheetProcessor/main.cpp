@@ -7,6 +7,7 @@
 
 #include "CommandLine.h"
 #include "Exceptions.h"
+#include "Operations.h"
 
 int main(int argc, char** argv)
 {
@@ -17,12 +18,10 @@ int main(int argc, char** argv)
 
 		switch( cmd.mode() ) {
 			case CommandLine::Mode_AddTimesheet:
-				// load the time sheet:
-				// add it to the database:
+				addTimesheet( cmd);
 				break;				
 			case CommandLine::Mode_RemoveTimesheet:
-				// delete the time sheet: pretty straightforward
-				// done
+				removeTimesheet(cmd);
 				break;
 			case CommandLine::Mode_DescribeUsage:
 			default:
@@ -30,9 +29,11 @@ int main(int argc, char** argv)
 			break;
 		}
 	} catch( UsageException* e ) {
+		cout << e->what() << endl;
 		CommandLine::usage();
 	} catch ( TimesheetProcessorException* e ) {
 		cout << e->what() << endl;
+		CommandLine::usage();
 		return 1;
 	}
 	

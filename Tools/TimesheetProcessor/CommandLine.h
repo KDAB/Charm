@@ -9,6 +9,7 @@ public:
 	CommandLine(int argc, char** argv);
 	
 	enum Mode {
+		Mode_None,
 		Mode_DescribeUsage,
 		Mode_AddTimesheet,
 		Mode_RemoveTimesheet,
@@ -25,6 +26,7 @@ public:
 private:
 	QString m_filename;
 	Mode m_mode;
+	int m_index;
 };
 
 #endif /*COMMANDLINE_H_*/

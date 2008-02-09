@@ -86,6 +86,19 @@ IF ( QT4_FOUND )
     SET( Charm_SRCS Charm.cpp )
     QT4_AUTOMOC (${Charm_SRCS} )
 
+	IF( APPLE )
+		SET( MACOSX_BUNDLE_INFO_STRING "Charm - Version 1.1.0-trunk" )
+		SET( MACOSX_BUNDLE_BUNDLE_VERSION "1.1.0" )
+		SET( MACOSX_BUNDLE_ICON_FILE "Charm.icns" )
+		SET( MACOSX_BUNDLE_GUI_IDENTIFIER "net.kdab" )
+		SET( MACOSX_BUNDLE_BUNDLE_NAME "Charm" )
+		
+		EXEC_PROGRAM( "mkdir -p ${Charm_BINARY_DIR}/Charm/Charm.app/Contents/Resources")
+		EXEC_PROGRAM( "cp ${Charm_SOURCE_DIR}/Charm/Icons/Charm.icns ${Charm_BINARY_DIR}/Charm/Charm.app/Contents/Resources/")
+		
+		SET( CMAKE_MODULE_PATH ${Charm_SOURCE_DIR}/Charm/ ${CMAKE_MODULE_PATH} )
+	ENDIF( APPLE)
+
     ADD_EXECUTABLE( Charm MACOSX_BUNDLE ${Charm_SRCS} )
     TARGET_LINK_LIBRARIES( Charm CharmApplication )
     TARGET_LINK_LIBRARIES( Charm CharmCore )

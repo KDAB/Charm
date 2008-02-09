@@ -19,7 +19,10 @@ IF ( QT4_FOUND )
    ENDIF (CMAKE_COMPILER_IS_GNUCXX)
 
     SET( TimesheetProcessor_SRCS main.cpp 
-    		CommandLine.cpp )
+    		CommandLine.cpp 
+    		Operations.cpp
+    		Database.cpp )
+
     QT4_AUTOMOC ( ${TimesheetProcessor_SRCS} )
 
     ADD_EXECUTABLE( TimesheetProcessor ${TimesheetProcessor_SRCS} )
