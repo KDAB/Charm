@@ -6,7 +6,7 @@
     <x>0</x>
     <y>0</y>
     <width>440</width>
-    <height>202</height>
+    <height>298</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -36,18 +36,18 @@
    <item row="0" column="2" >
     <widget class="QLineEdit" name="lineEditFilter" />
    </item>
-   <item rowspan="2" row="0" column="3" >
+   <item row="1" column="0" colspan="3" >
+    <widget class="QTreeView" name="treeView" />
+   </item>
+   <item row="2" column="0" colspan="3" >
     <widget class="QDialogButtonBox" name="buttonBox" >
      <property name="orientation" >
-      <enum>Qt::Vertical</enum>
+      <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons" >
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::NoButton|QDialogButtonBox::Ok</set>
      </property>
     </widget>
-   </item>
-   <item row="1" column="0" colspan="3" >
-    <widget class="QTreeView" name="treeView" />
    </item>
   </layout>
  </widget>
