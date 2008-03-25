@@ -388,7 +388,7 @@ void WeeklyTimeSheetReport::slotUpdate()
         QDomElement headline = doc.createElement( "h3" );
         QString content = tr( "Report for %1, Week %2 (%3 to %4)" )
                           .arg( CONFIGURATION.user.name() )
-                          .arg( m_weekNumber )
+                          .arg( m_weekNumber, 2, 10, QChar('0') )
                           .arg( m_start.toString( Qt::TextDate ) )
                           .arg( m_end.addDays( -1 ).toString( Qt::TextDate ) );
         QDomText text = doc.createTextNode( content );
@@ -564,12 +564,12 @@ void  WeeklyTimeSheetReport::slotSaveToXml()
         {
             QDomElement yearElement = document.createElement( "year" );
             metadata.appendChild( yearElement );
-            QDomText text = document.createTextNode( QString().setNum( m_start.year() ) );
+            QDomText text = document.createTextNode( QString::number( m_start.year() ) );
             yearElement.appendChild( text );
             QDomElement weekElement = document.createElement( "serial-number" );
             weekElement.setAttribute( "semantics", "week-number" );
             metadata.appendChild( weekElement );
-            QDomText weektext = document.createTextNode( QString().setNum( m_weekNumber ) );
+            QDomText weektext = document.createTextNode( QString::number( m_weekNumber ) );
             weekElement.appendChild( weektext );
         }
 
@@ -589,9 +589,9 @@ void  WeeklyTimeSheetReport::slotSaveToXml()
                 tasks.appendChild( modelTask.toXml( document ) );
 //             TaskId parentTask = DATAMODEL->parentItem( modelTask ).task().id();
 //             QDomElement task = document.createElement( "task" );
-//             task.setAttribute( "taskid", QString().setNum( info.taskId ) );
+//             task.setAttribute( "taskid", QString::number( info.taskId ) );
 //             if ( parentTask != 0 )
-//                 task.setAttribute( "parent", QString().setNum( parentTask ) );
+//                 task.setAttribute( "parent", QString::number( parentTask ) );
 
 //             QDomText name = document.createTextNode( modelTask.name() );
 //             task.appendChild( name );
@@ -678,7 +678,7 @@ QString WeeklyTimeSheetReport::getFileName()
     // suggest file name:
     QString suggestedFilename = tr( "WeeklyTimeSheet-%1-%2" )
                                 .arg( m_start.year() )
-                                .arg( m_weekNumber );
+                                .arg( m_weekNumber, 2, 10, QChar('0') );
     path += QDir::separator() + suggestedFilename;
     // ask:
     QString filename = QFileDialog::getSaveFileName( this, tr( "Enter File Name" ), path );
@@ -710,7 +710,7 @@ void WeeklyTimeSheetReport::slotSaveToText()
     QTextStream stream( &file );
     QString content = tr( "Report for %1, Week %2 (%3 to %4)" )
                       .arg( CONFIGURATION.user.name() )
-                      .arg( m_weekNumber )
+                      .arg( m_weekNumber, 2, 10, QChar('0') )
                       .arg( m_start.toString( Qt::TextDate ) )
                       .arg( m_end.addDays( -1 ).toString( Qt::TextDate ) );
     stream << content << '\n';
