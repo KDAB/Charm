@@ -118,7 +118,7 @@ const QPixmap& Data::editorDirtyPixmap()
 const QPixmap& Data::backdropPixmap()
 {
     static QPixmap pixmap( ":/Backdrops/backdrop1.jpg" );
-    Q_ASSERT_X( !pixmap.isNull(), "Data::editorDirtyPixmap",
+    Q_ASSERT_X( !pixmap.isNull(), "Data::backdropPixmap",
                 "Required resource not available" );
     return pixmap;
 }
