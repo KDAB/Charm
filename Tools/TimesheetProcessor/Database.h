@@ -10,6 +10,8 @@ public:
 	virtual ~Database();
 
 	void login();
+	
+	bool checkUserid( int id );
 };
 
 #endif /*DATABASE_H_*/

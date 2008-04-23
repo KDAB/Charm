@@ -3,10 +3,10 @@
 
 #include <exception>
 
-class XmlSerializationException : public std::exception
+class CharmException : public std::exception
 {
 public:
-    XmlSerializationException( const char* message = 0 )
+	CharmException( const char* message = 0 )
         : m_message( message )
     {}
     const char* what() const throw() {
@@ -14,6 +14,22 @@ public:
     }
 private:
     const char* m_message;
+};
+
+class XmlSerializationException : public CharmException
+{
+public:
+	XmlSerializationException( const char* message = 0 )
+        : CharmException( message )
+    {}
+};
+
+class UnsupportedDatabaseVersionException : public CharmException
+{
+public:
+	UnsupportedDatabaseVersionException( const char* message = 0 )
+        : CharmException( message )
+    {}
 };
 
 #endif

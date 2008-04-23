@@ -20,6 +20,10 @@ public:
 	
 	QString filename() const;
 	
+	int userid() const;
+	
+	int index() const;
+	
 	/** Dump command line option reference. */
 	static void usage();
 	
@@ -27,6 +31,7 @@ private:
 	QString m_filename;
 	Mode m_mode;
 	int m_index;
+	int m_userid;
 };
 
 #endif /*COMMANDLINE_H_*/

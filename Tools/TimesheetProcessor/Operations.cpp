@@ -1,3 +1,4 @@
+#include <QtDebug>
 #include <QFile>
 #include <QObject>
 #include <QDomDocument>
@@ -41,7 +42,7 @@ void addTimesheet(const CommandLine& cmd)
 		try { 
 			Event e = Event::fromXml(element);
 			events << e;
-			e.dump();
+			// e.dump();
 		} catch(XmlSerializationException e ) {
 			QString msg = QObject::tr("Syntax error in file %1.").arg(cmd.filename());
 			throw new TimesheetProcessorException( msg);
@@ -52,14 +53,24 @@ void addTimesheet(const CommandLine& cmd)
 	Database database;
 	database.login();
 	
+	qDebug() << "TimesheetProcessor: adding timesheet" << cmd.index() << "for user" << cmd.userid();
+	
 	// 3) map user id to database user id, installation id dito
 	// ...
 	// 4) add information to the database
 	// ...
+	
+	// we are connected
+	// check for the user id
+	// ...
+	// FIXME maybe check project codes?
+	// ...
+	// FIXME 
 }
 
 void removeTimesheet(const CommandLine& cmd)
 {
 	// delete the time sheet: pretty straightforward
+	
 	// done
 }

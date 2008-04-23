@@ -7,7 +7,9 @@
 #include "Configuration.h"
 
 // increment then SQL DB format changes:
-#define CHARM_DATABASE_VERSION 1
+#define CHARM_DATABASE_VERSION_DESCRIPTOR "CharmDatabaseSchemaVersion"
+#define CHARM_DATABASE_VERSION 2
+#define REQUIRED_CHARM_DATABASE_VERSION CHARM_DATABASE_VERSION
 // FIXME this may have to go into some plugin configuration later:
 // FIXME also, we may need some verbose descriptors for configuration
 #define CHARM_SQLITE_BACKEND_DESCRIPTOR "sqlite"

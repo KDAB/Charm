@@ -1,7 +1,16 @@
+#include <QMessageBox>
+
+#include "Core/CharmExceptions.h"
 #include "Application.h"
 
 int main ( int argc, char** argv )
 {
-    Application app ( argc,  argv );
-    return app.exec();
+	Application app ( argc,  argv );
+	try {
+		return app.exec();
+	} catch ( UnsupportedDatabaseVersionException& e ) {
+		QMessageBox::critical( 0, 
+				QObject::tr( "Charm Database Error"), 
+				QObject::tr( e.what() ) );
+	}
 }
