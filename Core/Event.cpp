@@ -5,6 +5,7 @@
 
 Event::Event()
     : m_userid()
+    , m_reportid()
     , m_installationId()
     , m_id()
     , m_taskId()
@@ -19,7 +20,8 @@ bool Event::operator == ( const Event& other ) const
              && other.comment() == comment()
              && other.startDateTime() ==  startDateTime()
              && other.endDateTime() == endDateTime()
-			 && other.userId() == userId() );
+			 && other.userId() == userId()
+			 && other.reportId() == reportId() );
 }
 
 EventId Event::id() const
@@ -40,6 +42,16 @@ int Event::userId() const
 void Event::setUserId( int userId )
 {
 	m_userid = userId;
+}
+
+int Event::reportId() const
+{
+	return m_reportid;
+}
+
+void Event::setReportId( int reportId )
+{
+	m_reportid = reportId;
 }
 
 void Event::setInstallationId( int instId )
@@ -134,6 +146,7 @@ const QString EventIdAttribute( "eventid" );
 const QString EventInstallationIdAttribute( "installationid" );
 const QString EventTaskIdAttribute( "taskid" );
 const QString EventUserIdAttribute( "userid" );
+const QString EventReportIdAttribute( "reportid" );
 const QString EventStartAttribute( "start" );
 const QString EventEndAttribute( "end" );
 
@@ -144,6 +157,7 @@ QDomElement Event::toXml( QDomDocument document ) const
     element.setAttribute( EventInstallationIdAttribute, QString().setNum( installationId() ) );
     element.setAttribute( EventTaskIdAttribute, QString().setNum( taskId() ) );
     element.setAttribute( EventUserIdAttribute, QString().setNum( userId() ) );
+    element.setAttribute( EventReportIdAttribute, QString().setNum( reportId() ) );
     if ( m_start.isValid() ) {
         element.setAttribute( EventStartAttribute, m_start.toString( Qt::ISODate ) );
     }
@@ -172,6 +186,8 @@ Event Event::fromXml( const QDomElement& element ) throw ( XmlSerializationExcep
     if ( !ok ) throw XmlSerializationException( "Event::fromXml: invalid task id" );
     event.setUserId( element.attribute( EventUserIdAttribute ).toInt( &ok ) );
     if ( !ok ) throw XmlSerializationException( "Event::fromXml: invalid user id" );
+    event.setReportId( element.attribute( EventReportIdAttribute ).toInt( &ok ) );
+    if ( !ok ) throw XmlSerializationException( "Event::fromXml: invalid report id" );
     if ( element.hasAttribute( EventStartAttribute ) ) {
         QDateTime start = QDateTime::fromString( element.attribute( EventStartAttribute ), Qt::ISODate );
         if ( !start.isValid() ) throw XmlSerializationException( "Event::fromXml: invalid start date" );

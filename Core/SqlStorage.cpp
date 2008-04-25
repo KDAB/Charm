@@ -10,71 +10,8 @@
 #include "Event.h"
 #include "State.h"
 #include "SqlStorage.h"
-#include "CharmConstants.h"
 #include "SqlRaiiTransactor.h"
-
-// DATABASE STRUCTURE DEFINITION
-static const QString Tables[] =
-{ "MetaData", "Installations", "Tasks", "Events", "Subscriptions", "Users" };
-
-static const int NumberOfTables = sizeof Tables / sizeof Tables[0];
-
-struct Field
-{
-	QString name;
-	QString type;
-};
-
-typedef Field Fields;
-const Field LastField =
-{ QString::null, QString::null};
-
-static const Fields MetaData_Fields[] =
-{
-{ "id", "INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY" },
-{ "key", "VARCHAR( 128 ) NOT NULL" },
-{ "value", "VARCHAR( 128 )" }, LastField };
-
-static const Fields Installations_Fields[] =
-{
-{ "id", "INTEGER PRIMARY KEY" },
-{ "inst_id", "INTEGER" },
-{ "user_id", "INTEGER" },
-{ "name", "varchar(256)" }, LastField };
-
-static const Fields Tasks_Fields[] =
-{
-{ "id", "INTEGER PRIMARY KEY" },
-{ "task_id", "INTEGER UNIQUE" },
-{ "parent", "INTEGER" },
-{ "name", "varchar(256)" }, LastField };
-
-static const Fields Event_Fields[] =
-{
-{ "id", "INTEGER PRIMARY KEY" },
-{ "user_id", "INTEGER" },
-{ "event_id", "INTEGER" },
-{ "installation_id", "INTEGER" },
-{ "task", "INTEGER" },
-{ "comment", "varchar(256)" },
-{ "start", "date" },
-{ "end", "date" }, LastField };
-
-static const Fields Subscriptions_Fields[] =
-{
-{ "id", "INTEGER PRIMARY KEY" },
-{ "user_id", "INTEGER" },
-{ "task", "INTEGER" }, LastField };
-
-static const Fields Users_Fields[] =
-{
-{ "id", "INTEGER PRIMARY KEY" },
-{ "user_id", "INTEGER UNIQUE" },
-{ "name", "varchar(256)" }, LastField };
-
-static const Fields* Database_Fields[NumberOfTables] =
-{ MetaData_Fields, Installations_Fields, Tasks_Fields, Event_Fields,
-		Subscriptions_Fields, Users_Fields };
+#include "CharmConstants.h"
 
 // SqlStorage class
 
@@ -89,12 +26,9 @@ SqlStorage::~SqlStorage()
 
 bool SqlStorage::verifyDatabase() throw (UnsupportedDatabaseVersionException )
 {
-	for (int i = 0; i < NumberOfTables; ++i)
-	{
-		if (!database().tables().contains(Tables[i]))
-			return false;
-	}
-
+	// if the database is empty, it is not ok :-)
+	if( database().tables().isEmpty() ) 
+		return false;
 	// check database metadata, throw an exception in case the version does not match:
 	int version = 1;
 	QString versionString = getMetaData(CHARM_DATABASE_VERSION_DESCRIPTOR);
@@ -115,55 +49,12 @@ bool SqlStorage::verifyDatabase() throw (UnsupportedDatabaseVersionException )
 	return true;
 }
 
-bool SqlStorage::createDatabase()
-{
-	Q_ASSERT_X(database().open(), "SqlStorage::createDatabase",
-			"Connection to database must be established first");
-
-	bool error = false;
-	// create tables:
-	for (int i = 0; i < NumberOfTables; ++i)
-	{
-		if (!database().tables().contains(Tables[i]))
-		{
-			QString statement;
-			QTextStream stream(&statement, QIODevice::WriteOnly);
-
-			stream << "CREATE table  `" << Tables[i] << "` (";
-			const Field* field = Database_Fields[i];
-			while (field->name != QString::null )
-			{
-				stream << " `" << field->name << "` "
-				<< field->type;
-				++field;
-				if ( field->name != QString::null ) stream << ", ";
-			}
-			stream << ");";
-
-			QSqlQuery query( database() );
-			qDebug() << statement;
-			query.prepare( statement );
-			if ( ! runQuery( query ) )
-			{
-				error = true;
-			}
-		}
-	}
-
-	setMetaData(CHARM_DATABASE_VERSION_DESCRIPTOR, QString().setNum( CHARM_DATABASE_VERSION) );
-	// FIXME temp remove this:
-	// populateDatabase();
-
-	return ! error;
-}
-
 TaskList SqlStorage::getAllTasks()
 {
 	TaskList tasks;
 	QSqlQuery query(database());
-	const char
-			statement[] =
-					"select * from Tasks left join Subscriptions on Tasks.task_id = Subscriptions.task;";
+	const char statement[] = "select * from Tasks left join Subscriptions "
+		"on Tasks.task_id = Subscriptions.task;";
 	query.prepare(statement);
 
 	if (runQuery(query))
@@ -173,7 +64,7 @@ TaskList SqlStorage::getAllTasks()
 			Task task;
 			// We use an inner join query that merges the
 			// subscriptions. If there is a subscription for the user
-			// for a task, it will return the user's user id in the
+			// for a task, it will return the user
 			// "user_id" field imported from the Subscriptions table.
 			int idField = query.record().indexOf("task_id");
 			int nameField = query.record().indexOf("name");
@@ -266,6 +157,7 @@ Event SqlStorage::makeEventFromRecord(const QSqlRecord& record)
 	int idField = record.indexOf("event_id");
 	int instIdField = record.indexOf("installation_id");
 	int userIdField = record.indexOf("user_id");
+	int reportIdField = record.indexOf("report_id");
 	int taskField = record.indexOf("task");
 	int commentField = record.indexOf("comment");
 	int startField = record.indexOf("start");
@@ -273,6 +165,7 @@ Event SqlStorage::makeEventFromRecord(const QSqlRecord& record)
 
 	event.setId(record.field( idField ).value().toInt() );
 	event.setUserId( record.field( userIdField ).value().toInt() );
+	event.setReportId( record.field( reportIdField ).value().toInt() );
 	event.setInstallationId( record.field ( instIdField ).value().toInt() );
 	event.setTaskId( record.field( taskField ).value().toInt() );
 	event.setComment( record.field( commentField ).value().toString() );
@@ -313,7 +206,7 @@ Event SqlStorage::makeEvent()
 
 	{ // insert a new record in the database
 		const char* statement = "INSERT into Events values "
-			"( NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL );";
+			"( NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL );";
 		QSqlQuery query(database());
 		query.prepare(statement);
 		result = runQuery(query);
@@ -321,8 +214,9 @@ Event SqlStorage::makeEvent()
 	}
 	if (result)
 	{ // retrieve the AUTOINCREMENT id value of it
-		const char* statement =
-				"SELECT id from Events WHERE id = last_insert_rowid();";
+		const QString statement = QString::fromLocal8Bit(
+				"SELECT id from Events WHERE id = %1();") .arg(
+				lastInsertRowFunction());
 		QSqlQuery query(database());
 		query.prepare(statement);
 		result = runQuery(query);
@@ -344,11 +238,12 @@ Event SqlStorage::makeEvent()
 		// modify the created record to make sure event_id is unique
 		// within the installation:
 		const char* statement = "UPDATE Events SET event_id = :event_id, "
-			"installation_id = :installation WHERE id = :id;";
+			"installation_id = :installation, report_id = :report_id WHERE id = :id;";
 		QSqlQuery query(database());
 		query.prepare(statement);
 		query.bindValue(":event_id", event.id());
 		query.bindValue(":installation_id", event.installationId());
+		query.bindValue(":report_id", event.reportId());
 		query.bindValue(":id", event.id());
 		result = runQuery(query);
 		Q_ASSERT_X(result, "SqlStorage::makeEvent",
@@ -391,11 +286,12 @@ bool SqlStorage::modifyEvent(const Event& event)
 {
 	QSqlQuery query(database());
 	query.prepare("UPDATE Events set task = :task, comment = :comment, "
-		"start = :start, end = :end, user_id = :user "
+		"start = :start, end = :end, user_id = :user, report_id = :report "
 		"where event_id = :id;");
 	query.bindValue(":id", event.id());
 	query.bindValue(":user", event.userId());
 	query.bindValue(":task", event.taskId());
+	query.bindValue(":report", event.reportId());
 	query.bindValue(":comment", event.comment());
 	query.bindValue(":start", event.startDateTime());
 	query.bindValue(":end", event.endDateTime() );
@@ -423,7 +319,7 @@ bool SqlStorage::deleteAllEvents()
 
 bool SqlStorage::runQuery(QSqlQuery& query)
 {
-	static const bool DoChitChat = true;
+	static const bool DoChitChat = false;
 	if (DoChitChat)
 		qDebug() << MARKER << endl << "SqlStorage::runQuery: executing query:"
 				<< endl << query.executedQuery();
@@ -588,8 +484,10 @@ User SqlStorage::makeUser(const QString& name)
 	if (result)
 	{ // find it and determine key:
 		QSqlQuery query(database());
-		const char* statement =
-				"SELECT id from Users WHERE id = last_insert_rowid();";
+
+		const QString statement = QString::fromLocal8Bit(
+				"SELECT id from Users WHERE id = %1();") .arg(
+				lastInsertRowFunction());
 		query.prepare(statement);
 
 		result = runQuery(query);
@@ -699,8 +597,9 @@ Installation SqlStorage::createInstallation(const QString& name)
 	if (result)
 	{
 		// retrieve the AUTOINCREMENT id value of it
-		const char* statement =
-				"SELECT * from Installations WHERE id = last_insert_rowid();";
+		const QString statement = QString::fromLocal8Bit(
+				"SELECT * from Installations WHERE id = %1();") .arg(
+				lastInsertRowFunction());
 		QSqlQuery query(database());
 		query.prepare(statement);
 		result = runQuery(query);
@@ -794,7 +693,8 @@ bool SqlStorage::setMetaData(const QString& key, const QString& value)
 	bool result;
 	{
 		QSqlQuery query(database());
-		const char statement[] = "SELECT * FROM MetaData WHERE 'key' = :key;";
+		const char statement[] =
+				"SELECT * FROM MetaData WHERE MetaData.key = :key;";
 		query.prepare(statement);
 		query.bindValue(":key", key);
 		if (runQuery(query) && query.next())

@@ -22,6 +22,8 @@ public:
 
 protected:
     bool createDatabase( Configuration& );
+    bool createDatabaseTables();
+	QString lastInsertRowFunction() const;
 
 private:
     QSqlDatabase m_database;

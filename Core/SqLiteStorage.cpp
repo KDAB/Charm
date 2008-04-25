@@ -8,6 +8,72 @@
 #include "Event.h"
 #include "Configuration.h"
 #include "SqLiteStorage.h"
+#include "CharmConstants.h"
+
+// DATABASE STRUCTURE DEFINITION
+static const QString Tables[] =
+{ "MetaData", "Installations", "Tasks", "Events", "Subscriptions", "Users" };
+
+static const int NumberOfTables = sizeof Tables / sizeof Tables[0];
+
+struct Field
+{
+	QString name;
+	QString type;
+};
+
+typedef Field Fields;
+const Field LastField =
+{ QString::null, QString::null};
+
+static const Fields MetaData_Fields[] =
+{
+{ "id", "INTEGER PRIMARY KEY" },
+{ "key", "VARCHAR( 128 ) NOT NULL" },
+{ "value", "VARCHAR( 128 )" }, LastField };
+
+static const Fields Installations_Fields[] =
+{
+{ "id", "INTEGER PRIMARY KEY" },
+{ "inst_id", "INTEGER" },
+{ "user_id", "INTEGER" },
+{ "name", "varchar(256)" }, LastField };
+
+static const Fields Tasks_Fields[] =
+{
+{ "id", "INTEGER PRIMARY KEY" },
+{ "task_id", "INTEGER UNIQUE" },
+{ "parent", "INTEGER" },
+{ "name", "varchar(256)" }, LastField };
+
+static const Fields Event_Fields[] =
+{
+{ "id", "INTEGER PRIMARY KEY" },
+{ "user_id", "INTEGER" },
+{ "event_id", "INTEGER" },
+{ "installation_id", "INTEGER" },
+{ "report_id", "INTEGER NULL" },
+{ "task", "INTEGER" },
+{ "comment", "varchar(256)" },
+{ "start", "date" },
+{ "end", "date" }, LastField };
+
+static const Fields Subscriptions_Fields[] =
+{
+{ "id", "INTEGER PRIMARY KEY" },
+{ "user_id", "INTEGER" },
+{ "task", "INTEGER" }, LastField };
+
+static const Fields Users_Fields[] =
+{
+{ "id", "INTEGER PRIMARY KEY" },
+{ "user_id", "INTEGER UNIQUE" },
+{ "name", "varchar(256)" }, LastField };
+
+static const Fields* Database_Fields[NumberOfTables] =
+{ MetaData_Fields, Installations_Fields, Tasks_Fields, Event_Fields,
+		Subscriptions_Fields, Users_Fields };
+
 
 const char DatabaseName[] = "charm.kdab.net";
 
@@ -21,9 +87,56 @@ SqLiteStorage::~SqLiteStorage()
 {
 }
 
+QString SqLiteStorage::lastInsertRowFunction() const
+{
+	return QString::fromLocal8Bit("last_insert_rowid");
+}
+
+
 QString SqLiteStorage::description() const
 {
     return QObject::tr( "local database" );
+}
+
+bool SqLiteStorage::createDatabaseTables() 
+{
+	Q_ASSERT_X(database().open(), "SqlStorage::createDatabase",
+			"Connection to database must be established first");
+
+	bool error = false;
+	// create tables:
+	for (int i = 0; i < NumberOfTables; ++i)
+	{
+		if (!database().tables().contains(Tables[i]))
+		{
+			QString statement;
+			QTextStream stream(&statement, QIODevice::WriteOnly);
+
+			stream << "CREATE table  `" << Tables[i] << "` (";
+			const Field* field = Database_Fields[i];
+			while (field->name != QString::null )
+			{
+				stream << " `" << field->name << "` "
+				<< field->type;
+				++field;
+				if ( field->name != QString::null ) stream << ", ";
+			}
+			stream << ");";
+
+			QSqlQuery query( database() );
+			query.prepare( statement );
+			if ( ! runQuery( query ) )
+			{
+				error = true;
+			}
+		}
+	}
+
+	error = error || ! setMetaData(CHARM_DATABASE_VERSION_DESCRIPTOR, QString().setNum( CHARM_DATABASE_VERSION) );
+	// FIXME temp remove this:
+	// populateDatabase();
+
+	return ! error;
 }
 
 bool SqLiteStorage::connect( Configuration& configuration )
@@ -127,7 +240,7 @@ QSqlDatabase& SqLiteStorage::database()
 
 bool SqLiteStorage::createDatabase( Configuration& configuration )
 {
-    bool success = SqlStorage::createDatabase();
+    bool success = createDatabaseTables();
     if ( !success ) return false;
 
     // add installation id and user id:

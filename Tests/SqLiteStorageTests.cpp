@@ -165,6 +165,7 @@ void SqLiteStorageTests::makeModifyDeleteEventsTest()
     QVERIFY( event1.isValid() );
     event1.setTaskId( task.id() );
     event1.setUserId( user.id() );
+    event1.setReportId( 42 );
     const QString Event1Comment( "Event-1-Comment" );
     event1.setComment( Event1Comment );
 

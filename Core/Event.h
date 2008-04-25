@@ -33,6 +33,10 @@ public:
     int userId() const;
     
     void setUserId( int userId );
+    
+    int reportId() const;
+    
+    void setReportId( int userId );    
 
     void setInstallationId( int instId );
 
@@ -68,6 +72,10 @@ public:
 private:
 	/** The id of the user who owns the event. */
 	int m_userid;
+	/** The report id. This field is only usefull 
+	 * if the event is imported from a report.
+	 */
+	int m_reportid;
     /** The installation-unique id of the event. */
     int m_installationId;
     int m_id;

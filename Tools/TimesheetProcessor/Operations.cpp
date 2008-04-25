@@ -16,15 +16,17 @@
 void initializeDatabase(const CommandLine& cmd)
 {
 	using namespace std;
-	
+
 	cout << "Initializing database." << endl;
-	
+
 	Database database;
 	database.login();
-	
+
 	cout << "Logged in." << endl;
-	
+
 	database.initializeDatabase();
+
+	cout << "Database initialized." << endl;
 }
 
 void addTimesheet(const CommandLine& cmd)
@@ -79,11 +81,15 @@ void addTimesheet(const CommandLine& cmd)
 	database.login();
 
 	qDebug() << "TimesheetProcessor: adding timesheet" << cmd.index() << "for user" << cmd.userid();
-
 	// 3) map user id to database user id, installation id dito
-	// ...
+	Q_FOREACH( Event e, events )
+	{
+		e.setUserId( cmd.userid() );
+		e.setReportId( cmd.index());
+		database.addEvent( e );
+	}
+
 	// 4) add information to the database
-	// ...
 
 	// we are connected
 	// check for the user id
@@ -95,7 +101,8 @@ void addTimesheet(const CommandLine& cmd)
 
 void removeTimesheet(const CommandLine& cmd)
 {
-	// delete the time sheet: pretty straightforward
-
-	// done
+	Database database;
+	database.login();
+	database.deleteEventsForReport( cmd.index() );
 }
+

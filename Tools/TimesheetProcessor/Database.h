@@ -14,6 +14,8 @@ public:
 
 	void login() throw ( TimesheetProcessorException );
 	void initializeDatabase() throw ( TimesheetProcessorException );
+	void addEvent( const Event& event );
+	void deleteEventsForReport ( int index );
 	bool checkUserid( int id );
 private:
 	MySqlStorage m_storage;

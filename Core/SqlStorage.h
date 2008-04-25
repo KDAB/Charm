@@ -58,14 +58,18 @@ public:
     QString getMetaData( const QString& );
 
     bool verifyDatabase() throw ( UnsupportedDatabaseVersionException );
-    bool createDatabase();
+    virtual bool createDatabaseTables() = 0;
+    
+protected:
+	virtual QString lastInsertRowFunction() const = 0;
+
+    // run the query and process possible errors
+    bool runQuery( QSqlQuery& );
 
 private:
     //  a debug helper that populates the database with canned values:
     void populateDatabase();
 
-    // run the query and process possible errors
-    bool runQuery( QSqlQuery& );
 
     Event makeEventFromRecord( const QSqlRecord& );
 };
