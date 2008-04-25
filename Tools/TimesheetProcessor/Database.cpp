@@ -1,6 +1,8 @@
 #include <QSqlDatabase>
 #include <QSqlError>
+#include <QSqlQuery>
 #include <QObject>
+#include <QVariant>
 #include <QStringList>
 
 #include "Core/CharmExceptions.h"
@@ -80,7 +82,12 @@ void Database::addEvent(const Event& event)
 void Database::deleteEventsForReport(int index)
 {
 	// delete the time sheet: pretty straightforward
-	// QString statement = QString::fromLocal8Bit( "DELETE FROM EVENTS WHERE report_id = :index")
-	// done
-	assert( false);
+	QString statement = QString::fromLocal8Bit( "DELETE FROM EVENTS WHERE report_id = :index");
+	QSqlQuery query( m_storage.database() );
+	query.prepare( statement );
+	query.bindValue( ":index", index );
+	bool result = query.exec();
+	if( ! result ) {
+		throw TimesheetProcessorException("Failed to delete report");
+	}
 }

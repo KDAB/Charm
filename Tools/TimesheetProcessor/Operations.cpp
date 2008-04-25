@@ -101,8 +101,13 @@ void addTimesheet(const CommandLine& cmd)
 
 void removeTimesheet(const CommandLine& cmd)
 {
+	using namespace std;
+	cout << "Removing report " << cmd.index() << endl;
+	
 	Database database;
 	database.login();
 	database.deleteEventsForReport( cmd.index() );
+
+	cout << "Report " << cmd.index() << " removed" << endl;
 }
 
