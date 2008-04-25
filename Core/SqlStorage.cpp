@@ -19,8 +19,6 @@ static const QString Tables[] =
 
 static const int NumberOfTables = sizeof Tables / sizeof Tables[0];
 
-static const int DatabaseVersion = 1;
-
 struct Field
 {
 	QString name;
@@ -91,8 +89,6 @@ SqlStorage::~SqlStorage()
 
 bool SqlStorage::verifyDatabase() throw ( UnsupportedDatabaseVersionException )
 {
-	bool versionMatches = true;
-
 	for (int i = 0; i < NumberOfTables; ++i)
 	{
 		if (!database().tables().contains(Tables[i]))
@@ -268,12 +264,14 @@ Event SqlStorage::makeEventFromRecord(const QSqlRecord& record)
 
 	int idField = record.indexOf("event_id");
 	int instIdField = record.indexOf("installation_id");
+	int userIdField = record.indexOf("user_id");
 	int taskField = record.indexOf("task");
 	int commentField = record.indexOf("comment");
 	int startField = record.indexOf("start");
 	int endField = record.indexOf("end");
 
 	event.setId(record.field( idField ).value().toInt() );
+	event.setUserId( record.field( userIdField ).value().toInt() );
 	event.setInstallationId( record.field ( instIdField ).value().toInt() );
 	event.setTaskId( record.field( taskField ).value().toInt() );
 	event.setComment( record.field( commentField ).value().toString() );
@@ -314,7 +312,7 @@ Event SqlStorage::makeEvent()
 
 	{ // insert a new record in the database
 		const char* statement = "INSERT into Events values "
-			"( NULL, NULL, NULL, NULL, NULL, NULL, NULL );";
+			"( NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL );";
 		QSqlQuery query(database());
 		query.prepare(statement);
 		result = runQuery(query);
@@ -392,9 +390,10 @@ bool SqlStorage::modifyEvent(const Event& event)
 {
 	QSqlQuery query(database());
 	query.prepare("UPDATE Events set task = :task, comment = :comment, "
-		"start = :start, end = :end "
+		"start = :start, end = :end, user_id = :user "
 		"where event_id = :id;");
 	query.bindValue(":id", event.id());
+	query.bindValue(":user", event.userId());
 	query.bindValue(":task", event.taskId());
 	query.bindValue(":comment", event.comment());
 	query.bindValue(":start", event.startDateTime());
@@ -688,7 +687,7 @@ Installation SqlStorage::createInstallation(const QString& name)
 	Installation installation;
 	{ // insert a new record in the database
 		const char* statement =
-				"INSERT into Installations values ( NULL, NULL, :name );";
+				"INSERT into Installations values ( NULL, NULL, NULL, :name );";
 		QSqlQuery query(database());
 		query.prepare(statement);
 		query.bindValue(":name", name);

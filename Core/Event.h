@@ -29,6 +29,10 @@ public:
     EventId id() const;
 
     void setId( EventId id );
+    
+    int userId() const;
+    
+    void setUserId( int userId );
 
     void setInstallationId( int instId );
 
@@ -62,6 +66,8 @@ public:
     static Event fromXml( const QDomElement& ) throw ( XmlSerializationException );
 
 private:
+	/** The id of the user who owns the event. */
+	int m_userid;
     /** The installation-unique id of the event. */
     int m_installationId;
     int m_id;

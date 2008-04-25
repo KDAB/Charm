@@ -150,6 +150,8 @@ void SqLiteStorageTests::makeModifyDeleteTasksTest()
 
 void SqLiteStorageTests::makeModifyDeleteEventsTest()
 {
+	// make a user
+    User user = m_storage->makeUser( tr("MakeEventTestUser") );
     // make two events
     Task task = m_storage->getTask( 1 );
     // WARNING: depends on leftover task created in previous test
@@ -158,12 +160,14 @@ void SqLiteStorageTests::makeModifyDeleteEventsTest()
     Event event1 = m_storage->makeEvent();
     QVERIFY( event1.isValid() );
     event1.setTaskId( task.id() );
+    event1.setUserId( user.id() );
     const QString Event1Comment( "Event-1-Comment" );
     event1.setComment( Event1Comment );
 
     Event event2 = m_storage->makeEvent();
     QVERIFY( event2.isValid() );
     event2.setTaskId( task.id() );
+    event2.setUserId( user.id() );
     const QString Event2Comment( "Event-2-Comment" );
     event2.setComment( Event2Comment );
 
