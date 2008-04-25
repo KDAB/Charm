@@ -40,13 +40,16 @@ void SqLiteStorageTests::connectAndCreateDatabaseTest()
 
 void SqLiteStorageTests::makeModifyDeleteInstallationTest()
 {
+	int userId = 42;
     // make two installation ids:
     QString name1 = "Installation-1";
     Installation installation1 = m_storage->createInstallation( name1 );
+    installation1.setUserId( userId );
     QVERIFY( installation1.isValid() );
     QVERIFY( installation1.name() == name1 );
     QString name2 = "Installation-2";
     Installation installation2 = m_storage->createInstallation( name2 );
+    installation1.setUserId( userId );
     QVERIFY( installation2.isValid() );
     QVERIFY( installation2.name() == name2 );
     // modify installation 1:
@@ -57,7 +60,8 @@ void SqLiteStorageTests::makeModifyDeleteInstallationTest()
     // verify installation 1 database entry:
     Installation installation1_1 = m_storage->getInstallation( installation1.id() );
     QVERIFY( installation1.id() == installation1_1.id() );
-    QVERIFY( installation1_1.name() == newName );
+    QVERIFY( installation1.userId() == installation1_1.userId() );
+	QVERIFY( installation1_1.name() == newName );
 
     // delete installation 1
     QVERIFY( m_storage->deleteInstallation( installation1 ) );

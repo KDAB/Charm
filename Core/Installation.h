@@ -6,31 +6,48 @@
 class Installation
 {
 public:
-    Installation() : m_id( 0 ) {}
+	Installation() : m_id(), m_userId()
+	{}
 
-    bool isValid() const {
-        return m_id != 0;
-    }
+	bool isValid() const
+	{
+		return m_id != 0;
+	}
 
-    int id() const {
-        return m_id;
-    }
+	int id() const
+	{
+		return m_id;
+	}
 
-    void setId( int newid ) {
-        m_id = newid;
-    }
+	void setId( int newid )
+	{
+		m_id = newid;
+	}
 
-    QString name() const {
-        return m_name;
-    }
+	int userId() const
+	{
+		return m_userId;
+	}
 
-    void setName( const QString& newname ) {
-        m_name = newname;
-    }
+	void setUserId( int userId )
+	{
+		m_userId = userId;
+	}
+
+	QString name() const
+	{
+		return m_name;
+	}
+
+	void setName( const QString& newname )
+	{
+		m_name = newname;
+	}
 
 private:
-    int m_id;
-    QString m_name;
+	int m_id;
+	int m_userId;
+	QString m_name;
 };
 
 #endif

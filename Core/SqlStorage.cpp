@@ -87,7 +87,7 @@ SqlStorage::~SqlStorage()
 {
 }
 
-bool SqlStorage::verifyDatabase() throw ( UnsupportedDatabaseVersionException )
+bool SqlStorage::verifyDatabase() throw (UnsupportedDatabaseVersionException )
 {
 	for (int i = 0; i < NumberOfTables; ++i)
 	{
@@ -751,8 +751,10 @@ Installation SqlStorage::getInstallation(int installationId)
 		Installation installation;
 		int idField = query.record().indexOf("inst_id");
 		int nameField = query.record().indexOf("name");
+		int userIdField = query.record().indexOf("user_id");
 		installation.setId(query.value(idField).toInt());
 		installation.setName(query.value(nameField).toString());
+		installation.setUserId(query.value(userIdField).toInt());
 		Q_ASSERT(installation.isValid());
 		return installation;
 	}
@@ -766,9 +768,10 @@ bool SqlStorage::modifyInstallation(const Installation& installation)
 {
 	QSqlQuery query(database());
 	const char statement[] =
-			"UPDATE Installations SET name = :name WHERE inst_id = :id;";
+			"UPDATE Installations SET name = :name, user_id = :user WHERE inst_id = :id;";
 	query.prepare(statement);
 	query.bindValue(":name", installation.name());
+	query.bindValue(":user", installation.userId());
 	query.bindValue(":id", installation.id());
 
 	return runQuery(query);
