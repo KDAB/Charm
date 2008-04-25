@@ -3,6 +3,7 @@
 
 #include <QString>
 
+#include "Core/Task.h"
 #include "Core/MySqlStorage.h"
 #include "Exceptions.h"
 
@@ -16,7 +17,10 @@ public:
 	void initializeDatabase() throw ( TimesheetProcessorException );
 	void addEvent( const Event& event );
 	void deleteEventsForReport ( int index );
-	bool checkUserid( int id );
+	void checkUserid( int id ) throw (TimesheetProcessorException );
+	Task getTask( int taskid ) throw (TimesheetProcessorException );
+	QSqlDatabase& database();
+
 private:
 	MySqlStorage m_storage;
 };

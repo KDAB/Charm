@@ -18,6 +18,28 @@ Database::~Database()
 {
 }
 
+void Database::checkUserid( int id ) throw (TimesheetProcessorException )
+{
+	User user = m_storage.getUser(id );
+	if( ! user.isValid()  ) {
+		throw TimesheetProcessorException( "No such user");
+	}
+}
+
+Task Database::getTask( int taskid ) throw (TimesheetProcessorException )
+{
+	Task task = m_storage.getTask( taskid );
+	if( ! task.isValid() ) {
+		throw TimesheetProcessorException( "Invalid task in report");
+	}
+	return task;
+}
+
+
+QSqlDatabase& Database::database()
+{
+	return m_storage.database();
+}
 void Database::login() throw (TimesheetProcessorException )
 {
 	QString name("timecheater");

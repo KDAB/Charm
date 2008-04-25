@@ -7,6 +7,7 @@
 #include <QSqlDatabase>
 
 #include "Core/Event.h"
+#include "Core/SqlRaiiTransactor.h"
 
 #include "CommandLine.h"
 #include "Operations.h"
@@ -21,7 +22,6 @@ void initializeDatabase(const CommandLine& cmd)
 
 	Database database;
 	database.login();
-
 	cout << "Logged in." << endl;
 
 	database.initializeDatabase();
@@ -31,6 +31,10 @@ void initializeDatabase(const CommandLine& cmd)
 
 void addTimesheet(const CommandLine& cmd)
 {
+	using namespace std;
+	cout << "Adding report " << cmd.index() << " for user " << cmd.userid()
+			<< endl;
+
 	// load the time sheet:
 	QFile file(cmd.filename() );
 	if ( !file.exists() )
@@ -80,30 +84,28 @@ void addTimesheet(const CommandLine& cmd)
 	Database database;
 	database.login();
 
-	qDebug() << "TimesheetProcessor: adding timesheet" << cmd.index() << "for user" << cmd.userid();
-	// 3) map user id to database user id, installation id dito
+	// check for the user id
+	database.checkUserid(cmd.userid());
+
+	SqlRaiiTransactor transaction( database.database() );
 	Q_FOREACH( Event e, events )
 	{
+		// check for the project code, if this does not throw an exception, the task id exists
+		Task task = database.getTask( e.taskId());
+		// FIXME check for reporting period for the task, not implemented in the DB
 		e.setUserId( cmd.userid() );
 		e.setReportId( cmd.index());
 		database.addEvent( e );
 	}
-
-	// 4) add information to the database
-
-	// we are connected
-	// check for the user id
-	// ...
-	// FIXME maybe check project codes?
-	// ...
-	// FIXME 
+	transaction.commit();
+	cout << "Report added" << endl;
 }
 
 void removeTimesheet(const CommandLine& cmd)
 {
 	using namespace std;
 	cout << "Removing report " << cmd.index() << endl;
-	
+
 	Database database;
 	database.login();
 	database.deleteEventsForReport( cmd.index() );
