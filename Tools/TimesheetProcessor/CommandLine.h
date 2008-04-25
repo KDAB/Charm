@@ -10,6 +10,7 @@ public:
 	
 	enum Mode {
 		Mode_None,
+		Mode_InitializeDatabase,
 		Mode_DescribeUsage,
 		Mode_AddTimesheet,
 		Mode_RemoveTimesheet,

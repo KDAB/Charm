@@ -31,9 +31,9 @@ const Field LastField =
 
 static const Fields MetaData_Fields[] =
 {
-{ "id", "INTEGER PRIMARY KEY" },
-{ "key", "varchar(128) UNIQUE" },
-{ "value", "value(128)" }, LastField };
+{ "id", "INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY" },
+{ "key", "VARCHAR( 128 ) NOT NULL" },
+{ "value", "VARCHAR( 128 )" }, LastField };
 
 static const Fields Installations_Fields[] =
 {
@@ -129,11 +129,11 @@ bool SqlStorage::createDatabase()
 			QString statement;
 			QTextStream stream(&statement, QIODevice::WriteOnly);
 
-			stream << "CREATE table " << Tables[i] << " (";
+			stream << "CREATE table  `" << Tables[i] << "` (";
 			const Field* field = Database_Fields[i];
 			while (field->name != QString::null )
 			{
-				stream << "\"" << field->name << "\" "
+				stream << " `" << field->name << "` "
 				<< field->type;
 				++field;
 				if ( field->name != QString::null ) stream << ", ";
@@ -141,6 +141,7 @@ bool SqlStorage::createDatabase()
 			stream << ");";
 
 			QSqlQuery query( database() );
+			qDebug() << statement;
 			query.prepare( statement );
 			if ( ! runQuery( query ) )
 			{
@@ -422,7 +423,7 @@ bool SqlStorage::deleteAllEvents()
 
 bool SqlStorage::runQuery(QSqlQuery& query)
 {
-	static const bool DoChitChat = false;
+	static const bool DoChitChat = true;
 	if (DoChitChat)
 		qDebug() << MARKER << endl << "SqlStorage::runQuery: executing query:"
 				<< endl << query.executedQuery();
@@ -793,7 +794,7 @@ bool SqlStorage::setMetaData(const QString& key, const QString& value)
 	bool result;
 	{
 		QSqlQuery query(database());
-		const char statement[] = "SELECT * FROM MetaData WHERE key = :key;";
+		const char statement[] = "SELECT * FROM MetaData WHERE 'key' = :key;";
 		query.prepare(statement);
 		query.bindValue(":key", key);
 		if (runQuery(query) && query.next())

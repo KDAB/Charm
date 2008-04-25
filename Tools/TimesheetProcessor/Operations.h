@@ -4,6 +4,8 @@
 /* Define functions that implement the operations of the time sheet processor. */
 class CommandLine;
 
+void initializeDatabase( const CommandLine& cmd );
+
 void addTimesheet(const CommandLine& cmd);
 
 void removeTimesheet(const CommandLine& cmd);

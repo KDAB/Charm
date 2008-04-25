@@ -16,7 +16,7 @@ CommandLine::CommandLine(int argc, char** argv) :
 {
 	opterr = 0;
 	char ch;
-	while ((ch = getopt(argc, argv, "ha:ri:u:")) != -1)
+	while ((ch = getopt(argc, argv, "hza:ri:u:")) != -1)
 	{
 		if (ch == '?')
 		{
@@ -24,23 +24,23 @@ CommandLine::CommandLine(int argc, char** argv) :
 			char option = optopt;
 			if (option == 'a')
 			{
-				throw new UsageException
+				throw UsageException
 				(QObject::tr("Option -a requires a filename argument"));
 			}
 			if (option == 'i')
 			{
-				throw new UsageException
+				throw UsageException
 				(QObject::tr("Option -i requires an index argument"));
 			}
 			if (isprint(option))
 			{
-				throw new UsageException
+				throw UsageException
 				(QObject::tr("Unknown option %1").arg(option));
 			}
 			else
 			{
 				int code = static_cast<int>(option);
-				throw new UsageException
+				throw UsageException
 				(QObject::tr("Unknown character %1").arg(code));
 			}
 		}
@@ -54,7 +54,7 @@ CommandLine::CommandLine(int argc, char** argv) :
 					QString
 							msg =
 									QObject::tr("Multiple mode selections, please use only one");
-					throw new UsageException(msg);
+					throw UsageException(msg);
 				}
 				// mode
 				m_filename = QString::fromLocal8Bit(optarg);
@@ -67,7 +67,7 @@ CommandLine::CommandLine(int argc, char** argv) :
 					QString
 							msg =
 									QObject::tr("Multiple mode selections, please use only one");
-					throw new UsageException(msg);
+					throw UsageException(msg);
 				}
 				m_mode = Mode_RemoveTimesheet;
 				break;
@@ -78,7 +78,7 @@ CommandLine::CommandLine(int argc, char** argv) :
 					QString
 							msg =
 									QObject::tr("Multiple user id selections, please use only one");
-					throw new UsageException(msg);
+					throw UsageException(msg);
 				}
 
 				QString arg = QString::fromLocal8Bit(optarg);
@@ -86,7 +86,7 @@ CommandLine::CommandLine(int argc, char** argv) :
 				m_userid = arg.toInt(&ok);
 				if ( !ok || m_userid < 1)
 				{
-					throw new UsageException
+					throw UsageException
 					(QObject::tr("Argument to option -u must be an integer user id larger than zero"));
 				}
 				break;
@@ -99,7 +99,7 @@ CommandLine::CommandLine(int argc, char** argv) :
 					QString
 							msg =
 									QObject::tr("Multiple index selections, please use only one");
-					throw new UsageException(msg);
+					throw UsageException(msg);
 				}
 
 				QString arg = QString::fromLocal8Bit(optarg);
@@ -107,11 +107,15 @@ CommandLine::CommandLine(int argc, char** argv) :
 				m_index = arg.toInt(&ok);
 				if ( !ok || m_index < 1)
 				{
-					throw new UsageException
+					throw UsageException
 					(QObject::tr("Argument to option -i must be an integer index larger than zero"));
 				}
 				break;
 			}
+			case 'z':
+				// initialize the database
+				m_mode = Mode_InitializeDatabase;
+				break;
 			case 'h':
 			default:
 				// help/usage
@@ -128,7 +132,7 @@ CommandLine::CommandLine(int argc, char** argv) :
 		{
 			msg += QObject::tr("Unknown extra argument \"%1\"\n").arg(argv[index]);
 		}
-		throw new UsageException(msg);
+		throw UsageException(msg);
 	}
 
 	// final checks:
@@ -154,7 +158,7 @@ CommandLine::CommandLine(int argc, char** argv) :
 	
 	if ( !msg.isEmpty() )
 	{
-		throw new UsageException(msg);
+		throw UsageException(msg);
 	}
 }
 
@@ -188,5 +192,7 @@ void CommandLine::usage()
 			<< "   * TimesheetProzessor -a filename -i index -u userid  <-- add timesheet from file with index"
 			<< endl
 			<< "   * TimesheetProzessor -r -i index -u userid           <-- remove timesheet at index"
+			<< endl
+			<< "   * TimesheetProzessor -z                              <-- initialize database (careful!)"
 			<< endl;
 }

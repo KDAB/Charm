@@ -1,6 +1,9 @@
 #include <QSqlDatabase>
 #include <QSqlError>
 #include <QObject>
+#include <QStringList>
+
+#include "Core/CharmExceptions.h"
 
 #include "Database.h"
 #include "Exceptions.h"
@@ -13,7 +16,7 @@ Database::~Database()
 {
 }
 
-void Database::login()
+void Database::login() throw ( TimesheetProcessorException )
 {
 	QString name("timecheater");
 	QString pass("polkadots");
@@ -21,15 +24,14 @@ void Database::login()
 	QString database("Charm");
 	const int port = 8889;
 	
-	QSqlDatabase db = QSqlDatabase::addDatabase("QMYSQL");
-	db.setHostName( host );
-	db.setDatabaseName( database);
-	db.setUserName(name);
-	db.setPassword(pass);
-	db.setPort(port);
-	bool ok = db.open();
+	m_storage.database().setHostName( host );
+	m_storage.database().setDatabaseName( database);
+	m_storage.database().setUserName(name);
+	m_storage.database().setPassword(pass);
+	m_storage.database().setPort(port);
+	bool ok = m_storage.database().open();
 	if (!ok) {
-		QSqlError error = db.lastError();
+		QSqlError error = m_storage.database().lastError();
 		
 		QString msg = QObject::tr("Cannot connect to database %1 on host %2, database said "
 				"\"%3\", driver said \"%4\"")
@@ -37,6 +39,20 @@ void Database::login()
 			.arg(host)
 			.arg(error.driverText())
 			.arg(error.databaseText());
-		throw new TimesheetProcessorException( msg);
+		throw TimesheetProcessorException( msg);
 	}
 }
+
+void Database::initializeDatabase() throw ( TimesheetProcessorException )
+{
+	try {
+		QStringList tables = m_storage.database().tables();
+		if( ! tables.empty() ) {
+			throw TimesheetProcessorException( "The database is not empty. Only empty databases can be automatically initialized.");
+		}
+		m_storage.SqlStorage::createDatabase();
+	} catch ( UnsupportedDatabaseVersionException& e ) {
+		throw TimesheetProcessorException( e.what() );
+	}
+}
+

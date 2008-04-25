@@ -57,7 +57,6 @@ public:
     bool setMetaData( const QString&,  const QString& );
     QString getMetaData( const QString& );
 
-protected:
     bool verifyDatabase() throw ( UnsupportedDatabaseVersionException );
     bool createDatabase();
 

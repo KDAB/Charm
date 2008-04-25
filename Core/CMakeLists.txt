@@ -21,6 +21,7 @@ IF ( QT4_FOUND )
 		       CharmConstants.cpp
 		       Controller.cpp
 		       SqLiteStorage.cpp
+               MySqlStorage.cpp
 		       Configuration.cpp
 		       SqlStorage.cpp
 		       Event.cpp
