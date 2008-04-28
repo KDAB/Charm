@@ -190,6 +190,7 @@ void MainWindow::slotShowHideView()
         m_reportDialog.hide();
     } else {
         restore();
+        raise();
     }
 }
 
