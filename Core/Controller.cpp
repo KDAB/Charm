@@ -327,8 +327,14 @@ QString Controller::importDatabaseFromXml( const QDomDocument& document )
     // (not touching the DB contents):
     TaskList importedTasks;
     EventList importedEvents;
+    int databaseSchemaVersion;
+
     try {
         QDomElement rootElement = document.documentElement();
+        bool ok;
+        databaseSchemaVersion = rootElement.attribute( "version" ).toInt( &ok );
+        if ( !ok ) throw XmlSerializationException( "Syntax error, no version attribute found." );
+
         QDomElement metadataElement = rootElement.firstChildElement( MetaDataElement );
         QDomElement tasksElement = rootElement.firstChildElement( TasksElement );
         // FIXME refactor XML element names into CharmConstants or

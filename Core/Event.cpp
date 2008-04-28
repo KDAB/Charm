@@ -171,7 +171,7 @@ QDomElement Event::toXml( QDomDocument document ) const
     return element;
 }
 
-Event Event::fromXml( const QDomElement& element ) throw ( XmlSerializationException )
+Event Event::fromXml( const QDomElement& element, int databaseSchemaVersion ) throw ( XmlSerializationException )
 {   // in case any event object creates trouble with
     // serialization/deserialization, add an object of it to
     // void XmlSerializationTests::testEventSerialization()
@@ -185,9 +185,15 @@ Event Event::fromXml( const QDomElement& element ) throw ( XmlSerializationExcep
     event.setTaskId( element.attribute( EventTaskIdAttribute ).toInt( &ok ) );
     if ( !ok ) throw XmlSerializationException( "Event::fromXml: invalid task id" );
     event.setUserId( element.attribute( EventUserIdAttribute ).toInt( &ok ) );
-    if ( !ok ) throw XmlSerializationException( "Event::fromXml: invalid user id" );
+    if ( !ok and databaseSchemaVersion > 1 ) {
+        throw XmlSerializationException( "Event::fromXml: invalid user id" );
+        event.setUserId( 0 );
+    }
     event.setReportId( element.attribute( EventReportIdAttribute ).toInt( &ok ) );
-    if ( !ok ) throw XmlSerializationException( "Event::fromXml: invalid report id" );
+    if ( !ok and databaseSchemaVersion > 1 ) {
+        throw XmlSerializationException( "Event::fromXml: invalid report id" );
+        event.setReportId( 0 );
+    }
     if ( element.hasAttribute( EventStartAttribute ) ) {
         QDateTime start = QDateTime::fromString( element.attribute( EventStartAttribute ), Qt::ISODate );
         if ( !start.isValid() ) throw XmlSerializationException( "Event::fromXml: invalid start date" );

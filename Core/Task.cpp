@@ -107,10 +107,11 @@ QDomElement Task::toXml( QDomDocument document ) const
     return element;
 }
 
-Task Task::fromXml( const QDomElement& element ) throw( XmlSerializationException )
+Task Task::fromXml( const QDomElement& element, int databaseSchemaVersion ) throw( XmlSerializationException )
 {   // in case any task object creates trouble with
     // serialization/deserialization, add an object of it to
     // void XmlSerializationTests::testTaskSerialization()
+    Q_UNUSED( databaseSchemaVersion ); // task no relevant schema changes yet
     Task task;
     bool ok;
     task.setName( element.text() );

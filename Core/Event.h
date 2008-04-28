@@ -29,14 +29,14 @@ public:
     EventId id() const;
 
     void setId( EventId id );
-    
+
     int userId() const;
-    
+
     void setUserId( int userId );
-    
+
     int reportId() const;
-    
-    void setReportId( int userId );    
+
+    void setReportId( int userId );
 
     void setInstallationId( int instId );
 
@@ -67,12 +67,12 @@ public:
 
     QDomElement toXml( QDomDocument ) const;
 
-    static Event fromXml( const QDomElement& ) throw ( XmlSerializationException );
+    static Event fromXml( const QDomElement&,  int databaseSchemaVersion = 1 ) throw ( XmlSerializationException );
 
 private:
 	/** The id of the user who owns the event. */
 	int m_userid;
-	/** The report id. This field is only usefull 
+	/** The report id. This field is only usefull
 	 * if the event is imported from a report.
 	 */
 	int m_reportid;

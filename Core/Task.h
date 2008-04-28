@@ -47,7 +47,7 @@ public:
 
     QDomElement toXml( QDomDocument ) const;
 
-    static Task fromXml( const QDomElement& ) throw( XmlSerializationException );
+    static Task fromXml( const QDomElement&, int databaseSchemaVersion = 1  ) throw( XmlSerializationException );
 
 private:
     int m_id;
