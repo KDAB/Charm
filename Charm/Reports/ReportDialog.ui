@@ -84,7 +84,7 @@
          <item>
           <widget class="QPushButton" name="pushButtonCancel" >
            <property name="text" >
-            <string>Cancel</string>
+            <string>&amp;Cancel</string>
            </property>
           </widget>
          </item>
@@ -104,7 +104,7 @@
          <item>
           <widget class="QPushButton" name="pushButtonNext" >
            <property name="text" >
-            <string>Next...</string>
+            <string>&amp;Next...</string>
            </property>
           </widget>
          </item>
