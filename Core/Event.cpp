@@ -185,12 +185,12 @@ Event Event::fromXml( const QDomElement& element, int databaseSchemaVersion ) th
     event.setTaskId( element.attribute( EventTaskIdAttribute ).toInt( &ok ) );
     if ( !ok ) throw XmlSerializationException( "Event::fromXml: invalid task id" );
     event.setUserId( element.attribute( EventUserIdAttribute ).toInt( &ok ) );
-    if ( !ok and databaseSchemaVersion > 1 ) {
+    if ( !ok && databaseSchemaVersion > 1 ) {
         throw XmlSerializationException( "Event::fromXml: invalid user id" );
         event.setUserId( 0 );
     }
     event.setReportId( element.attribute( EventReportIdAttribute ).toInt( &ok ) );
-    if ( !ok and databaseSchemaVersion > 1 ) {
+    if ( !ok && databaseSchemaVersion > 1 ) {
         throw XmlSerializationException( "Event::fromXml: invalid report id" );
         event.setReportId( 0 );
     }
