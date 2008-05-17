@@ -66,7 +66,13 @@ void addTimesheet(const CommandLine& cmd)
 	// add it to the database:
 	// 1) make a list of all the events:
 	EventList events;
+	int totalSeconds = 0;
 	QDomElement charmReportElement = doc.firstChildElement("charmreport");
+	QDomElement metadataElement = charmReportElement.firstChildElement("metadata");
+	QDomElement yearElement = metadataElement.firstChildElement("year");
+	QString year = yearElement.text().simplified();
+	QDomElement weekElement = metadataElement.firstChildElement("serial-number");
+	QString week = weekElement.text().simplified();
 	QDomElement reportElement = charmReportElement.firstChildElement("report");
 	QDomElement effortElement = reportElement.firstChildElement("effort");
 	if( effortElement.isNull() )
@@ -106,9 +112,13 @@ void addTimesheet(const CommandLine& cmd)
 		e.setUserId( cmd.userid() );
 		e.setReportId( cmd.index());
 		database.addEvent( e );
+		totalSeconds += e.duration();
 	}
 	transaction.commit();
-	cout << "Report added" << endl;
+	cout << "Report added" << endl
+		<< "total:" << totalSeconds << endl
+		<< "year:" << year.toLocal8Bit().constData() << endl
+		<< "week:" << week.toLocal8Bit().constData() << endl;
 }
 
 void removeTimesheet(const CommandLine& cmd)
