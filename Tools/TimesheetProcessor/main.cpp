@@ -22,6 +22,9 @@ int main(int argc, char** argv)
 		case CommandLine::Mode_InitializeDatabase:
 			initializeDatabase(cmd);
 			break;
+		case CommandLine::Mode_CheckOrCreateUser:
+			checkOrCreateUser(cmd);
+			break;
 		case CommandLine::Mode_AddTimesheet:
 			addTimesheet(cmd);
 			break;

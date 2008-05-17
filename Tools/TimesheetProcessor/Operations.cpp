@@ -6,6 +6,7 @@
 #include <QDomDocument>
 #include <QSqlDatabase>
 
+#include "Core/User.h"
 #include "Core/Event.h"
 #include "Core/SqlRaiiTransactor.h"
 
@@ -27,6 +28,15 @@ void initializeDatabase(const CommandLine& cmd)
 	database.initializeDatabase();
 
 	cout << "Database initialized." << endl;
+}
+
+void checkOrCreateUser(const CommandLine& cmd)
+{
+	using namespace std;
+	Database database;
+	database.login();
+	User user = database.getOrCreateUserByName( cmd.userName( ));
+	cout << user.id() << endl;
 }
 
 void addTimesheet(const CommandLine& cmd)
@@ -73,7 +83,7 @@ void addTimesheet(const CommandLine& cmd)
 			events << e;
 			// e.dump();
 		}
-		catch(XmlSerializationException e )
+		catch(XmlSerializationException& e )
 		{
 			QString msg = QObject::tr("Syntax error in file %1.").arg(cmd.filename());
 			throw TimesheetProcessorException( msg);

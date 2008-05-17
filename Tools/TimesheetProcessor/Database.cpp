@@ -1,6 +1,7 @@
 #include <QSqlDatabase>
 #include <QSqlError>
 #include <QSqlQuery>
+#include <QSqlRecord>
 #include <QObject>
 #include <QVariant>
 #include <QStringList>
@@ -21,10 +22,38 @@ Database::~Database()
 void Database::checkUserid( int id ) throw (TimesheetProcessorException )
 {
 	User user = m_storage.getUser(id );
-	if( ! user.isValid()  ) {
+	if( ! user.isValid() ) {
 		throw TimesheetProcessorException( "No such user");
 	}
 }
+
+User Database::getOrCreateUserByName( QString name ) throw (TimesheetProcessorException )
+{
+	User user;
+	QSqlQuery query(database());
+	const char* statement = "SELECT user_id from Users WHERE name = :user_name;";
+	query.prepare(statement);
+	query.bindValue(":user_name", name);
+	bool result = query.exec();
+	if (result)
+	{
+		if (query.next())
+		{
+			int userIdPosition = query.record().indexOf("user_id");
+			Q_ASSERT(userIdPosition != -1);
+			int userId = query.value(userIdPosition).toInt();
+			user = m_storage.getUser(userId);
+		}
+		else
+		{   // user with this name does not exist:
+			user = m_storage.makeUser(name); // that should work
+		}
+	} else {
+		throw TimesheetProcessorException( "Cannot execute query for user name");
+	}
+	return user;
+}
+
 
 Task Database::getTask( int taskid ) throw (TimesheetProcessorException )
 {

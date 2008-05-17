@@ -11,6 +11,7 @@ public:
 	enum Mode {
 		Mode_None,
 		Mode_InitializeDatabase,
+		Mode_CheckOrCreateUser,
 		Mode_DescribeUsage,
 		Mode_AddTimesheet,
 		Mode_RemoveTimesheet,
@@ -21,6 +22,8 @@ public:
 	
 	QString filename() const;
 	
+	QString userName() const;
+	
 	int userid() const;
 	
 	int index() const;
@@ -30,6 +33,7 @@ public:
 	
 private:
 	QString m_filename;
+	QString m_userName;
 	Mode m_mode;
 	int m_index;
 	int m_userid;
