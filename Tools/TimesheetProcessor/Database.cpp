@@ -130,13 +130,14 @@ void Database::addEvent(const Event& event)
 	}
 }
 
-void Database::deleteEventsForReport(int index)
+void Database::deleteEventsForReport( int userid, int index)
 {
 	// delete the time sheet: pretty straightforward
-	QString statement = QString::fromLocal8Bit( "DELETE FROM EVENTS WHERE report_id = :index");
+	QString statement = QString::fromLocal8Bit( "DELETE FROM Events WHERE report_id = :index and user_id = :userid");
 	QSqlQuery query( m_storage.database() );
 	query.prepare( statement );
 	query.bindValue( ":index", index );
+	query.bindValue( ":userid", userid );
 	bool result = query.exec();
 	if( ! result ) {
 		throw TimesheetProcessorException("Failed to delete report");

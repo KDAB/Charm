@@ -128,7 +128,7 @@ void removeTimesheet(const CommandLine& cmd)
 
 	Database database;
 	database.login();
-	database.deleteEventsForReport( cmd.index() );
+	database.deleteEventsForReport( cmd.userid(), cmd.index() );
 
 	cout << "Report " << cmd.index() << " removed" << endl;
 }
