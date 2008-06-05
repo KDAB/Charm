@@ -56,8 +56,8 @@ static const Fields Event_Fields[] =
 { "report_id", "INTEGER NULL" },
 { "task", "INTEGER" },
 { "comment", "varchar(256)" },
-{ "start", "date" },
-{ "end", "date" }, LastField };
+{ "start", "timestamp" },
+{ "end", "timestamp" }, LastField };
 
 static const Fields Subscriptions_Fields[] =
 {
