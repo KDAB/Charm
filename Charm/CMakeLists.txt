@@ -5,6 +5,7 @@ IF ( QT4_FOUND )
    INCLUDE_DIRECTORIES( ${QT_QTSQL_INCLUDE_DIR} )
    INCLUDE_DIRECTORIES( ${QT_QTXML_INCLUDE_DIR} )
    INCLUDE_DIRECTORIES( .. )
+   include (${QT_USE_FILE})
 
    LINK_LIBRARIES( ${QT_QTCORE_LIBRARY} )
    LINK_LIBRARIES( ${QT_QTGUI_LIBRARY} )
@@ -80,8 +81,7 @@ IF ( QT4_FOUND )
 
     ADD_LIBRARY( CharmApplication STATIC 
 		       ${CharmApplication_SRCS}
-		       ${UiGenerated_SRCS} 
-		       ${Resources_SRCS} )
+		       ${UiGenerated_SRCS} )
 
     SET( Charm_SRCS Charm.cpp )
     QT4_AUTOMOC (${Charm_SRCS} )
@@ -99,9 +99,15 @@ IF ( QT4_FOUND )
 		SET( CMAKE_MODULE_PATH ${Charm_SOURCE_DIR}/Charm/ ${CMAKE_MODULE_PATH} )
 	ENDIF( APPLE)
 
-    ADD_EXECUTABLE( Charm MACOSX_BUNDLE ${Charm_SRCS} )
+    ADD_EXECUTABLE( Charm MACOSX_BUNDLE ${Charm_SRCS} ${Resources_SRCS} )
     TARGET_LINK_LIBRARIES( Charm CharmApplication )
     TARGET_LINK_LIBRARIES( Charm CharmCore )
+    TARGET_LINK_LIBRARIES( Charm ${QT_LIBRARIES} )
+    IF( CHARM_BUILD_STATIC_QT )
+    	FIND_LIBRARY( QT_JPEG_PLUGINLIBRARY NAMES qjpeg qjpeg_debug PATHS ${QT_PLUGINS_DIR}/imageformats )
+	    TARGET_LINK_LIBRARIES( Charm ${QT_JPEG_PLUGINLIBRARY} )
+    	MESSAGE( "Linking static Qt JPG plugin for this static build." )
+    ENDIF( CHARM_BUILD_STATIC_QT )
     IF(APPLE)
         INSTALL( TARGETS Charm DESTINATION /Applications )
     ELSE(APPLE)

@@ -5,6 +5,11 @@ SET(QT_MIN_VERSION "4.3.1")
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 FIND_PACKAGE( Qt4 REQUIRED )
 ENABLE_TESTING()
+#
+# NOTE: 
+# If you are building against a static Qt, you need to set an extra variable on 
+# the command line: CHARM_BUILD_STATIC_QT:BOOL=ON
+# 
 # we do not set this anymore, turn it of by providing the option on
 # the cmake command line ( -DCMAKE_COLOR_MAKEFILE=off )
 # SET( CMAKE_COLOR_MAKEFILE off )
@@ -28,6 +33,9 @@ set(CMAKE_INCLUDE_DIRECTORIES_PROJECT_BEFORE ON)
 #    MESSAGE( "Building Revision ${Charm_WC_REVISION} of Charm" )
 #    MESSAGE( "Building from ${Charm_WC_URL}" )
 #ENDIF( Subversion_FOUND )
+IF (CMAKE_COMPILER_IS_GNUCXX)
+    ADD_DEFINITIONS( -fvisibility=hidden )
+ENDIF (CMAKE_COMPILER_IS_GNUCXX)
 
 ADD_SUBDIRECTORY( Core )
 ADD_SUBDIRECTORY( Charm )

@@ -7,6 +7,7 @@ IF ( QT4_FOUND )
    INCLUDE_DIRECTORIES( ${QT_QTSQL_INCLUDE_DIR} )
    INCLUDE_DIRECTORIES( ${QT_QTXML_INCLUDE_DIR} )
    INCLUDE_DIRECTORIES( ../Core )
+   include (${QT_USE_FILE})
 
    IF (CMAKE_COMPILER_IS_GNUCXX)
       ADD_DEFINITIONS( -Wall -Wundef -Wcast-align -Wconversion -Wchar-subscripts -Wpointer-arith 
@@ -30,6 +31,7 @@ IF ( QT4_FOUND )
    ADD_EXECUTABLE( SqLiteStorageTests ${SqLiteStorageTests_SRCS} )
 
    TARGET_LINK_LIBRARIES( SqLiteStorageTests ${QT_QTTEST_LIBRARY} )
+   TARGET_LINK_LIBRARIES( SqLiteStorageTests ${QT_LIBRARIES} )
 
    # ControllerTests
 
@@ -40,6 +42,7 @@ IF ( QT4_FOUND )
    ADD_EXECUTABLE( ControllerTests ${ControllerTests_SRCS} )
 
    TARGET_LINK_LIBRARIES( ControllerTests ${QT_QTTEST_LIBRARY} )
+   TARGET_LINK_LIBRARIES( ControllerTests ${QT_LIBRARIES} )
 
    # CharmDataModelTests
 
@@ -50,6 +53,7 @@ IF ( QT4_FOUND )
    ADD_EXECUTABLE( CharmDataModelTests ${CharmDataModelTests_SRCS} )
 
    TARGET_LINK_LIBRARIES( CharmDataModelTests ${QT_QTTEST_LIBRARY} )
+   TARGET_LINK_LIBRARIES( CharmDataModelTests ${QT_LIBRARIES} )
 
    # BackendIntegrationTests
    SET( BackendIntegrationTests_SRCS BackendIntegrationTests.cpp )
@@ -59,6 +63,7 @@ IF ( QT4_FOUND )
    ADD_EXECUTABLE( BackendIntegrationTests ${BackendIntegrationTests_SRCS} )
 
    TARGET_LINK_LIBRARIES( BackendIntegrationTests ${QT_QTTEST_LIBRARY} )
+   TARGET_LINK_LIBRARIES( BackendIntegrationTests ${QT_LIBRARIES} )
 
    # XML Serialization Tests:
    SET( XmlSerializationTests_SRCS XmlSerializationTests.cpp )
@@ -69,6 +74,7 @@ IF ( QT4_FOUND )
 
    TARGET_LINK_LIBRARIES( XmlSerializationTests ${QT_QTTEST_LIBRARY} )
    TARGET_LINK_LIBRARIES( XmlSerializationTests ${QT_QTXML_LIBRARY} )
+   TARGET_LINK_LIBRARIES( XmlSerializationTests ${QT_LIBRARIES} )
 
    # now add the tests:
    ADD_TEST( SqLiteStorageTests ${EXECUTABLE_OUTPUT_PATH}/SqLiteStorageTests )
