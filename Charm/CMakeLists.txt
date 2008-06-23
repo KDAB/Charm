@@ -108,11 +108,8 @@ IF ( QT4_FOUND )
 	    TARGET_LINK_LIBRARIES( Charm ${QT_JPEG_PLUGINLIBRARY} )
     	MESSAGE( "Linking static Qt JPG plugin for this static build." )
     ENDIF( CHARM_BUILD_STATIC_QT )
-    IF(APPLE)
-        INSTALL( TARGETS Charm DESTINATION /Applications )
-    ELSE(APPLE)
+    MESSAGE( "Charm will be installed to ${CMAKE_INSTALL_PREFIX}/bin" )
 	INSTALL( TARGETS Charm DESTINATION bin )
-    ENDIF(APPLE)
 
 ENDIF ( QT4_FOUND )
 
