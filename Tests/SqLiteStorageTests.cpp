@@ -1,5 +1,6 @@
 #include <QDir>
 #include <QFileInfo>
+#include <QDateTime>
 #include <QtTest/QtTest>
 
 #include <User.h>
@@ -115,9 +116,11 @@ void SqLiteStorageTests::makeModifyDeleteTasksTest()
     Task task1;
     task1.setId( Task1Id );
     task1.setName( Task1Name );
+    task1.setValidFrom( QDateTime::currentDateTime() );
     Task task2;
     task2.setId( Task2Id );
     task2.setName( Task2Name );
+    task2.setValidUntil( QDateTime::currentDateTime() );
     QVERIFY( m_storage->getAllTasks().size() == 0 );
     QVERIFY( m_storage->addTask( task1 ) );
     QVERIFY( m_storage->addTask( task2 ) );
