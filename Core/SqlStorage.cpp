@@ -5,6 +5,7 @@
 #include <QSettings>
 #include <QStringList>
 #include <QTextStream>
+#include <QDateTime>
 
 #include "Task.h"
 #include "Event.h"
@@ -27,7 +28,7 @@ SqlStorage::~SqlStorage()
 bool SqlStorage::verifyDatabase() throw (UnsupportedDatabaseVersionException )
 {
 	// if the database is empty, it is not ok :-)
-	if( database().tables().isEmpty() ) 
+	if( database().tables().isEmpty() )
 		return false;
 	// check database metadata, throw an exception in case the version does not match:
 	int version = 1;
@@ -110,12 +111,23 @@ Task SqlStorage::getTask(int taskid)
 		int nameField = query.record().indexOf("name");
 		int parentField = query.record().indexOf("parent");
 		int useridField = query.record().indexOf("user_id");
+		int validfromField = query.record().indexOf("validfrom");
+		int validuntilField = query.record().indexOf("validuntil");
 
 		task.setId(query.value(idField).toInt());
 		task.setName(query.value(nameField).toString());
 		task.setParent(query.value(parentField).toInt());
 		task.setSubscribed(!query.value(useridField).toString().isEmpty());
-
+		if ( ! query.value(validfromField).isNull() )
+		{
+			task.setValidFrom
+			( query.value(validfromField).value<QDateTime>() );
+		}
+		if ( ! query.value( validuntilField ).isNull() )
+		{
+			task.setValidUntil
+			( query.value( validuntilField ).value<QDateTime>() );
+		}
 		return task;
 	}
 	else

@@ -9,6 +9,7 @@
 #include <QMetaType>
 #include <QDomElement>
 #include <QDomDocument>
+#include <QDateTime>
 
 #include "CharmExceptions.h"
 
@@ -43,6 +44,14 @@ public:
 
     void setSubscribed( bool value );
 
+    const QDateTime& validFrom() const;
+
+    void setValidFrom( const QDateTime& );
+
+    const QDateTime& validUntil() const;
+
+    void setValidUntil( const QDateTime& );
+
     void dump() const;
 
     QDomElement toXml( QDomDocument ) const;
@@ -54,6 +63,10 @@ private:
     int m_parent;
     QString m_name;
     bool m_subscribed;
+    /** The timestamp from which the task is valid. */
+    QDateTime m_validFrom;
+    /** The timestamp after which the task becomes invalid. */
+    QDateTime m_validUntil;
 };
 
 /** A task list is a list of tasks that belong together.

@@ -1,3 +1,4 @@
+#include <QDateTime>
 #include <QtDebug>
 #include <QtTest/QtTest>
 
@@ -56,6 +57,9 @@ void XmlSerializationTests::testTaskSerialization()
     task2.setId( -1 );
     task2.setParent( 1000000000 );
     task2.setSubscribed( false );
+    task2.setValidFrom( QDateTime::currentDateTime() );
+    task2.setValidUntil( QDateTime::currentDateTime() );
+    Task task3;
 
     tasksToTest << Task() << task << task2;
 

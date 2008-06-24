@@ -45,6 +45,8 @@ static const Fields Tasks_Fields[] =
 { "id", "INTEGER AUTO_INCREMENT PRIMARY KEY" },
 { "task_id", "INTEGER UNIQUE" },
 { "parent", "INTEGER" },
+{ "validfrom", "timestamp" },
+{ "validuntil", "timestamp" },
 { "name", "varchar(256)" }, LastField };
 
 static const Fields Event_Fields[] =

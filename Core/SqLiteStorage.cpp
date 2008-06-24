@@ -44,6 +44,8 @@ static const Fields Tasks_Fields[] =
 { "id", "INTEGER PRIMARY KEY" },
 { "task_id", "INTEGER UNIQUE" },
 { "parent", "INTEGER" },
+{ "validfrom", "timestamp" },
+{ "validuntil", "timestamp" },
 { "name", "varchar(256)" }, LastField };
 
 static const Fields Event_Fields[] =
@@ -98,7 +100,7 @@ QString SqLiteStorage::description() const
     return QObject::tr( "local database" );
 }
 
-bool SqLiteStorage::createDatabaseTables() 
+bool SqLiteStorage::createDatabaseTables()
 {
 	Q_ASSERT_X(database().open(), "SqlStorage::createDatabase",
 			"Connection to database must be established first");
