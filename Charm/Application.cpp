@@ -109,24 +109,36 @@ void Application::setState( State state )
     };
 
     m_state = state;
-    m_model.charmDataModel()->stateChanged( previous, state );
-    m_controller.stateChanged( previous, state );
-    m_mainWindow.stateChanged( previous );
 
     switch( m_state ) {
     case StartingUp:
+        m_model.charmDataModel()->stateChanged( previous, state );
+        m_controller.stateChanged( previous, state );
+        m_mainWindow.stateChanged( previous );
         enterStartingUpState();
         break;
     case Connecting:
+        m_model.charmDataModel()->stateChanged( previous, state );
+        m_controller.stateChanged( previous, state );
+        m_mainWindow.stateChanged( previous );
         enterConnectingState();
         break;
     case Connected:
+        m_model.charmDataModel()->stateChanged( previous, state );
+        m_controller.stateChanged( previous, state );
+        m_mainWindow.stateChanged( previous );
         enterConnectedState();
         break;
     case Disconnecting:
+        m_mainWindow.stateChanged( previous );
+        m_model.charmDataModel()->stateChanged( previous, state );
+        m_controller.stateChanged( previous, state );
         enterDisconnectingState();
         break;
     case ShuttingDown:
+        m_mainWindow.stateChanged( previous );
+        m_model.charmDataModel()->stateChanged( previous, state );
+        m_controller.stateChanged( previous, state );
         enterShuttingDownState();
         break;
     default:
