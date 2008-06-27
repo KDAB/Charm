@@ -1,3 +1,5 @@
+#include <cmath>
+
 #include <QtDebug>
 #include <QPainter>
 
@@ -36,10 +38,9 @@ QSize EventEditorDelegate::sizeHint( const QStyleOptionViewItem& option,
         stream << date.toString( Qt::SystemLocaleDate )
                << " " << time.toString( Qt::SystemLocaleDate )
                << " " << hoursAndMinutes( 3654 );
-        const QString comment( tr( "- implement feature A, plus fix #2345" ) );
         m_cachedSizeHint = paint( &painter, fakeOption,
                                   task, dateAndDuration,
-                                  comment, EventState_Locked ).size();
+                                  42, EventState_Locked ).size();
     }
     return m_cachedSizeHint;
 }
@@ -61,10 +62,11 @@ void EventEditorDelegate::paint( QPainter* painter,
         stream << date.toString( Qt::SystemLocaleDate )
                << " " << time.toString( Qt::SystemLocaleDate )
                << " " << hoursAndMinutes( event.duration() );
+
         paint( painter, option,
                tasknameWithParents( item.task() ),
                dateAndDuration,
-               tr( "- implement feature A, plus fix #2345" ), //tmp
+               logDuration( event.duration() ),
                locked ? EventState_Locked : EventState_Default );
     }
 }
@@ -73,7 +75,7 @@ QRect EventEditorDelegate::paint( QPainter* painter,
                                   const QStyleOptionViewItem& option,
                                   const QString& taskName,
                                   const QString& timespan,
-                                  const QString& comment,
+                                  float logDuration,
                                   EventState state ) const
 {
     painter->save();
@@ -147,12 +149,35 @@ QRect EventEditorDelegate::paint( QPainter* painter,
                        timespan, &boundingRect );
     detailsRect.setSize( boundingRect.size() );
 
+    // draw the duration line:
+    const int Margin = 2;
+    QRect durationRect( option.rect.left(), detailsRect.bottom(),
+    		static_cast<int>( logDuration * option.rect.width() ), Margin  );
+    painter->setBrush( palette.dark() );
+    painter->setPen( Qt::NoPen );
+    painter->drawRect( durationRect );
+
     painter->restore();
     // return bounding rectangle
     return QRect( 0, 0,
                   qMax( taskRect.width(), detailsRect.width() ),
-                  taskRect.height() + detailsRect.height() );
+                  durationRect.bottom() + 1 - option.rect.top() );
 
+}
+
+float EventEditorDelegate::logDuration( int duration ) const
+{   // we rely on the compiler to optimize at compile time :-)
+	if( duration <= 0) {
+		return 0;
+	}
+	if( duration <= 3600 ) {
+		return 0.2 * 1.0 / 3600.0 * duration;
+	} else {
+		const float log2 = std::log( 2.0 );
+		const float hours = 1.0 / 3600 * duration;
+		const float value = log( hours ) / log2;
+		return 0.2 * ( 1.0 + value );
+	}
 }
 
 #include "EventEditorDelegate.moc"
