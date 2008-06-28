@@ -5,19 +5,19 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>395</width>
-    <height>339</height>
+    <width>433</width>
+    <height>362</height>
    </rect>
   </property>
   <property name="windowTitle" >
    <string>Edit Event</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_2" >
+  <layout class="QVBoxLayout" name="verticalLayout" >
    <property name="leftMargin" >
     <number>0</number>
    </property>
    <property name="topMargin" >
-    <number>3</number>
+    <number>6</number>
    </property>
    <property name="rightMargin" >
     <number>0</number>
@@ -457,7 +457,7 @@
         <string>(Task Name)</string>
        </property>
        <property name="alignment" >
-        <set>Qt::AlignHCenter|Qt::AlignTop</set>
+        <set>Qt::AlignCenter</set>
        </property>
        <property name="wordWrap" >
         <bool>true</bool>
@@ -473,201 +473,194 @@
     </layout>
    </item>
    <item>
-    <layout class="QVBoxLayout" name="verticalLayout" >
-     <property name="spacing" >
-      <number>9</number>
+    <layout class="QGridLayout" name="gridLayout" >
+     <property name="margin" >
+      <number>12</number>
      </property>
-     <item>
-      <layout class="QGridLayout" name="gridLayout" >
-       <property name="bottomMargin" >
-        <number>6</number>
+     <item row="0" column="1" >
+      <widget class="QPushButton" name="pushButtonSelectTask" >
+       <property name="text" >
+        <string>Select Task...</string>
        </property>
-       <item row="0" column="1" >
-        <widget class="QPushButton" name="pushButtonSelectTask" >
-         <property name="text" >
-          <string>Select Task...</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0" >
-        <widget class="QLabel" name="label_4" >
-         <property name="text" >
-          <string>Start:</string>
-         </property>
-         <property name="alignment" >
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-         <property name="buddy" >
-          <cstring>dateEditStart</cstring>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1" >
-        <widget class="QDateEdit" name="dateEditStart" >
-         <property name="buttonSymbols" >
-          <enum>QAbstractSpinBox::UpDownArrows</enum>
-         </property>
-         <property name="calendarPopup" >
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="2" >
-        <widget class="QTimeEdit" name="timeEditStart" />
-       </item>
-       <item row="2" column="0" >
-        <widget class="QLabel" name="label_5" >
-         <property name="text" >
-          <string>End:</string>
-         </property>
-         <property name="alignment" >
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-         <property name="buddy" >
-          <cstring>dateEditEnd</cstring>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="1" >
-        <widget class="QDateEdit" name="dateEditEnd" >
-         <property name="buttonSymbols" >
-          <enum>QAbstractSpinBox::UpDownArrows</enum>
-         </property>
-         <property name="calendarPopup" >
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="2" >
-        <widget class="QTimeEdit" name="timeEditEnd" />
-       </item>
-       <item row="3" column="0" >
-        <widget class="QLabel" name="label_6" >
-         <property name="text" >
-          <string>Duration:</string>
-         </property>
-         <property name="alignment" >
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-         <property name="buddy" >
-          <cstring>spinBoxHours</cstring>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="1" colspan="2" >
-        <layout class="QHBoxLayout" name="horizontalLayout_3" >
-         <property name="sizeConstraint" >
-          <enum>QLayout::SetDefaultConstraint</enum>
-         </property>
-         <item>
-          <widget class="QSpinBox" name="spinBoxHours" >
-           <property name="sizePolicy" >
-            <sizepolicy vsizetype="Fixed" hsizetype="Minimum" >
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimum" >
-            <number>0</number>
-           </property>
-           <property name="maximum" >
-            <number>999999999</number>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="label_2" >
-           <property name="sizePolicy" >
-            <sizepolicy vsizetype="Fixed" hsizetype="Preferred" >
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text" >
-            <string>h</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QSpinBox" name="spinBoxMinutes" >
-           <property name="sizePolicy" >
-            <sizepolicy vsizetype="Fixed" hsizetype="Minimum" >
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="frame" >
-            <bool>true</bool>
-           </property>
-           <property name="maximum" >
-            <number>59</number>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="label_3" >
-           <property name="sizePolicy" >
-            <sizepolicy vsizetype="Fixed" hsizetype="Preferred" >
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text" >
-            <string>min</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <spacer name="horizontalSpacer_4" >
-           <property name="orientation" >
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0" >
-            <size>
-             <width>40</width>
-             <height>1</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-        </layout>
-       </item>
-       <item row="4" column="1" colspan="2" >
-        <widget class="QTextEdit" name="textEditComment" >
+      </widget>
+     </item>
+     <item row="1" column="0" >
+      <widget class="QLabel" name="label_4" >
+       <property name="text" >
+        <string>Start:</string>
+       </property>
+       <property name="alignment" >
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+       <property name="buddy" >
+        <cstring>dateEditStart</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1" >
+      <widget class="QDateEdit" name="dateEditStart" >
+       <property name="buttonSymbols" >
+        <enum>QAbstractSpinBox::UpDownArrows</enum>
+       </property>
+       <property name="calendarPopup" >
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="2" >
+      <widget class="QTimeEdit" name="timeEditStart" />
+     </item>
+     <item row="2" column="0" >
+      <widget class="QLabel" name="label_5" >
+       <property name="text" >
+        <string>End:</string>
+       </property>
+       <property name="alignment" >
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+       <property name="buddy" >
+        <cstring>dateEditEnd</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1" >
+      <widget class="QDateEdit" name="dateEditEnd" >
+       <property name="buttonSymbols" >
+        <enum>QAbstractSpinBox::UpDownArrows</enum>
+       </property>
+       <property name="calendarPopup" >
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="2" >
+      <widget class="QTimeEdit" name="timeEditEnd" />
+     </item>
+     <item row="3" column="0" >
+      <widget class="QLabel" name="label_6" >
+       <property name="text" >
+        <string>Duration:</string>
+       </property>
+       <property name="alignment" >
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+       <property name="buddy" >
+        <cstring>spinBoxHours</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1" colspan="2" >
+      <layout class="QHBoxLayout" name="horizontalLayout_3" >
+       <property name="sizeConstraint" >
+        <enum>QLayout::SetDefaultConstraint</enum>
+       </property>
+       <item>
+        <widget class="QSpinBox" name="spinBoxHours" >
          <property name="sizePolicy" >
-          <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+          <sizepolicy vsizetype="Fixed" hsizetype="Minimum" >
            <horstretch>0</horstretch>
-           <verstretch>3</verstretch>
+           <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="acceptRichText" >
-          <bool>false</bool>
+         <property name="minimum" >
+          <number>0</number>
+         </property>
+         <property name="maximum" >
+          <number>999999999</number>
          </property>
         </widget>
        </item>
-       <item row="4" column="0" >
-        <widget class="QLabel" name="label" >
+       <item>
+        <widget class="QLabel" name="label_2" >
+         <property name="sizePolicy" >
+          <sizepolicy vsizetype="Fixed" hsizetype="Preferred" >
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="text" >
-          <string>Comment:</string>
-         </property>
-         <property name="alignment" >
-          <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
-         </property>
-         <property name="buddy" >
-          <cstring>textEditComment</cstring>
+          <string>h</string>
          </property>
         </widget>
+       </item>
+       <item>
+        <widget class="QSpinBox" name="spinBoxMinutes" >
+         <property name="sizePolicy" >
+          <sizepolicy vsizetype="Fixed" hsizetype="Minimum" >
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="frame" >
+          <bool>true</bool>
+         </property>
+         <property name="maximum" >
+          <number>59</number>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_3" >
+         <property name="sizePolicy" >
+          <sizepolicy vsizetype="Fixed" hsizetype="Preferred" >
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text" >
+          <string>min</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_4" >
+         <property name="orientation" >
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0" >
+          <size>
+           <width>40</width>
+           <height>1</height>
+          </size>
+         </property>
+        </spacer>
        </item>
       </layout>
      </item>
-     <item>
+     <item row="4" column="0" >
+      <widget class="QLabel" name="label" >
+       <property name="text" >
+        <string>Comment:</string>
+       </property>
+       <property name="alignment" >
+        <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
+       </property>
+       <property name="buddy" >
+        <cstring>textEditComment</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1" colspan="2" >
+      <widget class="QTextEdit" name="textEditComment" >
+       <property name="sizePolicy" >
+        <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+         <horstretch>0</horstretch>
+         <verstretch>3</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="acceptRichText" >
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="0" colspan="3" >
       <widget class="Line" name="line" >
        <property name="orientation" >
         <enum>Qt::Horizontal</enum>
        </property>
       </widget>
      </item>
-     <item>
+     <item row="6" column="0" colspan="3" >
       <widget class="QDialogButtonBox" name="buttonBox" >
        <property name="standardButtons" >
         <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>

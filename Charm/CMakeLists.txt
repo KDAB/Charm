@@ -32,7 +32,7 @@ IF ( QT4_FOUND )
 		       GUIState.cpp
 		       EventView.cpp
 		       EventEditor.cpp
-# 		       EventDisplay.cpp 
+		       EventDisplay.cpp 
 		       EventEditorDelegate.cpp 
 		       SelectTaskDialog.cpp
 		       ModelConnector.cpp
@@ -76,6 +76,7 @@ IF ( QT4_FOUND )
 		       Reports/ReportPreviewWindow.ui
 		       TasksView.ui
 		       EventView.ui 
+		       EventDisplay.ui
 		       EventEditor.ui
 		       SelectTaskDialog.ui
 		       CharmAboutDialog.ui )
@@ -90,8 +91,8 @@ IF ( QT4_FOUND )
     QT4_AUTOMOC (${Charm_SRCS} )
 
 	IF( APPLE )
-		SET( MACOSX_BUNDLE_INFO_STRING "Charm - Version 1.1.0-trunk" )
-		SET( MACOSX_BUNDLE_BUNDLE_VERSION "1.1.0" )
+		SET( MACOSX_BUNDLE_INFO_STRING "Charm - Version 1.2.0-trunk" )
+		SET( MACOSX_BUNDLE_BUNDLE_VERSION "1.2.0" )
 		SET( MACOSX_BUNDLE_ICON_FILE "Charm.icns" )
 		SET( MACOSX_BUNDLE_GUI_IDENTIFIER "net.kdab" )
 		SET( MACOSX_BUNDLE_BUNDLE_NAME "Charm" )

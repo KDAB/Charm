@@ -12,6 +12,7 @@
 #include "Core/CharmConstants.h"
 #include "Application.h"
 #include "EventView.h"
+#include "EventDisplay.h"
 #include "EventEditor.h"
 #include "Core/Configuration.h"
 #include "EventEditorDelegate.h"
@@ -29,6 +30,7 @@
 EventView::EventView( MainWindow* parent )
     : QWidget( parent )
     , m_ui( new Ui::EventView )
+    , m_eventDisplay( new EventDisplay() )
     , m_view( parent )
     , m_selectedTask( 0 )
     , m_dirty( false )
@@ -39,6 +41,13 @@ EventView::EventView( MainWindow* parent )
     , m_actionNextEvent( this )
 {
     m_ui->setupUi( this );
+    QHBoxLayout* layout = new QHBoxLayout();
+    layout->setContentsMargins( 0, 0, 0, 0 );
+    if( m_ui->pageEvent->layout() ) {
+    	delete m_ui->pageEvent->layout();
+    }
+    layout->addWidget( m_eventDisplay );
+    m_ui->pageEvent->setLayout( layout );
     m_ui->stackedWidget->setCurrentWidget( m_ui->pageNoEvent );
 
     m_ui->frame->setFrameStyle( m_ui->listView->frameStyle() );
@@ -57,6 +66,8 @@ EventView::EventView( MainWindow* parent )
              SLOT( slotNewEvent() ) );
     connect( &m_actionDeleteEvent, SIGNAL( triggered() ),
              SLOT( slotDeleteEvent() ) );
+    connect( m_eventDisplay, SIGNAL( editEvent( Event ) ),
+			 SLOT( slotEditEvent( Event ) ) );
 //     connect( &m_commitTimer, SIGNAL( timeout() ),
 //              SLOT( slotCommitTimeout() ) );
 //     m_commitTimer.setSingleShot( true );
@@ -85,15 +96,6 @@ EventView::EventView( MainWindow* parent )
     m_actionNewEvent.setEnabled( true ); // always on
     m_actionDeleteEvent.setEnabled( false );
 
-    //  all the signals when the event is edited:
-    connect( m_ui->dateTimeStart, SIGNAL( dateTimeChanged( const QDateTime& ) ),
-             SLOT( slotEventChanged() ) );
-    connect( m_ui->dateTimeEnd, SIGNAL( dateTimeChanged( const QDateTime& ) ),
-             SLOT( slotEventChanged() ) );
-    connect( m_ui->textEditComment, SIGNAL( textChanged() ),
-             SLOT( slotEventChanged() ) );
-    connect( m_ui->buttonSelectTask, SIGNAL( clicked() ),
-             SLOT( slotSelectTask() ) );
     connect( m_ui->comboBox, SIGNAL( currentIndexChanged( int ) ),
              SLOT( timeFrameChanged( int ) ) );
 
@@ -197,37 +199,20 @@ void EventView::slotCurrentItemChanged( const QModelIndex& start,
         m_actionDeleteEvent.setEnabled(true);
         Event event = m_model->eventForIndex( start );
         Q_ASSERT( event.isValid() ); // index is valid,  so...
-
+        m_eventDisplay->setEvent( event );
         setCurrentEvent( event );
     }
 
     slotConfigureUi();
 }
 
+// FIXME obsolete
 void EventView::setCurrentEvent( const Event& event )
 {
     m_event = event;
 
     const TaskTreeItem& taskTreeItem =
         MODEL.charmDataModel()->taskTreeItem( m_event.taskId() );
-
-    const QDateTime& start = m_event.startDateTime();
-    m_ui->dateTimeStart->setDateTime( start );
-#if 0
-    m_ui->dateTimeEnd->setMinimumDate( start.date() );
-    m_ui->dateTimeEnd->setMinimumTime( start.time() );
-    m_ui->dateTimeEnd->setDateTime( qMax( start, m_event.endDateTime() ) );
-#endif
-    m_ui->dateTimeEnd->setDateTime( m_event.endDateTime() );
-    m_ui->textEditComment->setText( m_event.comment() );
-    QString name = tasknameWithParents( taskTreeItem.task() );
-    m_ui->labelTaskName->setText( name );
-    QString weekNumber = QString( tr( "-%1-" ) ).
-                         arg( m_event.startDateTime().date().weekNumber(),
-                              2, 10, QChar( '0' ) );
-    m_ui->labelWeekNumber->setText( weekNumber );
-    m_selectedTask = m_event.taskId();
-    m_dirty = false;
 }
 
 void EventView::slotNewEvent()
@@ -296,15 +281,10 @@ void EventView::slotContextMenuRequested( const QPoint& point )
     menu.exec( m_ui->listView->mapToGlobal( point ) );
 }
 
+// FIXME obsolete
 Event EventView::newSettings()
 {
     Event event( m_event );
-    event.setStartDateTime( m_ui->dateTimeStart->dateTime() );
-    event.setEndDateTime( m_ui->dateTimeEnd->dateTime() );
-    event.setComment( m_ui->textEditComment->toPlainText() );
-    if ( m_selectedTask != 0 ) {
-        event.setTaskId( m_selectedTask );
-    }
     return event;
 }
 
@@ -318,6 +298,7 @@ void EventView::commitChanges()
     }
 }
 
+// FIXME obsolete
 void EventView::slotSelectTask()
 {
     SelectTaskDialog dialog( this );
@@ -327,7 +308,7 @@ void EventView::slotSelectTask()
         const TaskTreeItem& taskTreeItem =
             MODEL.charmDataModel()->taskTreeItem( m_selectedTask );
         QString name = tasknameWithParents( taskTreeItem.task() );
-        m_ui->labelTaskName->setText( name );
+        // m_ui->labelTaskName->setText( name );
         m_dirty = true;
     }
 }
@@ -402,23 +383,11 @@ void EventView::slotConfigureUi()
         OriginalDateTimeFormat = edit.displayFormat();
     } // yeah, I know, this will survive changes in the user prefs
 
-    if ( CONFIGURATION.always24hEditing ) {
-        QString format = m_ui->dateTimeStart->displayFormat()
-                         .replace( "ap",  "" )
-                         .replace( "AP",  "" )
-                         .simplified();
-        m_ui->dateTimeStart->setDisplayFormat( format );
-        m_ui->dateTimeEnd->setDisplayFormat( format );
-    } else {
-        m_ui->dateTimeStart->setDisplayFormat( OriginalDateTimeFormat );
-        m_ui->dateTimeEnd->setDisplayFormat( OriginalDateTimeFormat );
-    }
-
     bool active = MODEL.charmDataModel()->isEventActive( m_event.id() );
 
     m_actionNewEvent.setEnabled( true ); // always on
     m_actionDeleteEvent.setEnabled( m_event.isValid() && ! active );
-    m_ui->frame->setEnabled( ! active );
+    // m_ui->frame->setEnabled( ! active );
 
     const QModelIndex& index = m_ui->listView->selectionModel()->currentIndex();
     if ( index.isValid() ) {
@@ -523,6 +492,7 @@ void EventView::slotEditEvent( const Event& event )
         CommandModifyEvent* command =
             new CommandModifyEvent( newEvent, this );
         emitCommand( command );
+        m_eventDisplay->setEvent( newEvent );
 	}
 }
 

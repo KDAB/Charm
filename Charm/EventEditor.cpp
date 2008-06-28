@@ -146,7 +146,16 @@ void EventEditor::updateValues( bool all )
     QString name = tasknameWithParents( taskTreeItem.task() );
     m_ui->labelTaskName->setText( name );
 
-	m_updating = false;
+    if ( CONFIGURATION.always24hEditing ) {
+        QString format = m_ui->dateEditStart->displayFormat()
+                         .replace( "ap",  "" )
+                         .replace( "AP",  "" )
+                         .simplified();
+        m_ui->dateEditStart->setDisplayFormat( format );
+        m_ui->dateEditEnd->setDisplayFormat( format );
+    }
+
+    m_updating = false;
 }
 
 #include "EventEditor.moc"

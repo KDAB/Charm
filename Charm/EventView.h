@@ -14,6 +14,7 @@
 class QModelIndex;
 
 class MainWindow;
+class EventDisplay;
 class CharmCommand;
 class QAbstractItemModel;
 class EventModelFilter;
@@ -81,6 +82,7 @@ private:
 
     QList<NamedTimeSpan> m_timeSpans;
     Ui::EventView* m_ui;
+    EventDisplay* m_eventDisplay;
     MainWindow* m_view;
     Event m_event;
     TaskId m_selectedTask;
