@@ -29,12 +29,12 @@ MainWindow::MainWindow()
     , m_actionQuit( this )
     , m_actionAboutDialog( this )
     , m_actionPreferences( this )
-    , m_actionEventEditor( &m_viewActionsGroup )
+    , m_actionEventView( &m_viewActionsGroup )
     , m_actionTasksView( &m_viewActionsGroup )
     , m_actionToggleView( this )
     , m_actionExportToXml( this )
     , m_actionImportFromXml( this )
-    , m_eventEditor( this )
+    , m_eventView( this )
     , m_actionReporting( this )
     , m_reportDialog( this )
     , m_statusBarWidgetsAdded( false )
@@ -49,9 +49,9 @@ MainWindow::MainWindow()
     m_ui->viewStack->layout()->setSpacing( 0 );
 
     // "register" view modes:
-    m_modes << &m_tasksView << &m_eventEditor;
+    m_modes << &m_tasksView << &m_eventView;
     m_ui->viewStack->addWidget( &m_tasksView );
-    m_ui->viewStack->addWidget( &m_eventEditor );
+    m_ui->viewStack->addWidget( &m_eventView );
     Q_FOREACH( ViewModeInterface* mode, m_modes ) {
         QWidget* modeWidget = dynamic_cast<QWidget*>( mode );
         Q_ASSERT( modeWidget );
@@ -78,12 +78,12 @@ MainWindow::MainWindow()
     connect( &m_actionPreferences, SIGNAL( triggered( bool ) ),
              SLOT( slotEditPreferences( bool ) ) );
 
-    // m_actionEventEditor.setCheckable( true );
-//     m_eventEditor.setVisible( m_actionEventEditor.isChecked() );
-//     connect( &m_actionEventEditor, SIGNAL( toggled( bool ) ),
-//              &m_eventEditor, SLOT( setVisible( bool ) ) );
-//     connect( &m_eventEditor, SIGNAL( visible( bool ) ),
-//              &m_actionEventEditor, SLOT( setChecked( bool ) ) );
+    // m_actionEventView.setCheckable( true );
+//     m_eventView.setVisible( m_actionEventView.isChecked() );
+//     connect( &m_actionEventView, SIGNAL( toggled( bool ) ),
+//              &m_eventView, SLOT( setVisible( bool ) ) );
+//     connect( &m_eventView, SIGNAL( visible( bool ) ),
+//              &m_actionEventView, SLOT( setChecked( bool ) ) );
 
     m_actionImportFromXml.setText( tr( "Import from Previous Export..." ) );
     connect( &m_actionImportFromXml, SIGNAL( triggered() ),
@@ -107,13 +107,13 @@ MainWindow::MainWindow()
     connect( &m_actionReporting, SIGNAL( triggered() ),
              SLOT( slotReportDialog() ) );
 
-    m_actionEventEditor.setText( tr( "Event Editor" ) );
+    m_actionEventView.setText( tr( "Event Editor" ) );
     m_actionTasksView.setText( tr( "Tasks View" ) );
     Q_FOREACH( QAction* action, m_viewActionsGroup.actions() ) {
         action->setCheckable( true );
     }
     m_actionTasksView.setShortcut( Qt::CTRL + Qt::Key_T );
-    m_actionEventEditor.setShortcut( Qt::CTRL + Qt::Key_E );
+    m_actionEventView.setShortcut( Qt::CTRL + Qt::Key_E );
     m_actionReporting.setShortcut( Qt::CTRL + Qt::Key_R );
     // set default view mode:
     // FIXME restore view selection from settings:
@@ -164,7 +164,7 @@ void MainWindow::restore()
 void MainWindow::slotQuit()
 {
     // this saves changes:
-    m_eventEditor.close();
+    m_eventView.close();
     m_reportDialog.close();
     emit quit();
 }
@@ -324,8 +324,8 @@ void MainWindow::slotConfigurationChanged()
 
 void MainWindow::slotSelectViewMode( QAction* action )
 {
-    if ( action == &m_actionEventEditor ) {
-        m_ui->viewStack->setCurrentWidget( &m_eventEditor );
+    if ( action == &m_actionEventView ) {
+        m_ui->viewStack->setCurrentWidget( &m_eventView );
     } else if ( action == &m_actionTasksView ) {
         m_ui->viewStack->setCurrentWidget( &m_tasksView );
     }
@@ -369,8 +369,8 @@ void MainWindow::slotToggleView()
         }
         QWidget* widget = dynamic_cast<QWidget*>( *mode );
         // baah:
-        if ( widget == &m_eventEditor ) {
-            m_actionEventEditor.trigger();
+        if ( widget == &m_eventView ) {
+            m_actionEventView.trigger();
         } else if ( widget == &m_tasksView ) {
             m_actionTasksView.trigger();
         } else { // cannot happen:

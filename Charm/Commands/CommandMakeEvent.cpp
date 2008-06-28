@@ -1,7 +1,7 @@
 #include <QtDebug>
 #include <QDateTime>
 
-#include "EventEditor.h"
+#include "EventView.h"
 #include <Core/ControllerInterface.h>
 
 #include "CommandMakeEvent.h"
@@ -44,9 +44,9 @@ bool CommandMakeEvent::execute( ControllerInterface* controller )
 bool CommandMakeEvent::finalize()
 {
     if ( m_event.isValid() ) {
-        EventEditor* editor = dynamic_cast<EventEditor*>( owner() );
-        Q_ASSERT( editor ); // this command is "owned" by the editor
-        editor->makeVisibleAndCurrent( m_event );
+        EventView* view = dynamic_cast<EventView*>( owner() );
+        Q_ASSERT( view ); // this command is "owned" by the editor
+        view->makeVisibleAndCurrent( m_event );
         return true;
     } else {
         return false;

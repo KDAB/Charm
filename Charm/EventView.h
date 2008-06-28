@@ -1,5 +1,5 @@
-#ifndef EVENTEDITOR_H
-#define EVENTEDITOR_H
+#ifndef EVENTVIEW_H
+#define EVENTVIEW_H
 
 #include <QWidget>
 #include <QAction>
@@ -19,18 +19,18 @@ class QAbstractItemModel;
 class EventModelFilter;
 
 namespace Ui {
-    class EventEditor;
+    class EventView;
 }
 
-class EventEditor : public QWidget,
+class EventView : public QWidget,
                     public ViewModeInterface,
                     public CommandEmitterInterface
 {
     Q_OBJECT
 
 public:
-    explicit EventEditor( MainWindow* parent );
-    ~EventEditor();
+    explicit EventView( MainWindow* parent );
+    ~EventView();
 
     void closeEvent( QCloseEvent* );
 
@@ -77,7 +77,7 @@ private:
     void commitChanges();
 
     QList<NamedTimeSpan> m_timeSpans;
-    Ui::EventEditor* m_ui;
+    Ui::EventView* m_ui;
     MainWindow* m_view;
     Event m_event;
     TaskId m_selectedTask;

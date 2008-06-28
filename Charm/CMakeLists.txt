@@ -30,7 +30,8 @@ IF ( QT4_FOUND )
 		       CharmPreferences.cpp
 		       TasksView.cpp
 		       GUIState.cpp
-		       EventEditor.cpp 
+		       EventView.cpp
+# 		       EventDisplay.cpp 
 		       EventEditorDelegate.cpp 
 		       SelectTaskDialog.cpp
 		       ModelConnector.cpp
@@ -73,7 +74,7 @@ IF ( QT4_FOUND )
 		       Reports/WeeklyTimeSheetConfigurationPage.ui
 		       Reports/ReportPreviewWindow.ui
 		       TasksView.ui
-		       EventEditor.ui 
+		       EventView.ui 
 		       SelectTaskDialog.ui
 		       CharmAboutDialog.ui )
 

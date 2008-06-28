@@ -11,7 +11,7 @@
 #include "Core/Event.h"
 #include "Core/CharmConstants.h"
 #include "Application.h"
-#include "EventEditor.h"
+#include "EventView.h"
 #include "Core/Configuration.h"
 #include "EventEditorDelegate.h"
 #include "Reports/CharmReport.h"
@@ -23,11 +23,11 @@
 #include "Commands/CommandModifyEvent.h"
 #include "Commands/CommandDeleteEvent.h"
 
-#include "ui_EventEditor.h"
+#include "ui_EventView.h"
 
-EventEditor::EventEditor( MainWindow* parent )
+EventView::EventView( MainWindow* parent )
     : QWidget( parent )
-    , m_ui( new Ui::EventEditor )
+    , m_ui( new Ui::EventView )
     , m_view( parent )
     , m_selectedTask( 0 )
     , m_dirty( false )
@@ -96,12 +96,12 @@ EventEditor::EventEditor( MainWindow* parent )
     QTimer::singleShot( 0, this, SLOT( delayedInitialization() ) );
 }
 
-EventEditor::~EventEditor()
+EventView::~EventView()
 {
     delete m_ui; m_ui = 0;
 }
 
-void EventEditor::delayedInitialization()
+void EventView::delayedInitialization()
 {
     timeSpansChanged();
     connect( &Application::instance().timeSpans(),
@@ -110,7 +110,7 @@ void EventEditor::delayedInitialization()
 
 }
 
-void EventEditor::timeSpansChanged()
+void EventView::timeSpansChanged()
 {
     m_timeSpans = Application::instance().timeSpans().standardTimeSpans();
     // close enough to "ever" for our purposes:
@@ -134,26 +134,26 @@ void EventEditor::timeSpansChanged()
     }
 }
 
-void EventEditor::closeEvent( QCloseEvent* e )
+void EventView::closeEvent( QCloseEvent* e )
 {
     e->setAccepted( false );
     reject();
 }
 
-void EventEditor::reject()
+void EventView::reject()
 {
     // there is no reject semantic - all changes are implicit:
     commitChanges();
     emit visible( false );
 }
 
-void EventEditor::commitCommand( CharmCommand* command )
+void EventView::commitCommand( CharmCommand* command )
 {
     command->finalize();
     delete command;
 }
 
-void EventEditor::slotEventChanged()
+void EventView::slotEventChanged()
 {
     Event event = newSettings();
     if ( m_event != event ) {
@@ -171,14 +171,14 @@ void EventEditor::slotEventChanged()
     }
 }
 
-void EventEditor::slotCommitTimeout()
+void EventView::slotCommitTimeout()
 {
     if ( m_dirty ) {
         commitChanges();
     }
 }
 
-void EventEditor::slotCurrentItemChanged( const QModelIndex& start,
+void EventView::slotCurrentItemChanged( const QModelIndex& start,
                                           const QModelIndex& end )
 {
     commitChanges();
@@ -200,7 +200,7 @@ void EventEditor::slotCurrentItemChanged( const QModelIndex& start,
     slotConfigureUi();
 }
 
-void EventEditor::setCurrentEvent( const Event& event )
+void EventView::setCurrentEvent( const Event& event )
 {
     m_event = event;
 
@@ -226,7 +226,7 @@ void EventEditor::setCurrentEvent( const Event& event )
     m_dirty = false;
 }
 
-void EventEditor::slotNewEvent()
+void EventView::slotNewEvent()
 {
     SelectTaskDialog dialog( this );
     if ( dialog.exec() ) {
@@ -240,7 +240,7 @@ void EventEditor::slotNewEvent()
     }
 }
 
-void EventEditor::slotDeleteEvent()
+void EventView::slotDeleteEvent()
 {
     const TaskTreeItem& taskTreeItem =
         MODEL.charmDataModel()->taskTreeItem( m_event.taskId() );
@@ -263,7 +263,7 @@ void EventEditor::slotDeleteEvent()
     }
 }
 
-void EventEditor::slotPreviousEvent()
+void EventView::slotPreviousEvent()
 {
     const QModelIndex& index = m_model->indexForEvent( m_event );
     Q_ASSERT( index.isValid() && index.row() > 0 && index.row() < m_model->rowCount() );
@@ -272,7 +272,7 @@ void EventEditor::slotPreviousEvent()
         ( previousIndex, QItemSelectionModel::ClearAndSelect );
 }
 
-void EventEditor::slotNextEvent()
+void EventView::slotNextEvent()
 {
     const QModelIndex& index = m_model->indexForEvent( m_event );
     Q_ASSERT( index.isValid() && index.row() >= 0 && index.row() < m_model->rowCount() - 1 );
@@ -281,7 +281,7 @@ void EventEditor::slotNextEvent()
         ( nextIndex, QItemSelectionModel::ClearAndSelect );
 }
 
-void EventEditor::slotContextMenuRequested( const QPoint& point )
+void EventView::slotContextMenuRequested( const QPoint& point )
 {
     // prepare the menu:
     QMenu menu( m_ui->listView );
@@ -292,7 +292,7 @@ void EventEditor::slotContextMenuRequested( const QPoint& point )
     menu.exec( m_ui->listView->mapToGlobal( point ) );
 }
 
-Event EventEditor::newSettings()
+Event EventView::newSettings()
 {
     Event event( m_event );
     event.setStartDateTime( m_ui->dateTimeStart->dateTime() );
@@ -304,7 +304,7 @@ Event EventEditor::newSettings()
     return event;
 }
 
-void EventEditor::commitChanges()
+void EventView::commitChanges()
 {
     if ( m_dirty && m_selectedTask != 0 ) {
         CommandModifyEvent* command =
@@ -314,7 +314,7 @@ void EventEditor::commitChanges()
     }
 }
 
-void EventEditor::slotSelectTask()
+void EventView::slotSelectTask()
 {
     SelectTaskDialog dialog( this );
 
@@ -328,7 +328,7 @@ void EventEditor::slotSelectTask()
     }
 }
 
-void EventEditor::makeVisibleAndCurrent( const Event& event )
+void EventView::makeVisibleAndCurrent( const Event& event )
 {
     // make sure the event filter time span includes the events start
     // time (otherwise it is not visible):
@@ -352,7 +352,7 @@ void EventEditor::makeVisibleAndCurrent( const Event& event )
         ( index, QItemSelectionModel::ClearAndSelect );
 }
 
-void EventEditor::timeFrameChanged( int index )
+void EventView::timeFrameChanged( int index )
 {
     // wait for the next update, in this case:
     if ( m_ui->comboBox->count() == 0 ) return;
@@ -378,17 +378,17 @@ void EventEditor::timeFrameChanged( int index )
     }
 }
 
-void EventEditor::slotEventActivated( EventId )
+void EventView::slotEventActivated( EventId )
 {
     slotConfigureUi();
 }
 
-void EventEditor::slotEventDeactivated( EventId )
+void EventView::slotEventDeactivated( EventId )
 {
     slotConfigureUi();
 }
 
-void EventEditor::slotConfigureUi()
+void EventView::slotConfigureUi()
 {
     // what a fricking hack - but QDateTimeEdit does not seem to have
     // a simple function to toggle 12h and 24h mode:
@@ -428,7 +428,7 @@ void EventEditor::slotConfigureUi()
     }
 }
 
-void EventEditor::slotUpdateCurrent()
+void EventView::slotUpdateCurrent()
 {
     // this may be Qt-version dependant, verify later:
     Event event = DATAMODEL->eventForId( m_event.id() );
@@ -439,7 +439,7 @@ void EventEditor::slotUpdateCurrent()
     slotUpdateTotal();
 }
 
-void EventEditor::slotUpdateTotal()
+void EventView::slotUpdateTotal()
 {   // what matching signal does the proxy emit?
     int seconds = m_model->totalDuration();
     if ( seconds == 0 ) {
@@ -453,16 +453,16 @@ void EventEditor::slotUpdateTotal()
 }
 
 // ViewModeInterface:
-void EventEditor::saveGuiState() {}
-void EventEditor::restoreGuiState() {}
-void EventEditor::stateChanged( State previous ) {}
+void EventView::saveGuiState() {}
+void EventView::restoreGuiState() {}
+void EventView::stateChanged( State previous ) {}
 
-void EventEditor::configurationChanged()
+void EventView::configurationChanged()
 {
     slotConfigureUi();
 }
 
-void EventEditor::setModel( ModelConnector* connector )
+void EventView::setModel( ModelConnector* connector )
 {
     Q_ASSERT( m_ui );
     EventModelFilter* model = connector->eventModel();
@@ -505,4 +505,4 @@ void EventEditor::setModel( ModelConnector* connector )
 }
 
 
-#include "EventEditor.moc"
+#include "EventView.moc"

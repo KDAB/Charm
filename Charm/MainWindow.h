@@ -13,7 +13,7 @@
 #include <Core/State.h>
 #include <Core/ViewInterface.h>
 
-#include "EventEditor.h"
+#include "EventView.h"
 #include "TasksView.h"
 #include "ViewModeInterface.h"
 #include "Reports/ReportDialog.h"
@@ -80,13 +80,13 @@ private:
     QAction m_actionQuit;
     QAction m_actionAboutDialog;
     QAction m_actionPreferences;
-    QAction m_actionEventEditor;
+    QAction m_actionEventView;
     QAction m_actionTasksView;
     QAction m_actionToggleView;
     QAction m_actionExportToXml;
     QAction m_actionImportFromXml;
     View m_tasksView;
-    EventEditor m_eventEditor;
+    EventView m_eventView;
     QAction m_actionReporting;
     ReportDialog m_reportDialog;
     QLabel m_statusBarLabelWeekTotal;

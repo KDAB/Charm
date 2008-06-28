@@ -1,6 +1,6 @@
 <ui version="4.0" >
- <class>EventEditor</class>
- <widget class="QWidget" name="EventEditor" >
+ <class>EventView</class>
+ <widget class="QWidget" name="EventView" >
   <property name="geometry" >
    <rect>
     <x>0</x>
