@@ -127,6 +127,8 @@ void EventEditor::updateValues( bool all )
 
 	m_updating = true;
 
+	m_ui->buttonBox->button( QDialogButtonBox::Ok )
+		->setEnabled( m_event.endDateTime() >= m_event.startDateTime() );
 	const TaskTreeItem& taskTreeItem =
         MODEL.charmDataModel()->taskTreeItem( m_event.taskId() );
 
