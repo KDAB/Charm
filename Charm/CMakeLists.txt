@@ -31,6 +31,7 @@ IF ( QT4_FOUND )
 		       TasksView.cpp
 		       GUIState.cpp
 		       EventView.cpp
+		       EventEditor.cpp
 # 		       EventDisplay.cpp 
 		       EventEditorDelegate.cpp 
 		       SelectTaskDialog.cpp
@@ -75,6 +76,7 @@ IF ( QT4_FOUND )
 		       Reports/ReportPreviewWindow.ui
 		       TasksView.ui
 		       EventView.ui 
+		       EventEditor.ui
 		       SelectTaskDialog.ui
 		       CharmAboutDialog.ui )
 

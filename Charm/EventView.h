@@ -57,6 +57,9 @@ public slots:
     void slotConfigureUi();
 
 private slots:
+	void slotEventDoubleClicked( const QModelIndex& );
+	void slotEditEvent( const Event& );
+	// FIXME old:
     void slotEventChanged();
     void slotCurrentItemChanged( const QModelIndex&, const QModelIndex& );
     void slotContextMenuRequested( const QPoint& );

@@ -12,6 +12,7 @@
 #include "Core/CharmConstants.h"
 #include "Application.h"
 #include "EventView.h"
+#include "EventEditor.h"
 #include "Core/Configuration.h"
 #include "EventEditorDelegate.h"
 #include "Reports/CharmReport.h"
@@ -45,6 +46,9 @@ EventView::EventView( MainWindow* parent )
     connect( m_ui->listView,
              SIGNAL( customContextMenuRequested( const QPoint& ) ),
              SLOT( slotContextMenuRequested( const QPoint& ) ) );
+    connect( m_ui->listView,
+			 SIGNAL( doubleClicked( const QModelIndex& ) ),
+			 SLOT( slotEventDoubleClicked( const QModelIndex& ) ) );
     connect( &m_actionNextEvent, SIGNAL( triggered() ),
              SLOT( slotNextEvent() ) );
     connect( &m_actionPreviousEvent, SIGNAL( triggered() ),
@@ -502,6 +506,24 @@ void EventView::setModel( ModelConnector* connector )
 
 
     m_dirty = false;
+}
+
+void EventView::slotEventDoubleClicked( const QModelIndex& index )
+{
+	Q_ASSERT( m_model ); // otherwise, how can we get a doubleclick on an item?
+	const Event& event = m_model->eventForIndex( index );
+	slotEditEvent( event );
+}
+
+void EventView::slotEditEvent( const Event& event )
+{
+	EventEditor editor( event, this );
+	if( editor.exec() ) {
+		Event newEvent = editor.event();
+        CommandModifyEvent* command =
+            new CommandModifyEvent( newEvent, this );
+        emitCommand( command );
+	}
 }
 
 

@@ -151,8 +151,8 @@ QRect EventEditorDelegate::paint( QPainter* painter,
 
     // draw the duration line:
     const int Margin = 2;
-    QRect durationRect( option.rect.left(), detailsRect.bottom(),
-    		static_cast<int>( logDuration * option.rect.width() ), Margin  );
+    QRect durationRect( option.rect.left() + 1, detailsRect.bottom(),
+    		static_cast<int>( logDuration * ( option.rect.width() - 2 ) ), Margin  );
     painter->setBrush( palette.dark() );
     painter->setPen( Qt::NoPen );
     painter->drawRect( durationRect );
