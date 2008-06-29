@@ -5,11 +5,13 @@
 #include <QSortFilterProxyModel>
 
 #include "ViewFilter.h"
-#include "ui_SelectTaskDialog.h"
 
 class ViewFilter;
 class CharmDataModel;
 
+namespace Ui {
+	class SelectTaskDialog;
+}
 class SelectTaskDialogProxy : public ViewFilter
 {
     Q_OBJECT
@@ -27,6 +29,7 @@ class SelectTaskDialog : public QDialog
 
 public:
     SelectTaskDialog( QWidget* parent );
+    ~SelectTaskDialog();
 
     TaskId selectedTask() const;
 
@@ -39,7 +42,7 @@ private slots:
     void slotAccepted();
 
 private:
-    Ui::SelectTaskDialog m_ui;
+    Ui::SelectTaskDialog* m_ui;
     TaskId m_selectedTask;
     SelectTaskDialogProxy m_proxy;
 };

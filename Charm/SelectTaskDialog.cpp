@@ -15,6 +15,7 @@
 #include "TaskModelAdapter.h"
 #include "ViewFilter.h"
 #include "SelectTaskDialog.h"
+#include "ui_SelectTaskDialog.h"
 
 SelectTaskDialogProxy::SelectTaskDialogProxy( CharmDataModel* model, QObject* parent )
     : ViewFilter( model, parent )
@@ -31,19 +32,25 @@ bool SelectTaskDialogProxy::filterAcceptsColumn( int column, const QModelIndex& 
 
 SelectTaskDialog::SelectTaskDialog( QWidget* parent )
     : QDialog( parent )
+    , m_ui( new Ui::SelectTaskDialog() )
     , m_proxy( MODEL.charmDataModel() )
 {
-    m_ui.setupUi( this );
-    m_ui.treeView->setModel( &m_proxy );
-    connect( m_ui.treeView->selectionModel(),
+	m_ui->setupUi( this );
+    m_ui->treeView->setModel( &m_proxy );
+    connect( m_ui->treeView->selectionModel(),
              SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ),
              SLOT( slotCurrentItemChanged( const QModelIndex&, const QModelIndex& ) ) );
-    connect( m_ui.lineEditFilter, SIGNAL( textChanged( QString ) ),
+    connect( m_ui->lineEditFilter, SIGNAL( textChanged( QString ) ),
              SLOT( slotFilterTextChanged( QString ) ) );
     connect( this, SIGNAL( accepted() ),
     		 SLOT( slotAccepted() ) );
 
-    m_ui.buttonClearFilter->setIcon( Data::clearFilterIcon() );
+    m_ui->buttonClearFilter->setIcon( Data::clearFilterIcon() );
+}
+
+SelectTaskDialog::~SelectTaskDialog()
+{
+	delete m_ui; m_ui = 0;
 }
 
 void SelectTaskDialog::showEvent ( QShowEvent * event )
@@ -54,13 +61,13 @@ void SelectTaskDialog::showEvent ( QShowEvent * event )
 	state.loadFrom( settings );
 	QModelIndex index( m_proxy.indexForTaskId( state.selectedTask() ) );
 	if ( index.isValid() ) {
-		m_ui.treeView->setCurrentIndex(index);
+		m_ui->treeView->setCurrentIndex(index);
 	}
 
 	Q_FOREACH( TaskId id, state.expandedTasks() ) {
 		QModelIndex index( m_proxy.indexForTaskId( id ) );
 		if ( index.isValid() ) {
-			m_ui.treeView->expand( index );
+			m_ui->treeView->expand( index );
 		}
 	}
 }
@@ -77,7 +84,7 @@ void SelectTaskDialog::slotCurrentItemChanged( const QModelIndex& first,
     if ( task.isValid() ) {
         m_selectedTask = task.id();
     }
-    m_ui.buttonBox->button( QDialogButtonBox::Ok )->setEnabled( m_selectedTask != 0 );
+    m_ui->buttonBox->button( QDialogButtonBox::Ok )->setEnabled( m_selectedTask != 0 );
 }
 
 void SelectTaskDialog::slotFilterTextChanged( const QString& text )
@@ -86,7 +93,7 @@ void SelectTaskDialog::slotFilterTextChanged( const QString& text )
     filtertext.replace( ' ', '*' );
     m_proxy.setFilterWildcard( filtertext );
 
-    m_ui.buttonClearFilter->setEnabled( ! text.isEmpty() );
+    m_ui->buttonClearFilter->setEnabled( ! text.isEmpty() );
 }
 
 void SelectTaskDialog::slotAccepted()
@@ -104,7 +111,7 @@ void SelectTaskDialog::slotAccepted()
         TaskIdList expandedTasks;
         Q_FOREACH( Task task, tasks ) {
             QModelIndex index( m_proxy.indexForTaskId( task.id() ) );
-            if ( m_ui.treeView->isExpanded( index ) ) {
+            if ( m_ui->treeView->isExpanded( index ) ) {
                 expandedTasks << task.id();
             }
         }
