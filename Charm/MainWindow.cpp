@@ -125,8 +125,8 @@ MainWindow::MainWindow()
     QMenu* viewMenu = new QMenu( tr( "View" ), menuBar() );
     viewMenu->addActions( m_viewActionsGroup.actions() );
     viewMenu->addSeparator();
-    m_actionToggleView.setShortcut( Qt::CTRL + Qt::Key_V );
-    m_actionToggleView.setText( tr( "Toggle View" ) );
+    m_actionToggleView.setShortcut( Qt::CTRL + Qt::Key_S );
+    m_actionToggleView.setText( tr( "Switch View" ) );
     connect( &m_actionToggleView, SIGNAL( triggered() ), SLOT( slotToggleView() ) );
     viewMenu->addAction( &m_actionToggleView );
     viewMenu->addSeparator();
