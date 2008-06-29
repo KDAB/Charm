@@ -37,11 +37,7 @@ void EventDisplay::setEvent( const Event& event )
 	m_ui->labelTaskName->setText( tasknameWithParents( taskTreeItem.task() ) );
 	m_ui->labelStart->setText( m_event.startDateTime().toString( Qt::SystemLocaleShortDate) );
 	m_ui->labelEnd->setText( m_event.endDateTime().toString( Qt::SystemLocaleShortDate) );
-	const int durationHours = m_event.duration() / 3600;
-	const int durationMinutes = ( m_event.duration() % 3600 ) / 60;
-	m_ui->labelDuration->setText( tr( "%1:%2")
-		.arg( durationHours )
-		.arg( durationMinutes ) );
+	m_ui->labelDuration->setText( hoursAndMinutes( m_event.duration() ) );
 	const int weeknumber = m_event.startDateTime().date().weekNumber();
 	m_ui->labelWeeknumber->setText( tr("%1").arg( weeknumber ) );
 	m_ui->labelComment->setText( m_event.comment() );
