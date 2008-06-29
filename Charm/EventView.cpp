@@ -32,8 +32,6 @@ EventView::EventView( MainWindow* parent )
     , m_ui( new Ui::EventView )
     , m_eventDisplay( new EventDisplay() )
     , m_view( parent )
-    , m_selectedTask( 0 )
-    , m_dirty( false )
     , m_model( 0 )
     , m_actionNewEvent( this )
     , m_actionDeleteEvent( this )
@@ -148,8 +146,6 @@ void EventView::closeEvent( QCloseEvent* e )
 
 void EventView::reject()
 {
-    // there is no reject semantic - all changes are implicit:
-    commitChanges();
     emit visible( false );
 }
 
@@ -159,40 +155,12 @@ void EventView::commitCommand( CharmCommand* command )
     delete command;
 }
 
-void EventView::slotEventChanged()
-{
-    Event event = newSettings();
-    if ( m_event != event ) {
-        m_dirty = true;
-
-#if 0
-        const QDateTime& start = m_ui->dateTimeStart->dateTime();
-        if ( start != m_event.startDateTime() ) {
-            m_ui->dateTimeEnd->setMinimumTime( start.time() );
-            m_ui->dateTimeEnd->setMinimumDate( start.date() );
-        }
-#endif
-
-//         m_commitTimer.start( 10000 );
-    }
-}
-
-void EventView::slotCommitTimeout()
-{
-    if ( m_dirty ) {
-        commitChanges();
-    }
-}
-
 void EventView::slotCurrentItemChanged( const QModelIndex& start,
                                           const QModelIndex& end )
 {
-    commitChanges();
-
     if ( ! start.isValid() ) {
         m_ui->stackedWidget->setCurrentWidget( m_ui->pageNoEvent );
         m_event = Event();
-        m_selectedTask = 0;
         m_actionDeleteEvent.setEnabled(false);
     } else {
         m_ui->stackedWidget->setCurrentWidget( m_ui->pageEvent );
@@ -206,13 +174,9 @@ void EventView::slotCurrentItemChanged( const QModelIndex& start,
     slotConfigureUi();
 }
 
-// FIXME obsolete
 void EventView::setCurrentEvent( const Event& event )
 {
     m_event = event;
-
-    const TaskTreeItem& taskTreeItem =
-        MODEL.charmDataModel()->taskTreeItem( m_event.taskId() );
 }
 
 void EventView::slotNewEvent()
@@ -288,31 +252,6 @@ Event EventView::newSettings()
     return event;
 }
 
-void EventView::commitChanges()
-{
-    if ( m_dirty && m_selectedTask != 0 ) {
-        CommandModifyEvent* command =
-            new CommandModifyEvent( newSettings(), this );
-        m_dirty = false;
-        emitCommand( command );
-    }
-}
-
-// FIXME obsolete
-void EventView::slotSelectTask()
-{
-    SelectTaskDialog dialog( this );
-
-    if ( dialog.exec() ) {
-        m_selectedTask = dialog.selectedTask();
-        const TaskTreeItem& taskTreeItem =
-            MODEL.charmDataModel()->taskTreeItem( m_selectedTask );
-        QString name = tasknameWithParents( taskTreeItem.task() );
-        // m_ui->labelTaskName->setText( name );
-        m_dirty = true;
-    }
-}
-
 void EventView::makeVisibleAndCurrent( const Event& event )
 {
     // make sure the event filter time span includes the events start
@@ -342,24 +281,11 @@ void EventView::timeFrameChanged( int index )
     // wait for the next update, in this case:
     if ( m_ui->comboBox->count() == 0 ) return;
     if ( !m_model ) return;
-    // this is kind-of strange - we have to clear the dirty flag,
-    // and this will change the current index, triggering a commit
-    // halfway during the change:
-    Event event = newSettings();
-    bool dirty = m_dirty;
-    m_dirty = false;
-
     if ( index >= 0 && index < m_timeSpans.size() ) {
         m_model->setFilterStartDate( m_timeSpans[index].timespan.first );
         m_model->setFilterEndDate( m_timeSpans[index].timespan.second );
     } else {
         Q_ASSERT( false );
-    }
-
-    if ( dirty ) {
-        CommandModifyEvent* command =
-            new CommandModifyEvent( event, this );
-        emitCommand( command );
     }
 }
 
@@ -403,11 +329,9 @@ void EventView::slotConfigureUi()
 
 void EventView::slotUpdateCurrent()
 {
-    // this may be Qt-version dependant, verify later:
     Event event = DATAMODEL->eventForId( m_event.id() );
     if ( event != m_event ) {
         setCurrentEvent( event );
-        m_dirty = false;
     }
     slotUpdateTotal();
 }
@@ -472,9 +396,6 @@ void EventView::setModel( ModelConnector* connector )
     EventEditorDelegate* delegate =
         new EventEditorDelegate( model, m_ui->listView );
     m_ui->listView->setItemDelegate( delegate );
-
-
-    m_dirty = false;
 }
 
 void EventView::slotEventDoubleClicked( const QModelIndex& index )
