@@ -396,6 +396,7 @@ void EventView::setModel( ModelConnector* connector )
     EventEditorDelegate* delegate =
         new EventEditorDelegate( model, m_ui->listView );
     m_ui->listView->setItemDelegate( delegate );
+    timeSpansChanged();
 }
 
 void EventView::slotEventDoubleClicked( const QModelIndex& index )

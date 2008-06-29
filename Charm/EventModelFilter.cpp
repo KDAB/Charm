@@ -45,6 +45,7 @@ QModelIndex EventModelFilter::indexForEvent( const Event& event ) const
 {
 	const QModelIndex& sourceIndex = m_model.indexForEvent( event );
 	const QModelIndex& proxyIndex( mapFromSource( sourceIndex ) );
+	// bool valid = proxyIndex.isValid();
 	return proxyIndex;
 }
 
