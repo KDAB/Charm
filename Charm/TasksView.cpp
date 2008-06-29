@@ -428,12 +428,6 @@ void View::slotContextMenuRequested( const QPoint& point )
     }
 }
 
-// FIXME remove?
-// void View::actionNewTask( bool )
-// {
-//     // ... nothing done here, but in the context menu method
-// }
-
 void View::slotItemDoubleClicked( const QModelIndex& index )
 {
     ViewFilter* filter = Application::instance().model().taskModel();

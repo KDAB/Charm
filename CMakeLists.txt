@@ -1,7 +1,8 @@
 # this is the CMake Project File for Charm
 PROJECT( Charm )
 
-SET(QT_MIN_VERSION "4.3.1")
+# Charm uses layout and QPalette elements from Qt 4.4
+SET(QT_MIN_VERSION "4.4.0")
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 FIND_PACKAGE( Qt4 REQUIRED )
 ENABLE_TESTING()

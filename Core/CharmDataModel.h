@@ -31,6 +31,8 @@ public:
     void stateChanged( State previous, State next );
     /** Register a CharmDataModelAdapterInterface. */
     void registerAdapter( CharmDataModelAdapterInterface* );
+    /** Unregister a CharmDataModelAdapterInterface. */
+    void unregisterAdapter( CharmDataModelAdapterInterface* );
 
     /** Retrieve a task for the given task id.
         If called with Zero as the task id, it will return the

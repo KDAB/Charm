@@ -35,6 +35,12 @@ void CharmDataModel::registerAdapter( CharmDataModelAdapterInterface* adapter )
     m_adapters.append( adapter );
 }
 
+void CharmDataModel::unregisterAdapter( CharmDataModelAdapterInterface* adapter )
+{
+	Q_ASSERT( m_adapters.contains( adapter ) );
+    m_adapters.removeAll( adapter );
+}
+
 void CharmDataModel::setAllTasks( const TaskList& tasks )
 {
     m_tasks.clear();

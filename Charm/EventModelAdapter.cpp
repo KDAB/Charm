@@ -13,6 +13,7 @@ EventModelAdapter::EventModelAdapter( CharmDataModel* parent )
 
 EventModelAdapter::~EventModelAdapter()
 {
+    m_dataModel->unregisterAdapter( this );
 }
 
 int EventModelAdapter::rowCount( const QModelIndex& ) const

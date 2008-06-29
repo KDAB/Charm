@@ -43,7 +43,9 @@ const Event& EventModelFilter::eventForIndex( const QModelIndex& index ) const
 
 QModelIndex EventModelFilter::indexForEvent( const Event& event ) const
 {
-    return mapFromSource( m_model.indexForEvent( event ) );
+	const QModelIndex& sourceIndex = m_model.indexForEvent( event );
+	const QModelIndex& proxyIndex( mapFromSource( sourceIndex ) );
+	return proxyIndex;
 }
 
 bool EventModelFilter::filterAcceptsRow( int srow, const QModelIndex& sparent ) const
