@@ -1,4 +1,5 @@
 #include <QtDebug>
+#include <QSettings>
 #include <QPushButton>
 #include <QDialogButtonBox>
 
@@ -6,25 +7,21 @@
 
 #include "ViewHelpers.h"
 #include "Data.h"
+#include "GUIState.h"
 #include "ModelConnector.h"
 #include "ViewFilter.h"
 #include "Application.h"
-#include "Core/CharmDataModel.h"
+#include "ModelConnector.h"
 #include "TaskModelAdapter.h"
 #include "ViewFilter.h"
 #include "SelectTaskDialog.h"
 
-SelectTaskDialogProxy::SelectTaskDialogProxy()
-    : QSortFilterProxyModel()
+SelectTaskDialogProxy::SelectTaskDialogProxy( CharmDataModel* model, QObject* parent )
+    : ViewFilter( model, parent )
 {
     // we filter for the task name column
     setFilterKeyColumn( Column_TaskName );
     setFilterCaseSensitivity( Qt::CaseInsensitive );
-}
-
-QModelIndex SelectTaskDialogProxy::indexForTaskId( TaskId ) const
-{
-    return QModelIndex(); // not needed
 }
 
 bool SelectTaskDialogProxy::filterAcceptsColumn( int column, const QModelIndex& parent ) const
@@ -32,47 +29,40 @@ bool SelectTaskDialogProxy::filterAcceptsColumn( int column, const QModelIndex& 
     return column == Column_TaskId || column == Column_TaskName;
 }
 
-const ViewFilter* SelectTaskDialogProxy::source() const
-{
-    ViewFilter* filter = qobject_cast<ViewFilter*>( sourceModel() );
-    Q_ASSERT( filter );
-    return filter;
-}
-
-Task SelectTaskDialogProxy::taskForIndex( const QModelIndex& index ) const
-{
-    return source()->taskForIndex( mapToSource( index ) );
-}
-
-bool SelectTaskDialogProxy::taskIsActive( const Task& task ) const
-{
-    return source()->taskIsActive( task );
-}
-
-bool SelectTaskDialogProxy::taskHasChildren( const Task& task ) const
-{
-    return source()->taskHasChildren( task );
-}
-
-bool SelectTaskDialogProxy::taskIdExists( TaskId taskId ) const
-{
-    return source()->taskIdExists( taskId );
-}
-
 SelectTaskDialog::SelectTaskDialog( QWidget* parent )
     : QDialog( parent )
+    , m_proxy( MODEL.charmDataModel() )
 {
     m_ui.setupUi( this );
     m_ui.treeView->setModel( &m_proxy );
-    m_proxy.setSourceModel( MODEL.taskModel() );
     connect( m_ui.treeView->selectionModel(),
              SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ),
              SLOT( slotCurrentItemChanged( const QModelIndex&, const QModelIndex& ) ) );
-
     connect( m_ui.lineEditFilter, SIGNAL( textChanged( QString ) ),
              SLOT( slotFilterTextChanged( QString ) ) );
+    connect( this, SIGNAL( accepted() ),
+    		 SLOT( slotAccepted() ) );
 
     m_ui.buttonClearFilter->setIcon( Data::clearFilterIcon() );
+}
+
+void SelectTaskDialog::showEvent ( QShowEvent * event )
+{
+    QSettings settings;
+    settings.beginGroup( staticMetaObject.className() );
+	GUIState state;
+	state.loadFrom( settings );
+	QModelIndex index( m_proxy.indexForTaskId( state.selectedTask() ) );
+	if ( index.isValid() ) {
+		m_ui.treeView->setCurrentIndex(index);
+	}
+
+	Q_FOREACH( TaskId id, state.expandedTasks() ) {
+		QModelIndex index( m_proxy.indexForTaskId( id ) );
+		if ( index.isValid() ) {
+			m_ui.treeView->expand( index );
+		}
+	}
 }
 
 TaskId SelectTaskDialog::selectedTask() const
@@ -97,6 +87,31 @@ void SelectTaskDialog::slotFilterTextChanged( const QString& text )
     m_proxy.setFilterWildcard( filtertext );
 
     m_ui.buttonClearFilter->setEnabled( ! text.isEmpty() );
+}
+
+void SelectTaskDialog::slotAccepted()
+{
+    QSettings settings;
+    // FIXME refactor, code duplication with taskview
+    // save user settings
+    if ( Application::instance().state() == Connected ||
+         Application::instance().state() == Disconnecting ) {
+        GUIState state;
+        // selected task
+        state.setSelectedTask( selectedTask() );
+        // expanded tasks
+        TaskList tasks = MODEL.charmDataModel()->getAllTasks();
+        TaskIdList expandedTasks;
+        Q_FOREACH( Task task, tasks ) {
+            QModelIndex index( m_proxy.indexForTaskId( task.id() ) );
+            if ( m_ui.treeView->isExpanded( index ) ) {
+                expandedTasks << task.id();
+            }
+        }
+        state.setExpandedTasks( expandedTasks );
+        settings.beginGroup( staticMetaObject.className() );
+        state.saveTo( settings );
+    }
 }
 
 #include "SelectTaskDialog.moc"

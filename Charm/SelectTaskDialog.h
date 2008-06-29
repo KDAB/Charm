@@ -4,33 +4,21 @@
 #include <QDialog>
 #include <QSortFilterProxyModel>
 
-#include "Core/TaskModelInterface.h"
+#include "ViewFilter.h"
 #include "ui_SelectTaskDialog.h"
 
 class ViewFilter;
+class CharmDataModel;
 
-class SelectTaskDialogProxy : public QSortFilterProxyModel,
-                              public TaskModelInterface
+class SelectTaskDialogProxy : public ViewFilter
 {
     Q_OBJECT
 
 public:
-    SelectTaskDialogProxy();
-
-    Task taskForIndex( const QModelIndex& ) const;
-    QModelIndex indexForTaskId( TaskId ) const;
-    bool taskIsActive( const Task& task ) const;
-    bool taskHasChildren( const Task& task ) const;
-    bool taskIdExists( TaskId taskId ) const;
-
-    void eventActivationNotice( EventId ) {}
-    void eventDeactivationNotice( EventId ) {}
+    SelectTaskDialogProxy( CharmDataModel*, QObject* parent = 0 );
 
 protected:
-    bool filterAcceptsColumn( int column, const QModelIndex& parent ) const;
-
-private:
-    const ViewFilter* source() const;
+	bool filterAcceptsColumn( int column, const QModelIndex& parent ) const;
 };
 
 class SelectTaskDialog : public QDialog
@@ -42,9 +30,13 @@ public:
 
     TaskId selectedTask() const;
 
+protected:
+	void showEvent ( QShowEvent * event );
+
 private slots:
     void slotCurrentItemChanged( const QModelIndex&, const QModelIndex& );
     void slotFilterTextChanged( const QString& );
+    void slotAccepted();
 
 private:
     Ui::SelectTaskDialog m_ui;
