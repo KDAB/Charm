@@ -34,6 +34,7 @@ EventView::EventView( MainWindow* parent )
     , m_view( parent )
     , m_model( 0 )
     , m_actionNewEvent( this )
+    , m_actionEditEvent( this )
     , m_actionDeleteEvent( this )
     , m_actionPreviousEvent( this )
     , m_actionNextEvent( this )
@@ -62,6 +63,8 @@ EventView::EventView( MainWindow* parent )
              SLOT( slotPreviousEvent() ) );
     connect( &m_actionNewEvent, SIGNAL( triggered() ),
              SLOT( slotNewEvent() ) );
+    connect( &m_actionEditEvent, SIGNAL( triggered() ),
+    		 SLOT( slotEditEvent() ) );
     connect( &m_actionDeleteEvent, SIGNAL( triggered() ),
              SLOT( slotDeleteEvent() ) );
     connect( m_eventDisplay, SIGNAL( editEvent( Event ) ),
@@ -75,16 +78,20 @@ EventView::EventView( MainWindow* parent )
     m_actionNewEvent.setIcon( Data::newTaskIcon() );
     m_ui->toolButtonNewEvent->setDefaultAction( &m_actionNewEvent );
 
+    m_actionEditEvent.setText( tr( "Edit Event...") );
+    m_actionEditEvent.setIcon( Data::editEventIcon() );
+    m_ui->toolButtonEditEvent->setDefaultAction( &m_actionEditEvent );
+
     m_actionDeleteEvent.setText( tr( "Delete Event..." ) );
     m_actionDeleteEvent.setIcon( Data::deleteTaskIcon() );
     m_ui->toolButtonDeleteEvent->setDefaultAction( &m_actionDeleteEvent );
 
     m_actionPreviousEvent.setIcon( Data::previousEventIcon() );
-    m_actionPreviousEvent.setToolTip( tr( "Next Event" ) );
+    m_actionPreviousEvent.setText( tr( "Next Event" ) );
     m_ui->toolButtonPrevious->setDefaultAction( &m_actionPreviousEvent );
 
     m_actionNextEvent.setIcon( Data::nextEventIcon() );
-    m_actionNextEvent.setToolTip( tr( "Previous Event" ) );
+    m_actionNextEvent.setText( tr( "Previous Event" ) );
     m_ui->toolButtonNext->setDefaultAction( &m_actionNextEvent );
 
     // disable all actions, action state will be set when the current
@@ -92,6 +99,7 @@ EventView::EventView( MainWindow* parent )
     m_actionNextEvent.setEnabled( false );
     m_actionPreviousEvent.setEnabled( false );
     m_actionNewEvent.setEnabled( true ); // always on
+    m_actionEditEvent.setEnabled( false );
     m_actionDeleteEvent.setEnabled( false );
 
     connect( m_ui->comboBox, SIGNAL( currentIndexChanged( int ) ),
@@ -162,9 +170,11 @@ void EventView::slotCurrentItemChanged( const QModelIndex& start,
         m_ui->stackedWidget->setCurrentWidget( m_ui->pageNoEvent );
         m_event = Event();
         m_actionDeleteEvent.setEnabled(false);
+        m_actionEditEvent.setEnabled(false);
     } else {
         m_ui->stackedWidget->setCurrentWidget( m_ui->pageEvent );
         m_actionDeleteEvent.setEnabled(true);
+        m_actionEditEvent.setEnabled(true);
         Event event = m_model->eventForIndex( start );
         Q_ASSERT( event.isValid() ); // index is valid,  so...
         m_eventDisplay->setEvent( event );
@@ -239,6 +249,7 @@ void EventView::slotContextMenuRequested( const QPoint& point )
     // prepare the menu:
     QMenu menu( m_ui->listView );
     menu.addAction( &m_actionNewEvent );
+    menu.addAction( &m_actionEditEvent );
     menu.addAction( &m_actionDeleteEvent );
 
     // all actions are handled in their own slots:
@@ -312,6 +323,7 @@ void EventView::slotConfigureUi()
     bool active = MODEL.charmDataModel()->isEventActive( m_event.id() );
 
     m_actionNewEvent.setEnabled( true ); // always on
+    m_actionEditEvent.setEnabled( m_event.isValid() && ! active );
     m_actionDeleteEvent.setEnabled( m_event.isValid() && ! active );
     // m_ui->frame->setEnabled( ! active );
 
@@ -404,6 +416,11 @@ void EventView::slotEventDoubleClicked( const QModelIndex& index )
 	Q_ASSERT( m_model ); // otherwise, how can we get a doubleclick on an item?
 	const Event& event = m_model->eventForIndex( index );
 	slotEditEvent( event );
+}
+
+void EventView::slotEditEvent()
+{
+	slotEditEvent( m_event );
 }
 
 void EventView::slotEditEvent( const Event& event )

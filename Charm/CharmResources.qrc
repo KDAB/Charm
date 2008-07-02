@@ -6,6 +6,7 @@
 		<file alias="check.png">Icons/apply.png</file>
 		<file alias="new.png">Icons/filenew.png</file>
 		<file alias="deletetask.png">Icons/editdelete.png</file>
+		<file alias="edit.png">Icons/draw-freehand.png</file>
 		<file alias="next.png">Icons/forward.png</file>
 		<file alias="previous.png">Icons/back.png</file>
 		<file alias="charmicon.png">Icons/Charm-512x512.png</file>

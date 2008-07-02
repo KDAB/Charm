@@ -58,6 +58,7 @@ public slots:
 
 private slots:
 	void slotEventDoubleClicked( const QModelIndex& );
+	void slotEditEvent();
 	void slotEditEvent( const Event& );
     void slotCurrentItemChanged( const QModelIndex&, const QModelIndex& );
     void slotContextMenuRequested( const QPoint& );
@@ -81,6 +82,7 @@ private:
     Event m_event;
     EventModelFilter* m_model;
     QAction m_actionNewEvent;
+    QAction m_actionEditEvent;
     QAction m_actionDeleteEvent;
     QAction m_actionPreviousEvent;
     QAction m_actionNextEvent;

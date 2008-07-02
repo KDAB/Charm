@@ -12,6 +12,7 @@ public:
     static const QIcon& stopIcon();
     static const QIcon& newTaskIcon();
     static const QIcon& deleteTaskIcon();
+    static const QIcon& editEventIcon();
     static const QIcon& previousEventIcon();
     static const QIcon& nextEventIcon();
     static const QPixmap& checkIcon();

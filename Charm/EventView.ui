@@ -103,6 +103,19 @@
         </widget>
        </item>
        <item>
+        <widget class="QToolButton" name="toolButtonEditEvent" >
+         <property name="enabled" >
+          <bool>true</bool>
+         </property>
+         <property name="text" >
+          <string>...</string>
+         </property>
+         <property name="toolButtonStyle" >
+          <enum>Qt::ToolButtonTextUnderIcon</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QToolButton" name="toolButtonDeleteEvent" >
          <property name="text" >
           <string>...</string>
@@ -182,7 +195,6 @@
           </rect>
          </property>
          <layout class="QGridLayout" />
-         <zorder>listView</zorder>
         </widget>
         <widget class="QWidget" name="pageNoEvent" >
          <property name="geometry" >
@@ -218,8 +230,6 @@ p, li { white-space: pre-wrap; }
     </widget>
    </item>
   </layout>
-  <zorder>frame</zorder>
-  <zorder>listView</zorder>
  </widget>
  <tabstops>
   <tabstop>listView</tabstop>

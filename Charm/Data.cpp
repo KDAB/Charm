@@ -44,6 +44,14 @@ const QIcon& Data::deleteTaskIcon()
 	return icon;
 }
 
+const QIcon& Data::editEventIcon()
+{
+	Q_ASSERT_X(!QPixmap(":/Charm/edit.png").isNull(), "Data::editEventIcon",
+			"Required resource not available");
+	static QIcon icon(QPixmap(":/Charm/edit.png"));
+	return icon;
+}
+
 const QIcon& Data::previousEventIcon()
 {
 	Q_ASSERT_X(!QPixmap(":/Charm/previous.png").isNull(),
