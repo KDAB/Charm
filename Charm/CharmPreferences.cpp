@@ -26,6 +26,19 @@ CharmPreferences::CharmPreferences( const Configuration& config,
     default:
         Q_ASSERT( false ); // somebody added an option
     };
+    switch( config.toolButtonStyle ) {
+    case Qt::ToolButtonIconOnly:
+        m_ui.cbToolButtonStyle->setCurrentIndex( 0 );
+        break;
+    case Qt::ToolButtonTextOnly:
+        m_ui.cbToolButtonStyle->setCurrentIndex( 1 );
+        break;
+    case Qt::ToolButtonTextUnderIcon:
+        m_ui.cbToolButtonStyle->setCurrentIndex( 2 );
+        break;
+    default:
+        Q_ASSERT( false ); // somebody added an option
+    };
     // resize( minimumSize() );
 }
 
@@ -65,6 +78,25 @@ Configuration::TaskTrackerFontSize CharmPreferences::taskTrackerFontSize() const
     }
     // always return something, to avoid compiler warning:
     return Configuration::TaskTrackerFont_Regular;
+}
+
+Qt::ToolButtonStyle CharmPreferences::toolButtonStyle() const
+{
+    switch( m_ui.cbToolButtonStyle->currentIndex() ) {
+    case 0:
+        return Qt::ToolButtonIconOnly;
+        break;
+    case 1:
+        return Qt::ToolButtonTextOnly;
+        break;
+    case 2:
+        return Qt::ToolButtonTextUnderIcon;
+        break;
+    default:
+        Q_ASSERT( false ); // somebody added an item
+    }
+    // always return something, to avoid compiler warning:
+    return Qt::ToolButtonIconOnly;
 }
 
 #include "CharmPreferences.moc"

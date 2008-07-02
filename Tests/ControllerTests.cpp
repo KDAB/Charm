@@ -56,9 +56,9 @@ void ControllerTests::initializeConnectBackendTest()
 void ControllerTests:: persistProvideMetaDataTest()
 {   // stick with user id 0, it is not persisted in the DB, and 0 is the default
     Configuration configs[] = {
-        Configuration( true, true, User( "bla", 0 ), true, Configuration::TaskTrackerFont_Small, true ),
-        Configuration( true, false, User( "blub", 0 ), false, Configuration::TaskTrackerFont_Regular, true ),
-        Configuration( false, true, User(), true, Configuration::TaskTrackerFont_Large, false ),
+        Configuration( true, true, User( "bla", 0 ), true, Configuration::TaskTrackerFont_Small, true, Qt::ToolButtonIconOnly ),
+        Configuration( true, false, User( "blub", 0 ), false, Configuration::TaskTrackerFont_Regular, true, Qt::ToolButtonTextOnly ),
+        Configuration( false, true, User(), true, Configuration::TaskTrackerFont_Large, false, Qt::ToolButtonTextBesideIcon ),
     };
     const int NumberOfConfigurations = sizeof configs / sizeof configs[0];
 

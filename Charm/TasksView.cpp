@@ -52,6 +52,7 @@ View::View( QWidget* parent )
     connect( m_delegate, SIGNAL( editingStateChanged() ),
              SLOT( slotConfigureUi() ) );
     m_ui->buttonClearFilter->setEnabled( false );
+    m_ui->buttonClearFilter->setText( tr( "Clear Filter" ) );
     m_ui->buttonClearFilter->setIcon( Data::clearFilterIcon() );
     // set up actions
     // (no menu icons, please) m_actionAboutDialog.setIcon( Data::charmIcon() );

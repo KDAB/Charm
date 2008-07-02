@@ -35,6 +35,7 @@ extern const QString MetaKey_Key_LocalStorageType;
 extern const QString MetaKey_Key_SubscribedTasksOnly;
 extern const QString MetaKey_Key_TaskTrackerFontSize;
 extern const QString MetaKey_Key_24hEditing;
+extern const QString MetaKey_Key_ToolButtonStyle;
 
 #define CONFIGURATION ( Configuration::instance() )
 

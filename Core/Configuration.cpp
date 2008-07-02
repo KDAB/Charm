@@ -33,12 +33,13 @@ Configuration::Configuration()
 Configuration::Configuration( bool _eventsInLeafsOnly, bool _oneEventAtATime, User _user,
                               bool _showOnlySubscribedTasks,
                               TaskTrackerFontSize _taskTrackerFontSize,
-                              bool _always24hEditing )
+                              bool _always24hEditing, Qt::ToolButtonStyle _buttonstyle )
     : eventsInLeafsOnly( _eventsInLeafsOnly )
     , oneEventAtATime( _oneEventAtATime )
     , showOnlySubscribedTasks( _showOnlySubscribedTasks )
     , taskTrackerFontSize( _taskTrackerFontSize )
     , always24hEditing( _always24hEditing )
+    , toolButtonStyle( _buttonstyle )
     , configurationName( DEFAULT_CONFIG_GROUP )
     , installationId( 0 )
     , newDatabase( false )
@@ -56,6 +57,7 @@ bool Configuration::operator==( const Configuration& other ) const
         showOnlySubscribedTasks == other.showOnlySubscribedTasks &&
         taskTrackerFontSize == other.taskTrackerFontSize &&
         always24hEditing == other.always24hEditing &&
+        toolButtonStyle == other.toolButtonStyle &&
         configurationName == other.configurationName &&
         installationId == other.installationId &&
         localStorageType == other.localStorageType &&
@@ -72,6 +74,7 @@ void Configuration::writeTo( QSettings& settings )
     settings.setValue( MetaKey_Key_SubscribedTasksOnly, showOnlySubscribedTasks );
     settings.setValue( MetaKey_Key_TaskTrackerFontSize, static_cast<int>( taskTrackerFontSize ) );
     settings.setValue( MetaKey_Key_24hEditing, always24hEditing );
+    settings.setValue( MetaKey_Key_ToolButtonStyle, static_cast<int>( toolButtonStyle ) );
     dump( "(Configuration::writeTo stored configuration)" );
 }
 
@@ -109,6 +112,11 @@ bool Configuration::readFrom( QSettings& settings )
     if ( settings.contains( MetaKey_Key_24hEditing ) ) {
         always24hEditing = settings.value( MetaKey_Key_24hEditing ).value<bool>();
     }
+    if ( settings.contains( MetaKey_Key_ToolButtonStyle ) ) {
+    	int style = settings.value( MetaKey_Key_ToolButtonStyle ).value<int>();
+    	toolButtonStyle = static_cast<Qt::ToolButtonStyle>( style );
+    }
+
 
     dump( "(Configuration::readFrom loaded configuration)" );
     return complete;

@@ -18,6 +18,7 @@ public:
     bool oneEventAtATime() const;
     bool eventsInLeafsOnly() const;
     bool always24hEditing() const;
+    Qt::ToolButtonStyle toolButtonStyle() const;
 
     Configuration::TaskTrackerFontSize taskTrackerFontSize() const;
 

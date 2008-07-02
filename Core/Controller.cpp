@@ -174,7 +174,9 @@ void Controller::persistMetaData( Configuration& configuration )
         { MetaKey_Key_TaskTrackerFontSize,
           QString().setNum( configuration.taskTrackerFontSize ) },
         { MetaKey_Key_24hEditing,
-          stringForBool( configuration.always24hEditing ) }
+          stringForBool( configuration.always24hEditing ) },
+        { MetaKey_Key_ToolButtonStyle,
+          QString().setNum( configuration.toolButtonStyle ) }
     };
     int NumberOfSettings = sizeof settings / sizeof settings[0];
 
@@ -197,6 +199,7 @@ void Controller::provideMetaData( Configuration& configuration)
     configuration.user.setName( m_storage->getMetaData( MetaKey_Key_UserName ) );
     configuration.showOnlySubscribedTasks = boolForString(
         m_storage->getMetaData( MetaKey_Key_SubscribedTasksOnly ) );
+
     int fontSize;
     bool ok;
     fontSize = m_storage->getMetaData( MetaKey_Key_TaskTrackerFontSize ).toInt( &ok );
@@ -217,6 +220,14 @@ void Controller::provideMetaData( Configuration& configuration)
     }
     configuration.always24hEditing = boolForString(
         m_storage->getMetaData( MetaKey_Key_24hEditing ) );
+
+    int buttonStyleValue = m_storage->getMetaData( MetaKey_Key_ToolButtonStyle ).toInt( &ok );
+    if( ok ) {
+    	Qt::ToolButtonStyle buttonStyle = static_cast<Qt::ToolButtonStyle> ( buttonStyleValue );
+    	configuration.toolButtonStyle = buttonStyle;
+    } else {
+    	configuration.toolButtonStyle = Qt::ToolButtonIconOnly;
+    }
 }
 
 bool Controller::initializeBackEnd( const QString& name )

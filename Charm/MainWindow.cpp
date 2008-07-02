@@ -4,6 +4,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QStatusBar>
+#include <QToolButton>
 
 #include <Core/CharmCommand.h>
 #include <Core/CharmConstants.h>
@@ -178,6 +179,7 @@ void MainWindow::slotEditPreferences( bool )
         CONFIGURATION.oneEventAtATime = dialog.oneEventAtATime();
         CONFIGURATION.taskTrackerFontSize = dialog.taskTrackerFontSize();
         CONFIGURATION.always24hEditing = dialog.always24hEditing();
+        CONFIGURATION.toolButtonStyle = dialog.toolButtonStyle();
         slotConfigurationChanged();
         emit saveConfiguration();
     }
@@ -304,6 +306,7 @@ void MainWindow::restoreGuiState()
     // call all the view modes:
     for_each( m_modes.begin(), m_modes.end(),
               std::mem_fun( &ViewModeInterface::restoreGuiState ) );
+    slotConfigurationChanged();
 }
 
 void MainWindow::saveGuiState()
@@ -320,6 +323,10 @@ void MainWindow::slotConfigurationChanged()
 {
     for_each( m_modes.begin(), m_modes.end(),
               std::mem_fun( &ViewModeInterface::configurationChanged ) );
+    QList<QToolButton *> allToolButtons = findChildren<QToolButton *>();
+    Q_FOREACH( QToolButton* button, allToolButtons ) {
+    	button->setToolButtonStyle( CONFIGURATION.toolButtonStyle );
+    }
 }
 
 void MainWindow::slotSelectViewMode( QAction* action )

@@ -22,6 +22,7 @@ const QString MetaKey_Key_LocalStorageType = "LocalStorageType";
 const QString MetaKey_Key_SubscribedTasksOnly = "SubscribedTasksOnly";
 const QString MetaKey_Key_TaskTrackerFontSize = "TaskTrackerFontSize";
 const QString MetaKey_Key_24hEditing = "Key24hEditing";
+const QString MetaKey_Key_ToolButtonStyle = "ToolButtonStyle";
 
 
 const QString TrueString( "true" );

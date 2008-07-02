@@ -5,36 +5,32 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>402</width>
-    <height>222</height>
+    <width>434</width>
+    <height>183</height>
    </rect>
   </property>
   <property name="windowTitle" >
    <string>Charm Configuration</string>
   </property>
   <layout class="QVBoxLayout" >
-   <property name="margin" >
-    <number>9</number>
-   </property>
-   <property name="spacing" >
-    <number>6</number>
-   </property>
    <item>
     <widget class="QTabWidget" name="tabWidget" >
      <property name="currentIndex" >
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tabDatabase" >
+      <property name="geometry" >
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>404</width>
+        <height>104</height>
+       </rect>
+      </property>
       <attribute name="title" >
        <string>DataBase Options</string>
       </attribute>
       <layout class="QVBoxLayout" >
-       <property name="margin" >
-        <number>9</number>
-       </property>
-       <property name="spacing" >
-        <number>6</number>
-       </property>
        <item>
         <widget class="QCheckBox" name="cbEventsInLeavesOnly" >
          <property name="text" >
@@ -54,7 +50,7 @@
          <property name="orientation" >
           <enum>Qt::Vertical</enum>
          </property>
-         <property name="sizeHint" >
+         <property name="sizeHint" stdset="0" >
           <size>
            <width>20</width>
            <height>40</height>
@@ -65,104 +61,85 @@
       </layout>
      </widget>
      <widget class="QWidget" name="tabAppearance" >
+      <property name="geometry" >
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>404</width>
+        <height>104</height>
+       </rect>
+      </property>
       <attribute name="title" >
        <string>Appearance</string>
       </attribute>
-      <layout class="QVBoxLayout" >
-       <property name="margin" >
-        <number>9</number>
-       </property>
-       <property name="spacing" >
-        <number>6</number>
-       </property>
-       <item>
-        <layout class="QHBoxLayout" >
-         <property name="margin" >
-          <number>0</number>
+      <layout class="QFormLayout" name="formLayout" >
+       <item row="0" column="0" >
+        <widget class="QLabel" name="label" >
+         <property name="text" >
+          <string>Task Tracker Font Size:</string>
          </property>
-         <property name="spacing" >
-          <number>6</number>
-         </property>
-         <item>
-          <spacer>
-           <property name="orientation" >
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" >
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <widget class="QLabel" name="label" >
-           <property name="text" >
-            <string>Task Tracker Font Size:</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QComboBox" name="cbTaskTrackerFontSize" >
-           <item>
-            <property name="text" >
-             <string>Small</string>
-            </property>
-           </item>
-           <item>
-            <property name="text" >
-             <string>Regular (Application Font)</string>
-            </property>
-           </item>
-           <item>
-            <property name="text" >
-             <string>Large</string>
-            </property>
-           </item>
-          </widget>
-         </item>
-         <item>
-          <spacer>
-           <property name="orientation" >
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" >
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-        </layout>
+        </widget>
        </item>
-       <item>
-        <spacer>
-         <property name="orientation" >
-          <enum>Qt::Vertical</enum>
+       <item row="0" column="1" >
+        <widget class="QComboBox" name="cbTaskTrackerFontSize" >
+         <item>
+          <property name="text" >
+           <string>Small</string>
+          </property>
+         </item>
+         <item>
+          <property name="text" >
+           <string>Regular (Application Font)</string>
+          </property>
+         </item>
+         <item>
+          <property name="text" >
+           <string>Large</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="1" column="0" >
+        <widget class="QLabel" name="label_2" >
+         <property name="text" >
+          <string>Buttons show</string>
          </property>
-         <property name="sizeHint" >
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
+        </widget>
+       </item>
+       <item row="1" column="1" >
+        <widget class="QComboBox" name="cbToolButtonStyle" >
+         <item>
+          <property name="text" >
+           <string>Icons</string>
+          </property>
+         </item>
+         <item>
+          <property name="text" >
+           <string>Text</string>
+          </property>
+         </item>
+         <item>
+          <property name="text" >
+           <string>Icons and Text</string>
+          </property>
+         </item>
+        </widget>
        </item>
       </layout>
      </widget>
      <widget class="QWidget" name="tab" >
+      <property name="geometry" >
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>404</width>
+        <height>104</height>
+       </rect>
+      </property>
       <attribute name="title" >
        <string>Esoteric Options</string>
       </attribute>
       <layout class="QVBoxLayout" >
-       <property name="margin" >
-        <number>9</number>
-       </property>
-       <property name="spacing" >
-        <number>6</number>
-       </property>
        <item>
         <widget class="QCheckBox" name="cb24hEditing" >
          <property name="toolTip" >
@@ -181,7 +158,7 @@ p, li { white-space: pre-wrap; }
          <property name="orientation" >
           <enum>Qt::Vertical</enum>
          </property>
-         <property name="sizeHint" >
+         <property name="sizeHint" stdset="0" >
           <size>
            <width>20</width>
            <height>40</height>
@@ -199,11 +176,13 @@ p, li { white-space: pre-wrap; }
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons" >
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::NoButton|QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>
   </layout>
+  <zorder>buttonBox</zorder>
+  <zorder>tabWidget</zorder>
  </widget>
  <resources/>
  <connections>
