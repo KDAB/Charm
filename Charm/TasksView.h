@@ -84,8 +84,8 @@ private:
     QAction m_actionSelectedEventEnded;
     QAction m_actionNewTask;
     QAction m_actionNewSubTask;
+    QAction m_actionEditTask;
     QAction m_actionDeleteTask;
-    QAction m_actionRenameTask;
     QAction m_actionStopAllTasks;
     StatusBarWidget* m_statusBarWidget;
 };

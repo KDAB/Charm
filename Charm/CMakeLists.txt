@@ -29,6 +29,7 @@ IF ( QT4_FOUND )
 		       ConfigurationDialog.cpp 
 		       CharmPreferences.cpp
 		       TasksView.cpp
+		       TaskEditor.cpp
 		       GUIState.cpp
 		       EventView.cpp
 		       EventEditor.cpp
@@ -75,6 +76,7 @@ IF ( QT4_FOUND )
 		       Reports/WeeklyTimeSheetConfigurationPage.ui
 		       Reports/ReportPreviewWindow.ui
 		       TasksView.ui
+		       TaskEditor.ui
 		       EventView.ui 
 		       EventDisplay.ui
 		       EventEditor.ui

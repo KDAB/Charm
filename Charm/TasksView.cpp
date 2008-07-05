@@ -14,6 +14,7 @@
 #include "Core/Task.h"
 #include "Core/CharmConstants.h"
 #include "TasksView.h"
+#include "TaskEditor.h"
 #include <QInputDialog>
 #include "ViewHelpers.h"
 #include "Core/State.h"
@@ -42,8 +43,8 @@ View::View( QWidget* parent )
     , m_actionSelectedEventEnded( this )
     , m_actionNewTask( this )
     , m_actionNewSubTask( this )
+    , m_actionEditTask( this )
     , m_actionDeleteTask( this )
-    , m_actionRenameTask( this )
     , m_actionStopAllTasks( this )
 {
     m_ui->setupUi( this );
@@ -83,11 +84,11 @@ View::View( QWidget* parent )
     m_actionNewSubTask.setText( tr( "New Subtask" ) );
     m_actionNewSubTask.setIcon( Data::newTaskIcon() );
 
+    m_actionEditTask.setText( tr( "Edit Task" ) );
+    m_actionEditTask.setIcon( Data::editTaskIcon() );
+
     m_actionDeleteTask.setText( tr( "Delete Task" ) );
     m_actionDeleteTask.setIcon( Data::deleteTaskIcon() );
-
-    m_actionRenameTask.setText( tr( "Rename Task" ) );
-    // no icon yet m_actionRenameTask.setIcon( Data::renameTaskIcon() );
 
     // filter setup
     connect( m_ui->filterLineEdit, SIGNAL( textChanged( const QString& ) ),
@@ -355,7 +356,7 @@ void View::slotContextMenuRequested( const QPoint& point )
     menu.addSeparator();
     menu.addAction( &m_actionNewTask );
     menu.addAction( &m_actionNewSubTask );
-    menu.addAction( &m_actionRenameTask );
+    menu.addAction( &m_actionEditTask );
     menu.addAction( &m_actionDeleteTask );
 
     // find the model index at pos:
@@ -369,6 +370,7 @@ void View::slotContextMenuRequested( const QPoint& point )
     bool cannotStop = m_delegate->isEditing();
 
     m_actionDeleteTask.setEnabled( task.isValid() && ! filter->taskHasChildren( task ) );
+    m_actionEditTask.setEnabled( task.isValid() );
     m_actionNewSubTask.setEnabled( selected );
     m_actionEventStarted.setEnabled( selected && ! cannotStart
                                      && ! filter->taskIsActive( task ) );
@@ -405,17 +407,16 @@ void View::slotContextMenuRequested( const QPoint& point )
             CommandAddTask* cmd = new CommandAddTask( newTask, this );
             emit emitCommand( cmd );
         }
-    } else if ( result == &m_actionRenameTask ) {
-        Q_ASSERT( task.isValid() );
-        bool ok = false;
-        const QString text = QInputDialog::getText(this, tr("Rename Task"),
-                                                   tr("Task name:"), QLineEdit::Normal,
-                                                   task.name(), &ok);
-        if ( ok ) {
-            task.setName( text );
-            CommandModifyTask* cmd = new CommandModifyTask( task, this );
-            emit emitCommand( cmd );
-        }
+    } else if ( result == &m_actionEditTask ) {
+    	Q_ASSERT( task.isValid() );
+    	TaskEditor editor( this );
+    	editor.setTask( task );
+    	if( editor.exec() ) {
+    		task = editor.getTask();
+    		task.dump();
+			CommandModifyTask* cmd = new CommandModifyTask( task, this );
+			emit emitCommand( cmd );
+		}
     } else if ( result == &m_actionDeleteTask ) {
         Q_ASSERT( task.isValid() );
         if ( QMessageBox::question( this, tr( "Delete Task?" ),
