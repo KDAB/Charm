@@ -33,6 +33,7 @@ MainWindow::MainWindow()
     , m_actionEventView( &m_viewActionsGroup )
     , m_actionTasksView( &m_viewActionsGroup )
     , m_actionToggleView( this )
+    , m_actionShowStatusbar( this )
     , m_actionExportToXml( this )
     , m_actionImportFromXml( this )
     , m_eventView( this )
@@ -129,7 +130,13 @@ MainWindow::MainWindow()
     m_actionToggleView.setShortcut( Qt::CTRL + Qt::Key_S );
     m_actionToggleView.setText( tr( "Switch View" ) );
     connect( &m_actionToggleView, SIGNAL( triggered() ), SLOT( slotToggleView() ) );
+    m_actionShowStatusbar.setText( tr( "Show Status Bar" ) );
+    m_actionShowStatusbar.setCheckable( true );
+    connect( &m_actionShowStatusbar, SIGNAL( triggered( bool ) ),
+    		 SLOT( slotToggleStatusbar( bool ) ) );
     viewMenu->addAction( &m_actionToggleView );
+    viewMenu->addSeparator();
+    viewMenu->addAction( &m_actionShowStatusbar );
     viewMenu->addSeparator();
     viewMenu->addAction( &m_actionReporting );
 
@@ -223,6 +230,7 @@ void MainWindow::stateChanged( State previous )
     case Connected:
         // FIXME remember in Gui state:
         m_ui->viewStack->setCurrentWidget( &m_tasksView );
+    	slotConfigurationChanged();
         setEnabled( true );
         break;
     case Disconnecting:
@@ -306,7 +314,6 @@ void MainWindow::restoreGuiState()
     // call all the view modes:
     for_each( m_modes.begin(), m_modes.end(),
               std::mem_fun( &ViewModeInterface::restoreGuiState ) );
-    slotConfigurationChanged();
 }
 
 void MainWindow::saveGuiState()
@@ -327,6 +334,8 @@ void MainWindow::slotConfigurationChanged()
     Q_FOREACH( QToolButton* button, allToolButtons ) {
     	button->setToolButtonStyle( CONFIGURATION.toolButtonStyle );
     }
+    m_actionShowStatusbar.setChecked( CONFIGURATION.showStatusBar );
+    statusBar()->setVisible( CONFIGURATION.showStatusBar );
 }
 
 void MainWindow::slotSelectViewMode( QAction* action )
@@ -472,6 +481,13 @@ void MainWindow::slotUpdateTotal()
     const EventIdList weekEvents = DATAMODEL->eventsThatStartInTimeFrame(
         QDateTime( thisWeek.first ), QDateTime( thisWeek.second ) );
     m_statusBarLabelWeekTotal.setText( tr("Week total: %1").arg(hoursAndMinutes(totalDuration(weekEvents))) );
+}
+
+void MainWindow::slotToggleStatusbar( bool show )
+{
+	CONFIGURATION.showStatusBar = show;
+	statusBar()->setVisible( show );
+	emit saveConfiguration();
 }
 
 #include "MainWindow.moc"

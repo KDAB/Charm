@@ -56,6 +56,7 @@ private slots:
     void slotAboutDialog();
     void slotReportDialog();
     void slotUpdateTotal();
+    void slotToggleStatusbar( bool );
 
 protected:
     void showEvent( QShowEvent* );
@@ -83,6 +84,7 @@ private:
     QAction m_actionEventView;
     QAction m_actionTasksView;
     QAction m_actionToggleView;
+    QAction m_actionShowStatusbar;
     QAction m_actionExportToXml;
     QAction m_actionImportFromXml;
     View m_tasksView;

@@ -176,7 +176,9 @@ void Controller::persistMetaData( Configuration& configuration )
         { MetaKey_Key_24hEditing,
           stringForBool( configuration.always24hEditing ) },
         { MetaKey_Key_ToolButtonStyle,
-          QString().setNum( configuration.toolButtonStyle ) }
+          QString().setNum( configuration.toolButtonStyle ) },
+        { MetaKey_Key_ShowStatusBar,
+          stringForBool( configuration.showStatusBar ) }
     };
     int NumberOfSettings = sizeof settings / sizeof settings[0];
 
@@ -186,6 +188,7 @@ void Controller::persistMetaData( Configuration& configuration )
     }
     Q_ASSERT_X( good, "Controller::persistMetaData", "Controller assumes write "
                 "permissions in meta data table if persistMetaData is called" );
+    CONFIGURATION.dump();
 }
 
 void Controller::provideMetaData( Configuration& configuration)
@@ -228,6 +231,10 @@ void Controller::provideMetaData( Configuration& configuration)
     } else {
     	configuration.toolButtonStyle = Qt::ToolButtonIconOnly;
     }
+
+    configuration.showStatusBar = boolForString(
+            m_storage->getMetaData( MetaKey_Key_ShowStatusBar ) );
+    CONFIGURATION.dump();
 }
 
 bool Controller::initializeBackEnd( const QString& name )

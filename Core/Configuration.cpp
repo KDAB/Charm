@@ -22,6 +22,8 @@ Configuration::Configuration()
     , showOnlySubscribedTasks( false )
     , taskTrackerFontSize( TaskTrackerFont_Regular )
     , always24hEditing( false )
+    , toolButtonStyle( Qt::ToolButtonIconOnly )
+    , showStatusBar( true )
     , configurationName( DEFAULT_CONFIG_GROUP )
     , installationId( 0 )
     , newDatabase( false )
@@ -33,13 +35,15 @@ Configuration::Configuration()
 Configuration::Configuration( bool _eventsInLeafsOnly, bool _oneEventAtATime, User _user,
                               bool _showOnlySubscribedTasks,
                               TaskTrackerFontSize _taskTrackerFontSize,
-                              bool _always24hEditing, Qt::ToolButtonStyle _buttonstyle )
+                              bool _always24hEditing, Qt::ToolButtonStyle _buttonstyle,
+                              bool _showStatusBar )
     : eventsInLeafsOnly( _eventsInLeafsOnly )
     , oneEventAtATime( _oneEventAtATime )
     , showOnlySubscribedTasks( _showOnlySubscribedTasks )
     , taskTrackerFontSize( _taskTrackerFontSize )
     , always24hEditing( _always24hEditing )
     , toolButtonStyle( _buttonstyle )
+    , showStatusBar( _showStatusBar )
     , configurationName( DEFAULT_CONFIG_GROUP )
     , installationId( 0 )
     , newDatabase( false )
@@ -58,6 +62,7 @@ bool Configuration::operator==( const Configuration& other ) const
         taskTrackerFontSize == other.taskTrackerFontSize &&
         always24hEditing == other.always24hEditing &&
         toolButtonStyle == other.toolButtonStyle &&
+        showStatusBar == other.showStatusBar &&
         configurationName == other.configurationName &&
         installationId == other.installationId &&
         localStorageType == other.localStorageType &&
@@ -71,10 +76,13 @@ void Configuration::writeTo( QSettings& settings )
     settings.setValue( MetaKey_Key_LocalStorageType, localStorageType );
     settings.setValue( MetaKey_Key_LocalStorageDatabase, localStorageDatabase );
     // FIXME these go into the DB, not QSettings:
+    /*
     settings.setValue( MetaKey_Key_SubscribedTasksOnly, showOnlySubscribedTasks );
     settings.setValue( MetaKey_Key_TaskTrackerFontSize, static_cast<int>( taskTrackerFontSize ) );
     settings.setValue( MetaKey_Key_24hEditing, always24hEditing );
     settings.setValue( MetaKey_Key_ToolButtonStyle, static_cast<int>( toolButtonStyle ) );
+    settings.setValue( MetaKey_Key_ShowStatusBar, showStatusBar );
+    */
     dump( "(Configuration::writeTo stored configuration)" );
 }
 
@@ -102,6 +110,7 @@ bool Configuration::readFrom( QSettings& settings )
         complete = false;
     }
     // ----- optional settings:
+    /*
     if ( settings.contains( MetaKey_Key_SubscribedTasksOnly ) ) {
         showOnlySubscribedTasks = settings.value( MetaKey_Key_SubscribedTasksOnly ).value<bool>();
     }
@@ -116,8 +125,11 @@ bool Configuration::readFrom( QSettings& settings )
     	int style = settings.value( MetaKey_Key_ToolButtonStyle ).value<int>();
     	toolButtonStyle = static_cast<Qt::ToolButtonStyle>( style );
     }
+    if ( settings.contains( MetaKey_Key_ShowStatusBar ) ){
+    	showStatusBar = settings.value( MetaKey_Key_ShowStatusBar ).value<bool>();
+    }
 
-
+	*/
     dump( "(Configuration::readFrom loaded configuration)" );
     return complete;
 }
@@ -125,7 +137,7 @@ bool Configuration::readFrom( QSettings& settings )
 void Configuration::dump( const QString& why )
 {
     // dump configuration:
-    return; // disable debug output
+    // return; // disable debug output
     qDebug() << "Configuration: configuration:"
              << ( why.isEmpty() ? QString() : why )
              << endl
@@ -138,6 +150,8 @@ void Configuration::dump( const QString& why )
              << "--> showOnlySubscribedTasks:   " << showOnlySubscribedTasks << endl
              << "--> subscribed tasks only:  " << showOnlySubscribedTasks << endl
              << "--> task tracker font size: " << taskTrackerFontSize << endl
-             << "--> 24h time editing:       " << always24hEditing;
+             << "--> 24h time editing:       " << always24hEditing << endl
+             << "--> toolButtonStyle:        " << toolButtonStyle << endl
+             << "--> showStatusBar:          " << showStatusBar;
 }
 

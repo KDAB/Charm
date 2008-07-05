@@ -36,6 +36,7 @@ extern const QString MetaKey_Key_SubscribedTasksOnly;
 extern const QString MetaKey_Key_TaskTrackerFontSize;
 extern const QString MetaKey_Key_24hEditing;
 extern const QString MetaKey_Key_ToolButtonStyle;
+extern const QString MetaKey_Key_ShowStatusBar;
 
 #define CONFIGURATION ( Configuration::instance() )
 
