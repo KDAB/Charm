@@ -5,6 +5,7 @@
  *      Author: mirko
  */
 #include <QCheckBox>
+#include <QMessageBox>
 
 #include "Core/CharmConstants.h"
 #include "Core/TaskTreeItem.h"
@@ -89,11 +90,40 @@ Task TaskEditor::getTask() const
 	return m_task;
 }
 
+bool parentTreeIsTree( TaskId newParent, TaskId task )
+{
+	QList<TaskId> parents;
+	TaskId parent = newParent;
+	while( parent != 0 ) {
+		parents << parent;
+		const TaskTreeItem& parentItem =
+				        MODEL.charmDataModel()->taskTreeItem( parent );
+		parent = parentItem.task().parent();
+	}
+	return ! parents.contains( task );
+}
+
 void TaskEditor::slotSelectParent()
 {
     SelectTaskDialog dialog( this );
-    if ( dialog.exec() ) {
-    	m_task.setParent( dialog.selectedTask() );
+    Q_FOREVER {
+		if ( dialog.exec() ) {
+			TaskId newParentId = dialog.selectedTask();
+			if( parentTreeIsTree( newParentId, m_task.id() ) ) {
+				m_task.setParent( dialog.selectedTask() );
+				break;
+			}
+			QString name = m_task.name();
+			const TaskTreeItem& parentItem =
+		        MODEL.charmDataModel()->taskTreeItem( dialog.selectedTask() );
+			QString parent = parentItem.task().name();
+			QMessageBox::information( this, tr( "Please choose another task" ),
+                    tr( "The task \"%1\" cannot be selected as the parent task for \"%2\","
+                    	" because they are the same, or \"%3\" is a direct or indirect subtask of \"%4\".")
+                    	.arg( parent ).arg( name ).arg( parent ).arg( name ) );
+		} else {
+			break;
+		}
     }
 }
 
