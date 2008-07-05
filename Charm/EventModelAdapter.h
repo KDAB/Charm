@@ -30,6 +30,7 @@ public:
     void taskAboutToBeAdded( TaskId parentTask, int pos ) {}
     void taskAdded( TaskId id ) {}
     void taskModified( TaskId id ) {}
+    void taskParentChanged( TaskId, TaskId, TaskId ) {}
     void taskAboutToBeDeleted( TaskId ) {}
     void taskDeleted( TaskId id ) {}
 

@@ -15,6 +15,7 @@ public:
     virtual void taskAboutToBeAdded( TaskId parent, int pos ) = 0;
     virtual void taskAdded( TaskId id ) = 0;
     virtual void taskModified( TaskId id ) = 0;
+    virtual void taskParentChanged( TaskId task, TaskId oldParent, TaskId newParent ) = 0;
     virtual void taskAboutToBeDeleted( TaskId ) = 0;
     virtual void taskDeleted( TaskId id ) = 0;
 

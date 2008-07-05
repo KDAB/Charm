@@ -278,6 +278,24 @@ void TaskModelAdapter::taskAdded( TaskId id )
     endInsertRows();
 }
 
+void TaskModelAdapter::taskParentChanged( TaskId task, TaskId oldParent, TaskId newParent )
+{
+	// remove task from old parent:
+	const TaskTreeItem& item = m_dataModel->taskTreeItem( task );
+	const int row = item.row();
+	const TaskTreeItem& oldParentItem = m_dataModel->taskTreeItem( oldParent );
+	beginRemoveRows( indexForTaskTreeItem( oldParentItem, 0 ), row, row );
+	// the actual remove happens in the data model
+	endRemoveRows();
+	// add task to new patent:
+	const TaskTreeItem& newParentItem = m_dataModel->taskTreeItem( newParent );
+	const int pos = newParentItem.childCount();
+	beginInsertRows( indexForTaskTreeItem( newParentItem, 0 ), pos, pos );
+	// the actual insert happens in the data model
+	endInsertRows();
+}
+
+
 void TaskModelAdapter::taskModified( TaskId id )
 {
     const TaskTreeItem& item = m_dataModel->taskTreeItem( id );

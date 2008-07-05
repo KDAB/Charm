@@ -50,6 +50,7 @@ public:
     void taskAboutToBeAdded( TaskId parent, int pos );
     void taskAdded( TaskId id );
     void taskModified( TaskId id );
+    void taskParentChanged( TaskId task, TaskId oldParent, TaskId newParent );
     void taskAboutToBeDeleted( TaskId );
     void taskDeleted( TaskId id );
 

@@ -118,15 +118,20 @@ void CharmDataModel::modifyTask( const Task& task )
         bool parentChanged = task.parent() != oldParentId;
 
         if ( parentChanged ) {
-            m_tasks[ task.id() ].makeChildOf( parentItem( task ) );
             Q_FOREACH( CharmDataModelAdapterInterface* adapter, m_adapters )
-                adapter->taskModified( oldParentId );
+				adapter->taskParentChanged( task.id(), oldParentId, task.parent() );
+            m_tasks[ task.id() ].makeChildOf( parentItem( task ) );
         }
 
         m_tasks[ task.id() ].task() = task;
 
-        Q_FOREACH( CharmDataModelAdapterInterface* adapter, m_adapters )
+        if( parentChanged ) {
+            Q_FOREACH( CharmDataModelAdapterInterface* adapter, m_adapters )
+                adapter->resetTasks();
+        } else {
+        	Q_FOREACH( CharmDataModelAdapterInterface* adapter, m_adapters )
             adapter->taskModified( task.id() );
+        }
     }
 }
 
