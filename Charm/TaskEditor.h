@@ -30,8 +30,12 @@ public:
 
 private Q_SLOTS:
 	void slotSelectParent();
+	void slotDateChanged( const QDate & date );
+	void slotCheckBoxChecked( bool );
 
 private:
+	void checkInvariants();
+
 	Ui::TaskEditor* m_ui;
 	mutable Task m_task;
 };

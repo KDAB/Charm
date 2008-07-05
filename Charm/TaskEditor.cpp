@@ -23,6 +23,14 @@ TaskEditor::TaskEditor( QWidget* parent )
 	m_ui->setupUi( this );
 	connect( m_ui->pushButtonParent, SIGNAL( clicked() ),
 			 SLOT( slotSelectParent() ) );
+	connect( m_ui->dateEditFrom, SIGNAL( dateChanged( QDate ) ),
+			 SLOT( slotDateChanged( QDate ) ) );
+	connect( m_ui->dateEditTo, SIGNAL( dateChanged( QDate ) ),
+			 SLOT( slotDateChanged( QDate ) ) );
+	connect( m_ui->checkBoxFrom, SIGNAL( clicked( bool ) ),
+			 SLOT( slotCheckBoxChecked( bool ) ) );
+	connect( m_ui->checkBoxUntil, SIGNAL( clicked( bool ) ),
+			 SLOT( slotCheckBoxChecked( bool ) ) );
 }
 
 TaskEditor::~TaskEditor()
@@ -59,6 +67,7 @@ void TaskEditor::setTask( const Task& task )
 		m_ui->checkBoxUntil->setChecked( true );
 		m_ui->dateEditTo->setDate( QDate::currentDate() );
 	}
+	checkInvariants();
 }
 
 Task TaskEditor::getTask() const
@@ -88,4 +97,34 @@ void TaskEditor::slotSelectParent()
     }
 }
 
+void TaskEditor::slotDateChanged( const QDate& )
+{
+	checkInvariants();
+}
+
+void TaskEditor::slotCheckBoxChecked( bool )
+{
+	checkInvariants();
+}
+
+void TaskEditor::checkInvariants()
+{
+	bool acceptable;
+	// the start and end dates are acceptable if
+	// * both start and end date are deactivated,
+	// * if only one date is set, or
+	// * if none are set, and the start date is before the end date
+	if( m_ui->checkBoxFrom->isChecked() && m_ui->checkBoxUntil->isChecked() ) {
+		acceptable = true;
+	} else if ( m_ui->checkBoxFrom->isChecked() || m_ui->checkBoxUntil->isChecked() ) {
+		acceptable = true;
+	} else if ( m_ui->dateEditFrom->dateTime() < m_ui->dateEditTo->dateTime() ) {
+		acceptable = true;
+	} else {
+		acceptable = false;
+	}
+
+	m_ui->buttonBox->button( QDialogButtonBox::Ok )
+		->setEnabled( acceptable );
+}
 #include "TaskEditor.moc"
