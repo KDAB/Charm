@@ -5,6 +5,7 @@
  *      Author: mirko
  */
 #include <QCheckBox>
+#include <QPushButton>
 #include <QMessageBox>
 
 #include "Core/CharmConstants.h"
@@ -47,6 +48,14 @@ void TaskEditor::setTask( const Task& task )
         MODEL.charmDataModel()->taskTreeItem( task.id() );
 	m_ui->labelTaskName->setText( tasknameWithParents( taskTreeItem.task() ) );
 	m_ui->lineEditName->setText( task.name() );
+	if(  task.parent() != 0 ) {
+		const TaskTreeItem& parentItem =
+				MODEL.charmDataModel()->taskTreeItem( task.parent() );
+		const QString name = parentItem.task().name();
+		m_ui->pushButtonParent->setText( name );
+	} else {
+		m_ui->pushButtonParent->setText( tr( "Choose Parent Task" ) );
+	}
 	if( task.parent() == 0 ) {
 		m_ui->checkBoxTopLevel->setChecked( true );
 	} else {
@@ -109,14 +118,20 @@ void TaskEditor::slotSelectParent()
     Q_FOREVER {
 		if ( dialog.exec() ) {
 			TaskId newParentId = dialog.selectedTask();
+			const TaskTreeItem& parentItem =
+				MODEL.charmDataModel()->taskTreeItem( newParentId );
+			QString name = m_task.name();
+			QString parent = parentItem.task().name();
 			if( parentTreeIsTree( newParentId, m_task.id() ) ) {
 				m_task.setParent( dialog.selectedTask() );
+				if( newParentId != 0 ) {
+					m_ui->pushButtonParent->setText( parent );
+				} else {
+					m_ui->pushButtonParent->setText( tr( "Choose Parent Task" ) );
+				}
+
 				break;
 			}
-			QString name = m_task.name();
-			const TaskTreeItem& parentItem =
-		        MODEL.charmDataModel()->taskTreeItem( dialog.selectedTask() );
-			QString parent = parentItem.task().name();
 			QMessageBox::information( this, tr( "Please choose another task" ),
                     tr( "The task \"%1\" cannot be selected as the parent task for \"%2\","
                     	" because they are the same, or \"%3\" is a direct or indirect subtask of \"%4\".")

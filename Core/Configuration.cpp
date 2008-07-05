@@ -137,7 +137,7 @@ bool Configuration::readFrom( QSettings& settings )
 void Configuration::dump( const QString& why )
 {
     // dump configuration:
-    // return; // disable debug output
+    return; // disable debug output
     qDebug() << "Configuration: configuration:"
              << ( why.isEmpty() ? QString() : why )
              << endl
