@@ -3,10 +3,10 @@
 #include <QDateTime>
 #include <QtTest/QtTest>
 
-#include <User.h>
-#include <CharmConstants.h>
-#include <Installation.h>
-#include <SqLiteStorage.h>
+#include "Core/User.h"
+#include "Core/CharmConstants.h"
+#include "Core/Installation.h"
+#include "Core/SqLiteStorage.h"
 
 #include "SqLiteStorageTests.h"
 
@@ -129,6 +129,10 @@ void SqLiteStorageTests::makeModifyDeleteTasksTest()
     // verify task database entries
     Task task1_1 = m_storage->getTask( task1.id() );
     Task task2_1 = m_storage->getTask( task2.id() );
+    if( task1 != task1_1 ) {
+    	task1.dump();
+    	task1_1.dump();
+    }
     QVERIFY( task1 == task1_1 );
     QVERIFY( task2 == task2_1 );
 

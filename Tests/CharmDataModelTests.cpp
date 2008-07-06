@@ -1,9 +1,10 @@
 #include <QtDebug>
 #include <QtTest/QtTest>
 
-#include "Task.h"
-#include "TaskTreeItem.h"
-#include "CharmDataModel.h"
+#include "Core/Task.h"
+#include "Core/TaskTreeItem.h"
+#include "Core/CharmDataModel.h"
+
 #include "CharmDataModelTests.h"
 
 CharmDataModelTests::CharmDataModelTests()

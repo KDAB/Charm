@@ -58,25 +58,12 @@ TaskList SqlStorage::getAllTasks()
 		"on Tasks.task_id = Subscriptions.task;";
 	query.prepare(statement);
 
+	// FIXME merge record retrieval with getTask:
 	if (runQuery(query))
 	{
 		while (query.next())
 		{
-			Task task;
-			// We use an inner join query that merges the
-			// subscriptions. If there is a subscription for the user
-			// for a task, it will return the user
-			// "user_id" field imported from the Subscriptions table.
-			int idField = query.record().indexOf("task_id");
-			int nameField = query.record().indexOf("name");
-			int parentField = query.record().indexOf("parent");
-			int useridField = query.record().indexOf("user_id");
-
-			task.setId(query.value(idField).toInt());
-			task.setName(query.value(nameField).toString());
-			task.setParent(query.value(parentField).toInt());
-			task.setSubscribed(!query.value(useridField).toString().isEmpty());
-
+			Task task = makeTaskFromRecord( query.record() );
 			tasks.append(task);
 		}
 	}
@@ -87,11 +74,13 @@ TaskList SqlStorage::getAllTasks()
 bool SqlStorage::addTask(const Task& task)
 {
 	QSqlQuery query(database());
-	query.prepare("INSERT into Tasks (task_id, name, parent) "
-		"values ( :task_id, :name, :parent);");
+	query.prepare("INSERT into Tasks (task_id, name, parent, validfrom, validuntil) "
+		"values ( :task_id, :name, :parent, :validfrom, :validuntil);");
 	query.bindValue(":task_id", task.id());
 	query.bindValue(":name", task.name());
 	query.bindValue(":parent", task.parent());
+	query.bindValue(":validfrom", task.validFrom() );
+	query.bindValue(":validuntil", task.validUntil() );
 	return runQuery(query);
 }
 
@@ -106,28 +95,7 @@ Task SqlStorage::getTask(int taskid)
 
 	if (runQuery(query) && query.next())
 	{
-		Task task;
-		int idField = query.record().indexOf("task_id");
-		int nameField = query.record().indexOf("name");
-		int parentField = query.record().indexOf("parent");
-		int useridField = query.record().indexOf("user_id");
-		int validfromField = query.record().indexOf("validfrom");
-		int validuntilField = query.record().indexOf("validuntil");
-
-		task.setId(query.value(idField).toInt());
-		task.setName(query.value(nameField).toString());
-		task.setParent(query.value(parentField).toInt());
-		task.setSubscribed(!query.value(useridField).toString().isEmpty());
-		if ( ! query.value(validfromField).isNull() )
-		{
-			task.setValidFrom
-			( query.value(validfromField).value<QDateTime>() );
-		}
-		if ( ! query.value( validuntilField ).isNull() )
-		{
-			task.setValidUntil
-			( query.value( validuntilField ).value<QDateTime>() );
-		}
+		Task task = makeTaskFromRecord( query.record() );
 		return task;
 	}
 	else
@@ -139,11 +107,14 @@ Task SqlStorage::getTask(int taskid)
 bool SqlStorage::modifyTask(const Task& task)
 {
 	QSqlQuery query(database());
-	query.prepare("UPDATE Tasks set name = :name, parent = :parent "
+	query.prepare("UPDATE Tasks set name = :name, parent = :parent, "
+		"validfrom = :validfrom, validuntil = :validuntil "
 		"where task_id = :task_id;");
 	query.bindValue(":task_id", task.id());
 	query.bindValue(":name", task.name());
 	query.bindValue(":parent", task.parent());
+	query.bindValue(":validfrom", task.validFrom() );
+	query.bindValue(":validuntil", task.validUntil() );
 	return runQuery(query);
 }
 
@@ -774,4 +745,33 @@ QString SqlStorage::getMetaData(const QString& key)
 	{
 		return QString::null;
 	}
+}
+
+Task SqlStorage::makeTaskFromRecord( const QSqlRecord& record )
+{
+	Task task;
+	int idField = record.indexOf("task_id");
+	int nameField = record.indexOf("name");
+	int parentField = record.indexOf("parent");
+	int useridField = record.indexOf("user_id");
+	int validfromField = record.indexOf("validfrom");
+	int validuntilField = record.indexOf("validuntil");
+
+	task.setId(record.field(idField).value().toInt());
+	task.setName(record.field(nameField).value().toString());
+	task.setParent(record.field(parentField).value().toInt());
+	task.setSubscribed(!record.field(useridField).value().toString().isEmpty());
+	QString from = record.field(validfromField).value().toString();
+	if ( ! from.isEmpty() )
+	{
+		task.setValidFrom
+		( record.field(validfromField).value().value<QDateTime>() );
+	}
+	QString until = record.field(validuntilField).value().toString();
+	if ( ! until.isEmpty() )
+	{
+		task.setValidUntil
+		( record.field( validuntilField ).value().value<QDateTime>() );
+	}
+	return task;
 }

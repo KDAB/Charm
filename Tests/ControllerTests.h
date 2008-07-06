@@ -3,9 +3,8 @@
 
 #include <QObject>
 
-#include <Configuration.h>
-
-#include <ControllerInterface.h>
+#include "Core/Configuration.h"
+#include "Core/ControllerInterface.h"
 
 class ControllerTests : public QObject
 {

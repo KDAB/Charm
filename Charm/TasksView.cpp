@@ -144,7 +144,6 @@ void View::viewCurrentChanged( const QModelIndex& current,
 
 void View::configureUi( const QModelIndex& current )
 {
-    // FIXME add state handling
     if ( ! current.isValid() )
     {
         m_actionSelectedEventStarted.setEnabled( false );
@@ -158,7 +157,6 @@ void View::configureUi( const QModelIndex& current )
 
     // get the currently selected task:
     Task task = filter->taskForIndex( current );
-
     if ( task.isValid() && filter->taskIsActive( task ) ) {
         if ( editing ) {
             // If the tree view is in editing state, we do not allow
@@ -173,8 +171,15 @@ void View::configureUi( const QModelIndex& current )
             m_actionSelectedEventStarted.setEnabled( false );
             m_actionSelectedEventEnded.setEnabled( true );
         }
-    } else {
+    } else if ( task.isValid() && ! task.isCurrentlyValid() ) {
+    	// the task is valid, but at this time not within it's valid time frame
+        m_actionSelectedEventStarted.setEnabled( false );
+        m_actionSelectedEventEnded.setEnabled( false );
+    } else if ( task.isValid() ) {
         m_actionSelectedEventStarted.setEnabled( true );
+        m_actionSelectedEventEnded.setEnabled( false );
+    } else {
+        m_actionSelectedEventStarted.setEnabled( false );
         m_actionSelectedEventEnded.setEnabled( false );
     }
 
@@ -363,18 +368,18 @@ void View::slotContextMenuRequested( const QPoint& point )
     QModelIndex currentIndex = m_ui->treeView->indexAt( point );
     bool selected = currentIndex.isValid();
     Task task = filter->taskForIndex( currentIndex );
-
     bool cannotStart = task.isValid()
-                       && filter->taskHasChildren( task )
-                       && CONFIGURATION.eventsInLeafsOnly;
-    bool cannotStop = m_delegate->isEditing();
+		&& filter->taskHasChildren( task )
+		&& CONFIGURATION.eventsInLeafsOnly;
+	bool cannotStop = m_delegate->isEditing();
 
     m_actionDeleteTask.setEnabled( task.isValid() && ! filter->taskHasChildren( task ) );
     m_actionEditTask.setEnabled( task.isValid() );
     m_actionNewSubTask.setEnabled( selected );
-    m_actionEventStarted.setEnabled( selected && ! cannotStart
-                                     && ! filter->taskIsActive( task ) );
-    m_actionEventEnded.setEnabled( selected && filter->taskIsActive( task ) && ! cannotStop);
+	m_actionEventStarted.setEnabled( selected && ! cannotStart
+			&& ! filter->taskIsActive( task )
+			&& task.isCurrentlyValid() );
+	m_actionEventEnded.setEnabled( selected && filter->taskIsActive( task ) && ! cannotStop);
 
     // open the menu:
     QAction* result = menu.exec( m_ui->treeView->mapToGlobal( point ) );
@@ -417,6 +422,7 @@ void View::slotContextMenuRequested( const QPoint& point )
 			CommandModifyTask* cmd = new CommandModifyTask( task, this );
 			emit emitCommand( cmd );
 		}
+    	slotConfigureUi();
     } else if ( result == &m_actionDeleteTask ) {
         Q_ASSERT( task.isValid() );
         if ( QMessageBox::question( this, tr( "Delete Task?" ),
@@ -446,7 +452,9 @@ void View::slotItemDoubleClicked( const QModelIndex& index )
         if ( filter->taskIsActive( task ) ) {
             model->endEventRequested( task );
         } else {
-            model->startEventRequested( task );
+        	if( task.isCurrentlyValid() ) {
+        		model->startEventRequested( task );
+        	}
         }
     }
     slotConfigureUi();

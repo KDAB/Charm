@@ -59,7 +59,7 @@ public:
 
     bool verifyDatabase() throw ( UnsupportedDatabaseVersionException );
     virtual bool createDatabaseTables() = 0;
-    
+
 protected:
 	virtual QString lastInsertRowFunction() const = 0;
 
@@ -72,6 +72,7 @@ private:
 
 
     Event makeEventFromRecord( const QSqlRecord& );
+    Task makeTaskFromRecord( const QSqlRecord& );
 };
 
 #endif

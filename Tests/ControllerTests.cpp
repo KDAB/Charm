@@ -3,9 +3,9 @@
 #include <QtDebug>
 #include <QtTest/QtTest>
 
-#include <StorageInterface.h>
-#include <CharmConstants.h>
-#include <Controller.h>
+#include "Core/StorageInterface.h"
+#include "Core/CharmConstants.h"
+#include "Core/Controller.h"
 
 #include "ControllerTests.h"
 
@@ -35,8 +35,8 @@ void ControllerTests::initTestCase ()
     m_configuration.newDatabase = true;
     Controller* controller = new Controller;
     m_controller = controller;
-    connect( controller, SIGNAL( currentEvents( const EventList& ) ),
-             SLOT( slotCurrentEvents( const EventList& ) ) );
+//    connect( controller, SIGNAL( currentEvents( const EventList& ) ),
+//             SLOT( slotCurrentEvents( const EventList& ) ) );
     connect( controller, SIGNAL( definedTasks( const TaskList& ) ),
              SLOT( slotDefinedTasks( const TaskList& ) ) );
     connect( controller, SIGNAL( taskAdded( const Task& ) ),
@@ -149,12 +149,14 @@ void ControllerTests::addModifyDeleteTaskTest()
     task1.setId( Task1Id );
     task1.setName( Task1Name );
     task1.setSubscribed( true );
+    task1.setValidFrom( QDateTime::currentDateTime() );
     const int Task2Id = 2000;
     const QString Task2Name( "Task-2-Name" );
     Task task2;
     task2.setId( Task2Id );
     task2.setName( Task1Name );
     task2.setParent( task1.id() );
+    task2.setValidUntil( QDateTime::currentDateTime() );
     m_controller->addTask( task1 );
     // QTest::qWait( 1 ); // only necessary if we do this in threads
     QVERIFY( m_currentEvents.isEmpty() && m_eventListReceived == false );
@@ -224,6 +226,16 @@ void ControllerTests::toAndFromXmlTest()
         QFAIL( "Cannot reimport exported Xml Database Dump" );
     } else {
         TaskList tasksAfter = m_controller->storage()->getAllTasks();
+        if( tasksBefore != tasksAfter ) {
+        	qDebug() << "XML Document created during failed test:" << endl
+				<< document.toString();
+			Q_FOREACH( Task task, tasksBefore ) {
+				task.dump();
+			}
+			Q_FOREACH( Task task, tasksAfter ) {
+				task.dump();
+			}
+        }
         QVERIFY( tasksBefore == tasksAfter );
         EventList eventsAfter = m_controller->storage()->getAllEvents();
         // this is brittle, and may easily fail, because the event ids are auto-increment

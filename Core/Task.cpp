@@ -24,7 +24,9 @@ bool Task::operator == ( const Task& other ) const
 	other.id() == id()
 	&& other.parent() == parent()
 	&& other.name() == name()
-	&& other.subscribed() == subscribed();
+	&& other.subscribed() == subscribed()
+	&& other.validFrom() == validFrom()
+	&& other.validUntil() == validUntil();
 }
 
 TaskId Task::id() const
@@ -75,6 +77,9 @@ const QDateTime& Task::validFrom() const
 void Task::setValidFrom(const QDateTime& stamp)
 {
 	m_validFrom = stamp;
+	QTime time( m_validFrom.time() );
+	time.setHMS( time.hour(), time.minute(), time.second() );
+	m_validFrom.setTime( time );
 }
 
 const QDateTime& Task::validUntil() const
@@ -85,6 +90,15 @@ const QDateTime& Task::validUntil() const
 void Task::setValidUntil(const QDateTime& stamp)
 {
 	m_validUntil = stamp;
+	QTime time( m_validUntil.time() );
+	time.setHMS( time.hour(), time.minute(), time.second() );
+	m_validUntil.setTime( time );
+}
+
+bool Task::isCurrentlyValid() const
+{
+	return ( ! validFrom().isValid() || validFrom() < QDateTime::currentDateTime() )
+		&& ( ! validUntil().isValid() || validUntil() > QDateTime::currentDateTime() );
 }
 
 void Task::dump() const

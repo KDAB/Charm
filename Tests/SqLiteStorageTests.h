@@ -3,9 +3,8 @@
 
 #include <QObject>
 
-#include <Configuration.h>
-
-#include <StorageInterface.h>
+#include "Core/Configuration.h"
+#include "Core/StorageInterface.h"
 
 class SqLiteStorageTests : public QObject
 {

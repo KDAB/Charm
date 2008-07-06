@@ -3,12 +3,13 @@
 #include <QtDebug>
 #include <QtTest/QtTest>
 
-#include "CharmConstants.h"
-#include "Controller.h"
-#include "TaskTreeItem.h"
-#include "Configuration.h"
-#include "CharmDataModel.h"
-#include "StorageInterface.h"
+#include "Core/CharmConstants.h"
+#include "Core/Controller.h"
+#include "Core/TaskTreeItem.h"
+#include "Core/Configuration.h"
+#include "Core/CharmDataModel.h"
+#include "Core/StorageInterface.h"
+
 #include "BackendIntegrationTests.h"
 
 const int UserId = 1;

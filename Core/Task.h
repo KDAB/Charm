@@ -27,6 +27,7 @@ public:
     bool isValid() const;
 
     bool operator == ( const Task& other ) const;
+    bool operator != ( const Task& other ) const { return ! operator==( other ); }
 
     TaskId id() const ;
 
@@ -51,6 +52,8 @@ public:
     const QDateTime& validUntil() const;
 
     void setValidUntil( const QDateTime& );
+
+    bool isCurrentlyValid() const;
 
     void dump() const;
 

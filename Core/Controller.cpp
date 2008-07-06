@@ -359,7 +359,7 @@ QString Controller::importDatabaseFromXml( const QDomDocument& document )
         // static members:
         for ( QDomElement element = tasksElement.firstChildElement( "task" );
               !element.isNull(); element = element.nextSiblingElement( "task" ) ) {
-            Task task = Task::fromXml( element );
+            Task task = Task::fromXml( element, databaseSchemaVersion );
             if ( ! task.isValid() ) {
                 return tr( "The Export file contains at least one invalid task." );
             }
@@ -368,7 +368,7 @@ QString Controller::importDatabaseFromXml( const QDomDocument& document )
         QDomElement eventsElement = rootElement.firstChildElement( EventsElement );
         for ( QDomElement element = eventsElement.firstChildElement( "event" );
               !element.isNull(); element = element.nextSiblingElement( "event" ) ) {
-            Event event = Event::fromXml( element );
+            Event event = Event::fromXml( element, databaseSchemaVersion );
             if ( ! event.isValid() ) {
                 return tr( "The Export file contains at least one invalid event." );
             }

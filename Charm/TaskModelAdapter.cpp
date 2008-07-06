@@ -1,4 +1,6 @@
 #include <QPixmap>
+#include <QApplication>
+#include <QPalette>
 
 #include "Data.h"
 #include "Core/CharmConstants.h"
@@ -47,6 +49,18 @@ QVariant TaskModelAdapter::data( const QModelIndex& index, int role ) const
     const TaskId id = item->task().id();
     const Event& activeEvent = m_dataModel->activeEventFor( id );
     const bool isActive = activeEvent.isValid();
+    const QApplication* application = static_cast<QApplication*>( QApplication::instance() );
+    Q_ASSERT( application ); // we assume this code is executed in a GUI app
+
+    // handle roles that are treated all the same, everywhere:
+    switch( role ) {
+    case Qt::ForegroundRole:
+    	if( item->task().isCurrentlyValid() ) {
+    		return application->palette().color( QPalette::Active, QPalette::Text );
+    	} else {
+    		return application->palette().color( QPalette::Disabled, QPalette::Text );
+    	}
+    }
 
     switch( index.column() ) {
     case Column_TaskId:
@@ -197,8 +211,9 @@ Qt::ItemFlags TaskModelAdapter::flags( const QModelIndex & index ) const
         const TaskId id = item->task().id();
         const Event& activeEvent = m_dataModel->activeEventFor( id );
         const bool isActive = activeEvent.isValid();
+        const bool isCurrent = item->task().isCurrentlyValid();
 
-        if ( index.column() == Column_TaskComment && isActive ) {
+        if ( index.column() == Column_TaskComment && isActive && isCurrent ) {
             flags = Qt::ItemIsEditable;
         } else if ( index.column() == Column_TaskSubscriptions ) {
             flags = Qt::ItemIsUserCheckable;
