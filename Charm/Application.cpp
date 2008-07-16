@@ -23,48 +23,44 @@
 
 Application* Application::m_instance = 0;
 
-Application::Application( int argc,  char** argv )
-    : QObject ()
-    , m_state( Constructed )
-    , m_app( argc, argv )
-    , m_controller()
-    , m_mainWindow()
+Application::Application(int argc, char** argv) :
+	QObject(), m_state(Constructed), m_app(argc, argv), m_controller(),
+			m_mainWindow()
 {
-    // QApplication setup
-    m_app.setQuitOnLastWindowClosed( false );
-    // application metadata setup
-    // note that this modifies the behaviour of QSettings:
-    QCoreApplication::setOrganizationName( "KDAB" );
-    QCoreApplication::setOrganizationDomain( "kdab.net" );
-    QCoreApplication::setApplicationName( "Charm" );
+	// QApplication setup
+	m_app.setQuitOnLastWindowClosed(false);
+	// application metadata setup
+	// note that this modifies the behaviour of QSettings:
+	QCoreApplication::setOrganizationName("KDAB");
+	QCoreApplication::setOrganizationDomain("kdab.net");
+	QCoreApplication::setApplicationName("Charm");
 
-    Q_INIT_RESOURCE( CharmResources );
-    Q_ASSERT_X( m_instance == 0, "Application ctor",
-                "Application is a singleton and cannot be created more than once" );
-    m_instance = this;
-    qRegisterMetaType<State>( "State" );
+	Q_INIT_RESOURCE(CharmResources);
+	Q_ASSERT_X(m_instance == 0, "Application ctor",
+			"Application is a singleton and cannot be created more than once");
+	m_instance = this;
+	qRegisterMetaType<State> ("State");
 
-    // save the configuration (configuration is managed by the application)
-    connect( &m_mainWindow, SIGNAL( saveConfiguration() ),
-             SLOT( slotSaveConfiguration() ) );
-    // the exit process (close goes to systray, app->quit exits)
-    connect( &m_mainWindow, SIGNAL( quit() ),
-             SLOT( slotQuitApplication() ) );
+	// save the configuration (configuration is managed by the application)
+	connect(&m_mainWindow, SIGNAL(saveConfiguration()), SLOT(
+			slotSaveConfiguration()));
+	// the exit process (close goes to systray, app->quit exits)
+	connect(&m_mainWindow, SIGNAL(quit()), SLOT(slotQuitApplication()));
 
-    // exit process (app will only exit once controller says it is ready)
-    connect( &m_controller, SIGNAL( readyToQuit() ),
-             SLOT( slotControllerReadyToQuit() ) );
+	// exit process (app will only exit once controller says it is ready)
+	connect(&m_controller, SIGNAL(readyToQuit()), SLOT(
+			slotControllerReadyToQuit()));
 
-    connectControllerAndModel( &m_controller, m_model.charmDataModel() );
-    connectControllerAndView( &m_controller, &m_mainWindow );
+	connectControllerAndModel(&m_controller, m_model.charmDataModel());
+	connectControllerAndView(&m_controller, &m_mainWindow);
 
-    // my own signals:
-    connect( this, SIGNAL( goToState( State ) ), SLOT( setState(State ) ),
-             Qt::QueuedConnection);
+	// my own signals:
+	connect(this, SIGNAL(goToState(State)), SLOT(setState(State)),
+			Qt::QueuedConnection);
 
-    // Ladies and gentlemen, please raise upon your seats -
-    // the show is about to begin:
-    emit goToState( StartingUp );
+	// Ladies and gentlemen, please raise upon your seats -
+	// the show is about to begin:
+	emit goToState(StartingUp);
 }
 
 Application::~Application()
@@ -73,110 +69,115 @@ Application::~Application()
 
 int Application::exec()
 {
-    return m_app.exec();
+	return m_app.exec();
 }
 
-void Application::setState( State state )
+void Application::setState(State state)
 {
-    if ( m_state == state ) return;
+	if (m_state == state)
+		return;
 #ifndef NDEBUG
-    qDebug() << "Application::setState: going from" << StateNames[m_state]
-             << "to" << StateNames[state];
+	qDebug() << "Application::setState: going from" << StateNames[m_state]
+			<< "to" << StateNames[state];
 #endif
-    State previous = m_state;
+	State previous = m_state;
 
-    switch( m_state ) {
-    case Constructed:
-        break; // ignore, but this state is never re-entered
-    case StartingUp:
-        leaveStartingUpState();
-        break;
-    case Connecting:
-        leaveConnectingState();
-        break;
-    case Connected:
-        leaveConnectedState();
-        break;
-    case Disconnecting:
-        leaveDisconnectingState();
-        break;
-    case ShuttingDown:
-        leaveShuttingDownState();
-        break;
-    default:
-        Q_ASSERT_X( false, "Application::setState",
-                    "Unknown previous application state" );
-    };
+	switch (m_state)
+	{
+	case Constructed:
+		break; // ignore, but this state is never re-entered
+	case StartingUp:
+		leaveStartingUpState();
+		break;
+	case Connecting:
+		leaveConnectingState();
+		break;
+	case Connected:
+		leaveConnectedState();
+		break;
+	case Disconnecting:
+		leaveDisconnectingState();
+		break;
+	case ShuttingDown:
+		leaveShuttingDownState();
+		break;
+	default:
+		Q_ASSERT_X(false, "Application::setState",
+				"Unknown previous application state");
+	};
 
-    m_state = state;
+	m_state = state;
 
-    switch( m_state ) {
-    case StartingUp:
-        m_model.charmDataModel()->stateChanged( previous, state );
-        m_controller.stateChanged( previous, state );
-        m_mainWindow.stateChanged( previous );
-        enterStartingUpState();
-        break;
-    case Connecting:
-        m_model.charmDataModel()->stateChanged( previous, state );
-        m_controller.stateChanged( previous, state );
-        m_mainWindow.stateChanged( previous );
-        enterConnectingState();
-        break;
-    case Connected:
-        m_model.charmDataModel()->stateChanged( previous, state );
-        m_controller.stateChanged( previous, state );
-        m_mainWindow.stateChanged( previous );
-        enterConnectedState();
-        break;
-    case Disconnecting:
-        m_mainWindow.stateChanged( previous );
-        m_model.charmDataModel()->stateChanged( previous, state );
-        m_controller.stateChanged( previous, state );
-        enterDisconnectingState();
-        break;
-    case ShuttingDown:
-        m_mainWindow.stateChanged( previous );
-        m_model.charmDataModel()->stateChanged( previous, state );
-        m_controller.stateChanged( previous, state );
-        enterShuttingDownState();
-        break;
-    default:
-        Q_ASSERT_X( false, "Application::setState",
-                    "Unknown new application state" );
-    };
+	switch (m_state)
+	{
+	case StartingUp:
+		m_model.charmDataModel()->stateChanged(previous, state);
+		m_controller.stateChanged(previous, state);
+		m_mainWindow.stateChanged(previous);
+		enterStartingUpState();
+		break;
+	case Connecting:
+		m_model.charmDataModel()->stateChanged(previous, state);
+		m_controller.stateChanged(previous, state);
+		m_mainWindow.stateChanged(previous);
+		enterConnectingState();
+		break;
+	case Connected:
+		m_model.charmDataModel()->stateChanged(previous, state);
+		m_controller.stateChanged(previous, state);
+		m_mainWindow.stateChanged(previous);
+		enterConnectedState();
+		break;
+	case Disconnecting:
+		m_mainWindow.stateChanged(previous);
+		m_model.charmDataModel()->stateChanged(previous, state);
+		m_controller.stateChanged(previous, state);
+		enterDisconnectingState();
+		break;
+	case ShuttingDown:
+		m_mainWindow.stateChanged(previous);
+		m_model.charmDataModel()->stateChanged(previous, state);
+		m_controller.stateChanged(previous, state);
+		enterShuttingDownState();
+		break;
+	default:
+		Q_ASSERT_X(false, "Application::setState",
+				"Unknown new application state");
+	};
 }
 
 State Application::state() const
 {
-    return m_state;
+	return m_state;
 }
 
 Application& Application::instance()
 {
-    Q_ASSERT_X( m_instance, "Application::instance",
-                "Singleton not constructed yet" );
-    return * m_instance;
+	Q_ASSERT_X(m_instance, "Application::instance",
+			"Singleton not constructed yet");
+	return *m_instance;
 }
 
 void Application::enterStartingUpState()
 {
-    // show view  (view is never invisible)
-    m_mainWindow.show();
-    // load configuration
-    // ...
-    // verify configuration
-    // ...
-    // if configuration is incomplete or buggy configure
-    // FIXME ^^^
-    // then go to connecting state
-    if ( configure() )
-    {   // if all ok, go to connecting state
-        emit goToState( Connecting );
-    } else {
-        // user has cancelled configure, exit the application
-        m_app.quit();
-    }
+	// show view  (view is never invisible)
+	m_mainWindow.show();
+	// load configuration
+	// ...
+	// verify configuration
+	// ...
+	// if configuration is incomplete or buggy configure
+	// FIXME ^^^
+	// then go to connecting state
+	if (configure())
+	{ // if all ok, go to connecting state
+		emit goToState(Connecting);
+	}
+	else
+	{
+		// user has cancelled configure, exit the application
+		m_app.quit();
+	}
 }
 
 void Application::leaveStartingUpState()
@@ -185,18 +186,37 @@ void Application::leaveStartingUpState()
 
 void Application::enterConnectingState()
 {
-    if ( !m_controller.initializeBackEnd( CHARM_SQLITE_BACKEND_DESCRIPTOR ) )
-        m_app.quit();
-    // tell storage to connect to database
-    CONFIGURATION.failure = false;
-    if ( m_controller.connectToBackend() )
-    {
-        // delay switch to Connected state a bit to show the start screen:
-        QTimer::singleShot( 1200, this, SLOT( slotGoToConnectedState()));
-    } else {
-        // go back to StartingUp state and reconfigure
-        emit goToState( StartingUp );
-    }
+	if (!m_controller.initializeBackEnd(CHARM_SQLITE_BACKEND_DESCRIPTOR))
+		m_app.quit();
+	// tell storage to connect to database
+	CONFIGURATION.failure = false;
+	try
+	{
+		if (m_controller.connectToBackend())
+		{
+			// delay switch to Connected state a bit to show the start screen:
+			QTimer::singleShot(1200, this, SLOT(slotGoToConnectedState()));
+		}
+		else
+		{
+			// go back to StartingUp state and reconfigure
+			emit goToState(StartingUp);
+		}
+	} catch (UnsupportedDatabaseVersionException& e) {
+		QString message = QObject::tr( "<html><body>"
+				"<p>Your current Charm database is too old to use with this version. You have two "
+				"options here:</p><ul>"
+				"<li>Start over with an empty database by moving or deleting your ~/.Charm folder "
+				"then re-running this version of Charm.</li>"
+				"<li>Load an older version of Charm that supports your current database and select "
+				"File->Export, and save that file somewhere. Then, either rename or delete your "
+				"~/.Charm folder and restart this version of Charm and select File->Import from "
+				"previous export and select the file you saved in the previous step.</li>"
+				"</ul></body></html>");
+		QMessageBox::critical(&m_mainWindow, QObject::tr("Charm Database Error"),
+				message);
+		slotQuitApplication();
+	}
 }
 
 void Application::leaveConnectingState()
@@ -205,17 +225,17 @@ void Application::leaveConnectingState()
 
 void Application::enterConnectedState()
 {
-    slotSaveConfiguration();
+	slotSaveConfiguration();
 }
 
 void Application::leaveConnectedState()
 {
-    m_controller.persistMetaData( CONFIGURATION );
+	m_controller.persistMetaData(CONFIGURATION);
 }
 
 void Application::enterDisconnectingState()
 {
-    // just wait for controller to emit readyToQuit()
+	// just wait for controller to emit readyToQuit()
 }
 
 void Application::leaveDisconnectingState()
@@ -224,9 +244,9 @@ void Application::leaveDisconnectingState()
 
 void Application::enterShuttingDownState()
 {
-    // prevent all modules from accepting any user commands
-    m_mainWindow.setEnabled( false );
-    QTimer::singleShot( 1200, &m_app, SLOT( quit() ) );
+	// prevent all modules from accepting any user commands
+	m_mainWindow.setEnabled(false);
+	QTimer::singleShot(1200, &m_app, SLOT(quit()));
 }
 
 void Application::leaveShuttingDownState()
@@ -235,84 +255,96 @@ void Application::leaveShuttingDownState()
 
 void Application::slotGoToConnectedState()
 {
-    if ( state() == Connecting ) {
-        emit goToState( Connected );
-    }
+	if (state() == Connecting)
+	{
+		emit goToState(Connected);
+	}
 }
 bool Application::configure()
 {
-    if ( CONFIGURATION.failure == true ) {
-        qDebug() << "Application::configure: an error was found within the configuration.";
-        if ( ! CONFIGURATION.failureMessage.isEmpty() ) {
-            QMessageBox::information( &m_mainWindow, tr( "Configuration Problem" ),
-                                      CONFIGURATION.failureMessage,
-                                      tr( "Ok" ) );
-            CONFIGURATION.failureMessage.clear();
-        }
-    }
+	if (CONFIGURATION.failure == true)
+	{
+		qDebug()
+				<< "Application::configure: an error was found within the configuration.";
+		if (!CONFIGURATION.failureMessage.isEmpty())
+		{
+			QMessageBox::information(&m_mainWindow,
+					tr("Configuration Problem"), CONFIGURATION.failureMessage,
+					tr("Ok"));
+			CONFIGURATION.failureMessage.clear();
+		}
+	}
 
-    // load configuration:
-    QSettings settings;
-    settings.beginGroup( CONFIGURATION.configurationName );
+	// load configuration:
+	QSettings settings;
+	settings.beginGroup(CONFIGURATION.configurationName);
 
-    bool configurationComplete = CONFIGURATION.readFrom( settings );
+	bool configurationComplete = CONFIGURATION.readFrom(settings);
 
-    if ( !configurationComplete || CONFIGURATION.failure ) {
-        qDebug() << "Application::configure: no complete configuration found for configuration name"
-                 << CONFIGURATION.configurationName;
-// FIXME maybe move to Configuration::loadDefaults
+	if (!configurationComplete || CONFIGURATION.failure)
+	{
+		qDebug()
+				<< "Application::configure: no complete configuration found for configuration name"
+				<< CONFIGURATION.configurationName;
+		// FIXME maybe move to Configuration::loadDefaults
 #ifdef NDEBUG
-        CONFIGURATION.localStorageDatabase = QDir::homePath() + QDir::separator() + ".Charm/Charm.db";
+		CONFIGURATION.localStorageDatabase = QDir::homePath() + QDir::separator() + ".Charm/Charm.db";
 #else
-        CONFIGURATION.localStorageDatabase = QDir::homePath() + QDir::separator() + ".Charm/Charm_debug.db";
+		CONFIGURATION.localStorageDatabase = QDir::homePath()
+				+ QDir::separator() + ".Charm/Charm_debug.db";
 #endif
-        ConfigurationDialog dialog( CONFIGURATION, &m_mainWindow );
-        if ( dialog.exec() ) {
-            CONFIGURATION = dialog.configuration();
-            CONFIGURATION.writeTo( settings );
-        } else {
-            qDebug() << "Application::configure: user cancelled configuration. Exiting.";
-            // m_app.quit();
-            return false;
-        }
-    }
+		ConfigurationDialog dialog(CONFIGURATION, &m_mainWindow);
+		if (dialog.exec())
+		{
+			CONFIGURATION = dialog.configuration();
+			CONFIGURATION.writeTo(settings);
+		}
+		else
+		{
+			qDebug()
+					<< "Application::configure: user cancelled configuration. Exiting.";
+			// m_app.quit();
+			return false;
+		}
+	}
 
-    return true;
+	return true;
 }
 
 void Application::slotQuitApplication()
 {
-    emit goToState( Disconnecting );
+	emit goToState(Disconnecting);
 }
 
 void Application::slotControllerReadyToQuit()
 {
-    emit goToState( ShuttingDown );
+	emit goToState(ShuttingDown);
 }
 
 void Application::slotSaveConfiguration()
 {
-    QSettings settings;
-    settings.beginGroup( CONFIGURATION.configurationName );
-    CONFIGURATION.writeTo( settings );
-    if ( state() == Connected ) {
-        m_controller.persistMetaData( CONFIGURATION );
-    }
+	QSettings settings;
+	settings.beginGroup(CONFIGURATION.configurationName);
+	CONFIGURATION.writeTo(settings);
+	if (state() == Connected)
+	{
+		m_controller.persistMetaData(CONFIGURATION);
+	}
 }
 
 ModelConnector& Application::model()
 {
-    return m_model;
+	return m_model;
 }
 
 MainWindow& Application::view()
 {
-    return m_mainWindow;
+	return m_mainWindow;
 }
 
 TimeSpans& Application::timeSpans()
 {
-    return m_timeSpans;
+	return m_timeSpans;
 }
 
 #include "Application.moc"

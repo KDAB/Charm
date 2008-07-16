@@ -422,7 +422,9 @@ QString Controller::importDatabaseFromXml( const QDomDocument& document )
             return tr( "Error adding imported event." );
         }
     }
-
+//    qDebug() << "Controller::importDatabaseFromXml:" << m_storage->getAllTasks().count() << "tasks,"
+//		<< m_storage->getAllEvents().count() << "events imported from Xml file.";
+//
     // done
     return QString();
 }
