@@ -425,6 +425,9 @@ void EventView::slotEditEvent()
 
 void EventView::slotEditEvent( const Event& event )
 {
+	bool active = MODEL.charmDataModel()->isEventActive( event.id() );
+	if( active ) return;
+
 	EventEditor editor( event, this );
 	if( editor.exec() ) {
 		Event newEvent = editor.event();
