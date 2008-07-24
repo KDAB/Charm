@@ -57,7 +57,7 @@ View::View( QWidget* parent )
     m_ui->buttonClearFilter->setIcon( Data::clearFilterIcon() );
     // set up actions
     // (no menu icons, please) m_actionAboutDialog.setIcon( Data::charmIcon() );
-    m_actionStopAllTasks.setText( tr( "Stop All Active Tasks" ) );
+    m_actionStopAllTasks.setText( tr( "Stop &All Active Tasks" ) );
     m_actionStopAllTasks.setShortcut( Qt::Key_Escape );
     addAction(&m_actionStopAllTasks); // for the shortcut to work
     connect( &m_actionStopAllTasks, SIGNAL( triggered() ),
@@ -79,9 +79,10 @@ View::View( QWidget* parent )
              SLOT( actionSelectedEventEnded( bool ) ) );
 
 
-    m_actionNewTask.setText( tr( "New Task" ) );
+    m_actionNewTask.setText( tr( "New &Task" ) );
     m_actionNewTask.setIcon( Data::newTaskIcon() );
-    m_actionNewSubTask.setText( tr( "New Subtask" ) );
+
+    m_actionNewSubTask.setText( tr( "New &Subtask" ) );
     m_actionNewSubTask.setIcon( Data::newTaskIcon() );
 
     m_actionEditTask.setText( tr( "Edit Task" ) );
