@@ -75,9 +75,39 @@ void ActivityReportConfigurationPage::slotOkClicked()
 
 QDialog* ActivityReportConfigurationPage::makeReportPreviewDialog( QWidget* parent )
 {
-    return 0;
+    QDate start, end;
+    int index = m_ui->comboBox->currentIndex();
+    if ( index == m_timespans.size() -1 ) {
+        // manual selection
+        start = m_ui->dateEditStart->date();
+        end = m_ui->dateEditEnd->date();
+    } else {
+        start = m_timespans[index].timespan.first;
+        end = m_timespans[index].timespan.second;
+    }
+    ActivityReport* report = new ActivityReport( parent );
+    report->setReportProperties( start, end );
+    return report;
+}
+
+ActivityReport::ActivityReport( QWidget* parent )
+    : ReportPreviewWindow( parent )
+{
+}
+
+ActivityReport::~ActivityReport()
+{
+}
+
+void ActivityReport::setReportProperties( const QDate& start, const QDate& end )
+{
+    m_start = start;
+    m_end = end;
+    slotUpdate();
+}
+
+void ActivityReport::slotUpdate()
+{
 }
 
 #include "ActivityReport.moc"
-
-

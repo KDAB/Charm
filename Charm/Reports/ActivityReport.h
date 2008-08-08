@@ -4,6 +4,7 @@
 #include <Core/TimeSpans.h>
 
 #include "ReportConfigurationPage.h"
+#include "ReportPreviewWindow.h"
 
 namespace Ui {
     class ActivityReportConfigurationPage;
@@ -68,6 +69,25 @@ private:
     EventIdList m_matchingEvents;
     QWidget* m_configurationPage;
 */
+};
+
+class ActivityReport : public ReportPreviewWindow
+{
+    Q_OBJECT
+
+public:
+    explicit ActivityReport( QWidget* parent = 0 );
+    ~ActivityReport();
+
+    void setReportProperties( const QDate& start, const QDate& end );
+
+private:
+    // reimpl
+    void slotUpdate();
+
+private:
+    QDate m_start;
+    QDate m_end;
 };
 
 #endif
