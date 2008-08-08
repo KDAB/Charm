@@ -1,23 +1,30 @@
 #ifndef ACTIVITYREPORT_H
 #define ACTIVITYREPORT_H
 
-#include <QDate>
+#include "ReportConfigurationPage.h"
 
-#include "Core/Event.h"
-#include "CharmReport.h"
-#include "Core/TimeSpans.h"
+namespace Ui {
+    class ActivityReportConfigurationPage;
+}
 
-#include "ui_ActivityReportConfigurationPage.h"
-
-class QTextDocument;
-
-class ActivityReport : public CharmReport
+class ActivityReportConfigurationPage : public ReportConfigurationPage
 {
     Q_OBJECT
 
 public:
-    explicit ActivityReport( QObject* parent = 0 );
+    explicit ActivityReportConfigurationPage( ReportDialog* parent );
 
+    QDialog* makeReportPreviewDialog( QWidget* parent );
+    QString name();
+    QString description();
+
+private slots:
+    void slotOkClicked();
+
+private:
+    Ui::ActivityReportConfigurationPage* m_ui;
+
+/*
     bool prepare();
 
     bool create();
@@ -54,7 +61,7 @@ private:
     QTextDocument* m_report;
     EventIdList m_matchingEvents;
     QWidget* m_configurationPage;
-    Ui::ActivityReportConfigurationPage m_ui;
+*/
 };
 
 #endif

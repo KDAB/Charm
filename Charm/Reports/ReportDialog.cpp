@@ -5,10 +5,7 @@
 
 // the "well known" report types (as opposed to possible plugin based
 // report types:
-// FIXME outdated
-// #include "ActivityReport.h"
-// #include "WeeklyTimeSheet.h"
-// #include "WeeklyTimeSheet-OldSchool.h"
+#include "ActivityReport.h"
 #include "WeeklyTimeSheet3.h"
 
 ReportDialog::ReportDialog( QWidget* parent )
@@ -17,10 +14,8 @@ ReportDialog::ReportDialog( QWidget* parent )
 {
     m_ui->setupUi( this );
     // add all reports:
-    m_reports << new WTSConfigurationPage( this );
-//     m_reports << new ActivityReport( this )
-//               << new WeeklyTimeSheet( this )
-//               << new WeeklyTimeSheet_OldSchool( this );
+    m_reports << new WTSConfigurationPage( this )
+              << new ActivityReportConfigurationPage( this );
     // FEATURE: add report plugins (NI)
 
     // initialize GUI with all the report types:
