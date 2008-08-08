@@ -9,6 +9,7 @@
 #include <QDomDocument>
 
 #include <Core/CharmExceptions.h>
+#include <Core/Configuration.h>
 
 #include <QTimer>
 
@@ -154,13 +155,7 @@ void ActivityReport::slotUpdate()
     }
     {
         const QString Headlines[] = {
-            tr( "Task Id" ),
-            tr( "Task Name" ),
-            tr( "Date" ),
-            tr( "Start" ),
-            tr( "End" ),
-            tr( "Duration" ),
-            tr( "Comment" )
+            tr( "Date and Time, Task, Description" )
         };
         const int NumberOfColumns = sizeof Headlines / sizeof Headlines[0];
 
@@ -195,26 +190,37 @@ void ActivityReport::slotUpdate()
             const Task& task = item.task();
             Q_ASSERT( task.isValid() );
 
-            const QString rowTexts[] = {
-                QString().setNum( task.id() ),
-                task.name(),
-                event.startDateTime().date().toString( Qt::SystemLocaleShortDate ),
-                event.startDateTime().time().toString( Qt::SystemLocaleShortDate ),
-                event.endDateTime().time().toString( Qt::SystemLocaleShortDate ),
-                hoursAndMinutes( event.duration() ),
-                event.comment()
+            const QString row1Texts[] = {
+                tr( "%1 %2-%3 (%4) -- [%5] %6" )
+                .arg( event.startDateTime().date().toString( Qt::SystemLocaleShortDate ).trimmed() )
+                .arg( event.startDateTime().time().toString( Qt::SystemLocaleShortDate ).trimmed() )
+                .arg( event.endDateTime().time().toString( Qt::SystemLocaleShortDate ).trimmed() )
+                .arg( hoursAndMinutes( event.duration() ) )
+                .arg( QString().setNum( task.id() ).trimmed(), Configuration::instance().taskPaddingLength, '0' )
+                .arg( task.name().trimmed() )
             };
-            Q_ASSERT( sizeof rowTexts / sizeof rowTexts[0] == NumberOfColumns );
 
-            QDomElement row = doc.createElement( "tr" );
+            QDomElement row1 = doc.createElement( "tr" );
+            row1.setAttribute( "class", "event_attributes_row" );
+            QDomElement row2 = doc.createElement( "tr" );
             for ( int index = 0; index < NumberOfColumns; ++index ) {
                 QDomElement cell = doc.createElement( "td" );
-                cell.setAttribute( "align", "left" );
-                QDomText text = doc.createTextNode( rowTexts[index] );
+                cell.setAttribute( "class", "event_attributes" );
+                QDomText text = doc.createTextNode( row1Texts[index] );
                 cell.appendChild( text );
-                row.appendChild( cell );
+                row1.appendChild( cell );
             }
-            tableBody.appendChild( row );
+            QDomElement cell2 = doc.createElement( "td" );
+            cell2.setAttribute( "class", "event_description" );
+            cell2.setAttribute( "align", "left" );
+            QDomElement preElement = doc.createElement( "pre" );
+            QDomText preText = doc.createTextNode( event.comment() );
+            preElement.appendChild( preText );
+            cell2.appendChild( preElement );
+            row2.appendChild( cell2 );
+
+            tableBody.appendChild( row1 );
+            tableBody.appendChild( row2 );
         }
     }
 
