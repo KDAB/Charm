@@ -1,6 +1,8 @@
 #ifndef ACTIVITYREPORT_H
 #define ACTIVITYREPORT_H
 
+#include <Core/TimeSpans.h>
+
 #include "ReportConfigurationPage.h"
 
 namespace Ui {
@@ -19,10 +21,14 @@ public:
     QString description();
 
 private slots:
+    void slotDelayedInitialization();
     void slotOkClicked();
+    void slotStandardTimeSpansChanged();
+    void slotTimeSpanSelected( int );
 
 private:
     Ui::ActivityReportConfigurationPage* m_ui;
+    QList<NamedTimeSpan> m_timespans;
 
 /*
     bool prepare();
