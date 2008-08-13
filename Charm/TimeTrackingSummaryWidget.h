@@ -27,11 +27,20 @@ public:
     explicit TimeTrackingSummaryWidget( QWidget* parent = 0 );
     void paintEvent( QPaintEvent* );
 
+    QSize sizeHint() const;
+    QSize minimumSizeHint() const;
+
 private:
     DataField data( int column, int row );
     int columnCount() const { return 9; }
-    int rowCount() const { return m_summaries.count() + 3; }
+    int rowCount() const { return qMax( 8, m_summaries.count() ) + 3; }
     QVector<WeeklySummary> m_summaries;
+    mutable QSize m_cachedSizeHint;
+    mutable QSize m_cachedMinimumSizeHint;
+    mutable QRect m_cachedTotalsFieldRect;
+    mutable QRect m_cachedDayFielRect;
+    mutable QFont m_fixedFont;
+    mutable QFont m_narrowFont;
 };
 
 #endif
