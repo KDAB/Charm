@@ -7,8 +7,13 @@
 Q_IMPORT_PLUGIN(qjpeg)
 #endif
 
+// FIXME temp
+#include "TimeTrackingView.h"
+
 int main ( int argc, char** argv )
 {
 	Application app ( argc,  argv );
+        TimeTrackingView widget;
+        widget.show();
 	return app.exec();
 }

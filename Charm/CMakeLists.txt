@@ -43,6 +43,8 @@ IF ( QT4_FOUND )
 		       EventModelFilter.cpp
 		       ChattyItemDelegate.cpp 
 		       CharmAboutDialog.cpp
+		       TimeTrackingView.cpp
+		       TimeTrackingSummaryWidget.cpp
 		       # OpeningScene.cpp
 		       IdleWidget.cpp
 		       Reports/ReportDialog.cpp
@@ -81,7 +83,8 @@ IF ( QT4_FOUND )
 		       EventDisplay.ui
 		       EventEditor.ui
 		       SelectTaskDialog.ui
-		       CharmAboutDialog.ui )
+		       CharmAboutDialog.ui
+		       TimeTrackingView.ui )
 
     QT4_ADD_RESOURCES ( Resources_SRCS CharmResources.qrc )
 
