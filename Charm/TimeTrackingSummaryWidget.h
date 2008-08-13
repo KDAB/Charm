@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QVector>
 #include <QPen>
+#include <QToolButton>
 
 #include "Core/Task.h"
 
@@ -12,25 +13,31 @@
 class TimeTrackingSummaryWidget : public QWidget
 {
     Q_OBJECT
+public:
     struct WeeklySummary {
         TaskId task;
         QString taskname;
         QVector<int> durations;
         WeeklySummary() : task( 0 ), durations( DAYS_IN_WEEK, 0 ) {}
     };
+private:
     struct DataField {
         QString text;
         QBrush background;
-        QPen pen;
+        QFont font;
     };
 
 public:
     explicit TimeTrackingSummaryWidget( QWidget* parent = 0 );
     void paintEvent( QPaintEvent* );
+    void resizeEvent( QResizeEvent* );
 
-    void setSummaries( QList<WeeklySummary> );
+    void setSummaries( QVector<WeeklySummary> );
     QSize sizeHint() const;
     QSize minimumSizeHint() const;
+
+private slots:
+    void slotGoStopToggled( bool );
 
 private:
     DataField data( int column, int row );
@@ -40,9 +47,11 @@ private:
     mutable QSize m_cachedSizeHint;
     mutable QSize m_cachedMinimumSizeHint;
     mutable QRect m_cachedTotalsFieldRect;
-    mutable QRect m_cachedDayFielRect;
+    mutable QRect m_cachedDayFieldRect;
     mutable QFont m_fixedFont;
     mutable QFont m_narrowFont;
+    QToolButton m_stopGoButton;
+    QToolButton m_taskSelector;
 };
 
 #endif

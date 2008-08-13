@@ -132,6 +132,22 @@ const QPixmap& Data::editorDirtyPixmap()
 	return pixmap;
 }
 
+const QPixmap& Data::recorderStopIcon()
+{
+    static QPixmap pixmap( ":/Charm/recorder_stop.png" );
+    Q_ASSERT_X(!pixmap.isNull(), "Data::recorderStopIcon",
+               "Required resource not available");
+    return pixmap;
+}
+
+const QPixmap& Data::recorderGoIcon()
+{
+    static QPixmap pixmap( ":/Charm/recorder_go.png" );
+    Q_ASSERT_X(!pixmap.isNull(), "Data::recorderGoIcon",
+               "Required resource not available");
+    return pixmap;
+}
+
 const QPixmap& Data::backdropPixmap()
 {
 	Q_ASSERT_X(QFile::exists(":/Backdrops/backdrop1.jpg"),

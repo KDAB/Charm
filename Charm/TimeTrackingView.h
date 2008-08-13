@@ -6,6 +6,7 @@
 #include "Core/ViewInterface.h"
 
 class CharmCommand;
+class TimeTrackingSummaryWidget;
 
 namespace Ui {
     class TimeTrackingView;
@@ -14,6 +15,7 @@ namespace Ui {
 class TimeTrackingView : public QWidget,
                          public ViewInterface
 {
+    Q_OBJECT
 public:
     explicit TimeTrackingView( QWidget* parent = 0 );
     ~TimeTrackingView();
@@ -25,7 +27,9 @@ public:
     void commitCommand( CharmCommand* );
     void restore();
     void quit();
+
 private:
+    TimeTrackingSummaryWidget* summaryWidget();
     Ui::TimeTrackingView* m_ui;
 };
 
