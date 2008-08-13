@@ -24,6 +24,7 @@
 #include "Core/StorageInterface.h"
 
 #include "MainWindow.h"
+#include "TimeTrackingView.h"
 #include "ModelConnector.h"
 
 // FIXME read configuration name from command line
@@ -85,6 +86,8 @@ private:
     ModelConnector m_model;
     Controller m_controller;
     MainWindow m_mainWindow;
+    TimeTrackingView m_timeTracker;
+
     // All statics are created as members of Application. This is
     // supposed to help on Windows, where constructors for statics
     // do not seem to called correctly.

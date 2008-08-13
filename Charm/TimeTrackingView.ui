@@ -16,7 +16,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle" >
-   <string>Form</string>
+   <string>Charm Time Tracker</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout" >
    <property name="spacing" >

@@ -14,6 +14,7 @@ class TimeTrackingSummaryWidget : public QWidget
     Q_OBJECT
     struct WeeklySummary {
         TaskId task;
+        QString taskname;
         QVector<int> durations;
         WeeklySummary() : task( 0 ), durations( DAYS_IN_WEEK, 0 ) {}
     };
@@ -27,13 +28,14 @@ public:
     explicit TimeTrackingSummaryWidget( QWidget* parent = 0 );
     void paintEvent( QPaintEvent* );
 
+    void setSummaries( QList<WeeklySummary> );
     QSize sizeHint() const;
     QSize minimumSizeHint() const;
 
 private:
     DataField data( int column, int row );
     int columnCount() const { return 9; }
-    int rowCount() const { return qMax( 8, m_summaries.count() ) + 3; }
+    int rowCount() const { return qMax( 6, m_summaries.count() ) + 3; }
     QVector<WeeklySummary> m_summaries;
     mutable QSize m_cachedSizeHint;
     mutable QSize m_cachedMinimumSizeHint;

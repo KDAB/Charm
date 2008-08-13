@@ -9,12 +9,6 @@ const int Margin = 2;
 TimeTrackingSummaryWidget::TimeTrackingSummaryWidget( QWidget* parent )
     : QWidget( parent )
 {
-    // temp:
-    WeeklySummary s1;
-    s1.task = 1;
-    s1.durations << 1000 << 1100 << 1200 << 1300 << 1400 << 1500 << 1600;
-    m_summaries << s1 << s1 << s1 << s1;
-    //
     m_fixedFont.setFamily( "Andale Mono" );
     m_fixedFont.setPointSize( 10 );
     m_narrowFont.setFamily( "Arial Narrow" );
@@ -91,7 +85,8 @@ void TimeTrackingSummaryWidget::paintEvent( QPaintEvent* e )
                 fieldRect = QRect( 0, y, fieldWidth, FieldHeight );
             } else if ( column > 0 ) { //  a task
                 fieldRect = QRect( width() - m_cachedTotalsFieldRect.width()
-                                   - column * m_cachedDayFielRect.width(), y,
+                                   - 8 * m_cachedDayFielRect.width()
+                                   + column * m_cachedDayFielRect.width(), y,
                                    m_cachedDayFielRect.width(), FieldHeight );
             }
             const QRect textRect = fieldRect.adjusted( Margin, Margin, -Margin, -Margin );
@@ -140,7 +135,7 @@ TimeTrackingSummaryWidget::DataField TimeTrackingSummaryWidget::data( int column
     } else if ( row == TotalsRow ) {
         field.pen = QPen( Qt::black );
         if ( column == TaskColumn ) {
-            field.text = tr( "Total" );
+            // field.text = tr( "Total" );
         } else if ( column == TotalsColumn ) {
             field.text = tr( "42:11" );
         } else {
@@ -155,15 +150,17 @@ TimeTrackingSummaryWidget::DataField TimeTrackingSummaryWidget::data( int column
         field.text = tr( " 00:45 2345 KDAB/HR/Project Time Bookkeeping" );
     } else { // a task row
         field.pen = QPen( Qt::black );
-        if ( column == TaskColumn ) {
-            field.text = tr( "1234" );
-            field.background = HeaderBrush;
-        } else if ( column == TotalsColumn ) {
-            field.text = tr( "(sum)" );
-            field.background = HeaderBrush;
-        } else {
-            field.text = tr( "00:01" );
-            field.background = row % 2 ? TaskBrushEven : TaskBrushOdd;
+        field.background = row % 2 ? TaskBrushEven : TaskBrushOdd;
+        if ( m_summaries.size() > row - 1 ) {
+            if ( column == TaskColumn ) {
+                field.text = m_summaries[row - 1].taskname;
+            } else if ( column == TotalsColumn ) {
+                field.text = tr( "(sum)" );
+                field.background = TaskBrushOdd;
+            } else {
+                field.text = tr( "00:01" );
+                field.background = row % 2 ? TaskBrushEven : TaskBrushOdd;
+            }
         }
     }
 

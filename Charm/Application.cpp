@@ -114,27 +114,32 @@ void Application::setState(State state)
 		m_model.charmDataModel()->stateChanged(previous, state);
 		m_controller.stateChanged(previous, state);
 		m_mainWindow.stateChanged(previous);
+                m_timeTracker.stateChanged( previous );
 		enterStartingUpState();
 		break;
 	case Connecting:
 		m_model.charmDataModel()->stateChanged(previous, state);
 		m_controller.stateChanged(previous, state);
 		m_mainWindow.stateChanged(previous);
+                m_timeTracker.stateChanged( previous );
 		enterConnectingState();
 		break;
 	case Connected:
 		m_model.charmDataModel()->stateChanged(previous, state);
 		m_controller.stateChanged(previous, state);
 		m_mainWindow.stateChanged(previous);
+                m_timeTracker.stateChanged( previous );
 		enterConnectedState();
 		break;
 	case Disconnecting:
+                m_timeTracker.stateChanged( previous );
 		m_mainWindow.stateChanged(previous);
 		m_model.charmDataModel()->stateChanged(previous, state);
 		m_controller.stateChanged(previous, state);
 		enterDisconnectingState();
 		break;
 	case ShuttingDown:
+                m_timeTracker.stateChanged( previous );
 		m_mainWindow.stateChanged(previous);
 		m_model.charmDataModel()->stateChanged(previous, state);
 		m_controller.stateChanged(previous, state);
@@ -162,6 +167,8 @@ void Application::enterStartingUpState()
 {
 	// show view  (view is never invisible)
 	m_mainWindow.show();
+        // FIXME restore from previous setting:
+	m_timeTracker.show();
 	// load configuration
 	// ...
 	// verify configuration
@@ -246,6 +253,7 @@ void Application::enterShuttingDownState()
 {
 	// prevent all modules from accepting any user commands
 	m_mainWindow.setEnabled(false);
+        m_timeTracker.setEnabled( false );
 	QTimer::singleShot(1200, &m_app, SLOT(quit()));
 }
 
