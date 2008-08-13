@@ -138,6 +138,7 @@ void TimeTrackingSummaryWidget::paintEvent( QPaintEvent* e )
 void TimeTrackingSummaryWidget::resizeEvent( QResizeEvent* )
 {
     sizeHint(); // make sure cached values are updated
+    m_stopGoButton.resize( m_stopGoButton.sizeHint() );
     m_stopGoButton.move( Margin, height() - Margin - m_stopGoButton.height() );
     const int left = m_stopGoButton.geometry().right() + Margin;
     const int remainingWidth = width() - Margin - left;
@@ -205,7 +206,7 @@ TimeTrackingSummaryWidget::DataField TimeTrackingSummaryWidget::data( int column
                 const QVector<int>& durations = m_summaries[index].durations;
                 const int total = std::accumulate( durations.begin(), durations.end(), 0 );
                 field.text = hoursAndMinutes( total );
-                field.background = TaskBrushOdd;
+                // field.background = TaskBrushOdd;
             } else {
                 int duration = m_summaries[index].durations[day];
                 field.text = duration > 0 ? hoursAndMinutes( duration) : QString();
