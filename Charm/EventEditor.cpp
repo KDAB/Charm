@@ -17,31 +17,54 @@
 #include "ui_EventEditor.h"
 
 EventEditor::EventEditor( const Event& event, QWidget* parent )
-	: QDialog( parent )
-	, m_event( event )
-	, m_updating( false )
+    : QDialog( parent )
+    , m_event( event )
+    , m_updating( false )
 {
-	m_ui = new Ui::EventEditor();
-	m_ui->setupUi( this );
-	// connect stuff:
-	connect( m_ui->spinBoxHours, SIGNAL( valueChanged( int ) ),
-			 SLOT( durationHoursEdited( int ) ) );
-	connect( m_ui->spinBoxMinutes, SIGNAL( valueChanged( int ) ),
-			 SLOT( durationMinutesEdited( int ) ) );
-	connect( m_ui->dateEditStart, SIGNAL( dateChanged( QDate ) ),
-			 SLOT( startDateChanged( QDate ) ) );
-	connect( m_ui->timeEditStart, SIGNAL( timeChanged( QTime ) ),
-			 SLOT( startTimeChanged( QTime ) ) );
-	connect( m_ui->dateEditEnd, SIGNAL( dateChanged( QDate ) ),
-			 SLOT( endDateChanged( QDate ) ) );
-	connect( m_ui->timeEditEnd, SIGNAL( timeChanged( QTime ) ),
-			 SLOT( endTimeChanged( QTime ) ) );
-	connect( m_ui->pushButtonSelectTask, SIGNAL( clicked() ),
-			 SLOT( selectTaskClicked() ) );
-	connect( m_ui->textEditComment, SIGNAL( textChanged() ),
-			 SLOT( commentChanged() ) );
+    m_ui = new Ui::EventEditor();
+    m_ui->setupUi( this );
+    // connect stuff:
+    connect( m_ui->spinBoxHours, SIGNAL( valueChanged( int ) ),
+             SLOT( durationHoursEdited( int ) ) );
+    connect( m_ui->spinBoxMinutes, SIGNAL( valueChanged( int ) ),
+             SLOT( durationMinutesEdited( int ) ) );
+    connect( m_ui->dateEditStart, SIGNAL( dateChanged( QDate ) ),
+             SLOT( startDateChanged( QDate ) ) );
+    connect( m_ui->timeEditStart, SIGNAL( timeChanged( QTime ) ),
+             SLOT( startTimeChanged( QTime ) ) );
+    connect( m_ui->dateEditEnd, SIGNAL( dateChanged( QDate ) ),
+             SLOT( endDateChanged( QDate ) ) );
+    connect( m_ui->timeEditEnd, SIGNAL( timeChanged( QTime ) ),
+             SLOT( endTimeChanged( QTime ) ) );
+    connect( m_ui->pushButtonSelectTask, SIGNAL( clicked() ),
+             SLOT( selectTaskClicked() ) );
+    connect( m_ui->textEditComment, SIGNAL( textChanged() ),
+             SLOT( commentChanged() ) );
 
-	updateValues( true );
+    // what a fricking hack - but QDateTimeEdit does not seem to have
+    // a simple function to toggle 12h and 24h mode:
+    static QString OriginalDateTimeFormat;
+    // yeah, I know, this will survive changes in the user prefs, but
+    // only for this instance of the edit dialog
+    if ( OriginalDateTimeFormat.isEmpty() ) {
+        QDateTimeEdit edit( this );
+        OriginalDateTimeFormat = edit.displayFormat();
+    }
+
+    if ( CONFIGURATION.always24hEditing ) {
+        QString format = m_ui->timeEditStart->displayFormat()
+                         .replace( "ap",  "" )
+                         .replace( "AP",  "" )
+                         .simplified();
+        m_ui->timeEditStart->setDisplayFormat( format );
+        m_ui->timeEditEnd->setDisplayFormat( format );
+    } else {
+        m_ui->timeEditStart->setDisplayFormat( OriginalDateTimeFormat );
+        m_ui->timeEditEnd->setDisplayFormat( OriginalDateTimeFormat );
+    }
+
+
+    updateValues( true );
 }
 
 EventEditor::~EventEditor()

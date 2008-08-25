@@ -1,6 +1,7 @@
 #ifndef ACTIVITYREPORT_H
 #define ACTIVITYREPORT_H
 
+#include <Core/Task.h>
 #include <Core/TimeSpans.h>
 
 #include "ReportConfigurationPage.h"
@@ -26,10 +27,13 @@ private slots:
     void slotOkClicked();
     void slotStandardTimeSpansChanged();
     void slotTimeSpanSelected( int );
+    void slotCheckboxSubtasksOnlyChecked( bool );
+    void slotSelectTask();
 
 private:
     Ui::ActivityReportConfigurationPage* m_ui;
     QList<NamedTimeSpan> m_timespans;
+    TaskId m_rootTask;
 };
 
 class ActivityReport : public ReportPreviewWindow
@@ -40,7 +44,8 @@ public:
     explicit ActivityReport( QWidget* parent = 0 );
     ~ActivityReport();
 
-    void setReportProperties( const QDate& start, const QDate& end );
+    void setReportProperties( const QDate& start, const QDate& end,
+        TaskId rootTask );
 
 private:
     // reimpl
@@ -49,6 +54,7 @@ private:
 private:
     QDate m_start;
     QDate m_end;
+    TaskId m_rootTask;
 };
 
 #endif

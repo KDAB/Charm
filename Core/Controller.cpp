@@ -361,18 +361,24 @@ QString Controller::importDatabaseFromXml( const QDomDocument& document )
               !element.isNull(); element = element.nextSiblingElement( "task" ) ) {
             Task task = Task::fromXml( element, databaseSchemaVersion );
             if ( ! task.isValid() ) {
-                return tr( "The Export file contains at least one invalid task." );
+                qDebug() << "The following task is invalid and will not be added:";
+                task.dump();
+                // return tr( "The Export file contains at least one invalid task." );
+            } else {
+                importedTasks.append( task );
             }
-            importedTasks.append( task );
         }
         QDomElement eventsElement = rootElement.firstChildElement( EventsElement );
         for ( QDomElement element = eventsElement.firstChildElement( "event" );
               !element.isNull(); element = element.nextSiblingElement( "event" ) ) {
             Event event = Event::fromXml( element, databaseSchemaVersion );
             if ( ! event.isValid() ) {
-                return tr( "The Export file contains at least one invalid event." );
+                qDebug() << "The following event is invalid and will not be added:";
+                event.dump();
+                // return tr( "The Export file contains at least one invalid event." );
+            } else {
+                importedEvents.append( event );
             }
-            importedEvents.append( event );
         }
         // FIXME needs better error handling:
         //

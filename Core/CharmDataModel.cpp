@@ -471,6 +471,25 @@ EventIdList CharmDataModel::eventsThatStartInTimeFrame( const QDateTime& start,
     return events;
 }
 
+bool CharmDataModel::isParentOf( TaskId parent, TaskId id )
+{
+    Q_ASSERT_X( parent != 0, "CharmDataModel::isParentOf",
+                "parent is invalid (0)" );
+
+    if ( id == parent ) return false; // a task is not it's own child
+    // get the item, make sure it is valid
+    const TaskTreeItem& item( taskTreeItem( id ) );
+    Q_ASSERT_X( item.isValid(), "CharmDataModel::isParentOf",
+                "No such task" );
+    if ( ! item.isValid() ) return false;
+
+    TaskId parentId = item.task().parent();
+
+    if ( parentId == parent ) return true; // found it on the path
+    if ( parentId == 0 ) return false; // the task has no parent
+    return isParentOf( parent, parentId );
+}
+
 #include "CharmDataModel.moc"
 
 

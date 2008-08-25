@@ -15,12 +15,15 @@
 
 #include "Application.h"
 #include "ViewHelpers.h"
+#include "CharmReport.h"
+#include "SelectTaskDialog.h"
 #include "ActivityReport.h"
 #include "ui_ActivityReportConfigurationPage.h"
 
 ActivityReportConfigurationPage::ActivityReportConfigurationPage( ReportDialog* parent )
     : ReportConfigurationPage( parent )
     , m_ui( new Ui::ActivityReportConfigurationPage )
+    , m_rootTask( 0 )
 {
     m_ui->setupUi( this );
     connect( m_ui->pushButtonBack, SIGNAL( clicked() ),
@@ -29,6 +32,11 @@ ActivityReportConfigurationPage::ActivityReportConfigurationPage( ReportDialog* 
              SLOT( slotOkClicked() ) );
     connect( m_ui->comboBox, SIGNAL( currentIndexChanged( int ) ),
              SLOT( slotTimeSpanSelected( int ) ) );
+    connect( m_ui->checkBoxSubTasksOnly, SIGNAL( toggled( bool ) ),
+             SLOT( slotCheckboxSubtasksOnlyChecked( bool ) ) );
+    connect( m_ui->toolButtonSelectTask, SIGNAL( clicked() ),
+             SLOT( slotSelectTask() ) );
+    slotCheckboxSubtasksOnlyChecked( m_ui->checkBoxSubTasksOnly->isChecked() );
     QTimer::singleShot( 0, this, SLOT( slotDelayedInitialization() ) );
 }
 
@@ -81,6 +89,31 @@ void ActivityReportConfigurationPage::slotTimeSpanSelected( int index )
     }
 }
 
+void ActivityReportConfigurationPage::slotCheckboxSubtasksOnlyChecked( bool checked )
+{
+    if ( checked && m_rootTask == 0 ) {
+        slotSelectTask();
+    }
+
+    if ( ! checked ) {
+        m_rootTask = 0;
+        m_ui->labelTaskName->setText( tr( "(All Tasks)" ) );
+    }
+}
+
+void ActivityReportConfigurationPage::slotSelectTask()
+{
+    SelectTaskDialog dialog( this );
+    if ( dialog.exec() ) {
+        m_rootTask = dialog.selectedTask();
+        const TaskTreeItem& item = DATAMODEL->taskTreeItem( m_rootTask );
+        m_ui->labelTaskName->setText( tasknameWithParents( item.task() ) );
+    } else {
+        if ( m_rootTask == 0 )
+            m_ui->checkBoxSubTasksOnly->setChecked( false );
+    }
+}
+
 void ActivityReportConfigurationPage::slotOkClicked()
 {
     // FIXME save settings
@@ -100,7 +133,7 @@ QDialog* ActivityReportConfigurationPage::makeReportPreviewDialog( QWidget* pare
         end = m_timespans[index].timespan.second;
     }
     ActivityReport* report = new ActivityReport( parent );
-    report->setReportProperties( start, end );
+    report->setReportProperties( start, end, m_rootTask );
     return report;
 }
 
@@ -113,10 +146,12 @@ ActivityReport::~ActivityReport()
 {
 }
 
-void ActivityReport::setReportProperties( const QDate& start, const QDate& end )
+void ActivityReport::setReportProperties(
+    const QDate& start, const QDate& end, TaskId rootTask )
 {
     m_start = start;
     m_end = end;
+    m_rootTask = rootTask;
     slotUpdate();
 }
 
@@ -129,6 +164,19 @@ void ActivityReport::slotUpdate()
     // retrieve matching events:
     EventIdList matchingEvents = DATAMODEL->eventsThatStartInTimeFrame(
         QDateTime( m_start ), QDateTime( m_end ) );
+    matchingEvents = eventIdsSortedByStartTime( matchingEvents );
+    if ( m_rootTask != 0 ) {
+        matchingEvents = filteredBySubtree( matchingEvents, m_rootTask );
+    }
+
+    // calculate total:
+    int totalSeconds = 0;
+    Q_FOREACH( EventId id, matchingEvents ) {
+        const Event& event = DATAMODEL->eventForId( id );
+        Q_ASSERT( event.isValid() );
+        totalSeconds += event.duration();
+    }
+
     QTextDocument* report = new QTextDocument( this );
     QDomDocument doc = createReportTemplate();
     QDomElement root = doc.documentElement();
@@ -150,6 +198,22 @@ void ActivityReport::slotUpdate()
         QDomText text = doc.createTextNode( content );
         headline.appendChild( text );
         body.appendChild( headline );
+        {
+            QDomElement paragraph = doc.createElement( "p" );
+            QString totalsText = tr( "Total: %1" ).arg( hoursAndMinutes( totalSeconds ) );
+            QDomText totalsElement = doc.createTextNode( totalsText );
+            paragraph.appendChild( totalsElement );
+            body.appendChild( paragraph );
+        }
+        if ( m_rootTask != 0 ) {
+            QDomElement paragraph = doc.createElement( "p" );
+            const Task& task = DATAMODEL->getTask( m_rootTask );
+            QString rootTaskText = tr( "Activity under task %1" ).arg( tasknameWithParents( task ) );
+            QDomText rootText = doc.createTextNode( rootTaskText );
+            paragraph.appendChild( rootText );
+            body.appendChild( paragraph );
+        }
+
         QDomElement paragraph = doc.createElement( "br" );
         body.appendChild( paragraph );
     }

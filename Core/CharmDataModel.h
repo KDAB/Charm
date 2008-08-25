@@ -58,6 +58,9 @@ public:
     const Event& activeEventFor ( TaskId id ) const;
     TaskTreeItem& parentItem( const Task& task ); // FIXME const???
     bool taskExists( TaskId id );
+    /** True if task is in the subtree below parent.
+     * parent is not element of the subtree, and thus not it's own child. */
+    bool isParentOf( TaskId parent, TaskId task );
 
     // handling of active events:
     /** Is an event active for the task with this id? */
