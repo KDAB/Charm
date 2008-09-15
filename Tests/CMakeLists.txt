@@ -21,6 +21,11 @@ IF ( QT4_FOUND )
    LINK_DIRECTORIES( ../Core )
    LINK_LIBRARIES( CharmCore )
    LINK_LIBRARIES( ${QT_QTCORE_LIBRARY} )
+   IF( APPLE )
+       FIND_LIBRARY( SECURITY FRAMEWORK required NAMES Security )
+       LINK_LIBRARIES( ${SECURITY} )
+   ENDIF( APPLE )
+
 
    # SqLiteStorageTests
 
