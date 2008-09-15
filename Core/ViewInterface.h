@@ -14,6 +14,7 @@ public:
 
     // application:
     virtual void stateChanged( State previous ) = 0;
+    virtual void visibilityChanged( bool ) = 0; // implement as signal and emit from show and hide events
     virtual void saveConfiguration() = 0;
 
     virtual void emitCommand( CharmCommand* ) = 0;

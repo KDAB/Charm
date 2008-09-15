@@ -24,44 +24,78 @@
 Application* Application::m_instance = 0;
 
 Application::Application(int argc, char** argv) :
-	QObject(), m_state(Constructed), m_app(argc, argv), m_controller(),
-			m_mainWindow()
+    QObject()
+    , m_state(Constructed)
+    , m_app(argc, argv)
+    , m_actionShowHideView( this )
+    , m_actionShowHideTimeTracker( this )
+    , m_actionStopAllTasks( this )
 {
-	// QApplication setup
-	m_app.setQuitOnLastWindowClosed(false);
-	// application metadata setup
-	// note that this modifies the behaviour of QSettings:
-	QCoreApplication::setOrganizationName("KDAB");
-	QCoreApplication::setOrganizationDomain("kdab.net");
-	QCoreApplication::setApplicationName("Charm");
+    // QApplication setup
+    m_app.setQuitOnLastWindowClosed(false);
+    // application metadata setup
+    // note that this modifies the behaviour of QSettings:
+    QCoreApplication::setOrganizationName("KDAB");
+    QCoreApplication::setOrganizationDomain("kdab.net");
+    QCoreApplication::setApplicationName("Charm");
 
-	Q_INIT_RESOURCE(CharmResources);
-	Q_ASSERT_X(m_instance == 0, "Application ctor",
-			"Application is a singleton and cannot be created more than once");
-	m_instance = this;
-	qRegisterMetaType<State> ("State");
-        qRegisterMetaType<Event> ("Event");
+    Q_INIT_RESOURCE(CharmResources);
+    Q_ASSERT_X(m_instance == 0, "Application ctor",
+               "Application is a singleton and cannot be created more than once");
+    m_instance = this;
+    qRegisterMetaType<State> ("State");
+    qRegisterMetaType<Event> ("Event");
 
-	// save the configuration (configuration is managed by the application)
-	connect(&m_mainWindow, SIGNAL(saveConfiguration()), SLOT(
-			slotSaveConfiguration()));
-	// the exit process (close goes to systray, app->quit exits)
-	connect(&m_mainWindow, SIGNAL(quit()), SLOT(slotQuitApplication()));
+    // save the configuration (configuration is managed by the application)
+    connect(&m_mainWindow, SIGNAL(saveConfiguration()), SLOT(
+                slotSaveConfiguration()));
+    // the exit process (close goes to systray, app->quit exits)
+    connect(&m_mainWindow, SIGNAL(quit()), SLOT(slotQuitApplication()));
+    // window visibilities:
+    connect( &m_mainWindow, SIGNAL( visibilityChanged( bool ) ),
+             SLOT( slotMainWindowVisibilityChanged( bool ) ) );
+    connect( &m_timeTracker, SIGNAL( visibilityChanged( bool ) ),
+             SLOT( slotTimeTrackerVisibilityChanged( bool ) ) );
+    // window title updates
+    connect( &m_controller, SIGNAL( currentBackendStatus( const QString& ) ),
+             SLOT( slotCurrentBackendStatusChanged( const QString& ) ) );
 
-	// exit process (app will only exit once controller says it is ready)
-	connect(&m_controller, SIGNAL(readyToQuit()), SLOT(
-			slotControllerReadyToQuit()));
+    // exit process (app will only exit once controller says it is ready)
+    connect(&m_controller, SIGNAL(readyToQuit()), SLOT(
+                slotControllerReadyToQuit()));
 
-	connectControllerAndModel(&m_controller, m_model.charmDataModel());
-	connectControllerAndView(&m_controller, &m_mainWindow);
+    connectControllerAndModel(&m_controller, m_model.charmDataModel());
+    connectControllerAndView(&m_controller, &m_mainWindow);
 
-	// my own signals:
-	connect(this, SIGNAL(goToState(State)), SLOT(setState(State)),
-			Qt::QueuedConnection);
+    // my own signals:
+    connect(this, SIGNAL(goToState(State)), SLOT(setState(State)),
+            Qt::QueuedConnection);
 
-	// Ladies and gentlemen, please raise upon your seats -
-	// the show is about to begin:
-	emit goToState(StartingUp);
+    // system tray icon:
+    m_actionStopAllTasks.setText( tr( "Stop &All Active Tasks" ) );
+    m_actionStopAllTasks.setShortcut( Qt::Key_Escape );
+    m_actionStopAllTasks.setShortcutContext( Qt::ApplicationShortcut );
+    // FIXME review: still necessary after ApplicationShortcut?: addAction(&m_actionStopAllTasks); // for the shortcut to work
+    connect( &m_actionStopAllTasks, SIGNAL( triggered() ),
+             SLOT( slotStopAllTasks() ) );
+    connect( &m_actionShowHideView, SIGNAL( triggered() ),
+             &m_mainWindow, SLOT( slotShowHideView() ) );
+    connect( &m_actionShowHideTimeTracker, SIGNAL( triggered() ),
+             &m_timeTracker, SLOT( slotShowHide() ) );
+    m_trayIcon.setIcon( Data::charmIcon() );
+    m_trayIcon.show();
+    connect( &m_trayIcon, SIGNAL( activated( QSystemTrayIcon::ActivationReason ) ),
+             SLOT( slotTrayIconActivated( QSystemTrayIcon::ActivationReason ) ) );
+    m_systrayContextMenu.addAction( &m_actionShowHideView );
+    m_systrayContextMenu.addAction( &m_actionShowHideTimeTracker );
+    m_systrayContextMenu.addAction( &m_actionStopAllTasks );
+    m_systrayContextMenu.addSeparator();
+    m_systrayContextMenu.addAction( m_mainWindow.actionQuit() );
+    m_trayIcon.setContextMenu( &m_systrayContextMenu );
+
+    // Ladies and gentlemen, please raise upon your seats -
+    // the show is about to begin:
+    emit goToState(StartingUp);
 }
 
 Application::~Application()
@@ -70,122 +104,122 @@ Application::~Application()
 
 int Application::exec()
 {
-	return m_app.exec();
+    return m_app.exec();
 }
 
 void Application::setState(State state)
 {
-	if (m_state == state)
-		return;
+    if (m_state == state)
+        return;
 #ifndef NDEBUG
-	qDebug() << "Application::setState: going from" << StateNames[m_state]
-			<< "to" << StateNames[state];
+    qDebug() << "Application::setState: going from" << StateNames[m_state]
+             << "to" << StateNames[state];
 #endif
-	State previous = m_state;
+    State previous = m_state;
 
-	switch (m_state)
-	{
-	case Constructed:
-		break; // ignore, but this state is never re-entered
-	case StartingUp:
-		leaveStartingUpState();
-		break;
-	case Connecting:
-		leaveConnectingState();
-		break;
-	case Connected:
-		leaveConnectedState();
-		break;
-	case Disconnecting:
-		leaveDisconnectingState();
-		break;
-	case ShuttingDown:
-		leaveShuttingDownState();
-		break;
-	default:
-		Q_ASSERT_X(false, "Application::setState",
-				"Unknown previous application state");
-	};
+    switch (m_state)
+    {
+    case Constructed:
+        break; // ignore, but this state is never re-entered
+    case StartingUp:
+        leaveStartingUpState();
+        break;
+    case Connecting:
+        leaveConnectingState();
+        break;
+    case Connected:
+        leaveConnectedState();
+        break;
+    case Disconnecting:
+        leaveDisconnectingState();
+        break;
+    case ShuttingDown:
+        leaveShuttingDownState();
+        break;
+    default:
+        Q_ASSERT_X(false, "Application::setState",
+                   "Unknown previous application state");
+    };
 
-	m_state = state;
+    m_state = state;
 
-	switch (m_state)
-	{
-	case StartingUp:
-		m_model.charmDataModel()->stateChanged(previous, state);
-		m_controller.stateChanged(previous, state);
-		m_mainWindow.stateChanged(previous);
-                m_timeTracker.stateChanged( previous );
-		enterStartingUpState();
-		break;
-	case Connecting:
-		m_model.charmDataModel()->stateChanged(previous, state);
-		m_controller.stateChanged(previous, state);
-		m_mainWindow.stateChanged(previous);
-                m_timeTracker.stateChanged( previous );
-		enterConnectingState();
-		break;
-	case Connected:
-		m_model.charmDataModel()->stateChanged(previous, state);
-		m_controller.stateChanged(previous, state);
-		m_mainWindow.stateChanged(previous);
-                m_timeTracker.stateChanged( previous );
-		enterConnectedState();
-		break;
-	case Disconnecting:
-                m_timeTracker.stateChanged( previous );
-		m_mainWindow.stateChanged(previous);
-		m_model.charmDataModel()->stateChanged(previous, state);
-		m_controller.stateChanged(previous, state);
-		enterDisconnectingState();
-		break;
-	case ShuttingDown:
-                m_timeTracker.stateChanged( previous );
-		m_mainWindow.stateChanged(previous);
-		m_model.charmDataModel()->stateChanged(previous, state);
-		m_controller.stateChanged(previous, state);
-		enterShuttingDownState();
-		break;
-	default:
-		Q_ASSERT_X(false, "Application::setState",
-				"Unknown new application state");
-	};
+    switch (m_state)
+    {
+    case StartingUp:
+        m_model.charmDataModel()->stateChanged(previous, state);
+        m_controller.stateChanged(previous, state);
+        m_mainWindow.stateChanged(previous);
+        m_timeTracker.stateChanged( previous );
+        enterStartingUpState();
+        break;
+    case Connecting:
+        m_model.charmDataModel()->stateChanged(previous, state);
+        m_controller.stateChanged(previous, state);
+        m_mainWindow.stateChanged(previous);
+        m_timeTracker.stateChanged( previous );
+        enterConnectingState();
+        break;
+    case Connected:
+        m_model.charmDataModel()->stateChanged(previous, state);
+        m_controller.stateChanged(previous, state);
+        m_mainWindow.stateChanged(previous);
+        m_timeTracker.stateChanged( previous );
+        enterConnectedState();
+        break;
+    case Disconnecting:
+        m_timeTracker.stateChanged( previous );
+        m_mainWindow.stateChanged(previous);
+        m_model.charmDataModel()->stateChanged(previous, state);
+        m_controller.stateChanged(previous, state);
+        enterDisconnectingState();
+        break;
+    case ShuttingDown:
+        m_timeTracker.stateChanged( previous );
+        m_mainWindow.stateChanged(previous);
+        m_model.charmDataModel()->stateChanged(previous, state);
+        m_controller.stateChanged(previous, state);
+        enterShuttingDownState();
+        break;
+    default:
+        Q_ASSERT_X(false, "Application::setState",
+                   "Unknown new application state");
+    };
 }
 
 State Application::state() const
 {
-	return m_state;
+    return m_state;
 }
 
 Application& Application::instance()
 {
-	Q_ASSERT_X(m_instance, "Application::instance",
-			"Singleton not constructed yet");
-	return *m_instance;
+    Q_ASSERT_X(m_instance, "Application::instance",
+               "Singleton not constructed yet");
+    return *m_instance;
 }
 
 void Application::enterStartingUpState()
 {
-	// show view  (view is never invisible)
-	m_mainWindow.show();
-        // FIXME restore from previous setting:
-	m_timeTracker.show();
-	// load configuration
-	// ...
-	// verify configuration
-	// ...
-	// if configuration is incomplete or buggy configure
-	// FIXME ^^^
-	// then go to connecting state
-	if (configure())
-	{ // if all ok, go to connecting state
-		emit goToState(Connecting);
-	}
-	else
-	{
-		// user has cancelled configure, exit the application
-		m_app.quit();
-	}
+    // show view  (view is never invisible)
+    m_mainWindow.show();
+    // FIXME restore from previous setting:
+    m_timeTracker.show();
+    // load configuration
+    // ...
+    // verify configuration
+    // ...
+    // if configuration is incomplete or buggy configure
+    // FIXME ^^^
+    // then go to connecting state
+    if (configure())
+    { // if all ok, go to connecting state
+        emit goToState(Connecting);
+    }
+    else
+    {
+        // user has cancelled configure, exit the application
+        m_app.quit();
+    }
 }
 
 void Application::leaveStartingUpState()
@@ -236,133 +270,196 @@ void Application::enterConnectingState()
     }
 }
 
-    void Application::leaveConnectingState()
+void Application::leaveConnectingState()
+{
+}
+
+void Application::enterConnectedState()
+{
+    slotSaveConfiguration();
+}
+
+void Application::leaveConnectedState()
+{
+    m_controller.persistMetaData(CONFIGURATION);
+}
+
+void Application::enterDisconnectingState()
+{
+    // just wait for controller to emit readyToQuit()
+}
+
+void Application::leaveDisconnectingState()
+{
+}
+
+void Application::enterShuttingDownState()
+{
+    // prevent all modules from accepting any user commands
+    m_mainWindow.setEnabled(false);
+    m_timeTracker.setEnabled( false );
+    QTimer::singleShot(1200, &m_app, SLOT(quit()));
+}
+
+void Application::leaveShuttingDownState()
+{
+}
+
+void Application::slotGoToConnectedState()
+{
+    if (state() == Connecting)
     {
+        emit goToState(Connected);
+    }
+}
+bool Application::configure()
+{
+    if (CONFIGURATION.failure == true)
+    {
+        qDebug()
+            << "Application::configure: an error was found within the configuration.";
+        if (!CONFIGURATION.failureMessage.isEmpty())
+        {
+            QMessageBox::information(&m_mainWindow,
+                                     tr("Configuration Problem"), CONFIGURATION.failureMessage,
+                                     tr("Ok"));
+            CONFIGURATION.failureMessage.clear();
+        }
     }
 
-    void Application::enterConnectedState()
+    // load configuration:
+    QSettings settings;
+    settings.beginGroup(CONFIGURATION.configurationName);
+
+    bool configurationComplete = CONFIGURATION.readFrom(settings);
+
+    if (!configurationComplete || CONFIGURATION.failure)
     {
-	slotSaveConfiguration();
-    }
-
-    void Application::leaveConnectedState()
-    {
-	m_controller.persistMetaData(CONFIGURATION);
-    }
-
-    void Application::enterDisconnectingState()
-    {
-	// just wait for controller to emit readyToQuit()
-    }
-
-    void Application::leaveDisconnectingState()
-    {
-    }
-
-    void Application::enterShuttingDownState()
-    {
-	// prevent all modules from accepting any user commands
-	m_mainWindow.setEnabled(false);
-        m_timeTracker.setEnabled( false );
-	QTimer::singleShot(1200, &m_app, SLOT(quit()));
-    }
-
-    void Application::leaveShuttingDownState()
-    {
-    }
-
-    void Application::slotGoToConnectedState()
-    {
-	if (state() == Connecting)
-	{
-            emit goToState(Connected);
-	}
-    }
-    bool Application::configure()
-    {
-	if (CONFIGURATION.failure == true)
-	{
-            qDebug()
-                << "Application::configure: an error was found within the configuration.";
-            if (!CONFIGURATION.failureMessage.isEmpty())
-            {
-                QMessageBox::information(&m_mainWindow,
-                                         tr("Configuration Problem"), CONFIGURATION.failureMessage,
-                                         tr("Ok"));
-                CONFIGURATION.failureMessage.clear();
-            }
-	}
-
-	// load configuration:
-	QSettings settings;
-	settings.beginGroup(CONFIGURATION.configurationName);
-
-	bool configurationComplete = CONFIGURATION.readFrom(settings);
-
-	if (!configurationComplete || CONFIGURATION.failure)
-	{
-            qDebug()
-                << "Application::configure: no complete configuration found for configuration name"
-                << CONFIGURATION.configurationName;
-            // FIXME maybe move to Configuration::loadDefaults
+        qDebug()
+            << "Application::configure: no complete configuration found for configuration name"
+            << CONFIGURATION.configurationName;
+        // FIXME maybe move to Configuration::loadDefaults
 #ifdef NDEBUG
-            CONFIGURATION.localStorageDatabase = QDir::homePath() + QDir::separator() + ".Charm/Charm.db";
+        CONFIGURATION.localStorageDatabase = QDir::homePath() + QDir::separator() + ".Charm/Charm.db";
 #else
-            CONFIGURATION.localStorageDatabase = QDir::homePath()
-                                                 + QDir::separator() + ".Charm/Charm_debug.db";
+        CONFIGURATION.localStorageDatabase = QDir::homePath()
+                                             + QDir::separator() + ".Charm/Charm_debug.db";
 #endif
-            ConfigurationDialog dialog(CONFIGURATION, &m_mainWindow);
-            if (dialog.exec())
-            {
-                CONFIGURATION = dialog.configuration();
-                CONFIGURATION.writeTo(settings);
-            }
-            else
-            {
-                qDebug()
-                    << "Application::configure: user cancelled configuration. Exiting.";
-                // m_app.quit();
-                return false;
-            }
-	}
-
-	return true;
+        ConfigurationDialog dialog(CONFIGURATION, &m_mainWindow);
+        if (dialog.exec())
+        {
+            CONFIGURATION = dialog.configuration();
+            CONFIGURATION.writeTo(settings);
+        }
+        else
+        {
+            qDebug()
+                << "Application::configure: user cancelled configuration. Exiting.";
+            // m_app.quit();
+            return false;
+        }
     }
 
-    void Application::slotQuitApplication()
+    return true;
+}
+
+void Application::slotTrayIconActivated( QSystemTrayIcon::ActivationReason reason )
+{
+    switch( reason ) {
+    case QSystemTrayIcon::Context:
+        // show context menu
+        // m_contextMenu.show();
+        break;
+    case QSystemTrayIcon::DoubleClick:
+        m_mainWindow.slotShowHideView();
+        break;
+    case QSystemTrayIcon::Trigger:
+        // single click
+        break;
+    case QSystemTrayIcon::MiddleClick:
+        // ...
+        break;
+    case QSystemTrayIcon::Unknown:
+    default:
+        break;
+    }
+}
+
+void Application::slotMainWindowVisibilityChanged( bool visible )
+{
+    if ( visible ) {
+        m_actionShowHideView.setText( tr( "Hide Charm Window" ) );
+    } else {
+        m_actionShowHideView.setText( tr( "Show Charm Window" ) );
+    }
+    // FIXME save view state?
+}
+
+void Application::slotTimeTrackerVisibilityChanged( bool visible )
+{
+    if ( visible ) {
+        m_actionShowHideTimeTracker.setText( tr( "Hide Time Tracker Window" ) );
+    } else {
+        m_actionShowHideTimeTracker.setText( tr( "Show Time Tracker Window" ) );
+    }
+    // FIXME save view state?
+}
+
+void Application::slotCurrentBackendStatusChanged( const QString& text )
+{   // FIXME why can't this be done on stateChanged()? and if not, is
+    // maybe an app-wide metadataChanged() or configurationChanged()
+    // missing? (the latter exists)
+    QString dbInfo;
+    const QString userName = CONFIGURATION.user.name();
+    if (!userName.isEmpty())
+        dbInfo = QString("%1 - %2").arg(userName, text);
+    else
+        dbInfo = text;
+
+    const QString title = tr("Charm (%1)").arg(dbInfo);
+    m_mainWindow.setWindowTitle( title );
+    m_trayIcon.setToolTip( title );
+}
+
+void Application::slotStopAllTasks()
+{
+    DATAMODEL->endAllEventsRequested();
+}
+
+void Application::slotQuitApplication()
+{
+    emit goToState(Disconnecting);
+}
+
+void Application::slotControllerReadyToQuit()
+{
+    emit goToState(ShuttingDown);
+}
+
+void Application::slotSaveConfiguration()
+{
+    QSettings settings;
+    settings.beginGroup(CONFIGURATION.configurationName);
+    CONFIGURATION.writeTo(settings);
+    if (state() == Connected)
     {
-	emit goToState(Disconnecting);
+        m_controller.persistMetaData(CONFIGURATION);
     }
+}
 
-    void Application::slotControllerReadyToQuit()
-    {
-	emit goToState(ShuttingDown);
-    }
+ModelConnector& Application::model()
+{
+    return m_model;
+}
 
-    void Application::slotSaveConfiguration()
-    {
-	QSettings settings;
-	settings.beginGroup(CONFIGURATION.configurationName);
-	CONFIGURATION.writeTo(settings);
-	if (state() == Connected)
-	{
-            m_controller.persistMetaData(CONFIGURATION);
-	}
-    }
+MainWindow& Application::view()
+{
+    return m_mainWindow;
+}
 
-    ModelConnector& Application::model()
-    {
-	return m_model;
-    }
-
-    MainWindow& Application::view()
-    {
-	return m_mainWindow;
-    }
-
-    TimeSpans& Application::timeSpans()
-    {
-	return m_timeSpans;
-    }
+TimeSpans& Application::timeSpans()
+{
+    return m_timeSpans;
+}
 
 #include "Application.moc"

@@ -11,9 +11,6 @@ void connectControllerAndView( Controller* controller, MainWindow* view )
     // make view receive done commands from the controller:
     QObject::connect( controller, SIGNAL( commandCompleted( CharmCommand* ) ),
                       view, SLOT( commitCommand( CharmCommand* ) ) );
-    // window title updates
-    QObject::connect( controller, SIGNAL( currentBackendStatus( const QString& ) ),
-                      view, SLOT( slotCurrentBackendStatusChanged( const QString& ) ) );
 }
 
 bool startsEarlier(const EventId& leftId, const EventId& rightId )

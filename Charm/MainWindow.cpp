@@ -26,7 +26,6 @@ MainWindow::MainWindow()
     : QMainWindow()
     , m_ui( new Ui::MainWindow() )
     , m_viewActionsGroup( this )
-    , m_actionShowHideView( this )
     , m_actionQuit( this )
     , m_actionAboutDialog( this )
     , m_actionPreferences( this )
@@ -64,12 +63,10 @@ MainWindow::MainWindow()
     }
 
     // set up actions
-    connect( &m_actionShowHideView, SIGNAL( triggered() ),
-             SLOT( slotShowHideView() ) );
     m_actionQuit.setText( tr( "Quit" ) );
     m_actionQuit.setIcon( Data::quitCharmIcon() );
     !connect( &m_actionQuit, SIGNAL( triggered( bool ) ),
-             SLOT( slotQuit() ) );
+              SLOT( slotQuit() ) );
 
     m_actionAboutDialog.setText( tr( "About Charm" ) );
     connect( &m_actionAboutDialog, SIGNAL( triggered() ),
@@ -133,7 +130,7 @@ MainWindow::MainWindow()
     m_actionShowStatusbar.setText( tr( "Show Status Bar" ) );
     m_actionShowStatusbar.setCheckable( true );
     connect( &m_actionShowStatusbar, SIGNAL( triggered( bool ) ),
-    		 SLOT( slotToggleStatusbar( bool ) ) );
+             SLOT( slotToggleStatusbar( bool ) ) );
     viewMenu->addAction( &m_actionToggleView );
     viewMenu->addSeparator();
     viewMenu->addAction( &m_actionShowStatusbar );
@@ -146,17 +143,6 @@ MainWindow::MainWindow()
 //     taskMenu->addAction( &m_actionEventEnded );
     menuBar()->addMenu( appMenu );
     menuBar()->addMenu( viewMenu );
-
-    // system tray icon:
-    m_trayIcon.setIcon( Data::charmIcon() );
-    m_trayIcon.show();
-    connect( &m_trayIcon, SIGNAL( activated( QSystemTrayIcon::ActivationReason ) ),
-             SLOT( slotTrayIconActivated( QSystemTrayIcon::ActivationReason ) ) );
-    m_systrayContextMenu.addAction( &m_actionShowHideView );
-    m_systrayContextMenu.addAction( m_tasksView.actionStopAllTasks() );
-    m_systrayContextMenu.addSeparator();
-    m_systrayContextMenu.addAction( &m_actionQuit );
-    m_trayIcon.setContextMenu( &m_systrayContextMenu );
 }
 
 MainWindow::~MainWindow()
@@ -230,7 +216,7 @@ void MainWindow::stateChanged( State previous )
     case Connected:
         // FIXME remember in Gui state:
         m_ui->viewStack->setCurrentWidget( &m_tasksView );
-    	slotConfigurationChanged();
+        slotConfigurationChanged();
         setEnabled( true );
         break;
     case Disconnecting:
@@ -266,36 +252,17 @@ void MainWindow::sendCommand( CharmCommand *cmd)
     emit emitCommand( relay );
 }
 
-void MainWindow::slotTrayIconActivated( QSystemTrayIcon::ActivationReason reason )
-{
-    switch( reason ) {
-    case QSystemTrayIcon::Context:
-        // show context menu
-        // m_contextMenu.show();
-        break;
-    case QSystemTrayIcon::DoubleClick:
-        slotShowHideView();
-        break;
-    case QSystemTrayIcon::Trigger:
-        // single click
-        break;
-    case QSystemTrayIcon::MiddleClick:
-        // ...
-        break;
-    case QSystemTrayIcon::Unknown:
-    default:
-        break;
-    }
-}
 
 void MainWindow::showEvent( QShowEvent* )
 {
-    m_actionShowHideView.setText( tr( "Hide Charm Window" ) );
+    emit visibilityChanged( true );
+    // REFACTOR move to Application
+    // m_actionShowHideView.setText( tr( "Hide Charm Window" ) );
 }
 
 void MainWindow::hideEvent( QHideEvent* )
 {
-    m_actionShowHideView.setText( tr( "Show Charm Window" ) );
+    emit visibilityChanged( false );
 }
 
 void MainWindow::slotAboutDialog()
@@ -332,7 +299,7 @@ void MainWindow::slotConfigurationChanged()
               std::mem_fun( &ViewModeInterface::configurationChanged ) );
     QList<QToolButton *> allToolButtons = findChildren<QToolButton *>();
     Q_FOREACH( QToolButton* button, allToolButtons ) {
-    	button->setToolButtonStyle( CONFIGURATION.toolButtonStyle );
+        button->setToolButtonStyle( CONFIGURATION.toolButtonStyle );
     }
     m_actionShowStatusbar.setChecked( CONFIGURATION.showStatusBar );
     statusBar()->setVisible( CONFIGURATION.showStatusBar );
@@ -345,20 +312,6 @@ void MainWindow::slotSelectViewMode( QAction* action )
     } else if ( action == &m_actionTasksView ) {
         m_ui->viewStack->setCurrentWidget( &m_tasksView );
     }
-}
-
-void MainWindow::slotCurrentBackendStatusChanged( const QString& text )
-{
-    QString dbInfo;
-    const QString userName = CONFIGURATION.user.name();
-    if (!userName.isEmpty())
-        dbInfo = QString("%1 - %2").arg(userName, text);
-    else
-        dbInfo = text;
-
-    const QString title = tr("Charm (%1)").arg(dbInfo);
-    setWindowTitle( title );
-    m_trayIcon.setToolTip( title );
 }
 
 void MainWindow::slotReportDialog()
@@ -485,9 +438,14 @@ void MainWindow::slotUpdateTotal()
 
 void MainWindow::slotToggleStatusbar( bool show )
 {
-	CONFIGURATION.showStatusBar = show;
-	statusBar()->setVisible( show );
-	emit saveConfiguration();
+    CONFIGURATION.showStatusBar = show;
+    statusBar()->setVisible( show );
+    emit saveConfiguration();
+}
+
+QAction* MainWindow::actionQuit()
+{
+    return &m_actionQuit;
 }
 
 #include "MainWindow.moc"

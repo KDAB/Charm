@@ -66,6 +66,13 @@ public slots:
     void slotSaveConfiguration();
     void slotGoToConnectedState();
 
+private slots:
+    void slotTrayIconActivated( QSystemTrayIcon::ActivationReason );
+    void slotMainWindowVisibilityChanged( bool );
+    void slotTimeTrackerVisibilityChanged( bool );
+    void slotCurrentBackendStatusChanged( const QString& text );
+    void slotStopAllTasks();
+
 signals:
     void goToState( State state );
 
@@ -87,6 +94,11 @@ private:
     Controller m_controller;
     MainWindow m_mainWindow;
     TimeTrackingView m_timeTracker;
+    QSystemTrayIcon m_trayIcon;
+    QMenu m_systrayContextMenu;
+    QAction m_actionShowHideView;
+    QAction m_actionShowHideTimeTracker;
+    QAction m_actionStopAllTasks;
 
     // All statics are created as members of Application. This is
     // supposed to help on Windows, where constructors for statics

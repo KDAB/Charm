@@ -45,7 +45,6 @@ View::View( QWidget* parent )
     , m_actionNewSubTask( this )
     , m_actionEditTask( this )
     , m_actionDeleteTask( this )
-    , m_actionStopAllTasks( this )
 {
     m_ui->setupUi( this );
     setWindowIcon( Data::charmIcon() );
@@ -57,11 +56,6 @@ View::View( QWidget* parent )
     m_ui->buttonClearFilter->setIcon( Data::clearFilterIcon() );
     // set up actions
     // (no menu icons, please) m_actionAboutDialog.setIcon( Data::charmIcon() );
-    m_actionStopAllTasks.setText( tr( "Stop &All Active Tasks" ) );
-    m_actionStopAllTasks.setShortcut( Qt::Key_Escape );
-    addAction(&m_actionStopAllTasks); // for the shortcut to work
-    connect( &m_actionStopAllTasks, SIGNAL( triggered() ),
-             SLOT( slotStopAllTasks() ) );
     m_actionEventStarted.setIcon( Data::goIcon() );
     m_actionEventStarted.setText( tr( "Start Task" ) );
     m_actionSelectedEventStarted.setIcon( m_actionEventStarted.icon() );
@@ -477,12 +471,6 @@ void View::slotEventDeactivated( EventId )
     slotConfigureUi();
 }
 
-void View::slotStopAllTasks()
-{
-    CharmDataModel* model = MODEL.charmDataModel();
-    model->endAllEventsRequested();
-}
-
 Task View::selectedTask()
 {
     Q_ASSERT( m_ui->treeView );
@@ -498,9 +486,10 @@ Task View::selectedTask()
     }
 }
 
-QAction* View::actionStopAllTasks()
-{
-    return &m_actionStopAllTasks;
-}
+// FIXME needed?
+// QAction* View::actionStopAllTasks()
+// {
+//     return &m_actionStopAllTasks;
+// }
 
 #include "TasksView.moc"

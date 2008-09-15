@@ -33,16 +33,15 @@ public:
     ~MainWindow();
 
     void stateChanged( State previous );
+    QAction* actionQuit();
 
 public slots:
     void slotQuit();
     void slotShowHideView();
-    void slotTrayIconActivated( QSystemTrayIcon::ActivationReason );
     void slotEditPreferences( bool ); // show prefs dialog
     void slotConfigurationChanged();
     void slotSelectViewMode( QAction* );
     void slotToggleView();
-    void slotCurrentBackendStatusChanged( const QString& text );
     void slotExportToXml();
     void slotImportFromXml();
 
@@ -64,6 +63,7 @@ protected:
 
 signals:
     void emitCommand( CharmCommand* ); // CommandEmitterInterface
+    void visibilityChanged( bool ); // reimpl from ViewInterface
     void saveConfiguration();
     void quit();
 
@@ -74,10 +74,7 @@ private:
     QList<ViewModeInterface*> m_modes;
 
     Ui::MainWindow* m_ui;
-    QSystemTrayIcon m_trayIcon;
-    QMenu m_systrayContextMenu;
     QActionGroup m_viewActionsGroup;
-    QAction m_actionShowHideView;
     QAction m_actionQuit;
     QAction m_actionAboutDialog;
     QAction m_actionPreferences;

@@ -28,6 +28,16 @@ TimeTrackingView::~TimeTrackingView()
     delete m_ui; m_ui = 0;
 }
 
+void TimeTrackingView::slotShowHide()
+{
+    if ( isVisible() ) {
+        hide();
+    } else {
+        restore();
+        raise();
+    }
+}
+
 TimeTrackingSummaryWidget* TimeTrackingView::summaryWidget()
 {
     Q_ASSERT( m_ui );
@@ -60,6 +70,15 @@ void TimeTrackingView::stateChanged( State previous )
     }
 }
 
+void TimeTrackingView::showEvent( QShowEvent* )
+{
+    emit visibilityChanged( true );
+}
+
+void TimeTrackingView::hideEvent( QHideEvent* )
+{
+    emit visibilityChanged( false );
+}
 
 void TimeTrackingView::saveConfiguration()
 {
@@ -79,6 +98,7 @@ void TimeTrackingView::commitCommand( CharmCommand* )
 
 void TimeTrackingView::restore()
 {
+    show();
 }
 
 void TimeTrackingView::quit()

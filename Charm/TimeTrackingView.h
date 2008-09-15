@@ -23,6 +23,9 @@ class TimeTrackingView : public QWidget,
 public:
     explicit TimeTrackingView( QWidget* parent = 0 );
     ~TimeTrackingView();
+    void showEvent( QShowEvent* );
+    void hideEvent( QHideEvent* );
+
     // application:
     void stateChanged( State previous );
     void saveConfiguration();
@@ -53,6 +56,10 @@ private slots:
     void slotMaybeShrink();
     void slotStartEvent( TaskId );
     void slotStopEvent( TaskId );
+    void slotShowHide();
+
+signals:
+    void visibilityChanged( bool ); // reimpl from ViewInterface
 
 private:
     void selectTasksToShow();

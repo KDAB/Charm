@@ -41,7 +41,8 @@ public:
     void configurationChanged();
     void setModel( ModelConnector* );
 
-    QAction* actionStopAllTasks();
+    // FIXME needed?
+    // QAction* actionStopAllTasks();
 
 public slots:
     // reimpl
@@ -49,7 +50,6 @@ public slots:
 
     // pure view slots:
     void slotItemDoubleClicked( const QModelIndex& index );
-    void slotStopAllTasks();
 
 signals:
     // FIXME connect to MainWindow
@@ -86,7 +86,6 @@ private:
     QAction m_actionNewSubTask;
     QAction m_actionEditTask;
     QAction m_actionDeleteTask;
-    QAction m_actionStopAllTasks;
     StatusBarWidget* m_statusBarWidget;
 };
 
