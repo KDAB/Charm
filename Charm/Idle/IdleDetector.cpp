@@ -19,9 +19,11 @@ IdleDetector* IdleDetector::createIdleDetector( QObject* parent )
 #elif defined Q_WS_WIN
     // FIXME implement Windows Idle Detector
     // return new ...
+    return 0;
 #elif defined Q_WS_X11
     // FIXME implement X11 Idle Detector
     // return new ...
+    return 0;
 #else
     return 0;
 #endif
