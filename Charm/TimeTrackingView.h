@@ -49,6 +49,9 @@ public:
     void eventActivated( EventId id );
     void eventDeactivated( EventId id );
 
+private slots:
+    void slotMaybeShrink();
+
 private:
     void selectTasksToShow();
     TimeTrackingSummaryWidget* summaryWidget();

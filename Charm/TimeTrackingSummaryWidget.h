@@ -36,6 +36,9 @@ public:
     QSize sizeHint() const;
     QSize minimumSizeHint() const;
 
+signals:
+    void maybeShrink();
+
 private slots:
     void slotGoStopToggled( bool );
 

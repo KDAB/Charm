@@ -12,6 +12,8 @@ TimeTrackingView::TimeTrackingView( QWidget* parent )
     , m_ui( new Ui::TimeTrackingView )
 {
     m_ui->setupUi( this );
+    connect( m_ui->summaryWidget, SIGNAL( maybeShrink() ),
+             SLOT( slotMaybeShrink() ), Qt::QueuedConnection );
 }
 
 
@@ -164,6 +166,14 @@ void TimeTrackingView::selectTasksToShow()
     // and update the widget:
     m_summaries = summaries;
     summaryWidget()->setSummaries( m_summaries );
+}
+
+void TimeTrackingView::slotMaybeShrink()
+{
+    const int minHeight = minimumSize().height();
+    if ( minHeight < height() ) {
+        resize( width(), minHeight );
+    }
 }
 
 #include "TimeTrackingView.moc"

@@ -221,14 +221,17 @@ TimeTrackingSummaryWidget::DataField TimeTrackingSummaryWidget::data( int column
 void TimeTrackingSummaryWidget::setSummaries( QVector<WeeklySummary> s )
 {
     m_summaries = s;
-    // FIXME invalidate layout
-    update();
     if ( m_summaries.isEmpty() ) {
         m_taskSelector.setEnabled( false );
     } else {
         m_taskSelector.setEnabled( true );
         m_taskSelector.setText( m_summaries.last().taskname );
     }
+    m_cachedMinimumSizeHint = QSize();
+    m_cachedSizeHint = QSize();
+    updateGeometry();
+    update();
+    emit maybeShrink();
 }
 
 void TimeTrackingSummaryWidget::slotGoStopToggled( bool on )
@@ -243,5 +246,6 @@ void TimeTrackingSummaryWidget::slotGoStopToggled( bool on )
         m_taskSelector.setEnabled( true );
     }
 }
+
 
 #include "TimeTrackingSummaryWidget.moc"
