@@ -104,8 +104,7 @@ Application::Application(int argc, char** argv) :
         qDebug() << "Application ctor: idle detection is not available on this platform.";
     } else {
         qDebug() << "Application ctor: idle detection initialized.";
-        connect( m_idleDetector, SIGNAL( maybeIdle( QDateTime ) ),
-                 SLOT( slotMaybeIdle( QDateTime ) ) );
+        connect( m_idleDetector, SIGNAL( maybeIdle() ), SLOT( slotMaybeIdle() ) );
     }
 
     // Ladies and gentlemen, please raise upon your seats -
@@ -474,10 +473,26 @@ TimeSpans& Application::timeSpans()
     return m_timeSpans;
 }
 
-void Application::slotMaybeIdle( QDateTime since )
+void Application::slotMaybeIdle()
 {
-    qDebug() << "Application::slotMaybeIdle: computer might be idle since" << since
-             << "(it is now" << QDateTime::currentDateTime() << ")";
+    Q_FOREACH( const IdleDetector::IdlePeriod& p, m_idleDetector->idlePeriods() ) {
+        qDebug() << "Application::slotMaybeIdle: computer might be have been idle from"
+                 << p.first
+                 << "to" << p.second;
+    }
+
+    // thee are four parameters to the idle property:
+    // - the initial start time of the currently active event(s)
+    // - the time the machine went idle
+    // - the time it resumed from idling
+    // - the current time
+    // all this information is available in the data model, plus the
+    // argument to this call
+    // things that make it complicated:
+    // - there may be multiple active events
+    // - there may be multiple idle periods before the user deals with
+    // it
+
 }
 
 #include "Application.moc"

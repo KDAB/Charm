@@ -136,9 +136,7 @@ MacOsIdleDetector::~MacOsIdleDetector()
 
 void MacOsIdleDetector::idle()
 {
-    // FIXME check if relevant (e.g., a couple of minutes?) --> should
-    // be done in class IdleDetector
-    emit maybeIdle( d->idleStartTime );
+    maybeIdle( IdlePeriod( d->idleStartTime, QDateTime::currentDateTime() ) );
 }
 
 #include "MacOsIdleDetector.moc"

@@ -73,7 +73,7 @@ private slots:
     void slotTimeTrackerVisibilityChanged( bool );
     void slotCurrentBackendStatusChanged( const QString& text );
     void slotStopAllTasks();
-    void slotMaybeIdle( QDateTime );
+    void slotMaybeIdle();
 
 signals:
     void goToState( State state );

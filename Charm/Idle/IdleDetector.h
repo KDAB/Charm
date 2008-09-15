@@ -1,6 +1,8 @@
 #ifndef IDLEDETECTOR_H
 #define IDLEDETECTOR_H
 
+#include <QPair>
+#include <QVector>
 #include <QObject>
 #include <QDateTime>
 
@@ -15,16 +17,26 @@ class IdleDetector : public QObject
     Q_OBJECT
 
 public:
+    typedef QPair<QDateTime, QDateTime> IdlePeriod;
+    typedef QVector<IdlePeriod> IdlePeriods;
+
     /** Create an idle detector for this platform.
      * Returns 0 if idle detection is not available. */
     static IdleDetector* createIdleDetector( QObject* parent );
 
+    /** Returns the idle periods. */
+    IdlePeriods idlePeriods() const;
+
 protected:
     explicit IdleDetector( QObject* parent = 0 );
     virtual ~IdleDetector() {}
+    void maybeIdle( IdlePeriod period );
 
 Q_SIGNALS:
-    void maybeIdle( QDateTime );
+    void maybeIdle();
+
+private:
+    IdlePeriods m_idlePeriods;
 };
 
 #endif
