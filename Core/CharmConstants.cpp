@@ -9,6 +9,7 @@ const QString MetaKey_OneEventAtATime = "OneEventAtATime";
 const QString MetaKey_MainWindowGeometry = "MainWindowGeometry";
 const QString MetaKey_MainWindowGUIStateSelectedTask = "MainWindowGUIStateSelectedTask";
 const QString MetaKey_MainWindowGUIStateExpandedTasks = "MainWindowGUIStateExpandedTasks";
+const QString MetaKey_TimeTrackerGeometry = "TimeTrackerGeometry";
 const QString MetaKey_ReportsRecentSavePath = "ReportsRecentSavePath";
 const QString MetaKey_ExportToXmlRecentSavePath = "ExportToXmlSavePath";
 const QString MetaKey_TimesheetSubscribedOnly = "TimesheetSubscribedOnly";

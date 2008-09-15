@@ -1,3 +1,4 @@
+#include <QSettings>
 #include <QtAlgorithms>
 
 #include "ViewHelpers.h"
@@ -35,10 +36,30 @@ TimeTrackingSummaryWidget* TimeTrackingView::summaryWidget()
 
 void TimeTrackingView::stateChanged( State previous )
 {
-    if ( previous == Constructed ) {
+    switch( Application::instance().state() ) {
+    case Connecting: {
         DATAMODEL->registerAdapter( this );
+        break;
+    }
+    case StartingUp: {
+        // restore Gui state:
+        QSettings settings;
+        if ( settings.contains( MetaKey_TimeTrackerGeometry ) ) {
+            restoreGeometry( settings.value( MetaKey_TimeTrackerGeometry ).toByteArray() );
+        }
+        break;
+    }
+    case Disconnecting: {
+        // save Gui state:
+        QSettings settings;
+        settings.setValue( MetaKey_TimeTrackerGeometry, saveGeometry() );
+        break;
+    }
+    default:
+        break;
     }
 }
+
 
 void TimeTrackingView::saveConfiguration()
 {

@@ -22,6 +22,7 @@ extern const QString MetaKey_OneEventAtATime;
 extern const QString MetaKey_MainWindowGeometry;
 extern const QString MetaKey_MainWindowGUIStateSelectedTask;
 extern const QString MetaKey_MainWindowGUIStateExpandedTasks;
+extern const QString MetaKey_TimeTrackerGeometry;
 extern const QString MetaKey_ReportsRecentSavePath;
 extern const QString MetaKey_ExportToXmlRecentSavePath;
 extern const QString MetaKey_TimesheetActiveOnly;
