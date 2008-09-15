@@ -66,6 +66,12 @@ IF ( QT4_FOUND )
 		       Commands/CommandMakeAndActivateEvent.cpp 
 		       Idle/IdleDetector.cpp
 )
+	IF( APPLE )
+	   SET( CharmApplication_SRCS 
+		      ${CharmApplication_SRCS} Idle/MacOsIdleDetector.cpp )
+	ENDIF( APPLE)
+
+
     
     QT4_AUTOMOC ( ${CharmApplication_SRCS} )
 
@@ -97,6 +103,7 @@ IF ( QT4_FOUND )
     QT4_AUTOMOC (${Charm_SRCS} )
 
 	IF( APPLE )
+	        TARGET_LINK_LIBRARIES( CharmApplication IOKit )
 		SET( MACOSX_BUNDLE_INFO_STRING "Charm - Version 1.2.0-trunk" )
 		SET( MACOSX_BUNDLE_BUNDLE_VERSION "1.2.0" )
 		SET( MACOSX_BUNDLE_ICON_FILE "Charm.icns" )

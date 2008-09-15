@@ -20,6 +20,7 @@
 #include "Data.h"
 #include "Application.h"
 #include "ConfigurationDialog.h"
+#include "Idle/IdleDetector.h"
 
 Application* Application::m_instance = 0;
 
@@ -32,6 +33,7 @@ Application::Application(int argc, char** argv) :
     , m_actionShowHideView( this )
     , m_actionShowHideTimeTracker( this )
     , m_actionStopAllTasks( this )
+    , m_idleDetector( 0 )
 {
     // QApplication setup
     m_app.setQuitOnLastWindowClosed(false);
@@ -84,8 +86,6 @@ Application::Application(int argc, char** argv) :
              &m_mainWindow, SLOT( slotShowHideView() ) );
     connect( &m_actionShowHideTimeTracker, SIGNAL( triggered() ),
              &m_timeTracker, SLOT( slotShowHide() ) );
-    m_trayIcon.setIcon( Data::charmIcon() );
-    m_trayIcon.show();
     connect( &m_trayIcon, SIGNAL( activated( QSystemTrayIcon::ActivationReason ) ),
              SLOT( slotTrayIconActivated( QSystemTrayIcon::ActivationReason ) ) );
     m_systrayContextMenu.addAction( &m_actionShowHideView );
@@ -94,7 +94,19 @@ Application::Application(int argc, char** argv) :
     m_systrayContextMenu.addSeparator();
     m_systrayContextMenu.addAction( m_mainWindow.actionQuit() );
     m_trayIcon.setContextMenu( &m_systrayContextMenu );
+    m_trayIcon.setIcon( Data::charmIcon() );
+    m_trayIcon.show();
     qt_mac_set_dock_menu( &m_systrayContextMenu );
+
+    // set up idle detection
+    m_idleDetector = IdleDetector::createIdleDetector( this );
+    if ( m_idleDetector == 0 ) {
+        qDebug() << "Application ctor: idle detection is not available on this platform.";
+    } else {
+        qDebug() << "Application ctor: idle detection initialized.";
+        connect( m_idleDetector, SIGNAL( maybeIdle( QDateTime ) ),
+                 SLOT( slotMaybeIdle( QDateTime ) ) );
+    }
 
     // Ladies and gentlemen, please raise upon your seats -
     // the show is about to begin:
@@ -370,7 +382,7 @@ void Application::slotTrayIconActivated( QSystemTrayIcon::ActivationReason reaso
     switch( reason ) {
     case QSystemTrayIcon::Context:
         // show context menu
-        // m_contextMenu.show();
+        // m_systrayContextMenu.show();
         break;
     case QSystemTrayIcon::DoubleClick:
         m_mainWindow.slotShowHideView();
@@ -460,6 +472,12 @@ MainWindow& Application::view()
 TimeSpans& Application::timeSpans()
 {
     return m_timeSpans;
+}
+
+void Application::slotMaybeIdle( QDateTime since )
+{
+    qDebug() << "Application::slotMaybeIdle: computer might be idle since" << since
+             << "(it is now" << QDateTime::currentDateTime() << ")";
 }
 
 #include "Application.moc"

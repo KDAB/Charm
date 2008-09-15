@@ -28,6 +28,7 @@
 #include "ModelConnector.h"
 
 // FIXME read configuration name from command line
+class IdleDetector;
 
 class Application : public QObject
 {
@@ -72,6 +73,7 @@ private slots:
     void slotTimeTrackerVisibilityChanged( bool );
     void slotCurrentBackendStatusChanged( const QString& text );
     void slotStopAllTasks();
+    void slotMaybeIdle( QDateTime );
 
 signals:
     void goToState( State state );
@@ -99,6 +101,8 @@ private:
     QAction m_actionShowHideView;
     QAction m_actionShowHideTimeTracker;
     QAction m_actionStopAllTasks;
+
+    IdleDetector* m_idleDetector;
 
     // All statics are created as members of Application. This is
     // supposed to help on Windows, where constructors for statics

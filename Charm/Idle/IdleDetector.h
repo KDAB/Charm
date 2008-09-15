@@ -20,7 +20,8 @@ public:
     static IdleDetector* createIdleDetector( QObject* parent );
 
 protected:
-    explicit IdleDetector( QObject* parent );
+    explicit IdleDetector( QObject* parent = 0 );
+    virtual ~IdleDetector() {}
 
 Q_SIGNALS:
     void maybeIdle( QDateTime );
