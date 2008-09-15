@@ -43,13 +43,10 @@ EventEditor::EventEditor( const Event& event, QWidget* parent )
 
     // what a fricking hack - but QDateTimeEdit does not seem to have
     // a simple function to toggle 12h and 24h mode:
-    static QString OriginalDateTimeFormat;
     // yeah, I know, this will survive changes in the user prefs, but
     // only for this instance of the edit dialog
-    if ( OriginalDateTimeFormat.isEmpty() ) {
-        QDateTimeEdit edit( this );
-        OriginalDateTimeFormat = edit.displayFormat();
-    }
+    QTimeEdit edit( this ); // this bugger is gone after the constructor
+    QString originalDateTimeFormat = edit.displayFormat();
 
     if ( CONFIGURATION.always24hEditing ) {
         QString format = m_ui->timeEditStart->displayFormat()
@@ -59,8 +56,8 @@ EventEditor::EventEditor( const Event& event, QWidget* parent )
         m_ui->timeEditStart->setDisplayFormat( format );
         m_ui->timeEditEnd->setDisplayFormat( format );
     } else {
-        m_ui->timeEditStart->setDisplayFormat( OriginalDateTimeFormat );
-        m_ui->timeEditEnd->setDisplayFormat( OriginalDateTimeFormat );
+        m_ui->timeEditStart->setDisplayFormat( originalDateTimeFormat );
+        m_ui->timeEditEnd->setDisplayFormat( originalDateTimeFormat );
     }
 
 

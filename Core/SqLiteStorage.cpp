@@ -9,6 +9,7 @@
 #include "Configuration.h"
 #include "SqLiteStorage.h"
 #include "CharmConstants.h"
+#include "CharmExceptions.h"
 
 // DATABASE STRUCTURE DEFINITION
 static const QString Tables[] =
@@ -78,11 +79,15 @@ static const Fields* Database_Fields[NumberOfTables] =
 
 
 const char DatabaseName[] = "charm.kdab.net";
+const char DriverName[] = "QSQLITE";
 
 SqLiteStorage::SqLiteStorage()
     : SqlStorage()
-    , m_database( QSqlDatabase::addDatabase( "QSQLITE", DatabaseName ) )
+    , m_database( QSqlDatabase::addDatabase( DriverName, DatabaseName ) )
 {
+    if ( ! QSqlDatabase::isDriverAvailable( DriverName ) ) {
+        throw CharmException( "QSQLITE driver not available" );
+    }
 }
 
 SqLiteStorage::~SqLiteStorage()
@@ -145,6 +150,8 @@ bool SqLiteStorage::connect( Configuration& configuration )
 {   // make sure the database folder exits:
     m_installationId = configuration.installationId;
     bool error = false;
+
+
 
     QFileInfo fileInfo( configuration.localStorageDatabase ); // this is the full path
 

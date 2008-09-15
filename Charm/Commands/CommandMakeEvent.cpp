@@ -29,7 +29,7 @@ bool CommandMakeEvent::execute( ControllerInterface* controller )
         QDateTime start( QDateTime::currentDateTime() );
         event.setComment( tr( "(event created in event editor)" ) );
         event.setStartDateTime( start );
-        event.setEndDateTime( start.addMSecs( 1000 * 60 * 5 ) );
+        event.setEndDateTime( start );
         if ( controller->modifyEvent( event ) ) {
             m_event = event;
             return true;
@@ -45,8 +45,9 @@ bool CommandMakeEvent::finalize()
 {
     if ( m_event.isValid() ) {
         EventView* view = dynamic_cast<EventView*>( owner() );
-        Q_ASSERT( view ); // this command is "owned" by the editor
+        Q_ASSERT( view ); // this command is "owned" by the event view
         view->makeVisibleAndCurrent( m_event );
+        emit finishedOk( m_event );
         return true;
     } else {
         return false;

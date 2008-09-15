@@ -56,5 +56,4 @@ private:
     CommandEmitterInterface* m_owner;
 };
 
-
 #endif

@@ -198,6 +198,9 @@ void EventView::slotNewEvent()
         if ( item.task().isValid() ) {
             CommandMakeEvent* command =
                 new CommandMakeEvent( item.task(), this );
+            connect( command, SIGNAL( finishedOk( const Event& ) ),
+                     this, SLOT( slotEditEvent( const Event& ) ),
+                     Qt::QueuedConnection );
             emitCommand( command );
         }
     }

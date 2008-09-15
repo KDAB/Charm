@@ -34,7 +34,7 @@ EventIdList filteredBySubtree( EventIdList ids, TaskId parent )
     EventIdList result;
     Q_FOREACH( EventId id, ids ) {
         const Event& event = DATAMODEL->eventForId( id );
-        if ( parent == id || DATAMODEL->isParentOf( parent, event.taskId() ) ) {
+        if ( parent == event.taskId() || DATAMODEL->isParentOf( parent, event.taskId() ) ) {
             result << id;
         }
     }
