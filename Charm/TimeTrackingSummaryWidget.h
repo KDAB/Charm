@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QVector>
 #include <QPen>
+#include <QMenu>
 #include <QToolButton>
 
 #include "Core/Task.h"
@@ -39,8 +40,13 @@ public:
 signals:
     void maybeShrink();
 
+signals:
+    void startEvent( TaskId );
+    void stopEvent( TaskId );
+
 private slots:
     void slotGoStopToggled( bool );
+    void slotActionSelected( QAction* );
 
 private:
     DataField data( int column, int row );
@@ -55,6 +61,9 @@ private:
     mutable QFont m_narrowFont;
     QToolButton m_stopGoButton;
     QToolButton m_taskSelector;
+    QMenu m_menu;
+    QList<QAction*> m_currentActions;
+    int m_selectedSummary;
 };
 
 #endif

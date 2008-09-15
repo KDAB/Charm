@@ -14,6 +14,10 @@ TimeTrackingView::TimeTrackingView( QWidget* parent )
     m_ui->setupUi( this );
     connect( m_ui->summaryWidget, SIGNAL( maybeShrink() ),
              SLOT( slotMaybeShrink() ), Qt::QueuedConnection );
+    connect( m_ui->summaryWidget, SIGNAL( startEvent( TaskId ) ),
+             SLOT( slotStartEvent( TaskId ) ) );
+    connect( m_ui->summaryWidget, SIGNAL( stopEvent( TaskId ) ),
+             SLOT( slotStopEvent( TaskId ) ) );
 }
 
 
@@ -174,6 +178,16 @@ void TimeTrackingView::slotMaybeShrink()
     if ( minHeight < height() ) {
         resize( width(), minHeight );
     }
+}
+
+void TimeTrackingView::slotStartEvent( TaskId id )
+{
+    qDebug() << "TimeTrackingView::slotStartEvent: FIXME: implement";
+}
+
+void TimeTrackingView::slotStopEvent( TaskId id )
+{
+    qDebug() << "TimeTrackingView:;slotStopEvent: FIXME: implement";
 }
 
 #include "TimeTrackingView.moc"

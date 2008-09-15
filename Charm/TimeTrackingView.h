@@ -51,6 +51,8 @@ public:
 
 private slots:
     void slotMaybeShrink();
+    void slotStartEvent( TaskId );
+    void slotStopEvent( TaskId );
 
 private:
     void selectTasksToShow();

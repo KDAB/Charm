@@ -16,6 +16,7 @@ TimeTrackingSummaryWidget::TimeTrackingSummaryWidget( QWidget* parent )
     : QWidget( parent )
     , m_stopGoButton( this )
     , m_taskSelector( this )
+    , m_selectedSummary( -1 )
 {
     // FIXME use platform defined, hand-picked fonts, so far those have been selected for Mac:
     m_fixedFont.setFamily( "Andale Mono" );
@@ -30,7 +31,13 @@ TimeTrackingSummaryWidget::TimeTrackingSummaryWidget( QWidget* parent )
              SLOT( slotGoStopToggled( bool ) ) );
     m_stopGoButton.setChecked( false );
     slotGoStopToggled( false );
-    m_stopGoButton.setPopupMode( QToolButton::InstantPopup );
+    m_stopGoButton.setEnabled( false );
+    m_taskSelector.setEnabled( false );
+    m_taskSelector.setPopupMode( QToolButton::InstantPopup );
+    m_taskSelector.setMenu( &m_menu );
+    m_taskSelector.setText( tr( "Select Task" ) );
+    connect( &m_menu, SIGNAL( triggered( QAction* ) ),
+             SLOT( slotActionSelected( QAction* ) ) );
 }
 
 QSize TimeTrackingSummaryWidget::sizeHint() const
@@ -225,27 +232,51 @@ void TimeTrackingSummaryWidget::setSummaries( QVector<WeeklySummary> s )
         m_taskSelector.setEnabled( false );
     } else {
         m_taskSelector.setEnabled( true );
-        m_taskSelector.setText( m_summaries.last().taskname );
     }
     m_cachedMinimumSizeHint = QSize();
     m_cachedSizeHint = QSize();
     updateGeometry();
     update();
+    // populate menu:
+    qDeleteAll( m_currentActions );
+    m_currentActions.clear();
+    Q_FOREACH( const WeeklySummary& s, m_summaries ) {
+        m_currentActions << m_menu.addAction( s.taskname );
+    }
+    // FIXME maybe remember last selected task
     emit maybeShrink();
 }
 
 void TimeTrackingSummaryWidget::slotGoStopToggled( bool on )
 {
+    Q_ASSERT( m_selectedSummary >= 0 && m_selectedSummary < m_summaries.size()
+              || m_selectedSummary == -1 );
+
     if ( on ) {
         m_stopGoButton.setIcon( Data::recorderStopIcon() );
         m_stopGoButton.setText( tr( "Stop" ) );
         m_taskSelector.setEnabled( false );
+        if ( m_selectedSummary != -1 ) {
+            emit startEvent( m_summaries[m_selectedSummary].task );
+        }
     } else {
         m_stopGoButton.setIcon( Data::recorderGoIcon() );
         m_stopGoButton.setText( tr( "Start" ) );
         m_taskSelector.setEnabled( true );
+        if ( m_selectedSummary != -1 ) {
+            emit stopEvent( m_summaries[m_selectedSummary].task );
+        }
     }
 }
 
+void TimeTrackingSummaryWidget::slotActionSelected( QAction* action )
+{
+    QList<QAction*>::iterator it = std::find( m_currentActions.begin(), m_currentActions.end(), action );
+    const int position = std::distance( m_currentActions.begin(), it );
+    Q_ASSERT( position >= 0 && position < m_summaries.size() );
+    m_selectedSummary = position;
+    m_taskSelector.setText( m_summaries[m_selectedSummary].taskname );
+    m_stopGoButton.setEnabled( true );
+}
 
 #include "TimeTrackingSummaryWidget.moc"
