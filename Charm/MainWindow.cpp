@@ -14,10 +14,13 @@
 #include "MainWindow.h"
 #include "ViewHelpers.h"
 #include "Application.h"
+#include "Idle/IdleDetector.h"
+#include "Idle/IdleCorrectionDialog.h"
 #include "CharmAboutDialog.h"
 #include "Commands/CommandRelayCommand.h"
 #include "Commands/CommandExportToXml.h"
 #include "Commands/CommandImportFromXml.h"
+#include "Commands/CommandModifyEvent.h"
 #include "Reports/ReportConfigurationPage.h"
 #include "CharmPreferences.h"
 
@@ -459,6 +462,49 @@ void MainWindow::slotToggleStatusbar( bool show )
 QAction* MainWindow::actionQuit()
 {
     return &m_actionQuit;
+}
+
+void MainWindow::maybeIdle()
+{
+    IdleDetector* detector = Application::instance().idleDetector();
+    Q_FOREACH( const IdleDetector::IdlePeriod& p, detector->idlePeriods() ) {
+        qDebug() << "Application::slotMaybeIdle: computer might be have been idle from"
+                 << p.first
+                 << "to" << p.second;
+    }
+
+    // handle idle merging:
+    IdleCorrectionDialog dialog( this );
+    const bool wasVisible = isVisible();
+    if ( ! wasVisible ) show();
+
+    dialog.exec();
+    switch( dialog.result() ) {
+    case IdleCorrectionDialog::Idle_Ignore:
+        break;
+    case IdleCorrectionDialog::Idle_EndEvent: {
+        EventIdList activeEvents = DATAMODEL->activeEvents();
+        DATAMODEL->endAllEventsRequested();
+        // FIXME with this option, we can only change the events to
+        // the start time of one idle period, I chose to use the last
+        // one:
+        const IdleDetector::IdlePeriod& period = detector->idlePeriods().last();
+        Q_FOREACH ( EventId eventId, activeEvents ) {
+            Event event = DATAMODEL->eventForId( eventId );
+            if ( event.isValid() ) {
+                event.setEndDateTime( qMax( event.startDateTime(), period.first ) );
+                Q_ASSERT( event.isValid() );
+                CommandModifyEvent* cmd = new CommandModifyEvent( event, this );
+                emit emitCommand( cmd );
+            }
+        }
+        break;
+    }
+    default:
+        break; // should not happen
+    }
+    detector->clear();
+    if ( ! wasVisible ) hide();
 }
 
 #include "MainWindow.moc"

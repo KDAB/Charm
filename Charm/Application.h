@@ -58,6 +58,8 @@ public:
     /** Access to the time spans object. */
     TimeSpans& timeSpans();
 
+    IdleDetector* idleDetector();
+
     State state() const;
 
 public slots:

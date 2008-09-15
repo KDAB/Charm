@@ -24,7 +24,9 @@
 
 Application* Application::m_instance = 0;
 
+#if defined Q_WS_MAC
 extern void qt_mac_set_dock_menu(QMenu *);
+#endif
 
 Application::Application(int argc, char** argv) :
     QObject()
@@ -96,7 +98,10 @@ Application::Application(int argc, char** argv) :
     m_trayIcon.setContextMenu( &m_systrayContextMenu );
     m_trayIcon.setIcon( Data::charmIcon() );
     m_trayIcon.show();
+
+#if defined Q_WS_MAC
     qt_mac_set_dock_menu( &m_systrayContextMenu );
+#endif
 
     // set up idle detection
     m_idleDetector = IdleDetector::createIdleDetector( this );
@@ -473,14 +478,18 @@ TimeSpans& Application::timeSpans()
     return m_timeSpans;
 }
 
+IdleDetector* Application::idleDetector()
+{
+    return m_idleDetector;
+}
+
 void Application::slotMaybeIdle()
 {
-    Q_FOREACH( const IdleDetector::IdlePeriod& p, m_idleDetector->idlePeriods() ) {
-        qDebug() << "Application::slotMaybeIdle: computer might be have been idle from"
-                 << p.first
-                 << "to" << p.second;
+    if ( DATAMODEL->activeEventCount() > 0 ) {
+        if ( idleDetector()->idlePeriods().count() == 1 ) {
+            m_mainWindow.maybeIdle();
+        } // otherwise, the dialog will be showing already
     }
-
     // thee are four parameters to the idle property:
     // - the initial start time of the currently active event(s)
     // - the time the machine went idle
@@ -492,7 +501,6 @@ void Application::slotMaybeIdle()
     // - there may be multiple active events
     // - there may be multiple idle periods before the user deals with
     // it
-
 }
 
 #include "Application.moc"

@@ -27,6 +27,9 @@ public:
     /** Returns the idle periods. */
     IdlePeriods idlePeriods() const;
 
+    /** Clear the recorded idle periods. */
+    void clear();
+
 protected:
     explicit IdleDetector( QObject* parent = 0 );
     virtual ~IdleDetector() {}

@@ -502,6 +502,11 @@ bool CharmDataModel::isParentOf( TaskId parent, TaskId id )
     return isParentOf( parent, parentId );
 }
 
+EventIdList CharmDataModel::activeEvents() const
+{
+    return m_activeEventIds;
+}
+
 #include "CharmDataModel.moc"
 
 

@@ -34,7 +34,11 @@ IdleDetector::IdlePeriods IdleDetector::idlePeriods() const
 
 void IdleDetector::maybeIdle( IdlePeriod period )
 {
+#ifdef NDEBUG
     const int MinimumSeconds = 180;
+#else
+    const int MinimumSeconds = 10;
+#endif
     // merge overlapping idle periods
     IdlePeriods periods ( idlePeriods() );
     periods << period;
@@ -69,6 +73,11 @@ void IdleDetector::maybeIdle( IdlePeriod period )
     if ( ! idlePeriods().isEmpty() ) {
         emit maybeIdle();
     }
+}
+
+void IdleDetector::clear()
+{
+    m_idlePeriods.clear();
 }
 
 #include "IdleDetector.moc"

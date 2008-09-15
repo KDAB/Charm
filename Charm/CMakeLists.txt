@@ -65,6 +65,7 @@ IF ( QT4_FOUND )
 		       Commands/CommandImportFromXml.cpp
 		       Commands/CommandMakeAndActivateEvent.cpp 
 		       Idle/IdleDetector.cpp
+		       Idle/IdleCorrectionDialog.cpp
 )
 	IF( APPLE )
 	   SET( CharmApplication_SRCS 
@@ -91,7 +92,8 @@ IF ( QT4_FOUND )
 		       EventEditor.ui
 		       SelectTaskDialog.ui
 		       CharmAboutDialog.ui
-		       TimeTrackingView.ui )
+		       TimeTrackingView.ui
+		       Idle/IdleCorrectionDialog.ui )
 
     QT4_ADD_RESOURCES ( Resources_SRCS CharmResources.qrc )
 

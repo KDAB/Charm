@@ -34,6 +34,7 @@ public:
 
     void stateChanged( State previous );
     QAction* actionQuit();
+    void maybeIdle();
 
 public slots:
     void slotQuit();
