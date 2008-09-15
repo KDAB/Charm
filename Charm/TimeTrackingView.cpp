@@ -182,12 +182,21 @@ void TimeTrackingView::slotMaybeShrink()
 
 void TimeTrackingView::slotStartEvent( TaskId id )
 {
-    qDebug() << "TimeTrackingView::slotStartEvent: FIXME: implement";
+    const TaskTreeItem& item = DATAMODEL->taskTreeItem( id );
+    if ( CONFIGURATION.eventsInLeafsOnly && item.childCount() > 0 ) {
+        qDebug() << "FIXME this should be prevented by disabling the menu items";
+        return;
+    }
+
+    if( item.task().isCurrentlyValid() ) {
+        DATAMODEL->startEventRequested( item.task() );
+    }
 }
 
 void TimeTrackingView::slotStopEvent( TaskId id )
 {
-    qDebug() << "TimeTrackingView:;slotStopEvent: FIXME: implement";
+    const TaskTreeItem& item = DATAMODEL->taskTreeItem( id );
+    DATAMODEL->endEventRequested( item.task() );
 }
 
 #include "TimeTrackingView.moc"
