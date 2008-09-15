@@ -63,6 +63,7 @@ signals:
 
 private:
     void selectTasksToShow();
+    void handleActiveEvents();
     TimeTrackingSummaryWidget* summaryWidget();
     Ui::TimeTrackingView* m_ui;
     QVector<TimeTrackingSummaryWidget::WeeklySummary> m_summaries;

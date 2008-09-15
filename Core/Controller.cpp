@@ -175,6 +175,8 @@ void Controller::persistMetaData( Configuration& configuration )
           QString().setNum( configuration.taskTrackerFontSize ) },
         { MetaKey_Key_24hEditing,
           stringForBool( configuration.always24hEditing ) },
+        { MetaKey_Key_IdleDetection,
+          stringForBool( configuration.detectIdling ) },
         { MetaKey_Key_ToolButtonStyle,
           QString().setNum( configuration.toolButtonStyle ) },
         { MetaKey_Key_ShowStatusBar,
@@ -223,6 +225,8 @@ void Controller::provideMetaData( Configuration& configuration)
     }
     configuration.always24hEditing = boolForString(
         m_storage->getMetaData( MetaKey_Key_24hEditing ) );
+    configuration.detectIdling = boolForString(
+        m_storage->getMetaData( MetaKey_Key_IdleDetection ) );
 
     int buttonStyleValue = m_storage->getMetaData( MetaKey_Key_ToolButtonStyle ).toInt( &ok );
     if( ok ) {

@@ -24,6 +24,7 @@ Configuration::Configuration()
     , always24hEditing( false )
     , toolButtonStyle( Qt::ToolButtonIconOnly )
     , showStatusBar( true )
+    , detectIdling( true )
     , configurationName( DEFAULT_CONFIG_GROUP )
     , installationId( 0 )
     , newDatabase( false )
@@ -35,7 +36,8 @@ Configuration::Configuration()
 Configuration::Configuration( bool _eventsInLeafsOnly, bool _oneEventAtATime, User _user,
                               bool _showOnlySubscribedTasks,
                               TaskTrackerFontSize _taskTrackerFontSize,
-                              bool _always24hEditing, Qt::ToolButtonStyle _buttonstyle,
+                              bool _always24hEditing, bool _detectIdling,
+                              Qt::ToolButtonStyle _buttonstyle,
                               bool _showStatusBar )
     : eventsInLeafsOnly( _eventsInLeafsOnly )
     , oneEventAtATime( _oneEventAtATime )
@@ -44,6 +46,7 @@ Configuration::Configuration( bool _eventsInLeafsOnly, bool _oneEventAtATime, Us
     , always24hEditing( _always24hEditing )
     , toolButtonStyle( _buttonstyle )
     , showStatusBar( _showStatusBar )
+    , detectIdling ( _detectIdling )
     , configurationName( DEFAULT_CONFIG_GROUP )
     , installationId( 0 )
     , newDatabase( false )
@@ -61,6 +64,7 @@ bool Configuration::operator==( const Configuration& other ) const
         showOnlySubscribedTasks == other.showOnlySubscribedTasks &&
         taskTrackerFontSize == other.taskTrackerFontSize &&
         always24hEditing == other.always24hEditing &&
+        detectIdling == other.detectIdling &&
         toolButtonStyle == other.toolButtonStyle &&
         showStatusBar == other.showStatusBar &&
         configurationName == other.configurationName &&
@@ -151,6 +155,7 @@ void Configuration::dump( const QString& why )
              << "--> subscribed tasks only:  " << showOnlySubscribedTasks << endl
              << "--> task tracker font size: " << taskTrackerFontSize << endl
              << "--> 24h time editing:       " << always24hEditing << endl
+             << "--> Idle Detection:         " << detectIdling << endl
              << "--> toolButtonStyle:        " << toolButtonStyle << endl
              << "--> showStatusBar:          " << showStatusBar;
 }

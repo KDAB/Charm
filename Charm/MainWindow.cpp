@@ -175,6 +175,7 @@ void MainWindow::slotEditPreferences( bool )
         CONFIGURATION.taskTrackerFontSize = dialog.taskTrackerFontSize();
         CONFIGURATION.always24hEditing = dialog.always24hEditing();
         CONFIGURATION.toolButtonStyle = dialog.toolButtonStyle();
+        CONFIGURATION.detectIdling = dialog.detectIdling();
         slotConfigurationChanged();
         emit saveConfiguration();
     }

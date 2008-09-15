@@ -37,7 +37,7 @@ void CharmDataModel::registerAdapter( CharmDataModelAdapterInterface* adapter )
 
 void CharmDataModel::unregisterAdapter( CharmDataModelAdapterInterface* adapter )
 {
-	Q_ASSERT( m_adapters.contains( adapter ) );
+    Q_ASSERT( m_adapters.contains( adapter ) );
     m_adapters.removeAll( adapter );
 }
 
@@ -453,6 +453,11 @@ const EventMap& CharmDataModel::eventMap() const
 bool CharmDataModel::isEventActive( EventId id ) const
 {
     return m_activeEventIds.contains( id );
+}
+
+int CharmDataModel::activeEventCount() const
+{
+    return m_activeEventIds.count();
 }
 
 EventIdList CharmDataModel::eventsThatStartInTimeFrame( const QDateTime& start,

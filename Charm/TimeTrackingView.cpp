@@ -116,6 +116,7 @@ void TimeTrackingView::quit()
 // model adapter:
 void TimeTrackingView::resetTasks()
 {
+    selectTasksToShow();
 }
 
 void TimeTrackingView::taskAboutToBeAdded( TaskId parent, int pos )
@@ -124,14 +125,17 @@ void TimeTrackingView::taskAboutToBeAdded( TaskId parent, int pos )
 
 void TimeTrackingView::taskAdded( TaskId id )
 {
+    selectTasksToShow();
 }
 
 void TimeTrackingView::taskModified( TaskId id )
 {
+    selectTasksToShow();
 }
 
 void TimeTrackingView::taskParentChanged( TaskId task, TaskId oldParent, TaskId newParent )
 {
+    selectTasksToShow();
 }
 
 void TimeTrackingView::taskAboutToBeDeleted( TaskId )
@@ -140,6 +144,7 @@ void TimeTrackingView::taskAboutToBeDeleted( TaskId )
 
 void TimeTrackingView::taskDeleted( TaskId id )
 {
+    selectTasksToShow();
 }
 
 void TimeTrackingView::resetEvents()
@@ -172,7 +177,9 @@ void TimeTrackingView::eventDeleted( EventId id )
 
 void TimeTrackingView::eventActivated( EventId id )
 {
-
+    if ( DATAMODEL->activeEventCount() > 1 ) {
+        qDebug() << "TimeTrackingView::eventActivated: disable GUI, multiple events are active!";
+    }
 }
 
 void TimeTrackingView::eventDeactivated( EventId id )

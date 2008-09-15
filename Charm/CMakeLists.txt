@@ -64,6 +64,7 @@ IF ( QT4_FOUND )
 		       Commands/CommandExportToXml.cpp
 		       Commands/CommandImportFromXml.cpp
 		       Commands/CommandMakeAndActivateEvent.cpp 
+		       Idle/IdleDetector.cpp
 )
     
     QT4_AUTOMOC ( ${CharmApplication_SRCS} )

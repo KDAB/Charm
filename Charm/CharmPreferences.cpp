@@ -11,6 +11,7 @@ CharmPreferences::CharmPreferences( const Configuration& config,
     m_ui.cbOneEventAtATime->setChecked( config.oneEventAtATime );
     m_ui.cbEventsInLeavesOnly->setChecked( config.eventsInLeafsOnly );
     m_ui.cb24hEditing->setChecked( config.always24hEditing );
+    m_ui.cbIdleDetection->setChecked( config.detectIdling );
 
     // this would not need a switch, but i hate casting enums to int:
     switch( config.taskTrackerFontSize ) {
@@ -59,6 +60,11 @@ bool CharmPreferences::eventsInLeafsOnly() const
 bool CharmPreferences::always24hEditing() const
 {
     return m_ui.cb24hEditing->isChecked();
+}
+
+bool CharmPreferences::detectIdling() const
+{
+    return m_ui.cbIdleDetection->isChecked();
 }
 
 Configuration::TaskTrackerFontSize CharmPreferences::taskTrackerFontSize() const

@@ -16,17 +16,9 @@
    <item>
     <widget class="QTabWidget" name="tabWidget" >
      <property name="currentIndex" >
-      <number>1</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="tabDatabase" >
-      <property name="geometry" >
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>404</width>
-        <height>104</height>
-       </rect>
-      </property>
       <attribute name="title" >
        <string>DataBase Options</string>
       </attribute>
@@ -61,14 +53,6 @@
       </layout>
      </widget>
      <widget class="QWidget" name="tabAppearance" >
-      <property name="geometry" >
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>404</width>
-        <height>104</height>
-       </rect>
-      </property>
       <attribute name="title" >
        <string>Appearance</string>
       </attribute>
@@ -128,14 +112,6 @@
       </layout>
      </widget>
      <widget class="QWidget" name="tab" >
-      <property name="geometry" >
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>404</width>
-        <height>104</height>
-       </rect>
-      </property>
       <attribute name="title" >
        <string>Esoteric Options</string>
       </attribute>
@@ -150,6 +126,13 @@ p, li { white-space: pre-wrap; }
          </property>
          <property name="text" >
           <string>always use 24h time format when editing</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="cbIdleDetection" >
+         <property name="text" >
+          <string>Enable Idle Detection</string>
          </property>
         </widget>
        </item>

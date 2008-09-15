@@ -40,6 +40,7 @@ public:
     bool always24hEditing;
     Qt::ToolButtonStyle toolButtonStyle;
     bool showStatusBar;
+    bool detectIdling;
 
     // these are stored in QSettings, since we need this information to locate and open the database:
     QString configurationName;
@@ -61,8 +62,8 @@ private:
     // these are all the persisted metadata settings, and the constructor is only used during test runs:
     Configuration( bool eventsInLeafsOnly, bool oneEventAtATime, User user,
                    bool showOnlySubscribedTasks, TaskTrackerFontSize,
-                   bool always24hEditing, Qt::ToolButtonStyle buttonstyle,
-                   bool showStatusBar );
+                   bool always24hEditing, bool detectIdling,
+                   Qt::ToolButtonStyle buttonstyle, bool showStatusBar );
     Configuration();
 };
 

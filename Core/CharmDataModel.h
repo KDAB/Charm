@@ -58,6 +58,7 @@ public:
     // convenience overload
     EventIdList eventsThatStartInTimeFrame( const TimeSpan& timeSpan ) const;
     const Event& activeEventFor ( TaskId id ) const;
+    int activeEventCount() const;
     TaskTreeItem& parentItem( const Task& task ); // FIXME const???
     bool taskExists( TaskId id );
     /** True if task is in the subtree below parent.
