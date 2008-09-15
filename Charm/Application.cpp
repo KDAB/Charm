@@ -485,6 +485,8 @@ IdleDetector* Application::idleDetector()
 
 void Application::slotMaybeIdle()
 {
+    if ( idleDetector() == 0 ) return; // should not happen
+
     if ( DATAMODEL->activeEventCount() > 0 ) {
         if ( idleDetector()->idlePeriods().count() == 1 ) {
             m_mainWindow.maybeIdle();

@@ -466,7 +466,10 @@ QAction* MainWindow::actionQuit()
 
 void MainWindow::maybeIdle()
 {
+    if ( Application::instance().idleDetector() == 0 ) return;
+
     IdleDetector* detector = Application::instance().idleDetector();
+
     Q_FOREACH( const IdleDetector::IdlePeriod& p, detector->idlePeriods() ) {
         qDebug() << "Application::slotMaybeIdle: computer might be have been idle from"
                  << p.first

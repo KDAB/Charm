@@ -1,6 +1,7 @@
 #include <QCheckBox>
 
 #include "Core/Configuration.h"
+#include "Application.h"
 #include "CharmPreferences.h"
 
 CharmPreferences::CharmPreferences( const Configuration& config,
@@ -11,6 +12,7 @@ CharmPreferences::CharmPreferences( const Configuration& config,
     m_ui.cbOneEventAtATime->setChecked( config.oneEventAtATime );
     m_ui.cbEventsInLeavesOnly->setChecked( config.eventsInLeafsOnly );
     m_ui.cb24hEditing->setChecked( config.always24hEditing );
+    m_ui.cbIdleDetection->setEnabled( Application::instance().idleDetector() != 0 );
     m_ui.cbIdleDetection->setChecked( config.detectIdling );
 
     // this would not need a switch, but i hate casting enums to int:
