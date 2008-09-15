@@ -10,9 +10,9 @@
  *
  */
 
-#include <QApplication>
 #include <QMenu>
 #include <QAction>
+#include <QApplication>
 
 // this is an application, not a library:
 // no pimpling, and data members instead of forward declarations

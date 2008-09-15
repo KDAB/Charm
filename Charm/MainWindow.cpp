@@ -5,6 +5,7 @@
 #include <QMessageBox>
 #include <QStatusBar>
 #include <QToolButton>
+#include <QCloseEvent>
 
 #include <Core/CharmCommand.h>
 #include <Core/CharmConstants.h>
@@ -65,7 +66,7 @@ MainWindow::MainWindow()
     // set up actions
     m_actionQuit.setText( tr( "Quit" ) );
     m_actionQuit.setIcon( Data::quitCharmIcon() );
-    !connect( &m_actionQuit, SIGNAL( triggered( bool ) ),
+    connect( &m_actionQuit, SIGNAL( triggered( bool ) ),
               SLOT( slotQuit() ) );
 
     m_actionAboutDialog.setText( tr( "About Charm" ) );
@@ -158,8 +159,9 @@ void MainWindow::restore()
 void MainWindow::slotQuit()
 {
     // this saves changes:
-    m_eventView.close();
-    m_reportDialog.close();
+    // FIXME necessary?
+    // m_eventView.close();
+    // m_reportDialog.close();
     emit quit();
 }
 
@@ -226,12 +228,12 @@ void MainWindow::stateChanged( State previous )
         break;
     case StartingUp:
         m_ui->viewStack->setCurrentWidget( m_ui->openingPage );
-        restoreGuiState();
         break;
     case ShuttingDown:
     case Dead:
     case Connecting:
         setEnabled( false );
+        restoreGuiState();
         break;
     default:
         break;
@@ -278,6 +280,15 @@ void MainWindow::restoreGuiState()
     if ( settings.contains( MetaKey_MainWindowGeometry ) ) {
         restoreGeometry( settings.value( MetaKey_MainWindowGeometry ).toByteArray() );
     }
+    // restore visibility
+    if ( settings.contains( MetaKey_MainWindowVisible ) ) {
+        const bool visible = settings.value( MetaKey_MainWindowVisible ).toBool();
+        if ( visible ) {
+            show();
+        } else {
+            hide();
+        }
+    }
     // call all the view modes:
     for_each( m_modes.begin(), m_modes.end(),
               std::mem_fun( &ViewModeInterface::restoreGuiState ) );
@@ -288,6 +299,7 @@ void MainWindow::saveGuiState()
     QSettings settings;
     // save geometry
     settings.setValue( MetaKey_MainWindowGeometry, saveGeometry() );
+    settings.setValue( MetaKey_MainWindowVisible, isVisible() );
     // call all the view modes:
     for_each( m_modes.begin(), m_modes.end(),
               std::mem_fun( &ViewModeInterface::saveGuiState ) );

@@ -23,6 +23,8 @@
 
 Application* Application::m_instance = 0;
 
+extern void qt_mac_set_dock_menu(QMenu *);
+
 Application::Application(int argc, char** argv) :
     QObject()
     , m_state(Constructed)
@@ -92,6 +94,7 @@ Application::Application(int argc, char** argv) :
     m_systrayContextMenu.addSeparator();
     m_systrayContextMenu.addAction( m_mainWindow.actionQuit() );
     m_trayIcon.setContextMenu( &m_systrayContextMenu );
+    qt_mac_set_dock_menu( &m_systrayContextMenu );
 
     // Ladies and gentlemen, please raise upon your seats -
     // the show is about to begin:
@@ -200,9 +203,8 @@ Application& Application::instance()
 
 void Application::enterStartingUpState()
 {
-    // show view  (view is never invisible)
+    // HACK (Qt Mac menu merge bug)  necessary to merge main window menu?
     m_mainWindow.show();
-    // FIXME restore from previous setting:
     m_timeTracker.show();
     // load configuration
     // ...
@@ -392,7 +394,6 @@ void Application::slotMainWindowVisibilityChanged( bool visible )
     } else {
         m_actionShowHideView.setText( tr( "Show Charm Window" ) );
     }
-    // FIXME save view state?
 }
 
 void Application::slotTimeTrackerVisibilityChanged( bool visible )
@@ -402,7 +403,6 @@ void Application::slotTimeTrackerVisibilityChanged( bool visible )
     } else {
         m_actionShowHideTimeTracker.setText( tr( "Show Time Tracker Window" ) );
     }
-    // FIXME save view state?
 }
 
 void Application::slotCurrentBackendStatusChanged( const QString& text )

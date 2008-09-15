@@ -1,4 +1,5 @@
 #include <QSettings>
+#include <QCloseEvent>
 #include <QtAlgorithms>
 
 #include "ViewHelpers.h"
@@ -49,13 +50,19 @@ void TimeTrackingView::stateChanged( State previous )
     switch( Application::instance().state() ) {
     case Connecting: {
         DATAMODEL->registerAdapter( this );
-        break;
-    }
-    case StartingUp: {
         // restore Gui state:
         QSettings settings;
         if ( settings.contains( MetaKey_TimeTrackerGeometry ) ) {
             restoreGeometry( settings.value( MetaKey_TimeTrackerGeometry ).toByteArray() );
+        }
+        // restore visibility
+        if ( settings.contains( MetaKey_TimeTrackerVisible ) ) {
+            const bool visible = settings.value( MetaKey_TimeTrackerVisible ).toBool();
+            if ( visible ) {
+                show();
+            } else {
+                hide();
+            }
         }
         break;
     }
@@ -63,6 +70,7 @@ void TimeTrackingView::stateChanged( State previous )
         // save Gui state:
         QSettings settings;
         settings.setValue( MetaKey_TimeTrackerGeometry, saveGeometry() );
+        settings.setValue( MetaKey_TimeTrackerVisible, isVisible() );
         break;
     }
     default:
