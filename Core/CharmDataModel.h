@@ -7,6 +7,7 @@
 #include "Task.h"
 #include "State.h"
 #include "Event.h"
+#include "TimeSpans.h"
 #include "TaskTreeItem.h"
 #include "CharmDataModelAdapterInterface.h"
 
@@ -54,7 +55,8 @@ public:
      */
     EventIdList eventsThatStartInTimeFrame( const QDateTime& start,
                                             const QDateTime& end ) const;
-
+    // convenience overload
+    EventIdList eventsThatStartInTimeFrame( const TimeSpan& timeSpan ) const;
     const Event& activeEventFor ( TaskId id ) const;
     TaskTreeItem& parentItem( const Task& task ); // FIXME const???
     bool taskExists( TaskId id );

@@ -223,7 +223,12 @@ void TimeTrackingSummaryWidget::setSummaries( QVector<WeeklySummary> s )
     m_summaries = s;
     // FIXME invalidate layout
     update();
-    m_taskSelector.setText( m_summaries.last().taskname );
+    if ( m_summaries.isEmpty() ) {
+        m_taskSelector.setEnabled( false );
+    } else {
+        m_taskSelector.setEnabled( true );
+        m_taskSelector.setText( m_summaries.last().taskname );
+    }
 }
 
 void TimeTrackingSummaryWidget::slotGoStopToggled( bool on )
