@@ -77,7 +77,7 @@ Application::Application(int argc, char** argv) :
     m_actionStopAllTasks.setText( tr( "Stop &All Active Tasks" ) );
     m_actionStopAllTasks.setShortcut( Qt::Key_Escape );
     m_actionStopAllTasks.setShortcutContext( Qt::ApplicationShortcut );
-    // FIXME review: still necessary after ApplicationShortcut?: addAction(&m_actionStopAllTasks); // for the shortcut to work
+    m_mainWindow.addAction(&m_actionStopAllTasks); // for the shortcut to work
     connect( &m_actionStopAllTasks, SIGNAL( triggered() ),
              SLOT( slotStopAllTasks() ) );
     connect( &m_actionShowHideView, SIGNAL( triggered() ),
