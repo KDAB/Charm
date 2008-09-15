@@ -23,8 +23,11 @@ public:
     };
 private:
     struct DataField {
+        DataField() : hasHighlight( false ) {}
         QString text;
         QBrush background;
+        bool hasHighlight; // QBrush does not have isValid()
+        QBrush highlight;
         QFont font;
     };
 

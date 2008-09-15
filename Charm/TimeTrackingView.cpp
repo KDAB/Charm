@@ -123,6 +123,7 @@ void TimeTrackingView::eventDeleted( EventId id )
 
 void TimeTrackingView::eventActivated( EventId id )
 {
+
 }
 
 void TimeTrackingView::eventDeactivated( EventId id )

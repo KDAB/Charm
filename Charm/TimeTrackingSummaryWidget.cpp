@@ -6,8 +6,10 @@
 #include <QFontMetrics>
 #include <QToolButton>
 
-#include "Data.h"
 #include "Core/CharmConstants.h"
+
+#include "Data.h"
+#include "ViewHelpers.h"
 #include "TimeTrackingSummaryWidget.h"
 
 const int Margin = 2;
@@ -124,6 +126,11 @@ void TimeTrackingSummaryWidget::paintEvent( QPaintEvent* e )
             painter.setBrush( field.background );
             painter.setPen( Qt::NoPen );
             painter.drawRect( fieldRect );
+            if ( field.hasHighlight ) {
+                painter.setBrush( field.highlight );
+                painter.setPen( Qt::NoPen );
+                painter.drawRect( fieldRect );
+            }
             painter.setPen( palette().text().color() );
             painter.setFont( field.font );
             painter.drawText( textRect, alignment, field.text );
@@ -200,11 +207,20 @@ TimeTrackingSummaryWidget::DataField TimeTrackingSummaryWidget::data( int column
         // column as a special case
         field.background = TaskBrushOdd;
 
-        field.text = tr( " 00:45 2345 KDAB/HR/Project Time Bookkeeping" );
+        // field.text = tr( " 00:45 2345 KDAB/HR/Project Time Bookkeeping" );
     } else { // a task row
         field.background = row % 2 ? TaskBrushEven : TaskBrushOdd;
         if ( m_summaries.size() > row - 1 ) {
-            int index = row - 1; // index into summaries
+            const int index = row - 1; // index into summaries
+            const bool active = DATAMODEL->isTaskActive( m_summaries[index].task );
+            QColor dimHighlight( palette().highlight().color() );
+            dimHighlight.setAlphaF( 0.333 * dimHighlight.alphaF() );
+            const QBrush halfHighlight( dimHighlight );
+
+            if ( active ) {
+                field.hasHighlight = true;
+                field.highlight = halfHighlight;
+            }
             int day = column - 1;
             if ( column == TaskColumn ) {
                 field.text = m_summaries[index].taskname;
@@ -213,11 +229,14 @@ TimeTrackingSummaryWidget::DataField TimeTrackingSummaryWidget::data( int column
                 const QVector<int>& durations = m_summaries[index].durations;
                 const int total = std::accumulate( durations.begin(), durations.end(), 0 );
                 field.text = hoursAndMinutes( total );
-                // field.background = TaskBrushOdd;
             } else {
                 int duration = m_summaries[index].durations[day];
                 field.text = duration > 0 ? hoursAndMinutes( duration) : QString();
-                field.background = row % 2 ? TaskBrushEven : TaskBrushOdd;
+                // highlight today as well, with the half highlight:
+                if ( day == QDate::currentDate().dayOfWeek() -1 ) {
+                    field.hasHighlight = true;
+                    field.highlight = active ? palette().highlight() : halfHighlight;
+                }
             }
         }
     }
