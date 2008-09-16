@@ -38,11 +38,11 @@ int main(int argc, char** argv)
 		}
 	} catch (UsageException& e)
 	{
-		cout << e.what() << endl;
+		cerr << e.what() << endl;
 		CommandLine::usage();
 	} catch (TimesheetProcessorException& e)
 	{
-		cout << e.what() << endl;
+		cerr << e.what() << endl;
 		CommandLine::usage();
 		return 1;
 	}

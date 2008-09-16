@@ -59,7 +59,7 @@ Task Database::getTask( int taskid ) throw (TimesheetProcessorException )
 {
 	Task task = m_storage.getTask( taskid );
 	if( ! task.isValid() ) {
-		throw TimesheetProcessorException( "Invalid task in report");
+            throw TimesheetProcessorException( QObject::tr( "Invalid task %1 in report" ).arg( taskid ) );
 	}
 	return task;
 }
