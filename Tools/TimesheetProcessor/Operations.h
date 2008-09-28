@@ -12,4 +12,6 @@ void removeTimesheet(const CommandLine& cmd);
 
 void checkOrCreateUser(const CommandLine& cmd);
 
+void exportProjectcodes( const CommandLine& cmd );
+
 #endif /*OPERATIONS_H_*/

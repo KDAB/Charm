@@ -9,6 +9,7 @@
 #include <QDomDocument>
 
 #include <Core/CharmExceptions.h>
+#include <Core/XmlSerialization.h>
 
 #include "ViewHelpers.h"
 #include "SelectTaskDialog.h"
@@ -552,12 +553,12 @@ void  WeeklyTimeSheetReport::slotSaveToXml()
 
     try {
         // now create the report:
-        QDomDocument document = createExportTemplate( "weekly-timesheet" );
+        QDomDocument document = XmlSerialization::createXmlTemplate( "weekly-timesheet" );
 
         // find metadata and report element:
         QDomElement root = document.documentElement();
-        QDomElement metadata = root.firstChildElement( "metadata" );
-        QDomElement report = root.firstChildElement( "report" );
+        QDomElement metadata = XmlSerialization::metadataElement( document );
+        QDomElement report = XmlSerialization::reportElement( document );
         Q_ASSERT( !root.isNull() && !metadata.isNull() && !report.isNull() );
 
         // extend metadata tag: add year, and serial (week) number:

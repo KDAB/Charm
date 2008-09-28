@@ -64,6 +64,10 @@ Task Database::getTask( int taskid ) throw (TimesheetProcessorException )
 	return task;
 }
 
+TaskList Database::getAllTasks() throw( TimesheetProcessorException )
+{
+    return m_storage.getAllTasks();
+}
 
 QSqlDatabase& Database::database()
 {

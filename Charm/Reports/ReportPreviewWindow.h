@@ -20,7 +20,6 @@ public:
 protected:
     void setDocument( const QTextDocument* document );
     QDomDocument createReportTemplate();
-    QDomDocument createExportTemplate( QString reportType );
 
 private slots:
     virtual void slotSaveToXml();

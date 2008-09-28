@@ -31,6 +31,7 @@ IF ( QT4_FOUND )
 		       TaskTreeItem.cpp 
 		       TimeSpans.cpp
 		       CharmCommand.cpp
+		       XmlSerialization.cpp
 )
     
     QT4_AUTOMOC ( ${CharmCore_SRCS} )

@@ -6,9 +6,10 @@
 #include <QDomDocument>
 #include <QSqlDatabase>
 
-#include "Core/User.h"
-#include "Core/Event.h"
-#include "Core/SqlRaiiTransactor.h"
+#include <Core/User.h>
+#include <Core/Event.h>
+#include <Core/SqlRaiiTransactor.h>
+#include <Core/XmlSerialization.h>
 
 #include "CommandLine.h"
 #include "Operations.h"
@@ -133,3 +134,40 @@ void removeTimesheet(const CommandLine& cmd)
 	cout << "Report " << cmd.index() << " removed" << endl;
 }
 
+void exportProjectcodes( const CommandLine& cmd )
+{
+    using namespace std;
+
+    cout << "Exporting project codes to " << qPrintable( cmd.exportFilename() ) << endl;
+
+    Database database;
+    database.login();
+
+    TaskList tasks = database.getAllTasks();
+
+    QDomDocument document = XmlSerialization::createXmlTemplate( "taskdefinitions" );
+    QDomElement metadata = XmlSerialization::metadataElement( document );
+    QDomElement report = XmlSerialization::reportElement( document );
+
+    // write timestamp of export time to metadata:
+    // ...
+
+    // write tasks
+    {
+        QDomElement tasksElement = document.createElement( "tasks" );
+        report.appendChild( tasksElement );
+        Q_FOREACH( const Task& task, tasks ) {
+            tasksElement.appendChild( task.toXml( document ) );
+        }
+    }
+
+    // all done, write to file:
+    QFile file( cmd.exportFilename() );
+    if ( file.open( QIODevice::WriteOnly ) ) {
+        QTextStream stream( &file );
+        document.save( stream, 4 );
+    } else {
+        QString msg = QObject::tr("Cannot write to file %1.").arg(cmd.exportFilename());
+        throw TimesheetProcessorException( msg);
+    }
+}

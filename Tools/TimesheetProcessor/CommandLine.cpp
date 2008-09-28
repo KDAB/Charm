@@ -16,7 +16,7 @@ CommandLine::CommandLine(int argc, char** argv) :
 {
 	opterr = 0;
 	char ch;
-	while ((ch = getopt(argc, argv, "hza:c:ri:u:")) != -1)
+	while ((ch = getopt(argc, argv, "hza:x:c:ri:u:")) != -1)
 	{
 		if (ch == '?')
 		{
@@ -31,6 +31,11 @@ CommandLine::CommandLine(int argc, char** argv) :
 			{
 				throw UsageException(QObject::tr(
 						"Option -i requires an index argument"));
+			}
+			if (option == 'x')
+			{
+				throw UsageException(QObject::tr(
+						"Option -x requires a filename argument"));
 			}
 			if (isprint(option))
 			{
@@ -60,6 +65,19 @@ CommandLine::CommandLine(int argc, char** argv) :
 			m_mode = Mode_AddTimesheet;
 			break;
 		}
+		case 'x':
+		{
+			if (m_mode != Mode_None)
+			{
+				QString msg = QObject::tr(
+						"Multiple mode selections, please use only one");
+				throw UsageException(msg);
+			}
+			// mode
+			m_exportFilename = QString::fromLocal8Bit(optarg);
+			m_mode = Mode_ExportProjectcodes;
+			break;
+		}
 		case 'c':
 		{
 			if (m_mode != Mode_None)
@@ -71,7 +89,7 @@ CommandLine::CommandLine(int argc, char** argv) :
 			m_userName = QString::fromLocal8Bit(optarg);
 			m_mode = Mode_CheckOrCreateUser;
 			break;
-			
+
 		}
 		case 'r': // remove
 			if (m_mode != Mode_None)
@@ -189,6 +207,11 @@ QString CommandLine::filename() const
 	return m_filename;
 }
 
+QString CommandLine::exportFilename() const
+{
+    return m_exportFilename;
+}
+
 int CommandLine::userid() const
 {
 	return m_userid;
@@ -211,6 +234,8 @@ void CommandLine::usage()
 			<< "   * TimesheetProzessor -r -i index -u userid           <-- remove timesheet at index"
 			<< endl
 			<< "   * TimesheetProzessor -c username                     <-- create user if user does not exist"
+			<< endl
+			<< "   * TimesheetProzessor -x filename                     <-- export project codes to XML file"
 			<< endl
 			<< "   * TimesheetProzessor -z                              <-- initialize database (careful!)"
 			<< endl;
