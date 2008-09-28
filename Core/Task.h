@@ -16,6 +16,12 @@
 typedef int TaskId;
 Q_DECLARE_METATYPE( TaskId )
 
+class Task;
+/** A task list is a list of tasks that belong together.
+    Example: All tasks for one user. */
+typedef QList<Task> TaskList;
+typedef QList<TaskId> TaskIdList;
+
 /** A task is a category under which events are filed.
     It has a unique identifier and a name. */
 class Task {
@@ -57,9 +63,16 @@ public:
 
     void dump() const;
 
+    static QString tagName();
+    static QString taskListTagName();
+
     QDomElement toXml( QDomDocument ) const;
 
-    static Task fromXml( const QDomElement&, int databaseSchemaVersion = 1  ) throw( XmlSerializationException );
+    static Task fromXml( const QDomElement&, int databaseSchemaVersion = 1 ) throw( XmlSerializationException );
+
+    static TaskList readTasksElement( const QDomElement&, int databaseSchemaVersion = 1 ) throw( XmlSerializationException );
+
+    static QDomElement makeTasksElement( QDomDocument, const TaskList& ) throw( XmlSerializationException );
 
 private:
     int m_id;
@@ -72,10 +85,6 @@ private:
     QDateTime m_validUntil;
 };
 
-/** A task list is a list of tasks that belong together.
-    Example: All tasks for one user. */
-typedef QList<Task> TaskList;
-typedef QList<TaskId> TaskIdList;
 Q_DECLARE_METATYPE( TaskIdList )
 
 void dumpTaskList( const TaskList& tasks );

@@ -79,3 +79,34 @@ void TaskExport::writeTo( const QString& filename, const TaskList& tasks )
     }
 }
 
+void TaskExport::readFrom( const QString& filename )
+{
+    // load the time sheet:
+    QFile file( filename );
+    if ( !file.exists() )
+    {
+        throw XmlSerializationException( "File does not exist." );
+    }
+    // load the XML into a DOM tree:
+    if (!file.open(QIODevice::ReadOnly))
+    {
+        throw XmlSerializationException( "Cannot open file for reading." );
+    }
+    QDomDocument document;
+    if (!document.setContent(&file))
+    {
+        throw XmlSerializationException( "Cannot read file" );
+    }
+
+    // now read
+    QDomElement metadata = XmlSerialization::metadataElement( document );
+    QDomElement report = XmlSerialization::reportElement( document );
+
+    // from metadata, read the export time stamp:
+    // ...
+    // from report, read tasks:
+    // ...
+
+    throw XmlSerializationException( "Not Implemented" );
+}
+

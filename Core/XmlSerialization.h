@@ -14,7 +14,6 @@ namespace XmlSerialization {
     QDomElement reportElement( const QDomDocument& doc );
 
     QDomElement metadataElement( const QDomDocument& doc );
-
 }
 
 class TaskExport {

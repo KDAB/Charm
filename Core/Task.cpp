@@ -18,6 +18,18 @@ bool Task::isValid() const
 	return id() != 0;
 }
 
+QString Task::tagName()
+{
+    static const QString tag( QString::fromAscii( "task" ) );
+    return tag;
+}
+
+QString Task::taskListTagName()
+{
+    static const QString tag( QString::fromAscii( "tasks" ) );
+    return tag;
+}
+
 bool Task::operator == ( const Task& other ) const
 {
 	return
@@ -119,7 +131,6 @@ void dumpTaskList(const TaskList& tasks)
 }
 
 // FIXME make XmlSerializable interface, with tagName/toXml/fromXml:
-const QString TaskElement("task");
 const QString TaskIdElement("taskid");
 const QString TaskParentId("parentid");
 const QString TaskSubscribed("subscribed");
@@ -128,7 +139,7 @@ const QString TaskValidUntil("validuntil");
 
 QDomElement Task::toXml(QDomDocument document) const
 {
-	QDomElement element = document.createElement(TaskElement);
+	QDomElement element = document.createElement( tagName() );
 	element.setAttribute(TaskIdElement, id());
 	element.setAttribute(TaskParentId, parent());
 	element.setAttribute(TaskSubscribed, (subscribed() ? 1 : 0));
@@ -149,35 +160,67 @@ QDomElement Task::toXml(QDomDocument document) const
 }
 
 Task Task::fromXml(const QDomElement& element, int databaseSchemaVersion)
-		throw(XmlSerializationException )
-{ // in case any task object creates trouble with
-	// serialization/deserialization, add an object of it to
-	// void XmlSerializationTests::testTaskSerialization()
-	Task task;
-	bool ok;
-	task.setName(element.text());
-	task.setId(element.attribute(TaskIdElement).toInt(&ok));
-	if (!ok)
-		throw XmlSerializationException("Task::fromXml: invalid task id");
-	task.setParent(element.attribute(TaskParentId).toInt(&ok));
-	if (!ok)
-		throw XmlSerializationException("Task::fromXml: invalid parent task id");
-	task.setSubscribed(element.attribute(TaskSubscribed).toInt(&ok) == 1);
-	if (!ok)
-		throw XmlSerializationException(
-				"Task::fromXml: invalid subscription setting");
-	if( databaseSchemaVersion > CHARM_DATABASE_VERSION_BEFORE_TASK_EXPIRY ) {
-	    if ( element.hasAttribute( TaskValidFrom ) ) {
-	        QDateTime start = QDateTime::fromString( element.attribute( TaskValidFrom ), Qt::ISODate );
-	        if ( !start.isValid() ) throw XmlSerializationException( "Task::fromXml: invalid valid-from date" );
-	        task.setValidFrom( start );
-	    }
-	    if ( element.hasAttribute( TaskValidUntil ) ) {
-	        QDateTime end = QDateTime::fromString( element.attribute( TaskValidUntil ), Qt::ISODate );
-	        if ( !end.isValid() ) throw XmlSerializationException( "Task::fromXml: invalid valid-until date" );
-	        task.setValidUntil( end );
-	    }
+    throw(XmlSerializationException )
+{   // in case any task object creates trouble with
+    // serialization/deserialization, add an object of it to
+    // void XmlSerializationTests::testTaskSerialization()
+    if ( element.tagName() != tagName() ) {
+        throw XmlSerializationException("Task::fromXml: judging from the tag name, this is not a task tag");
+    }
+
+    Task task;
+    bool ok;
+    task.setName(element.text());
+    task.setId(element.attribute(TaskIdElement).toInt(&ok));
+    if (!ok)
+        throw XmlSerializationException("Task::fromXml: invalid task id");
+    task.setParent(element.attribute(TaskParentId).toInt(&ok));
+    if (!ok)
+        throw XmlSerializationException("Task::fromXml: invalid parent task id");
+    task.setSubscribed(element.attribute(TaskSubscribed).toInt(&ok) == 1);
+    if (!ok)
+        throw XmlSerializationException(
+            "Task::fromXml: invalid subscription setting");
+    if( databaseSchemaVersion > CHARM_DATABASE_VERSION_BEFORE_TASK_EXPIRY ) {
+        if ( element.hasAttribute( TaskValidFrom ) ) {
+            QDateTime start = QDateTime::fromString( element.attribute( TaskValidFrom ), Qt::ISODate );
+            if ( !start.isValid() ) throw XmlSerializationException( "Task::fromXml: invalid valid-from date" );
+            task.setValidFrom( start );
+        }
+        if ( element.hasAttribute( TaskValidUntil ) ) {
+            QDateTime end = QDateTime::fromString( element.attribute( TaskValidUntil ), Qt::ISODate );
+            if ( !end.isValid() ) throw XmlSerializationException( "Task::fromXml: invalid valid-until date" );
+            task.setValidUntil( end );
+        }
+    }
+    return task;
+}
+
+TaskList Task::readTasksElement( const QDomElement& element, int databaseSchemaVersion ) throw( XmlSerializationException )
+{
+    if ( element.tagName() == taskListTagName() ) {
+        TaskList tasks;
+	for ( QDomElement child = element.firstChildElement(); !child.isNull();
+              child = child.nextSiblingElement( tagName() ) ) {
+            if ( child.tagName() != tagName() ) {
+                throw XmlSerializationException( "Task::readTasksElement: parent-child mismatch" );
+            }
+            Task task = fromXml( child, databaseSchemaVersion );
+            tasks << task;
 	}
-	return task;
+        return tasks;
+    } else {
+        throw XmlSerializationException( "Task::readTasksElement: judging by the tag name, this is not a tasks element" );
+    }
+}
+
+
+QDomElement Task::makeTasksElement( QDomDocument document, const TaskList& tasks ) throw( XmlSerializationException )
+{
+    QDomElement element = document.createElement( taskListTagName() );
+    Q_FOREACH( const Task& task, tasks ) {
+        element.appendChild( task.toXml( document ) );
+    }
+    return element;
 }
 

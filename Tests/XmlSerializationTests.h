@@ -3,6 +3,8 @@
 
 #include <QObject>
 
+#include "Core/Task.h"
+
 class XmlSerializationTests : public QObject
 {
     Q_OBJECT
@@ -13,7 +15,11 @@ public:
 private slots:
     void testEventSerialization();
     void testTaskSerialization();
+    void testTaskListSerialization();
     void testQDateTimeToFromString();
+
+private:
+    TaskList tasksToTest();
 };
 
 #endif

@@ -11,6 +11,28 @@ XmlSerializationTests::XmlSerializationTests()
 {
 }
 
+TaskList XmlSerializationTests::tasksToTest()
+{
+    // set up test candidates:
+    TaskList tasks;
+    Task task;
+    task.setName( "A task" );
+    task.setId( 42 );
+    task.setParent( 4711 );
+    task.setSubscribed( true );
+    task.setValidFrom( QDateTime::currentDateTime() );
+    Task task2;
+    task2.setName( "Another task" );
+    task2.setId( -1 );
+    task2.setParent( 1000000000 );
+    task2.setSubscribed( false );
+    task2.setValidUntil( QDateTime::currentDateTime() );
+    Task task3;
+
+    tasks << Task() << task << task2;
+    return tasks;
+}
+
 void XmlSerializationTests::testEventSerialization()
 {
     // set up test candidates:
@@ -46,26 +68,8 @@ void XmlSerializationTests::testEventSerialization()
 
 void XmlSerializationTests::testTaskSerialization()
 {
-    // set up test candidates:
-    TaskList tasksToTest;
-    Task task;
-    task.setName( "A task" );
-    task.setId( 42 );
-    task.setParent( 4711 );
-    task.setSubscribed( true );
-    task.setValidFrom( QDateTime::currentDateTime() );
-    Task task2;
-    task2.setName( "Another task" );
-    task2.setId( -1 );
-    task2.setParent( 1000000000 );
-    task2.setSubscribed( false );
-    task2.setValidUntil( QDateTime::currentDateTime() );
-    Task task3;
-
-    tasksToTest << Task() << task << task2;
-
     QDomDocument document( "testdocument" );
-    Q_FOREACH( Task task, tasksToTest ) {
+    Q_FOREACH( Task task, tasksToTest() ) {
         QDomElement element = task.toXml( document );
         try {
             Task readTask = Task::fromXml( element, CHARM_DATABASE_VERSION );
@@ -110,6 +114,28 @@ void XmlSerializationTests::testQDateTimeToFromString()
     QString date3string = date3.toString( Qt::ISODate );
     QDateTime date4 = QDateTime::fromString( date3string, Qt::ISODate );
     QVERIFY( date3 == date4 );
+}
+
+void XmlSerializationTests::testTaskListSerialization()
+{
+    TaskList tasks = tasksToTest();
+    QDomDocument document( "testdocument" );
+    QDomElement element = Task::makeTasksElement( document, tasks );
+    try {
+        TaskList result = Task::readTasksElement( element, CHARM_DATABASE_VERSION );
+        QVERIFY( tasks.count() == result.count() );
+        for ( int i = 0; i < tasks.count(); ++i ) {
+            if ( tasks[i] != result[i] ) {
+                tasks[i].dump();
+                result[i].dump();
+            }
+        }
+        QVERIFY( tasks == result );
+    } catch( XmlSerializationException e ) {
+        qDebug() << "Failure reading tasks:" << e.what();
+        QFAIL( "Read tasks are not equal to the written ones" );
+    }
+
 }
 
 QTEST_MAIN( XmlSerializationTests )
