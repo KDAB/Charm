@@ -329,32 +329,56 @@ bool Task::checkForUniqueTaskIds( TaskList tasks )
 bool collectTaskIds( std::set<TaskId>& visitedIds, TaskId id, const TaskList& tasks )
 {
     bool foundSelf = false;
+    TaskIdList children;
 
+    // find children and the task itself (the parameter tasks is not sorted)
     for ( TaskList::const_iterator it = tasks.begin(); it != tasks.end(); ++it ) {
         if ( ( *it ).parent() == id ) {
-            collectTaskIds( visitedIds, ( *it ).id(), tasks );
+            children << ( *it ).id();
         }
         if ( ( *it ).id() == id ) {
             // just checking that it really exists...
             if ( std::find( visitedIds.begin(), visitedIds.end(), id ) != visitedIds.end() ) {
                 return false;
             } else {
-                visitedIds.insert( id );
-                foundSelf = true;
+                if ( ( *it ).isValid() ) {
+                    visitedIds.insert( id );
+                    foundSelf = true;
+                } else {
+                    return false;
+                }
             }
         }
     }
 
-    Q_ASSERT_X( foundSelf, "collectTaskIds", "task not found" );
-    Q_UNUSED( foundSelf ); // in release mode
+    if ( !foundSelf ) {
+        return false;
+    }
+
+    Q_FOREACH( TaskId id, children ) {
+        collectTaskIds( visitedIds, id, tasks );
+    }
+
     return true;
 }
 
+
+/** checkForTreeness checks a task list against cycles in the
+ * parent-child relationship, and for orphans (tasks where the parent
+ * task does not exist). If the task list contains invalid tasks,
+ * false is returned as well.
+ *
+ * @return false, if cycles in the task tree or orphans have been found
+ * @param tasks the tasklist to verify
+ */
 bool Task::checkForTreeness( const TaskList& tasks )
 {
     std::set<TaskId> ids;
 
     for ( TaskList::const_iterator it = tasks.begin(); it != tasks.end(); ++it ) {
+        if ( ! ( *it ).isValid() ) {
+            return false;
+        }
         if ( ( *it ).parent() == 0 ) {
             if ( ! collectTaskIds( ids, ( *it ).id(), tasks ) ) {
                 return false;
@@ -362,7 +386,14 @@ bool Task::checkForTreeness( const TaskList& tasks )
         }
     }
 
-    return false; // NI
+    // the count of ids now must be equal to the count of tasks,
+    // otherwise tasks contains elements that are not in the subtrees
+    // of toplevel elements
+    if ( ids.size() != static_cast<unsigned>( tasks.size() ) ) {
+        return false;
+    }
+
+    return true;
 }
 
 

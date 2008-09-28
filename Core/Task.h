@@ -92,6 +92,7 @@ private:
 };
 
 Q_DECLARE_METATYPE( TaskIdList )
+Q_DECLARE_METATYPE( TaskList )
 
 void dumpTaskList( const TaskList& tasks );
 

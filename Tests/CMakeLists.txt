@@ -81,12 +81,23 @@ IF ( QT4_FOUND )
    TARGET_LINK_LIBRARIES( XmlSerializationTests ${QT_QTXML_LIBRARY} )
    TARGET_LINK_LIBRARIES( XmlSerializationTests ${QT_LIBRARIES} )
 
+   # Task Structure Tests:
+   SET( TaskStructureTests_SRCS TaskStructureTests.cpp )
+
+   QT4_AUTOMOC( ${TaskStructureTests_SRCS} )
+
+   ADD_EXECUTABLE( TaskStructureTests ${TaskStructureTests_SRCS} )
+
+   TARGET_LINK_LIBRARIES( TaskStructureTests ${QT_QTTEST_LIBRARY} )
+   TARGET_LINK_LIBRARIES( TaskStructureTests ${QT_LIBRARIES} )
+
    # now add the tests:
    ADD_TEST( SqLiteStorageTests ${EXECUTABLE_OUTPUT_PATH}/SqLiteStorageTests )
    ADD_TEST( ControllerTests ${EXECUTABLE_OUTPUT_PATH}/ControllerTests )
    ADD_TEST( CharmDataModelTests ${EXECUTABLE_OUTPUT_PATH}/CharmDataModelTests )
    ADD_TEST( BackendIntegrationTests ${EXECUTABLE_OUTPUT_PATH}/BackendIntegrationTests )
    ADD_TEST( XmlSerializationTests ${EXECUTABLE_OUTPUT_PATH}/XmlSerializationTests )
+   ADD_TEST( TaskStructureTests ${EXECUTABLE_OUTPUT_PATH}/TaskStructureTests )
 
 ENDIF ( QT4_FOUND )
 

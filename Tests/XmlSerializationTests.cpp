@@ -119,6 +119,23 @@ void XmlSerializationTests::testQDateTimeToFromString()
 void XmlSerializationTests::testTaskListSerialization()
 {
     TaskList tasks = tasksToTest();
+    QVERIFY( ! Task::checkForTreeness( tasks ) );
+    tasks.pop_front();
+
+    // FIXME this needs to go into an extra test module named
+    // TaskStructureTests
+    //
+    // FIXME the data to test needs to be retrieved from resources
+    //
+    // just making sure:
+    Q_FOREACH( const Task& task, tasks ) {
+        QVERIFY( task.isValid() );
+    }
+
+    // the next test fails because tasks contains orphan elements (the
+    // parent they have assigned does not exist)
+    QVERIFY( ! Task::checkForTreeness( tasks ) );
+
     QDomDocument document( "testdocument" );
     QDomElement element = Task::makeTasksElement( document, tasks );
     try {
