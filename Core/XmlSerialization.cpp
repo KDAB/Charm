@@ -1,6 +1,8 @@
 #include <QDateTime>
+#include <QFile>
 
 #include "XmlSerialization.h"
+#include "CharmExceptions.h"
 #include "Configuration.h"
 
 namespace XmlSerialization {
@@ -50,3 +52,30 @@ namespace XmlSerialization {
     }
 
 }
+
+void TaskExport::writeTo( const QString& filename, const TaskList& tasks )
+    throw( XmlSerializationException )
+{
+    QDomDocument document = XmlSerialization::createXmlTemplate( "taskdefinitions" );
+    QDomElement metadata = XmlSerialization::metadataElement( document );
+    QDomElement report = XmlSerialization::reportElement( document );
+
+    // write tasks
+    {
+        QDomElement tasksElement = document.createElement( "tasks" );
+        report.appendChild( tasksElement );
+        Q_FOREACH( const Task& task, tasks ) {
+            tasksElement.appendChild( task.toXml( document ) );
+        }
+    }
+
+    // all done, write to file:
+    QFile file( filename );
+    if ( file.open( QIODevice::WriteOnly ) ) {
+        QTextStream stream( &file );
+        document.save( stream, 4 );
+    } else {
+        throw XmlSerializationException( "" );
+    }
+}
+

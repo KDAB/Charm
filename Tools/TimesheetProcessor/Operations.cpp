@@ -144,30 +144,11 @@ void exportProjectcodes( const CommandLine& cmd )
     database.login();
 
     TaskList tasks = database.getAllTasks();
-
-    QDomDocument document = XmlSerialization::createXmlTemplate( "taskdefinitions" );
-    QDomElement metadata = XmlSerialization::metadataElement( document );
-    QDomElement report = XmlSerialization::reportElement( document );
-
-    // write timestamp of export time to metadata:
-    // ...
-
-    // write tasks
-    {
-        QDomElement tasksElement = document.createElement( "tasks" );
-        report.appendChild( tasksElement );
-        Q_FOREACH( const Task& task, tasks ) {
-            tasksElement.appendChild( task.toXml( document ) );
-        }
+    try {
+        TaskExport::writeTo( cmd.exportFilename(), tasks );
+    } catch ( XmlSerializationException& e) {
+        throw TimesheetProcessorException( QObject::tr( "Cannot write to file %1" ).arg( cmd.exportFilename() ) );
     }
 
-    // all done, write to file:
-    QFile file( cmd.exportFilename() );
-    if ( file.open( QIODevice::WriteOnly ) ) {
-        QTextStream stream( &file );
-        document.save( stream, 4 );
-    } else {
-        QString msg = QObject::tr("Cannot write to file %1.").arg(cmd.exportFilename());
-        throw TimesheetProcessorException( msg);
-    }
+    cout << "Done, " << tasks.count() << " tasks definitions exported." << endl;
 }
