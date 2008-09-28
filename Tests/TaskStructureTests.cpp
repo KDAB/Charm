@@ -50,7 +50,7 @@ void TaskStructureTests::checkForUniqueTaskIdsTest_data()
     task5.setParent( 4 );
     TaskList cyclicTaskList;
     cyclicTaskList << task3 << task4 << task5;
-    QTest::newRow( "Cyclic TaskList" ) << cyclicTaskList << false;
+    QTest::newRow( "Cyclic TaskList" ) << cyclicTaskList << true;
 }
 
 void TaskStructureTests::checkForUniqueTaskIdsTest()
@@ -102,7 +102,15 @@ void TaskStructureTests::checkForTreenessTest_data()
     TaskList cyclicTaskList;
     cyclicTaskList << task3 << task4 << task5;
     QTest::newRow( "Cyclic TaskList" ) << cyclicTaskList << false;
-    Q_ASSERT( false && "the last one should fail" );
+
+    // add a task list of just one task that is it's own child:
+    Task task6;
+    task6.setId( 6 );
+    task6.setParent( 6 );
+    task6.setName( "6" );
+    TaskList oneTask;
+    oneTask << task6;
+    QTest::newRow( "One cyclic task" ) << oneTask << false;
 }
 
 void TaskStructureTests::checkForTreenessTest()
