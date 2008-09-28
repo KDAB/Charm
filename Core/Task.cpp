@@ -1,3 +1,5 @@
+#include <set>
+
 #include <QtDebug>
 
 #include "Task.h"
@@ -223,4 +225,144 @@ QDomElement Task::makeTasksElement( QDomDocument document, const TaskList& tasks
     }
     return element;
 }
+
+bool lowerTaskId( const Task& left,  const Task& right )
+{
+    return left.id() < right.id();
+
+}
+
+/** Merge the existing tasks in oldtasks with the possibly new state in newtasks.
+ * There are a number of assumptions in the merge algorithm: First of
+ * all, it assumes tasks never get deleted. Instead of deleting them,
+ * they would be marked as expired by setting their valid-until
+ * date. Second (based on the first assumption), tasks that exist in
+ * oldtasks but not in newtasks are assumed to be locally added, and
+ * left untouched. Third, tasks are recognized by their task id.
+ *
+ * If a task id exists in newtasks, but not in oldtasks, the task is
+ * assumed new. If a task id exists in both lists, but differs,
+ * newtasks is assumed to contain the newer state, and the returned
+ * list will contain the task as it was in newtasks.
+ *
+ *
+ */
+TaskList Task::mergeTaskLists( TaskList oldtasks, TaskList newtasks ) throw( InvalidTaskListException )
+{
+    if ( newtasks.isEmpty() ) return oldtasks; // nothing to do
+
+    // for each task in oldtasks, find it in newtasks, and see if it has changed
+    // if so, update
+    qSort( newtasks.begin(), newtasks.end(), lowerTaskId );
+    qSort( oldtasks.begin(), oldtasks.end(), lowerTaskId );
+
+    if ( ! checkForUniqueTaskIds( oldtasks ) ) {
+        throw InvalidTaskListException( "tasks database contains duplicate task ids" );
+    }
+
+    if ( ! checkForUniqueTaskIds( newtasks ) ) {
+        throw InvalidTaskListException( "the task list to be imported is invalid, it contains duplicate task ids" );
+    }
+
+    if ( ! checkForTreeness( oldtasks ) ) {
+        throw InvalidTaskListException( "tasks database is not a directed graph, this is seriously bad, go fix it" );
+    }
+
+    if ( ! checkForTreeness( newtasks ) ) {
+        throw InvalidTaskListException( "the task list to be imported is invalid, it does not resemble a directed graph" );
+    }
+
+    int newtasksIndex = 0;
+    int oldtasksIndex = 0;
+    TaskList addedTasks;
+    TaskIdList modifiedTasks;
+    while ( newtasksIndex < newtasks.count() && oldtasksIndex < oldtasks.count() ) {
+        // FIXME tasks in newtasks that are not in oldtasks are new
+        // tasks
+        if ( newtasks[newtasksIndex].id() < oldtasks[oldtasksIndex].id()
+            || oldtasksIndex == oldtasks.count() ) {
+            // if old task index points to the end of the list, there
+            // are additional tasks in the new task list that need to
+            // be added
+            addedTasks << newtasks[newtasksIndex];
+            ++newtasksIndex;
+        } else if ( newtasks[newtasksIndex].id() == oldtasks[oldtasksIndex].id() ) {
+            if ( newtasks[newtasksIndex] != oldtasks[oldtasksIndex] ) {
+                modifiedTasks << oldtasks[oldtasksIndex].id();
+                oldtasks[oldtasksIndex] = newtasks[newtasksIndex];
+            }
+            ++oldtasksIndex;
+            ++newtasksIndex;
+        } else {
+            // new task id > old task id:
+            // the old task list contains tasks that are not in the
+            // new tasks list, those will be left untouched:
+            ++oldtasksIndex;
+        }
+    }
+
+    oldtasks << addedTasks;
+    // FIXME how to return the merge results?
+    return oldtasks;
+}
+
+bool Task::checkForUniqueTaskIds( TaskList tasks )
+{
+    std::set<TaskId> ids;
+    for ( TaskList::const_iterator it = tasks.begin(); it != tasks.end(); ++it ) {
+        if ( ids.find( ( *it ).id() ) != ids.end() ) {
+            return false;
+        }
+        ids.insert( ( *it ).id() );
+    }
+    return true;
+}
+
+/** collectTaskIds visits the task and all subtasks recursively, and
+ * adds all visited task ids to visitedIds.
+ * @returns false if any visited task id is already in visitedIds
+ * @param id the parent task to traverse
+ * @param visitedIds reference to a TaskId set that contains already
+ * visited task ids
+ * @param tasks the tasklist to process
+ */
+bool collectTaskIds( std::set<TaskId>& visitedIds, TaskId id, const TaskList& tasks )
+{
+    bool foundSelf = false;
+
+    for ( TaskList::const_iterator it = tasks.begin(); it != tasks.end(); ++it ) {
+        if ( ( *it ).parent() == id ) {
+            collectTaskIds( visitedIds, ( *it ).id(), tasks );
+        }
+        if ( ( *it ).id() == id ) {
+            // just checking that it really exists...
+            if ( std::find( visitedIds.begin(), visitedIds.end(), id ) != visitedIds.end() ) {
+                return false;
+            } else {
+                visitedIds.insert( id );
+                foundSelf = true;
+            }
+        }
+    }
+
+    Q_ASSERT_X( foundSelf, "collectTaskIds", "task not found" );
+    Q_UNUSED( foundSelf ); // in release mode
+    return true;
+}
+
+bool Task::checkForTreeness( const TaskList& tasks )
+{
+    std::set<TaskId> ids;
+
+    for ( TaskList::const_iterator it = tasks.begin(); it != tasks.end(); ++it ) {
+        if ( ( *it ).parent() == 0 ) {
+            if ( ! collectTaskIds( ids, ( *it ).id(), tasks ) ) {
+                return false;
+            }
+        }
+    }
+
+    return false; // NI
+}
+
 

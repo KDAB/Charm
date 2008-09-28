@@ -32,4 +32,12 @@ public:
     {}
 };
 
+class InvalidTaskListException : public CharmException
+{
+public:
+    InvalidTaskListException( const char* message = 0 )
+        : CharmException( message )
+    {}
+};
+
 #endif
