@@ -1,7 +1,10 @@
 #include <QtDebug>
 #include <QtTest/QtTest>
+#include <QDir>
+#include <QFileInfo>
 
 #include "Core/Task.h"
+#include "Core/CharmConstants.h"
 
 #include "TaskStructureTests.h"
 
@@ -14,43 +17,39 @@ void TaskStructureTests::checkForUniqueTaskIdsTest_data()
 {
     QTest::addColumn<TaskList>( "tasks" );
     QTest::addColumn<bool>( "unique" );
+    const QString tagName( "testcase" );
+    const QString tasksTagName( "tasks" );
 
-    // FIXME this will be read from resources:
-    // set up test candidates:
-    TaskList tasks;
-    Task task1;
-    task1.setName( "A task" );
-    task1.setId( 1 );
-    task1.setParent( 0 );
-    task1.setSubscribed( true );
-    task1.setValidFrom( QDateTime::currentDateTime() );
-    Task task2;
-    task2.setName( "Another task" );
-    task2.setId( 2 );
-    task2.setParent( 1 );
-    task2.setSubscribed( false );
-    task2.setValidUntil( QDateTime::currentDateTime() );
+    QDir dataDir( ":/checkForUniqueTaskIdsTest/Data" );
+    QVERIFY( dataDir.exists() );
+    QStringList filenamePatterns;
+    filenamePatterns << "*.xml";
+    QFileInfoList dataSets = dataDir.entryInfoList( filenamePatterns, QDir::Files, QDir::Name );
+    Q_FOREACH( QFileInfo fileinfo, dataSets ) {
+        QDomDocument doc( "charmtests" );
+        QFile file( fileinfo.filePath() );
+        QVERIFY( file.open( QIODevice::ReadOnly ) );
+        QVERIFY( doc.setContent( &file ) );
+        QDomElement root = doc.firstChildElement();
+        QVERIFY( root.tagName() == "testcases" );
+        qDebug() << "Loading test case" << file.fileName();
+        for ( QDomElement child = root.firstChildElement( tagName ); !child.isNull();
+              child = child.nextSiblingElement( tagName ) ) {
+            QString name = child.attribute( "name" );
+            QString expectedResultText = child.attribute( "expectedResult" );
+            QVERIFY( expectedResultText == "false" || expectedResultText == "true" );
+            bool expectedResult = ( expectedResultText == "true" );
+            QString type = child.attribute( "type" );
+            QVERIFY( type == "checkForUniqueTaskIdsTest" );
 
-    tasks << task1 << task2;
-    QTest::newRow( "Empty TaskList" ) << TaskList() << true;
-    QTest::newRow( "Simple List" ) << tasks << true;
-
-    // now add a cycle to the graph, and make it fail:
-    Task task3;
-    task3.setName( "3" );
-    task3.setId( 3 );
-    task3.setParent( 5 );
-    Task task4;
-    task4.setName( "4" );
-    task4.setId( 4 );
-    task4.setParent( 3 );
-    Task task5;
-    task5.setName( "5" );
-    task5.setId( 5 );
-    task5.setParent( 4 );
-    TaskList cyclicTaskList;
-    cyclicTaskList << task3 << task4 << task5;
-    QTest::newRow( "Cyclic TaskList" ) << cyclicTaskList << true;
+            for ( QDomElement element = child.firstChildElement( tasksTagName ); !element.isNull();
+                  element = element.nextSiblingElement( tasksTagName ) ) {
+                TaskList tasks = Task::readTasksElement( element, CHARM_DATABASE_VERSION );
+                QTest::newRow( name.toLocal8Bit() ) << tasks << expectedResult;
+                qDebug() << "Added test case" << name;
+            }
+	}
+    }
 }
 
 void TaskStructureTests::checkForUniqueTaskIdsTest()

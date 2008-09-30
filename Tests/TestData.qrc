@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/checkForUniqueTaskIdsTest">
+	<file>Data/simple-tasklists.xml</file>
+    </qresource>
+</RCC>
+
+

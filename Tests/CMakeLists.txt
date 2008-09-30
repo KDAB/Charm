@@ -85,8 +85,9 @@ IF ( QT4_FOUND )
    SET( TaskStructureTests_SRCS TaskStructureTests.cpp )
 
    QT4_AUTOMOC( ${TaskStructureTests_SRCS} )
+   QT4_ADD_RESOURCES ( TaskStructureTestsResources_SRCS TestData.qrc )
 
-   ADD_EXECUTABLE( TaskStructureTests ${TaskStructureTests_SRCS} )
+   ADD_EXECUTABLE( TaskStructureTests ${TaskStructureTests_SRCS} ${TaskStructureTestsResources_SRCS} )
 
    TARGET_LINK_LIBRARIES( TaskStructureTests ${QT_QTTEST_LIBRARY} )
    TARGET_LINK_LIBRARIES( TaskStructureTests ${QT_LIBRARIES} )

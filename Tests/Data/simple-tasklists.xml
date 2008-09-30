@@ -1,0 +1,26 @@
+<!DOCTYPE charmtests>
+<testcases>
+<testcase type="checkForUniqueTaskIdsTest" name="Empty Task List" expectedResult="true" >
+   <tasks />
+</testcase>
+<testcase type="checkForUniqueTaskIdsTest" name="Simple Task List" expectedResult="true">
+  <tasks>
+      <task taskid="1" subscribed="1" parentid="0" >top</task>
+      <task taskid="2" subscribed="1" parentid="1" >first-child</task>
+      <task taskid="10" subscribed="1" parentid="2" >project</task>
+      <task taskid="11" subscribed="1" parentid="10" >project task 1</task>
+      <task taskid="12" subscribed="1" parentid="10" >project task 2</task>
+      <task taskid="13" subscribed="1" parentid="10" >project task 3</task>
+  </tasks>
+</testcase>
+<testcase type="checkForUniqueTaskIdsTest" name="Simple Broken Task List" expectedResult="false">
+   <tasks>
+      <task taskid="1" subscribed="1" parentid="0" >top</task>
+      <task taskid="2" subscribed="1" parentid="1" >first-child</task>
+      <task taskid="10" subscribed="1" parentid="2" >project</task>
+      <task taskid="10" subscribed="1" parentid="10" >project task 1</task>
+      <task taskid="11" subscribed="1" parentid="10" >project task 2</task>
+      <task taskid="11" subscribed="1" parentid="10" >project task 3</task>
+   </tasks>
+</testcase>
+</testcases>
