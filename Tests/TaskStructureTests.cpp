@@ -41,14 +41,13 @@ void TaskStructureTests::checkForUniqueTaskIdsTest_data()
             bool expectedResult = ( expectedResultText == "true" );
             QString type = child.attribute( "type" );
             QVERIFY( type == "checkForUniqueTaskIdsTest" );
-
-            for ( QDomElement element = child.firstChildElement( tasksTagName ); !element.isNull();
-                  element = element.nextSiblingElement( tasksTagName ) ) {
-                TaskList tasks = Task::readTasksElement( element, CHARM_DATABASE_VERSION );
-                QTest::newRow( name.toLocal8Bit() ) << tasks << expectedResult;
-                qDebug() << "Added test case" << name;
-            }
-	}
+            QDomElement element = child.firstChildElement( tasksTagName );
+            QVERIFY( !element.isNull() );
+            TaskList tasks = Task::readTasksElement( element, CHARM_DATABASE_VERSION );
+            QTest::newRow( name.toLocal8Bit() ) << tasks << expectedResult;
+            QVERIFY( element.nextSiblingElement( tasksTagName ).isNull() );
+            qDebug() << "Added test case" << name;
+        }
     }
 }
 
