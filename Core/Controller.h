@@ -36,6 +36,7 @@ public:
     bool addTask( const Task& parent );
     bool modifyTask( const Task& );
     bool deleteTask( const Task& );
+    bool setAllTasks( const TaskList& );
     QDomDocument exportDatabasetoXml() const throw ( XmlSerializationException );
     QString importDatabaseFromXml( const QDomDocument& );
 

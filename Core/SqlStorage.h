@@ -35,6 +35,7 @@ public:
 
     // implement task database functions:
     TaskList getAllTasks();
+    bool setAllTasks( const User& user, const TaskList& tasks );
     bool addTask ( const Task& task );
     Task getTask( int taskid );
     bool modifyTask( const Task& task );

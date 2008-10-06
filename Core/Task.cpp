@@ -315,6 +315,14 @@ bool Task::checkForTreeness( const TaskList& tasks )
     // otherwise tasks contains elements that are not in the subtrees
     // of toplevel elements
     if ( ids.size() != static_cast<unsigned>( tasks.size() ) ) {
+#if 0
+        Q_FOREACH( const Task& task, tasks ) {
+            if ( find( ids.begin(), ids.end(), task.id() ) == ids.end() ) {
+                qDebug() << "Orphan task:";
+                task.dump();
+            }
+        }
+#endif
         return false;
     }
 

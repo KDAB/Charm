@@ -23,6 +23,8 @@
 #include "Commands/CommandExportToXml.h"
 #include "Commands/CommandImportFromXml.h"
 #include "Commands/CommandModifyEvent.h"
+#include "Commands/CommandSetAllTasks.h"
+#include "Commands/CommandModifyTask.h"
 #include "Reports/ReportConfigurationPage.h"
 #include "CharmPreferences.h"
 
@@ -73,7 +75,7 @@ MainWindow::MainWindow()
     m_actionQuit.setText( tr( "Quit" ) );
     m_actionQuit.setIcon( Data::quitCharmIcon() );
     connect( &m_actionQuit, SIGNAL( triggered( bool ) ),
-              SLOT( slotQuit() ) );
+             SLOT( slotQuit() ) );
 
     m_actionAboutDialog.setText( tr( "About Charm" ) );
     connect( &m_actionAboutDialog, SIGNAL( triggered() ),
@@ -441,17 +443,41 @@ void MainWindow::slotImportTasks()
     TaskExport exporter;
     exporter.readFrom( filename );
     TaskListMerger merger;
-    merger.setOldTasks( DATAMODEL->getAllTasks() );
-    merger.setNewTasks( exporter.tasks() );
-
-    if ( merger.modifiedTasks().count() == 0 && merger.addedTasks().count() == 0 ) {
-        QMessageBox::information( this, tr( "Tasks Import" ), tr( "The selected task file does not contain any updates." ) );
-    } else {
-        QString detailsText(
-            tr( "Importing this task list will result in %1 modified and %2 added tasks. Do you want to continue?" )
-            .arg( merger.modifiedTasks().count() )
-            .arg( merger.addedTasks().count() ) );
+    try {
+        merger.setOldTasks( DATAMODEL->getAllTasks() );
+    } catch( InvalidTaskListException& e ) {
+        // holy shit...
     }
+    try {
+        merger.setNewTasks( exporter.tasks() );
+    } catch(  InvalidTaskListException& e ) {
+        QMessageBox::critical( this, tr(  "Invalid Task Definitions" ),
+                               tr( "The selected task definitions are invalid and cannot be imported." ) );
+        return;
+    }
+
+    try {
+        if ( merger.modifiedTasks().count() == 0 && merger.addedTasks().count() == 0 ) {
+            QMessageBox::information( this, tr( "Tasks Import" ), tr( "The selected task file does not contain any updates." ) );
+        } else {
+            QString detailsText(
+                tr( "Importing this task list will result in %1 modified and %2 added tasks. Do you want to continue?" )
+                .arg( merger.modifiedTasks().count() )
+                .arg( merger.addedTasks().count() ) );
+            if ( QMessageBox::warning( this, tr( "Tasks Import" ), detailsText,
+                                       QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes )
+                 == QMessageBox::Yes ) {
+                CommandSetAllTasks* cmd = new CommandSetAllTasks( merger.mergedTaskList(), this );
+                sendCommand( cmd );
+            }
+        }
+    } catch( InvalidTaskListException& e ) {
+        QMessageBox::critical(
+            this, tr(  "Invalid Task Definitions" ),
+            tr( "The selected task definitions cannot be merged, import aborted." ) );
+        return;
+    }
+
 }
 
 static int totalDuration( const EventIdList& eventList )

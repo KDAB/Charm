@@ -24,7 +24,6 @@ bool CommandModifyTask::prepare()
 
 bool CommandModifyTask::execute( ControllerInterface* controller )
 {
-    // FIXME make the controller methods return something
     m_success = controller->modifyTask( m_task );
     return m_success;
 }

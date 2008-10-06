@@ -38,6 +38,8 @@ public:
     virtual bool modifyTask( const Task& ) = 0;
     /** Delete the task. Send a signal to the view confirming it. */
     virtual bool deleteTask( const Task& ) = 0;
+    /** Set all tasks. Updates the view, after. */
+    virtual bool setAllTasks( const TaskList& tasks ) = 0;
     /** Receive a command from the view. */
     virtual void executeCommand( CharmCommand* ) = 0;
     /** Export the database contents into a XML document. */

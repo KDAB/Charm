@@ -70,8 +70,6 @@ void CharmDataModel::setAllTasks( const TaskList& tasks )
     // store task id length:
     determineTaskPaddingLength();
 
-    // FIXME check tree for treeness, e.g. no loops
-
     // notify adapters of changes
     for_each( m_adapters.begin(), m_adapters.end(),
               std::mem_fun( &CharmDataModelAdapterInterface::resetTasks ) );

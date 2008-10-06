@@ -71,6 +71,30 @@ TaskList SqlStorage::getAllTasks()
 	return tasks;
 }
 
+bool SqlStorage::setAllTasks( const User& user, const TaskList& tasks )
+{
+    SqlRaiiTransactor transactor(database());
+    const TaskList oldTasks = getAllTasks();
+    // clear tasks
+    deleteAllTasks();
+    // add tasks
+    Q_FOREACH( Task task, tasks ) {
+        task.setSubscribed( false );
+        addTask( task );
+    }
+    // try to restore subscriptions where possible
+    Q_FOREACH( const Task& oldTask, oldTasks ) {
+        const Task task = getTask( oldTask.id() );
+        if ( task.isValid() ) {
+            if ( oldTask.subscribed() ) {
+                addSubscription( user, task );
+            }
+        }
+    }
+    transactor.commit();
+    return true;
+}
+
 bool SqlStorage::addTask(const Task& task)
 {
 	QSqlQuery query(database());

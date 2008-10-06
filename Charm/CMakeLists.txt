@@ -57,6 +57,7 @@ IF ( QT4_FOUND )
 		       Commands/CommandRelayCommand.cpp
 		       Commands/CommandModifyEvent.cpp
 		       Commands/CommandDeleteEvent.cpp
+		       Commands/CommandSetAllTasks.cpp
 		       Commands/CommandAddTask.cpp
 		       Commands/CommandModifyTask.cpp
 		       Commands/CommandDeleteTask.cpp

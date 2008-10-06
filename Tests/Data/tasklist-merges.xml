@@ -159,4 +159,23 @@ because the lists are sorted before merging -->
       <task taskid="10" subscribed="1" parentid="1" >project</task>
    </tasks>
 </testcase>
+<testcase type="mergeTaskListsTest" name="update existing tasks">
+   <tasks arg="old">
+      <task taskid="1" subscribed="1" parentid="0" >top</task>
+      <task taskid="2" subscribed="1" parentid="0" >still toplevel</task>
+      <task taskid="10" subscribed="1" parentid="1" >project</task>
+   </tasks>
+   <tasks arg="new">
+      <task taskid="1" subscribed="1" parentid="0" >top new</task>
+      <task taskid="2" subscribed="1" parentid="1" >now first-child</task>
+      <task taskid="3" subscribed="1" parentid="10" >first-child</task>
+      <task taskid="10" subscribed="1" parentid="1" >project</task>
+   </tasks>
+   <tasks arg="merged">
+      <task taskid="1" subscribed="1" parentid="0" >top new</task>
+      <task taskid="2" subscribed="1" parentid="1" >now first-child</task>
+      <task taskid="3" subscribed="1" parentid="10" >first-child</task>
+      <task taskid="10" subscribed="1" parentid="1" >project</task>
+   </tasks>
+</testcase>
 </testcases>

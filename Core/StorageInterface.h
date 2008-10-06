@@ -47,6 +47,7 @@ public:
 
 	// task database functions:
 	virtual TaskList getAllTasks() = 0;
+        virtual bool setAllTasks( const User& user, const TaskList& tasks ) = 0;
 	virtual bool addTask(const Task& task) = 0;
 	virtual Task getTask(int taskId) = 0;
 	virtual bool modifyTask(const Task& task) = 0;
@@ -79,11 +80,11 @@ protected:
 	// get special requirements in.
 	// return true if successfull, false otherwise
 	virtual bool createDatabase(Configuration&) = 0;
-	/** Verify database content and database version. 
+	/** Verify database content and database version.
 	 * Will return false if the database is found, but for some reason does not contain
-	 * the complete structure (which is a very unusual odd case). 
+	 * the complete structure (which is a very unusual odd case).
 	 * It will throw an UnsupportedDatabaseVersionException if the database version does
-	 * not match the one the client was compiled against.  
+	 * not match the one the client was compiled against.
 	 */
 	virtual bool verifyDatabase() throw ( UnsupportedDatabaseVersionException ) = 0;
 

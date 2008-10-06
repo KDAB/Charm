@@ -106,6 +106,19 @@ bool Controller::deleteTask( const Task& task )
     }
 }
 
+bool Controller::setAllTasks( const TaskList& tasks )
+{
+    qDebug() << "Controller::setAllTasks: replacing all tasks";
+    if ( m_storage->setAllTasks( CONFIGURATION.user, tasks ) ) {
+        TaskList tasks = m_storage->getAllTasks();
+        // tell the view about the existing tasks;
+        emit definedTasks( tasks );
+        return true;
+    } else {
+        return false;
+    }
+}
+
 void Controller::updateSubscriptionForTask( const Task& task )
 {
     if ( task.subscribed() ) {
