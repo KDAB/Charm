@@ -251,11 +251,7 @@ TaskList Task::mergeTaskLists( TaskList oldtasks, TaskList newtasks ) throw( Inv
 {
     if ( newtasks.isEmpty() ) return oldtasks; // nothing to do
 
-    // for each task in oldtasks, find it in newtasks, and see if it has changed
-    // if so, update
-    qSort( newtasks.begin(), newtasks.end(), lowerTaskId );
-    qSort( oldtasks.begin(), oldtasks.end(), lowerTaskId );
-
+    // many checks required to make sure the merge algorithm works:
     if ( ! checkForUniqueTaskIds( oldtasks ) ) {
         throw InvalidTaskListException( "tasks database contains duplicate task ids" );
     }
@@ -272,6 +268,8 @@ TaskList Task::mergeTaskLists( TaskList oldtasks, TaskList newtasks ) throw( Inv
         throw InvalidTaskListException( "the task list to be imported is invalid, it does not resemble a directed graph" );
     }
 
+    qSort( newtasks.begin(), newtasks.end(), lowerTaskId );
+    qSort( oldtasks.begin(), oldtasks.end(), lowerTaskId );
     int newtasksIndex = 0;
     int oldtasksIndex = 0;
     TaskList addedTasks;
@@ -311,9 +309,21 @@ TaskList Task::mergeTaskLists( TaskList oldtasks, TaskList newtasks ) throw( Inv
     } while ( ( *oldIt ).id() < sentinelId || ( *newIt ).id() < sentinelId );
 
     oldtasks.pop_back(); // remove sentinel
-    oldtasks << addedTasks;
+    TaskList results;
+    results << oldtasks << addedTasks;
     // FIXME how to return the merge results?
-    return oldtasks;
+
+    // one last check: if tasks where modified through the new task
+    // lists, maybe local-only tasks have become orphans?
+    if ( ! checkForUniqueTaskIds( results ) ) {
+        throw InvalidTaskListException( "the merged task list is invalid, it contains duplicate task ids" );
+    }
+
+    if ( ! checkForTreeness( results ) ) {
+        throw InvalidTaskListException( "the merged tasks database is not a directed graph, this is seriously bad, go fix it" );
+    }
+
+    return results;
 }
 
 bool Task::checkForUniqueTaskIds( TaskList tasks )

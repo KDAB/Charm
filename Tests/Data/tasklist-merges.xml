@@ -91,7 +91,7 @@
       <task taskid="10" subscribed="1" parentid="1" >project</task>
    </tasks>
 </testcase>
-<testcase type="mergeTaskListsTest" name="extra tast, inbetween">
+<testcase type="mergeTaskListsTest" name="extra task, inbetween">
    <tasks arg="old">
       <task taskid="1" subscribed="1" parentid="0" >top</task>
       <task taskid="2" subscribed="1" parentid="1" >first-child</task>
