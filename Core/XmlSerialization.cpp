@@ -4,6 +4,7 @@
 #include "XmlSerialization.h"
 #include "CharmExceptions.h"
 #include "Configuration.h"
+#include "CharmConstants.h"
 
 namespace XmlSerialization {
 
@@ -51,6 +52,22 @@ namespace XmlSerialization {
         return root.firstChildElement( "metadata" );
     }
 
+    QDateTime creationTime( const QDomElement& metaDataElement )
+    {
+        QDomElement creationTimeElement = metaDataElement.firstChildElement( "creation-time" );
+        if ( ! creationTimeElement.isNull() ) {
+            return QDateTime::fromString( creationTimeElement.text(), Qt::ISODate );
+        } else {
+            return QDateTime();
+        }
+    }
+
+    QString userName( const QDomElement& metaDataElement )
+    {
+        QDomElement usernameElement = metaDataElement.firstChildElement( "username" );
+        return usernameElement.text();
+    }
+
 }
 
 void TaskExport::writeTo( const QString& filename, const TaskList& tasks )
@@ -62,11 +79,8 @@ void TaskExport::writeTo( const QString& filename, const TaskList& tasks )
 
     // write tasks
     {
-        QDomElement tasksElement = document.createElement( "tasks" );
+        QDomElement tasksElement = Task::makeTasksElement( document, tasks );
         report.appendChild( tasksElement );
-        Q_FOREACH( const Task& task, tasks ) {
-            tasksElement.appendChild( task.toXml( document ) );
-        }
     }
 
     // all done, write to file:
@@ -75,7 +89,7 @@ void TaskExport::writeTo( const QString& filename, const TaskList& tasks )
         QTextStream stream( &file );
         document.save( stream, 4 );
     } else {
-        throw XmlSerializationException( "" );
+        throw XmlSerializationException( "Cannot write to file" );
     }
 }
 
@@ -103,10 +117,23 @@ void TaskExport::readFrom( const QString& filename )
     QDomElement report = XmlSerialization::reportElement( document );
 
     // from metadata, read the export time stamp:
-    // ...
+    m_exportTime = XmlSerialization::creationTime( metadata );
+    m_userName = XmlSerialization::userName( metadata );
     // from report, read tasks:
-    // ...
-
-    throw XmlSerializationException( "Not Implemented" );
+    QDomElement tasksElement = report.firstChildElement( Task::taskListTagName() );
+    m_tasks = Task::readTasksElement( tasksElement, CHARM_DATABASE_VERSION );
+    qDebug() << "XmlSerialization::readFrom: loaded task definitions exported by"
+             << m_userName << "as of" << m_exportTime;
 }
+
+const TaskList& TaskExport::tasks() const
+{
+    return m_tasks;
+}
+
+QDateTime TaskExport::exportTime() const
+{
+    return m_exportTime;
+}
+
 

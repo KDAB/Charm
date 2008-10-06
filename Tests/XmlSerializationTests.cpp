@@ -4,6 +4,7 @@
 
 #include "Core/CharmConstants.h"
 #include "Core/Event.h"
+#include "Core/XmlSerialization.h"
 #include "XmlSerializationTests.h"
 
 XmlSerializationTests::XmlSerializationTests()
@@ -153,6 +154,14 @@ void XmlSerializationTests::testTaskListSerialization()
         QFAIL( "Read tasks are not equal to the written ones" );
     }
 
+}
+
+void XmlSerializationTests::testTaskExportImport()
+{
+    TaskExport importer;
+    importer.readFrom( ":/testTaskExportImport/Data/test-tasklistexport.xml" );
+    QVERIFY( !importer.tasks().isEmpty() );
+    QVERIFY( importer.exportTime().isValid() );
 }
 
 QTEST_MAIN( XmlSerializationTests )

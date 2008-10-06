@@ -70,17 +70,6 @@ IF ( QT4_FOUND )
    TARGET_LINK_LIBRARIES( BackendIntegrationTests ${QT_QTTEST_LIBRARY} )
    TARGET_LINK_LIBRARIES( BackendIntegrationTests ${QT_LIBRARIES} )
 
-   # XML Serialization Tests:
-   SET( XmlSerializationTests_SRCS XmlSerializationTests.cpp )
-
-   QT4_AUTOMOC( ${XmlSerializationTests_SRCS} )
-
-   ADD_EXECUTABLE( XmlSerializationTests ${XmlSerializationTests_SRCS} )
-
-   TARGET_LINK_LIBRARIES( XmlSerializationTests ${QT_QTTEST_LIBRARY} )
-   TARGET_LINK_LIBRARIES( XmlSerializationTests ${QT_QTXML_LIBRARY} )
-   TARGET_LINK_LIBRARIES( XmlSerializationTests ${QT_LIBRARIES} )
-
    # Task Structure Tests:
    SET( TaskStructureTests_SRCS TaskStructureTests.cpp )
 
@@ -100,6 +89,16 @@ IF ( QT4_FOUND )
    ADD_TEST( XmlSerializationTests ${EXECUTABLE_OUTPUT_PATH}/XmlSerializationTests )
    ADD_TEST( TaskStructureTests ${EXECUTABLE_OUTPUT_PATH}/TaskStructureTests )
 
+   # XML Serialization Tests:
+   SET( XmlSerializationTests_SRCS XmlSerializationTests.cpp )
+
+   QT4_AUTOMOC( ${XmlSerializationTests_SRCS} )
+
+   ADD_EXECUTABLE( XmlSerializationTests ${XmlSerializationTests_SRCS} ${TaskStructureTestsResources_SRCS} )
+
+   TARGET_LINK_LIBRARIES( XmlSerializationTests ${QT_QTTEST_LIBRARY} )
+   TARGET_LINK_LIBRARIES( XmlSerializationTests ${QT_QTXML_LIBRARY} )
+   TARGET_LINK_LIBRARIES( XmlSerializationTests ${QT_LIBRARIES} )
 ENDIF ( QT4_FOUND )
 
 IF ( NOT QT4_FOUND )

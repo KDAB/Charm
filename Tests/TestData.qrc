@@ -8,6 +8,9 @@
     <qresource prefix="/checkForTreenessTest">	
 	<file>Data/tasklist-treeness.xml</file>
     </qresource>
+    <qresource prefix="/testTaskExportImport">	
+	<file>Data/test-tasklistexport.xml</file>
+    </qresource>
 </RCC>
 
 

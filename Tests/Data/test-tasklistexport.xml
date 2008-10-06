@@ -1,0 +1,17 @@
+<!DOCTYPE charmreport>
+<charmreport type="taskdefinitions" >
+    <metadata>
+        <username>Mirko Boehm</username>
+        <creation-time>2008-09-20T23:53:12</creation-time>
+    </metadata>
+    <report>
+        <tasks>
+          <task taskid="1" subscribed="1" parentid="0" >top</task>
+          <task taskid="2" subscribed="1" parentid="1" >first-child</task>
+          <task taskid="10" subscribed="1" parentid="2" >project</task>
+          <task taskid="11" subscribed="1" parentid="10" >project task 1</task>
+          <task taskid="12" subscribed="1" parentid="10" >project task 2</task>
+          <task taskid="13" subscribed="1" parentid="10" >project task 3</task>
+        </tasks>
+    </report>
+</charmreport>

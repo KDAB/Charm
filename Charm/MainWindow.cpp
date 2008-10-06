@@ -9,6 +9,8 @@
 
 #include <Core/CharmCommand.h>
 #include <Core/CharmConstants.h>
+#include <Core/XmlSerialization.h>
+#include <Core/TaskListMerger.h>
 
 #include "Data.h"
 #include "MainWindow.h"
@@ -39,6 +41,7 @@ MainWindow::MainWindow()
     , m_actionShowStatusbar( this )
     , m_actionExportToXml( this )
     , m_actionImportFromXml( this )
+    , m_actionImportTasks( this )
     , m_eventView( this )
     , m_actionReporting( this )
     , m_reportDialog( this )
@@ -94,6 +97,9 @@ MainWindow::MainWindow()
     m_actionExportToXml.setText( tr( "Export..." ) );
     connect( &m_actionExportToXml, SIGNAL( triggered() ),
              SLOT( slotExportToXml() ) );
+    m_actionImportTasks.setText( tr( "Import Task Definitions..." ) );
+    connect( &m_actionImportTasks, SIGNAL( triggered() ),
+             SLOT( slotImportTasks() ) );
     // set up Charm menu:
     QMenu* appMenu = new QMenu( tr( "File" ), menuBar() );
     appMenu->addAction( &m_actionPreferences );
@@ -102,6 +108,8 @@ MainWindow::MainWindow()
     appMenu->addSeparator();
     appMenu->addAction( &m_actionExportToXml );
     appMenu->addAction( &m_actionImportFromXml );
+    appMenu->addSeparator();
+    appMenu->addAction( &m_actionImportTasks );
     appMenu->addSeparator();
     appMenu->addAction( &m_actionQuit );
 
@@ -420,6 +428,30 @@ void MainWindow::slotImportFromXml()
     // ask the controller to import the file:
     CommandImportFromXml* cmd = new CommandImportFromXml( filename, this );
     sendCommand( cmd );
+}
+
+void MainWindow::slotImportTasks()
+{
+    QString filename = QFileDialog::getOpenFileName( this, tr( "Please Select File" ) );
+    if ( filename.isEmpty() ) return;
+    QFileInfo fileinfo( filename );
+    Q_ASSERT( fileinfo.exists() );
+
+
+    TaskExport exporter;
+    exporter.readFrom( filename );
+    TaskListMerger merger;
+    merger.setOldTasks( DATAMODEL->getAllTasks() );
+    merger.setNewTasks( exporter.tasks() );
+
+    if ( merger.modifiedTasks().count() == 0 && merger.addedTasks().count() == 0 ) {
+        QMessageBox::information( this, tr( "Tasks Import" ), tr( "The selected task file does not contain any updates." ) );
+    } else {
+        QString detailsText(
+            tr( "Importing this task list will result in %1 modified and %2 added tasks. Do you want to continue?" )
+            .arg( merger.modifiedTasks().count() )
+            .arg( merger.addedTasks().count() ) );
+    }
 }
 
 static int totalDuration( const EventIdList& eventList )

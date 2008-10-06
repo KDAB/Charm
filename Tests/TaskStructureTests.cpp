@@ -123,16 +123,15 @@ void TaskStructureTests::mergeTaskListsTest_data()
     QTest::addColumn<TaskList>( "old" );
     QTest::addColumn<TaskList>( "newTasks" );
     QTest::addColumn<TaskList>( "merged" );
-    const QString tasksTagName( "tasks" );
 
     Q_FOREACH( QDomElement testcase,
                retrieveTestCases( ":/mergeTaskListsTest/Data", "mergeTaskListsTest" ) ) {
         QString name = testcase.attribute( "name" );
 
         QList<QDomElement> elements;
-        elements << testcase.firstChildElement( tasksTagName );
-        elements << ( elements.first() ).nextSiblingElement( tasksTagName );
-        elements << ( elements.at( 1 ) ).nextSiblingElement( tasksTagName );
+        elements << testcase.firstChildElement( Task::taskListTagName() );
+        elements << ( elements.first() ).nextSiblingElement( Task::taskListTagName() );
+        elements << ( elements.at( 1 ) ).nextSiblingElement( Task::taskListTagName() );
         bool oldFound = false, newFound = false, mergedFound = false;
         TaskList old, newTasks, merged;
         Q_FOREACH( QDomElement element, elements ) {

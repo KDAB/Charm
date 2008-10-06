@@ -17,6 +17,7 @@ private slots:
     void testTaskSerialization();
     void testTaskListSerialization();
     void testQDateTimeToFromString();
+    void testTaskExportImport();
 
 private:
     TaskList tasksToTest();

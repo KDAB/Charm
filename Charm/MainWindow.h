@@ -45,6 +45,7 @@ public slots:
     void slotToggleView();
     void slotExportToXml();
     void slotImportFromXml();
+    void slotImportTasks();
 
     // CommandEmitterInterface:
     void commitCommand( CharmCommand* );
@@ -85,6 +86,8 @@ private:
     QAction m_actionShowStatusbar;
     QAction m_actionExportToXml;
     QAction m_actionImportFromXml;
+    QAction m_actionImportTasks;
+
     View m_tasksView;
     EventView m_eventView;
     QAction m_actionReporting;

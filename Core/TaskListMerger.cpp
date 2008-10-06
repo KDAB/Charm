@@ -60,11 +60,10 @@ void TaskListMerger::calculateResults() const
             m_addedTasks << *newIt;
             ++newIt;
         }
-    } while ( ( *oldIt ).id() < sentinelId || ( *newIt ).id() < sentinelId );
+    } while ( oldIt != oldTasks.end() || newIt != newTasks.end() );
 
     oldTasks.pop_back(); // remove sentinel
     m_results = oldTasks + m_addedTasks;
-    // FIXME how to return the merge results?
 
     // one last check: if tasks where modified through the new task
     // lists, maybe local-only tasks have become orphans?

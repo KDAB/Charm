@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>434</width>
-    <height>183</height>
+    <width>441</width>
+    <height>237</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -16,13 +16,13 @@
    <item>
     <widget class="QTabWidget" name="tabWidget" >
      <property name="currentIndex" >
-      <number>2</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tabDatabase" >
       <attribute name="title" >
        <string>DataBase Options</string>
       </attribute>
-      <layout class="QVBoxLayout" >
+      <layout class="QVBoxLayout" name="verticalLayout" >
        <item>
         <widget class="QCheckBox" name="cbEventsInLeavesOnly" >
          <property name="text" >
@@ -36,6 +36,20 @@
           <string>only allow one event at a time</string>
          </property>
         </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout" >
+         <item>
+          <widget class="QLabel" name="label_3" >
+           <property name="text" >
+            <string>download tasks from:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="lineEdit" />
+         </item>
+        </layout>
        </item>
        <item>
         <spacer>

@@ -1,5 +1,5 @@
-#ifndef XMLSERIALIZATION_H
-#define XMLSERIALIZATION_H
+#ifndef CHARM_XMLSERIALIZATION_H
+#define CHARM_XMLSERIALIZATION_H
 
 #include <QDomDocument>
 #include <QString>
@@ -14,6 +14,9 @@ namespace XmlSerialization {
     QDomElement reportElement( const QDomDocument& doc );
 
     QDomElement metadataElement( const QDomDocument& doc );
+
+    QDateTime creationTime( const QDomElement& metaDataElement );
+    QString userName( const QDomElement& metaDataElement );
 }
 
 class TaskExport {
@@ -27,6 +30,7 @@ public:
     QDateTime exportTime() const;
 private:
     TaskList m_tasks;
+    QString m_userName;
     QDateTime m_exportTime;
 };
 
