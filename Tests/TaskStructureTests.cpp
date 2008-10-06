@@ -4,6 +4,7 @@
 #include <QFileInfo>
 
 #include "Core/Task.h"
+#include "Core/TaskListMerger.h"
 #include "Core/CharmConstants.h"
 #include "Core/CharmExceptions.h"
 
@@ -166,15 +167,13 @@ void TaskStructureTests::mergeTaskListsTest_data()
             TaskList tasks = Task::readTasksElement( element, CHARM_DATABASE_VERSION );
             if ( arg == "old" ) {
                 old = tasks;
-                qSort( old.begin(), old.end(), lowerTaskId );
                 oldFound = true;
             } else if ( arg == "new" ) {
                 newTasks = tasks;
-                qSort( newTasks.begin(), newTasks.end(), lowerTaskId );
                 newFound = true;
             } else if ( arg == "merged" ) {
                 merged = tasks;
-                qSort( merged.begin(), merged.end(), lowerTaskId );
+                qSort( merged.begin(), merged.end(), Task::lowerTaskId );
                 mergedFound = true;
             } else {
                 QFAIL( "invalid XML structure in input data" );
@@ -195,8 +194,12 @@ void TaskStructureTests::mergeTaskListsTest()
     QFETCH( TaskList, newTasks );
     QFETCH( TaskList, merged );
 
-    TaskList result = Task::mergeTaskLists( old, newTasks );
-    qSort( result.begin(), result.end(), lowerTaskId );
+    TaskListMerger merger;
+    merger.setOldTasks( old );
+    merger.setNewTasks( newTasks );
+
+    TaskList result = merger.mergedTaskList();
+    qSort( result.begin(), result.end(), Task::lowerTaskId );
     if ( result != merged ) {
         qDebug() << "Test failed";
         qDebug() << "Merge Result:";

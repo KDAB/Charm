@@ -74,11 +74,12 @@ public:
 
     static QDomElement makeTasksElement( QDomDocument, const TaskList& ) throw( XmlSerializationException );
 
-    static TaskList mergeTaskLists( TaskList oldtasks, TaskList newtasks ) throw( InvalidTaskListException );
-
     static bool checkForUniqueTaskIds( TaskList tasks );
 
     static bool checkForTreeness( const TaskList& tasks );
+
+    static bool lowerTaskId( const Task& left, const Task& right );
+
 
 private:
     int m_id;
@@ -95,7 +96,5 @@ Q_DECLARE_METATYPE( TaskIdList )
 Q_DECLARE_METATYPE( TaskList )
 
 void dumpTaskList( const TaskList& tasks );
-
-bool lowerTaskId( const Task& left, const Task& right );
 
 #endif
