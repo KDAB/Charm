@@ -139,4 +139,24 @@
       <task taskid="10" subscribed="1" parentid="1" >project</task>
    </tasks>
 </testcase>
+<!-- no need to add tests that permutate the tasks in the input lists, 
+because the lists are sorted before merging -->
+<testcase type="mergeTaskListsTest" name="old and new">
+   <tasks arg="old">
+      <task taskid="1" subscribed="1" parentid="0" >top</task>
+      <task taskid="2" subscribed="1" parentid="1" >first-child</task>
+      <task taskid="10" subscribed="1" parentid="1" >project</task>
+   </tasks>
+   <tasks arg="new">
+      <task taskid="1" subscribed="1" parentid="0" >top</task>
+      <task taskid="3" subscribed="1" parentid="10" >first-child</task>
+      <task taskid="10" subscribed="1" parentid="1" >project</task>
+   </tasks>
+   <tasks arg="merged">
+      <task taskid="1" subscribed="1" parentid="0" >top</task>
+      <task taskid="2" subscribed="1" parentid="1" >first-child</task>
+      <task taskid="3" subscribed="1" parentid="10" >first-child</task>
+      <task taskid="10" subscribed="1" parentid="1" >project</task>
+   </tasks>
+</testcase>
 </testcases>
