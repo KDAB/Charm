@@ -1,0 +1,8 @@
+<!DOCTYPE charmtests>
+<testcases>
+<testcase type="mergeTaskListsTest" name="Empty Task Lists">
+   <tasks arg="old" />
+   <tasks arg="new" />
+   <tasks arg="merged" />
+</testcase>
+</testcases>

@@ -147,9 +147,55 @@ void TaskStructureTests::checkForTreenessTest()
     QCOMPARE( Task::checkForTreeness( tasks ), directed );
 }
 
+void TaskStructureTests::mergeTaskListsTest_data()
+{
+    QTest::addColumn<TaskList>( "old" );
+    QTest::addColumn<TaskList>( "newTasks" );
+    QTest::addColumn<TaskList>( "merged" );
+    const QString tasksTagName( "tasks" );
+
+    Q_FOREACH( QDomElement testcase,
+               retrieveTestCases( ":/mergeTaskListsTest/Data", "mergeTaskListsTest" ) ) {
+        QString name = testcase.attribute( "name" );
+
+        QList<QDomElement> elements;
+        elements << testcase.firstChildElement( tasksTagName );
+        elements << ( elements.first() ).nextSiblingElement( tasksTagName );
+        elements << ( elements.at( 1 ) ).nextSiblingElement( tasksTagName );
+        bool oldFound = false, newFound = false, mergedFound = false;
+        TaskList old, newTasks, merged;
+        Q_FOREACH( QDomElement element, elements ) {
+            QString arg = element.attribute( "arg" );
+            TaskList tasks = Task::readTasksElement( element, CHARM_DATABASE_VERSION );
+            if ( arg == "old" ) {
+                old = tasks;
+                oldFound = true;
+            } else if ( arg == "new" ) {
+                newTasks = tasks;
+                newFound = true;
+            } else if ( arg == "merged" ) {
+                merged = tasks;
+                mergedFound = true;
+            } else {
+                QFAIL( "invalid XML structure in input data" );
+            }
+        }
+        QVERIFY( oldFound );
+        QVERIFY( newFound );
+        QVERIFY( mergedFound );
+
+        QTest::newRow( name.toLocal8Bit() ) << old << newTasks << merged;
+        qDebug() << "Added test case" << name;
+    }
+}
+
 void TaskStructureTests::mergeTaskListsTest()
 {
-    qDebug() << "NI";
+    QFETCH( TaskList, old );
+    QFETCH( TaskList, newTasks );
+    QFETCH( TaskList, merged );
+
+    QCOMPARE( Task::mergeTaskLists( old, newTasks ), merged );
 }
 
 QTEST_MAIN( TaskStructureTests )

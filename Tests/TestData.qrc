@@ -2,6 +2,9 @@
     <qresource prefix="/checkForUniqueTaskIdsTest">
 	<file>Data/simple-tasklists.xml</file>
     </qresource>
+    <qresource prefix="/mergeTaskListsTest">	
+	<file>Data/tasklist-merges.xml</file>
+    </qresource>
 </RCC>
 
 
