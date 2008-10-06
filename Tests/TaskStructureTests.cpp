@@ -5,6 +5,7 @@
 
 #include "Core/Task.h"
 #include "Core/CharmConstants.h"
+#include "Core/CharmExceptions.h"
 
 #include "TaskStructureTests.h"
 
@@ -13,41 +14,68 @@ TaskStructureTests::TaskStructureTests()
 {
 }
 
+QList<QDomElement> TaskStructureTests::retrieveTestCases( QString path, QString type )
+{
+    const QString tagName( "testcase" );
+    QStringList filenamePatterns;
+    filenamePatterns << "*.xml";
+
+    QDir dataDir( path );
+    if ( !dataDir.exists() ) {
+        throw CharmException( "path to test case data does not exist" );
+    }
+
+    QFileInfoList dataSets = dataDir.entryInfoList( filenamePatterns, QDir::Files, QDir::Name );
+
+    QList<QDomElement> result;
+    Q_FOREACH( QFileInfo fileinfo, dataSets ) {
+        QDomDocument doc( "charmtests" );
+        QFile file( fileinfo.filePath() );
+        if ( ! file.open( QIODevice::ReadOnly ) ) {
+            throw CharmException( "unable to open input file" );
+        }
+
+        if ( !doc.setContent( &file ) ) {
+            throw CharmException( "invalid DOM document, cannot load" );
+        }
+
+        QDomElement root = doc.firstChildElement();
+        if ( root.tagName() != "testcases" ) {
+            throw CharmException( "root element (testcases) not found" );
+        }
+
+        qDebug() << "Loading test case" << file.fileName();
+
+        for ( QDomElement child = root.firstChildElement( tagName ); !child.isNull();
+              child = child.nextSiblingElement( tagName ) ) {
+            if ( child.attribute( "type" ) == type ) {
+                result << child;
+            }
+        }
+    }
+    return result;
+}
+
 void TaskStructureTests::checkForUniqueTaskIdsTest_data()
 {
     QTest::addColumn<TaskList>( "tasks" );
     QTest::addColumn<bool>( "unique" );
-    const QString tagName( "testcase" );
     const QString tasksTagName( "tasks" );
 
-    QDir dataDir( ":/checkForUniqueTaskIdsTest/Data" );
-    QVERIFY( dataDir.exists() );
-    QStringList filenamePatterns;
-    filenamePatterns << "*.xml";
-    QFileInfoList dataSets = dataDir.entryInfoList( filenamePatterns, QDir::Files, QDir::Name );
-    Q_FOREACH( QFileInfo fileinfo, dataSets ) {
-        QDomDocument doc( "charmtests" );
-        QFile file( fileinfo.filePath() );
-        QVERIFY( file.open( QIODevice::ReadOnly ) );
-        QVERIFY( doc.setContent( &file ) );
-        QDomElement root = doc.firstChildElement();
-        QVERIFY( root.tagName() == "testcases" );
-        qDebug() << "Loading test case" << file.fileName();
-        for ( QDomElement child = root.firstChildElement( tagName ); !child.isNull();
-              child = child.nextSiblingElement( tagName ) ) {
-            QString name = child.attribute( "name" );
-            QString expectedResultText = child.attribute( "expectedResult" );
-            QVERIFY( expectedResultText == "false" || expectedResultText == "true" );
-            bool expectedResult = ( expectedResultText == "true" );
-            QString type = child.attribute( "type" );
-            QVERIFY( type == "checkForUniqueTaskIdsTest" );
-            QDomElement element = child.firstChildElement( tasksTagName );
-            QVERIFY( !element.isNull() );
-            TaskList tasks = Task::readTasksElement( element, CHARM_DATABASE_VERSION );
-            QTest::newRow( name.toLocal8Bit() ) << tasks << expectedResult;
-            QVERIFY( element.nextSiblingElement( tasksTagName ).isNull() );
-            qDebug() << "Added test case" << name;
-        }
+    Q_FOREACH( QDomElement testcase,
+               retrieveTestCases( ":/checkForUniqueTaskIdsTest/Data", "checkForUniqueTaskIdsTest" ) ) {
+        Q_ASSERT( testcase.attribute( "type" ) == "checkForUniqueTaskIdsTest" );
+
+        QString name = testcase.attribute( "name" );
+        QString expectedResultText = testcase.attribute( "expectedResult" );
+        QVERIFY( expectedResultText == "false" || expectedResultText == "true" );
+        bool expectedResult = ( expectedResultText == "true" );
+        QDomElement element = testcase.firstChildElement( tasksTagName );
+        QVERIFY( !element.isNull() );
+        TaskList tasks = Task::readTasksElement( element, CHARM_DATABASE_VERSION );
+        QTest::newRow( name.toLocal8Bit() ) << tasks << expectedResult;
+        QVERIFY( element.nextSiblingElement( tasksTagName ).isNull() );
+        qDebug() << "Added test case" << name;
     }
 }
 

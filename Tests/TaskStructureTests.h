@@ -2,6 +2,8 @@
 #define TASKSTRUCTURETESTS_H
 
 #include <QObject>
+#include <QList>
+#include <QDomElement>
 
 class TaskStructureTests : public QObject
 {
@@ -20,6 +22,8 @@ private slots:
 
     void mergeTaskListsTest();
 
+private:
+    QList<QDomElement> retrieveTestCases( QString path, QString type );
 };
 
 #endif
