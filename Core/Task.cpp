@@ -276,31 +276,41 @@ TaskList Task::mergeTaskLists( TaskList oldtasks, TaskList newtasks ) throw( Inv
     int oldtasksIndex = 0;
     TaskList addedTasks;
     TaskIdList modifiedTasks;
-    while ( newtasksIndex < newtasks.count() && oldtasksIndex < oldtasks.count() ) {
-        // FIXME tasks in newtasks that are not in oldtasks are new
-        // tasks
-        if ( newtasks[newtasksIndex].id() < oldtasks[oldtasksIndex].id()
-            || oldtasksIndex == oldtasks.count() ) {
-            // if old task index points to the end of the list, there
-            // are additional tasks in the new task list that need to
-            // be added
-            addedTasks << newtasks[newtasksIndex];
-            ++newtasksIndex;
-        } else if ( newtasks[newtasksIndex].id() == oldtasks[oldtasksIndex].id() ) {
+    // insert sentinels to end of list:
+    const TaskId maxId = qMax(
+        oldtasks.isEmpty() ? 0 : oldtasks.last().id(),
+        newtasks.isEmpty() ? 0 : newtasks.last().id() );
+    const TaskId sentinelId = maxId + 1;
+    const Task sentinel( sentinelId, QObject::tr( "Sentinel Task" ) );
+    oldtasks << sentinel;
+    newtasks << sentinel;
+
+    TaskList::iterator oldIt = oldtasks.begin();
+    TaskList::iterator newIt = newtasks.begin();
+
+    do {
+        if ( ( *oldIt ).id() < ( *newIt ).id() ) {
+            // there is a task in the old task list that is not an
+            // element of the new task list, ignore (the user added it
+            // manually)
+            ++oldIt;
+        } else if ( ( *oldIt ).id() == ( *newIt ).id() ) {
+            //
             if ( newtasks[newtasksIndex] != oldtasks[oldtasksIndex] ) {
                 modifiedTasks << oldtasks[oldtasksIndex].id();
                 oldtasks[oldtasksIndex] = newtasks[newtasksIndex];
             }
-            ++oldtasksIndex;
-            ++newtasksIndex;
+            ++oldIt;
+            ++newIt;
         } else {
-            // new task id > old task id:
-            // the old task list contains tasks that are not in the
-            // new tasks list, those will be left untouched:
-            ++oldtasksIndex;
+            // there are tasks in newtasks that are not in oldtasks,
+            // so they are new
+            addedTasks << ( *newIt );
+            ++newIt;
         }
-    }
+    } while ( ( *oldIt ).id() < sentinelId || ( *newIt ).id() < sentinelId );
 
+    oldtasks.pop_back(); // remove sentinel
     oldtasks << addedTasks;
     // FIXME how to return the merge results?
     return oldtasks;

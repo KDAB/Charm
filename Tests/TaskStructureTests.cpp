@@ -198,7 +198,17 @@ void TaskStructureTests::mergeTaskListsTest()
     QFETCH( TaskList, newTasks );
     QFETCH( TaskList, merged );
 
-    QCOMPARE( Task::mergeTaskLists( old, newTasks ), merged );
+    TaskList result = Task::mergeTaskLists( old, newTasks );
+    qSort( result.begin(), result.end(), lowerTaskId );
+    if ( result != merged ) {
+        qDebug() << "Test failed";
+        qDebug() << "Merge Result:";
+        dumpTaskList( result );
+        qDebug() << "Expected Merge Result:";
+        dumpTaskList( merged );
+    }
+
+    QCOMPARE( result, merged );
 }
 
 QTEST_MAIN( TaskStructureTests )
