@@ -96,4 +96,6 @@ Q_DECLARE_METATYPE( TaskList )
 
 void dumpTaskList( const TaskList& tasks );
 
+bool lowerTaskId( const Task& left, const Task& right );
+
 #endif
