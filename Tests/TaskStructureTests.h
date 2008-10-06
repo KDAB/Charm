@@ -25,6 +25,7 @@ private slots:
 
 private:
     QList<QDomElement> retrieveTestCases( QString path, QString type );
+    bool attribute( const QString& name, const QDomElement& element );
 };
 
 #endif

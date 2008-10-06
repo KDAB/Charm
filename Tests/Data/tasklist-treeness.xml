@@ -1,0 +1,24 @@
+<!DOCTYPE charmtests>
+<testcases>
+<testcase type="checkForTreenessTest" name="empty task lists" expectedResult="true">
+   <tasks />
+</testcase>
+<testcase type="checkForTreenessTest" name="simple task lists" expectedResult="true">
+   <tasks>
+      <task taskid="1" subscribed="1" parentid="0" >task 1</task>
+      <task taskid="2" subscribed="1" parentid="1" >task 2</task>
+   </tasks>
+</testcase>
+<testcase type="checkForTreenessTest" name="cyclic task lists" expectedResult="false">
+   <tasks>
+      <task taskid="3" subscribed="1" parentid="5" >task 3</task>
+      <task taskid="4" subscribed="1" parentid="3" >task 4</task>
+      <task taskid="5" subscribed="1" parentid="4" >task 5</task>
+   </tasks>
+</testcase>
+<testcase type="checkForTreenessTest" name="one cyclic task" expectedResult="false">
+   <tasks>
+      <task taskid="6" subscribed="1" parentid="6" >task 3</task>
+   </tasks>
+</testcase>
+</testcases>

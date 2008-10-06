@@ -5,6 +5,9 @@
     <qresource prefix="/mergeTaskListsTest">	
 	<file>Data/tasklist-merges.xml</file>
     </qresource>
+    <qresource prefix="/checkForTreenessTest">	
+	<file>Data/tasklist-treeness.xml</file>
+    </qresource>
 </RCC>
 
 

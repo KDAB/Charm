@@ -57,6 +57,15 @@ QList<QDomElement> TaskStructureTests::retrieveTestCases( QString path, QString 
     return result;
 }
 
+bool TaskStructureTests::attribute( const QString& name, const QDomElement& element )
+{
+    QString text = element.attribute( "expectedResult" );
+    if ( text != "false" && text != "true" ) {
+        throw CharmException( "attribute does not represent a boolean" );
+    }
+    return ( text == "true" );
+}
+
 void TaskStructureTests::checkForUniqueTaskIdsTest_data()
 {
     QTest::addColumn<TaskList>( "tasks" );
@@ -65,9 +74,7 @@ void TaskStructureTests::checkForUniqueTaskIdsTest_data()
     Q_FOREACH( QDomElement testcase,
                retrieveTestCases( ":/checkForUniqueTaskIdsTest/Data", "checkForUniqueTaskIdsTest" ) ) {
         QString name = testcase.attribute( "name" );
-        QString expectedResultText = testcase.attribute( "expectedResult" );
-        QVERIFY( expectedResultText == "false" || expectedResultText == "true" );
-        bool expectedResult = ( expectedResultText == "true" );
+        bool expectedResult = attribute( "expectedResult", testcase );
         QDomElement element = testcase.firstChildElement( Task::taskListTagName() );
         QVERIFY( !element.isNull() );
         TaskList tasks = Task::readTasksElement( element, CHARM_DATABASE_VERSION );
@@ -90,51 +97,17 @@ void TaskStructureTests::checkForTreenessTest_data()
     QTest::addColumn<TaskList>( "tasks" );
     QTest::addColumn<bool>( "directed" );
 
-    // FIXME this will be read from resources:
-    // set up test candidates:
-    TaskList tasks;
-    Task task1;
-    task1.setName( "A task" );
-    task1.setId( 1 );
-    task1.setParent( 0 );
-    task1.setSubscribed( true );
-    task1.setValidFrom( QDateTime::currentDateTime() );
-    Task task2;
-    task2.setName( "Another task" );
-    task2.setId( 2 );
-    task2.setParent( 1 );
-    task2.setSubscribed( false );
-    task2.setValidUntil( QDateTime::currentDateTime() );
-
-    tasks << task1 << task2;
-    QTest::newRow( "Empty TaskList" ) << TaskList() << true;
-    QTest::newRow( "Simple List" ) << tasks << true;
-
-    // now add a cycle to the graph, and make it fail:
-    Task task3;
-    task3.setName( "3" );
-    task3.setId( 3 );
-    task3.setParent( 5 );
-    Task task4;
-    task4.setName( "4" );
-    task4.setId( 4 );
-    task4.setParent( 3 );
-    Task task5;
-    task5.setName( "5" );
-    task5.setId( 5 );
-    task5.setParent( 4 );
-    TaskList cyclicTaskList;
-    cyclicTaskList << task3 << task4 << task5;
-    QTest::newRow( "Cyclic TaskList" ) << cyclicTaskList << false;
-
-    // add a task list of just one task that is it's own child:
-    Task task6;
-    task6.setId( 6 );
-    task6.setParent( 6 );
-    task6.setName( "6" );
-    TaskList oneTask;
-    oneTask << task6;
-    QTest::newRow( "One cyclic task" ) << oneTask << false;
+    Q_FOREACH( QDomElement testcase,
+               retrieveTestCases( ":/checkForTreenessTest/Data", "checkForTreenessTest" ) ) {
+        QString name = testcase.attribute( "name" );
+        bool expectedResult = attribute( "expectedResult", testcase );
+        QDomElement element = testcase.firstChildElement( Task::taskListTagName() );
+        QVERIFY( !element.isNull() );
+        TaskList tasks = Task::readTasksElement( element, CHARM_DATABASE_VERSION );
+        QTest::newRow( name.toLocal8Bit() ) << tasks << expectedResult;
+        QVERIFY( element.nextSiblingElement( Task::taskListTagName() ).isNull() );
+        qDebug() << "Added test case" << name;
+    }
 }
 
 void TaskStructureTests::checkForTreenessTest()
