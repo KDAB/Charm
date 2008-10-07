@@ -36,7 +36,7 @@ void CharmReport::makeReportPreviewWindow()
     }
 }
 
-int pointSize( float relSize, float scale )
+int pointSize( double relSize, float scale )
 {
     return static_cast<int>( relSize * scale );
 }

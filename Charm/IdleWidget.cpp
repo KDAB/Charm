@@ -17,7 +17,7 @@ void IdleWidget::paintEvent( QPaintEvent* )
 
 void IdleWidget::resizeEvent( QResizeEvent* )
 {
-    const float Ratio = 0.8;
+    const double Ratio = 0.8;
     QSize wantedSize = Ratio * size();
     if ( wantedSize.width() < Data::backdropPixmap().width() || wantedSize.height() < Data::backdropPixmap().height() ) {
         m_backdrop = Data::backdropPixmap().scaled( wantedSize, Qt::KeepAspectRatio );

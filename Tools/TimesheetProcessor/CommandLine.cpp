@@ -15,13 +15,13 @@ CommandLine::CommandLine(int argc, char** argv) :
 	m_mode(Mode_None), m_index(), m_userid()
 {
 	opterr = 0;
-	char ch;
+	int ch;
 	while ((ch = getopt(argc, argv, "hza:x:c:ri:u:")) != -1)
 	{
 		if (ch == '?')
 		{
 			// unparsable argument
-			char option = optopt;
+			int option = optopt;
 			if (option == 'a')
 			{
 				throw UsageException(QObject::tr(

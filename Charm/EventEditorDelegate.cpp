@@ -75,7 +75,7 @@ QRect EventEditorDelegate::paint( QPainter* painter,
                                   const QStyleOptionViewItem& option,
                                   const QString& taskName,
                                   const QString& timespan,
-                                  float logDuration,
+                                  double logDuration,
                                   EventState state ) const
 {
     painter->save();
@@ -165,7 +165,7 @@ QRect EventEditorDelegate::paint( QPainter* painter,
 
 }
 
-float EventEditorDelegate::logDuration( int duration ) const
+double EventEditorDelegate::logDuration( int duration ) const
 {   // we rely on the compiler to optimize at compile time :-)
 	if( duration <= 0) {
 		return 0;
@@ -173,9 +173,9 @@ float EventEditorDelegate::logDuration( int duration ) const
 	if( duration <= 3600 ) {
 		return 0.2 * 1.0 / 3600.0 * duration;
 	} else {
-		const float log2 = std::log( 2.0 );
-		const float hours = 1.0 / 3600 * duration;
-		const float value = log( hours ) / log2;
+		const double log2 = std::log( 2.0 );
+		const double hours = 1.0 / 3600 * duration;
+		const double value = log( hours ) / log2;
 		return 0.2 * ( 1.0 + value );
 	}
 }

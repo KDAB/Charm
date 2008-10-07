@@ -333,7 +333,7 @@ TimeSheetInfoList filteredTaskWithSubTasks(
         TimeSheetInfoList subscribed;
         for ( int i = 0; i < timeSheetInfo.size(); ++i ) {
             const TaskTreeItem& item = DATAMODEL->taskTreeItem( timeSheetInfo[i].taskId );
-            if ( item.task().subscribed() || timeSheetInfo[i].total() > 0 && timeSheetInfo[i].aggregated ) {
+            if ( item.task().subscribed() || ( timeSheetInfo[i].total() > 0 && timeSheetInfo[i].aggregated ) ) {
                 subscribed << timeSheetInfo[i];
             }
         }

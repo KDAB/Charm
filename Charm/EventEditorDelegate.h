@@ -39,10 +39,10 @@ private:
     // and the painting during paintEvent)
     QRect paint( QPainter*, const QStyleOptionViewItem& option,
                  const QString& taskName, const QString& timespan,
-                 float logDuration, EventState state ) const;
+                 double logDuration, EventState state ) const;
 
     // calculate the length for a  visual representation of the event duration
-    float logDuration( int seconds ) const;
+    double logDuration( int seconds ) const;
 };
 
 #endif

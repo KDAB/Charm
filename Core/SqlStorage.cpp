@@ -558,7 +558,7 @@ bool SqlStorage::addSubscription(User user, Task task)
 {
 	Task dbTask = getTask(task.id());
 
-	if (!dbTask.isValid() || dbTask.isValid() && !dbTask.subscribed())
+	if (!dbTask.isValid() || (dbTask.isValid() && !dbTask.subscribed()))
 	{
 		QSqlQuery query(database());
 		const char statement[] =

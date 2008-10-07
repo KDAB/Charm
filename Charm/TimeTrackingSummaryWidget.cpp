@@ -269,7 +269,7 @@ void TimeTrackingSummaryWidget::setSummaries( QVector<WeeklySummary> s )
 
 void TimeTrackingSummaryWidget::slotGoStopToggled( bool on )
 {
-    Q_ASSERT( m_selectedSummary >= 0 && m_selectedSummary < m_summaries.size()
+    Q_ASSERT( ( m_selectedSummary >= 0 && m_selectedSummary < m_summaries.size() )
               || m_selectedSummary == -1 );
 
     if ( on ) {
