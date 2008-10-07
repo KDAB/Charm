@@ -30,7 +30,7 @@
 // FIXME read configuration name from command line
 class IdleDetector;
 
-class Application : public QObject
+class Application : public QApplication
 {
     Q_OBJECT
 
@@ -39,8 +39,6 @@ public:
     ~Application();
 
     static Application& instance();
-
-    int exec();
 
     // FIXME broken by design?
     /** Configure the application.
@@ -93,7 +91,6 @@ private:
     void leaveShuttingDownState();
 
     State m_state;
-    QApplication m_app;
     ModelConnector m_model;
     Controller m_controller;
     MainWindow m_mainWindow;

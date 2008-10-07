@@ -1,5 +1,5 @@
-#ifndef EVENT_H
-#define EVENT_H
+#ifndef CHARM_EVENT_H
+#define CHARM_EVENT_H
 
 #include <map>
 

@@ -28,17 +28,16 @@ Application* Application::m_instance = 0;
 extern void qt_mac_set_dock_menu(QMenu *);
 #endif
 
-Application::Application(int argc, char** argv) :
-    QObject()
+Application::Application(int argc, char** argv)
+    : QApplication( argc, argv )
     , m_state(Constructed)
-    , m_app(argc, argv)
     , m_actionShowHideView( this )
     , m_actionShowHideTimeTracker( this )
     , m_actionStopAllTasks( this )
     , m_idleDetector( 0 )
 {
     // QApplication setup
-    m_app.setQuitOnLastWindowClosed(false);
+    setQuitOnLastWindowClosed(false);
     // application metadata setup
     // note that this modifies the behaviour of QSettings:
     QCoreApplication::setOrganizationName("KDAB");
@@ -119,11 +118,6 @@ Application::Application(int argc, char** argv) :
 
 Application::~Application()
 {
-}
-
-int Application::exec()
-{
-    return m_app.exec();
 }
 
 void Application::setState(State state)
@@ -236,7 +230,7 @@ void Application::enterStartingUpState()
     else
     {
         // user has cancelled configure, exit the application
-        m_app.quit();
+        quit();
     }
 }
 
@@ -248,7 +242,7 @@ void Application::enterConnectingState()
 {
     try {
 	if (!m_controller.initializeBackEnd(CHARM_SQLITE_BACKEND_DESCRIPTOR))
-            m_app.quit();
+            quit();
     } catch ( CharmException& e ) {
         QMessageBox::critical(&m_mainWindow, QObject::tr("Database Backend Error"),
                               tr( "The backend could not be initialized: %1" )
@@ -316,7 +310,7 @@ void Application::enterShuttingDownState()
     // prevent all modules from accepting any user commands
     m_mainWindow.setEnabled(false);
     m_timeTracker.setEnabled( false );
-    QTimer::singleShot(1200, &m_app, SLOT(quit()));
+    QTimer::singleShot(1200, this, SLOT(quit()));
 }
 
 void Application::leaveShuttingDownState()
@@ -373,7 +367,7 @@ bool Application::configure()
         {
             qDebug()
                 << "Application::configure: user cancelled configuration. Exiting.";
-            // m_app.quit();
+            // quit();
             return false;
         }
     }
@@ -492,7 +486,7 @@ void Application::slotMaybeIdle()
             m_mainWindow.maybeIdle();
         } // otherwise, the dialog will be showing already
     }
-    // thee are four parameters to the idle property:
+    // there are four parameters to the idle property:
     // - the initial start time of the currently active event(s)
     // - the time the machine went idle
     // - the time it resumed from idling

@@ -9,6 +9,7 @@
 #include <mach/mach_init.h>
 #include <IOKit/pwr_mgt/IOPMLib.h>
 #include <IOKit/IOMessage.h>
+#include <Carbon/Carbon.h>
 
 #include "MacOsIdleDetector.h"
 
@@ -72,7 +73,6 @@ public:
             d->idleStartTime = QDateTime::currentDateTime();
             break;
 
-
         case kIOMessageSystemWillPowerOn:
             qDebug() << "MacOsIdleDetector: system has started the wake up process.";
             break;
@@ -87,7 +87,20 @@ public:
         }
     }
 
+    static OSStatus sessionEventsHandler ( EventHandlerCallRef nextHandler, EventRef event, void* refCon )
+    {
+        // hauahauaha!
+        MacOsIdleDetector::Private* d = static_cast<MacOsIdleDetector::Private*>( refCon );
 
+        if ( GetEventKind( event ) == kEventSystemDisplaysAsleep ) {
+            qDebug() << "MacOsIdleDetector: system displays go to sleep";
+            d->idleStartTime = QDateTime::currentDateTime();
+        } else if ( GetEventKind( event ) == kEventSystemDisplaysAwake ) {
+            qDebug() << "MacOsIdleDetector: system displays woke up";
+            d->papa->idle();
+        }
+        return noErr;
+    }
 };
 
 MacOsIdleDetector::MacOsIdleDetector( QObject* parent )
@@ -112,6 +125,18 @@ MacOsIdleDetector::MacOsIdleDetector( QObject* parent )
         CFRunLoopGetCurrent(),
         IONotificationPortGetRunLoopSource( d->notifyPortRef ),
         kCFRunLoopCommonModes );
+
+    // register handler for session events:
+    EventTypeSpec switchEventTypes[2];
+    switchEventTypes[0].eventClass = kEventClassSystem;
+    switchEventTypes[0].eventKind = kEventSystemDisplaysAsleep;
+    switchEventTypes[1].eventClass = kEventClassSystem;
+    switchEventTypes[1].eventKind = kEventSystemDisplaysAwake;
+    EventHandlerUPP sessionEventsHandler = NewEventHandlerUPP( MacOsIdleDetector::Private::sessionEventsHandler );
+    OSStatus err = InstallApplicationEventHandler( sessionEventsHandler, 2, switchEventTypes,  d,  NULL );
+    if ( err != 0 ) {
+        qDebug() << "Warning: cannot install session events handler:" << err;
+    }
 }
 
 MacOsIdleDetector::~MacOsIdleDetector()

@@ -16,12 +16,12 @@
    </tasks>
    <tasks arg="new" />
    <tasks arg="merged">
-      <task taskid="1" subscribed="1" parentid="0" >top</task>
-      <task taskid="2" subscribed="1" parentid="1" >first-child</task>
-      <task taskid="10" subscribed="1" parentid="2" >project</task>
-      <task taskid="11" subscribed="1" parentid="10" >project task 1</task>
-      <task taskid="12" subscribed="1" parentid="10" >project task 2</task>
-      <task taskid="13" subscribed="1" parentid="10" >project task 3</task>
+      <task taskid="1" subscribed="0" parentid="0" >top</task>
+      <task taskid="2" subscribed="0" parentid="1" >first-child</task>
+      <task taskid="10" subscribed="0" parentid="2" >project</task>
+      <task taskid="11" subscribed="0" parentid="10" >project task 1</task>
+      <task taskid="12" subscribed="0" parentid="10" >project task 2</task>
+      <task taskid="13" subscribed="0" parentid="10" >project task 3</task>
    </tasks>
 </testcase>
 <testcase type="mergeTaskListsTest" name="new tasks, only">
@@ -35,12 +35,12 @@
       <task taskid="13" subscribed="1" parentid="10" >project task 3</task>
    </tasks>
    <tasks arg="merged">
-      <task taskid="1" subscribed="1" parentid="0" >top</task>
-      <task taskid="2" subscribed="1" parentid="1" >first-child</task>
-      <task taskid="10" subscribed="1" parentid="2" >project</task>
-      <task taskid="11" subscribed="1" parentid="10" >project task 1</task>
-      <task taskid="12" subscribed="1" parentid="10" >project task 2</task>
-      <task taskid="13" subscribed="1" parentid="10" >project task 3</task>
+      <task taskid="1" subscribed="0" parentid="0" >top</task>
+      <task taskid="2" subscribed="0" parentid="1" >first-child</task>
+      <task taskid="10" subscribed="0" parentid="2" >project</task>
+      <task taskid="11" subscribed="0" parentid="10" >project task 1</task>
+      <task taskid="12" subscribed="0" parentid="10" >project task 2</task>
+      <task taskid="13" subscribed="0" parentid="10" >project task 3</task>
    </tasks>
 </testcase>
 <testcase type="mergeTaskListsTest" name="one new task, inbetween">
@@ -54,9 +54,9 @@
       <task taskid="10" subscribed="1" parentid="1" >project</task>
    </tasks>
    <tasks arg="merged">
-      <task taskid="1" subscribed="1" parentid="0" >top</task>
-      <task taskid="2" subscribed="1" parentid="1" >first-child</task>
-      <task taskid="10" subscribed="1" parentid="1" >project</task>
+      <task taskid="1" subscribed="0" parentid="0" >top</task>
+      <task taskid="2" subscribed="0" parentid="1" >first-child</task>
+      <task taskid="10" subscribed="0" parentid="1" >project</task>
    </tasks>
 </testcase>
 <testcase type="mergeTaskListsTest" name="one new task, beginning">
@@ -70,9 +70,9 @@
       <task taskid="10" subscribed="1" parentid="1" >project</task>
    </tasks>
    <tasks arg="merged">
-      <task taskid="1" subscribed="1" parentid="0" >top</task>
-      <task taskid="2" subscribed="1" parentid="1" >first-child</task>
-      <task taskid="10" subscribed="1" parentid="1" >project</task>
+      <task taskid="1" subscribed="0" parentid="0" >top</task>
+      <task taskid="2" subscribed="0" parentid="1" >first-child</task>
+      <task taskid="10" subscribed="0" parentid="1" >project</task>
    </tasks>
 </testcase>
 <testcase type="mergeTaskListsTest" name="one new task, end">
@@ -86,9 +86,9 @@
       <task taskid="2" subscribed="1" parentid="1" >first-child</task>
    </tasks>
    <tasks arg="merged">
-      <task taskid="1" subscribed="1" parentid="0" >top</task>
-      <task taskid="2" subscribed="1" parentid="1" >first-child</task>
-      <task taskid="10" subscribed="1" parentid="1" >project</task>
+      <task taskid="1" subscribed="0" parentid="0" >top</task>
+      <task taskid="2" subscribed="0" parentid="1" >first-child</task>
+      <task taskid="10" subscribed="0" parentid="1" >project</task>
    </tasks>
 </testcase>
 <testcase type="mergeTaskListsTest" name="extra task, inbetween">
@@ -102,9 +102,9 @@
       <task taskid="10" subscribed="1" parentid="1" >project</task>
    </tasks>
    <tasks arg="merged">
-      <task taskid="1" subscribed="1" parentid="0" >top</task>
-      <task taskid="2" subscribed="1" parentid="1" >first-child</task>
-      <task taskid="10" subscribed="1" parentid="1" >project</task>
+      <task taskid="1" subscribed="0" parentid="0" >top</task>
+      <task taskid="2" subscribed="0" parentid="1" >first-child</task>
+      <task taskid="10" subscribed="0" parentid="1" >project</task>
    </tasks>
 </testcase>
 <testcase type="mergeTaskListsTest" name="extra, beginning">
@@ -118,9 +118,9 @@
       <task taskid="10" subscribed="1" parentid="1" >project</task>
    </tasks>
    <tasks arg="merged">
-      <task taskid="1" subscribed="1" parentid="0" >top</task>
-      <task taskid="2" subscribed="1" parentid="1" >first-child</task>
-      <task taskid="10" subscribed="1" parentid="1" >project</task>
+      <task taskid="1" subscribed="0" parentid="0" >top</task>
+      <task taskid="2" subscribed="0" parentid="1" >first-child</task>
+      <task taskid="10" subscribed="0" parentid="1" >project</task>
    </tasks>
 </testcase>
 <testcase type="mergeTaskListsTest" name="extra, end">
@@ -134,9 +134,9 @@
       <task taskid="10" subscribed="1" parentid="1" >project</task>
    </tasks>
    <tasks arg="merged">
-      <task taskid="1" subscribed="1" parentid="0" >top</task>
-      <task taskid="2" subscribed="1" parentid="1" >first-child</task>
-      <task taskid="10" subscribed="1" parentid="1" >project</task>
+      <task taskid="1" subscribed="0" parentid="0" >top</task>
+      <task taskid="2" subscribed="0" parentid="1" >first-child</task>
+      <task taskid="10" subscribed="0" parentid="1" >project</task>
    </tasks>
 </testcase>
 <!-- no need to add tests that permutate the tasks in the input lists, 
@@ -153,10 +153,10 @@ because the lists are sorted before merging -->
       <task taskid="10" subscribed="1" parentid="1" >project</task>
    </tasks>
    <tasks arg="merged">
-      <task taskid="1" subscribed="1" parentid="0" >top</task>
-      <task taskid="2" subscribed="1" parentid="1" >first-child</task>
-      <task taskid="3" subscribed="1" parentid="10" >first-child</task>
-      <task taskid="10" subscribed="1" parentid="1" >project</task>
+      <task taskid="1" subscribed="0" parentid="0" >top</task>
+      <task taskid="2" subscribed="0" parentid="1" >first-child</task>
+      <task taskid="3" subscribed="0" parentid="10" >first-child</task>
+      <task taskid="10" subscribed="0" parentid="1" >project</task>
    </tasks>
 </testcase>
 <testcase type="mergeTaskListsTest" name="update existing tasks">
@@ -172,10 +172,10 @@ because the lists are sorted before merging -->
       <task taskid="10" subscribed="1" parentid="1" >project</task>
    </tasks>
    <tasks arg="merged">
-      <task taskid="1" subscribed="1" parentid="0" >top new</task>
-      <task taskid="2" subscribed="1" parentid="1" >now first-child</task>
-      <task taskid="3" subscribed="1" parentid="10" >first-child</task>
-      <task taskid="10" subscribed="1" parentid="1" >project</task>
+      <task taskid="1" subscribed="0" parentid="0" >top new</task>
+      <task taskid="2" subscribed="0" parentid="1" >now first-child</task>
+      <task taskid="3" subscribed="0" parentid="10" >first-child</task>
+      <task taskid="10" subscribed="0" parentid="1" >project</task>
    </tasks>
 </testcase>
 </testcases>
