@@ -2,6 +2,8 @@
 #include <QCloseEvent>
 #include <QtAlgorithms>
 
+#include <algorithm>
+
 #include "ViewHelpers.h"
 
 #include "TimeTrackingView.h"
