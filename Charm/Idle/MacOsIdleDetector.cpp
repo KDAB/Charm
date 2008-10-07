@@ -3,7 +3,6 @@
 #include <QtDebug>
 
 #if defined Q_WS_MAC
-
 #include <mach/mach_port.h>
 #include <mach/mach_interface.h>
 #include <mach/mach_init.h>
@@ -87,6 +86,7 @@ public:
         }
     }
 
+#if DARWIN_VERSION > 8
     static OSStatus sessionEventsHandler ( EventHandlerCallRef nextHandler, EventRef event, void* refCon )
     {
         // hauahauaha!
@@ -101,6 +101,7 @@ public:
         }
         return noErr;
     }
+#endif
 };
 
 MacOsIdleDetector::MacOsIdleDetector( QObject* parent )
@@ -126,6 +127,7 @@ MacOsIdleDetector::MacOsIdleDetector( QObject* parent )
         IONotificationPortGetRunLoopSource( d->notifyPortRef ),
         kCFRunLoopCommonModes );
 
+#if DARWIN_VERSION > 8
     // register handler for session events:
     EventTypeSpec switchEventTypes[2];
     switchEventTypes[0].eventClass = kEventClassSystem;
@@ -137,6 +139,7 @@ MacOsIdleDetector::MacOsIdleDetector( QObject* parent )
     if ( err != 0 ) {
         qDebug() << "Warning: cannot install session events handler:" << err;
     }
+#endif
 }
 
 MacOsIdleDetector::~MacOsIdleDetector()
