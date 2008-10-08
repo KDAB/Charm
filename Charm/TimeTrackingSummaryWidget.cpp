@@ -32,9 +32,6 @@ TimeTrackingSummaryWidget::TimeTrackingSummaryWidget( QWidget* parent )
     m_stopGoButton.setCheckable( true );
     connect( &m_stopGoButton, SIGNAL( toggled( bool ) ),
              SLOT( slotGoStopToggled( bool ) ) );
-    m_stopGoButton.setChecked( false );
-    slotGoStopToggled( false );
-    m_stopGoButton.setEnabled( false );
     m_taskSelector.setEnabled( false );
     m_taskSelector.setPopupMode( QToolButton::InstantPopup );
     m_taskSelector.setMenu( &m_menu );
@@ -273,19 +270,11 @@ void TimeTrackingSummaryWidget::slotGoStopToggled( bool on )
               || m_selectedSummary == -1 );
 
     if ( on ) {
-        m_stopGoButton.setIcon( Data::recorderStopIcon() );
-        m_stopGoButton.setText( tr( "Stop" ) );
-        m_taskSelector.setEnabled( false );
         if ( m_selectedSummary != -1 ) {
             emit startEvent( m_summaries[m_selectedSummary].task );
         }
     } else {
-        m_stopGoButton.setIcon( Data::recorderGoIcon() );
-        m_stopGoButton.setText( tr( "Start" ) );
-        m_taskSelector.setEnabled( true );
-        if ( m_selectedSummary != -1 ) {
-            emit stopEvent( m_summaries[m_selectedSummary].task );
-        }
+        emit stopEvent();
     }
 }
 
@@ -297,6 +286,35 @@ void TimeTrackingSummaryWidget::slotActionSelected( QAction* action )
     m_selectedSummary = position;
     m_taskSelector.setText( m_summaries[m_selectedSummary].taskname );
     m_stopGoButton.setEnabled( true );
+}
+
+void TimeTrackingSummaryWidget::handleActiveEvents()
+{
+    const int activeEventCount = DATAMODEL->activeEventCount();
+    Q_ASSERT( activeEventCount >= 0 );
+
+    bool taskSelected = m_selectedSummary >= 0 && m_selectedSummary < m_summaries.size();
+
+    if ( activeEventCount > 1 ) {
+        m_stopGoButton.setIcon( Data::recorderGoIcon() );
+        m_stopGoButton.setText( tr( "Start" ) );
+        m_taskSelector.setEnabled( false );
+        m_stopGoButton.setEnabled( false );
+        m_stopGoButton.setChecked( true );
+        qDebug() << "TimeTrackingView::eventActivated: disable GUI, multiple events are active!";
+    } else if ( activeEventCount == 1 ) {
+        m_stopGoButton.setIcon( Data::recorderStopIcon() );
+        m_stopGoButton.setText( tr( "Stop" ) );
+        m_stopGoButton.setEnabled( true );
+        m_taskSelector.setEnabled( false );
+        m_stopGoButton.setChecked( true );
+    } else {
+        m_stopGoButton.setIcon( Data::recorderGoIcon() );
+        m_stopGoButton.setText( tr( "Start" ) );
+        m_taskSelector.setEnabled( true );
+        m_stopGoButton.setEnabled( taskSelected );
+        m_stopGoButton.setChecked( false );
+    }
 }
 
 #include "TimeTrackingSummaryWidget.moc"

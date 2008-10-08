@@ -55,7 +55,7 @@ public:
 private slots:
     void slotMaybeShrink();
     void slotStartEvent( TaskId );
-    void slotStopEvent( TaskId );
+    void slotStopEvent();
     void slotShowHide();
 
 signals:
@@ -63,7 +63,6 @@ signals:
 
 private:
     void selectTasksToShow();
-    void handleActiveEvents();
     TimeTrackingSummaryWidget* summaryWidget();
     Ui::TimeTrackingView* m_ui;
     QVector<TimeTrackingSummaryWidget::WeeklySummary> m_summaries;

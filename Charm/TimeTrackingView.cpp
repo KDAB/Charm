@@ -20,8 +20,8 @@ TimeTrackingView::TimeTrackingView( QWidget* parent )
              SLOT( slotMaybeShrink() ), Qt::QueuedConnection );
     connect( m_ui->summaryWidget, SIGNAL( startEvent( TaskId ) ),
              SLOT( slotStartEvent( TaskId ) ) );
-    connect( m_ui->summaryWidget, SIGNAL( stopEvent( TaskId ) ),
-             SLOT( slotStopEvent( TaskId ) ) );
+    connect( m_ui->summaryWidget, SIGNAL( stopEvent() ),
+             SLOT( slotStopEvent() ) );
 }
 
 
@@ -66,6 +66,7 @@ void TimeTrackingView::stateChanged( State previous )
                 hide();
             }
         }
+        summaryWidget()->handleActiveEvents();
         break;
     }
     case Disconnecting: {
@@ -179,13 +180,12 @@ void TimeTrackingView::eventDeleted( EventId id )
 
 void TimeTrackingView::eventActivated( EventId id )
 {
-    if ( DATAMODEL->activeEventCount() > 1 ) {
-        qDebug() << "TimeTrackingView::eventActivated: disable GUI, multiple events are active!";
-    }
+    summaryWidget()->handleActiveEvents();
 }
 
 void TimeTrackingView::eventDeactivated( EventId id )
 {
+    summaryWidget()->handleActiveEvents();
 }
 
 void TimeTrackingView::selectTasksToShow()
@@ -252,10 +252,9 @@ void TimeTrackingView::slotStartEvent( TaskId id )
     }
 }
 
-void TimeTrackingView::slotStopEvent( TaskId id )
+void TimeTrackingView::slotStopEvent()
 {
-    const TaskTreeItem& item = DATAMODEL->taskTreeItem( id );
-    DATAMODEL->endEventRequested( item.task() );
+    DATAMODEL->endAllEventsRequested();
 }
 
 #include "TimeTrackingView.moc"

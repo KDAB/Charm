@@ -168,13 +168,13 @@ because the lists are sorted before merging -->
    <tasks arg="new">
       <task taskid="1" subscribed="1" parentid="0" >top new</task>
       <task taskid="2" subscribed="1" parentid="1" >now first-child</task>
-      <task taskid="3" subscribed="1" parentid="10" >first-child</task>
+      <task taskid="3" subscribed="1" parentid="10" validuntil="2008-10-07T00:00:00" >second child</task>
       <task taskid="10" subscribed="1" parentid="1" >project</task>
    </tasks>
    <tasks arg="merged">
       <task taskid="1" subscribed="0" parentid="0" >top new</task>
       <task taskid="2" subscribed="0" parentid="1" >now first-child</task>
-      <task taskid="3" subscribed="0" parentid="10" >first-child</task>
+      <task taskid="3" subscribed="0" parentid="10" validuntil="2008-10-07T00:00:00">second child</task>
       <task taskid="10" subscribed="0" parentid="1" >project</task>
    </tasks>
 </testcase>

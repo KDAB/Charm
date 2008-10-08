@@ -40,12 +40,14 @@ public:
     QSize sizeHint() const;
     QSize minimumSizeHint() const;
 
+    void handleActiveEvents();
+
 signals:
     void maybeShrink();
 
 signals:
     void startEvent( TaskId );
-    void stopEvent( TaskId );
+    void stopEvent();
 
 private slots:
     void slotGoStopToggled( bool );
