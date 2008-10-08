@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>441</width>
-    <height>237</height>
+    <width>433</width>
+    <height>205</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -16,7 +16,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget" >
      <property name="currentIndex" >
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tabDatabase" >
       <attribute name="title" >
@@ -38,18 +38,7 @@
         </widget>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout" >
-         <item>
-          <widget class="QLabel" name="label_3" >
-           <property name="text" >
-            <string>download tasks from:</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLineEdit" name="lineEdit" />
-         </item>
-        </layout>
+        <layout class="QHBoxLayout" name="horizontalLayout" />
        </item>
        <item>
         <spacer>
