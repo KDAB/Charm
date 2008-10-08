@@ -45,6 +45,9 @@ void CharmDataModel::setAllTasks( const TaskList& tasks )
 {
     m_tasks.clear();
     m_rootItem = TaskTreeItem();
+    // notify adapters of changes
+    for_each( m_adapters.begin(), m_adapters.end(),
+              std::mem_fun( &CharmDataModelAdapterInterface::resetTasks ) );
 
     // fill the tasks into the map to TaskTreeItems
     for ( int i = 0; i < tasks.size(); ++i )
