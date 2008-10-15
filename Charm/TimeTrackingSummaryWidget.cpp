@@ -30,7 +30,7 @@ TimeTrackingSummaryWidget::TimeTrackingSummaryWidget( QWidget* parent )
     setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
     // plumbing
     m_stopGoButton.setCheckable( true );
-    connect( &m_stopGoButton, SIGNAL( toggled( bool ) ),
+    connect( &m_stopGoButton, SIGNAL( clicked( bool ) ),
              SLOT( slotGoStopToggled( bool ) ) );
     m_taskSelector.setEnabled( false );
     m_taskSelector.setPopupMode( QToolButton::InstantPopup );
