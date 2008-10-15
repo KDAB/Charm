@@ -1,6 +1,7 @@
 #include <QtAlgorithms>
 
 #include "IdleDetector.h"
+#include "X11IdleDetector.h"
 
 // FIXME verify inclusion guard is needed (Q_OBJECT?)
 #if defined Q_WS_MAC
@@ -21,9 +22,8 @@ IdleDetector* IdleDetector::createIdleDetector( QObject* parent )
     // return new ...
     return 0;
 #elif defined Q_WS_X11
-    // FIXME implement X11 Idle Detector
-    // return new ...
-    return 0;
+    if ( X11IdleDetector::idleCheckPossible() )
+        return new X11IdleDetector( parent );
 #else
     return 0;
 #endif
