@@ -1,9 +1,9 @@
 #include "X11IdleDetector.h"
-#include <QX11Info>
 #include <QTimer>
 #include "config-charm.h"
 
 #if defined(Q_WS_X11) && defined(HAVE_LIBXSS)
+ #include <QX11Info>
  #include <X11/Xlib.h>
  #include <X11/Xutil.h>
  #include <X11/extensions/scrnsaver.h>

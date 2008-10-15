@@ -1,17 +1,4 @@
 IF ( QT4_FOUND )
-   include(FindX11)
-   if(X11_FOUND)
-     set(HAVE_LIBXSS 0)
-
-     if(X11_Xscreensaver_LIB)
-       message("Found screensaver extension library")
-       LINK_LIBRARIES (${X11_Xscreensaver_LIB} )
-       set(HAVE_LIBXSS 1)
-     else(X11_Xscreensaver_LIB)
-       message("Please install libXss-dev to get idle detection to work on Linux")
-     endif(X11_Xscreensaver_LIB)
-     configure_file(config-charm.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-charm.h )
-   endif(X11_FOUND)
 
    INCLUDE_DIRECTORIES( ${QT_INCLUDE_DIR} )
    INCLUDE_DIRECTORIES( ${QT_QTCORE_INCLUDE_DIR} )
@@ -83,6 +70,7 @@ IF ( QT4_FOUND )
 		       Idle/IdleCorrectionDialog.cpp
                Idle/X11IdleDetector.cpp
 )
+	set(HAVE_LIBXSS 0)
 	IF( APPLE )
 	   SET( CharmApplication_SRCS 
 		      ${CharmApplication_SRCS} Idle/MacOsIdleDetector.cpp )
@@ -90,7 +78,21 @@ IF ( QT4_FOUND )
 	   STRING(REGEX MATCH "^[0-9]+" DARWIN_VERSION ${DARWIN_BUILDVERSION})
 #	   MESSAGE(STATUS "DARWIN_VERSION=${DARWIN_VERSION}")
 	   ADD_DEFINITIONS( -DDARWIN_VERSION=${DARWIN_VERSION} )
-	ENDIF( APPLE)
+        ELSE( APPLE )
+	    IF( UNIX )
+                include(FindX11)
+	        if(X11_FOUND)
+	            if(X11_Xscreensaver_LIB)
+	                message("Found screensaver extension library")
+	                LINK_LIBRARIES (${X11_Xscreensaver_LIB} )
+	                set(HAVE_LIBXSS 1)
+                    else(X11_Xscreensaver_LIB)
+                        message("Please install libXss-dev to get idle detection to work on Linux")
+                    endif(X11_Xscreensaver_LIB)
+                endif(X11_FOUND)
+            ENDIF( UNIX )
+        ENDIF( APPLE)
+        configure_file(config-charm.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-charm.h )
 
 
     

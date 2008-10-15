@@ -22,8 +22,11 @@ IdleDetector* IdleDetector::createIdleDetector( QObject* parent )
     // return new ...
     return 0;
 #elif defined Q_WS_X11
-    if ( X11IdleDetector::idleCheckPossible() )
+    if ( X11IdleDetector::idleCheckPossible() ) {
         return new X11IdleDetector( parent );
+    } else {
+        return 0;
+    }
 #else
     return 0;
 #endif
