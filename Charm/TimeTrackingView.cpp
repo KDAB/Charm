@@ -4,6 +4,9 @@
 
 #include <algorithm>
 
+#include "Core/TimeSpans.h"
+
+#include "Application.h"
 #include "ViewHelpers.h"
 
 #include "TimeTrackingView.h"
@@ -22,6 +25,8 @@ TimeTrackingView::TimeTrackingView( QWidget* parent )
              SLOT( slotStartEvent( TaskId ) ) );
     connect( m_ui->summaryWidget, SIGNAL( stopEvent() ),
              SLOT( slotStopEvent() ) );
+    connect( &Application::instance().timeSpans(), SIGNAL( timeSpansChanged() ),
+             SLOT( slotSelectTasksToShow() ) );
 }
 
 
@@ -119,7 +124,7 @@ void TimeTrackingView::quit()
 // model adapter:
 void TimeTrackingView::resetTasks()
 {
-    selectTasksToShow();
+    slotSelectTasksToShow();
 }
 
 void TimeTrackingView::taskAboutToBeAdded( TaskId parent, int pos )
@@ -128,17 +133,17 @@ void TimeTrackingView::taskAboutToBeAdded( TaskId parent, int pos )
 
 void TimeTrackingView::taskAdded( TaskId id )
 {
-    selectTasksToShow();
+    slotSelectTasksToShow();
 }
 
 void TimeTrackingView::taskModified( TaskId id )
 {
-    selectTasksToShow();
+    slotSelectTasksToShow();
 }
 
 void TimeTrackingView::taskParentChanged( TaskId task, TaskId oldParent, TaskId newParent )
 {
-    selectTasksToShow();
+    slotSelectTasksToShow();
 }
 
 void TimeTrackingView::taskAboutToBeDeleted( TaskId )
@@ -147,12 +152,12 @@ void TimeTrackingView::taskAboutToBeDeleted( TaskId )
 
 void TimeTrackingView::taskDeleted( TaskId id )
 {
-    selectTasksToShow();
+    slotSelectTasksToShow();
 }
 
 void TimeTrackingView::resetEvents()
 {
-    selectTasksToShow();
+    slotSelectTasksToShow();
 }
 
 void TimeTrackingView::eventAboutToBeAdded( EventId id )
@@ -161,12 +166,12 @@ void TimeTrackingView::eventAboutToBeAdded( EventId id )
 
 void TimeTrackingView::eventAdded( EventId id )
 {
-    selectTasksToShow();
+    slotSelectTasksToShow();
 }
 
 void TimeTrackingView::eventModified( EventId id, Event discardedEvent )
 {
-    selectTasksToShow();
+    slotSelectTasksToShow();
 }
 
 void TimeTrackingView::eventAboutToBeDeleted( EventId id )
@@ -175,7 +180,7 @@ void TimeTrackingView::eventAboutToBeDeleted( EventId id )
 
 void TimeTrackingView::eventDeleted( EventId id )
 {
-    selectTasksToShow();
+    slotSelectTasksToShow();
 }
 
 void TimeTrackingView::eventActivated( EventId id )
@@ -188,7 +193,7 @@ void TimeTrackingView::eventDeactivated( EventId id )
     summaryWidget()->handleActiveEvents();
 }
 
-void TimeTrackingView::selectTasksToShow()
+void TimeTrackingView::slotSelectTasksToShow()
 {
     // we would like to always show some tasks, if there are any
     // first, we select tasks that most recently where active

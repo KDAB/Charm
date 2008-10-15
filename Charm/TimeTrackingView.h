@@ -57,12 +57,12 @@ private slots:
     void slotStartEvent( TaskId );
     void slotStopEvent();
     void slotShowHide();
+    void slotSelectTasksToShow();
 
 signals:
     void visibilityChanged( bool ); // reimpl from ViewInterface
 
 private:
-    void selectTasksToShow();
     TimeTrackingSummaryWidget* summaryWidget();
     Ui::TimeTrackingView* m_ui;
     QVector<TimeTrackingSummaryWidget::WeeklySummary> m_summaries;
