@@ -121,11 +121,12 @@ void TimeTrackingSummaryWidget::paintEvent( QPaintEvent* e )
                                    m_cachedDayFieldRect.width(), FieldHeight );
             }
             const QRect textRect = fieldRect.adjusted( Margin, Margin, -Margin, -Margin );
-            painter.setBrush( field.background );
-            painter.setPen( Qt::NoPen );
-            painter.drawRect( fieldRect );
             if ( field.hasHighlight ) {
                 painter.setBrush( field.highlight );
+                painter.setPen( Qt::NoPen );
+                painter.drawRect( fieldRect );
+            } else {
+                painter.setBrush( field.background );
                 painter.setPen( Qt::NoPen );
                 painter.drawRect( fieldRect );
             }

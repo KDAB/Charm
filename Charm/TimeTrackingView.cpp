@@ -25,8 +25,6 @@ TimeTrackingView::TimeTrackingView( QWidget* parent )
              SLOT( slotStartEvent( TaskId ) ) );
     connect( m_ui->summaryWidget, SIGNAL( stopEvent() ),
              SLOT( slotStopEvent() ) );
-    connect( &Application::instance().timeSpans(), SIGNAL( timeSpansChanged() ),
-             SLOT( slotSelectTasksToShow() ) );
 }
 
 
@@ -56,6 +54,8 @@ void TimeTrackingView::stateChanged( State previous )
 {
     switch( Application::instance().state() ) {
     case Connecting: {
+        connect( &Application::instance().timeSpans(), SIGNAL( timeSpansChanged() ),
+                 SLOT( slotSelectTasksToShow() ) );
         DATAMODEL->registerAdapter( this );
         // restore Gui state:
         QSettings settings;
