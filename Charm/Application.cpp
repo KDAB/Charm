@@ -28,7 +28,7 @@ Application* Application::m_instance = 0;
 extern void qt_mac_set_dock_menu(QMenu *);
 #endif
 
-Application::Application(int argc, char** argv)
+Application::Application(int& argc, char** argv)
     : QApplication( argc, argv )
     , m_state(Constructed)
     , m_actionShowHideView( this )
