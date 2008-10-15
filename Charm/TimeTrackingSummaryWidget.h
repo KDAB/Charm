@@ -6,6 +6,7 @@
 #include <QPen>
 #include <QMenu>
 #include <QToolButton>
+#include <QTimeLine>
 
 #include "Core/Task.h"
 
@@ -23,10 +24,11 @@ public:
     };
 private:
     struct DataField {
-        DataField() : hasHighlight( false ) {}
+        DataField() : hasHighlight( false ), storeAsActive( false ) {}
         QString text;
         QBrush background;
         bool hasHighlight; // QBrush does not have isValid()
+        bool storeAsActive;
         QBrush highlight;
         QFont font;
     };
@@ -52,6 +54,7 @@ signals:
 private slots:
     void slotGoStopToggled( bool );
     void slotActionSelected( QAction* );
+    void slotPulseValueChanged( qreal );
 
 private:
     DataField data( int column, int row );
@@ -68,6 +71,8 @@ private:
     QToolButton m_taskSelector;
     QMenu m_menu;
     QList<QAction*> m_currentActions;
+    QList<QRect> m_activeFieldRects;
+    QTimeLine m_pulse;
     int m_selectedSummary;
 };
 

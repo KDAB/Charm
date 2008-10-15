@@ -6,6 +6,7 @@
 #include <QFont>
 #include <QFontMetrics>
 #include <QToolButton>
+#include <QPaintEvent>
 
 #include "Core/CharmConstants.h"
 
@@ -36,6 +37,13 @@ TimeTrackingSummaryWidget::TimeTrackingSummaryWidget( QWidget* parent )
     m_taskSelector.setPopupMode( QToolButton::InstantPopup );
     m_taskSelector.setMenu( &m_menu );
     m_taskSelector.setText( tr( "Select Task" ) );
+    m_pulse.setLoopCount( 0 );
+    m_pulse.setDuration( 2000 );
+    // m_pulse.setFrameRange( 1, 48 );
+    // m_pulse.setUpdateInterval( 250 );
+    m_pulse.setCurveShape( QTimeLine::SineCurve );
+    connect( &m_pulse, SIGNAL( valueChanged( qreal ) ),
+             SLOT( slotPulseValueChanged( qreal ) ) );
     connect( &m_menu, SIGNAL( triggered( QAction* ) ),
              SLOT( slotActionSelected( QAction* ) ) );
 }
@@ -71,7 +79,7 @@ QSize TimeTrackingSummaryWidget::minimumSizeHint() const
                                 + 2 * Margin;
         const QRect taskColumnFieldRect = narrowFontMetrics.boundingRect(
             tr( "KDABStuffngy" ) )
-            .adjusted( 0, 0, 2 * Margin, 2 * Margin );
+                                          .adjusted( 0, 0, 2 * Margin, 2 * Margin );
         // the tracking row needs to accomodate a tool button:
         const QSize buttonSizeHint = m_stopGoButton.sizeHint();
         const int trackingRowHeight = qMax( fieldHeight, buttonSizeHint.height() + 2 * Margin );
@@ -90,6 +98,7 @@ QSize TimeTrackingSummaryWidget::minimumSizeHint() const
 
 void TimeTrackingSummaryWidget::paintEvent( QPaintEvent* e )
 {
+    m_activeFieldRects.clear();
     const int FieldHeight = m_cachedTotalsFieldRect.height();
     QPainter painter( this );
     // all attributes are determined in data(), we just paint the rects:
@@ -120,33 +129,38 @@ void TimeTrackingSummaryWidget::paintEvent( QPaintEvent* e )
                                    + column * m_cachedDayFieldRect.width(), y,
                                    m_cachedDayFieldRect.width(), FieldHeight );
             }
-            const QRect textRect = fieldRect.adjusted( Margin, Margin, -Margin, -Margin );
-            if ( field.hasHighlight ) {
-                painter.setBrush( field.highlight );
-                painter.setPen( Qt::NoPen );
-                painter.drawRect( fieldRect );
-            } else {
-                painter.setBrush( field.background );
-                painter.setPen( Qt::NoPen );
-                painter.drawRect( fieldRect );
+            if ( field.storeAsActive ) m_activeFieldRects << fieldRect;
+            if ( e->rect().contains( fieldRect ) ) {
+                const QRect textRect = fieldRect.adjusted( Margin, Margin, -Margin, -Margin );
+                if ( field.hasHighlight ) {
+                    painter.setBrush( field.highlight );
+                    painter.setPen( Qt::NoPen );
+                    painter.drawRect( fieldRect );
+                } else {
+                    painter.setBrush( field.background );
+                    painter.setPen( Qt::NoPen );
+                    painter.drawRect( fieldRect );
+                }
+                painter.setPen( palette().text().color() );
+                painter.setFont( field.font );
+                painter.drawText( textRect, alignment, field.text );
+
             }
-            painter.setPen( palette().text().color() );
-            painter.setFont( field.font );
-            painter.drawText( textRect, alignment, field.text );
         }
     }
     // paint the tracking row
     const int left = m_stopGoButton.geometry().right() + Margin;
     const int top = ( rowCount() - 1 ) * FieldHeight;
     const QRect fieldRect( 0, top, width(), height() - top );
-    const QRect textRect = fieldRect.adjusted( left + Margin, Margin, -Margin, -Margin );
-    const DataField field = data( 0, rowCount() - 1 );
-    painter.setBrush( field.background );
-    painter.setPen( Qt::NoPen );
-    painter.drawRect( fieldRect );
-//     painter.setPen( palette().text().color() );
-//     painter.drawText( textRect, Qt::AlignLeft | Qt::AlignVCenter, field.text );
+    if ( e->rect().contains( fieldRect ) ) {
+        const QRect textRect = fieldRect.adjusted( left + Margin, Margin, -Margin, -Margin );
+        const DataField field = data( 0, rowCount() - 1 );
+        painter.setBrush( field.background );
+        painter.setPen( Qt::NoPen );
+        painter.drawRect( fieldRect );
+    }
 }
+
 
 void TimeTrackingSummaryWidget::resizeEvent( QResizeEvent* )
 {
@@ -213,7 +227,8 @@ TimeTrackingSummaryWidget::DataField TimeTrackingSummaryWidget::data( int column
             const int index = row - 1; // index into summaries
             const bool active = DATAMODEL->isTaskActive( m_summaries[index].task );
             QColor dimHighlight( palette().highlight().color() );
-            dimHighlight.setAlphaF( 0.333 * dimHighlight.alphaF() );
+            const float dim = 1.0 / 3;
+            dimHighlight.setAlphaF( dim * dimHighlight.alphaF() );
             const QBrush halfHighlight( dimHighlight );
 
             if ( active ) {
@@ -234,7 +249,11 @@ TimeTrackingSummaryWidget::DataField TimeTrackingSummaryWidget::data( int column
                 // highlight today as well, with the half highlight:
                 if ( day == QDate::currentDate().dayOfWeek() -1 ) {
                     field.hasHighlight = true;
-                    field.highlight = active ? palette().highlight() : halfHighlight;
+                    field.storeAsActive = active;
+                    QColor pulseColor = palette().highlight().color();
+                    pulseColor.setAlphaF( dim + ( 1.0 - dim ) * m_pulse.currentValue() );
+                    const QBrush pulseBrush( pulseColor );
+                    field.highlight = active ? pulseBrush : halfHighlight;
                 }
             }
         }
@@ -245,6 +264,7 @@ TimeTrackingSummaryWidget::DataField TimeTrackingSummaryWidget::data( int column
 
 void TimeTrackingSummaryWidget::setSummaries( QVector<WeeklySummary> s )
 {
+    m_activeFieldRects.clear();
     m_summaries = s;
     if ( m_summaries.isEmpty() ) {
         m_taskSelector.setEnabled( false );
@@ -291,6 +311,7 @@ void TimeTrackingSummaryWidget::slotActionSelected( QAction* action )
 
 void TimeTrackingSummaryWidget::handleActiveEvents()
 {
+    m_activeFieldRects.clear();
     const int activeEventCount = DATAMODEL->activeEventCount();
     Q_ASSERT( activeEventCount >= 0 );
 
@@ -303,18 +324,32 @@ void TimeTrackingSummaryWidget::handleActiveEvents()
         m_stopGoButton.setEnabled( false );
         m_stopGoButton.setChecked( true );
         qDebug() << "TimeTrackingView::eventActivated: disable GUI, multiple events are active!";
+        if ( m_pulse.state() != QTimeLine::Running ) m_pulse.start();
     } else if ( activeEventCount == 1 ) {
         m_stopGoButton.setIcon( Data::recorderStopIcon() );
         m_stopGoButton.setText( tr( "Stop" ) );
         m_stopGoButton.setEnabled( true );
         m_taskSelector.setEnabled( false );
         m_stopGoButton.setChecked( true );
+        if ( m_pulse.state() != QTimeLine::Running ) m_pulse.start();
     } else {
         m_stopGoButton.setIcon( Data::recorderGoIcon() );
         m_stopGoButton.setText( tr( "Start" ) );
         m_taskSelector.setEnabled( true );
         m_stopGoButton.setEnabled( taskSelected );
         m_stopGoButton.setChecked( false );
+        m_pulse.stop();
+    }
+}
+
+void TimeTrackingSummaryWidget::slotPulseValueChanged( qreal value )
+{
+    if ( m_activeFieldRects.isEmpty() ) {
+        update();
+    } else {
+        Q_FOREACH( const QRect& rect, m_activeFieldRects ) {
+            update( rect );
+        }
     }
 }
 
