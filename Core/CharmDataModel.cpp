@@ -16,6 +16,7 @@ CharmDataModel::CharmDataModel()
 
 CharmDataModel::~CharmDataModel()
 {
+    setAllTasks( TaskList() );
 }
 
 void CharmDataModel::stateChanged( State previous, State next )
@@ -27,6 +28,7 @@ void CharmDataModel::stateChanged( State previous, State next )
             Q_ASSERT( task.isValid() );
             endEventRequested( task );
         }
+        setAllTasks( TaskList() );
     }
 }
 
@@ -43,31 +45,34 @@ void CharmDataModel::unregisterAdapter( CharmDataModelAdapterInterface* adapter 
 
 void CharmDataModel::setAllTasks( const TaskList& tasks )
 {
+    // to clear the task list, all tasks have first to be changed to be children of the root item:
+    for ( TaskTreeItem::Map::iterator it = m_tasks.begin(); it != m_tasks.end(); ++it )
+    {
+        it->second.makeChildOf( m_rootItem );
+    }
     m_tasks.clear();
     m_rootItem = TaskTreeItem();
     // notify adapters of changes
     for_each( m_adapters.begin(), m_adapters.end(),
               std::mem_fun( &CharmDataModelAdapterInterface::resetTasks ) );
 
+    Q_ASSERT( Task::checkForTreeness( tasks ) );
+    Q_ASSERT( Task::checkForUniqueTaskIds( tasks ) );
+
     // fill the tasks into the map to TaskTreeItems
     for ( int i = 0; i < tasks.size(); ++i )
     {
-        TaskTreeItem item( tasks[i] );
-
-        if ( ! taskExists( tasks[i].id() ) ) {
-            m_tasks[ tasks[i].id() ] = item;
-        } else {
-            qDebug() << "CharmDataModel::setAllTasks: duplicate task id"
-                     << tasks[i].id() << "ignored. THIS IS A BUG";
-            Q_ASSERT_X( false, "CharmDataModel::setAllTasks",
-                        "Task list contains duplicate ids" );
-        }
+        TaskTreeItem item( tasks[i], &m_rootItem );
+        Q_ASSERT( ! taskExists( tasks[i].id() ) ); // the tasks form a tree and have unique task ids
+        m_tasks[ tasks[i].id() ] = item;
     }
 
     // create parent-child-relationships:
     for ( TaskTreeItem::Map::iterator it = m_tasks.begin(); it != m_tasks.end(); ++it )
     {
-        it->second.makeChildOf( parentItem( it->second.task() ) );
+        const Task& task = it->second.task();
+        TaskTreeItem& parent = parentItem( task );
+        it->second.makeChildOf( parent );
     }
 
     // store task id length:
@@ -334,8 +339,9 @@ void CharmDataModel::determineTaskPaddingLength()
 
 TaskTreeItem& CharmDataModel::parentItem( const Task& task )
 {
-    if ( m_tasks[ task.parent() ].isValid() ) {
-        return m_tasks[ task.parent() ];
+    TaskTreeItem& parent = m_tasks[ task.parent() ];
+    if ( parent.isValid() ) {
+        return parent;
     } else {
         return m_rootItem;
     }

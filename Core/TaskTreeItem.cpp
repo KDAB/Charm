@@ -7,10 +7,35 @@ TaskTreeItem::TaskTreeItem()
 {
 }
 
-TaskTreeItem::TaskTreeItem( const Task& task )
-    : m_parent( 0 )
+TaskTreeItem::TaskTreeItem( const Task& task, TaskTreeItem* parent )
+    : m_parent( parent )
     , m_task( task )
 {
+    if ( m_parent ) {
+        m_parent->m_children.append( this );
+    }
+}
+
+TaskTreeItem::TaskTreeItem( const TaskTreeItem& other )
+{
+    *this = other;
+}
+
+void TaskTreeItem::operator=( const TaskTreeItem& other )
+{
+    m_children = other.m_children;
+    m_parent = other.m_parent;
+    m_task = other.m_task;
+    if ( m_parent ) {
+        m_parent->m_children.append( this );
+    }
+}
+
+TaskTreeItem::~TaskTreeItem()
+{
+    if ( m_parent ) {
+        m_parent->m_children.removeAt( row() );
+    }
 }
 
 void TaskTreeItem::makeChildOf( TaskTreeItem& parent )

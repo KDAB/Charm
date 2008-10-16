@@ -25,7 +25,11 @@ public:
 
     TaskTreeItem();
 
-    explicit TaskTreeItem( const Task& task );
+    explicit TaskTreeItem( const Task& task, TaskTreeItem* parent = 0 );
+    TaskTreeItem( const TaskTreeItem& other );
+    void operator=( const TaskTreeItem& other );
+
+    ~TaskTreeItem();
 
     void makeChildOf( TaskTreeItem& parent );
 
