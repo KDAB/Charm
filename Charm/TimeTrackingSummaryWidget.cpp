@@ -14,7 +14,7 @@
 #include "ViewHelpers.h"
 #include "TimeTrackingSummaryWidget.h"
 
-const int Margin = 2;
+const int Margin = 3;
 
 TimeTrackingSummaryWidget::TimeTrackingSummaryWidget( QWidget* parent )
     : QWidget( parent )
@@ -23,10 +23,17 @@ TimeTrackingSummaryWidget::TimeTrackingSummaryWidget( QWidget* parent )
     , m_selectedSummary( -1 )
 {
     // FIXME use platform defined, hand-picked fonts, so far those have been selected for Mac:
+#ifdef Q_WS_MAC
     m_fixedFont.setFamily( "Andale Mono" );
     m_fixedFont.setPointSize( 12 );
     m_narrowFont = font(); // stay with the desktop
     m_narrowFont.setPointSize( 12);
+#elif defined Q_WS_X11
+    m_fixedFont.setFamily(  "Bitstream Vera Sans Mono" );
+    m_fixedFont.setPointSize( 9 );
+    m_narrowFont = font(); // stay with the desktop
+    m_narrowFont.setPointSize( 9 );
+#endif
     //
     setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
     // plumbing
@@ -39,7 +46,7 @@ TimeTrackingSummaryWidget::TimeTrackingSummaryWidget( QWidget* parent )
     m_taskSelector.setText( tr( "Select Task" ) );
     m_pulse.setLoopCount( 0 );
     m_pulse.setDuration( 2000 );
-    m_pulse.setUpdateInterval( 80 );
+    // m_pulse.setUpdateInterval( 80 );
     m_pulse.setCurveShape( QTimeLine::SineCurve );
     connect( &m_pulse, SIGNAL( valueChanged( qreal ) ),
              SLOT( slotPulseValueChanged( qreal ) ) );
@@ -188,6 +195,7 @@ TimeTrackingSummaryWidget::DataField TimeTrackingSummaryWidget::data( int column
     DataField field;
     field.font = m_fixedFont;
     if ( row == HeaderRow ) {
+        field.font = m_narrowFont;
         if ( column == TaskColumn ) {
             field.text = tr( "Task" );
         } else if ( column == TotalsColumn ) {
