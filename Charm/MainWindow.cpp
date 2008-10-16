@@ -441,22 +441,11 @@ void MainWindow::slotImportTasks()
 
 
     TaskExport exporter;
-    exporter.readFrom( filename );
     TaskListMerger merger;
     try {
+        exporter.readFrom( filename );
         merger.setOldTasks( DATAMODEL->getAllTasks() );
-    } catch( InvalidTaskListException& e ) {
-        // holy shit...
-    }
-    try {
         merger.setNewTasks( exporter.tasks() );
-    } catch(  InvalidTaskListException& e ) {
-        QMessageBox::critical( this, tr(  "Invalid Task Definitions" ),
-                               tr( "The selected task definitions are invalid and cannot be imported." ) );
-        return;
-    }
-
-    try {
         if ( merger.modifiedTasks().count() == 0 && merger.addedTasks().count() == 0 ) {
             QMessageBox::information( this, tr( "Tasks Import" ), tr( "The selected task file does not contain any updates." ) );
         } else {
@@ -471,13 +460,15 @@ void MainWindow::slotImportTasks()
                 sendCommand( cmd );
             }
         }
-    } catch( InvalidTaskListException& e ) {
-        QMessageBox::critical(
-            this, tr(  "Invalid Task Definitions" ),
-            tr( "The selected task definitions cannot be merged, import aborted." ) );
+    } catch(  InvalidTaskListException& e ) {
+        QMessageBox::critical( this, tr(  "Invalid Task Definitions" ),
+                               tr( "The selected task definitions are invalid and cannot be imported." ) );
+        return;
+    } catch( XmlSerializationException& e ) {
+        QMessageBox::critical( this, tr(  "Invalid Task Definitions" ),
+                               tr( "The selected task definitions are invalid and cannot be imported." ) );
         return;
     }
-
 }
 
 static int totalDuration( const EventIdList& eventList )
