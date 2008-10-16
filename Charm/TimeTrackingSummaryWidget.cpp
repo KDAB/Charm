@@ -25,9 +25,9 @@ TimeTrackingSummaryWidget::TimeTrackingSummaryWidget( QWidget* parent )
     // FIXME use platform defined, hand-picked fonts, so far those have been selected for Mac:
 #ifdef Q_WS_MAC
     m_fixedFont.setFamily( "Andale Mono" );
-    m_fixedFont.setPointSize( 12 );
+    m_fixedFont.setPointSize( 11 );
     m_narrowFont = font(); // stay with the desktop
-    m_narrowFont.setPointSize( 12);
+    m_narrowFont.setPointSize( 11 );
 #elif defined Q_WS_X11
     m_fixedFont.setFamily(  "Bitstream Vera Sans Mono" );
     m_fixedFont.setPointSize( 9 );
@@ -234,7 +234,7 @@ TimeTrackingSummaryWidget::DataField TimeTrackingSummaryWidget::data( int column
             const int index = row - 1; // index into summaries
             const bool active = DATAMODEL->isTaskActive( m_summaries[index].task );
             QColor dimHighlight( palette().highlight().color() );
-            const float dim = 1.0 / 3;
+            const float dim = 0.25;
             dimHighlight.setAlphaF( dim * dimHighlight.alphaF() );
             const QBrush halfHighlight( dimHighlight );
 
@@ -273,11 +273,6 @@ void TimeTrackingSummaryWidget::setSummaries( QVector<WeeklySummary> s )
 {
     m_activeFieldRects.clear();
     m_summaries = s;
-    if ( m_summaries.isEmpty() ) {
-        m_taskSelector.setEnabled( false );
-    } else {
-        m_taskSelector.setEnabled( true );
-    }
     m_cachedMinimumSizeHint = QSize();
     m_cachedSizeHint = QSize();
     updateGeometry();
@@ -290,6 +285,7 @@ void TimeTrackingSummaryWidget::setSummaries( QVector<WeeklySummary> s )
     }
     // FIXME maybe remember last selected task
     emit maybeShrink();
+    handleActiveEvents();
 }
 
 void TimeTrackingSummaryWidget::slotGoStopToggled( bool on )
