@@ -12,6 +12,7 @@
 const int IDLE_CHECK_INTERVAL= 30; // In seconds
 const int PERIOD_FOR_IDLENESS = 10*60; // In seconds
 
+
 bool X11IdleDetector::idleCheckPossible()
 {
 #if defined(Q_WS_X11) && defined(HAVE_LIBXSS)
@@ -28,6 +29,8 @@ X11IdleDetector::X11IdleDetector( QObject* parent )
     QTimer* timer = new QTimer( this );
     connect( timer, SIGNAL( timeout() ), this, SLOT( checkIdleness() ) );
     timer->start( IDLE_CHECK_INTERVAL * 1000 );
+
+    m_heartbeat = QDateTime::currentDateTime();
 }
 
 void X11IdleDetector::checkIdleness()
@@ -41,6 +44,9 @@ void X11IdleDetector::checkIdleness()
         maybeIdle( qMakePair(QDateTime::currentDateTime().addSecs( -idleSecs ), QDateTime::currentDateTime() ) );
 #endif // HAVE_LIBXSS
 
+    if ( m_heartbeat.secsTo( QDateTime::currentDateTime() ) > PERIOD_FOR_IDLENESS )
+        maybeIdle( qMakePair(m_heartbeat, QDateTime::currentDateTime()) );
+    m_heartbeat = QDateTime::currentDateTime();
 }
 
 #include "X11IdleDetector.moc"

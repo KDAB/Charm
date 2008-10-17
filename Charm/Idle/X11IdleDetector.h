@@ -13,6 +13,8 @@ public:
 private slots:
     void checkIdleness();
 
+private:
+    QDateTime m_heartbeat;
 };
 
 
