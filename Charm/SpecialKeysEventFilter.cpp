@@ -1,4 +1,3 @@
-#include <QtDebug>
 #include "SpecialKeysEventFilter.h"
 
 SpecialKeysEventFilter::SpecialKeysEventFilter( QObject* parent )
@@ -15,26 +14,23 @@ bool SpecialKeysEventFilter::eventFilter( QObject* watched, QEvent* event)
             // this is the Apple key, on Mac
             switch( keyEvent->key() ) {
             case Qt::Key_1:
-                qDebug() << "SpecialKeysEventFilter::eventFilter: 1";
                 emit toggleWindow1Visibility();
                 break;
             case Qt::Key_2:
-                qDebug() << "SpecialKeysEventFilter::eventFilter: 2";
                 emit toggleWindow2Visibility();
                 break;
             default:
                 return false; // the other keys remain unhandled
             }
+            return true;
         }
-        return true;
-    } else {
-        return false;
     }
 #else
     // the shortcuts might be useful on other platforms, too, but they are too unusual
-    Q_UNUSED( watched )
-    Q_UNUSED( event )
+    Q_UNUSED( watched );
+    Q_UNUSED( event );
 #endif
+    return false;
 }
 
 #include "SpecialKeysEventFilter.moc"
