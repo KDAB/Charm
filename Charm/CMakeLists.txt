@@ -24,6 +24,7 @@ IF ( QT4_FOUND )
    SET( CharmApplication_SRCS 
 		       MainWindow.cpp
 		       Application.cpp
+		       SpecialKeysEventFilter.cpp
 		       ViewHelpers.cpp
 		       TaskIdDialog.cpp
 		       Data.cpp

@@ -19,6 +19,7 @@
 #include "ViewHelpers.h"
 #include "Data.h"
 #include "Application.h"
+#include "SpecialKeysEventFilter.h"
 #include "ConfigurationDialog.h"
 #include "Idle/IdleDetector.h"
 
@@ -36,6 +37,12 @@ Application::Application(int& argc, char** argv)
     , m_actionStopAllTasks( this )
     , m_idleDetector( 0 )
 {
+    SpecialKeysEventFilter* filter = new SpecialKeysEventFilter( this );
+    installEventFilter( filter );
+    connect( filter, SIGNAL( toggleWindow1Visibility() ),
+             &m_mainWindow, SLOT( slotShowHideView() ) );
+    connect( filter, SIGNAL( toggleWindow2Visibility() ),
+             &m_timeTracker, SLOT( slotShowHide() ) );
     // QApplication setup
     setQuitOnLastWindowClosed(false);
     // application metadata setup
