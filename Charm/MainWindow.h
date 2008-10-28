@@ -62,6 +62,7 @@ private slots:
 protected:
     void showEvent( QShowEvent* );
     void hideEvent( QHideEvent* );
+    void keyPressEvent( QKeyEvent* );
 
 signals:
     void emitCommand( CharmCommand* ); // CommandEmitterInterface

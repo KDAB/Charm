@@ -25,6 +25,7 @@ public:
     ~TimeTrackingView();
     void showEvent( QShowEvent* );
     void hideEvent( QHideEvent* );
+    void keyPressEvent( QKeyEvent* );
 
     // application:
     void stateChanged( State previous );

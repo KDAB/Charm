@@ -1,8 +1,9 @@
+#include <algorithm>
+
 #include <QSettings>
 #include <QCloseEvent>
 #include <QtAlgorithms>
-
-#include <algorithm>
+#include <QKeyEvent>
 
 #include "Core/TimeSpans.h"
 
@@ -94,6 +95,19 @@ void TimeTrackingView::showEvent( QShowEvent* )
 void TimeTrackingView::hideEvent( QHideEvent* )
 {
     emit visibilityChanged( false );
+}
+
+void TimeTrackingView::keyPressEvent( QKeyEvent* event )
+{
+    if ( event->type() == QEvent::KeyPress ) {
+        QKeyEvent *keyEvent = static_cast<QKeyEvent*>( event );
+        if ( keyEvent->modifiers() & Qt::ControlModifier
+             && keyEvent->key() == Qt::Key_W ) {
+            // we must be visible, otherwise we would not get the event
+            slotShowHide();
+        }
+    }
+    QWidget::keyPressEvent( event );
 }
 
 void TimeTrackingView::saveConfiguration()

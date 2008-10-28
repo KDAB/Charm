@@ -6,6 +6,7 @@
 #include <QStatusBar>
 #include <QToolButton>
 #include <QCloseEvent>
+#include <QKeyEvent>
 
 #include <Core/CharmCommand.h>
 #include <Core/CharmConstants.h>
@@ -279,6 +280,19 @@ void MainWindow::showEvent( QShowEvent* )
 void MainWindow::hideEvent( QHideEvent* )
 {
     emit visibilityChanged( false );
+}
+
+void MainWindow::keyPressEvent( QKeyEvent* event )
+{
+    if ( event->type() == QEvent::KeyPress ) {
+        QKeyEvent *keyEvent = static_cast<QKeyEvent*>( event );
+        if ( keyEvent->modifiers() & Qt::ControlModifier
+             && keyEvent->key() == Qt::Key_W ) {
+            // we must be visible, otherwise we would not get the event
+            slotShowHideView();
+        }
+    }
+    QMainWindow::keyPressEvent( event );
 }
 
 void MainWindow::slotAboutDialog()

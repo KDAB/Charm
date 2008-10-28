@@ -23,7 +23,7 @@ bool SpecialKeysEventFilter::eventFilter( QObject* watched, QEvent* event)
                 emit toggleWindow2Visibility();
                 break;
             default:
-                break;
+                return false; // the other keys remain unhandled
             }
         }
         return true;
