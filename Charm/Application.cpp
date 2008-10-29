@@ -93,8 +93,8 @@ Application::Application(int& argc, char** argv)
     m_systrayContextMenu.addAction( &m_actionShowHideView );
 #ifdef TIMETRACKER_TEMPORARILY_DISABLED
     m_systrayContextMenu.addAction( &m_actionShowHideTimeTracker );
-    m_systrayContextMenu.addAction( &m_actionStopAllTasks );
 #endif
+    m_systrayContextMenu.addAction( &m_actionStopAllTasks );
     m_systrayContextMenu.addSeparator();
     m_systrayContextMenu.addAction( m_mainWindow.actionQuit() );
     m_trayIcon.setContextMenu( &m_systrayContextMenu );
