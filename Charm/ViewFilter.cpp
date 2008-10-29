@@ -79,6 +79,19 @@ bool ViewFilter::filterAcceptsRow( int source_row, const QModelIndex& parent ) c
     return accepted;
 }
 
+bool ViewFilter::filterAcceptsColumn( int source_column, const QModelIndex& ) const
+{
+    bool acceptCommentColumn = true;
+    bool acceptRunningTimeColumn = true;
+
+    if ( source_column ==  Column_TaskComment && ! acceptCommentColumn ) {
+        return false;
+    } else if ( source_column == Column_TaskSessionTime && ! acceptRunningTimeColumn ) {
+        return false;
+    }
+    return true;
+}
+
 bool ViewFilter::taskIdExists( TaskId taskId ) const
 {
     return m_model.taskIdExists( taskId );

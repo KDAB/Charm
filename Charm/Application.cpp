@@ -91,8 +91,10 @@ Application::Application(int& argc, char** argv)
     connect( &m_trayIcon, SIGNAL( activated( QSystemTrayIcon::ActivationReason ) ),
              SLOT( slotTrayIconActivated( QSystemTrayIcon::ActivationReason ) ) );
     m_systrayContextMenu.addAction( &m_actionShowHideView );
+#ifdef TIMETRACKER_TEMPORARILY_DISABLED
     m_systrayContextMenu.addAction( &m_actionShowHideTimeTracker );
     m_systrayContextMenu.addAction( &m_actionStopAllTasks );
+#endif
     m_systrayContextMenu.addSeparator();
     m_systrayContextMenu.addAction( m_mainWindow.actionQuit() );
     m_trayIcon.setContextMenu( &m_systrayContextMenu );
@@ -101,7 +103,9 @@ Application::Application(int& argc, char** argv)
 
 #if defined Q_WS_MAC
     m_dockMenu.addAction( &m_actionShowHideView );
+#ifdef TIMETRACKER_TEMPORARILY_DISABLED
     m_dockMenu.addAction( &m_actionShowHideTimeTracker );
+#endif
     m_dockMenu.addAction( &m_actionStopAllTasks );
     qt_mac_set_dock_menu( &m_dockMenu);
 #endif
@@ -113,7 +117,7 @@ Application::Application(int& argc, char** argv)
     installEventFilter( filter );
     connect( filter, SIGNAL( toggleWindow1Visibility() ),
              &m_mainWindow, SLOT( slotShowHideView() ) );
-#if 0
+#ifdef TIMETRACKER_TEMPORARILY_DISABLED
     connect( filter, SIGNAL( toggleWindow2Visibility() ),
              &m_timeTracker, SLOT( slotShowHide() ) );
 #endif

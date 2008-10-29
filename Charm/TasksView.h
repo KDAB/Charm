@@ -41,9 +41,6 @@ public:
     void configurationChanged();
     void setModel( ModelConnector* );
 
-    // FIXME needed?
-    // QAction* actionStopAllTasks();
-
 public slots:
     // reimpl
     void commitCommand( CharmCommand* );

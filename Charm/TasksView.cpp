@@ -216,14 +216,6 @@ void View::stateChanged( State previous )
                  SLOT( slotEventActivated( EventId ) ) );
         connect( filter, SIGNAL( eventDeactivationNotice( EventId ) ),
                  SLOT( slotEventDeactivated( EventId ) ) );
-
-        // column resize behaviour:
-        QHeaderView* header = m_ui->treeView->header();
-        header->setResizeMode( Column_TaskId, QHeaderView::ResizeToContents );
-        header->setResizeMode( Column_TaskName, QHeaderView::Stretch );
-        header->setResizeMode( Column_TaskSubscriptions, QHeaderView::ResizeToContents );
-        header->setResizeMode( Column_TaskSessionTime, QHeaderView::ResizeToContents );
-        header->setResizeMode( Column_TaskComment, QHeaderView::Stretch );
     }
 
     switch( Application::instance().state() ) {
@@ -315,6 +307,19 @@ void View::configurationChanged()
         break;
     };
     m_ui->treeView->setFont( font );
+
+    // column resize behaviour:
+    const ViewFilter* filter = Application::instance().model().taskModel();
+    QHeaderView* header = m_ui->treeView->header();
+    header->setResizeMode( Column_TaskId, QHeaderView::ResizeToContents );
+    header->setResizeMode( Column_TaskName, QHeaderView::Stretch );
+    if ( filter->filterAcceptsColumn( Column_TaskComment, QModelIndex() ) ) {
+        header->setResizeMode( Column_TaskSessionTime, QHeaderView::ResizeToContents );
+    }
+    header->setResizeMode( Column_TaskSubscriptions, QHeaderView::ResizeToContents );
+    if ( filter->filterAcceptsColumn( Column_TaskComment, QModelIndex() ) ) {
+        header->setResizeMode( Column_TaskComment, QHeaderView::Stretch );
+    }
 
     slotConfigureUi();
 }
@@ -485,11 +490,5 @@ Task View::selectedTask()
         return Task();
     }
 }
-
-// FIXME needed?
-// QAction* View::actionStopAllTasks()
-// {
-//     return &m_actionStopAllTasks;
-// }
 
 #include "TasksView.moc"

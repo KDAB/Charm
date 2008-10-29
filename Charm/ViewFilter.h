@@ -32,13 +32,12 @@ public:
 
     bool taskIdExists( TaskId taskId ) const;
     void commitCommand( CharmCommand* );
+    bool filterAcceptsColumn( int source_column, const QModelIndex& source_parent ) const;
+    bool filterAcceptsRow( int row, const QModelIndex& parent ) const;
 
 signals:
     void eventActivationNotice( EventId id );
     void eventDeactivationNotice( EventId id );
-
-protected:
-    bool filterAcceptsRow( int row, const QModelIndex& parent ) const;
 
 private:
     TaskModelAdapter m_model;
