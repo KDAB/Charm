@@ -37,12 +37,6 @@ Application::Application(int& argc, char** argv)
     , m_actionStopAllTasks( this )
     , m_idleDetector( 0 )
 {
-    SpecialKeysEventFilter* filter = new SpecialKeysEventFilter( this );
-    installEventFilter( filter );
-    connect( filter, SIGNAL( toggleWindow1Visibility() ),
-             &m_mainWindow, SLOT( slotShowHideView() ) );
-    connect( filter, SIGNAL( toggleWindow2Visibility() ),
-             &m_timeTracker, SLOT( slotShowHide() ) );
     // QApplication setup
     setQuitOnLastWindowClosed(false);
     // application metadata setup
@@ -111,6 +105,19 @@ Application::Application(int& argc, char** argv)
     m_dockMenu.addAction( &m_actionStopAllTasks );
     qt_mac_set_dock_menu( &m_dockMenu);
 #endif
+
+    // FIXME time tracker is disabled for now
+    m_actionShowHideTimeTracker.setEnabled( false );
+    m_timeTracker.hide();
+    SpecialKeysEventFilter* filter = new SpecialKeysEventFilter( this );
+    installEventFilter( filter );
+    connect( filter, SIGNAL( toggleWindow1Visibility() ),
+             &m_mainWindow, SLOT( slotShowHideView() ) );
+#if 0
+    connect( filter, SIGNAL( toggleWindow2Visibility() ),
+             &m_timeTracker, SLOT( slotShowHide() ) );
+#endif
+    // ^^^
 
     // set up idle detection
     m_idleDetector = IdleDetector::createIdleDetector( this );
