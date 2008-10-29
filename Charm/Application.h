@@ -97,6 +97,7 @@ private:
     TimeTrackingView m_timeTracker;
     QSystemTrayIcon m_trayIcon;
     QMenu m_systrayContextMenu;
+    QMenu m_dockMenu;
     QAction m_actionShowHideView;
     QAction m_actionShowHideTimeTracker;
     QAction m_actionStopAllTasks;

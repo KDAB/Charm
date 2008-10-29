@@ -106,7 +106,10 @@ Application::Application(int& argc, char** argv)
     m_trayIcon.show();
 
 #if defined Q_WS_MAC
-    qt_mac_set_dock_menu( &m_systrayContextMenu );
+    m_dockMenu.addAction( &m_actionShowHideView );
+    m_dockMenu.addAction( &m_actionShowHideTimeTracker );
+    m_dockMenu.addAction( &m_actionStopAllTasks );
+    qt_mac_set_dock_menu( &m_dockMenu);
 #endif
 
     // set up idle detection
