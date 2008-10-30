@@ -60,6 +60,8 @@ bool ViewFilter::filterAcceptsRow( int source_row, const QModelIndex& parent ) c
     // accepted if any of their children are accepted (this is a
     // recursive call, and could possibly be slow):
     const QModelIndex index( m_model.index( source_row, 0, parent ) );
+    if ( ! index.isValid() ) return acceptedByFilter;
+
     int rowCount = m_model.rowCount( index );
     for ( int i = 0; i < rowCount; ++i ) {
         if ( filterAcceptsRow( i, index ) ) {
@@ -71,7 +73,6 @@ bool ViewFilter::filterAcceptsRow( int source_row, const QModelIndex& parent ) c
     bool accepted = acceptedByFilter;
     if ( m_subscribedTasksOnly )
     {
-        Q_ASSERT( index.isValid() );
         Task task = m_model.taskForIndex( index );
         accepted = task.subscribed() && acceptedByFilter;
     }
