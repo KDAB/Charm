@@ -96,7 +96,6 @@ void addTimesheet(const CommandLine& cmd)
 			throw TimesheetProcessorException( msg);
 		}
 	}
-	// FIXME maybe verify the project codes, they are also part of the report
 	// 2) log into database
 	Database database;
 	database.login();

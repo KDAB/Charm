@@ -621,7 +621,6 @@ void  WeeklyTimeSheetReport::slotSaveToXml()
                 if ( events.contains( key ) ) {
                     // add to previous events:
                     const Event& oldEvent = events[key];
-                    oldEvent.dump();
                     const int seconds = oldEvent.duration() + event.duration();
                     const QDateTime start = oldEvent.startDateTime();
                     const QDateTime end( start.addSecs( seconds ) );

@@ -52,11 +52,11 @@ public:
 
     void setComment( const QString& );
 
-    const QDateTime& startDateTime() const;
+    QDateTime startDateTime( Qt::TimeSpec timeSpec = Qt::LocalTime ) const;
 
     void setStartDateTime( const QDateTime& start = QDateTime::currentDateTime() );
 
-    const QDateTime& endDateTime() const;
+    QDateTime endDateTime( Qt::TimeSpec timeSpec = Qt::LocalTime ) const;
 
     void setEndDateTime( const QDateTime& end = QDateTime::currentDateTime() );
 
