@@ -98,9 +98,9 @@ void Event::setStartDateTime( const QDateTime& start )
 {
     m_start = start;
     // strip milliseconds, this is necessary for the precision of serialization:
-    QTime time( m_start.time() );
-    time.setHMS( time.hour(), time.minute(), time.second() );
-    m_start.setTime( time );
+    m_start = m_start.addMSecs( -m_start.time().msec() );
+    Q_ASSERT( qAbs( m_start.secsTo( start ) ) <= 1 );
+    Q_ASSERT( m_start.time().msec() == 0 );
 }
 
 const QDateTime& Event::endDateTime() const
@@ -112,9 +112,9 @@ void Event::setEndDateTime( const QDateTime& end )
 {
     m_end = end;
     // strip milliseconds, this is necessary for the precision of serialization:
-    QTime time( m_end.time() );
-    time.setHMS( time.hour(), time.minute(), time.second() );
-    m_end.setTime( time );
+    m_end = m_end.addMSecs( -m_end.time().msec() );
+    Q_ASSERT( qAbs( m_end.secsTo( end ) ) <= 1 );
+    Q_ASSERT( m_end.time().msec() == 0 );
 }
 
 int Event::duration() const

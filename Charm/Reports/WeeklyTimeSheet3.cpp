@@ -620,25 +620,32 @@ void  WeeklyTimeSheetReport::slotSaveToXml()
                 Key key( event.taskId(), event.startDateTime().date() );
                 if ( events.contains( key ) ) {
                     // add to previous events:
-                    int seconds = events[key].duration() + event.duration();
-                    QDateTime end( events[key].startDateTime().addSecs( seconds ) );
-                    events[key].setEndDateTime( end );
-                    QString comment = events[key].comment();
+                    const Event& oldEvent = events[key];
+                    oldEvent.dump();
+                    const int seconds = oldEvent.duration() + event.duration();
+                    const QDateTime start = oldEvent.startDateTime();
+                    const QDateTime end( start.addSecs( seconds ) );
+                    Q_ASSERT( start.secsTo( end ) == seconds );
+                    Event newEvent( oldEvent );
+                    newEvent.setStartDateTime( start );
+                    newEvent.setEndDateTime( end );
+                    Q_ASSERT( newEvent.duration() == seconds );
+                    QString comment = oldEvent.comment();
                     if ( ! event.comment().isEmpty() ) {
                         if ( !comment.isEmpty() ) { // make separator
                             comment += " / ";
                         }
                         comment += event.comment();
-                        events[key].setComment( comment );
+                        newEvent.setComment( comment );
                     }
-                    Q_ASSERT( events[key].duration() == seconds );
+                    events[key] = newEvent;
                 } else {
                     // add this event:
                     events[key] = event;
                     events[key].setId( -events[key].id() ); // "synthetic" :-)
                     // move to start at midnight:
-                    QDateTime start( event.startDateTime() );
-                    start.setTime( QTime() );
+                    // never, never, never use setTime() here, it breaks on DST changes! (twice a year)
+                    QDateTime start( event.startDateTime().date() );
                     QDateTime end( start.addSecs( event.duration() ) );
                     events[key].setStartDateTime( start );
                     events[key].setEndDateTime( end );
