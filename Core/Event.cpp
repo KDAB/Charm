@@ -89,28 +89,28 @@ void Event::setComment ( const QString& comment )
     m_comment = comment;
 }
 
-const QDateTime& Event::startDateTime() const
+QDateTime Event::startDateTime( Qt::TimeSpec timeSpec ) const
 {
-    return m_start;
+    return m_start.toTimeSpec( timeSpec );
 }
 
 void Event::setStartDateTime( const QDateTime& start )
 {
-    m_start = start;
+    m_start = start.toUTC();
     // strip milliseconds, this is necessary for the precision of serialization:
     m_start = m_start.addMSecs( -m_start.time().msec() );
     Q_ASSERT( qAbs( m_start.secsTo( start ) ) <= 1 );
     Q_ASSERT( m_start.time().msec() == 0 );
 }
 
-const QDateTime& Event::endDateTime() const
+QDateTime Event::endDateTime( Qt::TimeSpec timeSpec ) const
 {
-    return m_end;
+    return m_end.toTimeSpec( timeSpec );
 }
 
 void Event::setEndDateTime( const QDateTime& end )
 {
-    m_end = end;
+    m_end = end.toUTC();
     // strip milliseconds, this is necessary for the precision of serialization:
     m_end = m_end.addMSecs( -m_end.time().msec() );
     Q_ASSERT( qAbs( m_end.secsTo( end ) ) <= 1 );
@@ -197,12 +197,14 @@ Event Event::fromXml( const QDomElement& element, int databaseSchemaVersion ) th
     if ( element.hasAttribute( EventStartAttribute ) ) {
         QDateTime start = QDateTime::fromString( element.attribute( EventStartAttribute ), Qt::ISODate );
         if ( !start.isValid() ) throw XmlSerializationException( "Event::fromXml: invalid start date" );
+        start.setTimeSpec( Qt::UTC );
         event.setStartDateTime( start );
     }
     if ( element.hasAttribute( EventEndAttribute ) ) {
         QDateTime end = QDateTime::fromString( element.attribute( EventEndAttribute ), Qt::ISODate );
         if ( !end.isValid() ) throw XmlSerializationException( "Event::fromXml: invalid end date" );
-        event.setEndDateTime( end );
+        end.setTimeSpec( Qt::UTC );
+        event.setEndDateTime( end.toLocalTime() );
     }
     event.setComment( element.text() );
     return event;
