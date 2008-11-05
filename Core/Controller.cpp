@@ -320,6 +320,7 @@ QDomDocument Controller::exportDatabasetoXml() const throw ( XmlSerializationExc
     root.appendChild( metadata );
     // tasks element:
     QDomElement tasksElement = document.createElement( TasksElement );
+    // FIXME there are generic methods for that now, in Task.h
     TaskList tasks = m_storage->getAllTasks();
     Q_FOREACH( Task task, tasks ) {
         QDomElement element = task.toXml( document );
@@ -400,7 +401,7 @@ QString Controller::importDatabaseFromXml( const QDomDocument& document )
         // FIXME needs better error handling:
         //
     } catch ( XmlSerializationException& e ) {
-        qDebug() << "Controller::exportDatabasetoXml: things fucked up:" << e.what();
+        qDebug() << "Controller::importDatabaseFromXml: things fucked up:" << e.what();
         return tr( "The Export file is invalid." );
     }
     qDebug() << "Controller::importDatabaseFromXml:" << importedTasks.size() << "tasks parsed from Xml file,"
