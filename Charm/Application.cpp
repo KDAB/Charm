@@ -110,9 +110,11 @@ Application::Application(int& argc, char** argv)
     qt_mac_set_dock_menu( &m_dockMenu);
 #endif
 
+#ifndef TIMETRACKER_TEMPORARILY_DISABLED
     // FIXME time tracker is disabled for now
     m_actionShowHideTimeTracker.setEnabled( false );
     m_timeTracker.hide();
+#endif
     SpecialKeysEventFilter* filter = new SpecialKeysEventFilter( this );
     installEventFilter( filter );
     connect( filter, SIGNAL( toggleWindow1Visibility() ),
@@ -236,7 +238,6 @@ void Application::enterStartingUpState()
 {
     // HACK (Qt Mac menu merge bug)  necessary to merge main window menu?
     m_mainWindow.show();
-    m_timeTracker.show();
     // load configuration
     // ...
     // verify configuration
@@ -328,9 +329,6 @@ void Application::leaveDisconnectingState()
 
 void Application::enterShuttingDownState()
 {
-    // prevent all modules from accepting any user commands
-    m_mainWindow.setEnabled(false);
-    m_timeTracker.setEnabled( false );
     QTimer::singleShot(1200, this, SLOT(quit()));
 }
 
