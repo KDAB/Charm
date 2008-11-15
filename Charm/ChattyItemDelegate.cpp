@@ -1,8 +1,9 @@
 #include <QtDebug>
-#include "ChattyItemDelegate.h"
 #include <QDebug>
 #include <QPainter>
 
+#include "ChattyItemDelegate.h"
+#include "TaskModelAdapter.h"
 
 ChattyItemDelegate::ChattyItemDelegate( QObject* parent )
     : QItemDelegate( parent )
@@ -37,9 +38,9 @@ void ChattyItemDelegate::paint(QPainter *painter,
                                const QModelIndex &index) const
 {
     painter->save();
-    drawBackground(painter, option, index);
-
-    const QString taskName = index.data(Qt::DisplayRole).toString();
+    drawBackground( painter, option, index );
+    const QString taskName = index.data(Qt::DisplayRole).toString()
+                             + " " + index.data( TasksViewRole_Name ).toString();
 #if 0
     const QVariant checkStateVariant = index.data(Qt::CheckStateRole);
     const Qt::CheckState checkState = static_cast<Qt::CheckState>(checkStateVariant.toInt());

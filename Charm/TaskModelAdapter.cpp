@@ -61,14 +61,14 @@ QVariant TaskModelAdapter::data( const QModelIndex& index, int role ) const
     	}
         break;
     case Qt::DisplayRole:
-        if ( role == Qt::DisplayRole ) {
-            QString text
-                ( QString("%1" ).arg
-                  ( item->task().id(),
-                    CONFIGURATION.taskPaddingLength,
-                    10, QChar( '0' ) ) );
-            return text;
-        }
+    {
+        QString text
+            ( QString("%1" ).arg
+              ( item->task().id(),
+                CONFIGURATION.taskPaddingLength,
+                10, QChar( '0' ) ) );
+        return text;
+    }
         break;
     case Qt::DecorationRole:
         if ( isActive ) {
@@ -93,6 +93,9 @@ QVariant TaskModelAdapter::data( const QModelIndex& index, int role ) const
 //                 return hoursAndMinutes( activeEvent.duration() );
 //             }
 //             break;
+
+    case TasksViewRole_Name:
+        return item->task().name();
     default:
         return QVariant();
     }
@@ -178,7 +181,10 @@ Qt::ItemFlags TaskModelAdapter::flags( const QModelIndex & index ) const
         // FIXME what to do?
         const bool isActive = activeEvent.isValid();
         const bool isCurrent = item->task().isCurrentlyValid();
-        flags = Qt::ItemIsEditable | Qt::ItemIsUserCheckable;
+        flags = Qt::ItemIsUserCheckable;
+        if ( isActive ) {
+            flags |= Qt::ItemIsEditable;
+        }
     }
 
     return QAbstractItemModel::flags( index ) | flags;

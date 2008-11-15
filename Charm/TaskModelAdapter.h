@@ -13,6 +13,11 @@ enum ViewColumns {
     Column_TaskColumnCount
 };
 
+enum TasksViewRoles {
+    TasksViewRole_Name = 0x1045F132,
+    TasksViewRole_RunningTime
+};
+
 typedef ViewColumns ViewColumn;
 
 /** TaskModelAdapter adapts the CharmDataModel to be used in the task view.
