@@ -9,11 +9,7 @@
 #include "Core/CommandEmitterInterface.h"
 
 enum ViewColumns {
-    Column_TaskId,
-    Column_TaskName,
-    Column_TaskSubscriptions,
-    Column_TaskSessionTime,
-    Column_TaskComment,
+    Column_TaskId, // FIXME rename
     Column_TaskColumnCount
 };
 
@@ -41,7 +37,7 @@ public:
     QVariant data( const QModelIndex& index, int role = Qt::DisplayRole ) const;
     QModelIndex index( int row, int column, const QModelIndex & parent = QModelIndex() ) const;
     QModelIndex parent( const QModelIndex & index ) const;
-    QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
+    // QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
     Qt::ItemFlags flags( const QModelIndex & index ) const;
     bool setData( const QModelIndex & index, const QVariant & value, int role = Qt::EditRole );
 

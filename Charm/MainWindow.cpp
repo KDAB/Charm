@@ -271,16 +271,18 @@ void MainWindow::sendCommand( CharmCommand *cmd)
 }
 
 
-void MainWindow::showEvent( QShowEvent* )
+void MainWindow::showEvent( QShowEvent* e )
 {
     emit visibilityChanged( true );
     // REFACTOR move to Application
     // m_actionShowHideView.setText( tr( "Hide Charm Window" ) );
+    QMainWindow::showEvent( e );
 }
 
-void MainWindow::hideEvent( QHideEvent* )
+void MainWindow::hideEvent( QHideEvent* e )
 {
     emit visibilityChanged( false );
+    QMainWindow::hideEvent( e );
 }
 
 void MainWindow::keyPressEvent( QKeyEvent* event )

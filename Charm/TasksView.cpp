@@ -432,8 +432,7 @@ void View::slotItemDoubleClicked( const QModelIndex& index )
     ViewFilter* filter = Application::instance().model().taskModel();
 
     if ( !index.isValid() ) return;
-    if ( index.column() == Column_TaskSessionTime ||
-         index.column() == Column_TaskName ) {
+    if ( index.column() == Column_TaskId ) {
         Task task = filter->taskForIndex( index );
         if ( CONFIGURATION.eventsInLeafsOnly && filter->taskHasChildren( task ) ) {
             return;
@@ -443,9 +442,9 @@ void View::slotItemDoubleClicked( const QModelIndex& index )
         if ( filter->taskIsActive( task ) ) {
             model->endEventRequested( task );
         } else {
-        	if( task.isCurrentlyValid() ) {
-        		model->startEventRequested( task );
-        	}
+            if( task.isCurrentlyValid() ) {
+                model->startEventRequested( task );
+            }
         }
     }
     slotConfigureUi();

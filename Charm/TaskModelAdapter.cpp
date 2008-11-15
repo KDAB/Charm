@@ -5,7 +5,6 @@
 #include "Data.h"
 #include "Core/CharmConstants.h"
 #include "ViewHelpers.h"
-// #include "Reports/CharmReport.h"
 #include <Core/Configuration.h>
 #include <Core/CharmCommand.h>
 #include "Commands/CommandModifyTask.h"
@@ -56,14 +55,12 @@ QVariant TaskModelAdapter::data( const QModelIndex& index, int role ) const
     switch( role ) {
     case Qt::ForegroundRole:
     	if( item->task().isCurrentlyValid() ) {
-    		return application->palette().color( QPalette::Active, QPalette::Text );
+            return application->palette().color( QPalette::Active, QPalette::Text );
     	} else {
-    		return application->palette().color( QPalette::Disabled, QPalette::Text );
+            return application->palette().color( QPalette::Disabled, QPalette::Text );
     	}
-    }
-
-    switch( index.column() ) {
-    case Column_TaskId:
+        break;
+    case Qt::DisplayRole:
         if ( role == Qt::DisplayRole ) {
             QString text
                 ( QString("%1" ).arg
@@ -73,64 +70,32 @@ QVariant TaskModelAdapter::data( const QModelIndex& index, int role ) const
             return text;
         }
         break;
-
-    case Column_TaskName:
-        switch( role ) {
-        case Qt::DisplayRole:
-        case Qt::EditRole:
-            return item->task().name();
-            break;
-        case Qt::DecorationRole:
-            if ( isActive ) {
-                return Data::activePixmap();
-            } else {
-                return QVariant();
-            }
-            break;
+    case Qt::DecorationRole:
+        if ( isActive ) {
+            return Data::activePixmap();
+        } else {
+            return QVariant();
         }
         break;
-
-    case Column_TaskSubscriptions:
-        switch( role ) {
-        case Qt::CheckStateRole:
-            if ( item->task().subscribed() ) {
-                return Qt::Checked;
-            } else {
-                return Qt::Unchecked;
-            }
-            break;
+    case Qt::EditRole:
+        return item->task().name();
+        break;
+    case Qt::CheckStateRole:
+        if ( item->task().subscribed() ) {
+            return Qt::Checked;
+        } else {
+            return Qt::Unchecked;
         }
         break;
-
-    case Column_TaskComment:
-        switch( role ) {
-        case Qt::EditRole:
-        case Qt::DisplayRole:
-            if ( isActive ) {
-                return activeEvent.comment();
-            } else {
-                return QVariant();
-            }
-            break;
-        };
-        break;
-
-    case Column_TaskSessionTime:
-        switch( role ) {
-        case Qt::TextAlignmentRole:
-            return QVariant( Qt::AlignRight | Qt::AlignVCenter );
-            break;
-        case Qt::DisplayRole:
-            if ( isActive )
-            {
-                return hoursAndMinutes( activeEvent.duration() );
-            }
-            break;
-        }
-        break;
+//         case Qt::DisplayRole:
+//             if ( isActive )
+//             {
+//                 return hoursAndMinutes( activeEvent.duration() );
+//             }
+//             break;
+    default:
+        return QVariant();
     }
-
-    return QVariant();
 }
 
 QModelIndex TaskModelAdapter::index( int row, int column, const QModelIndex & parent ) const
@@ -166,41 +131,41 @@ QModelIndex TaskModelAdapter::parent( const QModelIndex & index ) const
     return indexForTaskTreeItem( parent, 0 );
 }
 
-QVariant TaskModelAdapter::headerData( int section, Qt::Orientation orientation, int role ) const
-{
-    if ( orientation != Qt::Horizontal ) return QVariant();
+// QVariant TaskModelAdapter::headerData( int section, Qt::Orientation orientation, int role ) const
+// {
+//     if ( orientation != Qt::Horizontal ) return QVariant();
 
-    switch( section ) {
-    case Column_TaskId:
-        if ( role == Qt::DisplayRole ) {
-            return tr( "Task Id" );
-        }
-        break;
-    case Column_TaskName:
-        if ( role == Qt::DisplayRole ) {
-            return tr( "Task" );
-        }
-        break;
-    case Column_TaskComment:
-        if ( role == Qt::DisplayRole ) {
-            return tr( "Comment" );
-        }
-        break;
-    case Column_TaskSessionTime:
-        if ( role == Qt::DisplayRole ) {
-            return tr( "Running Time" );
-        }
-        break;
-    case Column_TaskSubscriptions:
-        switch( role ) {
-        case Qt::DecorationRole:
-            return Data::checkIcon();
-            break;
-        }
-    }
+//     switch( section ) {
+//     case Column_TaskId:
+//         if ( role == Qt::DisplayRole ) {
+//             return tr( "Task Id" );
+//         }
+//         break;
+//     case Column_TaskName:
+//         if ( role == Qt::DisplayRole ) {
+//             return tr( "Task" );
+//         }
+//         break;
+//     case Column_TaskComment:
+//         if ( role == Qt::DisplayRole ) {
+//             return tr( "Comment" );
+//         }
+//         break;
+//     case Column_TaskSessionTime:
+//         if ( role == Qt::DisplayRole ) {
+//             return tr( "Running Time" );
+//         }
+//         break;
+//     case Column_TaskSubscriptions:
+//         switch( role ) {
+//         case Qt::DecorationRole:
+//             return Data::checkIcon();
+//             break;
+//         }
+//     }
 
-    return QVariant();
-}
+//     return QVariant();
+// }
 
 Qt::ItemFlags TaskModelAdapter::flags( const QModelIndex & index ) const
 {
@@ -210,18 +175,10 @@ Qt::ItemFlags TaskModelAdapter::flags( const QModelIndex & index ) const
         const TaskTreeItem* item = itemFor( index );
         const TaskId id = item->task().id();
         const Event& activeEvent = m_dataModel->activeEventFor( id );
+        // FIXME what to do?
         const bool isActive = activeEvent.isValid();
         const bool isCurrent = item->task().isCurrentlyValid();
-
-        if ( index.column() == Column_TaskComment && isActive && isCurrent ) {
-            flags = Qt::ItemIsEditable;
-        } else if ( index.column() == Column_TaskSubscriptions ) {
-            flags = Qt::ItemIsUserCheckable;
-
-// Task name isn't editable in-place anymore, we have RMB/Rename Task now, and double-click should start the timer.
-//        } else if ( index.column() == Column_TaskName ) {
-//            flags = Qt::ItemIsEditable;
-        }
+        flags = Qt::ItemIsEditable | Qt::ItemIsUserCheckable;
     }
 
     return QAbstractItemModel::flags( index ) | flags;
@@ -232,49 +189,27 @@ bool TaskModelAdapter::setData( const QModelIndex & index, const QVariant & valu
     if ( ! index.isValid() )
         return false;
 
-    if ( !( index.column() == Column_TaskComment
-            || index.column() == Column_TaskSubscriptions
-            || index.column() == Column_TaskName ) )
-        return false;
-
     const TaskTreeItem* item = itemFor ( index );
     Q_ASSERT( item != 0 );
     Task task( item->task() ); // make a copy, so that we can modify it
 
-    switch( index.column() ) {
-    case Column_TaskName:
-        if ( role == Qt::EditRole ) {
-            QString name = value.toString();
-            if ( task.name() == name ) break;
-            task.setName( name );
-            CommandModifyTask* command = new CommandModifyTask( task, this );
-            VIEW.sendCommand( command );
-        }
-        break;
-    case Column_TaskComment:
-        if ( role == Qt::EditRole ) {
-            Q_ASSERT( m_dataModel->isTaskActive( task.id() ) );
+    if ( role == Qt::EditRole ) {
+        Q_ASSERT( m_dataModel->isTaskActive( task.id() ) );
 
-            const Event& old = m_dataModel->activeEventFor ( task.id() );
-            QString comment = value.toString();
-            if ( old.comment() == comment ) break;
-
-            Event event( old );
-            event.setComment( comment );
-            CommandModifyEvent* command = new CommandModifyEvent( event, this );
-            VIEW.sendCommand( command );
-        }
-        break;
-    case Column_TaskSubscriptions:
-        if ( role == Qt::CheckStateRole ) {
-            task.setSubscribed( ! task.subscribed() );
-            CommandModifyTask* command = new CommandModifyTask( task, this );
-            VIEW.sendCommand( command );
-        }
-        break;
-    };
-
-    return true;
+        const Event& old = m_dataModel->activeEventFor ( task.id() );
+        QString comment = value.toString();
+        Event event( old );
+        event.setComment( comment );
+        CommandModifyEvent* command = new CommandModifyEvent( event, this );
+        VIEW.sendCommand( command );
+        return true;
+    } else if ( role == Qt::CheckStateRole ) {
+        task.setSubscribed( ! task.subscribed() );
+        CommandModifyTask* command = new CommandModifyTask( task, this );
+        VIEW.sendCommand( command );
+        return true;
+    }
+    return false;
 }
 
 void TaskModelAdapter::resetTasks()
@@ -316,7 +251,7 @@ void TaskModelAdapter::taskModified( TaskId id )
     const TaskTreeItem& item = m_dataModel->taskTreeItem( id );
     if ( item.isValid() ) {
         QModelIndex startIndex = indexForTaskTreeItem( item, 0 );
-        QModelIndex endIndex = indexForTaskTreeItem( item, Column_TaskComment );
+        QModelIndex endIndex = indexForTaskTreeItem( item, Column_TaskId );
         emit dataChanged( startIndex, endIndex );
     }
 }
@@ -350,15 +285,8 @@ void TaskModelAdapter::eventModified( EventId id, Event oldEvent )
     if ( item.isValid() ) {
         // find out about what fields have actually changed, so that no
         // ongoing edits are overridden (to fix till' s bug report):
-        ViewColumns lastColumn;
-        if ( event.comment() == oldEvent.comment() ) {
-            lastColumn = Column_TaskSessionTime;
-        } else {
-            lastColumn = Column_TaskComment;
-        }
-
         QModelIndex startIndex = indexForTaskTreeItem( item, 0 );
-        QModelIndex endIndex = indexForTaskTreeItem( item, lastColumn );
+        QModelIndex endIndex = indexForTaskTreeItem( item, Column_TaskId );
         emit dataChanged( startIndex, endIndex );
     }
 }

@@ -21,13 +21,13 @@ SelectTaskDialogProxy::SelectTaskDialogProxy( CharmDataModel* model, QObject* pa
     : ViewFilter( model, parent )
 {
     // we filter for the task name column
-    setFilterKeyColumn( Column_TaskName );
+    setFilterKeyColumn( Column_TaskId );
     setFilterCaseSensitivity( Qt::CaseInsensitive );
 }
 
 bool SelectTaskDialogProxy::filterAcceptsColumn( int column, const QModelIndex& parent ) const
 {
-    return column == Column_TaskId || column == Column_TaskName;
+    return column == Column_TaskId;
 }
 
 SelectTaskDialog::SelectTaskDialog( QWidget* parent )

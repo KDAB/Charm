@@ -9,7 +9,7 @@ ViewFilter::ViewFilter( CharmDataModel* model, QObject* parent )
     setSourceModel ( &m_model );
 
     // we filter for the task name column
-    setFilterKeyColumn( Column_TaskName );
+    setFilterKeyColumn( Column_TaskId );
     // setFilterKeyColumn( -1 );
     setFilterCaseSensitivity( Qt::CaseInsensitive );
 
@@ -82,14 +82,6 @@ bool ViewFilter::filterAcceptsRow( int source_row, const QModelIndex& parent ) c
 
 bool ViewFilter::filterAcceptsColumn( int source_column, const QModelIndex& ) const
 {
-    bool acceptCommentColumn = true;
-    bool acceptRunningTimeColumn = true;
-
-    if ( source_column ==  Column_TaskComment && ! acceptCommentColumn ) {
-        return false;
-    } else if ( source_column == Column_TaskSessionTime && ! acceptRunningTimeColumn ) {
-        return false;
-    }
     return true;
 }
 

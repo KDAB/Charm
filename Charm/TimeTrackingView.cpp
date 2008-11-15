@@ -58,6 +58,7 @@ void TimeTrackingView::stateChanged( State previous )
         connect( &Application::instance().timeSpans(), SIGNAL( timeSpansChanged() ),
                  SLOT( slotSelectTasksToShow() ) );
         DATAMODEL->registerAdapter( this );
+#ifdef TIMETRACKER_TEMPORARILY_DISABLED
         // restore Gui state:
         QSettings settings;
         if ( settings.contains( MetaKey_TimeTrackerGeometry ) ) {
@@ -73,8 +74,12 @@ void TimeTrackingView::stateChanged( State previous )
             }
         }
         summaryWidget()->handleActiveEvents();
+#endif
         break;
     }
+    case ShuttingDown:
+        setEnabled( false );
+        break;
     case Disconnecting: {
         // save Gui state:
         QSettings settings;
