@@ -35,7 +35,7 @@ TimeTrackingSummaryWidget::TimeTrackingSummaryWidget( QWidget* parent )
     m_narrowFont.setPointSize( 9 );
 #endif
     //
-    setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
+    setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
     // plumbing
     m_stopGoButton.setCheckable( true );
     connect( &m_stopGoButton, SIGNAL( clicked( bool ) ),
@@ -127,7 +127,7 @@ void TimeTrackingSummaryWidget::paintEvent( QPaintEvent* e )
                                        - 7 * m_cachedDayFieldRect.width();
                 fieldRect = QRect( 0, y, fieldWidth, FieldHeight );
                 QFontMetrics metrics( field.font );
-                field.text = metrics.elidedText( field.text, Qt::ElideMiddle,
+                field.text = metrics.elidedText( field.text, Qt::ElideLeft,
                                                  fieldRect.width() - 2*Margin );
             } else if ( column > 0 ) { //  a task
                 fieldRect = QRect( width() - m_cachedTotalsFieldRect.width()

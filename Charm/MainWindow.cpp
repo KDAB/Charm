@@ -73,6 +73,7 @@ MainWindow::MainWindow()
     }
 
     // set up actions
+    m_actionQuit.setShortcut( Qt::CTRL + Qt::Key_Q );
     m_actionQuit.setText( tr( "Quit" ) );
     m_actionQuit.setIcon( Data::quitCharmIcon() );
     connect( &m_actionQuit, SIGNAL( triggered( bool ) ),
