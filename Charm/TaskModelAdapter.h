@@ -15,7 +15,8 @@ enum ViewColumns {
 
 enum TasksViewRoles {
     TasksViewRole_Name = 0x1045F132,
-    TasksViewRole_RunningTime
+    TasksViewRole_RunningTime,
+    TasksViewRole_Comment
 };
 
 typedef ViewColumns ViewColumn;

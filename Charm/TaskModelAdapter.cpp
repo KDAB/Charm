@@ -87,15 +87,12 @@ QVariant TaskModelAdapter::data( const QModelIndex& index, int role ) const
             return Qt::Unchecked;
         }
         break;
-//         case Qt::DisplayRole:
-//             if ( isActive )
-//             {
-//                 return hoursAndMinutes( activeEvent.duration() );
-//             }
-//             break;
-
     case TasksViewRole_Name:
         return item->task().name();
+    case TasksViewRole_RunningTime:
+        return hoursAndMinutes( activeEvent.duration() );
+    case TasksViewRole_Comment:
+        return activeEvent.comment();
     default:
         return QVariant();
     }

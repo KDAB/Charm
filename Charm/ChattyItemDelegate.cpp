@@ -41,13 +41,8 @@ void ChattyItemDelegate::paint(QPainter *painter,
     drawBackground( painter, option, index );
     const QString taskName = index.data(Qt::DisplayRole).toString()
                              + " " + index.data( TasksViewRole_Name ).toString();
-#if 0
     const QVariant checkStateVariant = index.data(Qt::CheckStateRole);
     const Qt::CheckState checkState = static_cast<Qt::CheckState>(checkStateVariant.toInt());
-#else
-    const Qt::CheckState checkState = Qt::Checked;
-    const QVariant checkStateVariant = QVariant(checkState);
-#endif
     // Find size of checkbox
     const QRect bounding = option.rect; // TODO adjust if recording
     QRect cbRect = check(option, bounding, checkStateVariant);
