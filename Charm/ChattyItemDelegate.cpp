@@ -37,6 +37,8 @@ void ChattyItemDelegate::paint(QPainter *painter,
                                const QModelIndex &index) const
 {
     painter->save();
+    drawBackground(painter, option, index);
+
     const QString taskName = index.data(Qt::DisplayRole).toString();
 #if 0
     const QVariant checkStateVariant = index.data(Qt::CheckStateRole);
@@ -51,12 +53,13 @@ void ChattyItemDelegate::paint(QPainter *painter,
     // Position checkbox on the right, and vertically aligned
     cbRect = QStyle::alignedRect(option.direction, Qt::AlignRight | Qt::AlignVCenter,
                                  cbRect.size(), bounding);
-
     const QRect textRect(option.rect.left(),
                          option.rect.top(),
                          option.rect.width() - cbRect.width(),
                          firstLineHeight(option));
-    painter->drawText(textRect, Qt::AlignLeft | Qt::AlignVCenter, taskName);
+    QStyleOptionViewItem optText = option;
+    optText.displayAlignment = Qt::AlignLeft | Qt::AlignVCenter;
+    drawDisplay(painter, optText, textRect, taskName);
 
     drawCheck(painter, option, cbRect, checkState);
     painter->restore();
