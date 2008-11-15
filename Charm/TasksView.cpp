@@ -307,11 +307,7 @@ void View::configurationChanged()
         break;
     };
     m_ui->treeView->setFont( font );
-
-    // column resize behaviour:
-    QHeaderView* header = m_ui->treeView->header();
-    header->setResizeMode( Column_TaskId /* TODO: rename */, QHeaderView::Stretch );
-
+    m_ui->treeView->header()->hide();
     slotConfigureUi();
 }
 
