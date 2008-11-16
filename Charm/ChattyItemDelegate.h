@@ -23,6 +23,8 @@ public:
 
     // reimpl
     QWidget* createEditor( QWidget* parent, const QStyleOptionViewItem& option, const QModelIndex& index ) const;
+    bool editorEvent(QEvent *event, QAbstractItemModel *model,
+                     const QStyleOptionViewItem &option, const QModelIndex &index);
 
     bool isEditing() const;
 
@@ -34,6 +36,8 @@ private slots:
 
 private:
     int firstLineHeight(const QStyleOptionViewItem& option) const;
+    QRect checkBoxRect(const QStyleOptionViewItem &option,
+                       const QVariant &variant) const;
     mutable bool m_editing;
 };
 #endif
