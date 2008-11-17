@@ -179,30 +179,30 @@ Event Event::fromXml( const QDomElement& element, int databaseSchemaVersion ) th
     bool ok;
     event.setComment( element.text() );
     event.setId( element.attribute( EventIdAttribute ).toInt( &ok ) );
-    if ( !ok ) throw XmlSerializationException( "Event::fromXml: invalid event id" );
+    if ( !ok ) throw XmlSerializationException( QObject::tr( "Event::fromXml: invalid event id" ) );
     event.setInstallationId( element.attribute( EventInstallationIdAttribute ).toInt( &ok ) );
-    if ( !ok ) throw XmlSerializationException( "Event::fromXml: invalid installation id" );
+    if ( !ok ) throw XmlSerializationException( QObject::tr( "Event::fromXml: invalid installation id" ) );
     event.setTaskId( element.attribute( EventTaskIdAttribute ).toInt( &ok ) );
-    if ( !ok ) throw XmlSerializationException( "Event::fromXml: invalid task id" );
+    if ( !ok ) throw XmlSerializationException( QObject::tr( "Event::fromXml: invalid task id" ) );
     event.setUserId( element.attribute( EventUserIdAttribute ).toInt( &ok ) );
     if ( !ok && databaseSchemaVersion > 1 ) {
-        throw XmlSerializationException( "Event::fromXml: invalid user id" );
+        throw XmlSerializationException( QObject::tr( "Event::fromXml: invalid user id" ) );
         event.setUserId( 0 );
     }
     event.setReportId( element.attribute( EventReportIdAttribute ).toInt( &ok ) );
     if ( !ok && databaseSchemaVersion > 1 ) {
-        throw XmlSerializationException( "Event::fromXml: invalid report id" );
+        throw XmlSerializationException( QObject::tr( "Event::fromXml: invalid report id" ) );
         event.setReportId( 0 );
     }
     if ( element.hasAttribute( EventStartAttribute ) ) {
         QDateTime start = QDateTime::fromString( element.attribute( EventStartAttribute ), Qt::ISODate );
-        if ( !start.isValid() ) throw XmlSerializationException( "Event::fromXml: invalid start date" );
+        if ( !start.isValid() ) throw XmlSerializationException( QObject::tr( "Event::fromXml: invalid start date" ) );
         start.setTimeSpec( Qt::UTC );
         event.setStartDateTime( start );
     }
     if ( element.hasAttribute( EventEndAttribute ) ) {
         QDateTime end = QDateTime::fromString( element.attribute( EventEndAttribute ), Qt::ISODate );
-        if ( !end.isValid() ) throw XmlSerializationException( "Event::fromXml: invalid end date" );
+        if ( !end.isValid() ) throw XmlSerializationException( QObject::tr( "Event::fromXml: invalid end date" ) );
         end.setTimeSpec( Qt::UTC );
         event.setEndDateTime( end.toLocalTime() );
     }

@@ -39,12 +39,10 @@ int main(int argc, char** argv)
             throw UsageException();
             break;
         }
-    } catch (UsageException& e)
-    {
+    } catch (UsageException& e) {
         cerr << e.what() << endl;
         CommandLine::usage();
-    } catch (TimesheetProcessorException& e)
-    {
+    } catch (TimesheetProcessorException& e) {
         cerr << e.what() << endl;
         CommandLine::usage();
         return 1;

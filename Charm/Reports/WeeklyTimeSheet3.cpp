@@ -668,8 +668,7 @@ void  WeeklyTimeSheetReport::slotSaveToXml()
 //     qDebug() << "WeeklyTimeSheetReport::slotSaveToXml: generated XML:" << endl
 //              << document.toString( 4 );
     } catch ( XmlSerializationException& e ) {
-        QMessageBox::critical( this, tr( "Error exporting the report" ),
-                               QString::fromLatin1( e.what() ) );
+        QMessageBox::critical( this, tr( "Error exporting the report" ), e.what() );
     }
 }
 

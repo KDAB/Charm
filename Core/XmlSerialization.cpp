@@ -89,7 +89,7 @@ void TaskExport::writeTo( const QString& filename, const TaskList& tasks )
         QTextStream stream( &file );
         document.save( stream, 4 );
     } else {
-        throw XmlSerializationException( "Cannot write to file" );
+        throw XmlSerializationException( QObject::tr( "Cannot write to file" ) );
     }
 }
 
@@ -99,17 +99,17 @@ void TaskExport::readFrom( const QString& filename )
     QFile file( filename );
     if ( !file.exists() )
     {
-        throw XmlSerializationException( "File does not exist." );
+        throw XmlSerializationException( QObject::tr( "File does not exist." ) );
     }
     // load the XML into a DOM tree:
     if (!file.open(QIODevice::ReadOnly))
     {
-        throw XmlSerializationException( "Cannot open file for reading." );
+        throw XmlSerializationException( QObject::tr( "Cannot open file for reading." ) );
     }
     QDomDocument document;
     if (!document.setContent(&file))
     {
-        throw XmlSerializationException( "Cannot read file" );
+        throw XmlSerializationException( QObject::tr( "Cannot read file" ) );
     }
 
     // now read

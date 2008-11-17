@@ -86,7 +86,7 @@ SqLiteStorage::SqLiteStorage()
     , m_database( QSqlDatabase::addDatabase( DriverName, DatabaseName ) )
 {
     if ( ! QSqlDatabase::isDriverAvailable( DriverName ) ) {
-        throw CharmException( "QSQLITE driver not available" );
+        throw CharmException( QObject::tr( "QSQLITE driver not available" ) );
     }
 }
 

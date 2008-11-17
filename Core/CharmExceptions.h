@@ -1,25 +1,25 @@
 #ifndef CHARMEXCEPTIONS_H
 #define CHARMEXCEPTIONS_H
 
-#include <exception>
+#include <QString>
 
-class CharmException : public std::exception
+class CharmException
 {
 public:
-	CharmException( const char* message = 0 )
+    CharmException( const QString& message )
         : m_message( message )
     {}
-    const char* what() const throw() {
+    QString what() const throw() {
         return m_message;
     }
 private:
-    const char* m_message;
+    QString m_message;
 };
 
 class XmlSerializationException : public CharmException
 {
 public:
-	XmlSerializationException( const char* message = 0 )
+	XmlSerializationException( const QString& message )
         : CharmException( message )
     {}
 };
@@ -27,7 +27,7 @@ public:
 class UnsupportedDatabaseVersionException : public CharmException
 {
 public:
-	UnsupportedDatabaseVersionException( const char* message = 0 )
+	UnsupportedDatabaseVersionException( const QString& message )
         : CharmException( message )
     {}
 };
@@ -35,7 +35,7 @@ public:
 class InvalidTaskListException : public CharmException
 {
 public:
-    InvalidTaskListException( const char* message = 0 )
+    InvalidTaskListException( const QString& message )
         : CharmException( message )
     {}
 };

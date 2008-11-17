@@ -1,5 +1,6 @@
 #include <QtDebug>
 
+
 #include "Task.h"
 #include "Event.h"
 #include "CharmConstants.h"
@@ -139,6 +140,17 @@ void Controller::stateChanged( State previous, State next )
     {   // yes, it is that simple:
         TaskList tasks = m_storage->getAllTasks();
         // tell the view about the existing tasks;
+        if ( ! Task::checkForUniqueTaskIds( tasks ) ) {
+            // throw CharmException( "
+//             QMessageBox::error( &Application::instance().view(),
+//                                 tr( "Critical Error" ),
+//                                 tr( "The task list is malformed. The application will abort." ) );
+//             Application::instance().quit();
+        }
+        if ( ! Task::checkForTreeness( tasks ) ) {
+            // FIXME give up
+            qDebug() << "Controller::stateChanged: duh";
+        }
         emit definedTasks( tasks );
         EventList events = m_storage->getAllEvents();
         emit allEvents( events );
@@ -369,7 +381,7 @@ QString Controller::importDatabaseFromXml( const QDomDocument& document )
         QDomElement rootElement = document.documentElement();
         bool ok;
         databaseSchemaVersion = rootElement.attribute( "version" ).toInt( &ok );
-        if ( !ok ) throw XmlSerializationException( "Syntax error, no version attribute found." );
+        if ( !ok ) throw XmlSerializationException( QObject::tr( "Syntax error, no version attribute found." ) );
 
         QDomElement metadataElement = rootElement.firstChildElement( MetaDataElement );
         QDomElement tasksElement = rootElement.firstChildElement( TasksElement );

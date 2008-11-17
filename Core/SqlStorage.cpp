@@ -45,7 +45,7 @@ bool SqlStorage::verifyDatabase() throw (UnsupportedDatabaseVersionException )
 	}
 	if( version != REQUIRED_CHARM_DATABASE_VERSION )
 	{
-		throw UnsupportedDatabaseVersionException( "Database version is not supported." );
+            throw UnsupportedDatabaseVersionException( QObject::tr( "Database version is not supported." ) );
 	}
 	return true;
 }
