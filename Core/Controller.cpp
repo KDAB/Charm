@@ -141,15 +141,12 @@ void Controller::stateChanged( State previous, State next )
         TaskList tasks = m_storage->getAllTasks();
         // tell the view about the existing tasks;
         if ( ! Task::checkForUniqueTaskIds( tasks ) ) {
-            // throw CharmException( "
-//             QMessageBox::error( &Application::instance().view(),
-//                                 tr( "Critical Error" ),
-//                                 tr( "The task list is malformed. The application will abort." ) );
-//             Application::instance().quit();
+            throw CharmException( tr( "The Charm database is corrupted, it contains duplicate task ids. "
+                                      "Please have it looked after by a professional." ) );
         }
         if ( ! Task::checkForTreeness( tasks ) ) {
-            // FIXME give up
-            qDebug() << "Controller::stateChanged: duh";
+            throw CharmException( tr( "The Charm database is corrupted, the tasks do not form a tree. "
+                                      "Please have it looked after by a professional." ) );
         }
         emit definedTasks( tasks );
         EventList events = m_storage->getAllEvents();

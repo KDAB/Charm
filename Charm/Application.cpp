@@ -153,6 +153,8 @@ void Application::setState(State state)
 #endif
     State previous = m_state;
 
+    try {
+
     switch (m_state)
     {
     case Constructed:
@@ -220,6 +222,11 @@ void Application::setState(State state)
         Q_ASSERT_X(false, "Application::setState",
                    "Unknown new application state");
     };
+    } catch( CharmException& e ) {
+        QMessageBox::critical( &view(), tr( "Critical Charm Problem" ),
+                               e.what() );
+        quit();
+    }
 }
 
 State Application::state() const
