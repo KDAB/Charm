@@ -12,6 +12,7 @@
 #include <QSettings>
 #include <QMetaType>
 #include <QMessageBox>
+#include <QShortcut>
 
 #include <Core/CharmConstants.h>
 #include <Core/SqLiteStorage.h>
@@ -30,7 +31,7 @@ extern void qt_mac_set_dock_menu(QMenu *);
 #endif
 
 Application::Application(int& argc, char** argv)
-    : QApplication( argc, argv )
+    : ApplicationBase( argc, argv )
     , m_state(Constructed)
     , m_actionShowHideView( this )
     , m_actionShowHideTimeTracker( this )
@@ -115,6 +116,8 @@ Application::Application(int& argc, char** argv)
     m_actionShowHideTimeTracker.setEnabled( false );
     m_timeTracker.hide();
 #endif
+
+#ifndef Q_WS_MAC
     SpecialKeysEventFilter* filter = new SpecialKeysEventFilter( this );
     installEventFilter( filter );
     connect( filter, SIGNAL( toggleWindow1Visibility() ),
@@ -123,7 +126,17 @@ Application::Application(int& argc, char** argv)
     connect( filter, SIGNAL( toggleWindow2Visibility() ),
              &m_timeTracker, SLOT( slotShowHide() ) );
 #endif
+#endif
     // ^^^
+
+#ifdef Q_WS_MAC
+    QShortcut* const ctrl1 = new QShortcut( QKeySequence( "Ctrl+1" ), &m_mainWindow, SLOT( slotShowHideView() ) );
+    ctrl1->setContext( Qt::ApplicationShortcut );
+    QShortcut* const ctrl2 = new QShortcut( QKeySequence( "Ctrl+2" ), &m_timeTracker, SLOT( slotShowHide() ) );
+    ctrl2->setContext( Qt::ApplicationShortcut );
+    QShortcut* const ctrlW = new QShortcut( QKeySequence( "Ctrl+W" ), &m_mainWindow, SLOT( hide() ) );
+    ctrlW->setContext( Qt::ApplicationShortcut );
+#endif
 
     // set up idle detection
     m_idleDetector = IdleDetector::createIdleDetector( this );

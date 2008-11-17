@@ -12,7 +12,11 @@
 
 #include <QMenu>
 #include <QAction>
+#ifdef Q_WS_MAC
+#include "mac_application.h"
+#else
 #include <QApplication>
+#endif
 
 // this is an application, not a library:
 // no pimpling, and data members instead of forward declarations
@@ -30,7 +34,15 @@
 // FIXME read configuration name from command line
 class IdleDetector;
 
-class Application : public QApplication
+
+
+#ifdef Q_WS_MAC
+typedef MacApplication ApplicationBase;
+#else
+typedef QApplication ApplicationBase;
+#endif
+
+class Application : public ApplicationBase
 {
     Q_OBJECT
 

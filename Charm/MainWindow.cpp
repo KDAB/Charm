@@ -159,6 +159,10 @@ MainWindow::MainWindow()
 //     taskMenu->addAction( &m_actionEventEnded );
     menuBar()->addMenu( appMenu );
     menuBar()->addMenu( viewMenu );
+
+#ifdef Q_WS_MAC
+    connect( QApplication::instance(), SIGNAL( dockIconClicked() ), this, SLOT( show() ) );
+#endif
 }
 
 MainWindow::~MainWindow()
@@ -202,6 +206,7 @@ void MainWindow::slotShowHideView()
         hide();
         m_reportDialog.hide();
     } else {
+        show();
         restore();
         raise();
     }
