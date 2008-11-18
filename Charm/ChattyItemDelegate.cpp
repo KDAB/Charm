@@ -41,8 +41,7 @@ void ChattyItemDelegate::paint(QPainter *painter,
 {
     painter->save();
     drawBackground( painter, option, index );
-    const QString taskName = index.data(Qt::DisplayRole).toString()
-                             + " " + index.data( TasksViewRole_Name ).toString();
+
     const QVariant checkStateVariant = index.data(Qt::CheckStateRole);
     const Qt::CheckState checkState = static_cast<Qt::CheckState>(checkStateVariant.toInt());
     // Find size of checkbox
@@ -51,18 +50,46 @@ void ChattyItemDelegate::paint(QPainter *painter,
                          option.rect.top(),
                          option.rect.width() - cbRect.width(),
                          firstLineHeight(option));
-    QStyleOptionViewItem optText = option;
-    optText.displayAlignment = Qt::AlignLeft | Qt::AlignVCenter;
-    drawDisplay(painter, optText, textRect, taskName);
 
+    // Prepare QStyleOptionViewItem with the wanted alignments
+    QStyleOptionViewItem modifiedOption = option;
+    modifiedOption.displayAlignment = Qt::AlignLeft | Qt::AlignVCenter;
+    modifiedOption.decorationAlignment = Qt::AlignLeft | Qt::AlignVCenter;
+
+    // Draw first line of text (task id+name)
+    const QString taskName = index.data(Qt::DisplayRole).toString()
+                             + " " + index.data( TasksViewRole_Name ).toString();
+    drawDisplay(painter, modifiedOption, textRect, taskName);
+
+    // Draw checkbox
     drawCheck(painter, option, cbRect, checkState);
+
+    const QVariant decorationVariant = index.data(Qt::DecorationRole);
+    if (!decorationVariant.isNull()) {
+        // This task is active. Draw decoration, running time, comment field.
+        const QPixmap decorationPixmap = decoration(option, decorationVariant);
+        const QRect pixmapRect(option.rect.left(),
+                               option.rect.top() + textRect.height(),
+                               option.rect.width(),
+                               decorationPixmap.height());
+        drawDecoration(painter, modifiedOption, pixmapRect, decorationPixmap);
+    }
+
     painter->restore();
 }
 
 QSize ChattyItemDelegate::sizeHint(const QStyleOptionViewItem &option,
                                    const QModelIndex &index) const
 {
-    return QSize(option.rect.width(), firstLineHeight(option));
+    int height = firstLineHeight(option);
+
+    const QVariant decorationVariant = index.data(Qt::DecorationRole);
+    if (!decorationVariant.isNull()) {
+        const QPixmap decorationPixmap = decoration(option, decorationVariant);
+        height += decorationPixmap.height();
+    }
+
+    return QSize(option.rect.width(), height);
 }
 
 int ChattyItemDelegate::firstLineHeight(const QStyleOptionViewItem& option) const
