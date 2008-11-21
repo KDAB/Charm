@@ -20,7 +20,7 @@ public:
     SelectTaskDialogProxy( CharmDataModel*, QObject* parent = 0 );
 
 protected:
-	bool filterAcceptsColumn( int column, const QModelIndex& parent ) const;
+    /*! \reimp */ bool filterAcceptsColumn( int column, const QModelIndex& parent ) const;
 };
 
 class SelectTaskDialog : public QDialog

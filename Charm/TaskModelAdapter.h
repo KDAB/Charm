@@ -21,7 +21,8 @@ enum TasksViewRoles {
 
 typedef ViewColumns ViewColumn;
 
-/** TaskModelAdapter adapts the CharmDataModel to be used in the task view.
+/** TaskModelAdapter adapts the CharmDataModel to be used in the task view
+    (in main view and "select task" dialog).
 
     It is a QAbstractItemModel, and stores the TaskTreeItem pointer of
     the respective address in the model indexes internal pointer.
