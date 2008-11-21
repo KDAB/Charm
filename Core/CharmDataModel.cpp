@@ -445,7 +445,9 @@ void CharmDataModel::endAllEventsRequested()
 void CharmDataModel::eventUpdateTimerEvent()
 {
     Q_FOREACH( EventId id, m_activeEventIds ) {
-        Event& event = findEvent( id );
+        // Not a ref (Event &), since we want to diff "old event"
+        // and "new event" in *Adapter::eventModified
+        Event event = findEvent( id );
         event.setEndDateTime( QDateTime::currentDateTime() );
 
         emit requestEventModification( event );
