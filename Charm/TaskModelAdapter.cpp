@@ -62,12 +62,14 @@ QVariant TaskModelAdapter::data( const QModelIndex& index, int role ) const
         break;
     case Qt::DisplayRole:
     {
-        QString text
-            ( QString("%1" ).arg
+        // Return ID + name -- this is used for painting but also
+        // for filtering in select task dialog.
+        return QString("%1" ).arg
               ( item->task().id(),
                 CONFIGURATION.taskPaddingLength,
-                10, QChar( '0' ) ) );
-        return text;
+                10, QChar( '0' ) )
+            + ' ' + item->task().name();
+
     }
         break;
     case Qt::DecorationRole:
@@ -77,9 +79,6 @@ QVariant TaskModelAdapter::data( const QModelIndex& index, int role ) const
             return QVariant();
         }
         break;
-    case Qt::EditRole:
-        return item->task().name();
-        break;
     case Qt::CheckStateRole:
         if ( item->task().subscribed() ) {
             return Qt::Checked;
@@ -87,10 +86,11 @@ QVariant TaskModelAdapter::data( const QModelIndex& index, int role ) const
             return Qt::Unchecked;
         }
         break;
-    case TasksViewRole_Name:
+    case TasksViewRole_Name: // now unused
         return item->task().name();
     case TasksViewRole_RunningTime:
         return hoursAndMinutes( activeEvent.duration() );
+    case Qt::EditRole: // we edit the comment
     case TasksViewRole_Comment:
         return activeEvent.comment();
     default:
@@ -287,7 +287,10 @@ void TaskModelAdapter::eventModified( EventId id, Event oldEvent )
 
     if ( item.isValid() ) {
         // find out about what fields have actually changed, so that no
-        // ongoing edits are overridden (to fix till' s bug report):
+        // ongoing edits are overridden (to fix till' s bug report)
+        // -- DF: we can't do that anymore, with a single column.
+        // see TasksViewDelegate::setEditorData for the fix.
+
         QModelIndex startIndex = indexForTaskTreeItem( item, 0 );
         QModelIndex endIndex = indexForTaskTreeItem( item, Column_TaskId );
         emit dataChanged( startIndex, endIndex );
@@ -333,6 +336,7 @@ QModelIndex TaskModelAdapter::indexForTaskTreeItem( const TaskTreeItem& item,
 {
     if ( item.isValid() ) {
         // argl UUUUGGGLLYYYY
+        // DF: how about reinterpret_cast<void*>(&item) ?
         const void* constVoidPointer = static_cast<const void*>( &item );
         void* voidPointer = const_cast<void*>( constVoidPointer );
         return createIndex( item.row(), column, voidPointer );
