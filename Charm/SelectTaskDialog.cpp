@@ -2,6 +2,7 @@
 #include <QSettings>
 #include <QPushButton>
 #include <QDialogButtonBox>
+#include <QHeaderView>
 
 #include <Core/CharmConstants.h>
 
@@ -23,6 +24,8 @@ SelectTaskDialogProxy::SelectTaskDialogProxy( CharmDataModel* model, QObject* pa
     // we filter for the task name column
     setFilterKeyColumn( Column_TaskId );
     setFilterCaseSensitivity( Qt::CaseInsensitive );
+
+    setSubscribedTasksOnlyMode( CONFIGURATION.showOnlySubscribedTasks );
 }
 
 bool SelectTaskDialogProxy::filterAcceptsColumn( int column, const QModelIndex& parent ) const
@@ -35,8 +38,9 @@ SelectTaskDialog::SelectTaskDialog( QWidget* parent )
     , m_ui( new Ui::SelectTaskDialog() )
     , m_proxy( MODEL.charmDataModel() )
 {
-	m_ui->setupUi( this );
+    m_ui->setupUi( this );
     m_ui->treeView->setModel( &m_proxy );
+    m_ui->treeView->header()->hide();
     connect( m_ui->treeView->selectionModel(),
              SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ),
              SLOT( slotCurrentItemChanged( const QModelIndex&, const QModelIndex& ) ) );
