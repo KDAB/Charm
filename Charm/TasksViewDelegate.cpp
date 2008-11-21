@@ -3,11 +3,12 @@
 #include <QPainter>
 #include <QEvent>
 
-#include "ChattyItemDelegate.h"
+#include "TasksViewDelegate.h"
+#include <QApplication>
 #include <QMouseEvent>
 #include "TaskModelAdapter.h"
 
-ChattyItemDelegate::ChattyItemDelegate( QObject* parent )
+TasksViewDelegate::TasksViewDelegate( QObject* parent )
     : QItemDelegate( parent )
     , m_editing( false )
 {
@@ -16,7 +17,7 @@ ChattyItemDelegate::ChattyItemDelegate( QObject* parent )
 
 }
 
-QWidget* ChattyItemDelegate::createEditor( QWidget* parent, const QStyleOptionViewItem& option, const QModelIndex& index ) const
+QWidget* TasksViewDelegate::createEditor( QWidget* parent, const QStyleOptionViewItem& option, const QModelIndex& index ) const
 {
     QWidget* result = QItemDelegate::createEditor( parent, option, index );
     m_editing = true;
@@ -24,32 +25,38 @@ QWidget* ChattyItemDelegate::createEditor( QWidget* parent, const QStyleOptionVi
     return result;
 }
 
-bool ChattyItemDelegate::isEditing() const
+bool TasksViewDelegate::isEditing() const
 {
     return m_editing;
 }
 
-void ChattyItemDelegate::slotCloseEditor( QWidget*, QAbstractItemDelegate::EndEditHint )
+void TasksViewDelegate::slotCloseEditor( QWidget*, QAbstractItemDelegate::EndEditHint )
 {
     m_editing = false;
     emit editingStateChanged();
 }
 
-void ChattyItemDelegate::paint(QPainter *painter,
+void TasksViewDelegate::paint( QPainter *painter,
                                const QStyleOptionViewItem &option,
-                               const QModelIndex &index) const
+                               const QModelIndex &index ) const
 {
     painter->save();
+
+    // Nasty QTreeView clips the painting to the editor geometry!
+    // We don't want that....
+    painter->setClipRect( option.rect );
+
     drawBackground( painter, option, index );
 
     const QVariant checkStateVariant = index.data(Qt::CheckStateRole);
     const Qt::CheckState checkState = static_cast<Qt::CheckState>(checkStateVariant.toInt());
-    // Find size of checkbox
-    QRect cbRect = checkBoxRect(option, checkStateVariant);
+
+    Layout layout = doLayout( option, index );
+
     const QRect textRect(option.rect.left(),
                          option.rect.top(),
-                         option.rect.width() - cbRect.width(),
-                         firstLineHeight(option));
+                         option.rect.width() - layout.cbRect.width(),
+                         layout.firstLineHeight);
 
     // Prepare QStyleOptionViewItem with the wanted alignments
     QStyleOptionViewItem modifiedOption = option;
@@ -57,13 +64,12 @@ void ChattyItemDelegate::paint(QPainter *painter,
     modifiedOption.decorationAlignment = Qt::AlignLeft | Qt::AlignVCenter;
 
     // Draw first line of text (task id+name)
-    const QString taskName = index.data(Qt::DisplayRole).toString()
-                             + " " + index.data( TasksViewRole_Name ).toString();
+    const QString taskName = index.data(Qt::DisplayRole).toString();
     drawDisplay(painter, modifiedOption, textRect, taskName);
 
     // Draw checkbox
     painter->save(); // preserve text colors, for displaying the running time similarly
-    drawCheck(painter, option, cbRect, checkState);
+    drawCheck(painter, option, layout.cbRect, checkState);
     painter->restore();
 
     const QVariant decorationVariant = index.data(Qt::DecorationRole);
@@ -78,44 +84,26 @@ void ChattyItemDelegate::paint(QPainter *painter,
 
         const QString runningTime = index.data(TasksViewRole_RunningTime).toString();
         QRect textRect(pixmapRect.right() + 5, pixmapRect.top(),
-                       option.rect.width(), option.fontMetrics.ascent());
+                       option.rect.width(), layout.secondLineTextHeight);
         painter->drawText(textRect, Qt::AlignLeft | Qt::AlignVCenter, runningTime, &textRect);
 
         const QString comment = index.data(TasksViewRole_Comment).toString();
         textRect.moveLeft(textRect.right() + 5);
-        textRect.setRight(cbRect.left());
+        textRect.setRight(layout.cbRect.left());
         painter->drawText(textRect, Qt::AlignLeft | Qt::AlignVCenter, comment);
     }
 
     painter->restore();
 }
 
-QSize ChattyItemDelegate::sizeHint(const QStyleOptionViewItem &option,
+QSize TasksViewDelegate::sizeHint( const QStyleOptionViewItem &option,
                                    const QModelIndex &index) const
 {
-    const int height = firstLineHeight(option) + secondLineHeight(option, index);
-    return QSize(option.rect.width(), height);
+    Layout layout = doLayout( option, index );
+    return QSize(option.rect.width(), layout.firstLineHeight + layout.secondLineHeight);
 }
 
-int ChattyItemDelegate::firstLineHeight(const QStyleOptionViewItem& option) const
-{
-    const QRect cbRect = check(option, option.rect, false);
-    return qMax(cbRect.height(), option.fontMetrics.height());
-}
-
-int ChattyItemDelegate::secondLineHeight(const QStyleOptionViewItem& option,
-                                         const QModelIndex& index) const
-{
-    int height = 0;
-    const QVariant decorationVariant = index.data(Qt::DecorationRole);
-    if (!decorationVariant.isNull()) {
-        const QPixmap decorationPixmap = decoration(option, decorationVariant);
-        height = qMax(option.fontMetrics.ascent(), decorationPixmap.height());
-    }
-    return height;
-}
-
-bool ChattyItemDelegate::editorEvent(QEvent *event, QAbstractItemModel *model,
+bool TasksViewDelegate::editorEvent(QEvent *event, QAbstractItemModel *model,
                                      const QStyleOptionViewItem &option, const QModelIndex &index)
 {
     Q_ASSERT(event);
@@ -157,8 +145,8 @@ bool ChattyItemDelegate::editorEvent(QEvent *event, QAbstractItemModel *model,
     return model->setData(index, state, Qt::CheckStateRole);
 }
 
-QRect ChattyItemDelegate::checkBoxRect(const QStyleOptionViewItem &option,
-                                       const QVariant &variant) const
+QRect TasksViewDelegate::checkBoxRect( const QStyleOptionViewItem &option,
+                                       const QVariant &variant ) const
 {
     const QRect bounding = option.rect; // TODO adjust if recording
 
@@ -166,8 +154,64 @@ QRect ChattyItemDelegate::checkBoxRect(const QStyleOptionViewItem &option,
 
     // Position checkbox on the right, and vertically aligned
     return QStyle::alignedRect(option.direction, Qt::AlignRight | Qt::AlignVCenter,
-                                 cbRect.size(), bounding);
+                               cbRect.size(), bounding);
 }
 
-#include "ChattyItemDelegate.moc"
+void TasksViewDelegate::updateEditorGeometry( QWidget * editor,
+                                              const QStyleOptionViewItem & option,
+                                              const QModelIndex & index ) const
+{
+    // TODO use doLayout
+    const QRect cbRect = checkBoxRect(option, Qt::Checked);
+    int firstLineHeight = qMax(cbRect.height(), option.fontMetrics.height());
+    const QVariant decorationVariant = index.data(Qt::DecorationRole);
+    const QPixmap decorationPixmap = decoration(option, decorationVariant);
+    const QString runningTime = index.data(TasksViewRole_RunningTime).toString();
+    const int left = decorationPixmap.width() + option.fontMetrics.width(runningTime);
+    QRect r = option.rect.translated( left + 5, 0 );
+    r.setRight( cbRect.left() );
+    r.setTop( r.top() + firstLineHeight );
+    editor->setGeometry( r );
+}
+
+void TasksViewDelegate::setEditorData( QWidget * editor, const QModelIndex & index ) const
+{
+    // Do not reset the comment lineedit to empty every time TaskModelAdapter emits
+    // dataChanged (because of the running time being updated).
+    if ( m_editing )
+        return;
+    QItemDelegate::setEditorData( editor, index );
+}
+
+TasksViewDelegate::Layout TasksViewDelegate::doLayout( const QStyleOptionViewItem& option,
+                                                       const QModelIndex& index ) const
+{
+    Layout layout;
+    // Find size of checkbox
+    const QVariant checkStateVariant = index.data(Qt::CheckStateRole);
+    layout.cbRect = checkBoxRect(option, checkStateVariant);
+    layout.firstLineHeight = qMax(layout.cbRect.height(), option.fontMetrics.height());
+    layout.secondLineHeight = 0;
+    layout.secondLineTextHeight = 0;
+    const QVariant decorationVariant = index.data(Qt::DecorationRole);
+    if (!decorationVariant.isNull()) {
+        const QPixmap decorationPixmap = decoration(option, decorationVariant);
+
+        const QString comment = index.data(TasksViewRole_Comment).toString();
+        // For editing or rendering a comment we need the whole font height,
+        // while for just "00:05" we only need the ascent.
+        if ( m_editing || !comment.isEmpty() ) {
+            layout.secondLineTextHeight = option.fontMetrics.lineSpacing() + 2 +
+                                          qApp->style()->pixelMetric(QStyle::PM_DefaultFrameWidth, &option, 0);
+        } else {
+            layout.secondLineTextHeight = option.fontMetrics.ascent();
+        }
+
+        layout.secondLineHeight = qMax(layout.secondLineTextHeight, decorationPixmap.height());
+    }
+
+    return layout;
+}
+
+#include "TasksViewDelegate.moc"
 

@@ -6,7 +6,7 @@ ViewFilter::ViewFilter( CharmDataModel* model, QObject* parent )
     , m_model( model )
     , m_subscribedTasksOnly( false )
 {
-    setSourceModel ( &m_model );
+    setSourceModel( &m_model );
 
     // we filter for the task name column
     setFilterKeyColumn( Column_TaskId );
@@ -48,8 +48,10 @@ bool ViewFilter::taskHasChildren( const Task& task ) const
 
 void ViewFilter::setSubscribedTasksOnlyMode( bool onoff )
 {
-    m_subscribedTasksOnly = onoff;
-    clear();
+    if (m_subscribedTasksOnly != onoff) {
+        m_subscribedTasksOnly = onoff;
+        clear();
+    }
 }
 
 bool ViewFilter::filterAcceptsRow( int source_row, const QModelIndex& parent ) const
@@ -71,10 +73,10 @@ bool ViewFilter::filterAcceptsRow( int source_row, const QModelIndex& parent ) c
     }
 
     bool accepted = acceptedByFilter;
-    if ( m_subscribedTasksOnly )
+    if ( accepted && m_subscribedTasksOnly )
     {
         Task task = m_model.taskForIndex( index );
-        accepted = task.subscribed() && acceptedByFilter;
+        accepted = task.subscribed();
     }
 
     return accepted;

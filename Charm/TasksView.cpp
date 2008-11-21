@@ -22,7 +22,7 @@
 #include "ViewFilter.h"
 #include "Application.h"
 #include "TaskIdDialog.h"
-#include "ChattyItemDelegate.h"
+#include "TasksViewDelegate.h"
 
 #include "Core/CharmCommand.h"
 #include "Commands/CommandRelayCommand.h"
@@ -36,7 +36,7 @@ View::View( QWidget* parent )
     : QWidget( parent )
     // , ViewInterface()
     , m_ui( new Ui::View )
-    , m_delegate( new ChattyItemDelegate( this ) )
+    , m_delegate( new TasksViewDelegate( this ) )
     , m_actionEventStarted( this )
     , m_actionEventEnded( this )
     , m_actionSelectedEventStarted( this )
@@ -167,7 +167,7 @@ void View::configureUi( const QModelIndex& current )
             m_actionSelectedEventEnded.setEnabled( true );
         }
     } else if ( task.isValid() && ! task.isCurrentlyValid() ) {
-    	// the task is valid, but at this time not within it's valid time frame
+    	// the task is valid, but at this time not within its valid time frame
         m_actionSelectedEventStarted.setEnabled( false );
         m_actionSelectedEventEnded.setEnabled( false );
     } else if ( task.isValid() ) {

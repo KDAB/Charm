@@ -43,7 +43,7 @@ IF ( QT4_FOUND )
 		       TaskModelAdapter.cpp
 		       EventModelAdapter.cpp
 		       EventModelFilter.cpp
-		       ChattyItemDelegate.cpp 
+		       TasksViewDelegate.cpp 
 		       CharmAboutDialog.cpp
 		       TimeTrackingView.cpp
 		       TimeTrackingSummaryWidget.cpp

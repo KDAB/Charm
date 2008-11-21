@@ -13,7 +13,7 @@
 
 class QItemSelection;
 class QModelIndex;
-class ChattyItemDelegate;
+class TasksViewDelegate;
 class StatusBarWidget;
 
 namespace Ui {
@@ -74,7 +74,7 @@ private:
     void configureUi( const QModelIndex& current );
 
     Ui::View* m_ui;
-    ChattyItemDelegate* m_delegate;
+    TasksViewDelegate* m_delegate;
     QAction m_actionEventStarted;
     QAction m_actionEventEnded;
     QAction m_actionSelectedEventStarted;
