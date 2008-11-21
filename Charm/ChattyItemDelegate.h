@@ -36,6 +36,8 @@ private slots:
 
 private:
     int firstLineHeight(const QStyleOptionViewItem& option) const;
+    int secondLineHeight(const QStyleOptionViewItem& option,
+                         const QModelIndex& index) const;
     QRect checkBoxRect(const QStyleOptionViewItem &option,
                        const QVariant &variant) const;
     mutable bool m_editing;

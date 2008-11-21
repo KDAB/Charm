@@ -62,7 +62,9 @@ void ChattyItemDelegate::paint(QPainter *painter,
     drawDisplay(painter, modifiedOption, textRect, taskName);
 
     // Draw checkbox
+    painter->save(); // preserve text colors, for displaying the running time similarly
     drawCheck(painter, option, cbRect, checkState);
+    painter->restore();
 
     const QVariant decorationVariant = index.data(Qt::DecorationRole);
     if (!decorationVariant.isNull()) {
@@ -70,9 +72,19 @@ void ChattyItemDelegate::paint(QPainter *painter,
         const QPixmap decorationPixmap = decoration(option, decorationVariant);
         const QRect pixmapRect(option.rect.left(),
                                option.rect.top() + textRect.height(),
-                               option.rect.width(),
-                               decorationPixmap.height());
+                               decorationPixmap.width(),
+                               option.rect.height() - textRect.height() - 1);
         drawDecoration(painter, modifiedOption, pixmapRect, decorationPixmap);
+
+        const QString runningTime = index.data(TasksViewRole_RunningTime).toString();
+        QRect textRect(pixmapRect.right() + 5, pixmapRect.top(),
+                       option.rect.width(), option.fontMetrics.ascent());
+        painter->drawText(textRect, Qt::AlignLeft | Qt::AlignVCenter, runningTime, &textRect);
+
+        const QString comment = index.data(TasksViewRole_Comment).toString();
+        textRect.moveLeft(textRect.right() + 5);
+        textRect.setRight(cbRect.left());
+        painter->drawText(textRect, Qt::AlignLeft | Qt::AlignVCenter, comment);
     }
 
     painter->restore();
@@ -81,14 +93,7 @@ void ChattyItemDelegate::paint(QPainter *painter,
 QSize ChattyItemDelegate::sizeHint(const QStyleOptionViewItem &option,
                                    const QModelIndex &index) const
 {
-    int height = firstLineHeight(option);
-
-    const QVariant decorationVariant = index.data(Qt::DecorationRole);
-    if (!decorationVariant.isNull()) {
-        const QPixmap decorationPixmap = decoration(option, decorationVariant);
-        height += decorationPixmap.height();
-    }
-
+    const int height = firstLineHeight(option) + secondLineHeight(option, index);
     return QSize(option.rect.width(), height);
 }
 
@@ -96,6 +101,18 @@ int ChattyItemDelegate::firstLineHeight(const QStyleOptionViewItem& option) cons
 {
     const QRect cbRect = check(option, option.rect, false);
     return qMax(cbRect.height(), option.fontMetrics.height());
+}
+
+int ChattyItemDelegate::secondLineHeight(const QStyleOptionViewItem& option,
+                                         const QModelIndex& index) const
+{
+    int height = 0;
+    const QVariant decorationVariant = index.data(Qt::DecorationRole);
+    if (!decorationVariant.isNull()) {
+        const QPixmap decorationPixmap = decoration(option, decorationVariant);
+        height = qMax(option.fontMetrics.ascent(), decorationPixmap.height());
+    }
+    return height;
 }
 
 bool ChattyItemDelegate::editorEvent(QEvent *event, QAbstractItemModel *model,
