@@ -79,7 +79,7 @@ QRect EventEditorDelegate::paint( QPainter* painter,
                                   EventState state ) const
 {
     painter->save();
-    const QPalette& palette = qApp->palette();
+    const QPalette& palette = option.palette;
     QFont mainFont = painter->font();
     QFont detailFont ( mainFont );
     detailFont.setPointSizeF( mainFont.pointSizeF() * 0.8 );
@@ -129,7 +129,7 @@ QRect EventEditorDelegate::paint( QPainter* painter,
 
     QRect boundingRect;
     QFontMetrics metrics( mainFont );
-    QString elidedTaskName = metrics.elidedText( taskName, Qt::ElideMiddle,
+    QString elidedTaskName = metrics.elidedText( taskName, Qt::ElideLeft,
                                                  taskRect.width() );
     painter->drawText( taskRect, Qt::AlignLeft | Qt::AlignTop,
                        elidedTaskName, &boundingRect );
