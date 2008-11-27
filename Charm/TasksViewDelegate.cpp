@@ -85,7 +85,15 @@ void TasksViewDelegate::paint( QPainter *painter,
         const QString runningTime = index.data(TasksViewRole_RunningTime).toString();
         QRect textRect(pixmapRect.right() + 5, pixmapRect.top(),
                        option.rect.width(), layout.secondLineTextHeight);
+
+        QColor dimHighlight( option.palette.highlight().color() );
+        const float dim = 0.25;
+        dimHighlight.setAlphaF( dim * dimHighlight.alphaF() );
+        const QBrush halfHighlight( dimHighlight );
+        painter->setBackground( halfHighlight ); // running time on blue background
+        painter->setBackgroundMode( Qt::OpaqueMode );
         painter->drawText(textRect, Qt::AlignLeft | Qt::AlignVCenter, runningTime, &textRect);
+        painter->setBackgroundMode( Qt::TransparentMode );
 
         const QString comment = index.data(TasksViewRole_Comment).toString();
         textRect.moveLeft(textRect.right() + 5);
@@ -198,14 +206,19 @@ TasksViewDelegate::Layout TasksViewDelegate::doLayout( const QStyleOptionViewIte
         const QPixmap decorationPixmap = decoration(option, decorationVariant);
 
         const QString comment = index.data(TasksViewRole_Comment).toString();
+#if 0
         // For editing or rendering a comment we need the whole font height,
         // while for just "00:05" we only need the ascent.
+        // Update: changed my mind: looks too narrow.
         if ( m_editing || !comment.isEmpty() ) {
+#endif
             layout.secondLineTextHeight = option.fontMetrics.lineSpacing() + 2 +
                                           qApp->style()->pixelMetric(QStyle::PM_DefaultFrameWidth, &option, 0);
+#if 0
         } else {
             layout.secondLineTextHeight = option.fontMetrics.ascent();
         }
+#endif
 
         layout.secondLineHeight = qMax(layout.secondLineTextHeight, decorationPixmap.height());
     }
