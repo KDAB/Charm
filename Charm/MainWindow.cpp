@@ -456,7 +456,7 @@ void MainWindow::slotImportFromXml()
 
 void MainWindow::slotImportTasks()
 {
-    QString filename = QFileDialog::getOpenFileName( this, tr( "Please Select File" ) );
+    QString filename = QFileDialog::getOpenFileName( this, tr( "Please Select File" ), "", tr("Task definitions (*.xml);;All Files (*)") );
     if ( filename.isEmpty() ) return;
     QFileInfo fileinfo( filename );
     Q_ASSERT( fileinfo.exists() );
