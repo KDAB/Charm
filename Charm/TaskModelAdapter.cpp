@@ -173,18 +173,20 @@ Qt::ItemFlags TaskModelAdapter::flags( const QModelIndex & index ) const
 
     if ( index.isValid() ) {
         const TaskTreeItem* item = itemFor( index );
-        const TaskId id = item->task().id();
-        const Event& activeEvent = m_dataModel->activeEventFor( id );
-        // FIXME what to do?
-        const bool isActive = activeEvent.isValid();
-        const bool isCurrent = item->task().isCurrentlyValid();
         flags = Qt::ItemIsUserCheckable;
-        if ( isActive ) {
-            flags |= Qt::ItemIsEditable;
+        const bool isCurrent = item->task().isCurrentlyValid();
+        if ( isCurrent ) {
+            flags = Qt::ItemIsSelectable|Qt::ItemIsEnabled;
+            const TaskId id = item->task().id();
+            const Event& activeEvent = m_dataModel->activeEventFor( id );
+            const bool isActive = activeEvent.isValid();
+            if ( isActive ) {
+                flags |= Qt::ItemIsEditable;
+            }
         }
     }
 
-    return QAbstractItemModel::flags( index ) | flags;
+    return flags;
 }
 
 bool TaskModelAdapter::setData( const QModelIndex & index, const QVariant & value, int role )
