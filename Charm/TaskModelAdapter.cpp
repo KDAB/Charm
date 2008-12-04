@@ -176,7 +176,7 @@ Qt::ItemFlags TaskModelAdapter::flags( const QModelIndex & index ) const
         flags = Qt::ItemIsUserCheckable;
         const bool isCurrent = item->task().isCurrentlyValid();
         if ( isCurrent ) {
-            flags = Qt::ItemIsSelectable|Qt::ItemIsEnabled;
+            flags |= Qt::ItemIsSelectable|Qt::ItemIsEnabled;
             const TaskId id = item->task().id();
             const Event& activeEvent = m_dataModel->activeEventFor( id );
             const bool isActive = activeEvent.isValid();
