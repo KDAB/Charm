@@ -74,11 +74,11 @@ void TaskListMerger::calculateResults() const
     // one last check: if tasks where modified through the new task
     // lists, maybe local-only tasks have become orphans?
     if ( ! Task::checkForUniqueTaskIds( m_results ) ) {
-        throw InvalidTaskListException( "the merged task list is invalid, it contains duplicate task ids" );
+        throw InvalidTaskListException( QObject::tr( "the merged task list is invalid, it contains duplicate task ids" ) );
     }
 
     if ( ! Task::checkForTreeness( m_results ) ) {
-        throw InvalidTaskListException( "the merged tasks database is not a directed graph, this is seriously bad, go fix it" );
+        throw InvalidTaskListException( QObject::tr( "the merged tasks database is not a directed graph, this is seriously bad, go fix it" ) );
     }
 
     m_resultsValid = true;
@@ -87,11 +87,11 @@ void TaskListMerger::calculateResults() const
 void TaskListMerger::verifyTaskList( const TaskList& tasks )
 {
     if ( ! Task::checkForUniqueTaskIds( tasks ) ) {
-        throw InvalidTaskListException( "task list contains duplicate task ids" );
+        throw InvalidTaskListException( QObject::tr( "task list contains duplicate task ids" ) );
     }
 
     if ( ! Task::checkForTreeness( tasks ) ) {
-        throw InvalidTaskListException( "task list is not a directed graph, this is seriously bad, go fix it" );
+        throw InvalidTaskListException( QObject::tr( "task list is not a directed graph, this is seriously bad, go fix it" ) );
     }
 }
 

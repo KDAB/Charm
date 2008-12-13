@@ -59,7 +59,7 @@ void XmlSerializationTests::testEventSerialization()
             QVERIFY( event.startDateTime() == readEvent.startDateTime() );
             QVERIFY( event.endDateTime() == readEvent.endDateTime() );
             QVERIFY( event == readEvent );
-        } catch( std::exception& e ) {
+        } catch( CharmException& e ) {
             qDebug() << "XmlSerializationTests::testEventSerialization: exception caught ("
                      << e.what() << ")";
             QFAIL( "Event Serialization throws" );
@@ -78,7 +78,7 @@ void XmlSerializationTests::testTaskSerialization()
             	task.dump();
             }
             QVERIFY( task == readTask );
-        } catch( std::exception& e ) {
+        } catch( CharmException& e ) {
             qDebug() << "XmlSerializationTests::testTaskSerialization: exception caught ("
                      << e.what() << ")";
             QFAIL( "Task Serialization throws" );

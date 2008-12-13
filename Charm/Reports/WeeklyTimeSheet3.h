@@ -49,7 +49,6 @@ public:
 
     void setReportProperties( const QDate& start,
                               const QDate& end,
-                              int weekNumber,
                               TaskId rootTask,
                               bool activeTasksOnly,
                               bool subscribedOnly );
@@ -83,6 +82,7 @@ private:
     QDate m_start;
     QDate m_end;
     int m_weekNumber;
+    int m_yearOfWeek;
     TaskId m_rootTask;
     bool m_activeTasksOnly;
     bool m_subscribedOnly;

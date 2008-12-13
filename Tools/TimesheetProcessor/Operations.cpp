@@ -84,16 +84,13 @@ void addTimesheet(const CommandLine& cmd)
 	QDomElement element = effortElement.firstChildElement("event");
 	for (; !element.isNull(); element = element.nextSiblingElement("event"))
 	{
-		try
-		{
+		try {
 			Event e = Event::fromXml(element);
 			events << e;
 			// e.dump();
-		}
-		catch(XmlSerializationException& e )
-		{
+		} catch(XmlSerializationException& e ) {
 			QString msg = QObject::tr("Syntax error in file %1.").arg(cmd.filename());
-			throw TimesheetProcessorException( msg);
+			throw TimesheetProcessorException( msg );
 		}
 	}
 	// 2) log into database
