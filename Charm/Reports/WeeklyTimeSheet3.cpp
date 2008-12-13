@@ -94,11 +94,10 @@ QDialog* WTSConfigurationPage::makeReportPreviewDialog( QWidget* parent )
         start = m_weekInfo[index].timespan.first;
         end = m_weekInfo[index].timespan.second;
     }
-    int weekNumber = start.weekNumber();
     bool activeOnly = m_ui->checkBoxActiveOnly->isChecked();
     bool subscribedOnly = m_ui->checkBoxSubscribedOnly->isChecked();
     WeeklyTimeSheetReport* report = new WeeklyTimeSheetReport( parent );
-    report->setReportProperties( start, end, weekNumber, m_rootTask, activeOnly, subscribedOnly );
+    report->setReportProperties( start, end, m_rootTask, activeOnly, subscribedOnly );
     return report;
 }
 
@@ -190,6 +189,7 @@ void WTSConfigurationPage::slotSelectTask()
 WeeklyTimeSheetReport::WeeklyTimeSheetReport( QWidget* parent )
     : ReportPreviewWindow( parent )
     , m_weekNumber( 0 )
+    , m_yearOfWeek( 0 )
     , m_rootTask( 0 )
     , m_activeTasksOnly( false )
     , m_subscribedOnly( false )
@@ -203,15 +203,15 @@ WeeklyTimeSheetReport::~WeeklyTimeSheetReport()
 
 void WeeklyTimeSheetReport::setReportProperties(
     const QDate& start, const QDate& end,
-    int weekNumber, TaskId rootTask,
-    bool activeTasksOnly, bool subscribedOnly )
+    TaskId rootTask, bool activeTasksOnly, bool subscribedOnly )
 {
     m_start = start;
     m_end = end;
-    m_weekNumber = weekNumber;
     m_rootTask = rootTask;
     m_activeTasksOnly = activeTasksOnly;
     m_subscribedOnly = subscribedOnly;
+
+    m_weekNumber = start.weekNumber( &m_yearOfWeek );
 
     slotUpdate();
 }
@@ -565,7 +565,7 @@ void  WeeklyTimeSheetReport::slotSaveToXml()
         {
             QDomElement yearElement = document.createElement( "year" );
             metadata.appendChild( yearElement );
-            QDomText text = document.createTextNode( QString::number( m_start.year() ) );
+            QDomText text = document.createTextNode( QString::number( m_yearOfWeek ) );
             yearElement.appendChild( text );
             QDomElement weekElement = document.createElement( "serial-number" );
             weekElement.setAttribute( "semantics", "week-number" );
@@ -683,7 +683,7 @@ QString WeeklyTimeSheetReport::getFileName()
     }
     // suggest file name:
     QString suggestedFilename = tr( "WeeklyTimeSheet-%1-%2" )
-                                .arg( m_start.year() )
+                                .arg( m_yearOfWeek )
                                 .arg( m_weekNumber, 2, 10, QChar('0') );
     path += QDir::separator() + suggestedFilename;
     // ask:
