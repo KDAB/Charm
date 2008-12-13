@@ -1,5 +1,7 @@
 #include <QtAlgorithms>
 
+#include "Core/Configuration.h"
+
 #include "IdleDetector.h"
 #include "X11IdleDetector.h"
 
@@ -39,6 +41,10 @@ IdleDetector::IdlePeriods IdleDetector::idlePeriods() const
 
 void IdleDetector::maybeIdle( IdlePeriod period )
 {
+    if ( ! Configuration::instance().detectIdling ) {
+        return;
+    }
+
 #ifdef NDEBUG
     const int MinimumSeconds = 180;
 #else
