@@ -44,6 +44,10 @@ SelectTaskDialog::SelectTaskDialog( QWidget* parent )
     connect( m_ui->treeView->selectionModel(),
              SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ),
              SLOT( slotCurrentItemChanged( const QModelIndex&, const QModelIndex& ) ) );
+    connect( m_ui->treeView,
+             SIGNAL( doubleClicked( const QModelIndex& ) ),
+             SLOT( slotDoubleClicked( const QModelIndex& ) ) );
+
     connect( m_ui->lineEditFilter, SIGNAL( textChanged( QString ) ),
              SLOT( slotFilterTextChanged( QString ) ) );
     connect( this, SIGNAL( accepted() ),
@@ -89,6 +93,14 @@ void SelectTaskDialog::slotCurrentItemChanged( const QModelIndex& first,
         m_selectedTask = task.id();
     }
     m_ui->buttonBox->button( QDialogButtonBox::Ok )->setEnabled( m_selectedTask != 0 );
+}
+
+
+void SelectTaskDialog::slotDoubleClicked ( const QModelIndex & index )
+{
+    if ( index.isValid() && m_proxy.taskForIndex( index ).isValid() ) {
+        accept();
+    }
 }
 
 void SelectTaskDialog::slotFilterTextChanged( const QString& text )

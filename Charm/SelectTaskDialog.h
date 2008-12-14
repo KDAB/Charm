@@ -38,6 +38,7 @@ protected:
 
 private slots:
     void slotCurrentItemChanged( const QModelIndex&, const QModelIndex& );
+    void slotDoubleClicked ( const QModelIndex & );
     void slotFilterTextChanged( const QString& );
     void slotAccepted();
 
