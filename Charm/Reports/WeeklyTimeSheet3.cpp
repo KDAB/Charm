@@ -55,11 +55,6 @@ void WTSConfigurationPage::slotDelayedInitialization()
 
     // load settings:
     QSettings settings;
-    if ( settings.contains( MetaKey_TimesheetSubscribedOnly ) ) {
-        m_ui->checkBoxSubscribedOnly->setChecked( settings.value( MetaKey_TimesheetSubscribedOnly ).toBool() );
-    } else {
-        m_ui->checkBoxSubscribedOnly->setChecked( false );
-    }
     if ( settings.contains( MetaKey_TimesheetActiveOnly ) ) {
         m_ui->checkBoxActiveOnly->setChecked( settings.value( MetaKey_TimesheetActiveOnly ).toBool() );
     } else {
@@ -71,8 +66,6 @@ void WTSConfigurationPage::slotOkClicked()
 {
     // save settings:
     QSettings settings;
-    settings.setValue( MetaKey_TimesheetSubscribedOnly,
-                       m_ui->checkBoxSubscribedOnly->isChecked() );
     settings.setValue( MetaKey_TimesheetActiveOnly,
                        m_ui->checkBoxActiveOnly->isChecked() );
     settings.setValue( MetaKey_TimesheetRootTask,
@@ -95,9 +88,8 @@ QDialog* WTSConfigurationPage::makeReportPreviewDialog( QWidget* parent )
         end = m_weekInfo[index].timespan.second;
     }
     bool activeOnly = m_ui->checkBoxActiveOnly->isChecked();
-    bool subscribedOnly = m_ui->checkBoxSubscribedOnly->isChecked();
     WeeklyTimeSheetReport* report = new WeeklyTimeSheetReport( parent );
-    report->setReportProperties( start, end, m_rootTask, activeOnly, subscribedOnly );
+    report->setReportProperties( start, end, m_rootTask, activeOnly );
     return report;
 }
 
@@ -192,7 +184,6 @@ WeeklyTimeSheetReport::WeeklyTimeSheetReport( QWidget* parent )
     , m_yearOfWeek( 0 )
     , m_rootTask( 0 )
     , m_activeTasksOnly( false )
-    , m_subscribedOnly( false )
     , m_report( 0 )
 {
 }
@@ -203,14 +194,12 @@ WeeklyTimeSheetReport::~WeeklyTimeSheetReport()
 
 void WeeklyTimeSheetReport::setReportProperties(
     const QDate& start, const QDate& end,
-    TaskId rootTask, bool activeTasksOnly, bool subscribedOnly )
+    TaskId rootTask, bool activeTasksOnly )
 {
     m_start = start;
     m_end = end;
     m_rootTask = rootTask;
     m_activeTasksOnly = activeTasksOnly;
-    m_subscribedOnly = subscribedOnly;
-
     m_weekNumber = start.weekNumber( &m_yearOfWeek );
 
     slotUpdate();
@@ -312,10 +301,10 @@ static TimeSheetInfoList taskWithSubTasks( TaskId id,
     return result;
 }
 
-// retrieve events that match the settings (active, subscribed, ...):
+// retrieve events that match the settings (active, ...):
 TimeSheetInfoList filteredTaskWithSubTasks(
     TimeSheetInfoList timeSheetInfo,
-    bool activeTasksOnly, bool subscribedOnly )
+    bool activeTasksOnly )
 {
     if ( activeTasksOnly ) {
         TimeSheetInfoList nonZero;
@@ -327,17 +316,6 @@ TimeSheetInfoList filteredTaskWithSubTasks(
             }
         }
         timeSheetInfo = nonZero;
-    }
-
-    if ( subscribedOnly ) {
-        TimeSheetInfoList subscribed;
-        for ( int i = 0; i < timeSheetInfo.size(); ++i ) {
-            const TaskTreeItem& item = DATAMODEL->taskTreeItem( timeSheetInfo[i].taskId );
-            if ( item.task().subscribed() || ( timeSheetInfo[i].total() > 0 && timeSheetInfo[i].aggregated ) ) {
-                subscribed << timeSheetInfo[i];
-            }
-        }
-        timeSheetInfo = subscribed;
     }
 
     return timeSheetInfo;
@@ -404,7 +382,7 @@ void WeeklyTimeSheetReport::slotUpdate()
         // TimeSheetInfoList timeSheetInfo = taskWithSubTasks( m_rootTask, m_secondsMap );
         TimeSheetInfoList timeSheetInfo = filteredTaskWithSubTasks(
             taskWithSubTasks( m_rootTask, m_secondsMap ),
-            m_activeTasksOnly, m_subscribedOnly );
+            m_activeTasksOnly );
 
         QDomElement table = doc.createElement( "table" );
         table.setAttribute( "width", "100%" );
@@ -577,7 +555,7 @@ void  WeeklyTimeSheetReport::slotSaveToXml()
         SecondsMap m_secondsMap;
         TimeSheetInfoList timeSheetInfo = filteredTaskWithSubTasks(
             taskWithSubTasks( m_rootTask, m_secondsMap ),
-            false, m_subscribedOnly ); // here, we don't care about active or not, because we only report on the tasks
+            false ); // here, we don't care about active or not, because we only report on the tasks
 
         // extend report tag: add tasks and effort structure
         {   // tasks
@@ -723,7 +701,7 @@ void WeeklyTimeSheetReport::slotSaveToText()
     stream << '\n';
     TimeSheetInfoList timeSheetInfo = filteredTaskWithSubTasks(
         taskWithSubTasks( m_rootTask, m_secondsMap ),
-        m_activeTasksOnly, m_subscribedOnly );
+        m_activeTasksOnly );
 
     TimeSheetInfo totalsLine;
     if ( ! timeSheetInfo.isEmpty() ) {
