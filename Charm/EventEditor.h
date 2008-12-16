@@ -44,6 +44,7 @@ private:
 	Ui::EventEditor* m_ui;
 	Event m_event;
 	bool m_updating;
+        bool m_endDateChanged;
 };
 
 #endif /* EVENTEDITOR_H_ */

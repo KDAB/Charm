@@ -13,6 +13,7 @@
 #include "EventEditor.h"
 #include "SelectTaskDialog.h"
 #include "Reports/CharmReport.h"
+#include "Commands/CommandMakeEvent.h"
 
 #include "ui_EventEditor.h"
 
@@ -20,6 +21,7 @@ EventEditor::EventEditor( const Event& event, QWidget* parent )
     : QDialog( parent )
     , m_event( event )
     , m_updating( false )
+    , m_endDateChanged( true )
 {
     m_ui = new Ui::EventEditor();
     m_ui->setupUi( this );
@@ -60,69 +62,83 @@ EventEditor::EventEditor( const Event& event, QWidget* parent )
         m_ui->timeEditEnd->setDisplayFormat( originalDateTimeFormat );
     }
 
-
+    // initialize to some sensible values, unless we got something valid passed in
+    if ( !m_event.isValid() ) {
+        m_event.setComment( tr( "(event created in event editor)" ) );
+        QDateTime start( QDateTime::currentDateTime() );
+        m_event.setStartDateTime( start );
+        m_event.setEndDateTime( start );
+        m_endDateChanged = false;
+    }
     updateValues( true );
 }
 
 EventEditor::~EventEditor()
 {
-	delete m_ui; m_ui = 0;
+    delete m_ui; m_ui = 0;
 }
 
 Event EventEditor::event() const
 {
-	return m_event;
+    return m_event;
 }
 
 void EventEditor::durationHoursEdited( int value )
 {
-	updateEndTime();
-	updateValues();
+    updateEndTime();
+    updateValues();
 }
 
 void EventEditor::durationMinutesEdited( int value )
 {
-	updateEndTime();
-	updateValues();
+    updateEndTime();
+    updateValues();
 }
 
 void EventEditor::updateEndTime()
 {
-	int duration = 3600 * m_ui->spinBoxHours->value() + 60 * m_ui->spinBoxMinutes->value();
-	QDateTime endTime = m_event.startDateTime().addSecs( duration );
-	m_event.setEndDateTime( endTime );
+    int duration = 3600 * m_ui->spinBoxHours->value() + 60 * m_ui->spinBoxMinutes->value();
+    QDateTime endTime = m_event.startDateTime().addSecs( duration );
+    m_event.setEndDateTime( endTime );
 }
 
 void EventEditor::startDateChanged( const QDate& date )
 {
-	QDateTime start = m_event.startDateTime();
-	start.setDate( date );
-	m_event.setStartDateTime( start );
-	updateValues();
+    QDateTime start = m_event.startDateTime();
+    start.setDate( date );
+    int delta = m_event.startDateTime().secsTo( m_event.endDateTime() );
+    m_event.setStartDateTime( start );
+    if ( !m_endDateChanged ) {
+        m_event.setEndDateTime( start.addSecs( delta ));
+    }
+    updateValues();
 }
 
 void EventEditor::startTimeChanged( const QTime& time )
 {
-	QDateTime start = m_event.startDateTime();
-	start.setTime( time );
-	m_event.setStartDateTime( start );
-	updateValues();
+    QDateTime start = m_event.startDateTime();
+    start.setTime( time );
+    m_event.setStartDateTime( start );
+    updateValues();
 }
 
 void EventEditor::endDateChanged( const QDate& date )
 {
-	QDateTime end = m_event.endDateTime();
-	end.setDate( date );
-	m_event.setEndDateTime( end );
-	updateValues();
+    QDateTime end = m_event.endDateTime();
+    end.setDate( date );
+    m_event.setEndDateTime( end );
+    updateValues();
+    if ( !m_updating ) {
+        m_endDateChanged = true;
+    }
 }
 
 void EventEditor::endTimeChanged( const QTime& time )
 {
-	QDateTime end = m_event.endDateTime();
-	end.setTime( time );
-	m_event.setEndDateTime( end );
-	updateValues();
+    QDateTime end = m_event.endDateTime();
+    end.setTime( time );
+    m_event.setEndDateTime( end );
+    updateValues();
 }
 
 void EventEditor::selectTaskClicked()
@@ -130,26 +146,26 @@ void EventEditor::selectTaskClicked()
     SelectTaskDialog dialog( this );
 
     if ( dialog.exec() ) {
-    	m_event.setTaskId( dialog.selectedTask() );
-    	updateValues();
+        m_event.setTaskId( dialog.selectedTask() );
+        updateValues();
     }
 }
 
 void EventEditor::commentChanged()
 {
-	m_event.setComment( m_ui->textEditComment->toPlainText() );
-	updateValues();
+    m_event.setComment( m_ui->textEditComment->toPlainText() );
+    updateValues();
 }
 
 void EventEditor::updateValues( bool all )
 {
-	if( m_updating ) return;
+    if( m_updating ) return;
 
-	m_updating = true;
+    m_updating = true;
 
-	m_ui->buttonBox->button( QDialogButtonBox::Ok )
-		->setEnabled( m_event.endDateTime() >= m_event.startDateTime() );
-	const TaskTreeItem& taskTreeItem =
+    m_ui->buttonBox->button( QDialogButtonBox::Ok )
+        ->setEnabled( m_event.endDateTime() >= m_event.startDateTime() );
+    const TaskTreeItem& taskTreeItem =
         MODEL.charmDataModel()->taskTreeItem( m_event.taskId() );
 
     m_ui->dateEditStart->setDate( m_event.startDateTime().date() );
@@ -157,7 +173,7 @@ void EventEditor::updateValues( bool all )
     m_ui->dateEditEnd->setDate( m_event.endDateTime().date() );
     m_ui->timeEditEnd->setTime( m_event.endDateTime().time() );
     if( all ) {
-    	m_ui->textEditComment->setText( m_event.comment() );
+        m_ui->textEditComment->setText( m_event.comment() );
     }
     int durationHours = qMax( m_event.duration() / 3600, 0);
     int durationMinutes = qMax( ( m_event.duration() % 3600 ) / 60, 0 );

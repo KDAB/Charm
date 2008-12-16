@@ -43,7 +43,7 @@ EventView::EventView( MainWindow* parent )
     QHBoxLayout* layout = new QHBoxLayout();
     layout->setContentsMargins( 0, 0, 0, 0 );
     if( m_ui->pageEvent->layout() ) {
-    	delete m_ui->pageEvent->layout();
+        delete m_ui->pageEvent->layout();
     }
     layout->addWidget( m_eventDisplay );
     m_ui->pageEvent->setLayout( layout );
@@ -55,8 +55,8 @@ EventView::EventView( MainWindow* parent )
              SIGNAL( customContextMenuRequested( const QPoint& ) ),
              SLOT( slotContextMenuRequested( const QPoint& ) ) );
     connect( m_ui->listView,
-			 SIGNAL( doubleClicked( const QModelIndex& ) ),
-			 SLOT( slotEventDoubleClicked( const QModelIndex& ) ) );
+             SIGNAL( doubleClicked( const QModelIndex& ) ),
+             SLOT( slotEventDoubleClicked( const QModelIndex& ) ) );
     connect( &m_actionNextEvent, SIGNAL( triggered() ),
              SLOT( slotNextEvent() ) );
     connect( &m_actionPreviousEvent, SIGNAL( triggered() ),
@@ -64,11 +64,11 @@ EventView::EventView( MainWindow* parent )
     connect( &m_actionNewEvent, SIGNAL( triggered() ),
              SLOT( slotNewEvent() ) );
     connect( &m_actionEditEvent, SIGNAL( triggered() ),
-    		 SLOT( slotEditEvent() ) );
+             SLOT( slotEditEvent() ) );
     connect( &m_actionDeleteEvent, SIGNAL( triggered() ),
              SLOT( slotDeleteEvent() ) );
     connect( m_eventDisplay, SIGNAL( editEvent( Event ) ),
-			 SLOT( slotEditEvent( Event ) ) );
+             SLOT( slotEditEvent( Event ) ) );
 //     connect( &m_commitTimer, SIGNAL( timeout() ),
 //              SLOT( slotCommitTimeout() ) );
 //     m_commitTimer.setSingleShot( true );
@@ -196,12 +196,9 @@ void EventView::slotNewEvent()
         const TaskTreeItem& item =
             MODEL.charmDataModel()->taskTreeItem( dialog.selectedTask() );
         if ( item.task().isValid() ) {
-            CommandMakeEvent* command =
-                new CommandMakeEvent( item.task(), this );
-            connect( command, SIGNAL( finishedOk( const Event& ) ),
-                     this, SLOT( slotEditEvent( const Event& ) ),
-                     Qt::QueuedConnection );
-            emitCommand( command );
+            Event e;
+            e.setTaskId( dialog.selectedTask( ) );
+            slotEditEvent( e );
         }
     }
 }
@@ -416,29 +413,46 @@ void EventView::setModel( ModelConnector* connector )
 
 void EventView::slotEventDoubleClicked( const QModelIndex& index )
 {
-	Q_ASSERT( m_model ); // otherwise, how can we get a doubleclick on an item?
-	const Event& event = m_model->eventForIndex( index );
-	slotEditEvent( event );
+    Q_ASSERT( m_model ); // otherwise, how can we get a doubleclick on an item?
+    const Event& event = m_model->eventForIndex( index );
+    slotEditEvent( event );
 }
 
 void EventView::slotEditEvent()
 {
-	slotEditEvent( m_event );
+    slotEditEvent( m_event );
 }
 
 void EventView::slotEditEvent( const Event& event )
 {
-	bool active = MODEL.charmDataModel()->isEventActive( event.id() );
-	if( active ) return;
+    bool active = MODEL.charmDataModel()->isEventActive( event.id() );
+    if( active ) return;
 
-	EventEditor editor( event, this );
-	if( editor.exec() ) {
-		Event newEvent = editor.event();
-        CommandModifyEvent* command =
-            new CommandModifyEvent( newEvent, this );
-        emitCommand( command );
-        m_eventDisplay->setEvent( newEvent );
-	}
+    EventEditor editor( event, this );
+    if( editor.exec() ) {
+        Event newEvent = editor.event();
+        if ( !newEvent.isValid() ) {
+            CommandMakeEvent* command =
+                new CommandMakeEvent( newEvent, this );
+            connect( command, SIGNAL( finishedOk( const Event& ) ),
+                     this, SLOT( slotEditEventCompleted( const Event& ) ),
+                     Qt::QueuedConnection );
+            emitCommand( command );
+            return;
+
+        } else {
+            slotEditEventCompleted( newEvent );
+        }
+    }
+}
+
+void EventView::slotEditEventCompleted( const Event& event )
+{
+    CommandModifyEvent* command =
+        new CommandModifyEvent( event, this );
+    emitCommand( command );
+
+    m_eventDisplay->setEvent( m_event );
 }
 
 

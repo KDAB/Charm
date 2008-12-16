@@ -57,9 +57,10 @@ public slots:
     void slotConfigureUi();
 
 private slots:
-	void slotEventDoubleClicked( const QModelIndex& );
-	void slotEditEvent();
-	void slotEditEvent( const Event& );
+    void slotEventDoubleClicked( const QModelIndex& );
+    void slotEditEvent();
+    void slotEditEvent( const Event& );
+    void slotEditEventCompleted( const Event& );
     void slotCurrentItemChanged( const QModelIndex&, const QModelIndex& );
     void slotContextMenuRequested( const QPoint& );
     void slotNextEvent();
