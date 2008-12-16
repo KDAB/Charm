@@ -426,7 +426,9 @@ void View::slotContextMenuRequested( const QPoint& point )
     } else if ( result == &m_actionDeleteTask ) {
         Q_ASSERT( task.isValid() );
         if ( QMessageBox::question( this, tr( "Delete Task?" ),
-                                    tr( "Do you really want to delete this task?" ),
+                                    tr( "Do you really want to delete this task?\n"
+                                        "Warning: All events for this task will be deleted as well!\n"
+                                        "This operation cannot be undone." ),
                                     QMessageBox::Ok | QMessageBox::Cancel,
                                     QMessageBox::Ok )
              == QMessageBox::Ok ) {
