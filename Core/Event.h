@@ -70,12 +70,12 @@ public:
     static Event fromXml( const QDomElement&,  int databaseSchemaVersion = 1 ) throw ( XmlSerializationException );
 
 private:
-	/** The id of the user who owns the event. */
-	int m_userid;
-	/** The report id. This field is only usefull
-	 * if the event is imported from a report.
-	 */
-	int m_reportid;
+    /** The id of the user who owns the event. */
+    int m_userid;
+    /** The report id. This field is only usefull
+     * if the event is imported from a report.
+     */
+    int m_reportid;
     /** The installation-unique id of the event. */
     int m_installationId;
     int m_id;
