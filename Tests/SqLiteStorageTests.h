@@ -34,6 +34,8 @@ private slots:
 
     void setGetMetaDataTest();
 
+    void deleteTaskWithEventsTest();
+
     void cleanupTestCase();
 };
 

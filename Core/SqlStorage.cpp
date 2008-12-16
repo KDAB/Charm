@@ -144,10 +144,21 @@ bool SqlStorage::modifyTask(const Task& task)
 
 bool SqlStorage::deleteTask(const Task& task)
 {
-	QSqlQuery query(database());
-	query.prepare("DELETE from Tasks where task_id = :task_id;");
-	query.bindValue(":task_id", task.id());
-	return runQuery(query);
+    SqlRaiiTransactor transactor(database());
+    QSqlQuery query(database());
+    query.prepare("DELETE from Tasks where task_id = :task_id;");
+    query.bindValue(":task_id", task.id());
+    bool rc = runQuery(query);
+    QSqlQuery query2( database() );
+    query2.prepare( "DELETE from Events where task = :task_id;" );
+    query2.bindValue( ":task_id", task.id() );
+    bool rc2 = runQuery( query2 );
+    if ( rc && rc2 ) {
+        transactor.commit();
+        return true;
+    } else {
+        return false;
+    }
 }
 
 bool SqlStorage::deleteAllTasks()
