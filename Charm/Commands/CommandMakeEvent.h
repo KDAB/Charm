@@ -13,6 +13,7 @@ class CommandMakeEvent : public CharmCommand
 
 public:
     explicit CommandMakeEvent( const Task& task, QObject* parent );
+    explicit CommandMakeEvent( const Event& event, QObject* parent );
     ~CommandMakeEvent();
 
     bool prepare();

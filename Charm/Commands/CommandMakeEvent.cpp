@@ -13,6 +13,15 @@ CommandMakeEvent::CommandMakeEvent( const Task& task,
 {
 }
 
+CommandMakeEvent::CommandMakeEvent( const Event& event,
+                                    QObject* parent )
+    : CharmCommand( parent )
+    , m_event( event )
+{
+}
+
+
+
 CommandMakeEvent::~CommandMakeEvent()
 {
 }
@@ -25,17 +34,26 @@ bool CommandMakeEvent::prepare()
 bool CommandMakeEvent::execute( ControllerInterface* controller )
 {
     Event event = controller->makeEvent( m_task );
-    if ( event.isValid() ) {
-        QDateTime start( QDateTime::currentDateTime() );
-        event.setComment( tr( "(event created in event editor)" ) );
-        event.setStartDateTime( start );
-        event.setEndDateTime( start );
-        if ( controller->modifyEvent( event ) ) {
-            m_event = event;
-            return true;
-        } else {
-            return false;
-        }
+    if ( !event.isValid() )
+         return false;
+
+    QDateTime start( QDateTime::currentDateTime() );
+    event.setComment( tr( "(created from defaults)" ) );
+    event.setStartDateTime( start );
+    event.setEndDateTime( start );
+
+    if ( m_event.startDateTime().isValid() )
+        event.setStartDateTime( m_event.startDateTime() );
+    if ( m_event.endDateTime().isValid() )
+        event.setEndDateTime( m_event.endDateTime() );
+    if ( !m_event.comment().isEmpty() )
+        event.setComment( m_event.comment() );
+    if ( m_event.taskId() != 0 )
+        event.setTaskId( m_event.taskId() );
+
+    if ( controller->modifyEvent( event ) ) {
+        m_event = event;
+        return true;
     } else {
         return false;
     }
