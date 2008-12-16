@@ -560,7 +560,8 @@ void MainWindow::maybeIdle()
         Q_FOREACH ( EventId eventId, activeEvents ) {
             Event event = DATAMODEL->eventForId( eventId );
             if ( event.isValid() ) {
-                event.setEndDateTime( qMax( event.startDateTime(), period.first ) );
+                QDateTime start  = period.first; // initializes a valid QDateTime
+                event.setEndDateTime( qMax( event.startDateTime(), start ) );
                 Q_ASSERT( event.isValid() );
                 CommandModifyEvent* cmd = new CommandModifyEvent( event, this );
                 emit emitCommand( cmd );
