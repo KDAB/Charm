@@ -36,7 +36,8 @@ private Q_SLOTS:
 	void endTimeChanged( const QTime& );
 	void selectTaskClicked();
 	void commentChanged();
-
+        void startToNowButtonClicked();
+        void endToNowButtonClicked();
 private:
 	void updateEndTime();
 	void updateValues( bool all = false );

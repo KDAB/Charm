@@ -17,6 +17,8 @@
 
 #include "ui_EventEditor.h"
 
+#include <QSettings>
+
 EventEditor::EventEditor( const Event& event, QWidget* parent )
     : QDialog( parent )
     , m_event( event )
@@ -42,7 +44,10 @@ EventEditor::EventEditor( const Event& event, QWidget* parent )
              SLOT( selectTaskClicked() ) );
     connect( m_ui->textEditComment, SIGNAL( textChanged() ),
              SLOT( commentChanged() ) );
-
+    connect( m_ui->startToNowButton, SIGNAL( clicked() ),
+             SLOT( startToNowButtonClicked() ) );
+    connect( m_ui->endToNowButton, SIGNAL( clicked() ),
+             SLOT( endToNowButtonClicked() ) );
     // what a fricking hack - but QDateTimeEdit does not seem to have
     // a simple function to toggle 12h and 24h mode:
     // yeah, I know, this will survive changes in the user prefs, but
@@ -65,7 +70,8 @@ EventEditor::EventEditor( const Event& event, QWidget* parent )
     // initialize to some sensible values, unless we got something valid passed in
     if ( !m_event.isValid() ) {
         m_event.setComment( tr( "(event created in event editor)" ) );
-        QDateTime start( QDateTime::currentDateTime() );
+        QSettings settings;
+        QDateTime start = settings.value( MetaKey_LastEventEditorDateTime, QDateTime::currentDateTime() ).toDateTime();
         m_event.setStartDateTime( start );
         m_event.setEndDateTime( start );
         m_endDateChanged = false;
@@ -75,6 +81,8 @@ EventEditor::EventEditor( const Event& event, QWidget* parent )
 
 EventEditor::~EventEditor()
 {
+    QSettings settings;
+    settings.setValue( MetaKey_LastEventEditorDateTime, m_event.endDateTime() );
     delete m_ui; m_ui = 0;
 }
 
@@ -192,6 +200,19 @@ void EventEditor::updateValues( bool all )
     }
 
     m_updating = false;
+}
+
+
+void EventEditor::startToNowButtonClicked()
+{
+    m_event.setStartDateTime( QDateTime::currentDateTime() );
+    updateValues();
+}
+
+void EventEditor::endToNowButtonClicked()
+{
+    m_event.setEndDateTime( QDateTime::currentDateTime() );
+    updateValues();
 }
 
 #include "EventEditor.moc"
