@@ -27,6 +27,9 @@ public:
 	// return the result after the dialgo has been accepted
 	Event event() const;
 
+protected Q_SLOTS:
+        void accept();
+
 private Q_SLOTS:
 	void durationHoursEdited( int );
 	void durationMinutesEdited( int );

@@ -81,9 +81,13 @@ EventEditor::EventEditor( const Event& event, QWidget* parent )
 
 EventEditor::~EventEditor()
 {
+    delete m_ui; m_ui = 0;
+}
+
+void EventEditor::accept()
+{
     QSettings settings;
     settings.setValue( MetaKey_LastEventEditorDateTime, m_event.endDateTime() );
-    delete m_ui; m_ui = 0;
 }
 
 Event EventEditor::event() const
