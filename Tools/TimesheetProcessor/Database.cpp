@@ -92,6 +92,10 @@ void Database::login() throw (TimesheetProcessorException )
 			port = elements.at( 1 ).toInt( &ok );
 			name = elements.at( 2 );
 			pass = elements.at( 3 );
+			if ( ok != true || port < 0 ) {
+				throw TimesheetProcessorException( QObject::tr(
+						"The port must be a non-negative integer number in the database configuration string format" ) );
+			}
 		}
 	}
 	m_storage.database().setHostName( host );
