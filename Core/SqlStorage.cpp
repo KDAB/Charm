@@ -476,7 +476,7 @@ User SqlStorage::makeUser(const QString& name)
 
 	{ // create a new record:
 		QSqlQuery query(database());
-		const char* statement = "INSERT into Users VALUES (NULL, NULL, :name);";
+		const char* statement = "INSERT into Users ( id, user_id, name ) VALUES (NULL, NULL, :name);";
 
 		query.prepare(statement);
 		query.bindValue(":name", user.name());
@@ -522,7 +522,6 @@ User SqlStorage::makeUser(const QString& name)
 		result = runQuery(query);
 		if (!result)
 		{
-			// all is well
 			user.setId(0); // make invalid
 		}
 	}
