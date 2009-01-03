@@ -88,6 +88,7 @@ void EventEditor::accept()
 {
     QSettings settings;
     settings.setValue( MetaKey_LastEventEditorDateTime, m_event.endDateTime() );
+    QDialog::accept();
 }
 
 Event EventEditor::event() const
