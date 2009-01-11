@@ -50,8 +50,7 @@ public:
     void setReportProperties( const QDate& start,
                               const QDate& end,
                               TaskId rootTask,
-                              bool activeTasksOnly,
-                              bool subscribedOnly );
+                              bool activeTasksOnly );
 
     typedef QMap< TaskId, QVector<int> > SecondsMap;
 
@@ -85,7 +84,6 @@ private:
     int m_yearOfWeek;
     TaskId m_rootTask;
     bool m_activeTasksOnly;
-    bool m_subscribedOnly;
     QTextDocument* m_report; // FIXME unnecessary
     SecondsMap m_secondsMap;
 };

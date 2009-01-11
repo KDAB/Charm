@@ -29,7 +29,7 @@ IF ( QT4_FOUND )
     ADD_EXECUTABLE( TimesheetProcessor ${TimesheetProcessor_SRCS} )
     TARGET_LINK_LIBRARIES( TimesheetProcessor CharmCore )
     TARGET_LINK_LIBRARIES( TimesheetProcessor ${QT_LIBRARIES} )
-#    INSTALL( TARGETS TimesheetProcessor DESTINATION bin )
+    INSTALL( TARGETS TimesheetProcessor DESTINATION bin )
 
 ENDIF ( QT4_FOUND )
 

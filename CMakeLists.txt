@@ -46,8 +46,15 @@ ADD_DEFINITIONS( -DTIMETRACKER_TEMPORARILY_DISABLED )
 
 ADD_SUBDIRECTORY( Core )
 ADD_SUBDIRECTORY( Charm )
-IF(UNIX)
+
+# the tools are only built if they are explicitly enabled, to avoid the Qt MySQL driver dependency
+IF( CHARM_ENABLE_TOOLS_BUILD )
+    IF(UNIX)
 	ADD_SUBDIRECTORY( Tools/TimesheetProcessor )
-	MESSAGE( "This is Unix, building Timesheet Processor")
-ENDIF(UNIX)
+	MESSAGE( "This is Unix, building Charm Tools")
+    ENDIF(UNIX)
+ELSE( CHARM_ENABLE_TOOLS_BUILD )
+    MESSAGE( "Charm Tools Build is disabled" )
+ENDIF( CHARM_ENABLE_TOOLS_BUILD )
+
 ADD_SUBDIRECTORY( Tests )
