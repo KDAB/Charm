@@ -92,9 +92,7 @@ Application::Application(int& argc, char** argv)
     connect( &m_trayIcon, SIGNAL( activated( QSystemTrayIcon::ActivationReason ) ),
              SLOT( slotTrayIconActivated( QSystemTrayIcon::ActivationReason ) ) );
     m_systrayContextMenu.addAction( &m_actionShowHideView );
-#ifdef TIMETRACKER_TEMPORARILY_DISABLED
     m_systrayContextMenu.addAction( &m_actionShowHideTimeTracker );
-#endif
     m_systrayContextMenu.addAction( &m_actionStopAllTasks );
     m_systrayContextMenu.addSeparator();
     m_systrayContextMenu.addAction( m_mainWindow.actionQuit() );
@@ -104,28 +102,22 @@ Application::Application(int& argc, char** argv)
 
 #if defined Q_WS_MAC
     m_dockMenu.addAction( &m_actionShowHideView );
-#ifdef TIMETRACKER_TEMPORARILY_DISABLED
     m_dockMenu.addAction( &m_actionShowHideTimeTracker );
-#endif
     m_dockMenu.addAction( &m_actionStopAllTasks );
     qt_mac_set_dock_menu( &m_dockMenu);
 #endif
 
-#ifndef TIMETRACKER_TEMPORARILY_DISABLED
     // FIXME time tracker is disabled for now
     m_actionShowHideTimeTracker.setEnabled( false );
     m_timeTracker.hide();
-#endif
 
 #ifndef Q_WS_MAC
     SpecialKeysEventFilter* filter = new SpecialKeysEventFilter( this );
     installEventFilter( filter );
     connect( filter, SIGNAL( toggleWindow1Visibility() ),
              &m_mainWindow, SLOT( slotShowHideView() ) );
-#ifdef TIMETRACKER_TEMPORARILY_DISABLED
     connect( filter, SIGNAL( toggleWindow2Visibility() ),
              &m_timeTracker, SLOT( slotShowHide() ) );
-#endif
 #endif
     // ^^^
 
