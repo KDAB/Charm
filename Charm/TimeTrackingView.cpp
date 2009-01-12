@@ -257,7 +257,7 @@ void TimeTrackingView::slotMaybeShrink()
 {
     const int minHeight = minimumSize().height();
     if ( minHeight < height() ) {
-        resize( width(), minHeight );
+        setFixedHeight( minHeight );
     }
 }
 
