@@ -37,6 +37,8 @@ public:
     explicit TimeTrackingSummaryWidget( QWidget* parent = 0 );
     void paintEvent( QPaintEvent* );
     void resizeEvent( QResizeEvent* );
+    void mousePressEvent( QMouseEvent* event );
+    void mouseDoubleClickEvent( QMouseEvent * event );
 
     void setSummaries( QVector<WeeklySummary> );
     QSize sizeHint() const;
@@ -44,10 +46,10 @@ public:
 
     void handleActiveEvents();
 
-signals:
-    void maybeShrink();
+    bool isTracking() const;
 
 signals:
+    void maybeShrink();
     void startEvent( TaskId );
     void stopEvent();
 
@@ -60,6 +62,11 @@ private:
     DataField data( int column, int row );
     int columnCount() const { return 9; }
     int rowCount() const { return qMax( 6, m_summaries.count() ) + 3; }
+    void selectSummary( int position );
+    int getSummaryAt( const QPoint& position );
+
+    int taskColumnWidth() const;
+
     QVector<WeeklySummary> m_summaries;
     mutable QSize m_cachedSizeHint;
     mutable QSize m_cachedMinimumSizeHint;

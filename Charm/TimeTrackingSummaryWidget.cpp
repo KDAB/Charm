@@ -123,9 +123,7 @@ void TimeTrackingSummaryWidget::paintEvent( QPaintEvent* e )
                 fieldRect = QRect( width() - m_cachedTotalsFieldRect.width(), y,
                                    m_cachedTotalsFieldRect.width(), FieldHeight );
             } else if ( column == 0 ) { // task column
-                const int fieldWidth = width() - m_cachedTotalsFieldRect.width()
-                                       - 7 * m_cachedDayFieldRect.width();
-                fieldRect = QRect( 0, y, fieldWidth, FieldHeight );
+                fieldRect = QRect( 0, y, taskColumnWidth(), FieldHeight );
                 QFontMetrics metrics( field.font );
                 field.text = metrics.elidedText( field.text, Qt::ElideLeft,
                                                  fieldRect.width() - 2*Margin );
@@ -178,6 +176,47 @@ void TimeTrackingSummaryWidget::resizeEvent( QResizeEvent* )
     const QRect selectorGeometry( left, m_stopGoButton.geometry().top(),
                                   remainingWidth, m_stopGoButton.height() );
     m_taskSelector.setGeometry( selectorGeometry );
+}
+
+void TimeTrackingSummaryWidget::mousePressEvent( QMouseEvent* event )
+{
+    if ( ! isTracking() ) {
+        const int position = getSummaryAt( event->pos() );
+        if ( position >= 0 ) {
+            selectSummary( position );
+        }
+    }
+}
+
+void TimeTrackingSummaryWidget::mouseDoubleClickEvent( QMouseEvent* event )
+{   // we rely on the mouse press event that was received before the doubleclick!
+    if( ! isTracking() ) {
+        // start tracking
+        const int position = getSummaryAt( event->pos() );
+        if ( position >= 0 ) {
+            slotGoStopToggled( true );
+        }
+    }
+}
+
+int TimeTrackingSummaryWidget::getSummaryAt( const QPoint& position )
+{
+    const int left = 0;
+    const int right = taskColumnWidth();
+    const int fieldIndex = position.y() / m_cachedTotalsFieldRect.height();
+    const int taskIndex = fieldIndex - 1;
+    if ( taskIndex < 0 || taskIndex >= m_summaries.count() ) {
+        return -1;
+    }
+    if ( position.x() < left || position.x() > right ) {
+        return -1;
+    }
+    return taskIndex;
+}
+
+int TimeTrackingSummaryWidget::taskColumnWidth() const
+{
+    return width() - m_cachedTotalsFieldRect.width() - 7 * m_cachedDayFieldRect.width();
 }
 
 TimeTrackingSummaryWidget::DataField TimeTrackingSummaryWidget::data( int column, int row )
@@ -302,10 +341,20 @@ void TimeTrackingSummaryWidget::slotGoStopToggled( bool on )
     }
 }
 
+bool TimeTrackingSummaryWidget::isTracking() const
+{
+    return DATAMODEL->activeEventCount() > 0;
+}
+
 void TimeTrackingSummaryWidget::slotActionSelected( QAction* action )
 {
     QList<QAction*>::iterator it = std::find( m_currentActions.begin(), m_currentActions.end(), action );
     const int position = std::distance( m_currentActions.begin(), it );
+    selectSummary( position );
+}
+
+void TimeTrackingSummaryWidget::selectSummary( int position )
+{
     Q_ASSERT( position >= 0 && position < m_summaries.size() );
     m_selectedSummary = position;
     m_taskSelector.setText( m_summaries[m_selectedSummary].taskname );
