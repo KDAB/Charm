@@ -46,7 +46,7 @@ TimeTrackingSummaryWidget::TimeTrackingSummaryWidget( QWidget* parent )
     m_taskSelector.setText( tr( "Select Task" ) );
     m_pulse.setLoopCount( 0 );
     m_pulse.setDuration( 2000 );
-    // m_pulse.setUpdateInterval( 80 );
+    m_pulse.setUpdateInterval( 160 ); // any smaller value uses too much cpu
     m_pulse.setCurveShape( QTimeLine::SineCurve );
     connect( &m_pulse, SIGNAL( valueChanged( qreal ) ),
              SLOT( slotPulseValueChanged( qreal ) ) );
