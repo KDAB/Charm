@@ -42,6 +42,7 @@ int main(int argc, char** argv)
     } catch (UsageException& e) {
         cerr << e.what() << endl;
         CommandLine::usage();
+        return 1;
     } catch (TimesheetProcessorException& e) {
         cerr << e.what() << endl;
         CommandLine::usage();
