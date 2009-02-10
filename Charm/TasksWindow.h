@@ -20,7 +20,6 @@ public:
 
 signals:
     /* reimpl */ void emitCommand( CharmCommand* );
-    /* reimpl */ void visibilityChanged( bool );
     /* reimpl */ void saveConfiguration();
     /* reimpl */ void quit();
 

@@ -37,7 +37,8 @@ Application::Application(int& argc, char** argv)
     , m_actionShowHideTimeTracker( this )
     , m_actionStopAllTasks( this )
     , m_idleDetector( 0 )
-    , m_windows( QList<CharmWindow*> () << &m_tasksWindow )
+    , m_windows( QList<CharmWindow*> ()
+                 << &m_tasksWindow << &m_eventWindow )
 {
     // QApplication setup
     setQuitOnLastWindowClosed(false);
@@ -188,9 +189,8 @@ void Application::setState(State state)
 
     m_state = state;
 
-    Q_FOREACH( CharmWindow* window, m_windows ) {
-        window->stateChanged( m_state );
-    }
+    std::for_each( m_windows.begin(), m_windows.end(),
+                   std::bind2nd( std::mem_fun( &CharmWindow::stateChanged ), m_state ) );
 
     switch (m_state)
     {
@@ -199,7 +199,6 @@ void Application::setState(State state)
         m_controller.stateChanged(previous, state);
         m_mainWindow.stateChanged(previous);
         m_timeTracker.stateChanged( previous );
-        //  FIXME make oneliner
         enterStartingUpState();
         break;
     case Connecting:
