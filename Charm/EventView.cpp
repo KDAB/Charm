@@ -36,20 +36,11 @@ EventView::EventView( MainWindow* parent )
     , m_actionNewEvent( this )
     , m_actionEditEvent( this )
     , m_actionDeleteEvent( this )
-    , m_actionPreviousEvent( this )
-    , m_actionNextEvent( this )
 {
     m_ui->setupUi( this );
     QHBoxLayout* layout = new QHBoxLayout();
     layout->setContentsMargins( 0, 0, 0, 0 );
-    if( m_ui->pageEvent->layout() ) {
-        delete m_ui->pageEvent->layout();
-    }
-    layout->addWidget( m_eventDisplay );
-    m_ui->pageEvent->setLayout( layout );
-    m_ui->stackedWidget->setCurrentWidget( m_ui->pageNoEvent );
 
-    m_ui->frame->setFrameStyle( m_ui->listView->frameStyle() );
     m_ui->listView->setContextMenuPolicy( Qt::CustomContextMenu );
     connect( m_ui->listView,
              SIGNAL( customContextMenuRequested( const QPoint& ) ),
@@ -57,10 +48,6 @@ EventView::EventView( MainWindow* parent )
     connect( m_ui->listView,
              SIGNAL( doubleClicked( const QModelIndex& ) ),
              SLOT( slotEventDoubleClicked( const QModelIndex& ) ) );
-    connect( &m_actionNextEvent, SIGNAL( triggered() ),
-             SLOT( slotNextEvent() ) );
-    connect( &m_actionPreviousEvent, SIGNAL( triggered() ),
-             SLOT( slotPreviousEvent() ) );
     connect( &m_actionNewEvent, SIGNAL( triggered() ),
              SLOT( slotNewEvent() ) );
     connect( &m_actionEditEvent, SIGNAL( triggered() ),
@@ -86,18 +73,8 @@ EventView::EventView( MainWindow* parent )
     m_actionDeleteEvent.setIcon( Data::deleteTaskIcon() );
     m_ui->toolButtonDeleteEvent->setDefaultAction( &m_actionDeleteEvent );
 
-    m_actionPreviousEvent.setIcon( Data::previousEventIcon() );
-    m_actionPreviousEvent.setText( tr( "Next Event" ) );
-    m_ui->toolButtonPrevious->setDefaultAction( &m_actionPreviousEvent );
-
-    m_actionNextEvent.setIcon( Data::nextEventIcon() );
-    m_actionNextEvent.setText( tr( "Previous Event" ) );
-    m_ui->toolButtonNext->setDefaultAction( &m_actionNextEvent );
-
     // disable all actions, action state will be set when the current
     // item changes:
-    m_actionNextEvent.setEnabled( false );
-    m_actionPreviousEvent.setEnabled( false );
     m_actionNewEvent.setEnabled( true ); // always on
     m_actionEditEvent.setEnabled( false );
     m_actionDeleteEvent.setEnabled( false );
@@ -167,12 +144,10 @@ void EventView::slotCurrentItemChanged( const QModelIndex& start,
                                           const QModelIndex& end )
 {
     if ( ! start.isValid() ) {
-        m_ui->stackedWidget->setCurrentWidget( m_ui->pageNoEvent );
         m_event = Event();
         m_actionDeleteEvent.setEnabled(false);
         m_actionEditEvent.setEnabled(false);
     } else {
-        m_ui->stackedWidget->setCurrentWidget( m_ui->pageEvent );
         m_actionDeleteEvent.setEnabled(true);
         m_actionEditEvent.setEnabled(true);
         Event event = m_model->eventForIndex( start );
@@ -326,17 +301,6 @@ void EventView::slotConfigureUi()
     m_actionEditEvent.setEnabled( m_event.isValid() && ! active );
     m_actionDeleteEvent.setEnabled( m_event.isValid() && ! active );
     // m_ui->frame->setEnabled( ! active );
-
-    const QModelIndex& index = m_ui->listView->selectionModel()->currentIndex();
-    if ( index.isValid() ) {
-        int row = index.row();
-        Q_ASSERT( row >= 0 && row < m_model->rowCount() );
-        m_actionPreviousEvent.setEnabled( row > 0 && row < m_model->rowCount() );
-        m_actionNextEvent.setEnabled( row >=0 && row < m_model->rowCount() -1 );
-    } else {
-        m_actionNextEvent.setEnabled( false );
-        m_actionPreviousEvent.setEnabled( false );
-    }
 }
 
 void EventView::slotUpdateCurrent()

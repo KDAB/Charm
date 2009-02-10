@@ -85,8 +85,6 @@ private:
     QAction m_actionNewEvent;
     QAction m_actionEditEvent;
     QAction m_actionDeleteEvent;
-    QAction m_actionPreviousEvent;
-    QAction m_actionNextEvent;
 };
 
 #endif
