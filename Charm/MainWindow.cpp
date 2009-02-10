@@ -548,6 +548,29 @@ private:
     bool *m_guard;
 };
 
+class MakeTemporarilyVisible {
+public:
+    explicit MakeTemporarilyVisible( QWidget* widget )
+        : m_widget( widget )
+        , m_wasVisible( false )
+    {
+        Q_ASSERT( m_widget );
+        m_wasVisible = m_widget->isVisible();
+        if ( ! m_wasVisible ) {
+            m_widget->show();
+        }
+    }
+
+    ~MakeTemporarilyVisible() {
+        if ( ! m_wasVisible ) {
+            m_widget->hide();
+        }
+    }
+private:
+    QWidget* m_widget;
+    bool m_wasVisible;
+};
+
 void MainWindow::maybeIdle()
 {
     static bool inProgress = false;
@@ -566,8 +589,7 @@ void MainWindow::maybeIdle()
 
     // handle idle merging:
     IdleCorrectionDialog dialog( this );
-    const bool wasVisible = isVisible();
-    if ( ! wasVisible ) show();
+    MakeTemporarilyVisible m( this );
 
     dialog.exec();
     switch( dialog.result() ) {
@@ -596,7 +618,6 @@ void MainWindow::maybeIdle()
         break; // should not happen
     }
     detector->clear();
-    if ( ! wasVisible ) hide();
 }
 
 #include "MainWindow.moc"
