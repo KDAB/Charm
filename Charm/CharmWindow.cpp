@@ -38,7 +38,10 @@ void CharmWindow::stateChanged( State previous )
     };
 }
 
-
+const QString& CharmWindow::windowName() const
+{
+    return m_windowName;
+}
 
 QAction* CharmWindow::showHideAction()
 {

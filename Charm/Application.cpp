@@ -9,6 +9,7 @@
 
 #include <QDir>
 #include <QTimer>
+#include <QAction>
 #include <QSettings>
 #include <QMetaType>
 #include <QMessageBox>
@@ -37,8 +38,7 @@ Application::Application(int& argc, char** argv)
     , m_actionShowHideTimeTracker( this )
     , m_actionStopAllTasks( this )
     , m_idleDetector( 0 )
-    , m_windows( QList<CharmWindow*> ()
-                 << &m_tasksWindow << &m_eventWindow )
+    , m_windows( QList<CharmWindow*> () << &m_tasksWindow << &m_eventWindow << &m_timeTracker )
 {
     // QApplication setup
     setQuitOnLastWindowClosed(false);
@@ -114,7 +114,16 @@ Application::Application(int& argc, char** argv)
     m_tasksWindow.show();
     m_eventWindow.show();
 
+    // create window menu:
+    m_windowMenu.setTitle( tr( "Window" ) );
+    Q_FOREACH( CharmWindow* window, m_windows ) {
+        // ...
+        QAction* windowAction = new QAction( window->windowName(), this );
+        m_windowMenu.addAction( windowAction );
+    }
+
 #ifndef Q_WS_MAC
+    // FIXME parametrize, handle the same for all windows
     SpecialKeysEventFilter* filter = new SpecialKeysEventFilter( this );
     installEventFilter( filter );
     connect( filter, SIGNAL( toggleWindow1Visibility() ),
@@ -149,6 +158,11 @@ Application::Application(int& argc, char** argv)
 
 Application::~Application()
 {
+}
+
+QMenu& Application::windowMenu()
+{
+    return m_windowMenu;
 }
 
 void Application::setState(State state)

@@ -20,6 +20,7 @@ public:
     void showHideView();
     QAction* showHideAction();
 
+    const QString& windowName() const;
     /* reimpl */ void stateChanged( State previous );
     /* reimpl */ void showEvent( QShowEvent* );
     /* reimpl */ void hideEvent( QHideEvent* );

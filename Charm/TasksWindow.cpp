@@ -1,3 +1,5 @@
+#include <QMenuBar>
+
 #include "Application.h"
 #include "TasksWindow.h"
 #include "TasksView.h"
@@ -22,6 +24,9 @@ void TasksWindow::stateChanged( State previous )
 
     if ( Application::instance().state() == Connecting ) {
         m_tasksView->setModel( & Application::instance().model() );
+        // set up the menu
+        menuBar()->addMenu( & Application::instance().windowMenu() );
+        // FIXME assign shortcuts (in the window objects?)
     }
 }
 

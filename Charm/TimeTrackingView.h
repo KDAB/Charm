@@ -1,11 +1,10 @@
 #ifndef TIMETRACKINGVIEW_H
 #define TIMETRACKINGVIEW_H
 
-#include <QWidget>
-
 #include "Core/ViewInterface.h"
 #include "Core/CharmDataModelAdapterInterface.h"
 
+#include "CharmWindow.h"
 #include "TimeTrackingSummaryWidget.h"
 
 class CharmCommand;
@@ -15,8 +14,7 @@ namespace Ui {
     class TimeTrackingView;
 }
 
-class TimeTrackingView : public QWidget,
-                         public ViewInterface,
+class TimeTrackingView : public CharmWindow,
                          public CharmDataModelAdapterInterface
 {
     Q_OBJECT

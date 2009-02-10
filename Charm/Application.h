@@ -37,8 +37,6 @@
 // FIXME read configuration name from command line
 class IdleDetector;
 
-
-
 #ifdef Q_WS_MAC
 typedef MacApplication ApplicationBase;
 #else
@@ -74,6 +72,8 @@ public:
     IdleDetector* idleDetector();
 
     State state() const;
+
+    QMenu& windowMenu();
 
 public slots:
     void setState( State state );
@@ -115,6 +115,7 @@ private:
     QSystemTrayIcon m_trayIcon;
     QMenu m_systrayContextMenu;
     QMenu m_dockMenu;
+    QMenu m_windowMenu;
     QAction m_actionShowHideView;
     QAction m_actionShowHideTimeTracker;
     QAction m_actionStopAllTasks;

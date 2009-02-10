@@ -16,10 +16,12 @@
 #include "ui_TimeTrackingView.h"
 
 TimeTrackingView::TimeTrackingView( QWidget* parent )
-    : QWidget( parent )
+    : CharmWindow( tr( "Time Tracker" ), parent )
     , m_ui( new Ui::TimeTrackingView )
 {
-    m_ui->setupUi( this );
+    QWidget* widget = new QWidget( this );
+    m_ui->setupUi( widget );
+    setCentralWidget( widget );
     connect( m_ui->summaryWidget, SIGNAL( maybeShrink() ),
              SLOT( slotMaybeShrink() ), Qt::QueuedConnection );
     connect( m_ui->summaryWidget, SIGNAL( startEvent( TaskId ) ),
