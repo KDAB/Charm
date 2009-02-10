@@ -535,9 +535,26 @@ QAction* MainWindow::actionQuit()
     return &m_actionQuit;
 }
 
+class Uniquifier {
+public:
+    explicit Uniquifier( bool* guard ) {
+        m_guard = guard;
+        *m_guard = true;
+    }
+    ~Uniquifier() {
+        *m_guard = false;
+    }
+private:
+    bool *m_guard;
+};
+
 void MainWindow::maybeIdle()
 {
+    static bool inProgress = false;
     if ( Application::instance().idleDetector() == 0 ) return;
+
+    if ( inProgress == true ) return;
+    Uniquifier u( &inProgress );
 
     IdleDetector* detector = Application::instance().idleDetector();
 
