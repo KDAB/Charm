@@ -59,9 +59,12 @@ void EventEditorDelegate::paint( QPainter* painter,
         QTextStream stream( &dateAndDuration );
         QDate date = event.startDateTime().date();
         QTime time = event.startDateTime().time();
+        QTime endTime = event.endDateTime().time();
         stream << date.toString( Qt::SystemLocaleDate )
                << " " << time.toString( Qt::SystemLocaleDate )
-               << " " << hoursAndMinutes( event.duration() );
+               << " - " << endTime.toString( Qt::SystemLocaleDate )
+               << " (" << hoursAndMinutes( event.duration() ) << ") wk"
+               << date.weekNumber();
 
         paint( painter, option,
                tasknameWithParents( item.task() ),
