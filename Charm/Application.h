@@ -27,7 +27,10 @@
 #include "Core/Configuration.h"
 #include "Core/StorageInterface.h"
 
+#include "CharmWindow.h"
 #include "MainWindow.h"
+#include "TasksWindow.h"
+#include "EventWindow.h"
 #include "TimeTrackingView.h"
 #include "ModelConnector.h"
 
@@ -106,6 +109,8 @@ private:
     ModelConnector m_model;
     Controller m_controller;
     MainWindow m_mainWindow;
+    TasksWindow m_tasksWindow;
+    EventWindow m_eventWindow;
     TimeTrackingView m_timeTracker;
     QSystemTrayIcon m_trayIcon;
     QMenu m_systrayContextMenu;
@@ -115,6 +120,7 @@ private:
     QAction m_actionStopAllTasks;
 
     IdleDetector* m_idleDetector;
+    const QList<CharmWindow*> m_windows;
 
     // All statics are created as members of Application. This is
     // supposed to help on Windows, where constructors for statics

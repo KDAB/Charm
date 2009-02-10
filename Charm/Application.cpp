@@ -37,6 +37,7 @@ Application::Application(int& argc, char** argv)
     , m_actionShowHideTimeTracker( this )
     , m_actionStopAllTasks( this )
     , m_idleDetector( 0 )
+    , m_windows( QList<CharmWindow*> () << &m_tasksWindow )
 {
     // QApplication setup
     setQuitOnLastWindowClosed(false);
@@ -107,9 +108,10 @@ Application::Application(int& argc, char** argv)
     qt_mac_set_dock_menu( &m_dockMenu);
 #endif
 
-    // FIXME time tracker is disabled for now
-    m_actionShowHideTimeTracker.setEnabled( false );
     m_timeTracker.hide();
+    // FIXME temp
+    m_tasksWindow.show();
+    m_eventWindow.show();
 
 #ifndef Q_WS_MAC
     SpecialKeysEventFilter* filter = new SpecialKeysEventFilter( this );
@@ -186,6 +188,10 @@ void Application::setState(State state)
 
     m_state = state;
 
+    Q_FOREACH( CharmWindow* window, m_windows ) {
+        window->stateChanged( m_state );
+    }
+
     switch (m_state)
     {
     case StartingUp:
@@ -193,6 +199,7 @@ void Application::setState(State state)
         m_controller.stateChanged(previous, state);
         m_mainWindow.stateChanged(previous);
         m_timeTracker.stateChanged( previous );
+        //  FIXME make oneliner
         enterStartingUpState();
         break;
     case Connecting:

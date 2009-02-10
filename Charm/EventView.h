@@ -23,13 +23,13 @@ namespace Ui {
 }
 
 class EventView : public QWidget,
-                    public ViewModeInterface,
-                    public CommandEmitterInterface
+                  public ViewModeInterface,
+                  public CommandEmitterInterface
 {
     Q_OBJECT
 
 public:
-    explicit EventView( MainWindow* parent );
+    explicit EventView( QWidget* parent );
     ~EventView();
 
     void closeEvent( QCloseEvent* );

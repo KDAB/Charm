@@ -22,6 +22,7 @@ IF ( QT4_FOUND )
    ENDIF (CMAKE_COMPILER_IS_GNUCXX)
 
    SET( CharmApplication_SRCS 
+		       CharmWindow.cpp
 		       MainWindow.cpp
 		       Application.cpp
 		       SpecialKeysEventFilter.cpp
@@ -31,9 +32,11 @@ IF ( QT4_FOUND )
 		       ConfigurationDialog.cpp 
 		       CharmPreferences.cpp
 		       TasksView.cpp
+		       TasksWindow.cpp
 		       TaskEditor.cpp
 		       GUIState.cpp
 		       EventView.cpp
+		       EventWindow.cpp
 		       EventEditor.cpp
 		       EventDisplay.cpp 
 		       EventEditorDelegate.cpp 
