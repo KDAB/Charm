@@ -1,9 +1,10 @@
-#include "Data.h"
 #include <QKeyEvent>
 #include <QAction>
 
 #include <Core/CharmCommand.h>
 
+#include "Application.h"
+#include "Data.h"
 #include "Commands/CommandRelayCommand.h"
 #include "CharmWindow.h"
 
@@ -14,6 +15,30 @@ CharmWindow::CharmWindow( const QString& name, QWidget* parent )
 {
     setWindowIcon( Data::charmIcon() );
 }
+
+void CharmWindow::stateChanged( State previous )
+{
+    switch( Application::instance().state() ) {
+    case Connecting:
+        setEnabled( false );
+        // restoreGuiState();
+        break;
+    case Connected:
+        // slotConfigurationChanged();
+        setEnabled( true );
+        break;
+    case Disconnecting:
+        setEnabled( false );
+        // saveGuiState();
+        break;
+    case ShuttingDown:
+    case Dead:
+    default:
+        break;
+    };
+}
+
+
 
 QAction* CharmWindow::showHideAction()
 {

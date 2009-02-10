@@ -17,28 +17,12 @@ TasksWindow::~TasksWindow()
 
 void TasksWindow::stateChanged( State previous )
 {
-    // FIXME refactor to base class
+    CharmWindow::stateChanged( previous );
     m_tasksView->stateChanged( previous );
 
-    switch( Application::instance().state() ) {
-    case Connecting:
-        setEnabled( false );
-        // restoreGuiState();
+    if ( Application::instance().state() == Connecting ) {
         m_tasksView->setModel( & Application::instance().model() );
-        break;
-    case Connected:
-        // slotConfigurationChanged();
-        setEnabled( true );
-        break;
-    case Disconnecting:
-        setEnabled( false );
-        // saveGuiState();
-        break;
-    case ShuttingDown:
-    case Dead:
-    default:
-        break;
-    };
+    }
 }
 
 void TasksWindow::restore()
