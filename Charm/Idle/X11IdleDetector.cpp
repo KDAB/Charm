@@ -41,11 +41,12 @@ void X11IdleDetector::checkIdleness()
     int idleSecs = _mit_info->idle/1000;
 
     if (idleSecs >= PERIOD_FOR_IDLENESS)
-        maybeIdle( qMakePair(QDateTime::currentDateTime().addSecs( -idleSecs ), QDateTime::currentDateTime() ) );
+        maybeIdle( IdlePeriod(QDateTime::currentDateTime().addSecs( -idleSecs ),
+                              QDateTime::currentDateTime() ) );
 #endif // HAVE_LIBXSS
 
     if ( m_heartbeat.secsTo( QDateTime::currentDateTime() ) > PERIOD_FOR_IDLENESS )
-        maybeIdle( qMakePair(m_heartbeat, QDateTime::currentDateTime()) );
+        maybeIdle( IdlePeriod( m_heartbeat, QDateTime::currentDateTime() ) );
     m_heartbeat = QDateTime::currentDateTime();
 }
 
