@@ -6,6 +6,8 @@ EventWindow::EventWindow( QWidget* parent )
     : CharmWindow( tr( "Events" ), parent )
     , m_eventView( new EventView( this ) )
 {
+    setWindowNumber( 2 );
+    setWindowIdentifier( tr( "window_events" ) );
     setCentralWidget( m_eventView );
     connect( m_eventView, SIGNAL( emitCommand( CharmCommand* ) ),
              SLOT( sendCommand( CharmCommand* ) ) );

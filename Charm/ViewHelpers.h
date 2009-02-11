@@ -9,7 +9,7 @@
 
 #define MODEL ( Application::instance().model() )
 #define DATAMODEL ( MODEL.charmDataModel() )
-#define VIEW ( Application::instance().view() )
+#define VIEW ( Application::instance().mainView() )
 
 void connectControllerAndView( Controller*, CharmWindow* );
 EventIdList eventIdsSortedByStartTime( EventIdList );

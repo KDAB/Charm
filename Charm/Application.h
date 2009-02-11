@@ -72,7 +72,9 @@ public:
 
     QMenu& windowMenu();
     QMenu& fileMenu();
-    CharmWindow& view();
+    /** The main view is the window responsible for managing state during command execution.
+     * It is an internal concept, not a notion for the end user. */
+    CharmWindow& mainView();
 
 public slots:
     void setState( State state );

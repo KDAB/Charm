@@ -84,8 +84,10 @@ Application::Application(int& argc, char** argv)
                 slotControllerReadyToQuit()));
 
     connectControllerAndModel(&m_controller, m_model.charmDataModel());
+    connectControllerAndView(&m_controller, &m_tasksWindow);
     Q_FOREACH( CharmWindow* window, m_windows ) {
-        connectControllerAndView(&m_controller, window);
+        connect( window, SIGNAL( emitCommand( CharmCommand* ) ),
+                 &mainView(), SLOT( sendCommand( CharmCommand* ) ) );
     }
     // my own signals:
     connect(this, SIGNAL(goToState(State)), SLOT(setState(State)),
@@ -97,23 +99,23 @@ Application::Application(int& argc, char** argv)
     m_actionStopAllTasks.setShortcutContext( Qt::ApplicationShortcut );
     // MIRKO_TEMP_REM: move to where?
     /*
-    m_mainWindow.addAction(&m_actionStopAllTasks); // for the shortcut to work
+      m_mainWindow.addAction(&m_actionStopAllTasks); // for the shortcut to work
     */
     connect( &m_actionStopAllTasks, SIGNAL( triggered() ),
              SLOT( slotStopAllTasks() ) );
     // MIRKO_TEMP_REM shoud not be needed anymore
     /*
-    connect( &m_actionShowHideView, SIGNAL( triggered() ),
-             &m_mainWindow, SLOT( slotShowHideView() ) );
-    connect( &m_actionShowHideTimeTracker, SIGNAL( triggered() ),
-             &m_timeTracker, SLOT( slotShowHide() ) );
+      connect( &m_actionShowHideView, SIGNAL( triggered() ),
+      &m_mainWindow, SLOT( slotShowHideView() ) );
+      connect( &m_actionShowHideTimeTracker, SIGNAL( triggered() ),
+      &m_timeTracker, SLOT( slotShowHide() ) );
     */
     connect( &m_trayIcon, SIGNAL( activated( QSystemTrayIcon::ActivationReason ) ),
              SLOT( slotTrayIconActivated( QSystemTrayIcon::ActivationReason ) ) );
     // MIRKO_TEMP_REM add show hide window actions
     /*
-    m_systrayContextMenu.addAction( &m_actionShowHideView );
-    m_systrayContextMenu.addAction( &m_actionShowHideTimeTracker );
+      m_systrayContextMenu.addAction( &m_actionShowHideView );
+      m_systrayContextMenu.addAction( &m_actionShowHideTimeTracker );
     */
     m_systrayContextMenu.addAction( &m_actionStopAllTasks );
     m_systrayContextMenu.addSeparator();
@@ -126,8 +128,8 @@ Application::Application(int& argc, char** argv)
 #if defined Q_WS_MAC
     // MIRKO_TEMP_REM repopulate dock menu
     /*
-    m_dockMenu.addAction( &m_actionShowHideView );
-    m_dockMenu.addAction( &m_actionShowHideTimeTracker );
+      m_dockMenu.addAction( &m_actionShowHideView );
+      m_dockMenu.addAction( &m_actionShowHideTimeTracker );
     */
     m_dockMenu.addAction( &m_actionStopAllTasks );
     qt_mac_set_dock_menu( &m_dockMenu);
@@ -138,16 +140,16 @@ Application::Application(int& argc, char** argv)
     m_actionQuit.setText( tr( "Quit" ) );
     m_actionQuit.setIcon( Data::quitCharmIcon() );
     connect( &m_actionQuit, SIGNAL( triggered( bool ) ),
-             SLOT( slotQuit() ) );
+             SLOT( slotQuitApplication() ) );
 
     m_actionAboutDialog.setText( tr( "About Charm" ) );
     connect( &m_actionAboutDialog, SIGNAL( triggered() ),
-             SLOT( slotAboutDialog() ) );
+             &m_tasksWindow,  SLOT( slotAboutDialog() ) );
 
     m_actionPreferences.setText( tr( "Preferences" ) );
     m_actionPreferences.setIcon( Data::configureIcon() );
     connect( &m_actionPreferences, SIGNAL( triggered( bool ) ),
-             SLOT( slotEditPreferences( bool ) ) );
+             &m_tasksWindow,  SLOT( slotEditPreferences( bool ) ) );
 
     // m_actionEventView.setCheckable( true );
 //     m_eventView.setVisible( m_actionEventView.isChecked() );
@@ -158,13 +160,13 @@ Application::Application(int& argc, char** argv)
 
     m_actionImportFromXml.setText( tr( "Import from Previous Export..." ) );
     connect( &m_actionImportFromXml, SIGNAL( triggered() ),
-             SLOT( slotImportFromXml() ) );
+             &m_tasksWindow,  SLOT( slotImportFromXml() ) );
     m_actionExportToXml.setText( tr( "Export..." ) );
     connect( &m_actionExportToXml, SIGNAL( triggered() ),
-             SLOT( slotExportToXml() ) );
+             &m_tasksWindow,  SLOT( slotExportToXml() ) );
     m_actionImportTasks.setText( tr( "Import Task Definitions..." ) );
     connect( &m_actionImportTasks, SIGNAL( triggered() ),
-             SLOT( slotImportTasks() ) );
+             &m_tasksWindow,  SLOT( slotImportTasks() ) );
 
     // set up Charm menu:
     QMenu* appMenu = new QMenu( tr( "File" ) );
@@ -186,15 +188,15 @@ Application::Application(int& argc, char** argv)
     }
     m_actionReporting.setText( tr( "Reports..." ) );
     connect( &m_actionReporting, SIGNAL( triggered() ),
-             SLOT( slotReportDialog() ) );
+             &m_tasksWindow, SLOT( slotReportDialog() ) );
     m_windowMenu.addSeparator();
     m_windowMenu.addAction( &m_actionReporting );
 
     // MIRKO_TEMP_REM implement common shortcuts in all the CharmWindows
     /*
-    m_actionTasksView.setShortcut( Qt::CTRL + Qt::Key_T );
-    m_actionEventView.setShortcut( Qt::CTRL + Qt::Key_E );
-    m_actionReporting.setShortcut( Qt::CTRL + Qt::Key_R );
+      m_actionTasksView.setShortcut( Qt::CTRL + Qt::Key_T );
+      m_actionEventView.setShortcut( Qt::CTRL + Qt::Key_E );
+      m_actionReporting.setShortcut( Qt::CTRL + Qt::Key_R );
     */
     // FIXME ifndef?
 #ifndef Q_WS_MAC
@@ -607,7 +609,7 @@ void Application::slotMaybeIdle()
     // it
 }
 
-CharmWindow& Application::view()
+CharmWindow& Application::mainView()
 {
     // FIXME is this any good?
     return m_tasksWindow;

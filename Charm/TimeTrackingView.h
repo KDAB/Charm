@@ -28,7 +28,6 @@ public:
     // application:
     void stateChanged( State previous );
     void saveConfiguration();
-    void emitCommand( CharmCommand* );
     void sendCommand( CharmCommand* );
     void commitCommand( CharmCommand* );
     void restore();
@@ -59,6 +58,7 @@ private slots:
     void slotSelectTasksToShow();
 
 signals:
+    void emitCommand( CharmCommand* );
     void visibilityChanged( bool ); // reimpl from ViewInterface
 
 private:

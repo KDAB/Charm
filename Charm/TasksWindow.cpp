@@ -29,9 +29,11 @@ TasksWindow::TasksWindow( QWidget* parent )
     : CharmWindow( tr( "Tasks" ), parent )
     , m_tasksView( new View( this ) )
 {
+    setWindowNumber( 1 );
+    setWindowIdentifier( tr( "window_tasks" ) );
     setCentralWidget( m_tasksView );
     connect( m_tasksView, SIGNAL( emitCommand( CharmCommand* ) ),
-             SLOT( sendCommand( CharmCommand* ) ) );
+             SIGNAL( emitCommand( CharmCommand* ) ) );
 }
 
 TasksWindow::~TasksWindow()

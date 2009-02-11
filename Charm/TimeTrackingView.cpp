@@ -19,7 +19,9 @@ TimeTrackingView::TimeTrackingView( QWidget* parent )
     : CharmWindow( tr( "Time Tracker" ), parent )
     , m_ui( new Ui::TimeTrackingView )
 {
-    QWidget* widget = new QWidget( this );
+    setWindowNumber( 3 );
+    setWindowIdentifier( tr( "window_tracking" ) );
+     QWidget* widget = new QWidget( this );
     m_ui->setupUi( widget );
     setCentralWidget( widget );
     connect( m_ui->summaryWidget, SIGNAL( maybeShrink() ),
@@ -116,10 +118,6 @@ void TimeTrackingView::keyPressEvent( QKeyEvent* event )
 }
 
 void TimeTrackingView::saveConfiguration()
-{
-}
-
-void TimeTrackingView::emitCommand( CharmCommand* )
 {
 }
 
