@@ -17,14 +17,32 @@ class CharmWindow : public QMainWindow,
 public:
     explicit CharmWindow( const QString& name, QWidget* parent = 0 );
 
-    void showHideView();
     QAction* showHideAction();
 
     const QString& windowName() const;
+    const QString& windowIdentfier() const;
+    int windowNumber() const;
+
+protected:
+    /** The window name is the human readable name the application uses to reference the window.
+     */
+    void setWindowName( const QString& name );
+    /** The window identifier is used to reference window specific configuration groups, et cetera.
+     * It is generally not recommend to change it once the application is in use. */
+    void setWindowIdentifier( const QString& id );
+    /** The window number is a Mac concept that allows to pull up application windows by entering CMD+<number>.
+     */
+    void setWindowNumber( int number );
+
+public:
     /* reimpl */ void stateChanged( State previous );
     /* reimpl */ void showEvent( QShowEvent* );
     /* reimpl */ void hideEvent( QHideEvent* );
     /* reimpl */ void keyPressEvent( QKeyEvent* event );
+
+    virtual void saveGuiState();
+    virtual void restoreGuiState();
+    void configurationChanged();
 
 signals:
     /* reimpl */ void visibilityChanged( bool );
@@ -32,10 +50,15 @@ signals:
 public slots:
     /* reimpl */ void sendCommand( CharmCommand* );
     /* reimpl */ void commitCommand( CharmCommand* );
+    void restore();
+    void showHideView();
 
 private:
-    const QString m_windowName;
+    QString m_windowName;
     QAction* m_showHideAction;
+    int m_windowNumber; // Mac numerical window number, used for shortcut etc
+    QString m_windowIdentifier;
+    QShortcut* m_shortcut;
 };
 
 #endif

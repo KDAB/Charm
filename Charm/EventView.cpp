@@ -31,7 +31,6 @@ EventView::EventView( QWidget* parent )
     : QWidget( parent )
     , m_ui( new Ui::EventView )
     , m_eventDisplay( new EventDisplay() )
-    , m_view( qobject_cast<MainWindow*>( parent ) ) // FIXME temp
     , m_model( 0 )
     , m_actionNewEvent( this )
     , m_actionEditEvent( this )

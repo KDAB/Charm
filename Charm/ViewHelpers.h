@@ -11,7 +11,7 @@
 #define DATAMODEL ( MODEL.charmDataModel() )
 #define VIEW ( Application::instance().view() )
 
-void connectControllerAndView( Controller*, MainWindow* );
+void connectControllerAndView( Controller*, CharmWindow* );
 EventIdList eventIdsSortedByStartTime( EventIdList );
 /** Return those ids in the input list that elements of the subtree
  * under the parent task, which includes the parent task. */

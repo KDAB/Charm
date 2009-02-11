@@ -5,6 +5,7 @@
 
 class ModelConnector;
 
+// FIXME obsolete, merge into CharmWindow
 class ViewModeInterface
 {
 public:

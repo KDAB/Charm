@@ -14,6 +14,7 @@
 #include <QMetaType>
 #include <QMessageBox>
 #include <QShortcut>
+#include <QSystemTrayIcon>
 
 #include <Core/CharmConstants.h>
 #include <Core/SqLiteStorage.h>
@@ -24,6 +25,7 @@
 #include "SpecialKeysEventFilter.h"
 #include "ConfigurationDialog.h"
 #include "Idle/IdleDetector.h"
+#include "Uniquifier.h"
 
 #include <algorithm> //for_each()
 
@@ -36,9 +38,14 @@ extern void qt_mac_set_dock_menu(QMenu *);
 Application::Application(int& argc, char** argv)
     : ApplicationBase( argc, argv )
     , m_state(Constructed)
-    , m_actionShowHideView( this )
-    , m_actionShowHideTimeTracker( this )
     , m_actionStopAllTasks( this )
+    , m_actionQuit( this )
+    , m_actionAboutDialog( this )
+    , m_actionPreferences( this )
+    , m_actionExportToXml( this )
+    , m_actionImportFromXml( this )
+    , m_actionImportTasks( this )
+    , m_actionReporting( this )
     , m_idleDetector( 0 )
     , m_windows( QList<CharmWindow*> () << &m_tasksWindow << &m_eventWindow << &m_timeTracker )
 {
@@ -58,26 +65,28 @@ Application::Application(int& argc, char** argv)
     qRegisterMetaType<Event> ("Event");
 
     // save the configuration (configuration is managed by the application)
-    connect(&m_mainWindow, SIGNAL(saveConfiguration()), SLOT(
-                slotSaveConfiguration()));
-    // the exit process (close goes to systray, app->quit exits)
-    connect(&m_mainWindow, SIGNAL(quit()), SLOT(slotQuitApplication()));
-    // window visibilities:
-    connect( &m_mainWindow, SIGNAL( visibilityChanged( bool ) ),
-             SLOT( slotMainWindowVisibilityChanged( bool ) ) );
-    connect( &m_timeTracker, SIGNAL( visibilityChanged( bool ) ),
-             SLOT( slotTimeTrackerVisibilityChanged( bool ) ) );
+    // MIRKO_TEMP_REM where from?
+    /*
+      connect(&m_mainWindow, SIGNAL(saveConfiguration()), SLOT(
+      slotSaveConfiguration()));
+      // the exit process (close goes to systray, app->quit exits)
+      connect(&m_mainWindow, SIGNAL(quit()), SLOT(slotQuitApplication()));
+    */
+    // MIRKO_TEMP_REM where from?
+
+    /*// FIXME needed?
     // window title updates
     connect( &m_controller, SIGNAL( currentBackendStatus( const QString& ) ),
-             SLOT( slotCurrentBackendStatusChanged( const QString& ) ) );
-
+    SLOT( slotCurrentBackendStatusChanged( const QString& ) ) );
+    */
     // exit process (app will only exit once controller says it is ready)
     connect(&m_controller, SIGNAL(readyToQuit()), SLOT(
                 slotControllerReadyToQuit()));
 
     connectControllerAndModel(&m_controller, m_model.charmDataModel());
-    connectControllerAndView(&m_controller, &m_mainWindow);
-
+    Q_FOREACH( CharmWindow* window, m_windows ) {
+        connectControllerAndView(&m_controller, window);
+    }
     // my own signals:
     connect(this, SIGNAL(goToState(State)), SLOT(setState(State)),
             Qt::QueuedConnection);
@@ -86,44 +95,108 @@ Application::Application(int& argc, char** argv)
     m_actionStopAllTasks.setText( tr( "Stop &All Active Tasks" ) );
     m_actionStopAllTasks.setShortcut( Qt::Key_Escape );
     m_actionStopAllTasks.setShortcutContext( Qt::ApplicationShortcut );
+    // MIRKO_TEMP_REM: move to where?
+    /*
     m_mainWindow.addAction(&m_actionStopAllTasks); // for the shortcut to work
+    */
     connect( &m_actionStopAllTasks, SIGNAL( triggered() ),
              SLOT( slotStopAllTasks() ) );
+    // MIRKO_TEMP_REM shoud not be needed anymore
+    /*
     connect( &m_actionShowHideView, SIGNAL( triggered() ),
              &m_mainWindow, SLOT( slotShowHideView() ) );
     connect( &m_actionShowHideTimeTracker, SIGNAL( triggered() ),
              &m_timeTracker, SLOT( slotShowHide() ) );
+    */
     connect( &m_trayIcon, SIGNAL( activated( QSystemTrayIcon::ActivationReason ) ),
              SLOT( slotTrayIconActivated( QSystemTrayIcon::ActivationReason ) ) );
+    // MIRKO_TEMP_REM add show hide window actions
+    /*
     m_systrayContextMenu.addAction( &m_actionShowHideView );
     m_systrayContextMenu.addAction( &m_actionShowHideTimeTracker );
+    */
     m_systrayContextMenu.addAction( &m_actionStopAllTasks );
     m_systrayContextMenu.addSeparator();
-    m_systrayContextMenu.addAction( m_mainWindow.actionQuit() );
+    // MIRKO_TEMP_REM where to put quit action?
+    // m_systrayContextMenu.addAction( m_mainWindow.actionQuit() );
     m_trayIcon.setContextMenu( &m_systrayContextMenu );
     m_trayIcon.setIcon( Data::charmIcon() );
     m_trayIcon.show();
 
 #if defined Q_WS_MAC
+    // MIRKO_TEMP_REM repopulate dock menu
+    /*
     m_dockMenu.addAction( &m_actionShowHideView );
     m_dockMenu.addAction( &m_actionShowHideTimeTracker );
+    */
     m_dockMenu.addAction( &m_actionStopAllTasks );
     qt_mac_set_dock_menu( &m_dockMenu);
 #endif
 
-    m_timeTracker.hide();
-    // FIXME temp
-    m_tasksWindow.show();
-    m_eventWindow.show();
+    // set up actions:
+    m_actionQuit.setShortcut( Qt::CTRL + Qt::Key_Q );
+    m_actionQuit.setText( tr( "Quit" ) );
+    m_actionQuit.setIcon( Data::quitCharmIcon() );
+    connect( &m_actionQuit, SIGNAL( triggered( bool ) ),
+             SLOT( slotQuit() ) );
+
+    m_actionAboutDialog.setText( tr( "About Charm" ) );
+    connect( &m_actionAboutDialog, SIGNAL( triggered() ),
+             SLOT( slotAboutDialog() ) );
+
+    m_actionPreferences.setText( tr( "Preferences" ) );
+    m_actionPreferences.setIcon( Data::configureIcon() );
+    connect( &m_actionPreferences, SIGNAL( triggered( bool ) ),
+             SLOT( slotEditPreferences( bool ) ) );
+
+    // m_actionEventView.setCheckable( true );
+//     m_eventView.setVisible( m_actionEventView.isChecked() );
+//     connect( &m_actionEventView, SIGNAL( toggled( bool ) ),
+//              &m_eventView, SLOT( setVisible( bool ) ) );
+//     connect( &m_eventView, SIGNAL( visible( bool ) ),
+//              &m_actionEventView, SLOT( setChecked( bool ) ) );
+
+    m_actionImportFromXml.setText( tr( "Import from Previous Export..." ) );
+    connect( &m_actionImportFromXml, SIGNAL( triggered() ),
+             SLOT( slotImportFromXml() ) );
+    m_actionExportToXml.setText( tr( "Export..." ) );
+    connect( &m_actionExportToXml, SIGNAL( triggered() ),
+             SLOT( slotExportToXml() ) );
+    m_actionImportTasks.setText( tr( "Import Task Definitions..." ) );
+    connect( &m_actionImportTasks, SIGNAL( triggered() ),
+             SLOT( slotImportTasks() ) );
+
+    // set up Charm menu:
+    QMenu* appMenu = new QMenu( tr( "File" ) );
+    appMenu->addAction( &m_actionPreferences );
+    m_actionPreferences.setEnabled( true );
+    appMenu->addAction( &m_actionAboutDialog );
+    appMenu->addSeparator();
+    appMenu->addAction( &m_actionExportToXml );
+    appMenu->addAction( &m_actionImportFromXml );
+    appMenu->addSeparator();
+    appMenu->addAction( &m_actionImportTasks );
+    appMenu->addSeparator();
+    appMenu->addAction( &m_actionQuit );
 
     // create window menu:
     m_windowMenu.setTitle( tr( "Window" ) );
     Q_FOREACH( CharmWindow* window, m_windows ) {
-        // ...
-        QAction* windowAction = new QAction( window->windowName(), this );
-        m_windowMenu.addAction( windowAction );
+        m_windowMenu.addAction( window->showHideAction() );
     }
+    m_actionReporting.setText( tr( "Reports..." ) );
+    connect( &m_actionReporting, SIGNAL( triggered() ),
+             SLOT( slotReportDialog() ) );
+    m_windowMenu.addSeparator();
+    m_windowMenu.addAction( &m_actionReporting );
 
+    // MIRKO_TEMP_REM implement common shortcuts in all the CharmWindows
+    /*
+    m_actionTasksView.setShortcut( Qt::CTRL + Qt::Key_T );
+    m_actionEventView.setShortcut( Qt::CTRL + Qt::Key_E );
+    m_actionReporting.setShortcut( Qt::CTRL + Qt::Key_R );
+    */
+    // FIXME ifndef?
 #ifndef Q_WS_MAC
     // FIXME parametrize, handle the same for all windows
     SpecialKeysEventFilter* filter = new SpecialKeysEventFilter( this );
@@ -132,17 +205,11 @@ Application::Application(int& argc, char** argv)
              &m_mainWindow, SLOT( slotShowHideView() ) );
     connect( filter, SIGNAL( toggleWindow2Visibility() ),
              &m_timeTracker, SLOT( slotShowHide() ) );
+
+    // FIXME fix
+    connect( QApplication::instance(), SIGNAL( dockIconClicked() ), this, SLOT( show() ) );
 #endif
     // ^^^
-
-#ifdef Q_WS_MAC
-    QShortcut* const ctrl1 = new QShortcut( QKeySequence( "Ctrl+1" ), &m_mainWindow, SLOT( slotShowHideView() ) );
-    ctrl1->setContext( Qt::ApplicationShortcut );
-    QShortcut* const ctrl2 = new QShortcut( QKeySequence( "Ctrl+2" ), &m_timeTracker, SLOT( slotShowHide() ) );
-    ctrl2->setContext( Qt::ApplicationShortcut );
-    QShortcut* const ctrlW = new QShortcut( QKeySequence( "Ctrl+W" ), &m_mainWindow, SLOT( hide() ) );
-    ctrlW->setContext( Qt::ApplicationShortcut );
-#endif
 
     // set up idle detection
     m_idleDetector = IdleDetector::createIdleDetector( this );
@@ -213,34 +280,39 @@ void Application::setState(State state)
     case StartingUp:
         m_model.charmDataModel()->stateChanged(previous, state);
         m_controller.stateChanged(previous, state);
-        m_mainWindow.stateChanged(previous);
-        m_timeTracker.stateChanged( previous );
+        // FIXME unnecessary?
+        // m_mainWindow.stateChanged(previous);
+        // m_timeTracker.stateChanged( previous );
         enterStartingUpState();
         break;
     case Connecting:
         m_model.charmDataModel()->stateChanged(previous, state);
         m_controller.stateChanged(previous, state);
-        m_mainWindow.stateChanged(previous);
-        m_timeTracker.stateChanged( previous );
+        // FIXME unnecessary?
+        // m_mainWindow.stateChanged(previous);
+        // m_timeTracker.stateChanged( previous );
         enterConnectingState();
         break;
     case Connected:
         m_model.charmDataModel()->stateChanged(previous, state);
         m_controller.stateChanged(previous, state);
-        m_mainWindow.stateChanged(previous);
-        m_timeTracker.stateChanged( previous );
+        // FIXME unnecessary?
+        // m_mainWindow.stateChanged(previous);
+        // m_timeTracker.stateChanged( previous );
         enterConnectedState();
         break;
     case Disconnecting:
-        m_timeTracker.stateChanged( previous );
-        m_mainWindow.stateChanged(previous);
+        // FIXME unnecessary?
+        // m_timeTracker.stateChanged( previous );
+        // m_mainWindow.stateChanged(previous);
         m_model.charmDataModel()->stateChanged(previous, state);
         m_controller.stateChanged(previous, state);
         enterDisconnectingState();
         break;
     case ShuttingDown:
-        m_timeTracker.stateChanged( previous );
-        m_mainWindow.stateChanged(previous);
+        // FIXME unnecessary?
+        // m_timeTracker.stateChanged( previous );
+        // m_mainWindow.stateChanged(previous);
         m_model.charmDataModel()->stateChanged(previous, state);
         m_controller.stateChanged(previous, state);
         enterShuttingDownState();
@@ -250,7 +322,7 @@ void Application::setState(State state)
                    "Unknown new application state");
     };
     } catch( CharmException& e ) {
-        QMessageBox::critical( &view(), tr( "Critical Charm Problem" ),
+        QMessageBox::critical( &m_tasksWindow, tr( "Critical Charm Problem" ),
                                e.what() );
         quit();
     }
@@ -270,8 +342,6 @@ Application& Application::instance()
 
 void Application::enterStartingUpState()
 {
-    // HACK (Qt Mac menu merge bug)  necessary to merge main window menu?
-    m_mainWindow.show();
     // load configuration
     // ...
     // verify configuration
@@ -300,7 +370,7 @@ void Application::enterConnectingState()
 	if (!m_controller.initializeBackEnd(CHARM_SQLITE_BACKEND_DESCRIPTOR))
             quit();
     } catch ( CharmException& e ) {
-        QMessageBox::critical(&m_mainWindow, QObject::tr("Database Backend Error"),
+        QMessageBox::critical( & m_tasksWindow, QObject::tr("Database Backend Error"),
                               tr( "The backend could not be initialized: %1" )
                               .arg( e.what() ) );
         slotQuitApplication();
@@ -331,7 +401,7 @@ void Application::enterConnectingState()
                                        "~/.Charm folder and restart this version of Charm and select File->Import from "
                                        "previous export and select the file you saved in the previous step.</li>"
                                        "</ul></body></html>");
-        QMessageBox::critical(&m_mainWindow, QObject::tr("Charm Database Error"),
+        QMessageBox::critical( & m_tasksWindow, QObject::tr("Charm Database Error"),
                               message);
         slotQuitApplication();
         return;
@@ -385,7 +455,7 @@ bool Application::configure()
             << "Application::configure: an error was found within the configuration.";
         if (!CONFIGURATION.failureMessage.isEmpty())
         {
-            QMessageBox::information(&m_mainWindow,
+            QMessageBox::information( &m_tasksWindow,
                                      tr("Configuration Problem"), CONFIGURATION.failureMessage,
                                      tr("Ok"));
             CONFIGURATION.failureMessage.clear();
@@ -410,7 +480,7 @@ bool Application::configure()
         CONFIGURATION.localStorageDatabase = QDir::homePath()
                                              + QDir::separator() + ".Charm/Charm_debug.db";
 #endif
-        ConfigurationDialog dialog(CONFIGURATION, &m_mainWindow);
+        ConfigurationDialog dialog(CONFIGURATION, &m_tasksWindow);
         if (dialog.exec())
         {
             CONFIGURATION = dialog.configuration();
@@ -436,7 +506,10 @@ void Application::slotTrayIconActivated( QSystemTrayIcon::ActivationReason reaso
         // m_systrayContextMenu.show();
         break;
     case QSystemTrayIcon::DoubleClick:
+        // MIRKO_TEMP_REM?
+        /*
         m_mainWindow.slotShowHideView();
+        */
         break;
     case QSystemTrayIcon::Trigger:
         // single click
@@ -447,24 +520,6 @@ void Application::slotTrayIconActivated( QSystemTrayIcon::ActivationReason reaso
     case QSystemTrayIcon::Unknown:
     default:
         break;
-    }
-}
-
-void Application::slotMainWindowVisibilityChanged( bool visible )
-{
-    if ( visible ) {
-        m_actionShowHideView.setText( tr( "Hide Charm Window" ) );
-    } else {
-        m_actionShowHideView.setText( tr( "Show Charm Window" ) );
-    }
-}
-
-void Application::slotTimeTrackerVisibilityChanged( bool visible )
-{
-    if ( visible ) {
-        m_actionShowHideTimeTracker.setText( tr( "Hide Time Tracker Window" ) );
-    } else {
-        m_actionShowHideTimeTracker.setText( tr( "Show Time Tracker Window" ) );
     }
 }
 
@@ -480,7 +535,10 @@ void Application::slotCurrentBackendStatusChanged( const QString& text )
         dbInfo = text;
 
     const QString title = tr("Charm (%1)").arg(dbInfo);
+    // MIRKO_TEMP_REM
+    /*
     m_mainWindow.setWindowTitle( title );
+    */
     m_trayIcon.setToolTip( title );
 }
 
@@ -508,16 +566,13 @@ void Application::slotSaveConfiguration()
     {
         m_controller.persistMetaData(CONFIGURATION);
     }
+    std::for_each( m_windows.begin(), m_windows.end(),
+                   std::mem_fun( &CharmWindow::configurationChanged ) );
 }
 
 ModelConnector& Application::model()
 {
     return m_model;
-}
-
-MainWindow& Application::view()
-{
-    return m_mainWindow;
 }
 
 TimeSpans& Application::timeSpans()
@@ -536,7 +591,7 @@ void Application::slotMaybeIdle()
 
     if ( DATAMODEL->activeEventCount() > 0 ) {
         if ( idleDetector()->idlePeriods().count() == 1 ) {
-            m_mainWindow.maybeIdle();
+            m_tasksWindow.maybeIdle();
         } // otherwise, the dialog will be showing already
     }
     // there are four parameters to the idle property:
@@ -550,6 +605,12 @@ void Application::slotMaybeIdle()
     // - there may be multiple active events
     // - there may be multiple idle periods before the user deals with
     // it
+}
+
+CharmWindow& Application::view()
+{
+    // FIXME is this any good?
+    return m_tasksWindow;
 }
 
 #include "Application.moc"

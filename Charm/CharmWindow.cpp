@@ -1,8 +1,13 @@
 #include <QKeyEvent>
 #include <QAction>
-
+#include <QMenuBar>
+#include <QSettings>
+#include <QShortcut>
+#include <QKeySequence>
 #include <Core/CharmCommand.h>
+#include <Core/CharmConstants.h>
 
+#include "ViewHelpers.h"
 #include "Application.h"
 #include "Data.h"
 #include "Commands/CommandRelayCommand.h"
@@ -12,8 +17,12 @@ CharmWindow::CharmWindow( const QString& name, QWidget* parent )
     : QMainWindow( parent )
     , m_windowName( name )
     , m_showHideAction( new QAction( this ) )
+    , m_windowNumber( -1 )
+    , m_shortcut( 0 )
 {
     setWindowIcon( Data::charmIcon() );
+    // FIXME make work with Mac menu merging
+    show();
 }
 
 void CharmWindow::stateChanged( State previous )
@@ -21,15 +30,16 @@ void CharmWindow::stateChanged( State previous )
     switch( Application::instance().state() ) {
     case Connecting:
         setEnabled( false );
-        // restoreGuiState();
+        restoreGuiState();
         break;
     case Connected:
-        // slotConfigurationChanged();
+        configurationChanged();
+        menuBar()->addMenu( & Application::instance().windowMenu() );
         setEnabled( true );
         break;
     case Disconnecting:
         setEnabled( false );
-        // saveGuiState();
+        saveGuiState();
         break;
     case ShuttingDown:
     case Dead:
@@ -38,9 +48,39 @@ void CharmWindow::stateChanged( State previous )
     };
 }
 
+void CharmWindow::setWindowName( const QString& text )
+{
+    m_windowName = text;
+}
+
 const QString& CharmWindow::windowName() const
 {
     return m_windowName;
+}
+
+void CharmWindow::setWindowIdentifier( const QString& id )
+{
+    m_windowIdentifier = id;
+}
+
+const QString& CharmWindow::windowIdentfier() const
+{
+    return m_windowIdentifier;
+}
+
+void CharmWindow::setWindowNumber( int number )
+{   // FIXME restrict to Mac?
+    m_windowNumber = number;
+    delete m_shortcut;
+    m_shortcut = new QShortcut( this );
+    QKeySequence sequence( tr( "Ctrl+%1" ).arg( number ) );
+    m_shortcut->setKey( sequence );
+    connect( m_shortcut, SIGNAL( activated() ), SLOT( showHideView() ) );
+}
+
+int CharmWindow::windowNumber() const
+{
+    return m_windowNumber;
 }
 
 QAction* CharmWindow::showHideAction()
@@ -48,16 +88,19 @@ QAction* CharmWindow::showHideAction()
     return m_showHideAction;
 }
 
+void CharmWindow::restore()
+{
+    show();
+}
+
 void CharmWindow::showEvent( QShowEvent* e )
 {
-    emit visibilityChanged( true );
     m_showHideAction->setText( tr( "Hide %1 Window" ).arg( m_windowName ) );
     QMainWindow::showEvent( e );
 }
 
 void CharmWindow::hideEvent( QHideEvent* e )
 {
-    emit visibilityChanged( false );
     m_showHideAction->setText( tr( "Show %1 Window" ).arg( m_windowName ) );
     QMainWindow::hideEvent( e );
 }
@@ -102,6 +145,44 @@ void CharmWindow::showHideView()
     }
 }
 
+void CharmWindow::configurationChanged()
+{
+    const QList<QToolButton*> buttons = findChildren<QToolButton *>();
+    std::for_each( buttons.begin(), buttons.end(),
+                   std::bind2nd( std::mem_fun( &QToolButton::setToolButtonStyle ), CONFIGURATION.toolButtonStyle ) );
+//     Q_FOREACH( QToolButton* button, allToolButtons ) {
+//         button->setToolButtonStyle( CONFIGURATION.toolButtonStyle );
+//     }
+}
+
+void CharmWindow::saveGuiState()
+{
+    QSettings settings;
+    // FIXME use config group made from the window name or ID or whatever
+    // save geometry
+    settings.setValue( MetaKey_MainWindowGeometry, saveGeometry() );
+    settings.setValue( MetaKey_MainWindowVisible, isVisible() );
+}
+
+void CharmWindow::restoreGuiState()
+{
+    // FIXME use config group, implement generically for all CharmWindows
+    // restore geometry
+    QSettings settings;
+    if ( settings.contains( MetaKey_MainWindowGeometry ) ) {
+        // FIXME restore?
+        restoreGeometry( settings.value( MetaKey_MainWindowGeometry ).toByteArray() );
+    }
+    // restore visibility
+    if ( settings.contains( MetaKey_MainWindowVisible ) ) {
+        const bool visible = settings.value( MetaKey_MainWindowVisible ).toBool();
+        if ( visible ) {
+            show();
+        } else {
+            hide();
+        }
+    }
+}
 
 #include "CharmWindow.moc"
 

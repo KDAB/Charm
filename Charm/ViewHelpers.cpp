@@ -2,7 +2,7 @@
 
 #include "ViewHelpers.h"
 
-void connectControllerAndView( Controller* controller, MainWindow* view )
+void connectControllerAndView( Controller* controller, CharmWindow* view )
 {
     // connect view and controller:
     // make controller process commands send by the view:

@@ -10,6 +10,7 @@
  *
  */
 
+#include <QSystemTrayIcon>
 #include <QMenu>
 #include <QAction>
 #ifdef Q_WS_MAC
@@ -28,7 +29,6 @@
 #include "Core/StorageInterface.h"
 
 #include "CharmWindow.h"
-#include "MainWindow.h"
 #include "TasksWindow.h"
 #include "EventWindow.h"
 #include "TimeTrackingView.h"
@@ -63,9 +63,6 @@ public:
     /** Access to the model. */
     ModelConnector& model();
 
-    /** Access to the view. */
-    MainWindow& view();
-
     /** Access to the time spans object. */
     TimeSpans& timeSpans();
 
@@ -74,6 +71,8 @@ public:
     State state() const;
 
     QMenu& windowMenu();
+    QMenu& fileMenu();
+    CharmWindow& view();
 
 public slots:
     void setState( State state );
@@ -84,8 +83,8 @@ public slots:
 
 private slots:
     void slotTrayIconActivated( QSystemTrayIcon::ActivationReason );
-    void slotMainWindowVisibilityChanged( bool );
-    void slotTimeTrackerVisibilityChanged( bool );
+//     void slotMainWindowVisibilityChanged( bool );
+//     void slotTimeTrackerVisibilityChanged( bool );
     void slotCurrentBackendStatusChanged( const QString& text );
     void slotStopAllTasks();
     void slotMaybeIdle();
@@ -108,7 +107,7 @@ private:
     State m_state;
     ModelConnector m_model;
     Controller m_controller;
-    MainWindow m_mainWindow;
+    // MainWindow m_mainWindow;
     TasksWindow m_tasksWindow;
     EventWindow m_eventWindow;
     TimeTrackingView m_timeTracker;
@@ -116,9 +115,16 @@ private:
     QMenu m_systrayContextMenu;
     QMenu m_dockMenu;
     QMenu m_windowMenu;
-    QAction m_actionShowHideView;
-    QAction m_actionShowHideTimeTracker;
+    // QAction m_actionShowHideView;
+    // QAction m_actionShowHideTimeTracker;
     QAction m_actionStopAllTasks;
+    QAction m_actionQuit;
+    QAction m_actionAboutDialog;
+    QAction m_actionPreferences;
+    QAction m_actionExportToXml;
+    QAction m_actionImportFromXml;
+    QAction m_actionImportTasks;
+    QAction m_actionReporting;
 
     IdleDetector* m_idleDetector;
     const QList<CharmWindow*> m_windows;

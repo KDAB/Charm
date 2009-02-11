@@ -6,7 +6,7 @@
 #include <Core/CharmExceptions.h>
 #include <Core/ControllerInterface.h>
 
-#include "MainWindow.h"
+#include "CharmWindow.h"
 #include "CommandExportToXml.h"
 
 CommandExportToXml::CommandExportToXml( QString filename, QObject* parent )
@@ -46,8 +46,8 @@ bool CommandExportToXml::finalize()
 {
     // any errors?
     if ( m_error ) {
-        MainWindow* view = dynamic_cast<MainWindow*>( owner() );
-        Q_ASSERT( view ); // this command is "owned" by the MainWindow
+        CharmWindow* view = dynamic_cast<CharmWindow*>( owner() );
+        Q_ASSERT( view ); // this command is "owned" by a CharmWindow
         QMessageBox::critical( view, tr( "Error exporting Database to XML" ),
                                tr("The database could not be exported, sorry." ) );
     }

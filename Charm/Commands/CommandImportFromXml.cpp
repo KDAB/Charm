@@ -6,7 +6,7 @@
 #include <Core/CharmExceptions.h>
 #include <Core/ControllerInterface.h>
 
-#include "MainWindow.h"
+#include "CharmWindow.h"
 #include "CommandImportFromXml.h"
 
 CommandImportFromXml::CommandImportFromXml( QString filename, QObject* parent )
@@ -44,8 +44,8 @@ bool CommandImportFromXml::finalize()
 {
     // any errors?
     if ( ! m_error.isEmpty() ) {
-        MainWindow* view = dynamic_cast<MainWindow*>( owner() );
-        Q_ASSERT( view ); // this command is "owned" by the MainWindow
+        CharmWindow* view = dynamic_cast<CharmWindow*>( owner() );
+        Q_ASSERT( view ); // this command is "owned" by a CharmWindow
         QMessageBox::critical( view, tr( "Error importing the Database" ),
                                tr("An error has occurred:\n%1" ).arg( m_error ) );
     }
