@@ -25,6 +25,8 @@
 #include "ConfigurationDialog.h"
 #include "Idle/IdleDetector.h"
 
+#include <algorithm> //for_each()
+
 Application* Application::m_instance = 0;
 
 #if defined Q_WS_MAC

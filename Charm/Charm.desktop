@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Charm
+GenericName=Time Tracker
+Exec=Charm
+Icon=Charm-128x128
+Type=Application
+Categories=Qt;KDE;Office;
+X-KDE-StartupNotify=true
