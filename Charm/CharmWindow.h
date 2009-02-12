@@ -7,6 +7,7 @@
 #include "Core/CommandEmitterInterface.h"
 
 class QAction;
+class QShortcut;
 
 class CharmWindow : public QMainWindow,
                     public ViewInterface,

@@ -203,11 +203,13 @@ Application::Application(int& argc, char** argv)
     // FIXME parametrize, handle the same for all windows
     SpecialKeysEventFilter* filter = new SpecialKeysEventFilter( this );
     installEventFilter( filter );
+    // MIRKO_TEMP_REM
+    /*
     connect( filter, SIGNAL( toggleWindow1Visibility() ),
              &m_mainWindow, SLOT( slotShowHideView() ) );
     connect( filter, SIGNAL( toggleWindow2Visibility() ),
              &m_timeTracker, SLOT( slotShowHide() ) );
-
+	*/
     // FIXME fix
     connect( QApplication::instance(), SIGNAL( dockIconClicked() ), this, SLOT( show() ) );
 #endif
