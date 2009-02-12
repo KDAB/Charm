@@ -36,8 +36,8 @@ int main(int argc, char** argv)
             break;
         case CommandLine::Mode_DescribeUsage:
         default:
-            throw UsageException();
-            break;
+        	CommandLine::usage();
+        	return 0;
         }
     } catch (UsageException& e) {
         cerr << e.what() << endl;

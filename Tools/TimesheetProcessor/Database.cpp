@@ -45,6 +45,9 @@ User Database::getOrCreateUserByName( QString name ) throw (TimesheetProcessorEx
 			user = m_storage.getUser( userId );
 		} else { // user with this name does not exist:
 			user = m_storage.makeUser( name ); // that should work
+			if( ! user.isValid() ) {
+				throw TimesheetProcessorException( "Cannot create the new user" );
+			}
 		}
 	} else {
 		throw TimesheetProcessorException( "Cannot execute query for user name" );
