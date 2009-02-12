@@ -13,6 +13,8 @@
 #include "Commands/CommandRelayCommand.h"
 #include "CharmWindow.h"
 
+#include <algorithm> //for_each()
+
 CharmWindow::CharmWindow( const QString& name, QWidget* parent )
     : QMainWindow( parent )
     , m_windowName( name )
