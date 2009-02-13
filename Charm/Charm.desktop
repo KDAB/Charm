@@ -1,6 +1,11 @@
 [Desktop Entry]
 Name=Charm
+Name[uk]=Шарм
 GenericName=Time Tracker
+GenericName[pt]=Gestor de Tempo
+GenericName[pt_BR]=Gestor de Tempo
+GenericName[sv]=Tidmätning
+GenericName[uk]=Інструмент стеження за часом
 Exec=Charm
 Icon=Charm-128x128
 Type=Application
