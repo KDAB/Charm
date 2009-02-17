@@ -234,7 +234,6 @@ void View::stateChanged( State previous )
     default:
         break;
     };
-
 }
 
 void View::saveGuiState()

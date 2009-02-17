@@ -21,9 +21,6 @@ class TimeTrackingView : public CharmWindow,
 public:
     explicit TimeTrackingView( QWidget* parent = 0 );
     ~TimeTrackingView();
-    void showEvent( QShowEvent* );
-    void hideEvent( QHideEvent* );
-    void keyPressEvent( QKeyEvent* );
 
     // application:
     void stateChanged( State previous );
@@ -54,7 +51,6 @@ private slots:
     void slotMaybeShrink();
     void slotStartEvent( TaskId );
     void slotStopEvent();
-    void slotShowHide();
     void slotSelectTasksToShow();
 
 signals:

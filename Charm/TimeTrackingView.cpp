@@ -21,7 +21,7 @@ TimeTrackingView::TimeTrackingView( QWidget* parent )
 {
     setWindowNumber( 3 );
     setWindowIdentifier( tr( "window_tracking" ) );
-     QWidget* widget = new QWidget( this );
+    QWidget* widget = new QWidget( this );
     m_ui->setupUi( widget );
     setCentralWidget( widget );
     connect( m_ui->summaryWidget, SIGNAL( maybeShrink() ),
@@ -39,16 +39,6 @@ TimeTrackingView::~TimeTrackingView()
     delete m_ui; m_ui = 0;
 }
 
-void TimeTrackingView::slotShowHide()
-{
-    if ( isVisible() ) {
-        hide();
-    } else {
-        restore();
-        raise();
-    }
-}
-
 TimeTrackingSummaryWidget* TimeTrackingView::summaryWidget()
 {
     Q_ASSERT( m_ui );
@@ -57,6 +47,7 @@ TimeTrackingSummaryWidget* TimeTrackingView::summaryWidget()
 
 void TimeTrackingView::stateChanged( State previous )
 {
+    CharmWindow::stateChanged( previous );
     switch( Application::instance().state() ) {
     case Connecting: {
         connect( &Application::instance().timeSpans(), SIGNAL( timeSpansChanged() ),
@@ -79,9 +70,6 @@ void TimeTrackingView::stateChanged( State previous )
         summaryWidget()->handleActiveEvents();
         break;
     }
-    case ShuttingDown:
-        setEnabled( false );
-        break;
     case Disconnecting: {
         // save Gui state:
         QSettings settings;
@@ -89,32 +77,10 @@ void TimeTrackingView::stateChanged( State previous )
         settings.setValue( MetaKey_TimeTrackerVisible, isVisible() );
         break;
     }
+    case ShuttingDown:
     default:
         break;
     }
-}
-
-void TimeTrackingView::showEvent( QShowEvent* )
-{
-    emit visibilityChanged( true );
-}
-
-void TimeTrackingView::hideEvent( QHideEvent* )
-{
-    emit visibilityChanged( false );
-}
-
-void TimeTrackingView::keyPressEvent( QKeyEvent* event )
-{
-    if ( event->type() == QEvent::KeyPress ) {
-        QKeyEvent *keyEvent = static_cast<QKeyEvent*>( event );
-        if ( keyEvent->modifiers() & Qt::ControlModifier
-             && keyEvent->key() == Qt::Key_W ) {
-            // we must be visible, otherwise we would not get the event
-            slotShowHide();
-        }
-    }
-    QWidget::keyPressEvent( event );
 }
 
 void TimeTrackingView::saveConfiguration()
