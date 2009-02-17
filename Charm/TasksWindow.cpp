@@ -47,8 +47,6 @@ void TasksWindow::stateChanged( State previous )
 
     if ( Application::instance().state() == Connecting ) {
         m_tasksView->setModel( & Application::instance().model() );
-        // set up the menu
-        // FIXME assign shortcuts (in the window objects?)
     }
 }
 

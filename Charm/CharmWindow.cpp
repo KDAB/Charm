@@ -77,6 +77,7 @@ void CharmWindow::setWindowNumber( int number )
     m_shortcut = new QShortcut( this );
     QKeySequence sequence( tr( "Ctrl+%1" ).arg( number ) );
     m_shortcut->setKey( sequence );
+    m_shortcut->setContext( Qt::ApplicationShortcut );
     connect( m_shortcut, SIGNAL( activated() ), SLOT( showHideView() ) );
 }
 
