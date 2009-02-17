@@ -123,6 +123,7 @@ void TimeTrackingView::saveConfiguration()
 
 void TimeTrackingView::sendCommand( CharmCommand* )
 {
+    Q_ASSERT( false ); // should not be called
 }
 
 void TimeTrackingView::commitCommand( CharmCommand* )

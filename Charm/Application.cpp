@@ -86,8 +86,10 @@ Application::Application(int& argc, char** argv)
     connectControllerAndModel(&m_controller, m_model.charmDataModel());
     connectControllerAndView(&m_controller, &m_tasksWindow);
     Q_FOREACH( CharmWindow* window, m_windows ) {
-        connect( window, SIGNAL( emitCommand( CharmCommand* ) ),
-                 &mainView(), SLOT( sendCommand( CharmCommand* ) ) );
+        if ( window != &m_tasksWindow ) { // tasks view acts as the main relay
+            connect( window, SIGNAL( emitCommand( CharmCommand* ) ),
+                     &mainView(), SLOT( sendCommand( CharmCommand* ) ) );
+        }
     }
     // my own signals:
     connect(this, SIGNAL(goToState(State)), SLOT(setState(State)),

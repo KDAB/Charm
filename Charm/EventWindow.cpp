@@ -10,7 +10,7 @@ EventWindow::EventWindow( QWidget* parent )
     setWindowIdentifier( tr( "window_events" ) );
     setCentralWidget( m_eventView );
     connect( m_eventView, SIGNAL( emitCommand( CharmCommand* ) ),
-             SLOT( sendCommand( CharmCommand* ) ) );
+             SIGNAL( emitCommand( CharmCommand* ) ) );
 }
 
 EventWindow::~EventWindow()
