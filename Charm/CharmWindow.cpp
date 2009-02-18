@@ -36,6 +36,7 @@ void CharmWindow::stateChanged( State previous )
         break;
     case Connected:
         configurationChanged();
+        menuBar()->addMenu( & Application::instance().fileMenu() );
         menuBar()->addMenu( & Application::instance().windowMenu() );
         setEnabled( true );
         break;
@@ -153,15 +154,13 @@ void CharmWindow::configurationChanged()
     const QList<QToolButton*> buttons = findChildren<QToolButton *>();
     std::for_each( buttons.begin(), buttons.end(),
                    std::bind2nd( std::mem_fun( &QToolButton::setToolButtonStyle ), CONFIGURATION.toolButtonStyle ) );
-//     Q_FOREACH( QToolButton* button, allToolButtons ) {
-//         button->setToolButtonStyle( CONFIGURATION.toolButtonStyle );
-//     }
 }
 
 void CharmWindow::saveGuiState()
 {
+    Q_ASSERT( !windowIdentfier().isEmpty() );
     QSettings settings;
-    // FIXME use config group made from the window name or ID or whatever
+    settings.beginGroup( windowIdentfier() );
     // save geometry
     settings.setValue( MetaKey_MainWindowGeometry, saveGeometry() );
     settings.setValue( MetaKey_MainWindowVisible, isVisible() );
@@ -169,11 +168,11 @@ void CharmWindow::saveGuiState()
 
 void CharmWindow::restoreGuiState()
 {
-    // FIXME use config group, implement generically for all CharmWindows
+    Q_ASSERT( !windowIdentfier().isEmpty() );
     // restore geometry
     QSettings settings;
+    settings.beginGroup( windowIdentfier() );
     if ( settings.contains( MetaKey_MainWindowGeometry ) ) {
-        // FIXME restore?
         restoreGeometry( settings.value( MetaKey_MainWindowGeometry ).toByteArray() );
     }
     // restore visibility

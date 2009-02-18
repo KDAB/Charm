@@ -171,17 +171,17 @@ Application::Application(int& argc, char** argv)
              &m_tasksWindow,  SLOT( slotImportTasks() ) );
 
     // set up Charm menu:
-    QMenu* appMenu = new QMenu( tr( "File" ) );
-    appMenu->addAction( &m_actionPreferences );
+    m_appMenu.setTitle ( tr( "File" ) );
+    m_appMenu.addAction( &m_actionPreferences );
     m_actionPreferences.setEnabled( true );
-    appMenu->addAction( &m_actionAboutDialog );
-    appMenu->addSeparator();
-    appMenu->addAction( &m_actionExportToXml );
-    appMenu->addAction( &m_actionImportFromXml );
-    appMenu->addSeparator();
-    appMenu->addAction( &m_actionImportTasks );
-    appMenu->addSeparator();
-    appMenu->addAction( &m_actionQuit );
+    m_appMenu.addAction( &m_actionAboutDialog );
+    m_appMenu.addSeparator();
+    m_appMenu.addAction( &m_actionExportToXml );
+    m_appMenu.addAction( &m_actionImportFromXml );
+    m_appMenu.addSeparator();
+    m_appMenu.addAction( &m_actionImportTasks );
+    m_appMenu.addSeparator();
+    m_appMenu.addAction( &m_actionQuit );
 
     // create window menu:
     m_windowMenu.setTitle( tr( "Window" ) );
@@ -238,6 +238,11 @@ Application::~Application()
 QMenu& Application::windowMenu()
 {
     return m_windowMenu;
+}
+
+QMenu& Application::fileMenu()
+{
+    return m_appMenu;
 }
 
 void Application::setState(State state)

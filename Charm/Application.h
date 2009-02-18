@@ -117,6 +117,7 @@ private:
     QMenu m_systrayContextMenu;
     QMenu m_dockMenu;
     QMenu m_windowMenu;
+    QMenu m_appMenu;
     // QAction m_actionShowHideView;
     // QAction m_actionShowHideTimeTracker;
     QAction m_actionStopAllTasks;
