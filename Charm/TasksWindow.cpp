@@ -27,7 +27,7 @@
 
 TasksWindow::TasksWindow( QWidget* parent )
     : CharmWindow( tr( "Tasks" ), parent )
-    , m_tasksView( new View( this ) )
+    , m_tasksView( new TasksView( this ) )
 {
     setWindowNumber( 1 );
     setWindowIdentifier( tr( "window_tasks" ) );

@@ -32,10 +32,10 @@
 
 #include "ui_TasksView.h"
 
-View::View( QWidget* parent )
+TasksView::TasksView( QWidget* parent )
     : QWidget( parent )
     // , ViewInterface()
-    , m_ui( new Ui::View )
+    , m_ui( new Ui::TasksView )
     , m_delegate( new TasksViewDelegate( this ) )
     , m_actionEventStarted( this )
     , m_actionEventEnded( this )
@@ -99,12 +99,12 @@ View::View( QWidget* parent )
     m_ui->tasksCombo->setCurrentIndex( 0 );
 }
 
-View::~View()
+TasksView::~TasksView()
 {
     delete m_ui; m_ui = 0;
 }
 
-void View::actionSelectedEventStarted( bool b ) // bool triggered
+void TasksView::actionSelectedEventStarted( bool b ) // bool triggered
 {
     ViewFilter* filter = Application::instance().model().taskModel();
     Task task = selectedTask();
@@ -120,7 +120,7 @@ void View::actionSelectedEventStarted( bool b ) // bool triggered
     }
 }
 
-void View::actionSelectedEventEnded( bool ) // bool triggered
+void TasksView::actionSelectedEventEnded( bool ) // bool triggered
 {
     Task task = selectedTask();
     // emit signal:
@@ -131,13 +131,13 @@ void View::actionSelectedEventEnded( bool ) // bool triggered
     }
 }
 
-void View::viewCurrentChanged( const QModelIndex& current,
+void TasksView::viewCurrentChanged( const QModelIndex& current,
                                const QModelIndex& )
 {
     configureUi( current );
 }
 
-void View::configureUi( const QModelIndex& current )
+void TasksView::configureUi( const QModelIndex& current )
 {
     if ( ! current.isValid() )
     {
@@ -183,12 +183,12 @@ void View::configureUi( const QModelIndex& current )
     }
 }
 
-void View::closeEvent( QCloseEvent* )
+void TasksView::closeEvent( QCloseEvent* )
 {
     saveGuiState();
 }
 
-void View::showEvent( QShowEvent* )
+void TasksView::showEvent( QShowEvent* )
 {
     restoreGuiState();
     bool on = CONFIGURATION.showOnlySubscribedTasks;
@@ -196,14 +196,14 @@ void View::showEvent( QShowEvent* )
     slotConfigureUi();
 }
 
-void View::slotConfigureUi()
+void TasksView::slotConfigureUi()
 {
     if ( QItemSelectionModel* smodel = m_ui->treeView->selectionModel() ) {
         configureUi( smodel->currentIndex() );
     }
 }
 
-void View::stateChanged( State previous )
+void TasksView::stateChanged( State previous )
 {
     if ( previous == Constructed ) {
         // set model on view:
@@ -236,7 +236,7 @@ void View::stateChanged( State previous )
     };
 }
 
-void View::saveGuiState()
+void TasksView::saveGuiState()
 {
     Q_ASSERT( m_ui->treeView );
     ViewFilter* filter = Application::instance().model().taskModel();
@@ -262,7 +262,7 @@ void View::saveGuiState()
     }
 }
 
-void View::restoreGuiState()
+void TasksView::restoreGuiState()
 {
     Q_ASSERT( m_ui->treeView );
     ViewFilter* filter = Application::instance().model().taskModel();
@@ -288,7 +288,7 @@ void View::restoreGuiState()
 
 }
 
-void View::configurationChanged()
+void TasksView::configurationChanged()
 {
     QTreeView treeView; // temp, to get default treeView font
     QFont font = treeView.font();
@@ -310,13 +310,13 @@ void View::configurationChanged()
     slotConfigureUi();
 }
 
-void View::setModel( ModelConnector* connector )
+void TasksView::setModel( ModelConnector* connector )
 {
     Q_ASSERT( m_ui );
     m_ui->treeView->setModel( connector->taskModel() );
 }
 
-void View::slotFiltertextChanged( const QString& filtertextRaw )
+void TasksView::slotFiltertextChanged( const QString& filtertextRaw )
 {
     ViewFilter* filter = Application::instance().model().taskModel();
     QString filtertext = filtertextRaw.simplified();
@@ -327,7 +327,7 @@ void View::slotFiltertextChanged( const QString& filtertextRaw )
     if ( ! filtertextRaw.isEmpty() ) m_ui->treeView->expandAll();
 }
 
-void View::subscribedOnlyModeChanged( int index )
+void TasksView::subscribedOnlyModeChanged( int index )
 {
     ViewFilter* filter = Application::instance().model().taskModel();
     bool on = ( index == 1 );
@@ -336,7 +336,7 @@ void View::subscribedOnlyModeChanged( int index )
     emit saveConfiguration();
 }
 
-void View::slotContextMenuRequested( const QPoint& point )
+void TasksView::slotContextMenuRequested( const QPoint& point )
 {
     ViewFilter* filter = MODEL.taskModel();
 
@@ -424,7 +424,7 @@ void View::slotContextMenuRequested( const QPoint& point )
     }
 }
 
-void View::slotItemDoubleClicked( const QModelIndex& index )
+void TasksView::slotItemDoubleClicked( const QModelIndex& index )
 {
     ViewFilter* filter = Application::instance().model().taskModel();
 
@@ -447,23 +447,23 @@ void View::slotItemDoubleClicked( const QModelIndex& index )
     slotConfigureUi();
 }
 
-void View::commitCommand( CharmCommand* command )
+void TasksView::commitCommand( CharmCommand* command )
 {
     command->finalize();
     delete command;
 }
 
-void View::slotEventActivated( EventId )
+void TasksView::slotEventActivated( EventId )
 {
     slotConfigureUi();
 }
 
-void View::slotEventDeactivated( EventId )
+void TasksView::slotEventDeactivated( EventId )
 {
     slotConfigureUi();
 }
 
-Task View::selectedTask()
+Task TasksView::selectedTask()
 {
     Q_ASSERT( m_ui->treeView );
     ViewFilter* filter = Application::instance().model().taskModel();

@@ -1,6 +1,6 @@
 <ui version="4.0" >
- <class>View</class>
- <widget class="QWidget" name="View" >
+ <class>TasksView</class>
+ <widget class="QWidget" name="TasksView" >
   <property name="geometry" >
    <rect>
     <x>0</x>

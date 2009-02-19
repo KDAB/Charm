@@ -17,18 +17,18 @@ class TasksViewDelegate;
 class StatusBarWidget;
 
 namespace Ui {
-    class View;
+    class TasksView;
 }
 
-class View : public QWidget,
+class TasksView : public QWidget,
              public ViewModeInterface,
              public CommandEmitterInterface
 {
     Q_OBJECT
 
 public:
-    explicit View ( QWidget* parent = 0 );
-    ~View();
+    explicit TasksView ( QWidget* parent = 0 );
+    ~TasksView();
 
     void closeEvent( QCloseEvent* );
     void showEvent( QShowEvent* );
@@ -73,7 +73,7 @@ private:
     Task selectedTask();
     void configureUi( const QModelIndex& current );
 
-    Ui::View* m_ui;
+    Ui::TasksView* m_ui;
     TasksViewDelegate* m_delegate;
     QAction m_actionEventStarted;
     QAction m_actionEventEnded;

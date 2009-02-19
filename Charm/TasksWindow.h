@@ -4,7 +4,7 @@
 #include "CharmWindow.h"
 #include "Reports/ReportDialog.h"
 
-class View; // FIXME rename to TasksView
+class TasksView; // FIXME rename to TasksView
 
 class TasksWindow : public CharmWindow
 {
@@ -36,7 +36,7 @@ signals:
 
 
 private:
-    View* m_tasksView;
+    TasksView* m_tasksView;
     // the tasks window is also the "default view" that is made
     // visible when dialogs are shown:
     ReportDialog m_reportDialog;

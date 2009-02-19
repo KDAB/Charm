@@ -1,6 +1,6 @@
 #include "TaskIdDialog.h"
 
-TaskIdDialog::TaskIdDialog( TaskModelInterface* model, View* parent )
+TaskIdDialog::TaskIdDialog( TaskModelInterface* model, TasksView* parent )
     : QDialog( parent )
     , m_model( model )
 {

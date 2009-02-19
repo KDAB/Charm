@@ -15,7 +15,7 @@ class TaskIdDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit TaskIdDialog( TaskModelInterface* model, View* parent );
+    explicit TaskIdDialog( TaskModelInterface* model, TasksView* parent );
     ~TaskIdDialog();
 
     void setSuggestedId( int );
