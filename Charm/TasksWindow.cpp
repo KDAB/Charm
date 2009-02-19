@@ -63,6 +63,7 @@ void TasksWindow::configurationChanged()
 
 void TasksWindow::slotEditPreferences( bool )
 {
+    MakeTemporarilyVisible m( this );
     CharmPreferences dialog( CONFIGURATION, this );
 
     if ( dialog.exec() ) {
@@ -78,12 +79,14 @@ void TasksWindow::slotEditPreferences( bool )
 
 void TasksWindow::slotAboutDialog()
 {
+    MakeTemporarilyVisible m( this );
     CharmAboutDialog dialog( this );
     dialog.exec();
 }
 
 void TasksWindow::slotReportDialog()
 {
+    MakeTemporarilyVisible m( this );
     m_reportDialog.back();
     if ( m_reportDialog.exec() ) {
         ReportConfigurationPage* page = m_reportDialog.selectedPage();
@@ -95,6 +98,7 @@ void TasksWindow::slotReportDialog()
 
 void TasksWindow::slotExportToXml()
 {
+    MakeTemporarilyVisible m( this );
     // ask for a filename:
     QSettings settings;
     QString path;
@@ -125,6 +129,7 @@ void TasksWindow::slotExportToXml()
 
 void TasksWindow::slotImportFromXml()
 {
+    MakeTemporarilyVisible m( this );
     // ask for the filename:
     QSettings settings;
     QString path;
@@ -153,6 +158,7 @@ void TasksWindow::slotImportFromXml()
 
 void TasksWindow::slotImportTasks()
 {
+    MakeTemporarilyVisible m( this );
     QString filename = QFileDialog::getOpenFileName( this, tr( "Please Select File" ), "", tr("Task definitions (*.xml);;All Files (*)") );
     if ( filename.isEmpty() ) return;
     QFileInfo fileinfo( filename );
