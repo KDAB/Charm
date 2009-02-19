@@ -323,7 +323,6 @@ void TimeTrackingSummaryWidget::setSummaries( QVector<WeeklySummary> s )
         m_currentActions << m_menu.addAction( s.taskname );
     }
     // FIXME maybe remember last selected task
-    emit maybeShrink();
     handleActiveEvents();
 }
 

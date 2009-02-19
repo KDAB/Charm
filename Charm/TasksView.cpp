@@ -191,9 +191,6 @@ void TasksView::closeEvent( QCloseEvent* )
 void TasksView::showEvent( QShowEvent* )
 {
     restoreGuiState();
-    bool on = CONFIGURATION.showOnlySubscribedTasks;
-    m_ui->tasksCombo->setCurrentIndex( on == true ? 1 : 0 );
-    slotConfigureUi();
 }
 
 void TasksView::slotConfigureUi()
@@ -205,7 +202,9 @@ void TasksView::slotConfigureUi()
 
 void TasksView::stateChanged( State previous )
 {
-    if ( previous == Constructed ) {
+    switch( Application::instance().state() ) {
+    case Connecting:
+    {
         // set model on view:
         ViewFilter* filter = Application::instance().model().taskModel();
         m_ui->treeView->setModel( filter );
@@ -216,17 +215,13 @@ void TasksView::stateChanged( State previous )
                  SLOT( slotEventActivated( EventId ) ) );
         connect( filter, SIGNAL( eventDeactivationNotice( EventId ) ),
                  SLOT( slotEventDeactivated( EventId ) ) );
-    }
-
-    switch( Application::instance().state() ) {
-    case Connecting:
-    {
         bool on =  CONFIGURATION.showOnlySubscribedTasks;
         m_ui->tasksCombo->setCurrentIndex( on == true ? 1 : 0 );
     }
     break;
     case Connected:
         configurationChanged();
+        restoreGuiState();
         break;
     case Disconnecting:
     case ShuttingDown:
@@ -285,11 +280,13 @@ void TasksView::restoreGuiState()
             }
         }
     }
-
 }
 
 void TasksView::configurationChanged()
 {
+    const bool on = CONFIGURATION.showOnlySubscribedTasks;
+    m_ui->tasksCombo->setCurrentIndex( on == true ? 1 : 0 );
+
     QTreeView treeView; // temp, to get default treeView font
     QFont font = treeView.font();
 

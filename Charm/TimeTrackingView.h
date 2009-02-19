@@ -47,7 +47,6 @@ public:
     void eventDeactivated( EventId id );
 
 private slots:
-    void slotMaybeShrink();
     void slotStartEvent( TaskId );
     void slotStopEvent();
     void slotSelectTasksToShow();

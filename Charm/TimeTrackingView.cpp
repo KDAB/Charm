@@ -19,13 +19,12 @@ TimeTrackingView::TimeTrackingView( QWidget* parent )
     : CharmWindow( tr( "Time Tracker" ), parent )
     , m_ui( new Ui::TimeTrackingView )
 {
+    setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
     setWindowNumber( 3 );
     setWindowIdentifier( tr( "window_tracking" ) );
     QWidget* widget = new QWidget( this );
     m_ui->setupUi( widget );
     setCentralWidget( widget );
-    connect( m_ui->summaryWidget, SIGNAL( maybeShrink() ),
-             SLOT( slotMaybeShrink() ), Qt::QueuedConnection );
     connect( m_ui->summaryWidget, SIGNAL( startEvent( TaskId ) ),
              SLOT( slotStartEvent( TaskId ) ) );
     connect( m_ui->summaryWidget, SIGNAL( stopEvent() ),
@@ -214,14 +213,6 @@ void TimeTrackingView::slotSelectTasksToShow()
     // and update the widget:
     m_summaries = summaries;
     summaryWidget()->setSummaries( m_summaries );
-}
-
-void TimeTrackingView::slotMaybeShrink()
-{
-    const int minHeight = minimumSize().height();
-    if ( minHeight < height() ) {
-        setFixedHeight( minHeight );
-    }
 }
 
 void TimeTrackingView::slotStartEvent( TaskId id )
