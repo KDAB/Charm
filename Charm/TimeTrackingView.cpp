@@ -83,10 +83,6 @@ void TimeTrackingView::stateChanged( State previous )
     }
 }
 
-void TimeTrackingView::saveConfiguration()
-{
-}
-
 void TimeTrackingView::sendCommand( CharmCommand* )
 {
     Q_ASSERT( false ); // should not be called

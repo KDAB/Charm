@@ -55,6 +55,12 @@ void TasksWindow::restore()
     show();
 }
 
+void TasksWindow::configurationChanged()
+{
+    CharmWindow::configurationChanged();
+    m_tasksView->configurationChanged();
+}
+
 void TasksWindow::slotEditPreferences( bool )
 {
     CharmPreferences dialog( CONFIGURATION, this );
@@ -66,7 +72,6 @@ void TasksWindow::slotEditPreferences( bool )
         CONFIGURATION.always24hEditing = dialog.always24hEditing();
         CONFIGURATION.toolButtonStyle = dialog.toolButtonStyle();
         CONFIGURATION.detectIdling = dialog.detectIdling();
-        configurationChanged();
         emit saveConfiguration();
     }
 }

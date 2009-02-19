@@ -42,10 +42,9 @@ public:
     void setModel( ModelConnector* );
 
 public slots:
-    // reimpl
-    void commitCommand( CharmCommand* );
+    /* reimpl */ void commitCommand( CharmCommand* );
 
-    // pure view slots:
+private slots:
     void slotItemDoubleClicked( const QModelIndex& index );
 
 signals:

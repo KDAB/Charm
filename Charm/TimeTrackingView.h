@@ -24,7 +24,6 @@ public:
 
     // application:
     void stateChanged( State previous );
-    void saveConfiguration();
     void sendCommand( CharmCommand* );
     void commitCommand( CharmCommand* );
     void restore();

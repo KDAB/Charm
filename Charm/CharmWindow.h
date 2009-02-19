@@ -43,16 +43,17 @@ public:
 
     virtual void saveGuiState();
     virtual void restoreGuiState();
-    void configurationChanged();
 
 signals:
     /* reimpl */ void visibilityChanged( bool );
+    /* reimpl */ void saveConfiguration();
 
 public slots:
     /* reimpl */ void sendCommand( CharmCommand* );
     /* reimpl */ void commitCommand( CharmCommand* );
     void restore();
     void showHideView();
+    void configurationChanged();
 
 private:
     QString m_windowName;

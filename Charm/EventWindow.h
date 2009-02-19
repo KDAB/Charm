@@ -17,10 +17,11 @@ public:
 
     // restore the view
     /* reimpl */ void restore();
+public slots:
+    /* reimpl */ void configurationChanged();
 
 signals:
     /* reimpl */ void emitCommand( CharmCommand* );
-    /* reimpl */ void saveConfiguration();
     /* reimpl */ void quit();
 
 private:

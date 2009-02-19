@@ -17,6 +17,12 @@ EventWindow::~EventWindow()
 {
 }
 
+void EventWindow::configurationChanged()
+{
+    CharmWindow::configurationChanged();
+    m_eventView->configurationChanged();
+}
+
 void EventWindow::stateChanged( State previous )
 {
     CharmWindow::stateChanged( previous );

@@ -64,17 +64,14 @@ Application::Application(int& argc, char** argv)
     qRegisterMetaType<State> ("State");
     qRegisterMetaType<Event> ("Event");
 
-    // save the configuration (configuration is managed by the application)
-    // MIRKO_TEMP_REM where from?
+    // MIRKO_TEMP_REM
     /*
-      connect(&m_mainWindow, SIGNAL(saveConfiguration()), SLOT(
-      slotSaveConfiguration()));
       // the exit process (close goes to systray, app->quit exits)
       connect(&m_mainWindow, SIGNAL(quit()), SLOT(slotQuitApplication()));
     */
-    // MIRKO_TEMP_REM where from?
 
-    /*// FIXME needed?
+    // MIRKO_TEMP_REM needed?
+    /*
     // window title updates
     connect( &m_controller, SIGNAL( currentBackendStatus( const QString& ) ),
     SLOT( slotCurrentBackendStatusChanged( const QString& ) ) );
@@ -90,6 +87,9 @@ Application::Application(int& argc, char** argv)
             connect( window, SIGNAL( emitCommand( CharmCommand* ) ),
                      &mainView(), SLOT( sendCommand( CharmCommand* ) ) );
         }
+        // save the configuration (configuration is managed by the application)
+        connect( window, SIGNAL(saveConfiguration() ),
+                 SLOT( slotSaveConfiguration() ) );
     }
     // my own signals:
     connect(this, SIGNAL(goToState(State)), SLOT(setState(State)),
@@ -425,7 +425,7 @@ void Application::leaveConnectingState()
 
 void Application::enterConnectedState()
 {
-    slotSaveConfiguration();
+    slotSaveConfiguration(); // FIXME why?
 }
 
 void Application::leaveConnectedState()
