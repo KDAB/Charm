@@ -2,6 +2,7 @@
 Name=Charm
 Name[uk]=Шарм
 GenericName=Time Tracker
+GenericName[ja]=タイムトラッカー
 GenericName[pt]=Gestor de Tempo
 GenericName[pt_BR]=Gestor de Tempo
 GenericName[sv]=Tidmätning
