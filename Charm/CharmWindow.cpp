@@ -17,11 +17,11 @@
 
 CharmWindow::CharmWindow( const QString& name, QWidget* parent )
     : QMainWindow( parent )
-    , m_windowName( name )
     , m_showHideAction( new QAction( this ) )
     , m_windowNumber( -1 )
     , m_shortcut( 0 )
 {
+    setWindowName( name );
     setWindowIcon( Data::charmIcon() );
     // FIXME make work with Mac menu merging
     show();
@@ -54,6 +54,7 @@ void CharmWindow::stateChanged( State previous )
 void CharmWindow::setWindowName( const QString& text )
 {
     m_windowName = text;
+    setWindowTitle( text );
 }
 
 const QString& CharmWindow::windowName() const
