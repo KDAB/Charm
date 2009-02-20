@@ -25,7 +25,7 @@ SelectTaskDialogProxy::SelectTaskDialogProxy( CharmDataModel* model, QObject* pa
     setFilterKeyColumn( Column_TaskId );
     setFilterCaseSensitivity( Qt::CaseInsensitive );
 
-    setSubscribedTasksOnlyMode( CONFIGURATION.showOnlySubscribedTasks );
+    setTaskPrefilteringMode( CONFIGURATION.taskPrefilteringMode );
 }
 
 bool SelectTaskDialogProxy::filterAcceptsColumn( int column, const QModelIndex& parent ) const

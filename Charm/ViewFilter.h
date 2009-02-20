@@ -3,6 +3,7 @@
 
 #include <QSortFilterProxyModel>
 
+#include "Core/Configuration.h"
 #include "TaskModelAdapter.h"
 #include "Core/TaskModelInterface.h"
 #include "Core/CommandEmitterInterface.h"
@@ -28,7 +29,7 @@ public:
     bool taskHasChildren( const Task& task ) const;
 
     // filter for subscriptions:
-    void setSubscribedTasksOnlyMode( bool onoff );
+    void setTaskPrefilteringMode( Configuration::TaskPrefilteringMode mode );
 
     bool taskIdExists( TaskId taskId ) const;
     void commitCommand( CharmCommand* );
@@ -41,7 +42,7 @@ signals:
 
 private:
     TaskModelAdapter m_model;
-    bool m_subscribedTasksOnly;
+    Configuration::TaskPrefilteringMode m_taskPrefilteringMode;
 };
 
 #endif

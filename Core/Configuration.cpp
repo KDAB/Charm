@@ -19,7 +19,7 @@ Configuration& Configuration::instance()
 Configuration::Configuration()
     : eventsInLeafsOnly( true )
     , oneEventAtATime( true )
-    , showOnlySubscribedTasks( false )
+    , taskPrefilteringMode( TaskPrefilter_ShowAll )
     , taskTrackerFontSize( TaskTrackerFont_Regular )
     , always24hEditing( false )
     , toolButtonStyle( Qt::ToolButtonIconOnly )
@@ -34,14 +34,14 @@ Configuration::Configuration()
 }
 
 Configuration::Configuration( bool _eventsInLeafsOnly, bool _oneEventAtATime, User _user,
-                              bool _showOnlySubscribedTasks,
+                              TaskPrefilteringMode _taskPrefilteringMode,
                               TaskTrackerFontSize _taskTrackerFontSize,
                               bool _always24hEditing, bool _detectIdling,
                               Qt::ToolButtonStyle _buttonstyle,
                               bool _showStatusBar )
     : eventsInLeafsOnly( _eventsInLeafsOnly )
     , oneEventAtATime( _oneEventAtATime )
-    , showOnlySubscribedTasks( _showOnlySubscribedTasks )
+    , taskPrefilteringMode( _taskPrefilteringMode )
     , taskTrackerFontSize( _taskTrackerFontSize )
     , always24hEditing( _always24hEditing )
     , toolButtonStyle( _buttonstyle )
@@ -61,7 +61,7 @@ bool Configuration::operator==( const Configuration& other ) const
         eventsInLeafsOnly == other.eventsInLeafsOnly &&
         oneEventAtATime == other.oneEventAtATime &&
         user == other.user &&
-        showOnlySubscribedTasks == other.showOnlySubscribedTasks &&
+        taskPrefilteringMode == other.taskPrefilteringMode &&
         taskTrackerFontSize == other.taskTrackerFontSize &&
         always24hEditing == other.always24hEditing &&
         detectIdling == other.detectIdling &&
@@ -79,14 +79,6 @@ void Configuration::writeTo( QSettings& settings )
     settings.setValue( MetaKey_Key_UserId, user.id() );
     settings.setValue( MetaKey_Key_LocalStorageType, localStorageType );
     settings.setValue( MetaKey_Key_LocalStorageDatabase, localStorageDatabase );
-    // FIXME these go into the DB, not QSettings:
-    /*
-    settings.setValue( MetaKey_Key_SubscribedTasksOnly, showOnlySubscribedTasks );
-    settings.setValue( MetaKey_Key_TaskTrackerFontSize, static_cast<int>( taskTrackerFontSize ) );
-    settings.setValue( MetaKey_Key_24hEditing, always24hEditing );
-    settings.setValue( MetaKey_Key_ToolButtonStyle, static_cast<int>( toolButtonStyle ) );
-    settings.setValue( MetaKey_Key_ShowStatusBar, showStatusBar );
-    */
     dump( "(Configuration::writeTo stored configuration)" );
 }
 
@@ -113,27 +105,6 @@ bool Configuration::readFrom( QSettings& settings )
     } else {
         complete = false;
     }
-    // ----- optional settings:
-    /*
-    if ( settings.contains( MetaKey_Key_SubscribedTasksOnly ) ) {
-        showOnlySubscribedTasks = settings.value( MetaKey_Key_SubscribedTasksOnly ).value<bool>();
-    }
-    if ( settings.contains( MetaKey_Key_TaskTrackerFontSize ) ) {
-        int setting = settings.value( MetaKey_Key_TaskTrackerFontSize ).value<int>();
-        taskTrackerFontSize = static_cast<TaskTrackerFontSize>( setting );
-    }
-    if ( settings.contains( MetaKey_Key_24hEditing ) ) {
-        always24hEditing = settings.value( MetaKey_Key_24hEditing ).value<bool>();
-    }
-    if ( settings.contains( MetaKey_Key_ToolButtonStyle ) ) {
-    	int style = settings.value( MetaKey_Key_ToolButtonStyle ).value<int>();
-    	toolButtonStyle = static_cast<Qt::ToolButtonStyle>( style );
-    }
-    if ( settings.contains( MetaKey_Key_ShowStatusBar ) ){
-    	showStatusBar = settings.value( MetaKey_Key_ShowStatusBar ).value<bool>();
-    }
-
-	*/
     dump( "(Configuration::readFrom loaded configuration)" );
     return complete;
 }
@@ -151,8 +122,7 @@ void Configuration::dump( const QString& why )
              << "--> local storage database: " << localStorageDatabase << endl
              << "--> events in leaf nodes only: " << eventsInLeafsOnly << endl
              << "--> one event at a time:       " << oneEventAtATime << endl
-             << "--> showOnlySubscribedTasks:   " << showOnlySubscribedTasks << endl
-             << "--> subscribed tasks only:  " << showOnlySubscribedTasks << endl
+             << "--> task prefiltering mode:   " << taskPrefilteringMode << endl
              << "--> task tracker font size: " << taskTrackerFontSize << endl
              << "--> 24h time editing:       " << always24hEditing << endl
              << "--> Idle Detection:         " << detectIdling << endl

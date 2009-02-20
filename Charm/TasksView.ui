@@ -54,7 +54,17 @@
        </item>
        <item>
         <property name="text" >
-         <string>Subscribed Tasks Only</string>
+         <string>Current Tasks</string>
+        </property>
+       </item>
+       <item>
+        <property name="text" >
+         <string>Subscribed Tasks</string>
+        </property>
+       </item>
+       <item>
+        <property name="text" >
+         <string>Current And Subscribed Tasks</string>
         </property>
        </item>
       </widget>

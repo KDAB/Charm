@@ -4,7 +4,7 @@
 ViewFilter::ViewFilter( CharmDataModel* model, QObject* parent )
     : QSortFilterProxyModel( parent )
     , m_model( model )
-    , m_subscribedTasksOnly( false )
+    , m_taskPrefilteringMode( Configuration::TaskPrefilter_ShowAll )
 {
     setSourceModel( &m_model );
 
@@ -46,10 +46,10 @@ bool ViewFilter::taskHasChildren( const Task& task ) const
     return m_model.taskHasChildren( task );
 }
 
-void ViewFilter::setSubscribedTasksOnlyMode( bool onoff )
+void ViewFilter::setTaskPrefilteringMode( Configuration::TaskPrefilteringMode mode )
 {
-    if (m_subscribedTasksOnly != onoff) {
-        m_subscribedTasksOnly = onoff;
+    if ( mode != m_taskPrefilteringMode ) {
+        m_taskPrefilteringMode = mode;
         clear();
     }
 }
@@ -73,10 +73,21 @@ bool ViewFilter::filterAcceptsRow( int source_row, const QModelIndex& parent ) c
     }
 
     bool accepted = acceptedByFilter;
-    if ( accepted && m_subscribedTasksOnly )
-    {
-        Task task = m_model.taskForIndex( index );
-        accepted = task.subscribed();
+    Task task = m_model.taskForIndex( index );
+    switch( Configuration::instance().taskPrefilteringMode ) {
+    case Configuration::TaskPrefilter_ShowAll:
+        break;
+    case Configuration::TaskPrefilter_CurrentOnly:
+        accepted &= task.isCurrentlyValid();
+        break;
+    case Configuration::TaskPrefilter_SubscribedOnly:
+        accepted &= task.subscribed();
+        break;
+    case Configuration::TaskPrefilter_SubscribedAndCurrentOnly:
+        accepted &= ( task.subscribed() && task.isCurrentlyValid() );
+        break;
+    default:
+        break;
     }
 
     return accepted;

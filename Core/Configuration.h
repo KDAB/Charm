@@ -17,6 +17,14 @@ public:
         TaskTrackerFont_Large
     };
 
+    enum TaskPrefilteringMode {
+        TaskPrefilter_ShowAll,
+        TaskPrefilter_CurrentOnly,
+        TaskPrefilter_SubscribedOnly,
+        TaskPrefilter_SubscribedAndCurrentOnly,
+        TaskPrefilter_NumberOfModes
+    };
+
     bool operator== ( const Configuration& other ) const;
 
     static Configuration& instance();
@@ -35,7 +43,7 @@ public:
     bool eventsInLeafsOnly;
     bool oneEventAtATime;
     User user;  // this user's id
-    bool showOnlySubscribedTasks;
+    TaskPrefilteringMode taskPrefilteringMode;
     TaskTrackerFontSize taskTrackerFontSize;
     bool always24hEditing;
     Qt::ToolButtonStyle toolButtonStyle;
@@ -61,7 +69,7 @@ private:
     friend class ControllerTests;
     // these are all the persisted metadata settings, and the constructor is only used during test runs:
     Configuration( bool eventsInLeafsOnly, bool oneEventAtATime, User user,
-                   bool showOnlySubscribedTasks, TaskTrackerFontSize,
+                   TaskPrefilteringMode taskPrefilteringMode, TaskTrackerFontSize,
                    bool always24hEditing, bool detectIdling,
                    Qt::ToolButtonStyle buttonstyle, bool showStatusBar );
     Configuration();

@@ -8,6 +8,7 @@
 #include "SqLiteStorage.h"
 #include "StorageInterface.h"
 #include "CharmCommand.h"
+#include "Configuration.h"
 
 Controller::Controller( QObject* parent_ )
     : QObject( parent_ )
@@ -192,7 +193,7 @@ void Controller::persistMetaData( Configuration& configuration )
         { MetaKey_Key_UserName,
           configuration.user.name() },
         { MetaKey_Key_SubscribedTasksOnly,
-          stringForBool( configuration.showOnlySubscribedTasks ) },
+          QString().setNum( configuration.taskPrefilteringMode ) },
         { MetaKey_Key_TaskTrackerFontSize,
           QString().setNum( configuration.taskTrackerFontSize ) },
         { MetaKey_Key_24hEditing,
@@ -224,12 +225,9 @@ void Controller::provideMetaData( Configuration& configuration)
     configuration.eventsInLeafsOnly = boolForString(
         m_storage->getMetaData( MetaKey_EventsInLeafsOnly ) );
     configuration.user.setName( m_storage->getMetaData( MetaKey_Key_UserName ) );
-    configuration.showOnlySubscribedTasks = boolForString(
-        m_storage->getMetaData( MetaKey_Key_SubscribedTasksOnly ) );
 
-    int fontSize;
     bool ok;
-    fontSize = m_storage->getMetaData( MetaKey_Key_TaskTrackerFontSize ).toInt( &ok );
+    const int fontSize = m_storage->getMetaData( MetaKey_Key_TaskTrackerFontSize ).toInt( &ok );
     if ( !ok ) {
         configuration.taskTrackerFontSize = Configuration::TaskTrackerFont_Regular;
     } else {
@@ -245,6 +243,25 @@ void Controller::provideMetaData( Configuration& configuration)
             configuration.taskTrackerFontSize = Configuration::TaskTrackerFont_Regular;
         }
     }
+
+    const int taskPrefilteringModeValue = m_storage->getMetaData( MetaKey_Key_SubscribedTasksOnly ).toInt( &ok );
+    if ( ok ) {
+        switch( taskPrefilteringModeValue ) {
+        case Configuration::TaskPrefilter_ShowAll:
+            configuration.taskPrefilteringMode = Configuration::TaskPrefilter_ShowAll;
+            break;
+        case Configuration::TaskPrefilter_CurrentOnly:
+            configuration.taskPrefilteringMode = Configuration::TaskPrefilter_CurrentOnly;
+            break;
+        case Configuration::TaskPrefilter_SubscribedOnly:
+            configuration.taskPrefilteringMode = Configuration::TaskPrefilter_SubscribedOnly;
+            break;
+        case Configuration::TaskPrefilter_SubscribedAndCurrentOnly:
+            configuration.taskPrefilteringMode = Configuration::TaskPrefilter_SubscribedAndCurrentOnly;
+            break;
+        }
+    }
+
     configuration.always24hEditing = boolForString(
         m_storage->getMetaData( MetaKey_Key_24hEditing ) );
     configuration.detectIdling = boolForString(

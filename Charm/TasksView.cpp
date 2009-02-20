@@ -89,7 +89,7 @@ TasksView::TasksView( QWidget* parent )
     connect( m_ui->filterLineEdit, SIGNAL( textChanged( const QString& ) ),
              SLOT( slotFiltertextChanged( const QString& ) ) );
     connect( m_ui->tasksCombo, SIGNAL( currentIndexChanged( int ) ),
-             SLOT( subscribedOnlyModeChanged( int ) ) );
+             SLOT( taskPrefilteringChanged( int ) ) );
     m_ui->treeView->setContextMenuPolicy( Qt::CustomContextMenu );
     connect( m_ui->treeView, SIGNAL( customContextMenuRequested( const QPoint& ) ),
              SLOT( slotContextMenuRequested( const QPoint& ) ) );
@@ -215,12 +215,10 @@ void TasksView::stateChanged( State previous )
                  SLOT( slotEventActivated( EventId ) ) );
         connect( filter, SIGNAL( eventDeactivationNotice( EventId ) ),
                  SLOT( slotEventDeactivated( EventId ) ) );
-        bool on =  CONFIGURATION.showOnlySubscribedTasks;
-        m_ui->tasksCombo->setCurrentIndex( on == true ? 1 : 0 );
+        configurationChanged();
     }
     break;
     case Connected:
-        configurationChanged();
         restoreGuiState();
         break;
     case Disconnecting:
@@ -284,8 +282,8 @@ void TasksView::restoreGuiState()
 
 void TasksView::configurationChanged()
 {
-    const bool on = CONFIGURATION.showOnlySubscribedTasks;
-    m_ui->tasksCombo->setCurrentIndex( on == true ? 1 : 0 );
+    Q_ASSERT( CONFIGURATION.taskPrefilteringMode >= 0 && CONFIGURATION.taskPrefilteringMode < m_ui->tasksCombo->count() );
+    m_ui->tasksCombo->setCurrentIndex( CONFIGURATION.taskPrefilteringMode );
 
     QTreeView treeView; // temp, to get default treeView font
     QFont font = treeView.font();
@@ -324,13 +322,15 @@ void TasksView::slotFiltertextChanged( const QString& filtertextRaw )
     if ( ! filtertextRaw.isEmpty() ) m_ui->treeView->expandAll();
 }
 
-void TasksView::subscribedOnlyModeChanged( int index )
+void TasksView::taskPrefilteringChanged( int index )
 {
     ViewFilter* filter = Application::instance().model().taskModel();
-    bool on = ( index == 1 );
-    filter->setSubscribedTasksOnlyMode( on );
-    CONFIGURATION.showOnlySubscribedTasks = on;
-    emit saveConfiguration();
+    if ( index >= 0 && index < Configuration::TaskPrefilter_NumberOfModes ) {
+        const Configuration::TaskPrefilteringMode mode = static_cast<Configuration::TaskPrefilteringMode>( index );
+        filter->setTaskPrefilteringMode( mode );
+        CONFIGURATION.taskPrefilteringMode = mode;
+        emit saveConfiguration();
+    }
 }
 
 void TasksView::slotContextMenuRequested( const QPoint& point )
@@ -383,7 +383,8 @@ void TasksView::slotContextMenuRequested( const QPoint& point )
             newTask.setParent( task.id() );
             // subscribe if the parent is subscribed:
             newTask.setSubscribed( task.subscribed()
-                                   || CONFIGURATION.showOnlySubscribedTasks );
+                                   || CONFIGURATION.taskPrefilteringMode == Configuration::TaskPrefilter_SubscribedOnly
+                                   || CONFIGURATION.taskPrefilteringMode == Configuration::TaskPrefilter_SubscribedAndCurrentOnly );
         }
         // yeah, daredevil!
         while ( filter->taskIdExists( suggestedId ) ) ++suggestedId;

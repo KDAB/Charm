@@ -58,7 +58,7 @@ private slots:
     // void actionNewTask( bool );
     void viewCurrentChanged( const QModelIndex&, const QModelIndex& );
     void slotFiltertextChanged( const QString& filtertext );
-    void subscribedOnlyModeChanged( int );
+    void taskPrefilteringChanged( int );
     void slotContextMenuRequested( const QPoint& );
 
     void slotEventActivated( EventId );
