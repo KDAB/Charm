@@ -15,6 +15,7 @@
 #include "ModelConnector.h"
 #include "TaskModelAdapter.h"
 #include "ViewFilter.h"
+#include "TasksView.h"
 #include "SelectTaskDialog.h"
 #include "ui_SelectTaskDialog.h"
 
@@ -33,6 +34,20 @@ bool SelectTaskDialogProxy::filterAcceptsColumn( int column, const QModelIndex& 
     return column == Column_TaskId;
 }
 
+Qt::ItemFlags SelectTaskDialogProxy::flags( const QModelIndex & index ) const
+{
+    return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+}
+
+QVariant SelectTaskDialogProxy::data( const QModelIndex& index, int role ) const
+{
+    if ( index.isValid() && role == Qt::CheckStateRole ) {
+        return QVariant();
+    } else {
+        return ViewFilter::data( index, role );
+    }
+}
+
 SelectTaskDialog::SelectTaskDialog( QWidget* parent )
     : QDialog( parent )
     , m_ui( new Ui::SelectTaskDialog() )
@@ -41,6 +56,7 @@ SelectTaskDialog::SelectTaskDialog( QWidget* parent )
     m_ui->setupUi( this );
     m_ui->treeView->setModel( &m_proxy );
     m_ui->treeView->header()->hide();
+    m_ui->treeView->setFont( TasksView::configuredFont() );
     connect( m_ui->treeView->selectionModel(),
              SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ),
              SLOT( slotCurrentItemChanged( const QModelIndex&, const QModelIndex& ) ) );
@@ -54,6 +70,11 @@ SelectTaskDialog::SelectTaskDialog( QWidget* parent )
     		 SLOT( slotAccepted() ) );
 
     m_ui->buttonClearFilter->setIcon( Data::clearFilterIcon() );
+    QSettings settings;
+    settings.beginGroup( staticMetaObject.className() );
+    if ( settings.contains( MetaKey_MainWindowGeometry ) ) {
+        resize( settings.value( MetaKey_MainWindowGeometry ).toSize() );
+    }
 }
 
 SelectTaskDialog::~SelectTaskDialog()
@@ -65,19 +86,29 @@ void SelectTaskDialog::showEvent ( QShowEvent * event )
 {
     QSettings settings;
     settings.beginGroup( staticMetaObject.className() );
-	GUIState state;
-	state.loadFrom( settings );
-	QModelIndex index( m_proxy.indexForTaskId( state.selectedTask() ) );
-	if ( index.isValid() ) {
-		m_ui->treeView->setCurrentIndex(index);
-	}
+    GUIState state;
+    state.loadFrom( settings );
+    QModelIndex index( m_proxy.indexForTaskId( state.selectedTask() ) );
+    if ( index.isValid() ) {
+        m_ui->treeView->setCurrentIndex(index);
+    }
 
-	Q_FOREACH( TaskId id, state.expandedTasks() ) {
-		QModelIndex index( m_proxy.indexForTaskId( id ) );
-		if ( index.isValid() ) {
-			m_ui->treeView->expand( index );
-		}
-	}
+    Q_FOREACH( TaskId id, state.expandedTasks() ) {
+        QModelIndex index( m_proxy.indexForTaskId( id ) );
+        if ( index.isValid() ) {
+            m_ui->treeView->expand( index );
+        }
+    }
+
+    QDialog::showEvent( event );
+}
+
+void SelectTaskDialog::hideEvent( QHideEvent* event )
+{
+    QSettings settings;
+    settings.beginGroup( staticMetaObject.className() );
+    settings.setValue( MetaKey_MainWindowGeometry, size() );
+    QDialog::hideEvent( event );
 }
 
 TaskId SelectTaskDialog::selectedTask() const

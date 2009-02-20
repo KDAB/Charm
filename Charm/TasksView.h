@@ -40,6 +40,7 @@ public:
     void stateChanged( State previous );
     void configurationChanged();
     void setModel( ModelConnector* );
+    static QFont configuredFont();
 
 public slots:
     /* reimpl */ void commitCommand( CharmCommand* );

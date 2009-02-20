@@ -19,6 +19,9 @@ class SelectTaskDialogProxy : public ViewFilter
 public:
     SelectTaskDialogProxy( CharmDataModel*, QObject* parent = 0 );
 
+    Qt::ItemFlags flags( const QModelIndex & index ) const;
+    QVariant data( const QModelIndex& index, int role = Qt::DisplayRole ) const;
+
 protected:
     /*! \reimp */ bool filterAcceptsColumn( int column, const QModelIndex& parent ) const;
 };
@@ -34,7 +37,8 @@ public:
     TaskId selectedTask() const;
 
 protected:
-	void showEvent ( QShowEvent * event );
+    void showEvent ( QShowEvent * event );
+    void hideEvent( QHideEvent* event );
 
 private slots:
     void slotCurrentItemChanged( const QModelIndex&, const QModelIndex& );

@@ -280,13 +280,10 @@ void TasksView::restoreGuiState()
     }
 }
 
-void TasksView::configurationChanged()
+QFont TasksView::configuredFont()
 {
-    Q_ASSERT( CONFIGURATION.taskPrefilteringMode >= 0 && CONFIGURATION.taskPrefilteringMode < m_ui->tasksCombo->count() );
-    m_ui->tasksCombo->setCurrentIndex( CONFIGURATION.taskPrefilteringMode );
-
-    QTreeView treeView; // temp, to get default treeView font
-    QFont font = treeView.font();
+//    QTreeView treeView; // temp, to get default treeView font
+    QFont font = QTreeView().font();
 
     switch( CONFIGURATION.taskTrackerFontSize ) {
     case Configuration::TaskTrackerFont_Small:
@@ -300,7 +297,15 @@ void TasksView::configurationChanged()
     default:
         break;
     };
-    m_ui->treeView->setFont( font );
+    return font;
+}
+
+void TasksView::configurationChanged()
+{
+    Q_ASSERT( CONFIGURATION.taskPrefilteringMode >= 0 && CONFIGURATION.taskPrefilteringMode < m_ui->tasksCombo->count() );
+    m_ui->tasksCombo->setCurrentIndex( CONFIGURATION.taskPrefilteringMode );
+
+    m_ui->treeView->setFont( configuredFont() );
     m_ui->treeView->header()->hide();
     slotConfigureUi();
 }
