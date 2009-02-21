@@ -12,15 +12,6 @@ IF ( QT4_FOUND )
    LINK_LIBRARIES( ${QT_QTGUI_LIBRARY} )
    LINK_LIBRARIES( ${QT_QTXML_LIBRARY} )
    
-   IF (CMAKE_COMPILER_IS_GNUCXX)
-      ADD_DEFINITIONS( -Wall -Wundef -Wcast-align -Wconversion -Wchar-subscripts -Wpointer-arith 
-		       -Wwrite-strings -Wpacked -Wformat-security -Wmissing-format-attribute 
-		       -Wold-style-cast )
-# to be added:       
-#	-Woverloaded-virtual  -Wshadow 
-#  -Wnon-virtual-dtor # Qt has too many of those already
-   ENDIF (CMAKE_COMPILER_IS_GNUCXX)
-
    SET( CharmApplication_SRCS 
 		       CharmWindow.cpp
 		       Application.cpp

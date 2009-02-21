@@ -9,15 +9,6 @@ IF ( QT4_FOUND )
    INCLUDE_DIRECTORIES( ../ )
    include (${QT_USE_FILE})
 
-   IF (CMAKE_COMPILER_IS_GNUCXX)
-      ADD_DEFINITIONS( -Wall -Wundef -Wcast-align -Wconversion -Wchar-subscripts -Wpointer-arith 
-		       -Wwrite-strings -Wpacked -Wformat-security -Wmissing-format-attribute 
-		       -Wold-style-cast )
-# to be added:       
-#	-Woverloaded-virtual  -Wshadow 
-#  -Wnon-virtual-dtor # Qt has too many of those already
-   ENDIF (CMAKE_COMPILER_IS_GNUCXX)
-
    LINK_DIRECTORIES( ../Core )
    LINK_LIBRARIES( CharmCore )
    LINK_LIBRARIES( ${QT_QTCORE_LIBRARY} )
@@ -25,7 +16,6 @@ IF ( QT4_FOUND )
        FIND_LIBRARY( SECURITY FRAMEWORK required NAMES Security )
        LINK_LIBRARIES( ${SECURITY} )
    ENDIF( APPLE )
-
 
    # SqLiteStorageTests
 

@@ -8,20 +8,11 @@ IF ( QT4_FOUND )
    LINK_LIBRARIES( ${QT_QTSQL_LIBRARY} )
    LINK_LIBRARIES( ${QT_QTXML_LIBRARY} )
    
-   IF (CMAKE_COMPILER_IS_GNUCXX)
-      ADD_DEFINITIONS( -Wall -Wundef -Wcast-align -Wconversion -Wchar-subscripts -Wpointer-arith 
-		       -Wwrite-strings -Wpacked -Wformat-security -Wmissing-format-attribute 
-		       -Wold-style-cast )
-# to be added:       
-#	-Woverloaded-virtual  -Wshadow 
-#  -Wnon-virtual-dtor # Qt has too many of those already
-   ENDIF (CMAKE_COMPILER_IS_GNUCXX)
-
    SET( CharmCore_SRCS 
 		       CharmConstants.cpp
 		       Controller.cpp
 		       SqLiteStorage.cpp
-               MySqlStorage.cpp
+		       MySqlStorage.cpp
 		       Configuration.cpp
 		       SqlStorage.cpp
 		       Event.cpp
