@@ -1,7 +1,11 @@
 [Desktop Entry]
 Name=Charm
+Name[fr]=Charme
+Name[gl]=Encanto
 Name[uk]=Шарм
 GenericName=Time Tracker
+GenericName[fr]=Outil de suivi du temps
+GenericName[gl]=Administrador do tempo
 GenericName[ja]=タイムトラッカー
 GenericName[pt]=Gestor de Tempo
 GenericName[pt_BR]=Gestor de Tempo
