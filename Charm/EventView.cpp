@@ -62,13 +62,16 @@ EventView::EventView( QWidget* parent )
 
     m_actionNewEvent.setText( tr( "Create New Event..." ) );
     m_actionNewEvent.setIcon( Data::newTaskIcon() );
+    m_actionNewEvent.setShortcut( QKeySequence::New );
     m_ui->toolButtonNewEvent->setDefaultAction( &m_actionNewEvent );
 
     m_actionEditEvent.setText( tr( "Edit Event...") );
+    m_actionEditEvent.setShortcut( Qt::CTRL + Qt::Key_E );
     m_actionEditEvent.setIcon( Data::editEventIcon() );
     m_ui->toolButtonEditEvent->setDefaultAction( &m_actionEditEvent );
 
     m_actionDeleteEvent.setText( tr( "Delete Event..." ) );
+    m_actionDeleteEvent.setShortcut( QKeySequence::Delete );
     m_actionDeleteEvent.setIcon( Data::deleteTaskIcon() );
     m_ui->toolButtonDeleteEvent->setDefaultAction( &m_actionDeleteEvent );
 

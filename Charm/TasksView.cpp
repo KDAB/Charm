@@ -58,6 +58,7 @@ TasksView::TasksView( QWidget* parent )
     // (no menu icons, please) m_actionAboutDialog.setIcon( Data::charmIcon() );
     m_actionEventStarted.setIcon( Data::goIcon() );
     m_actionEventStarted.setText( tr( "Start Task" ) );
+    m_actionEventStarted.setShortcut( Qt::CTRL + Qt::Key_Enter );
     m_actionSelectedEventStarted.setIcon( m_actionEventStarted.icon() );
     m_actionSelectedEventStarted.setText( m_actionEventStarted.text() );
     m_ui->goButton->setDefaultAction( &m_actionSelectedEventStarted );
@@ -66,6 +67,7 @@ TasksView::TasksView( QWidget* parent )
 
     m_actionEventEnded.setIcon( Data::stopIcon() );
     m_actionEventEnded.setText( tr( "Stop Task" ) );
+    m_actionEventEnded.setShortcut( Qt::Key_Escape );
     m_actionSelectedEventEnded.setIcon( m_actionEventEnded.icon() );
     m_actionSelectedEventEnded.setText( m_actionEventEnded.text() );
     m_ui->stopButton->setDefaultAction( &m_actionSelectedEventEnded );
@@ -74,15 +76,19 @@ TasksView::TasksView( QWidget* parent )
 
 
     m_actionNewTask.setText( tr( "New &Task" ) );
+    m_actionNewTask.setShortcut( QKeySequence::New );
     m_actionNewTask.setIcon( Data::newTaskIcon() );
 
     m_actionNewSubTask.setText( tr( "New &Subtask" ) );
+    m_actionNewSubTask.setShortcut( Qt::META + Qt::Key_N );
     m_actionNewSubTask.setIcon( Data::newTaskIcon() );
 
     m_actionEditTask.setText( tr( "Edit Task" ) );
+    m_actionEditTask.setShortcut( Qt::CTRL + Qt::Key_E );
     m_actionEditTask.setIcon( Data::editTaskIcon() );
 
     m_actionDeleteTask.setText( tr( "Delete Task" ) );
+    m_actionDeleteTask.setShortcut( QKeySequence::Delete );
     m_actionDeleteTask.setIcon( Data::deleteTaskIcon() );
 
     // filter setup
