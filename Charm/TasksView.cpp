@@ -58,32 +58,42 @@ TasksView::TasksView( QWidget* parent )
     m_actionStartEvent.setShortcut( Qt::CTRL + Qt::Key_Return );
     m_ui->goButton->setDefaultAction( &m_actionStartEvent );
     connect( &m_actionStartEvent, SIGNAL( triggered( bool ) ),
-             SLOT( actionStartEvent( bool ) ) );
+             SLOT( actionStartEvent() ) );
 
     m_actionEndEvent.setIcon( Data::stopIcon() );
     m_actionEndEvent.setText( tr( "Stop Task" ) );
     m_actionEndEvent.setShortcut( Qt::Key_Escape );
     m_ui->stopButton->setDefaultAction( &m_actionEndEvent );
-    // FIXME no worky
     connect( &m_actionEndEvent, SIGNAL( triggered( bool ) ),
-             SLOT( actionEndEvent( bool ) ) );
-
+             SLOT( actionEndEvent() ) );
 
     m_actionNewTask.setText( tr( "New &Task" ) );
     m_actionNewTask.setShortcut( QKeySequence::New );
     m_actionNewTask.setIcon( Data::newTaskIcon() );
+    connect( &m_actionNewTask, SIGNAL( triggered( bool ) ),
+             SLOT( actionNewTask() ) );
 
     m_actionNewSubTask.setText( tr( "New &Subtask" ) );
     m_actionNewSubTask.setShortcut( Qt::META + Qt::Key_N );
     m_actionNewSubTask.setIcon( Data::newTaskIcon() );
+    connect( &m_actionNewSubTask, SIGNAL( triggered( bool ) ),
+             SLOT( actionNewSubTask() ) );
 
     m_actionEditTask.setText( tr( "Edit Task" ) );
     m_actionEditTask.setShortcut( Qt::CTRL + Qt::Key_E );
     m_actionEditTask.setIcon( Data::editTaskIcon() );
+    connect( &m_actionEditTask, SIGNAL( triggered( bool ) ),
+             SLOT( actionEditTask() ) );
 
     m_actionDeleteTask.setText( tr( "Delete Task" ) );
+#ifdef Q_WS_MAC
+    m_actionDeleteTask.setShortcut( Qt::Key_Backspace );
+#else
     m_actionDeleteTask.setShortcut( QKeySequence::Delete );
+#endif
     m_actionDeleteTask.setIcon( Data::deleteTaskIcon() );
+    connect( &m_actionDeleteTask, SIGNAL( triggered( bool ) ),
+             SLOT( actionDeleteTask() ) );
 
     // filter setup
     connect( m_ui->filterLineEdit, SIGNAL( textChanged( const QString& ) ),
@@ -115,7 +125,7 @@ void TasksView::populateEditMenu( QMenu* editMenu )
     editMenu->addAction( &m_actionDeleteTask );
 }
 
-void TasksView::actionStartEvent( bool )
+void TasksView::actionStartEvent()
 {
     ViewFilter* filter = Application::instance().model().taskModel();
     Task task = selectedTask();
@@ -131,7 +141,7 @@ void TasksView::actionStartEvent( bool )
     }
 }
 
-void TasksView::actionEndEvent( bool ) // bool triggered
+void TasksView::actionEndEvent()
 {
     Task task = selectedTask();
     // emit signal:
@@ -139,6 +149,73 @@ void TasksView::actionEndEvent( bool ) // bool triggered
     {
         CharmDataModel* model = MODEL.charmDataModel();
         model->endEventRequested( task );
+    }
+}
+
+void TasksView::actionNewTask()
+{
+    addTaskHelper( Task() );
+}
+
+void TasksView::actionNewSubTask()
+{
+    Task task = selectedTask();
+    Q_ASSERT( task.isValid() );
+    addTaskHelper( task );
+}
+
+void TasksView::actionEditTask()
+{
+    Task task = selectedTask();
+    Q_ASSERT( task.isValid() );
+
+    TaskEditor editor( this );
+    editor.setTask( task );
+    if( editor.exec() ) {
+        const Task newTask = editor.getTask();
+        newTask.dump();
+        CommandModifyTask* cmd = new CommandModifyTask( newTask, this );
+        emit emitCommand( cmd );
+    }
+    configureUi(); // FIXME needed?
+}
+
+void TasksView::actionDeleteTask()
+{
+    Task task = selectedTask();
+    if ( QMessageBox::question( this, tr( "Delete Task?" ),
+                                tr( "Do you really want to delete this task?\n"
+                                    "Warning: All events for this task will be deleted as well!\n"
+                                    "This operation cannot be undone." ),
+                                QMessageBox::Ok | QMessageBox::Cancel,
+                                QMessageBox::Ok )
+         == QMessageBox::Ok ) {
+        CommandDeleteTask* cmd = new CommandDeleteTask( task, this );
+        emit emitCommand( cmd );
+    }
+}
+
+void TasksView::addTaskHelper( const Task& parent )
+{
+    ViewFilter* filter = Application::instance().model().taskModel();
+    Task task;
+    int suggestedId = 1;
+    if ( parent.isValid() ) {
+        task.setParent( parent.id() );
+        // subscribe if the parent is subscribed:
+        task.setSubscribed( parent.subscribed()
+                            || CONFIGURATION.taskPrefilteringMode == Configuration::TaskPrefilter_SubscribedOnly
+                            || CONFIGURATION.taskPrefilteringMode == Configuration::TaskPrefilter_SubscribedAndCurrentOnly );
+    }
+    // yeah, daredevil!
+    while ( filter->taskIdExists( suggestedId ) ) ++suggestedId;
+    TaskIdDialog dialog( filter, this );
+    dialog.setSuggestedId( suggestedId );
+    if ( dialog.exec() ) {
+        task.setId( dialog.selectedId() );
+        task.setName( dialog.taskName() );
+        CommandAddTask* cmd = new CommandAddTask( task, this );
+        emit emitCommand( cmd );
     }
 }
 
@@ -163,274 +240,223 @@ void TasksView::configureUi()
     m_actionEndEvent.setEnabled( selected && active && ! cannotStop );
 }
 
-void TasksView::closeEvent( QCloseEvent* )
-{
-    saveGuiState();
-}
+ void TasksView::closeEvent( QCloseEvent* )
+ {
+     saveGuiState();
+ }
 
-void TasksView::showEvent( QShowEvent* )
-{
-    restoreGuiState();
-}
+ void TasksView::showEvent( QShowEvent* )
+ {
+     restoreGuiState();
+ }
 
-void TasksView::stateChanged( State previous )
-{
-    switch( Application::instance().state() ) {
-    case Connecting:
-    {
-        // set model on view:
-        ViewFilter* filter = Application::instance().model().taskModel();
-        m_ui->treeView->setModel( filter );
-        const QItemSelectionModel* smodel =  m_ui->treeView->selectionModel();
-        connect( smodel, SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ), SLOT( configureUi() ) );
-        connect( smodel, SIGNAL( selectionChanged( const QItemSelection&, const QItemSelection& ) ), SLOT( configureUi() ) );
-        connect( filter, SIGNAL( eventActivationNotice( EventId ) ),
-                 SLOT( slotEventActivated( EventId ) ) );
-        connect( filter, SIGNAL( eventDeactivationNotice( EventId ) ),
-                 SLOT( slotEventDeactivated( EventId ) ) );
-    }
-    break;
-    case Connected:
-        restoreGuiState();
-        break;
-    case Disconnecting:
-    case ShuttingDown:
-    case Dead:
-    default:
-        break;
-    };
-}
+ void TasksView::stateChanged( State previous )
+ {
+     switch( Application::instance().state() ) {
+     case Connecting:
+     {
+         // set model on view:
+         ViewFilter* filter = Application::instance().model().taskModel();
+         m_ui->treeView->setModel( filter );
+         const QItemSelectionModel* smodel =  m_ui->treeView->selectionModel();
+         connect( smodel, SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ), SLOT( configureUi() ) );
+         connect( smodel, SIGNAL( selectionChanged( const QItemSelection&, const QItemSelection& ) ), SLOT( configureUi() ) );
+         connect( filter, SIGNAL( eventActivationNotice( EventId ) ),
+                  SLOT( slotEventActivated( EventId ) ) );
+         connect( filter, SIGNAL( eventDeactivationNotice( EventId ) ),
+                  SLOT( slotEventDeactivated( EventId ) ) );
+     }
+     break;
+     case Connected:
+         restoreGuiState();
+         break;
+     case Disconnecting:
+     case ShuttingDown:
+     case Dead:
+     default:
+         break;
+     };
+ }
 
-void TasksView::saveGuiState()
-{
-    Q_ASSERT( m_ui->treeView );
-    ViewFilter* filter = Application::instance().model().taskModel();
-    Q_ASSERT( filter );
-    QSettings settings;
-    // save user settings
-    if ( Application::instance().state() == Connected ||
-         Application::instance().state() == Disconnecting ) {
-        GUIState state;
-        // selected task
-        state.setSelectedTask( selectedTask().id() );
-        // expanded tasks
-        TaskList tasks = MODEL.charmDataModel()->getAllTasks();
-        TaskIdList expandedTasks;
-        Q_FOREACH( Task task, tasks ) {
-            QModelIndex index( filter->indexForTaskId( task.id() ) );
-            if ( m_ui->treeView->isExpanded( index ) ) {
-                expandedTasks << task.id();
-            }
-        }
-        state.setExpandedTasks( expandedTasks );
-        state.saveTo( settings );
-    }
-}
+ void TasksView::saveGuiState()
+ {
+     Q_ASSERT( m_ui->treeView );
+     ViewFilter* filter = Application::instance().model().taskModel();
+     Q_ASSERT( filter );
+     QSettings settings;
+     // save user settings
+     if ( Application::instance().state() == Connected ||
+          Application::instance().state() == Disconnecting ) {
+         GUIState state;
+         // selected task
+         state.setSelectedTask( selectedTask().id() );
+         // expanded tasks
+         TaskList tasks = MODEL.charmDataModel()->getAllTasks();
+         TaskIdList expandedTasks;
+         Q_FOREACH( Task task, tasks ) {
+             QModelIndex index( filter->indexForTaskId( task.id() ) );
+             if ( m_ui->treeView->isExpanded( index ) ) {
+                 expandedTasks << task.id();
+             }
+         }
+         state.setExpandedTasks( expandedTasks );
+         state.saveTo( settings );
+     }
+ }
 
-void TasksView::restoreGuiState()
-{
-    Q_ASSERT( m_ui->treeView );
-    ViewFilter* filter = Application::instance().model().taskModel();
-    Q_ASSERT( filter );
-    QSettings settings;
-    // restore user settings, but only when we are connected
-    // (otherwise, we do not have any user data):
-    if ( Application::instance().state() == Connected ) {
-        GUIState state;
-        state.loadFrom( settings );
-        QModelIndex index( filter->indexForTaskId( state.selectedTask() ) );
-        if ( index.isValid() ) {
-            m_ui->treeView->setCurrentIndex(index);
-        }
+ void TasksView::restoreGuiState()
+ {
+     Q_ASSERT( m_ui->treeView );
+     ViewFilter* filter = Application::instance().model().taskModel();
+     Q_ASSERT( filter );
+     QSettings settings;
+     // restore user settings, but only when we are connected
+     // (otherwise, we do not have any user data):
+     if ( Application::instance().state() == Connected ) {
+         GUIState state;
+         state.loadFrom( settings );
+         QModelIndex index( filter->indexForTaskId( state.selectedTask() ) );
+         if ( index.isValid() ) {
+             m_ui->treeView->setCurrentIndex(index);
+         }
 
-        Q_FOREACH( TaskId id, state.expandedTasks() ) {
-            QModelIndex index( filter->indexForTaskId( id ) );
-            if ( index.isValid() ) {
-                m_ui->treeView->expand( index );
-            }
-        }
-    }
-}
+         Q_FOREACH( TaskId id, state.expandedTasks() ) {
+             QModelIndex index( filter->indexForTaskId( id ) );
+             if ( index.isValid() ) {
+                 m_ui->treeView->expand( index );
+             }
+         }
+     }
+ }
 
-QFont TasksView::configuredFont()
-{
+ QFont TasksView::configuredFont()
+ {
 //    QTreeView treeView; // temp, to get default treeView font
-    QFont font = QTreeView().font();
+     QFont font = QTreeView().font();
 
-    switch( CONFIGURATION.taskTrackerFontSize ) {
-    case Configuration::TaskTrackerFont_Small:
-        font.setPointSizeF( 0.9 * font.pointSize() );
-        break;
-    case Configuration::TaskTrackerFont_Regular:
-        break;
-    case Configuration::TaskTrackerFont_Large:
-        font.setPointSizeF( 1.2 * font.pointSize() );
-        break;
-    default:
-        break;
-    };
-    return font;
-}
+     switch( CONFIGURATION.taskTrackerFontSize ) {
+     case Configuration::TaskTrackerFont_Small:
+         font.setPointSizeF( 0.9 * font.pointSize() );
+         break;
+     case Configuration::TaskTrackerFont_Regular:
+         break;
+     case Configuration::TaskTrackerFont_Large:
+         font.setPointSizeF( 1.2 * font.pointSize() );
+         break;
+     default:
+         break;
+     };
+     return font;
+ }
 
-void TasksView::configurationChanged()
-{
-    Q_ASSERT( CONFIGURATION.taskPrefilteringMode >= 0 && CONFIGURATION.taskPrefilteringMode < m_ui->tasksCombo->count() );
-    m_ui->tasksCombo->setCurrentIndex( CONFIGURATION.taskPrefilteringMode );
+ void TasksView::configurationChanged()
+ {
+     Q_ASSERT( CONFIGURATION.taskPrefilteringMode >= 0 && CONFIGURATION.taskPrefilteringMode < m_ui->tasksCombo->count() );
+     m_ui->tasksCombo->setCurrentIndex( CONFIGURATION.taskPrefilteringMode );
 
-    m_ui->treeView->setFont( configuredFont() );
-    m_ui->treeView->header()->hide();
-    configureUi();
-}
+     m_ui->treeView->setFont( configuredFont() );
+     m_ui->treeView->header()->hide();
+     configureUi();
+ }
 
-void TasksView::setModel( ModelConnector* connector )
-{
-    Q_ASSERT( m_ui );
-    m_ui->treeView->setModel( connector->taskModel() );
-}
+ void TasksView::setModel( ModelConnector* connector )
+ {
+     Q_ASSERT( m_ui );
+     m_ui->treeView->setModel( connector->taskModel() );
+ }
 
-void TasksView::slotFiltertextChanged( const QString& filtertextRaw )
-{
-    ViewFilter* filter = Application::instance().model().taskModel();
-    QString filtertext = filtertextRaw.simplified();
-    filtertext.replace( ' ', '*' );
-    filter->setFilterWildcard( filtertext );
+ void TasksView::slotFiltertextChanged( const QString& filtertextRaw )
+ {
+     ViewFilter* filter = Application::instance().model().taskModel();
+     QString filtertext = filtertextRaw.simplified();
+     filtertext.replace( ' ', '*' );
+     filter->setFilterWildcard( filtertext );
 
-    m_ui->buttonClearFilter->setEnabled( ! filtertextRaw.isEmpty() );
-    if ( ! filtertextRaw.isEmpty() ) m_ui->treeView->expandAll();
-}
+     m_ui->buttonClearFilter->setEnabled( ! filtertextRaw.isEmpty() );
+     if ( ! filtertextRaw.isEmpty() ) m_ui->treeView->expandAll();
+ }
 
-void TasksView::taskPrefilteringChanged( int index )
-{
-    ViewFilter* filter = Application::instance().model().taskModel();
-    if ( index >= 0 && index < Configuration::TaskPrefilter_NumberOfModes ) {
-        const Configuration::TaskPrefilteringMode mode = static_cast<Configuration::TaskPrefilteringMode>( index );
-        filter->setTaskPrefilteringMode( mode );
-        CONFIGURATION.taskPrefilteringMode = mode;
-        emit saveConfiguration();
-    }
-}
+ void TasksView::taskPrefilteringChanged( int index )
+ {
+     ViewFilter* filter = Application::instance().model().taskModel();
+     if ( index >= 0 && index < Configuration::TaskPrefilter_NumberOfModes ) {
+         const Configuration::TaskPrefilteringMode mode = static_cast<Configuration::TaskPrefilteringMode>( index );
+         filter->setTaskPrefilteringMode( mode );
+         CONFIGURATION.taskPrefilteringMode = mode;
+         emit saveConfiguration();
+     }
+ }
 
-void TasksView::slotContextMenuRequested( const QPoint& point )
-{
-    ViewFilter* filter = MODEL.taskModel();
+ void TasksView::slotContextMenuRequested( const QPoint& point )
+ {
+     // prepare the menu:
+     QMenu menu( m_ui->treeView );
+     menu.addAction( &m_actionStartEvent );
+     menu.addAction( &m_actionEndEvent );
 
-    // prepare the menu:
-    QMenu menu( m_ui->treeView );
-    menu.addAction( &m_actionStartEvent );
-    menu.addAction( &m_actionEndEvent );
+     menu.addSeparator();
+     menu.addAction( &m_actionNewTask );
+     menu.addAction( &m_actionNewSubTask );
+     menu.addAction( &m_actionEditTask );
+     menu.addAction( &m_actionDeleteTask );
 
-    menu.addSeparator();
-    menu.addAction( &m_actionNewTask );
-    menu.addAction( &m_actionNewSubTask );
-    menu.addAction( &m_actionEditTask );
-    menu.addAction( &m_actionDeleteTask );
+     configureUi();
 
-    // find the model index at pos:
-    const QModelIndex currentIndex = m_ui->treeView->indexAt( point );
-    const bool selected = currentIndex.isValid();
-    const Task task = filter->taskForIndex( currentIndex );
-    configureUi();
+     menu.exec( m_ui->treeView->mapToGlobal( point ) );
+ }
 
-    // open the menu:
-    QAction* result = menu.exec( m_ui->treeView->mapToGlobal( point ) );
-    if ( result == &m_actionNewTask || result == &m_actionNewSubTask ) {
-        Task newTask;
-        int suggestedId = 1;
-        if ( selected && result == &m_actionNewSubTask ) {
-            newTask.setParent( task.id() );
-            // subscribe if the parent is subscribed:
-            newTask.setSubscribed( task.subscribed()
-                                   || CONFIGURATION.taskPrefilteringMode == Configuration::TaskPrefilter_SubscribedOnly
-                                   || CONFIGURATION.taskPrefilteringMode == Configuration::TaskPrefilter_SubscribedAndCurrentOnly );
-        }
-        // yeah, daredevil!
-        while ( filter->taskIdExists( suggestedId ) ) ++suggestedId;
-        TaskIdDialog dialog( filter, this );
-        dialog.setSuggestedId( suggestedId );
-        if ( dialog.exec() ) {
-            newTask.setId( dialog.selectedId() );
-            newTask.setName( dialog.taskName() );
-            CommandAddTask* cmd = new CommandAddTask( newTask, this );
-            emit emitCommand( cmd );
-        }
-    } else if ( result == &m_actionEditTask ) {
-    	Q_ASSERT( task.isValid() );
-    	TaskEditor editor( this );
-    	editor.setTask( task );
-    	if( editor.exec() ) {
-    		const Task newTask = editor.getTask();
-    		newTask.dump();
-                CommandModifyTask* cmd = new CommandModifyTask( newTask, this );
-                emit emitCommand( cmd );
-        }
-    	configureUi();
-    } else if ( result == &m_actionDeleteTask ) {
-        Q_ASSERT( task.isValid() );
-        if ( QMessageBox::question( this, tr( "Delete Task?" ),
-                                    tr( "Do you really want to delete this task?\n"
-                                        "Warning: All events for this task will be deleted as well!\n"
-                                        "This operation cannot be undone." ),
-                                    QMessageBox::Ok | QMessageBox::Cancel,
-                                    QMessageBox::Ok )
-             == QMessageBox::Ok ) {
-            CommandDeleteTask* cmd = new CommandDeleteTask( task, this );
-            emit emitCommand( cmd );
-        }
-    }
-}
+ void TasksView::slotItemDoubleClicked( const QModelIndex& index )
+ {
+     ViewFilter* filter = Application::instance().model().taskModel();
 
-void TasksView::slotItemDoubleClicked( const QModelIndex& index )
-{
-    ViewFilter* filter = Application::instance().model().taskModel();
+     if ( !index.isValid() ) return;
+     if ( index.column() == Column_TaskId ) {
+         Task task = filter->taskForIndex( index );
+         if ( CONFIGURATION.eventsInLeafsOnly && filter->taskHasChildren( task ) ) {
+             return;
+         }
 
-    if ( !index.isValid() ) return;
-    if ( index.column() == Column_TaskId ) {
-        Task task = filter->taskForIndex( index );
-        if ( CONFIGURATION.eventsInLeafsOnly && filter->taskHasChildren( task ) ) {
-            return;
-        }
+         CharmDataModel* model = MODEL.charmDataModel();
+         if ( filter->taskIsActive( task ) ) {
+             model->endEventRequested( task );
+         } else {
+             if( task.isCurrentlyValid() ) {
+                 model->startEventRequested( task );
+             }
+         }
+     }
+     configureUi();
+ }
 
-        CharmDataModel* model = MODEL.charmDataModel();
-        if ( filter->taskIsActive( task ) ) {
-            model->endEventRequested( task );
-        } else {
-            if( task.isCurrentlyValid() ) {
-                model->startEventRequested( task );
-            }
-        }
-    }
-    configureUi();
-}
+ void TasksView::commitCommand( CharmCommand* command )
+ {
+     command->finalize();
+     delete command;
+ }
 
-void TasksView::commitCommand( CharmCommand* command )
-{
-    command->finalize();
-    delete command;
-}
+ void TasksView::slotEventActivated( EventId )
+ {
+     configureUi();
+ }
 
-void TasksView::slotEventActivated( EventId )
-{
-    configureUi();
-}
+ void TasksView::slotEventDeactivated( EventId )
+ {
+     configureUi();
+ }
 
-void TasksView::slotEventDeactivated( EventId )
-{
-    configureUi();
-}
-
-Task TasksView::selectedTask()
-{
-    Q_ASSERT( m_ui->treeView );
-    ViewFilter* filter = Application::instance().model().taskModel();
-    Q_ASSERT( filter );
-    // find current selection
-    QItemSelection selection = m_ui->treeView->selectionModel()->selection();
-    // match it to a task:
-    if ( selection.size() > 0 ) {
-        return filter->taskForIndex( selection.indexes().first() );
-    } else {
-        return Task();
-    }
-}
+ Task TasksView::selectedTask()
+ {
+     Q_ASSERT( m_ui->treeView );
+     ViewFilter* filter = Application::instance().model().taskModel();
+     Q_ASSERT( filter );
+     // find current selection
+     QItemSelection selection = m_ui->treeView->selectionModel()->selection();
+     // match it to a task:
+     if ( selection.size() > 0 ) {
+         return filter->taskForIndex( selection.indexes().first() );
+     } else {
+         return Task();
+     }
+ }
 
 #include "TasksView.moc"

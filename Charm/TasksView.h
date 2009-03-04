@@ -56,9 +56,12 @@ signals:
     void emitCommand( CharmCommand* );
 
 private slots:
-    void actionStartEvent( bool );
-    void actionEndEvent( bool );
-    // void actionNewTask( bool );
+    void actionStartEvent();
+    void actionEndEvent();
+    void actionNewTask();
+    void actionNewSubTask();
+    void actionEditTask();
+    void actionDeleteTask();
     void slotFiltertextChanged( const QString& filtertext );
     void taskPrefilteringChanged( int );
     void slotContextMenuRequested( const QPoint& );
@@ -72,6 +75,7 @@ private slots:
 private:
     // helper to retrieve selected task:
     Task selectedTask();
+    void addTaskHelper( const Task& parent );
 
     Ui::TasksView* m_ui;
     TasksViewDelegate* m_delegate;
