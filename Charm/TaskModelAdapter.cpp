@@ -360,6 +360,7 @@ Task TaskModelAdapter::taskForIndex( const QModelIndex& index ) const
 
 bool TaskModelAdapter::taskIsActive( const Task& task ) const
 {
+    Q_ASSERT( m_dataModel != 0 );
     return m_dataModel->isTaskActive( task.id() );
 }
 

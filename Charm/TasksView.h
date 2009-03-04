@@ -56,10 +56,9 @@ signals:
     void emitCommand( CharmCommand* );
 
 private slots:
-    void actionSelectedEventStarted( bool );
-    void actionSelectedEventEnded( bool );
+    void actionStartEvent( bool );
+    void actionEndEvent( bool );
     // void actionNewTask( bool );
-    void viewCurrentChanged( const QModelIndex&, const QModelIndex& );
     void slotFiltertextChanged( const QString& filtertext );
     void taskPrefilteringChanged( int );
     void slotContextMenuRequested( const QPoint& );
@@ -68,19 +67,16 @@ private slots:
     void slotEventDeactivated( EventId );
     // this method is called everytime the UI actions need update, for
     // example when the current index changes:
-    void slotConfigureUi();
+    void configureUi();
 
 private:
     // helper to retrieve selected task:
     Task selectedTask();
-    void configureUi( const QModelIndex& current );
 
     Ui::TasksView* m_ui;
     TasksViewDelegate* m_delegate;
-    QAction m_actionEventStarted;
-    QAction m_actionEventEnded;
-    QAction m_actionSelectedEventStarted;
-    QAction m_actionSelectedEventEnded;
+    QAction m_actionStartEvent;
+    QAction m_actionEndEvent;
     QAction m_actionNewTask;
     QAction m_actionNewSubTask;
     QAction m_actionEditTask;

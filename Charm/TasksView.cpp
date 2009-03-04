@@ -37,42 +37,36 @@ TasksView::TasksView( QWidget* parent )
     // , ViewInterface()
     , m_ui( new Ui::TasksView )
     , m_delegate( new TasksViewDelegate( this ) )
-    , m_actionEventStarted( this )
-    , m_actionEventEnded( this )
-    , m_actionSelectedEventStarted( this )
-    , m_actionSelectedEventEnded( this )
+    , m_actionStartEvent( this )
+    , m_actionEndEvent( this )
     , m_actionNewTask( this )
     , m_actionNewSubTask( this )
     , m_actionEditTask( this )
     , m_actionDeleteTask( this )
 {
     m_ui->setupUi( this );
-    setWindowIcon( Data::charmIcon() );
     m_ui->treeView->setItemDelegate( m_delegate );
     connect( m_delegate, SIGNAL( editingStateChanged() ),
-             SLOT( slotConfigureUi() ) );
+             SLOT( configureUi() ) );
     m_ui->buttonClearFilter->setEnabled( false );
     m_ui->buttonClearFilter->setText( tr( "Clear Filter" ) );
     m_ui->buttonClearFilter->setIcon( Data::clearFilterIcon() );
     // set up actions
     // (no menu icons, please) m_actionAboutDialog.setIcon( Data::charmIcon() );
-    m_actionEventStarted.setIcon( Data::goIcon() );
-    m_actionEventStarted.setText( tr( "Start Task" ) );
-    m_actionEventStarted.setShortcut( Qt::CTRL + Qt::Key_Enter );
-    m_actionSelectedEventStarted.setIcon( m_actionEventStarted.icon() );
-    m_actionSelectedEventStarted.setText( m_actionEventStarted.text() );
-    m_ui->goButton->setDefaultAction( &m_actionSelectedEventStarted );
-    connect( &m_actionSelectedEventStarted, SIGNAL( triggered( bool ) ),
-             SLOT( actionSelectedEventStarted( bool ) ) );
+    m_actionStartEvent.setIcon( Data::goIcon() );
+    m_actionStartEvent.setText( tr( "Start Task" ) );
+    m_actionStartEvent.setShortcut( Qt::CTRL + Qt::Key_Return );
+    m_ui->goButton->setDefaultAction( &m_actionStartEvent );
+    connect( &m_actionStartEvent, SIGNAL( triggered( bool ) ),
+             SLOT( actionStartEvent( bool ) ) );
 
-    m_actionEventEnded.setIcon( Data::stopIcon() );
-    m_actionEventEnded.setText( tr( "Stop Task" ) );
-    m_actionEventEnded.setShortcut( Qt::Key_Escape );
-    m_actionSelectedEventEnded.setIcon( m_actionEventEnded.icon() );
-    m_actionSelectedEventEnded.setText( m_actionEventEnded.text() );
-    m_ui->stopButton->setDefaultAction( &m_actionSelectedEventEnded );
-    connect( &m_actionSelectedEventEnded, SIGNAL( triggered( bool ) ),
-             SLOT( actionSelectedEventEnded( bool ) ) );
+    m_actionEndEvent.setIcon( Data::stopIcon() );
+    m_actionEndEvent.setText( tr( "Stop Task" ) );
+    m_actionEndEvent.setShortcut( Qt::Key_Escape );
+    m_ui->stopButton->setDefaultAction( &m_actionEndEvent );
+    // FIXME no worky
+    connect( &m_actionEndEvent, SIGNAL( triggered( bool ) ),
+             SLOT( actionEndEvent( bool ) ) );
 
 
     m_actionNewTask.setText( tr( "New &Task" ) );
@@ -112,8 +106,8 @@ TasksView::~TasksView()
 
 void TasksView::populateEditMenu( QMenu* editMenu )
 {
-    editMenu->addAction( &m_actionEventStarted );
-    editMenu->addAction( &m_actionEventEnded );
+    editMenu->addAction( &m_actionStartEvent );
+    editMenu->addAction( &m_actionEndEvent );
     editMenu->addSeparator();
     editMenu->addAction( &m_actionNewTask );
     editMenu->addAction( &m_actionNewSubTask );
@@ -121,7 +115,7 @@ void TasksView::populateEditMenu( QMenu* editMenu )
     editMenu->addAction( &m_actionDeleteTask );
 }
 
-void TasksView::actionSelectedEventStarted( bool ) // bool triggered
+void TasksView::actionStartEvent( bool )
 {
     ViewFilter* filter = Application::instance().model().taskModel();
     Task task = selectedTask();
@@ -137,7 +131,7 @@ void TasksView::actionSelectedEventStarted( bool ) // bool triggered
     }
 }
 
-void TasksView::actionSelectedEventEnded( bool ) // bool triggered
+void TasksView::actionEndEvent( bool ) // bool triggered
 {
     Task task = selectedTask();
     // emit signal:
@@ -148,70 +142,25 @@ void TasksView::actionSelectedEventEnded( bool ) // bool triggered
     }
 }
 
-void TasksView::viewCurrentChanged( const QModelIndex& current,
-                               const QModelIndex& )
+void TasksView::configureUi()
 {
-    configureUi( current );
-}
-
-void TasksView::configureUi( const QModelIndex& current )
-{
-    ViewFilter* filter = Application::instance().model().taskModel();
-
+    const QItemSelectionModel* smodel = m_ui->treeView->selectionModel();
+    const QModelIndex current = smodel ? smodel->currentIndex() : QModelIndex();
+    const ViewFilter* filter = Application::instance().model().taskModel();
     const bool editing = m_delegate->isEditing();
-
     const bool selected = current.isValid();
-    const Task task = filter->taskForIndex( current );
-    const bool cannotStart = task.isValid()
-                             && filter->taskHasChildren( task )
-                             && CONFIGURATION.eventsInLeafsOnly;
+    const Task task = selected ? filter->taskForIndex( current ) : Task();
+    const bool active = filter->taskIsActive( task );
+    const bool isCurrent = task.isCurrentlyValid();
+    const bool hasChildren = filter->taskHasChildren( task );
+    const bool cannotStart = hasChildren && CONFIGURATION.eventsInLeafsOnly;
     const bool cannotStop = m_delegate->isEditing();
 
-    m_actionDeleteTask.setEnabled( task.isValid() && ! filter->taskHasChildren( task ) );
-    m_actionEditTask.setEnabled( task.isValid() );
+    m_actionDeleteTask.setEnabled( selected && ! hasChildren );
+    m_actionEditTask.setEnabled( selected );
     m_actionNewSubTask.setEnabled( selected );
-    m_actionEventStarted.setEnabled( selected && ! cannotStart
-                                     && ! filter->taskIsActive( task )
-                                     && task.isCurrentlyValid() );
-    m_actionEventEnded.setEnabled( selected && filter->taskIsActive( task ) && ! cannotStop);
-
-    if ( ! current.isValid() )
-    {
-        m_actionSelectedEventStarted.setEnabled( false );
-        m_actionSelectedEventEnded.setEnabled( false );
-        return;
-    }
-
-    // get the currently selected task:
-    if ( task.isValid() && filter->taskIsActive( task ) ) {
-        if ( editing ) {
-            // If the tree view is in editing state, we do not allow
-            // to stop the task, because that invalidates the entered
-            // comment before it is committed. If the user selects
-            // another tree item with the mouse, the editor closes,
-            // too. This is not considered that bad, since it requires
-            // explicit activity by the user.
-            m_actionSelectedEventStarted.setEnabled( false );
-            m_actionSelectedEventEnded.setEnabled( false );
-        } else {
-            m_actionSelectedEventStarted.setEnabled( false );
-            m_actionSelectedEventEnded.setEnabled( true );
-        }
-    } else if ( task.isValid() && ! task.isCurrentlyValid() ) {
-    	// the task is valid, but at this time not within its valid time frame
-        m_actionSelectedEventStarted.setEnabled( false );
-        m_actionSelectedEventEnded.setEnabled( false );
-    } else if ( task.isValid() ) {
-        m_actionSelectedEventStarted.setEnabled( true );
-        m_actionSelectedEventEnded.setEnabled( false );
-    } else {
-        m_actionSelectedEventStarted.setEnabled( false );
-        m_actionSelectedEventEnded.setEnabled( false );
-    }
-
-    if ( filter->taskHasChildren( task ) && CONFIGURATION.eventsInLeafsOnly ) {
-        m_actionSelectedEventStarted.setEnabled( false );
-    }
+    m_actionStartEvent.setEnabled( selected && ! cannotStart && ! active && isCurrent && ! editing );
+    m_actionEndEvent.setEnabled( selected && active && ! cannotStop );
 }
 
 void TasksView::closeEvent( QCloseEvent* )
@@ -224,13 +173,6 @@ void TasksView::showEvent( QShowEvent* )
     restoreGuiState();
 }
 
-void TasksView::slotConfigureUi()
-{
-    if ( QItemSelectionModel* smodel = m_ui->treeView->selectionModel() ) {
-        configureUi( smodel->currentIndex() );
-    }
-}
-
 void TasksView::stateChanged( State previous )
 {
     switch( Application::instance().state() ) {
@@ -239,9 +181,9 @@ void TasksView::stateChanged( State previous )
         // set model on view:
         ViewFilter* filter = Application::instance().model().taskModel();
         m_ui->treeView->setModel( filter );
-        connect( m_ui->treeView->selectionModel(),
-                 SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ),
-                 SLOT( viewCurrentChanged( const QModelIndex&, const QModelIndex& ) ) );
+        const QItemSelectionModel* smodel =  m_ui->treeView->selectionModel();
+        connect( smodel, SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ), SLOT( configureUi() ) );
+        connect( smodel, SIGNAL( selectionChanged( const QItemSelection&, const QItemSelection& ) ), SLOT( configureUi() ) );
         connect( filter, SIGNAL( eventActivationNotice( EventId ) ),
                  SLOT( slotEventActivated( EventId ) ) );
         connect( filter, SIGNAL( eventDeactivationNotice( EventId ) ),
@@ -337,7 +279,7 @@ void TasksView::configurationChanged()
 
     m_ui->treeView->setFont( configuredFont() );
     m_ui->treeView->header()->hide();
-    slotConfigureUi();
+    configureUi();
 }
 
 void TasksView::setModel( ModelConnector* connector )
@@ -374,8 +316,9 @@ void TasksView::slotContextMenuRequested( const QPoint& point )
 
     // prepare the menu:
     QMenu menu( m_ui->treeView );
-    menu.addAction( &m_actionEventStarted );
-    menu.addAction( &m_actionEventEnded );
+    menu.addAction( &m_actionStartEvent );
+    menu.addAction( &m_actionEndEvent );
+
     menu.addSeparator();
     menu.addAction( &m_actionNewTask );
     menu.addAction( &m_actionNewSubTask );
@@ -386,21 +329,11 @@ void TasksView::slotContextMenuRequested( const QPoint& point )
     const QModelIndex currentIndex = m_ui->treeView->indexAt( point );
     const bool selected = currentIndex.isValid();
     const Task task = filter->taskForIndex( currentIndex );
-    configureUi( currentIndex );
+    configureUi();
 
     // open the menu:
     QAction* result = menu.exec( m_ui->treeView->mapToGlobal( point ) );
-    if (  result == &m_actionEventStarted ) {
-        // action triggers it
-        if ( m_actionEventStarted.isEnabled() ) {
-            actionSelectedEventStarted( false );
-        }
-    } else if ( result == &m_actionEventEnded ) {
-        // action triggers it
-        if ( m_actionEventEnded.isEnabled() ) {
-            actionSelectedEventEnded( false );
-        }
-    } else if ( result == &m_actionNewTask || result == &m_actionNewSubTask ) {
+    if ( result == &m_actionNewTask || result == &m_actionNewSubTask ) {
         Task newTask;
         int suggestedId = 1;
         if ( selected && result == &m_actionNewSubTask ) {
@@ -430,7 +363,7 @@ void TasksView::slotContextMenuRequested( const QPoint& point )
                 CommandModifyTask* cmd = new CommandModifyTask( newTask, this );
                 emit emitCommand( cmd );
         }
-    	slotConfigureUi();
+    	configureUi();
     } else if ( result == &m_actionDeleteTask ) {
         Q_ASSERT( task.isValid() );
         if ( QMessageBox::question( this, tr( "Delete Task?" ),
@@ -466,7 +399,7 @@ void TasksView::slotItemDoubleClicked( const QModelIndex& index )
             }
         }
     }
-    slotConfigureUi();
+    configureUi();
 }
 
 void TasksView::commitCommand( CharmCommand* command )
@@ -477,12 +410,12 @@ void TasksView::commitCommand( CharmCommand* command )
 
 void TasksView::slotEventActivated( EventId )
 {
-    slotConfigureUi();
+    configureUi();
 }
 
 void TasksView::slotEventDeactivated( EventId )
 {
-    slotConfigureUi();
+    configureUi();
 }
 
 Task TasksView::selectedTask()
