@@ -3,7 +3,6 @@
 
 #include <QWidget>
 #include <QAction>
-#include <QMenu>
 
 #include <Core/Event.h>
 #include <Core/State.h>
@@ -11,6 +10,7 @@
 
 #include "ViewModeInterface.h"
 
+class QMenu;
 class QItemSelection;
 class QModelIndex;
 class TasksViewDelegate;
@@ -40,7 +40,9 @@ public:
     void stateChanged( State previous );
     void configurationChanged();
     void setModel( ModelConnector* );
+
     static QFont configuredFont();
+    void populateEditMenu( QMenu* );
 
 public slots:
     /* reimpl */ void commitCommand( CharmCommand* );

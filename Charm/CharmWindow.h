@@ -34,6 +34,8 @@ protected:
     /** The window number is a Mac concept that allows to pull up application windows by entering CMD+<number>.
      */
     void setWindowNumber( int number );
+    /** Insert the Edit menu. Empty by default. */
+    virtual void insertEditMenu() {}
 
 public:
     /* reimpl */ void stateChanged( State previous );

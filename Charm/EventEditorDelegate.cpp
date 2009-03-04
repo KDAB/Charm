@@ -26,7 +26,7 @@ QSize EventEditorDelegate::sizeHint( const QStyleOptionViewItem& option,
     // to an invalid value (m_cachedSizeHint = QSize();)
     if ( ! m_cachedSizeHint.isValid() ) {
         // make up event settings and calculate the space they need:
-        QPixmap pixmap( 10000, 10000 ); // temp
+        QPixmap pixmap( 2000, 800 ); // temp
         QPainter painter( &pixmap );
         QStyleOptionViewItem fakeOption ( option );
         fakeOption.rect.setSize( pixmap.size() );

@@ -44,6 +44,8 @@ public:
     void configurationChanged();
     void setModel( ModelConnector* );
 
+    void populateEditMenu( QMenu* );
+
 signals:
     void visible( bool );
     void emitCommand( CharmCommand* );

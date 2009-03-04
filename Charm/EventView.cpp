@@ -98,6 +98,13 @@ void EventView::delayedInitialization()
 
 }
 
+void EventView::populateEditMenu( QMenu* menu )
+{
+    menu->addAction( &m_actionNewEvent );
+    menu->addAction( &m_actionEditEvent );
+    menu->addAction( &m_actionDeleteEvent );
+}
+
 void EventView::timeSpansChanged()
 {
     m_timeSpans = Application::instance().timeSpans().standardTimeSpans();

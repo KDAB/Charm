@@ -37,6 +37,7 @@ void CharmWindow::stateChanged( State previous )
     case Connected:
         configurationChanged();
         menuBar()->addMenu( & Application::instance().fileMenu() );
+        insertEditMenu();
         menuBar()->addMenu( & Application::instance().windowMenu() );
         setEnabled( true );
         break;

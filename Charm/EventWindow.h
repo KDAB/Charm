@@ -20,6 +20,9 @@ public:
 public slots:
     /* reimpl */ void configurationChanged();
 
+protected:
+    /* reimpl */ void insertEditMenu();
+
 signals:
     /* reimpl */ void emitCommand( CharmCommand* );
     /* reimpl */ void quit();

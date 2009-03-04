@@ -1,3 +1,5 @@
+#include <QMenuBar>
+
 #include "Application.h"
 #include "EventWindow.h"
 #include "EventView.h"
@@ -15,6 +17,12 @@ EventWindow::EventWindow( QWidget* parent )
 
 EventWindow::~EventWindow()
 {
+}
+
+void EventWindow::insertEditMenu()
+{
+    QMenu* editMenu = menuBar()->addMenu( tr( "Edit" ) );
+    m_eventView->populateEditMenu( editMenu );
 }
 
 void EventWindow::configurationChanged()

@@ -104,7 +104,18 @@ TasksView::~TasksView()
     delete m_ui; m_ui = 0;
 }
 
-void TasksView::actionSelectedEventStarted( bool b ) // bool triggered
+void TasksView::populateEditMenu( QMenu* editMenu )
+{
+    editMenu->addAction( &m_actionEventStarted );
+    editMenu->addAction( &m_actionEventEnded );
+    editMenu->addSeparator();
+    editMenu->addAction( &m_actionNewTask );
+    editMenu->addAction( &m_actionNewSubTask );
+    editMenu->addAction( &m_actionEditTask );
+    editMenu->addAction( &m_actionDeleteTask );
+}
+
+void TasksView::actionSelectedEventStarted( bool ) // bool triggered
 {
     ViewFilter* filter = Application::instance().model().taskModel();
     Task task = selectedTask();

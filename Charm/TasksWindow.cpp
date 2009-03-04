@@ -61,6 +61,12 @@ void TasksWindow::configurationChanged()
     m_tasksView->configurationChanged();
 }
 
+void TasksWindow::insertEditMenu()
+{
+    QMenu* editMenu = menuBar()->addMenu( tr( "Edit" ) );
+    m_tasksView->populateEditMenu( editMenu);
+}
+
 void TasksWindow::slotEditPreferences( bool )
 {
     MakeTemporarilyVisible m( this );
