@@ -23,6 +23,7 @@ CharmWindow::CharmWindow( const QString& name, QWidget* parent )
 {
     setWindowName( name );
     setWindowIcon( Data::charmIcon() );
+    connect( m_showHideAction, SIGNAL( triggered( bool ) ), SLOT( showHideView() ) );
     // FIXME make work with Mac menu merging
     show();
 }

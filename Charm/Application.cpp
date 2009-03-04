@@ -64,12 +64,6 @@ Application::Application(int& argc, char** argv)
     qRegisterMetaType<State> ("State");
     qRegisterMetaType<Event> ("Event");
 
-    // MIRKO_TEMP_REM
-    /*
-      // the exit process (close goes to systray, app->quit exits)
-      connect(&m_mainWindow, SIGNAL(quit()), SLOT(slotQuitApplication()));
-    */
-
     // MIRKO_TEMP_REM needed?
     /*
     // window title updates
@@ -99,28 +93,14 @@ Application::Application(int& argc, char** argv)
     m_actionStopAllTasks.setText( tr( "Stop &All Active Tasks" ) );
     m_actionStopAllTasks.setShortcut( Qt::Key_Escape );
     m_actionStopAllTasks.setShortcutContext( Qt::ApplicationShortcut );
-    // MIRKO_TEMP_REM: move to where?
-    /*
-      m_mainWindow.addAction(&m_actionStopAllTasks); // for the shortcut to work
-    */
+    mainView().addAction(&m_actionStopAllTasks); // for the shortcut to work
     connect( &m_actionStopAllTasks, SIGNAL( triggered() ),
              SLOT( slotStopAllTasks() ) );
-    // MIRKO_TEMP_REM shoud not be needed anymore
-    /*
-      connect( &m_actionShowHideView, SIGNAL( triggered() ),
-      &m_mainWindow, SLOT( slotShowHideView() ) );
-      connect( &m_actionShowHideTimeTracker, SIGNAL( triggered() ),
-      &m_timeTracker, SLOT( slotShowHide() ) );
-    */
     connect( &m_trayIcon, SIGNAL( activated( QSystemTrayIcon::ActivationReason ) ),
              SLOT( slotTrayIconActivated( QSystemTrayIcon::ActivationReason ) ) );
-    // MIRKO_TEMP_REM add show hide window actions
-    /*
-      m_systrayContextMenu.addAction( &m_actionShowHideView );
-      m_systrayContextMenu.addAction( &m_actionShowHideTimeTracker );
-    */
     m_systrayContextMenu.addAction( &m_actionStopAllTasks );
     m_systrayContextMenu.addSeparator();
+
     // MIRKO_TEMP_REM where to put quit action?
     // m_systrayContextMenu.addAction( m_mainWindow.actionQuit() );
     m_trayIcon.setContextMenu( &m_systrayContextMenu );
@@ -128,14 +108,16 @@ Application::Application(int& argc, char** argv)
     m_trayIcon.show();
 
 #if defined Q_WS_MAC
-    // MIRKO_TEMP_REM repopulate dock menu
-    /*
-      m_dockMenu.addAction( &m_actionShowHideView );
-      m_dockMenu.addAction( &m_actionShowHideTimeTracker );
-    */
     m_dockMenu.addAction( &m_actionStopAllTasks );
     qt_mac_set_dock_menu( &m_dockMenu);
 #endif
+
+    Q_FOREACH( CharmWindow* window, m_windows ) {
+        m_systrayContextMenu.addAction( window->showHideAction() );
+#if defined Q_WS_MAC
+        m_dockMenu.addAction( window->showHideAction() );
+#endif
+    }
 
     // set up actions:
     m_actionQuit.setShortcut( Qt::CTRL + Qt::Key_Q );
@@ -152,13 +134,6 @@ Application::Application(int& argc, char** argv)
     m_actionPreferences.setIcon( Data::configureIcon() );
     connect( &m_actionPreferences, SIGNAL( triggered( bool ) ),
              &m_tasksWindow,  SLOT( slotEditPreferences( bool ) ) );
-
-    // m_actionEventView.setCheckable( true );
-//     m_eventView.setVisible( m_actionEventView.isChecked() );
-//     connect( &m_actionEventView, SIGNAL( toggled( bool ) ),
-//              &m_eventView, SLOT( setVisible( bool ) ) );
-//     connect( &m_eventView, SIGNAL( visible( bool ) ),
-//              &m_actionEventView, SLOT( setChecked( bool ) ) );
 
     m_actionImportFromXml.setText( tr( "Import from Previous Export..." ) );
     connect( &m_actionImportFromXml, SIGNAL( triggered() ),
@@ -194,12 +169,6 @@ Application::Application(int& argc, char** argv)
     m_windowMenu.addSeparator();
     m_windowMenu.addAction( &m_actionReporting );
 
-    // MIRKO_TEMP_REM implement common shortcuts in all the CharmWindows
-    /*
-      m_actionTasksView.setShortcut( Qt::CTRL + Qt::Key_T );
-      m_actionEventView.setShortcut( Qt::CTRL + Qt::Key_E );
-      m_actionReporting.setShortcut( Qt::CTRL + Qt::Key_R );
-    */
     // FIXME ifndef?
 #ifndef Q_WS_MAC
     // FIXME parametrize, handle the same for all windows
@@ -207,11 +176,11 @@ Application::Application(int& argc, char** argv)
     installEventFilter( filter );
     // MIRKO_TEMP_REM
     /*
-    connect( filter, SIGNAL( toggleWindow1Visibility() ),
-             &m_mainWindow, SLOT( slotShowHideView() ) );
-    connect( filter, SIGNAL( toggleWindow2Visibility() ),
-             &m_timeTracker, SLOT( slotShowHide() ) );
-	*/
+      connect( filter, SIGNAL( toggleWindow1Visibility() ),
+      &m_mainWindow, SLOT( slotShowHideView() ) );
+      connect( filter, SIGNAL( toggleWindow2Visibility() ),
+      &m_timeTracker, SLOT( slotShowHide() ) );
+    */
     // FIXME fix
     connect( QApplication::instance(), SIGNAL( dockIconClicked() ), this, SLOT( show() ) );
 #endif
