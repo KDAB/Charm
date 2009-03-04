@@ -33,6 +33,7 @@ void CharmWindow::stateChanged( State previous )
     case Connecting:
         setEnabled( false );
         restoreGuiState();
+        configurationChanged();
         break;
     case Connected:
         configurationChanged();
