@@ -79,6 +79,7 @@ IF( CHARM_BUILD_STATIC_QT )
 	    LINK_LIBRARIES( ${X11_Xrender_LIB} )
 	    LINK_LIBRARIES( ${X11_Xrandr_LIB} )
 	    LINK_LIBRARIES( ${X11_Xinput_LIB} )
+	    LINK_LIBRARIES( ${QT_QTXML_LIBRARY} )
 	    LINK_LIBRARIES( ${QT_X11_Xext_LIBRARY} )
       
 	    # FIXME why does FIND_PACKAGE( GTK ... ) not find this?
