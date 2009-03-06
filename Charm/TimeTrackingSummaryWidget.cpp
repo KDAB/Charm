@@ -22,7 +22,7 @@ TimeTrackingSummaryWidget::TimeTrackingSummaryWidget( QWidget* parent )
     , m_taskSelector( this )
     , m_selectedSummary( -1 )
 {
-    // FIXME use platform defined, hand-picked fonts, so far those have been selected for Mac:
+    // FIXME use platform defined, hand-picked fonts, so far those have been selected for Mac and Linux:
 #ifdef Q_WS_MAC
     m_fixedFont.setFamily( "Andale Mono" );
     m_fixedFont.setPointSize( 11 );
@@ -386,7 +386,7 @@ void TimeTrackingSummaryWidget::handleActiveEvents()
     } else {
         m_stopGoButton.setIcon( Data::recorderGoIcon() );
         m_stopGoButton.setText( tr( "Start" ) );
-        m_taskSelector.setEnabled( true );
+        m_taskSelector.setEnabled( ! m_summaries.isEmpty() );
         m_stopGoButton.setEnabled( taskSelected );
         m_stopGoButton.setChecked( false );
         m_pulse.stop();
