@@ -62,7 +62,6 @@ TasksView::TasksView( QWidget* parent )
 
     m_actionEndEvent.setIcon( Data::stopIcon() );
     m_actionEndEvent.setText( tr( "Stop Task" ) );
-    m_actionEndEvent.setShortcut( Qt::Key_Escape );
     m_ui->stopButton->setDefaultAction( &m_actionEndEvent );
     connect( &m_actionEndEvent, SIGNAL( triggered( bool ) ),
              SLOT( actionEndEvent() ) );
