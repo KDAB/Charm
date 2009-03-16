@@ -164,6 +164,7 @@ Application::Application(int& argc, char** argv)
         m_windowMenu.addAction( window->showHideAction() );
     }
     m_actionReporting.setText( tr( "Reports..." ) );
+    m_actionReporting.setShortcut( Qt::CTRL + Qt::Key_R );
     connect( &m_actionReporting, SIGNAL( triggered() ),
              &m_tasksWindow, SLOT( slotReportDialog() ) );
     m_windowMenu.addSeparator();
