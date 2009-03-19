@@ -41,6 +41,7 @@ IF (CMAKE_COMPILER_IS_GNUCXX)
     ADD_DEFINITIONS( -Wall -Wundef -Wcast-align -Wchar-subscripts -Wpointer-arith 
        -Wwrite-strings -Wpacked -Wformat-security -Wmissing-format-attribute 
        -Wold-style-cast )
+    ADD_DEFINITIONS( -fvisibility=hidden )
 # to be added:       
 #	-Woverloaded-virtual  -Wshadow 
 # FIXME we might want this one back in, but Qt 4.4.3 spits gazillions of warnings with it on Linux-64:
@@ -48,9 +49,6 @@ IF (CMAKE_COMPILER_IS_GNUCXX)
 #  -Wnon-virtual-dtor # Qt has too many of those already
 ENDIF (CMAKE_COMPILER_IS_GNUCXX)
 
-IF (CMAKE_COMPILER_IS_GNUCXX)
-    ADD_DEFINITIONS( -fvisibility=hidden )
-ENDIF (CMAKE_COMPILER_IS_GNUCXX)
 IF( CHARM_BUILD_STATIC_QT )
     ADD_DEFINITIONS( -DCHARM_BUILD_STATIC_QT )
     IF( UNIX )
