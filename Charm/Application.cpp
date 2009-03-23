@@ -94,6 +94,7 @@ Application::Application(int& argc, char** argv)
     m_actionStopAllTasks.setShortcut( Qt::Key_Escape );
     m_actionStopAllTasks.setShortcutContext( Qt::ApplicationShortcut );
     mainView().addAction(&m_actionStopAllTasks); // for the shortcut to work
+    m_timeTracker.addAction(&m_actionStopAllTasks); // for the shortcut to work
     connect( &m_actionStopAllTasks, SIGNAL( triggered() ),
              SLOT( slotStopAllTasks() ) );
     connect( &m_trayIcon, SIGNAL( activated( QSystemTrayIcon::ActivationReason ) ),
