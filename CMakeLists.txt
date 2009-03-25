@@ -82,6 +82,7 @@ IF( CHARM_BUILD_STATIC_QT )
       
 	    # FIXME why does FIND_PACKAGE( GTK ... ) not find this?
 	    LINK_LIBRARIES( glib-2.0 )
+	    LINK_LIBRARIES( gobject-2.0 )
 	    LINK_LIBRARIES( gthread-2.0 )
 	ENDIF( NOT APPLE )
     ENDIF( UNIX )
