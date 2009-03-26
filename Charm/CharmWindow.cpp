@@ -104,12 +104,14 @@ void CharmWindow::restore()
 void CharmWindow::showEvent( QShowEvent* e )
 {
     m_showHideAction->setText( tr( "Hide %1 Window" ).arg( m_windowName ) );
+    emit visibilityChanged( true );
     QMainWindow::showEvent( e );
 }
 
 void CharmWindow::hideEvent( QHideEvent* e )
 {
     m_showHideAction->setText( tr( "Show %1 Window" ).arg( m_windowName ) );
+    emit visibilityChanged( false );
     QMainWindow::hideEvent( e );
 }
 

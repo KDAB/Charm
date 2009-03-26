@@ -91,6 +91,9 @@ private slots:
     void slotStopAllTasks();
     void slotMaybeIdle();
 
+    void slotOpenLastClosedWindow();
+    void slotCharmWindowVisibilityChanged( bool visibility );
+
 signals:
     void goToState( State state );
 
@@ -130,6 +133,7 @@ private:
     QAction m_actionReporting;
 
     IdleDetector* m_idleDetector;
+    CharmWindow* m_closedWindow;
     const QList<CharmWindow*> m_windows;
 
     // All statics are created as members of Application. This is

@@ -47,6 +47,7 @@ Application::Application(int& argc, char** argv)
     , m_actionImportTasks( this )
     , m_actionReporting( this )
     , m_idleDetector( 0 )
+    , m_closedWindow( 0 )
     , m_windows( QList<CharmWindow*> () << &m_tasksWindow << &m_eventWindow << &m_timeTracker )
 {
     // QApplication setup
@@ -84,6 +85,9 @@ Application::Application(int& argc, char** argv)
         // save the configuration (configuration is managed by the application)
         connect( window, SIGNAL(saveConfiguration() ),
                  SLOT( slotSaveConfiguration() ) );
+
+        connect( window, SIGNAL( visibilityChanged( bool ) ),
+                 this,   SLOT( slotCharmWindowVisibilityChanged( bool ) ) );
     }
     // my own signals:
     connect(this, SIGNAL(goToState(State)), SLOT(setState(State)),
@@ -172,10 +176,12 @@ Application::Application(int& argc, char** argv)
     m_windowMenu.addAction( &m_actionReporting );
 
     // FIXME ifndef?
-#ifndef Q_WS_MAC
+#ifdef Q_WS_MAC
+#if 0
     // FIXME parametrize, handle the same for all windows
     SpecialKeysEventFilter* filter = new SpecialKeysEventFilter( this );
     installEventFilter( filter );
+#endif
     // MIRKO_TEMP_REM
     /*
       connect( filter, SIGNAL( toggleWindow1Visibility() ),
@@ -184,7 +190,7 @@ Application::Application(int& argc, char** argv)
       &m_timeTracker, SLOT( slotShowHide() ) );
     */
     // FIXME fix
-    connect( QApplication::instance(), SIGNAL( dockIconClicked() ), this, SLOT( show() ) );
+    connect( QApplication::instance(), SIGNAL( dockIconClicked() ), this, SLOT( slotOpenLastClosedWindow() ) );
 #endif
     // ^^^
 
@@ -593,6 +599,20 @@ CharmWindow& Application::mainView()
 {
     // FIXME is this any good?
     return m_tasksWindow;
+}
+
+void Application::slotOpenLastClosedWindow()
+{
+    if( m_closedWindow == 0 )
+        return;
+    m_closedWindow->show();
+    m_closedWindow = 0;
+}
+
+void Application::slotCharmWindowVisibilityChanged( bool visible )
+{
+    if( !visible )
+        m_closedWindow = dynamic_cast< CharmWindow* >( sender() );
 }
 
 #include "Application.moc"
