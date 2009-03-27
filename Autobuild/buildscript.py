@@ -4,6 +4,7 @@ from AutobuildCore.Configuration import Configuration
 from AutobuildCore.Project import Project
 from AutobuildCore.Callbacks.DynamicUploadLocation import BranchNamePackageSubdir
 from AutobuildCore.Callbacks.ConfigurationBuildSequence import ConfigurationBuildSequence
+from AutobuildCore.Callbacks.BuildInformation import BuildInformation
 
 scmPath = 'svn://kde.codeyard.cs.ru.nl/home/kde/trunk/playground/utils/charm'
 Product = Project( 'Charm', '0.4.2' )
@@ -13,6 +14,7 @@ Product.addCallback( BranchNamePackageSubdir( scmPath ) )
 
 Debug = Configuration( Product, 'Shared Debug' )
 Debug.addCallback( ConfigurationBuildSequence( 'conf-bin-package', '*Static*', False, False ) ) # do not package shared builds
+Debug.addCallback( BuildInformation() )
 Debug.setBuilder( 'cmake' )
 Debug.addPackageDependency( 'Qt-4.[4-9].?-Shared-Debug' )
 Debug.addBlacklistedPlatform( 'win32-msvc' ) # disable MSVC6
