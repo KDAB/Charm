@@ -246,7 +246,7 @@ TimeTrackingSummaryWidget::DataField TimeTrackingSummaryWidget::data( int column
         if ( column == TaskColumn ) {
             // field.text = tr( "Total" );
         } else if ( column == TotalsColumn ) {
-            int total = 0;
+        	int total = 0;
             Q_FOREACH( const WeeklySummary& s, m_summaries ) {
                 total += std::accumulate( s.durations.begin(), s.durations.end(), 0 );
             }

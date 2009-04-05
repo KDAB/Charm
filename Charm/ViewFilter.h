@@ -29,7 +29,7 @@ public:
     bool taskHasChildren( const Task& task ) const;
 
     // filter for subscriptions:
-    void setTaskPrefilteringMode( Configuration::TaskPrefilteringMode mode );
+    void prefilteringModeChanged();
 
     bool taskIdExists( TaskId taskId ) const;
     void commitCommand( CharmCommand* );

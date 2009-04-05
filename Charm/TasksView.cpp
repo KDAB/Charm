@@ -380,8 +380,8 @@ void TasksView::configureUi()
      ViewFilter* filter = Application::instance().model().taskModel();
      if ( index >= 0 && index < Configuration::TaskPrefilter_NumberOfModes ) {
          const Configuration::TaskPrefilteringMode mode = static_cast<Configuration::TaskPrefilteringMode>( index );
-         filter->setTaskPrefilteringMode( mode );
          CONFIGURATION.taskPrefilteringMode = mode;
+         filter->prefilteringModeChanged();
          emit saveConfiguration();
      }
  }

@@ -45,9 +45,9 @@ bool ViewFilter::taskHasChildren( const Task& task ) const
     return m_model.taskHasChildren( task );
 }
 
-void ViewFilter::setTaskPrefilteringMode( Configuration::TaskPrefilteringMode mode )
+void ViewFilter::prefilteringModeChanged()
 {
-    clear();
+	invalidate();
 }
 
 bool ViewFilter::filterAcceptsRow( int source_row, const QModelIndex& parent ) const

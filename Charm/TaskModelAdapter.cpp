@@ -53,11 +53,21 @@ QVariant TaskModelAdapter::data( const QModelIndex& index, int role ) const
 
     // handle roles that are treated all the same, everywhere:
     switch( role ) {
+    // problem: foreground role is never queried for
     case Qt::ForegroundRole:
     	if( item->task().isCurrentlyValid() ) {
             return application->palette().color( QPalette::Active, QPalette::Text );
     	} else {
-            return application->palette().color( QPalette::Disabled, QPalette::Text );
+    		return application->palette().color( QPalette::Disabled, QPalette::Text );
+    	}
+        break;
+    case Qt::BackgroundRole:
+    	if( item->task().isCurrentlyValid() ) {
+            return QVariant();
+    	} else {
+    		QColor color( "crimson" );
+    		color.setAlphaF( 0.25 );
+    		return color;
     	}
         break;
     case Qt::DisplayRole:
@@ -173,10 +183,9 @@ Qt::ItemFlags TaskModelAdapter::flags( const QModelIndex & index ) const
 
     if ( index.isValid() ) {
         const TaskTreeItem* item = itemFor( index );
-        flags = Qt::ItemIsUserCheckable;
+        flags = Qt::ItemIsUserCheckable|Qt::ItemIsSelectable|Qt::ItemIsEnabled;
         const bool isCurrent = item->task().isCurrentlyValid();
         if ( isCurrent ) {
-            flags |= Qt::ItemIsSelectable|Qt::ItemIsEnabled;
             const TaskId id = item->task().id();
             const Event& activeEvent = m_dataModel->activeEventFor( id );
             const bool isActive = activeEvent.isValid();
