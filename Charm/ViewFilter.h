@@ -42,7 +42,6 @@ signals:
 
 private:
     TaskModelAdapter m_model;
-    Configuration::TaskPrefilteringMode m_taskPrefilteringMode;
 };
 
 #endif

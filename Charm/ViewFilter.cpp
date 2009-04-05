@@ -4,7 +4,6 @@
 ViewFilter::ViewFilter( CharmDataModel* model, QObject* parent )
     : QSortFilterProxyModel( parent )
     , m_model( model )
-    , m_taskPrefilteringMode( Configuration::TaskPrefilter_ShowAll )
 {
     setSourceModel( &m_model );
 
@@ -48,10 +47,7 @@ bool ViewFilter::taskHasChildren( const Task& task ) const
 
 void ViewFilter::setTaskPrefilteringMode( Configuration::TaskPrefilteringMode mode )
 {
-    if ( mode != m_taskPrefilteringMode ) {
-        m_taskPrefilteringMode = mode;
-        clear();
-    }
+    clear();
 }
 
 bool ViewFilter::filterAcceptsRow( int source_row, const QModelIndex& parent ) const
@@ -73,7 +69,7 @@ bool ViewFilter::filterAcceptsRow( int source_row, const QModelIndex& parent ) c
     }
 
     bool accepted = acceptedByFilter;
-    Task task = m_model.taskForIndex( index );
+    const Task task = m_model.taskForIndex( index );
     switch( Configuration::instance().taskPrefilteringMode ) {
     case Configuration::TaskPrefilter_ShowAll:
         break;

@@ -44,10 +44,10 @@ public:
     static QFont configuredFont();
     void populateEditMenu( QMenu* );
 
-public slots:
+public Q_SLOTS:
     /* reimpl */ void commitCommand( CharmCommand* );
 
-private slots:
+private Q_SLOTS:
     void slotItemDoubleClicked( const QModelIndex& index );
 
 signals:

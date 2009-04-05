@@ -14,7 +14,7 @@
 #include "ViewHelpers.h"
 #include "TimeTrackingSummaryWidget.h"
 
-const int Margin = 3;
+const int Margin = 2;
 
 TimeTrackingSummaryWidget::TimeTrackingSummaryWidget( QWidget* parent )
     : QWidget( parent )
@@ -29,10 +29,10 @@ TimeTrackingSummaryWidget::TimeTrackingSummaryWidget( QWidget* parent )
     m_narrowFont = font(); // stay with the desktop
     m_narrowFont.setPointSize( 11 );
 #elif defined Q_WS_X11
-    m_fixedFont.setFamily(  "Bitstream Vera Sans Mono" );
-    m_fixedFont.setPointSize( 9 );
+    m_fixedFont.setFamily(  "Helvetica" );
+    m_fixedFont.setPointSize( 8 );
     m_narrowFont = font(); // stay with the desktop
-    m_narrowFont.setPointSize( 9 );
+    m_narrowFont.setPointSize( 8 );
 #endif
     //
     setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
@@ -77,9 +77,7 @@ QSize TimeTrackingSummaryWidget::minimumSizeHint() const
         const QRect totalsColumnFieldRect(
             fixedFontMetrics.boundingRect( "100:00" )
             .adjusted( 0, 0, 2 * Margin, 2 * Margin ) );
-        const QRect dayColumnRect(
-            fixedFontMetrics.boundingRect( "99:99" )
-            .adjusted( 0, 0, 2 * Margin, 2 * Margin ) );
+        const int dayWidth = fixedFontMetrics.width( "00:00" ) + 2 * Margin;
         const int fieldHeight = qMax( fixedFontMetrics.lineSpacing(),
                                       narrowFontMetrics.lineSpacing() )
                                 + 2 * Margin;
@@ -92,12 +90,12 @@ QSize TimeTrackingSummaryWidget::minimumSizeHint() const
 
         const int minimumWidth =
             totalsColumnFieldRect.width()
-            + 7 * dayColumnRect.width()
+            + 7 * dayWidth
             + taskColumnFieldRect.width();
         const int minimumHeight = ( rowCount() - 1 ) * fieldHeight + trackingRowHeight;
         m_cachedMinimumSizeHint = QSize( minimumWidth, minimumHeight );
         m_cachedTotalsFieldRect = QRect( 0, 0, totalsColumnFieldRect.width(), fieldHeight );
-        m_cachedDayFieldRect = QRect( 0, 0, dayColumnRect.width(), fieldHeight );
+        m_cachedDayFieldRect = QRect( 0, 0, dayWidth, fieldHeight );
     }
     return m_cachedMinimumSizeHint;
 }
@@ -148,7 +146,6 @@ void TimeTrackingSummaryWidget::paintEvent( QPaintEvent* e )
                 painter.setPen( palette().text().color() );
                 painter.setFont( field.font );
                 painter.drawText( textRect, alignment, field.text );
-
             }
         }
     }
