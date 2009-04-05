@@ -22,17 +22,15 @@ TimeTrackingSummaryWidget::TimeTrackingSummaryWidget( QWidget* parent )
     , m_taskSelector( this )
     , m_selectedSummary( -1 )
 {
-    // FIXME use platform defined, hand-picked fonts, so far those have been selected for Mac and Linux:
 #ifdef Q_WS_MAC
     m_fixedFont.setFamily( "Andale Mono" );
     m_fixedFont.setPointSize( 11 );
     m_narrowFont = font(); // stay with the desktop
     m_narrowFont.setPointSize( 11 );
 #elif defined Q_WS_X11
-    m_fixedFont.setFamily(  "Helvetica" );
-    m_fixedFont.setPointSize( 8 );
-    m_narrowFont = font(); // stay with the desktop
-    m_narrowFont.setPointSize( 8 );
+    m_fixedFont = font();
+    m_fixedFont.setPointSizeF( 0.9 * m_fixedFont.pointSizeF() );
+    m_narrowFont = m_fixedFont;
 #endif
     //
     setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
@@ -222,11 +220,14 @@ TimeTrackingSummaryWidget::DataField TimeTrackingSummaryWidget::data( int column
     const QBrush& TaskBrushEven = palette().light();
     const QBrush& TaskBrushOdd = palette().midlight();
     const QBrush& TotalsRowBrush = HeaderBrush;
+    const QBrush TotalsRowEvenDayBrush = QBrush( TaskBrushEven.color().darker(125));
+    const QBrush HeaderEvenDayBrush = TotalsRowEvenDayBrush;
     const int HeaderRow = 0;
     const int TotalsRow = rowCount() - 2;
     const int TrackingRow = rowCount() - 1;
     const int TaskColumn = 0;
     const int TotalsColumn = columnCount() - 1;
+    const int Day = column - 1;
 
     DataField field;
     field.font = m_fixedFont;
@@ -239,8 +240,9 @@ TimeTrackingSummaryWidget::DataField TimeTrackingSummaryWidget::data( int column
         } else {
             field.text = QDate::shortDayName( column );
         }
-        field.background = HeaderBrush;
+        field.background = (Day % 2) ?  HeaderBrush: HeaderEvenDayBrush;
     } else if ( row == TotalsRow ) {
+        field.background = TotalsRowBrush;
         if ( column == TaskColumn ) {
             // field.text = tr( "Total" );
         } else if ( column == TotalsColumn ) {
@@ -250,14 +252,13 @@ TimeTrackingSummaryWidget::DataField TimeTrackingSummaryWidget::data( int column
             }
             field.text = hoursAndMinutes( total );
         } else {
-            int day = column - 1;
             int total = 0;
             Q_FOREACH( const WeeklySummary& s, m_summaries ) {
-                total += s.durations[day];
+                total += s.durations[Day];
             }
             field.text = hoursAndMinutes( total );
+            field.background = (Day % 2) ?  TotalsRowBrush: TotalsRowEvenDayBrush;
         }
-        field.background = TotalsRowBrush;
     } else if ( row == TrackingRow ) {
         // we only return one value, the paint method will treat this
         // column as a special case
