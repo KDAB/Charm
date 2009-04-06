@@ -66,6 +66,7 @@ void TimeTrackingView::stateChanged( State previous )
                 hide();
             }
         }
+        summaryWidget()->setSummaries( QVector<TimeTrackingSummaryWidget::WeeklySummary>() );
         summaryWidget()->handleActiveEvents();
         break;
     }
