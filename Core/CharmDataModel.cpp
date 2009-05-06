@@ -3,6 +3,7 @@
 #include <QList>
 #include <QtDebug>
 #include <QDateTime>
+#include <QSettings>
 
 #include "CharmConstants.h"
 #include "Configuration.h"
@@ -392,6 +393,11 @@ void CharmDataModel::startEventRequested( const Task& task )
     if ( CONFIGURATION.oneEventAtATime && !m_activeEventIds.isEmpty() ) {
         endAllEventsRequested();
     }
+
+    // clear the "last event editor datetime" so that the next manual "create event"
+    // doesn't use some old date
+    QSettings settings;
+    settings.remove( MetaKey_LastEventEditorDateTime );
 
     emit makeAndActivateEvent( task );
 }

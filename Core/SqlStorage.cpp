@@ -2,7 +2,6 @@
 #include <QFile>
 #include <QtDebug>
 #include <QSqlDatabase>
-#include <QSettings>
 #include <QStringList>
 #include <QTextStream>
 #include <QDateTime>

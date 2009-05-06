@@ -2,7 +2,6 @@
 #include <QtSql>
 #include <QtDebug>
 #include <QFileInfo>
-#include <QSettings>
 #include <QSqlDatabase>
 
 #include "Event.h"
