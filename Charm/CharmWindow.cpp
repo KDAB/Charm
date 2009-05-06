@@ -184,11 +184,7 @@ void CharmWindow::restoreGuiState()
     // restore visibility
     if ( settings.contains( MetaKey_MainWindowVisible ) ) {
         const bool visible = settings.value( MetaKey_MainWindowVisible ).toBool();
-        if ( visible ) {
-            show();
-        } else {
-            hide();
-        }
+        setVisible(visible);
     }
 }
 

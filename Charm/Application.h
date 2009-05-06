@@ -76,6 +76,9 @@ public:
      * It is an internal concept, not a notion for the end user. */
     CharmWindow& mainView();
 
+    /*! \reimp */ void saveState( QSessionManager & manager );
+    /*! \reimp */ void commitData( QSessionManager & manager );
+
 public slots:
     void setState( State state );
     void slotQuitApplication();

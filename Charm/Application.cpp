@@ -22,6 +22,7 @@
 #include "ViewHelpers.h"
 #include "Data.h"
 #include "Application.h"
+#include <QSessionManager>
 #include "SpecialKeysEventFilter.h"
 #include "ConfigurationDialog.h"
 #include "Idle/IdleDetector.h"
@@ -613,6 +614,34 @@ void Application::slotCharmWindowVisibilityChanged( bool visible )
 {
     if( !visible )
         m_closedWindow = dynamic_cast< CharmWindow* >( sender() );
+}
+
+void Application::saveState( QSessionManager & manager )
+{
+    //qDebug() << "saveState(QSessionManager)";
+    if (m_state == Connected) {
+        //QSettings settings;
+        //const QString prefix = manager.sessionId() + '/';
+        //qDebug() << "saveState" << prefix << "tasksWindow:" << m_tasksWindow.geometry();
+        // Visibility is done already. TODO: desktop number?
+        //settings.setValue(prefix + "tasks_window_shown", m_tasksWindow.isVisible());
+        //settings.setValue(prefix + "event_window_shown", m_eventWindow.isVisible());
+        //settings.setValue(prefix + "timetracker_window_shown", m_timeTracker.isVisible());
+        //settings.setValue(prefix + "tasks_window_geometry", m_tasksWindow.geometry());
+
+        m_tasksWindow.saveGuiState();
+        m_eventWindow.saveGuiState();
+        m_timeTracker.saveGuiState();
+    } else {
+        //qDebug() << "ignored";
+    }
+}
+
+void Application::commitData( QSessionManager & manager )
+{
+    // Do nothing here. The default implementation closes all windows,
+    // (just to see if the closeEvent is accepted), and this messes up
+    // our saving of the "visible" state later on in saveData.
 }
 
 #include "Application.moc"

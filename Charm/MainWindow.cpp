@@ -312,40 +312,6 @@
 //     dialog.exec();
 // }
 
-// FIXME implement generically for CharnWindow
-// void MainWindow::restoreGuiState()
-// {
-//     // restore geometry
-//     QSettings settings;
-//     if ( settings.contains( MetaKey_MainWindowGeometry ) ) {
-//         restoreGeometry( settings.value( MetaKey_MainWindowGeometry ).toByteArray() );
-//     }
-//     // restore visibility
-//     if ( settings.contains( MetaKey_MainWindowVisible ) ) {
-//         const bool visible = settings.value( MetaKey_MainWindowVisible ).toBool();
-//         if ( visible ) {
-//             show();
-//         } else {
-//             hide();
-//         }
-//     }
-//     // call all the view modes:
-//     for_each( m_modes.begin(), m_modes.end(),
-//               std::mem_fun( &ViewModeInterface::restoreGuiState ) );
-// }
-
-// FIXME implement generically for CharnWindow
-// void MainWindow::saveGuiState()
-// {
-//     QSettings settings;
-//     // save geometry
-//     settings.setValue( MetaKey_MainWindowGeometry, saveGeometry() );
-//     settings.setValue( MetaKey_MainWindowVisible, isVisible() );
-//     // call all the view modes:
-//     for_each( m_modes.begin(), m_modes.end(),
-//               std::mem_fun( &ViewModeInterface::saveGuiState ) );
-// }
-
 // void MainWindow::slotConfigurationChanged()
 // {
 // //     for_each( m_modes.begin(), m_modes.end(),

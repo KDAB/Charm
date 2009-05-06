@@ -52,31 +52,11 @@ void TimeTrackingView::stateChanged( State previous )
         connect( &Application::instance().timeSpans(), SIGNAL( timeSpansChanged() ),
                  SLOT( slotSelectTasksToShow() ) );
         DATAMODEL->registerAdapter( this );
-        // restore Gui state:
-        QSettings settings;
-        if ( settings.contains( MetaKey_TimeTrackerGeometry ) ) {
-            restoreGeometry( settings.value( MetaKey_TimeTrackerGeometry ).toByteArray() );
-        }
-        // restore visibility
-        if ( settings.contains( MetaKey_TimeTrackerVisible ) ) {
-            const bool visible = settings.value( MetaKey_TimeTrackerVisible ).toBool();
-            if ( visible ) {
-                show();
-            } else {
-                hide();
-            }
-        }
         summaryWidget()->setSummaries( QVector<TimeTrackingSummaryWidget::WeeklySummary>() );
         summaryWidget()->handleActiveEvents();
         break;
     }
-    case Disconnecting: {
-        // save Gui state:
-        QSettings settings;
-        settings.setValue( MetaKey_TimeTrackerGeometry, saveGeometry() );
-        settings.setValue( MetaKey_TimeTrackerVisible, isVisible() );
-        break;
-    }
+    case Disconnecting:
     case ShuttingDown:
     default:
         break;
