@@ -1,0 +1,9 @@
+<!DOCTYPE charm_timesheet_template>
+<charm_template>
+<timesheet userid="17">
+  <event eventid="1" installationid="1" taskid="7001" userid="17" end="2000-01-01T05:00:00" reportid="0" start="2000-01-01T00:00:00" >auto-generated entry 1</event>
+</timesheet>
+<timesheet userid="18">
+  <event eventid="1" installationid="1" taskid="4711" userid="18" end="2000-01-01T08:00:00" reportid="0" start="2000-01-01T00:00:00" >auto-generated entry 2</event>
+</timesheet>
+</charm_template>
