@@ -174,7 +174,7 @@ CommandLine::CommandLine(int argc, char** argv) :
 	{
 		msg += QObject::tr("No mode selected. Use one of -a filename, -r.");
 	}
-	else if (m_mode == Mode_AddTimesheet || m_mode == Mode_RemoveTimesheet)
+	else if ( m_mode == Mode_RemoveTimesheet)
 	{
 		if (m_index < 1)
 		{
@@ -187,7 +187,11 @@ CommandLine::CommandLine(int argc, char** argv) :
 			msg += QObject::tr("No userid specified. -a filename, "
 				" -r require a user id specified with -u.");
 		}
-	}
+	} else if ( m_mode == Mode_AddTimesheet ) {
+            if ( m_index > 0 ) {
+                msg += QObject::tr( "Specifying an index when adding a time sheet is not supported anymore." );
+            }
+        }
 
 	if (!msg.isEmpty())
 	{
