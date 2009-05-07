@@ -16,7 +16,7 @@ int main( int argc, char** argv ) {
 
     try {
         using namespace TimesheetGenerator;
-        cout << "Timesheet Generator" << endl;
+        cout << "Timesheet Generator, (C) 2009 Mirko Boehm, KDAB" << endl;
         Options options( argc, argv );
 
         // create a QDomDocument from the file content:
@@ -47,7 +47,6 @@ int main( int argc, char** argv ) {
             if ( !ok ) {
                 throw Exception( QObject::tr( "Mis-spelled or missing user id in timesheet entry." ) );
             }
-            cout << "Generating time sheet for user " << userId << "." << endl;
 
             // read event entries:
             EventList events;
@@ -58,7 +57,7 @@ int main( int argc, char** argv ) {
                   eventElem = eventElem.nextSiblingElement( eventTagName ) ) {
                 try {
                     Event event = Event::fromXml( eventElem );
-                    event.dump();
+                    // event.dump();
                     events << event;
                 } catch(  XmlSerializationException& e ) {
                     throw Exception( QObject::tr( "Error reading event: " ) + e.what() );
@@ -74,8 +73,10 @@ int main( int argc, char** argv ) {
             Q_ASSERT( !root.isNull() && !metadata.isNull() && !report.isNull() );
             // extend metadata tag: add year, and serial (week) number:
             // temp:
-            const int year = 2009;
-            const int week = 17;
+            // the start date of the week, specified on the command line:
+            const QDateTime start( options.date(), QTime(), Qt::UTC );
+            int year;
+            const int week = start.date().weekNumber( &year );
 
             {
                 QDomElement yearElement = document.createElement( "year" );
@@ -88,12 +89,16 @@ int main( int argc, char** argv ) {
                 QDomText weektext = document.createTextNode( QString::number( week ) );
                 weekElement.appendChild( weektext );
             }
+
             {   // effort
                 // make effort element:
                 QDomElement effort = document.createElement( "effort" );
                 report.appendChild( effort );
                 // create elements:
                 Q_FOREACH( Event event, events ) {
+                    const QDateTime end = start.addSecs( event.duration() );
+                    event.setStartDateTime( start );
+                    event.setEndDateTime( end );
                     effort.appendChild( event.toXml( document ) );
                 }
             }
@@ -114,7 +119,11 @@ int main( int argc, char** argv ) {
         return 0;
     } catch( TimesheetGenerator::UsageException& e ) {
         cerr << e.what() << endl;
-        // FIXME print usage
+        cout << "Usage: " << endl
+             << "   * TimesheetGenerator -h                              <-- get help"
+             << endl
+             << "   * TimesheetGenerator -f template-filename -d date    <-- generate timesheets from template for that date"
+             << endl;
         return 1;
     } catch( TimesheetGenerator::Exception& e ) {
         cerr << e.what() << endl;

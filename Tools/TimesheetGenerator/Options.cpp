@@ -17,7 +17,7 @@ Options::Options( int argc, char** argv )
 {
     opterr = 0;
     int ch;
-    while ((ch = getopt(argc, argv, "hf:")) != -1)
+    while ((ch = getopt(argc, argv, "hf:d:")) != -1)
     {
         if (ch == '?')
         {
@@ -26,6 +26,8 @@ Options::Options( int argc, char** argv )
             if (option == 'f')
             {
                 throw UsageException(QObject::tr( "Option -f requires a filename argument" ) );
+            } else if ( option == 'd' ) {
+                throw UsageException(QObject::tr( "Option -d requires a date argument (e.g. 2009-01-01)" ) );
             } else {
                 int code = static_cast<int> ( option );
                 throw UsageException(QObject::tr("Unknown character %1").arg( code ) );
@@ -37,7 +39,18 @@ Options::Options( int argc, char** argv )
             mFile = QString::fromLocal8Bit(optarg);
             break;
         }
+        case 'd': {
+            const QString text = QString::fromLocal8Bit( optarg );
+            QDate date = QDate::fromString( text, "yyyy-MM-dd" );
+            if ( date.isValid() ) {
+                mDate = date;
+            } else {
+                throw UsageException(QObject::tr("Cannot parse date \"%1\"").arg( text ) );
+            }
+            break;
+        }
         case 'h':
+            throw UsageException();
         default:
             break;
         }
@@ -46,15 +59,14 @@ Options::Options( int argc, char** argv )
     if ( mFile.isEmpty() ) {
         throw UsageException(QObject::tr( "No filename specified (-f), aborting." ) );
     }
+    if ( ! mDate.isValid() ) {
+        throw UsageException( QObject::tr( "No date specified (-d), aborting." ) );
+    }
 
     using namespace std;
-    cout << "Parsing file \"" << qPrintable( mFile ) << "\"... ";
     QFile file( mFile );
     if ( ! file.exists() ) {
-        cout << "not found." << endl;
         throw UsageException(QObject::tr( "Specified file not found, aborting." ) );
-    } else {
-        cout << "found." << endl;
     }
 }
 
@@ -62,3 +74,9 @@ QString Options::file() const
 {
     return mFile;
 }
+
+QDate Options::date() const
+{
+    return mDate;
+}
+
