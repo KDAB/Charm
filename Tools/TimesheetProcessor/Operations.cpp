@@ -46,8 +46,6 @@ void checkOrCreateUser(const CommandLine& cmd)
 void addTimesheet(const CommandLine& cmd)
 {
 	using namespace std;
-	cout << "Adding report " << cmd.index() << " for user " << cmd.userid()
-			<< endl;
 
 	// load the time sheet:
 	QFile file(cmd.filename() );
@@ -134,6 +132,8 @@ void addTimesheet(const CommandLine& cmd)
             }
         }
         Q_ASSERT( index > 0 );
+	cout << "Adding report " << index << " for user " << cmd.userid()
+             << endl;
         // add the events to the database
 	Q_FOREACH( Event e, events )
 	{
