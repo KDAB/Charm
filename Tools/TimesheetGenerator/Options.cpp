@@ -1,5 +1,6 @@
 extern "C"
 {
+#include <stdlib.h>
 #include <getopt.h>
 }
 
@@ -7,6 +8,8 @@ extern "C"
 
 #include <QObject>
 #include <QFile>
+
+#include "Core/CharmVersion.h"
 
 #include "Exceptions.h"
 #include "Options.h"
@@ -17,7 +20,7 @@ Options::Options( int argc, char** argv )
 {
     opterr = 0;
     int ch;
-    while ((ch = getopt(argc, argv, "hf:d:")) != -1)
+    while ((ch = getopt(argc, argv, "vhf:d:")) != -1)
     {
         if (ch == '?')
         {
@@ -51,6 +54,10 @@ Options::Options( int argc, char** argv )
         }
         case 'h':
             throw UsageException();
+        case 'v':
+            std::cout << CHARM_VERSION << std::endl;
+            exit( 0 );
+            break;
         default:
             break;
         }
