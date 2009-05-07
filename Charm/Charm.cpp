@@ -1,8 +1,9 @@
 #include <QMessageBox>
 #include <QtPlugin>
 
+#include "Core/CharmVersion.h"
+
 #include "Application.h"
-#include "CharmVersion.h"
 
 #if defined CHARM_BUILD_STATIC_QT
 Q_IMPORT_PLUGIN(qjpeg)

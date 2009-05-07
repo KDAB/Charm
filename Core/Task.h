@@ -80,7 +80,6 @@ public:
 
     static bool lowerTaskId( const Task& left, const Task& right );
 
-
 private:
     int m_id;
     int m_parent;

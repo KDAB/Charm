@@ -13,6 +13,7 @@ public:
         Mode_InitializeDatabase,
         Mode_CheckOrCreateUser,
         Mode_DescribeUsage,
+        Mode_PrintVersion,
         Mode_AddTimesheet,
         Mode_RemoveTimesheet,
         Mode_ExportProjectcodes,

@@ -16,7 +16,7 @@ CommandLine::CommandLine(int argc, char** argv) :
 {
 	opterr = 0;
 	int ch;
-	while ((ch = getopt(argc, argv, "hza:x:c:ri:u:")) != -1)
+	while ((ch = getopt(argc, argv, "vhza:x:c:ri:u:")) != -1)
 	{
 		if (ch == '?')
 		{
@@ -145,6 +145,9 @@ CommandLine::CommandLine(int argc, char** argv) :
 			// initialize the database
 			m_mode = Mode_InitializeDatabase;
 			break;
+                case 'v':
+                    m_mode = Mode_PrintVersion;
+                    break;
 		case 'h':
 		default:
 			// help/usage
@@ -228,6 +231,8 @@ void CommandLine::usage()
 	cout << "Timesheet Processor, (C) 2008 Mirko Boehm, KDAB" << endl
 			<< "Usage: " << endl
 			<< "   * TimesheetProzessor -h                              <-- get help"
+			<< endl
+			<< "   * TimesheetProzessor -v                              <-- print version"
 			<< endl
 			<< "   * TimesheetProzessor -a filename -i index -u userid  <-- add timesheet from file with index"
 			<< endl

@@ -30,4 +30,10 @@ StaticRelease.setConfigName( 'Static Release' )
 StaticRelease.setPackageDependencies( [ 'Qt-4.[4-9].?-Static-Release' ] )
 StaticRelease.setOptions( '-D CMAKE_BUILD_TYPE=release -D CHARM_BUILD_STATIC_QT:BOOL=true' )
 
-Product.build( [ Debug, Release, StaticRelease] )
+# a configuration that does not use any Autobuild environments
+PlatformBuild = Configuration( Product, "Platform Build" )
+PlatformBuild.setBuilder( 'cmake' )
+PlatformBuild.setOptions( '-D CMAKE_BUILD_TYPE=release' )
+
+# platform build is not enabled by default: 
+Product.build( [ Debug, Release, StaticRelease ] )

@@ -5,6 +5,8 @@
 
 #include <QObject>
 
+#include "Core/CharmVersion.h"
+
 #include "CommandLine.h"
 #include "Exceptions.h"
 #include "Operations.h"
@@ -33,6 +35,9 @@ int main(int argc, char** argv)
             break;
         case CommandLine::Mode_ExportProjectcodes:
             exportProjectcodes( cmd );
+            break;
+        case CommandLine::Mode_PrintVersion:
+            cout << CHARM_VERSION << endl;
             break;
         case CommandLine::Mode_DescribeUsage:
         default:
