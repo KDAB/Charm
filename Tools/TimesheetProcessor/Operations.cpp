@@ -120,7 +120,11 @@ void addTimesheet(const CommandLine& cmd)
         // retrieve index
         {
             QSqlQuery query( database.database() );
-            query.exec( "SELECT id from timesheets WHERE id = last_insert_id()" );
+            if ( ! query.exec( "SELECT id from timesheets WHERE id = last_insert_id()" ) ) {
+                QString msg = QObject::tr( "SQL error retrieving index for time sheet %1.").arg(cmd.filename() );
+                throw TimesheetProcessorException( msg );
+            }
+
             if ( query.next() ) {
                 const int idField = query.record().indexOf( "id" );
                 index = query.value( idField ).toInt();
@@ -156,8 +160,20 @@ void removeTimesheet(const CommandLine& cmd)
 
 	Database database;
 	database.login();
+	SqlRaiiTransactor transaction( database.database() );
 	database.deleteEventsForReport( cmd.userid(), cmd.index() );
+        {
+            QSqlQuery query( database.database() );
+            query.prepare( "DELETE from timesheets WHERE id = :index" );
+            query.bindValue( QString::fromAscii( ":index" ), cmd.index() );
 
+            if ( ! query.exec() ) {
+                QString msg = QObject::tr( "Error removing timesheet %1.").arg(cmd.index() );
+                throw TimesheetProcessorException( msg );
+            }
+        }
+
+	transaction.commit();
 	cout << "Report " << cmd.index() << " removed" << endl;
 }
 
