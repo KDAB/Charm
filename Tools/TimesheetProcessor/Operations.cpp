@@ -5,6 +5,9 @@
 #include <QObject>
 #include <QDomDocument>
 #include <QSqlDatabase>
+#include <QVariant>
+#include <QSqlQuery>
+#include <QSqlRecord>
 
 #include <Core/User.h>
 #include <Core/Event.h>
@@ -96,18 +99,45 @@ void addTimesheet(const CommandLine& cmd)
 	// 2) log into database
 	Database database;
 	database.login();
+        int index = -1;
 
 	// check for the user id
 	database.checkUserid(cmd.userid());
 
 	SqlRaiiTransactor transaction( database.database() );
+        // add time sheet to time sheets list
+        {
+            QSqlQuery query( database.database() );
+            query.prepare( "INSERT into timesheets VALUES( 0, :filename, NULL, NULL, NULL, NULL, :userid, 0)" );
+            query.bindValue( QString::fromAscii( ":filename" ), cmd.filename() );
+            // FIXME add original file name?
+            query.bindValue( ":userid", cmd.userid() );
+            if ( ! query.exec() ) {
+                QString msg = QObject::tr( "Error adding time sheet %1.").arg(cmd.filename() );
+                throw TimesheetProcessorException( msg );
+            }
+        }
+        // retrieve index
+        {
+            QSqlQuery query( database.database() );
+            query.exec( "SELECT id from timesheets WHERE id = last_insert_id()" );
+            if ( query.next() ) {
+                const int idField = query.record().indexOf( "id" );
+                index = query.value( idField ).toInt();
+            } else {
+                QString msg = QObject::tr( "Error retrieving index for time sheet %1.").arg(cmd.filename() );
+                throw TimesheetProcessorException( msg );
+            }
+        }
+        Q_ASSERT( index > 0 );
+        // add the events to the database
 	Q_FOREACH( Event e, events )
 	{
 		// check for the project code, if this does not throw an exception, the task id exists
 		Task task = database.getTask( e.taskId());
 		// FIXME check for reporting period for the task, not implemented in the DB
 		e.setUserId( cmd.userid() );
-		e.setReportId( cmd.index());
+		e.setReportId( index );
 		database.addEvent( e );
 		totalSeconds += e.duration();
 	}
@@ -115,7 +145,8 @@ void addTimesheet(const CommandLine& cmd)
 	cout << "Report added" << endl
 		<< "total:" << totalSeconds << endl
 		<< "year:" << year.toLocal8Bit().constData() << endl
-		<< "week:" << week.toLocal8Bit().constData() << endl;
+		<< "week:" << week.toLocal8Bit().constData() << endl
+                << "index:" << index << endl;
 }
 
 void removeTimesheet(const CommandLine& cmd)
