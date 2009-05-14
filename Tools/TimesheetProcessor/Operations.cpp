@@ -94,63 +94,91 @@ void addTimesheet(const CommandLine& cmd)
 			throw TimesheetProcessorException( msg );
 		}
 	}
-	// 2) log into database
-	Database database;
-	database.login();
+
+        // 2) log into database
+        Database database;
+        database.login();
         int index = -1;
 
-	// check for the user id
-	database.checkUserid(cmd.userid());
+        // check for the user id
+        database.checkUserid(cmd.userid());
 
-	SqlRaiiTransactor transaction( database.database() );
-        // add time sheet to time sheets list
-        {
-            QSqlQuery query( database.database() );
-            query.prepare( "INSERT into timesheets VALUES( 0, :filename, NULL, NULL, NULL, NULL, :userid, 0)" );
-            query.bindValue( QString::fromAscii( ":filename" ), cmd.filename() );
-            // FIXME add original file name?
-            query.bindValue( ":userid", cmd.userid() );
-            if ( ! query.exec() ) {
-                QString msg = QObject::tr( "Error adding time sheet %1.").arg(cmd.filename() );
-                throw TimesheetProcessorException( msg );
-            }
-        }
-        // retrieve index
-        {
-            QSqlQuery query( database.database() );
-            if ( ! query.exec( "SELECT id from timesheets WHERE id = last_insert_id()" ) ) {
-                QString msg = QObject::tr( "SQL error retrieving index for time sheet %1.").arg(cmd.filename() );
-                throw TimesheetProcessorException( msg );
+        try {
+            SqlRaiiTransactor transaction( database.database() );
+
+            // add time sheet to time sheets list
+            {
+                QSqlQuery query( database.database() );
+                query.prepare( "INSERT into timesheets VALUES( 0, :filename, NULL, NULL, NULL, NULL, :userid, 0)" );
+                query.bindValue( QString::fromAscii( ":filename" ), cmd.filename() );
+                // FIXME add original file name?
+                query.bindValue( ":userid", cmd.userid() );
+                if ( ! query.exec() ) {
+                    QString msg = QObject::tr( "Error adding time sheet %1.").arg(cmd.filename() );
+                    throw TimesheetProcessorException( msg );
+                }
             }
 
-            if ( query.next() ) {
-                const int idField = query.record().indexOf( "id" );
-                index = query.value( idField ).toInt();
-            } else {
-                QString msg = QObject::tr( "Error retrieving index for time sheet %1.").arg(cmd.filename() );
-                throw TimesheetProcessorException( msg );
+            // retrieve index
+            {
+                QSqlQuery query( database.database() );
+                if ( ! query.exec( "SELECT id from timesheets WHERE id = last_insert_id()" ) ) {
+                    QString msg = QObject::tr( "SQL error retrieving index for time sheet %1.").arg(cmd.filename() );
+                    throw TimesheetProcessorException( msg );
+                }
+
+                if ( query.next() ) {
+                    const int idField = query.record().indexOf( "id" );
+                    index = query.value( idField ).toInt();
+                } else {
+                    QString msg = QObject::tr( "Error retrieving index for time sheet %1.").arg(cmd.filename() );
+                    throw TimesheetProcessorException( msg );
+                }
             }
+
+            Q_ASSERT( index > 0 );
+
+            cout << "Adding report " << index << " for user " << cmd.userid() << endl;
+
+            // add the events to the database
+            Q_FOREACH( Event e, events )
+            {
+            	// check for the project code, if this does not throw an exception, the task id exists
+            	Task task = database.getTask( e.taskId());
+            	// FIXME check for reporting period for the task, not implemented in the DB
+            	e.setUserId( cmd.userid() );
+            	e.setReportId( index );
+            	database.addEvent( e );
+            	totalSeconds += e.duration();
+            }
+
+            transaction.commit();
+
+            cout << "Report added" << endl
+                 << "total:" << totalSeconds << endl
+                 << "year:" << year.toLocal8Bit().constData() << endl
+                 << "week:" << week.toLocal8Bit().constData() << endl
+                 << "index:" << index << endl;
+
+        } catch (TimesheetProcessorException &e) {
+            if ( index >= 0 ) {
+                // A valid index means that something with the events/tasks went wrong and triggered the
+                // exception. In that case we already created an entry in the Charm/timesheets table that
+                // we would need to remove again cause adding the timesheet just failed. Normally this
+                // should have been done by the transaction we created above. Cause we did not commit()
+                // the transction should be rollback() and there should be no item with id=index in the
+                // Charm/timesheets table any longer...
+                QSqlQuery query( database.database() );
+                if ( query.exec( QString("SELECT id from timesheets WHERE id = %1").arg(index) ) ) {
+                    if ( query.next() ) { //WTF, if that happens that something went wrong with the transaction
+                        QSqlQuery deletequery( database.database() );
+                        bool ok = deletequery.exec( QString("DELETE FROM timesheets WHERE id = %1").arg(index) );
+                        qDebug() << "WTF; The transaction did not rollback as expected. Trying to cleanup manually. index=" << index << "ok=" << ok;
+                    }
+                }
+            }
+            throw e;
         }
-        Q_ASSERT( index > 0 );
-	cout << "Adding report " << index << " for user " << cmd.userid()
-             << endl;
-        // add the events to the database
-	Q_FOREACH( Event e, events )
-	{
-		// check for the project code, if this does not throw an exception, the task id exists
-		Task task = database.getTask( e.taskId());
-		// FIXME check for reporting period for the task, not implemented in the DB
-		e.setUserId( cmd.userid() );
-		e.setReportId( index );
-		database.addEvent( e );
-		totalSeconds += e.duration();
-	}
-	transaction.commit();
-	cout << "Report added" << endl
-		<< "total:" << totalSeconds << endl
-		<< "year:" << year.toLocal8Bit().constData() << endl
-		<< "week:" << week.toLocal8Bit().constData() << endl
-                << "index:" << index << endl;
 }
 
 void removeTimesheet(const CommandLine& cmd)
