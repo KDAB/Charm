@@ -68,7 +68,6 @@ void addTimesheet(const CommandLine& cmd)
 	// add it to the database:
 	// 1) make a list of all the events:
 	EventList events;
-	int totalSeconds = 0;
 	QDomElement charmReportElement = doc.firstChildElement("charmreport");
 	QDomElement metadataElement = charmReportElement.firstChildElement("metadata");
 	QDomElement yearElement = metadataElement.firstChildElement("year");
@@ -82,12 +81,15 @@ void addTimesheet(const CommandLine& cmd)
 		QString msg = QObject::tr("Invalid structure in file %1.").arg(cmd.filename());
 		throw TimesheetProcessorException( msg);
 	}
+
+	int totalSeconds = 0;
 	QDomElement element = effortElement.firstChildElement("event");
 	for (; !element.isNull(); element = element.nextSiblingElement("event"))
 	{
 		try {
 			Event e = Event::fromXml(element);
 			events << e;
+			totalSeconds += e.duration();
 			// e.dump();
 		} catch(XmlSerializationException& e ) {
 			QString msg = QObject::tr("Syntax error in file %1.").arg(cmd.filename());
@@ -109,9 +111,12 @@ void addTimesheet(const CommandLine& cmd)
             // add time sheet to time sheets list
             {
                 QSqlQuery query( database.database() );
-                query.prepare( "INSERT into timesheets VALUES( 0, :filename, NULL, NULL, NULL, NULL, :userid, 0)" );
+                query.prepare( "INSERT into timesheets VALUES( 0, :filename, :original_filename, :year, :week, :total, :userid, 0)" );
                 query.bindValue( QString::fromAscii( ":filename" ), cmd.filename() );
-                // FIXME add original file name?
+                query.bindValue( QString::fromAscii( ":original_filename" ), "" ); // FIXME add original file name?
+                query.bindValue( QString::fromAscii( ":year" ), year );
+                query.bindValue( QString::fromAscii( ":week" ), week );
+                query.bindValue( QString::fromAscii( ":total" ), totalSeconds );
                 query.bindValue( ":userid", cmd.userid() );
                 if ( ! query.exec() ) {
                     QString msg = QObject::tr( "Error adding time sheet %1.").arg(cmd.filename() );
@@ -149,7 +154,6 @@ void addTimesheet(const CommandLine& cmd)
             	e.setUserId( cmd.userid() );
             	e.setReportId( index );
             	database.addEvent( e );
-            	totalSeconds += e.duration();
             }
 
             transaction.commit();
