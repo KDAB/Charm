@@ -196,16 +196,29 @@ void removeTimesheet(const CommandLine& cmd)
 	database.deleteEventsForReport( cmd.userid(), cmd.index() );
         {
             QSqlQuery query( database.database() );
-            query.prepare( "DELETE from timesheets WHERE id = :index" );
+            if ( ! query.prepare( "DELETE from timesheets WHERE id = :index" ) ) {
+                QString msg = QObject::tr( "Error prepare to remove timesheet %1.").arg(cmd.index() );
+                throw TimesheetProcessorException( msg );
+            }
+
             query.bindValue( QString::fromAscii( ":index" ), cmd.index() );
 
             if ( ! query.exec() ) {
                 QString msg = QObject::tr( "Error removing timesheet %1.").arg(cmd.index() );
                 throw TimesheetProcessorException( msg );
             }
+
+            if ( query.numRowsAffected() < 1 ) {
+                QString msg = QObject::tr( "No such timesheet %1.").arg(cmd.index() );
+                throw TimesheetProcessorException( msg );
+            }
         }
 
-	transaction.commit();
+	if ( ! transaction.commit() ) {
+		QString msg = QObject::tr( "Error commit remove timesheet %1.").arg(cmd.index() );
+		throw TimesheetProcessorException( msg );
+	}
+
 	cout << "Report " << cmd.index() << " removed" << endl;
 }
 
