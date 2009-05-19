@@ -15,6 +15,7 @@ GenericName[nds]=Tietkieker
 GenericName[pt]=Gestor de Tempo
 GenericName[pt_BR]=Registro de tempo
 GenericName[sv]=Tidmätning
+GenericName[tr]=Zaman İzleyici
 GenericName[uk]=Інструмент стеження за часом
 GenericName[x-test]=xxTime Trackerxx
 Exec=Charm
