@@ -63,7 +63,7 @@ private slots:
     void actionEditTask();
     void actionDeleteTask();
     void slotFiltertextChanged( const QString& filtertext );
-    void taskPrefilteringChanged( int );
+    void taskPrefilteringChanged();
     void slotContextMenuRequested( const QPoint& );
 
     void slotEventActivated( EventId );

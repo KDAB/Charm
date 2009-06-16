@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>455</width>
-    <height>197</height>
+    <width>359</width>
+    <height>350</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -34,54 +34,43 @@
       </widget>
      </item>
      <item>
-      <spacer>
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
+      <widget class="QToolButton" name="showCurrentOnly">
+       <property name="toolTip">
+        <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Bitstream Vera Sans'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Show only &lt;span style=&quot; text-decoration: underline;&quot;&gt;current&lt;/span&gt; tasks. Tasks are current if&lt;/p&gt;
+&lt;ul style=&quot;-qt-list-indent: 1;&quot;&gt;&lt;li style=&quot; margin-top:12px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;the date they are valid from is in the past, or empty,&lt;/li&gt;
+&lt;li style=&quot; margin-top:0px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;and if the date they are valid to is in the future, or empty.&lt;/li&gt;&lt;/ul&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
+       <property name="text">
+        <string>current</string>
        </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QComboBox" name="tasksCombo">
-       <item>
-        <property name="text">
-         <string>All Tasks</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Current Tasks</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Subscribed Tasks</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Current And Subscribed Tasks</string>
-        </property>
-       </item>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
       </widget>
      </item>
      <item>
-      <spacer>
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
+      <widget class="QToolButton" name="showSubscribedOnly">
+       <property name="toolTip">
+        <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Bitstream Vera Sans'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Show only &lt;span style=&quot; text-decoration: underline;&quot;&gt;subscribed&lt;/span&gt; tasks. To subscribe to tasks, check the box on the right of the task name.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>0</width>
-         <height>20</height>
-        </size>
+       <property name="text">
+        <string>my tasks</string>
        </property>
-      </spacer>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QToolButton" name="buttonClearFilter">
@@ -119,7 +108,6 @@
  <tabstops>
   <tabstop>goButton</tabstop>
   <tabstop>stopButton</tabstop>
-  <tabstop>tasksCombo</tabstop>
   <tabstop>filterLineEdit</tabstop>
   <tabstop>buttonClearFilter</tabstop>
   <tabstop>treeView</tabstop>

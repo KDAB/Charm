@@ -97,15 +97,16 @@ TasksView::TasksView( QWidget* parent )
     // filter setup
     connect( m_ui->filterLineEdit, SIGNAL( textChanged( const QString& ) ),
              SLOT( slotFiltertextChanged( const QString& ) ) );
-    connect( m_ui->tasksCombo, SIGNAL( currentIndexChanged( int ) ),
-             SLOT( taskPrefilteringChanged( int ) ) );
+    connect( m_ui->showCurrentOnly, SIGNAL( clicked( bool ) ),
+             SLOT( taskPrefilteringChanged() ) );
+    connect( m_ui->showSubscribedOnly, SIGNAL( clicked( bool ) ),
+             SLOT( taskPrefilteringChanged() ) );
     m_ui->treeView->setContextMenuPolicy( Qt::CustomContextMenu );
     connect( m_ui->treeView, SIGNAL( customContextMenuRequested( const QPoint& ) ),
              SLOT( slotContextMenuRequested( const QPoint& ) ) );
 
     connect( m_ui->treeView, SIGNAL( doubleClicked( const QModelIndex& ) ),
              SLOT( slotItemDoubleClicked( const QModelIndex& ) ) );
-    m_ui->tasksCombo->setCurrentIndex( 0 );
 }
 
 TasksView::~TasksView()
@@ -350,8 +351,11 @@ void TasksView::configureUi()
 
  void TasksView::configurationChanged()
  {
-     Q_ASSERT( CONFIGURATION.taskPrefilteringMode >= 0 && CONFIGURATION.taskPrefilteringMode < m_ui->tasksCombo->count() );
-     m_ui->tasksCombo->setCurrentIndex( CONFIGURATION.taskPrefilteringMode );
+     const Configuration::TaskPrefilteringMode mode = CONFIGURATION.taskPrefilteringMode;
+     const bool showSubscribedOnly = mode == Configuration::TaskPrefilter_SubscribedOnly || mode == Configuration::TaskPrefilter_SubscribedAndCurrentOnly;
+     const bool showCurrentOnly = mode == Configuration::TaskPrefilter_CurrentOnly || mode == Configuration::TaskPrefilter_SubscribedAndCurrentOnly;
+     m_ui->showSubscribedOnly->setChecked( showSubscribedOnly );
+     m_ui->showCurrentOnly->setChecked( showCurrentOnly );
 
      m_ui->treeView->setFont( configuredFont() );
      m_ui->treeView->header()->hide();
@@ -375,15 +379,26 @@ void TasksView::configureUi()
      if ( ! filtertextRaw.isEmpty() ) m_ui->treeView->expandAll();
  }
 
- void TasksView::taskPrefilteringChanged( int index )
+ void TasksView::taskPrefilteringChanged()
  {
-     ViewFilter* filter = Application::instance().model().taskModel();
-     if ( index >= 0 && index < Configuration::TaskPrefilter_NumberOfModes ) {
-         const Configuration::TaskPrefilteringMode mode = static_cast<Configuration::TaskPrefilteringMode>( index );
-         CONFIGURATION.taskPrefilteringMode = mode;
-         filter->prefilteringModeChanged();
-         emit saveConfiguration();
+     // find out about the selected mode:
+     Configuration::TaskPrefilteringMode mode;
+     const bool showCurrentOnly = m_ui->showCurrentOnly->isChecked();
+     const bool showSubscribedOnly = m_ui->showSubscribedOnly->isChecked();
+     if (  showCurrentOnly && showSubscribedOnly ) {
+         mode = Configuration::TaskPrefilter_SubscribedAndCurrentOnly;
+     } else if ( showCurrentOnly && ! showSubscribedOnly ) {
+         mode = Configuration::TaskPrefilter_CurrentOnly;
+     } else if ( ! showCurrentOnly && showSubscribedOnly ) {
+         mode = Configuration::TaskPrefilter_SubscribedOnly;
+     } else {
+         mode = Configuration::TaskPrefilter_ShowAll;
      }
+
+     ViewFilter* filter = Application::instance().model().taskModel();
+     CONFIGURATION.taskPrefilteringMode = mode;
+     filter->prefilteringModeChanged();
+     emit saveConfiguration();
  }
 
  void TasksView::slotContextMenuRequested( const QPoint& point )

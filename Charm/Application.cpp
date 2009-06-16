@@ -372,7 +372,7 @@ void Application::enterConnectingState()
         if (m_controller.connectToBackend())
         {
             // delay switch to Connected state a bit to show the start screen:
-            QTimer::singleShot(1200, this, SLOT(slotGoToConnectedState()));
+            QTimer::singleShot(0, this, SLOT(slotGoToConnectedState()));
         }
         else
         {
@@ -422,7 +422,7 @@ void Application::leaveDisconnectingState()
 
 void Application::enterShuttingDownState()
 {
-    QTimer::singleShot(1200, this, SLOT(quit()));
+    QTimer::singleShot(0, this, SLOT(quit()));
 }
 
 void Application::leaveShuttingDownState()
