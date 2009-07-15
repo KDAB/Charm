@@ -103,6 +103,8 @@ signals:
 private:
     void enterStartingUpState();
     void leaveStartingUpState();
+    void enterConfiguringState();
+    void leaveConfiguringState();
     void enterConnectingState();
     void leaveConnectingState();
     void enterConnectedState();

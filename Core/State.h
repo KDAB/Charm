@@ -6,6 +6,7 @@
 enum State {
     Constructed,
     StartingUp,
+    Configuring,
     Connecting,
     Connected,
     Disconnecting,

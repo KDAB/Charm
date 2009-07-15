@@ -242,6 +242,9 @@ void Application::setState(State state)
     case StartingUp:
         leaveStartingUpState();
         break;
+    case Configuring:
+        leaveConfiguringState();
+        break;
     case Connecting:
         leaveConnectingState();
         break;
@@ -273,6 +276,9 @@ void Application::setState(State state)
         // m_mainWindow.stateChanged(previous);
         // m_timeTracker.stateChanged( previous );
         enterStartingUpState();
+        break;
+    case Configuring:
+        enterConfiguringState();
         break;
     case Connecting:
         m_model.charmDataModel()->stateChanged(previous, state);
@@ -331,25 +337,25 @@ Application& Application::instance()
 
 void Application::enterStartingUpState()
 {
-    // load configuration
-    // ...
-    // verify configuration
-    // ...
-    // if configuration is incomplete or buggy configure
-    // FIXME ^^^
-    // then go to connecting state
+    emit goToState( Configuring );
+}
+
+void Application::leaveStartingUpState()
+{
+}
+
+void Application::enterConfiguringState()
+{
     if (configure())
     { // if all ok, go to connecting state
         emit goToState(Connecting);
-    }
-    else
-    {
+    } else {
         // user has cancelled configure, exit the application
         quit();
     }
 }
 
-void Application::leaveStartingUpState()
+void Application::leaveConfiguringState()
 {
 }
 

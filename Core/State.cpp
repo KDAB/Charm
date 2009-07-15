@@ -3,6 +3,7 @@
 const char* StateNames[] = {
     "Constructed",
     "StartingUp",
+    "Configuring",
     "Connecting",
     "Connected",
     "Disconnecting",
