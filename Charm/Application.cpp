@@ -409,7 +409,6 @@ void Application::leaveConnectingState()
 
 void Application::enterConnectedState()
 {
-    slotSaveConfiguration(); // FIXME why? this should go away once SettingUpBackend becomes its own state
 }
 
 void Application::leaveConnectedState()

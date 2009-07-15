@@ -35,6 +35,8 @@ TasksWindow::TasksWindow( QWidget* parent )
     setCentralWidget( m_tasksView );
     connect( m_tasksView, SIGNAL( emitCommand( CharmCommand* ) ),
              SIGNAL( emitCommand( CharmCommand* ) ) );
+    connect( m_tasksView, SIGNAL( saveConfiguration() ),
+             SIGNAL( saveConfiguration() ) );
 }
 
 TasksWindow::~TasksWindow()
