@@ -24,6 +24,8 @@ public:
 
     QString filename() const;
 
+    QString userComment() const;
+
     QString exportFilename() const;
 
     QString userName() const;
@@ -37,6 +39,7 @@ public:
 
 private:
     QString m_filename;
+    QString m_userComment;
     QString m_userName;
     QString m_exportFilename;
     Mode m_mode;

@@ -16,7 +16,7 @@ CommandLine::CommandLine(int argc, char** argv) :
 {
 	opterr = 0;
 	int ch;
-	while ((ch = getopt(argc, argv, "vhza:x:c:ri:u:")) != -1)
+	while ((ch = getopt(argc, argv, "vhza:x:c:ri:u:m:")) != -1)
 	{
 		if (ch == '?')
 		{
@@ -37,6 +37,10 @@ CommandLine::CommandLine(int argc, char** argv) :
 				throw UsageException(QObject::tr(
 						"Option -x requires a filename argument"));
 			}
+                        if ( option == 'm' )
+                        {
+                            throw UsageException( QObject::tr( "Option -m requires a user comment argument" ) );
+                        }
 			if (isprint(option))
 			{
 				throw UsageException(
@@ -141,6 +145,16 @@ CommandLine::CommandLine(int argc, char** argv) :
 			}
 			break;
 		}
+                case 'm':
+                {
+                    if ( m_userComment.isEmpty() )
+                    {
+                        QString msg = QObject::tr( "Multiple user comments specified, please use only one" );
+                        throw UsageException( msg );
+                    }
+                    QString arg = QString::fromLocal8Bit( optarg );
+                    m_userComment = arg;
+                }
 		case 'z':
 			// initialize the database
 			m_mode = Mode_InitializeDatabase;
@@ -209,6 +223,11 @@ QString CommandLine::userName() const
 	return m_userName;
 }
 
+QString CommandLine::userComment() const
+{
+    return m_userComment;
+}
+
 QString CommandLine::filename() const
 {
 	return m_filename;
@@ -234,18 +253,18 @@ void CommandLine::usage()
 	using namespace std;
 	cout << "Timesheet Processor, (C) 2008 Mirko Boehm, KDAB" << endl
 			<< "Usage: " << endl
-			<< "   * TimesheetProzessor -h                              <-- get help"
+			<< "   * TimesheetProzessor -h                                         <-- get help"
 			<< endl
-			<< "   * TimesheetProzessor -v                              <-- print version"
+			<< "   * TimesheetProzessor -v                                         <-- print version"
 			<< endl
-			<< "   * TimesheetProzessor -a filename -i index -u userid  <-- add timesheet from file with index"
+			<< "   * TimesheetProzessor -a filename -i index -u userid -m comment  <-- add timesheet from file with index"
 			<< endl
-			<< "   * TimesheetProzessor -r -i index -u userid           <-- remove timesheet at index"
+			<< "   * TimesheetProzessor -r -i index -u userid                      <-- remove timesheet at index"
 			<< endl
-			<< "   * TimesheetProzessor -c username                     <-- create user if user does not exist"
+			<< "   * TimesheetProzessor -c username                                <-- create user if user does not exist"
 			<< endl
-			<< "   * TimesheetProzessor -x filename                     <-- export project codes to XML file"
+			<< "   * TimesheetProzessor -x filename                                <-- export project codes to XML file"
 			<< endl
-			<< "   * TimesheetProzessor -z                              <-- initialize database (careful!)"
+			<< "   * TimesheetProzessor -z                                         <-- initialize database (careful!)"
 			<< endl;
 }

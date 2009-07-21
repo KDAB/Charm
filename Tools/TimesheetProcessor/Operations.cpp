@@ -113,7 +113,7 @@ void addTimesheet(const CommandLine& cmd)
 			QSqlQuery query( database.database() );
 			query.prepare( "INSERT into timesheets VALUES( 0, :filename, :original_filename, :year, :week, :total, :userid, 0)" );
 			query.bindValue( QString::fromAscii( ":filename" ), cmd.filename() );
-			query.bindValue( QString::fromAscii( ":original_filename" ), "" ); // FIXME add original file name?
+			query.bindValue( QString::fromAscii( ":original_filename" ), cmd.userComment() );
 			query.bindValue( QString::fromAscii( ":year" ), year );
 			query.bindValue( QString::fromAscii( ":week" ), week );
 			query.bindValue( QString::fromAscii( ":total" ), totalSeconds );
