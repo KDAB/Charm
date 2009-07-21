@@ -147,13 +147,14 @@ CommandLine::CommandLine(int argc, char** argv) :
 		}
                 case 'm':
                 {
-                    if ( m_userComment.isEmpty() )
+                    if ( ! m_userComment.isEmpty() )
                     {
                         QString msg = QObject::tr( "Multiple user comments specified, please use only one" );
                         throw UsageException( msg );
                     }
                     QString arg = QString::fromLocal8Bit( optarg );
                     m_userComment = arg;
+                    break;
                 }
 		case 'z':
 			// initialize the database
