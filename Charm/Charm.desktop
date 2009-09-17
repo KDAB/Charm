@@ -1,12 +1,24 @@
 [Desktop Entry]
 Name=Charm
+Name[bg]=Charm
+Name[de]=Charm
+Name[en_GB]=Charm
+Name[et]=Charm
 Name[fr]=Charme
 Name[gl]=Encanto
+Name[ja]=Charm
+Name[km]=Charm
+Name[nds]=Charm
+Name[pt]=Charm
+Name[pt_BR]=Charm
+Name[sv]=Charm
+Name[tr]=Charm
 Name[uk]=Шарм
 Name[x-test]=xxCharmxx
 GenericName=Time Tracker
 GenericName[bg]=Замерване на време
 GenericName[de]=Zeiterfassung
+GenericName[en_GB]=Time Tracker
 GenericName[es]=Administrador de tiempo
 GenericName[et]=Ajaarvestus
 GenericName[fr]=Outil de suivi du temps
