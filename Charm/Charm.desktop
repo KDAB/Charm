@@ -2,6 +2,7 @@
 Name=Charm
 Name[bg]=Charm
 Name[de]=Charm
+Name[el]=Charm
 Name[en_GB]=Charm
 Name[et]=Charm
 Name[fr]=Charme
@@ -18,6 +19,7 @@ Name[x-test]=xxCharmxx
 GenericName=Time Tracker
 GenericName[bg]=Замерване на време
 GenericName[de]=Zeiterfassung
+GenericName[el]=Καταγραφέας χρόνου
 GenericName[en_GB]=Time Tracker
 GenericName[es]=Administrador de tiempo
 GenericName[et]=Ajaarvestus
