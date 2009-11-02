@@ -21,7 +21,7 @@
      <item>
       <widget class="QPushButton" name="pushButtonClose" >
        <property name="text" >
-        <string>Close</string>
+        <string>&amp;Close</string>
        </property>
       </widget>
      </item>
@@ -41,28 +41,28 @@
      <item>
       <widget class="QPushButton" name="pushButtonUpdate" >
        <property name="text" >
-        <string>Update</string>
+        <string>&amp;Update</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="pushButtonSave" >
        <property name="text" >
-        <string>Save as XML...</string>
+        <string>Save as &amp;XML...</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="pushButtonSaveTotals" >
        <property name="text" >
-        <string>Save Totals...</string>
+        <string>Save &amp;Totals...</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="pushButtonPrint" >
        <property name="text" >
-        <string>Print...</string>
+        <string>&amp;Print...</string>
        </property>
       </widget>
      </item>

@@ -1,21 +1,22 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>WeeklyTimeSheetConfigurationPage</class>
- <widget class="QWidget" name="WeeklyTimeSheetConfigurationPage" >
-  <property name="geometry" >
+ <widget class="QWidget" name="WeeklyTimeSheetConfigurationPage">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>433</width>
+    <width>449</width>
     <height>322</height>
    </rect>
   </property>
-  <layout class="QGridLayout" >
-   <item row="3" column="1" >
+  <layout class="QGridLayout">
+   <item row="3" column="1">
     <spacer>
-     <property name="orientation" >
+     <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
-     <property name="sizeHint" stdset="0" >
+     <property name="sizeHint" stdset="0">
       <size>
        <width>211</width>
        <height>31</height>
@@ -23,28 +24,28 @@
      </property>
     </spacer>
    </item>
-   <item row="4" column="0" >
-    <widget class="QPushButton" name="pushButtonBack" >
-     <property name="text" >
-      <string>Back</string>
+   <item row="4" column="0">
+    <widget class="QPushButton" name="pushButtonBack">
+     <property name="text">
+      <string>&amp;Back</string>
      </property>
     </widget>
    </item>
-   <item row="4" column="2" >
-    <widget class="QPushButton" name="pushButtonReport" >
-     <property name="text" >
-      <string>Create Report</string>
+   <item row="4" column="2">
+    <widget class="QPushButton" name="pushButtonReport">
+     <property name="text">
+      <string>&amp;Create Report</string>
      </property>
     </widget>
    </item>
-   <item row="0" column="0" colspan="3" >
-    <layout class="QHBoxLayout" >
+   <item row="0" column="0" colspan="3">
+    <layout class="QHBoxLayout">
      <item>
       <spacer>
-       <property name="orientation" >
+       <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
-       <property name="sizeHint" stdset="0" >
+       <property name="sizeHint" stdset="0">
         <size>
          <width>40</width>
          <height>20</height>
@@ -53,24 +54,27 @@
       </spacer>
      </item>
      <item>
-      <widget class="QLabel" name="label" >
-       <property name="text" >
-        <string>Select Week:</string>
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>&amp;Select Week:</string>
        </property>
-       <property name="alignment" >
+       <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+       <property name="buddy">
+        <cstring>comboBoxWeek</cstring>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="comboBoxWeek" />
+      <widget class="QComboBox" name="comboBoxWeek"/>
      </item>
      <item>
       <spacer>
-       <property name="orientation" >
+       <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
-       <property name="sizeHint" stdset="0" >
+       <property name="sizeHint" stdset="0">
         <size>
          <width>40</width>
          <height>20</height>
@@ -80,27 +84,30 @@
      </item>
     </layout>
    </item>
-   <item row="1" column="0" colspan="3" >
-    <widget class="QGroupBox" name="groupBox" >
-     <property name="title" >
+   <item row="1" column="0" colspan="3">
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
       <string>Manual Selection</string>
      </property>
-     <layout class="QVBoxLayout" >
+     <layout class="QVBoxLayout">
       <item>
-       <layout class="QHBoxLayout" >
+       <layout class="QHBoxLayout">
         <item>
-         <widget class="QLabel" name="label_2" >
-          <property name="text" >
+         <widget class="QLabel" name="label_2">
+          <property name="text">
            <string>The Week containing ...</string>
           </property>
-          <property name="alignment" >
+          <property name="alignment">
            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+          <property name="buddy">
+           <cstring>dateEditDay</cstring>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QDateEdit" name="dateEditDay" >
-          <property name="calendarPopup" >
+         <widget class="QDateEdit" name="dateEditDay">
+          <property name="calendarPopup">
            <bool>true</bool>
           </property>
          </widget>
@@ -109,10 +116,10 @@
       </item>
       <item>
        <spacer>
-        <property name="orientation" >
+        <property name="orientation">
          <enum>Qt::Vertical</enum>
         </property>
-        <property name="sizeHint" stdset="0" >
+        <property name="sizeHint" stdset="0">
          <size>
           <width>20</width>
           <height>40</height>
@@ -123,36 +130,36 @@
      </layout>
     </widget>
    </item>
-   <item row="2" column="0" colspan="3" >
-    <widget class="QGroupBox" name="groupBox_2" >
-     <property name="title" >
+   <item row="2" column="0" colspan="3">
+    <widget class="QGroupBox" name="groupBox_2">
+     <property name="title">
       <string>What Tasks to include in the report:</string>
      </property>
-     <layout class="QVBoxLayout" >
+     <layout class="QVBoxLayout">
       <item>
-       <layout class="QHBoxLayout" >
+       <layout class="QHBoxLayout">
         <item>
-         <widget class="QCheckBox" name="checkBoxSubTasksOnly" >
-          <property name="text" >
+         <widget class="QCheckBox" name="checkBoxSubTasksOnly">
+          <property name="text">
            <string>Show...</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="labelTaskName" >
-          <property name="enabled" >
+         <widget class="QLabel" name="labelTaskName">
+          <property name="enabled">
            <bool>false</bool>
           </property>
-          <property name="sizePolicy" >
-           <sizepolicy vsizetype="Preferred" hsizetype="MinimumExpanding" >
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
-          <property name="text" >
+          <property name="text">
            <string>(Task Name)</string>
           </property>
-          <property name="alignment" >
+          <property name="alignment">
            <set>Qt::AlignCenter</set>
           </property>
          </widget>
@@ -160,37 +167,37 @@
        </layout>
       </item>
       <item>
-       <layout class="QHBoxLayout" >
+       <layout class="QHBoxLayout">
         <item>
-         <widget class="QLabel" name="label_5" >
-          <property name="text" >
+         <widget class="QLabel" name="label_5">
+          <property name="text">
            <string>... and subtasks</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QToolButton" name="toolButtonSelectTask" >
-          <property name="enabled" >
+         <widget class="QToolButton" name="toolButtonSelectTask">
+          <property name="enabled">
            <bool>false</bool>
           </property>
-          <property name="text" >
+          <property name="text">
            <string>Select Task...</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="label_3" >
-          <property name="text" >
+         <widget class="QLabel" name="label_3">
+          <property name="text">
            <string>(all tasks, otherwise).</string>
           </property>
          </widget>
         </item>
         <item>
          <spacer>
-          <property name="orientation" >
+          <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
-          <property name="sizeHint" stdset="0" >
+          <property name="sizeHint" stdset="0">
            <size>
             <width>40</width>
             <height>20</height>
@@ -201,11 +208,11 @@
        </layout>
       </item>
       <item>
-       <widget class="QCheckBox" name="checkBoxActiveOnly" >
-        <property name="text" >
+       <widget class="QCheckBox" name="checkBoxActiveOnly">
+        <property name="text">
          <string>only show tasks with activity</string>
         </property>
-        <property name="checked" >
+        <property name="checked">
          <bool>true</bool>
         </property>
        </widget>
@@ -223,11 +230,11 @@
    <receiver>labelTaskName</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>68</x>
      <y>171</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>137</x>
      <y>171</y>
     </hint>
@@ -239,11 +246,11 @@
    <receiver>toolButtonSelectTask</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>84</x>
      <y>182</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>151</x>
      <y>204</y>
     </hint>
