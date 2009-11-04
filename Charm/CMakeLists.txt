@@ -87,7 +87,7 @@ IF ( QT4_FOUND )
                     endif(X11_Xscreensaver_LIB)
                 endif(X11_FOUND)
             ENDIF( UNIX )
-        ENDIF( APPLE)
+        ENDIF( APPLE AND NOT QT_MAC_USE_COCOA )
         configure_file(config-charm.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-charm.h )
 
 
