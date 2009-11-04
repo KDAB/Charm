@@ -18,7 +18,12 @@ IdleDetector::IdleDetector( QObject* parent )
 IdleDetector* IdleDetector::createIdleDetector( QObject* parent )
 {
 #if defined Q_WS_MAC
+#if defined QT_MAC_USE_COCOA
+    // FIXME port Carbon Idle Detector to Cocoa
+    return 0;
+#else
     return new MacOsIdleDetector( parent );
+#endif
 #elif defined Q_WS_WIN
     // FIXME implement Windows Idle Detector
     // return new ...

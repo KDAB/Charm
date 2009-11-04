@@ -13,7 +13,7 @@
 #include <QSystemTrayIcon>
 #include <QMenu>
 #include <QAction>
-#ifdef Q_WS_MAC
+#if defined Q_WS_MAC && !defined QT_MAC_USE_COCOA
 #include "mac_application.h"
 #else
 #include <QApplication>
@@ -37,7 +37,7 @@
 // FIXME read configuration name from command line
 class IdleDetector;
 
-#ifdef Q_WS_MAC
+#if defined Q_WS_MAC && !defined QT_MAC_USE_COCOA
 typedef MacApplication ApplicationBase;
 #else
 typedef QApplication ApplicationBase;

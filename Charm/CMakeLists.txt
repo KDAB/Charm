@@ -65,7 +65,7 @@ IF ( QT4_FOUND )
                Idle/X11IdleDetector.cpp
 )
 	set(HAVE_LIBXSS 0)
-	IF( APPLE )
+	IF( APPLE AND NOT QT_MAC_USE_COCOA )
 	   SET( CharmApplication_SRCS 
 		      ${CharmApplication_SRCS} Idle/MacOsIdleDetector.cpp
               mac_application.cpp )
@@ -73,7 +73,7 @@ IF ( QT4_FOUND )
 	   STRING(REGEX MATCH "^[0-9]+" DARWIN_VERSION ${DARWIN_BUILDVERSION})
 #	   MESSAGE(STATUS "DARWIN_VERSION=${DARWIN_VERSION}")
 	   ADD_DEFINITIONS( -DDARWIN_VERSION=${DARWIN_VERSION} )
-        ELSE( APPLE )
+        ELSE( APPLE AND NOT QT_MAC_USE_COCOA )
 	    IF( UNIX )
                 include(FindX11)
 	        if(X11_FOUND)
