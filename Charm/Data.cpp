@@ -12,6 +12,18 @@ const QIcon& Data::charmIcon()
 	return icon;
 }
 
+const QIcon& Data::charmTrayIcon()
+{
+#ifndef Q_WS_MAC
+	return charmIcon();
+#else
+	Q_ASSERT_X(!QPixmap(":/Charm/charmtrayicon.png").isNull(), "Data::charmTrayIcon",
+			"Required resource not available");
+	static QIcon icon(QPixmap(":/Charm/charmtrayicon.png"));
+	return icon;
+#endif
+}
+
 const QIcon& Data::goIcon()
 {
 	Q_ASSERT_X(!QPixmap(":/Charm/go.png").isNull(), "Data::goIcon",

@@ -10,6 +10,7 @@
 		<file alias="next.png">Icons/forward.png</file>
 		<file alias="previous.png">Icons/back.png</file>
 		<file alias="charmicon.png">Icons/Charm-512x512.png</file>
+		<file alias="charmtrayicon.png">Icons/charmtrayicon.png</file>
 	    <file alias="quitcharm.png">Icons/exit.png</file>
 	    <file alias="clearfilter.png">Icons/locationbar_erase.png</file>
 	    <file alias="configure.png">Icons/configure.png</file>

@@ -110,7 +110,7 @@ Application::Application(int& argc, char** argv)
     // MIRKO_TEMP_REM where to put quit action?
     // m_systrayContextMenu.addAction( m_mainWindow.actionQuit() );
     m_trayIcon.setContextMenu( &m_systrayContextMenu );
-    m_trayIcon.setIcon( Data::charmIcon() );
+    m_trayIcon.setIcon( Data::charmTrayIcon() );
     m_trayIcon.show();
 
 #if defined Q_WS_MAC
