@@ -8,10 +8,6 @@ IF ( QT4_FOUND )
    INCLUDE_DIRECTORIES( .. )
    include (${QT_USE_FILE})
 
-   LINK_LIBRARIES( ${QT_QTCORE_LIBRARY} )
-   LINK_LIBRARIES( ${QT_QTGUI_LIBRARY} )
-   LINK_LIBRARIES( ${QT_QTXML_LIBRARY} )
-   
    SET( CharmApplication_SRCS 
 		       CharmWindow.cpp
 		       Application.cpp
