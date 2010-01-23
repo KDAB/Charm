@@ -1,4 +1,4 @@
-#include "mac_application.h"
+#include "MacCarbonApplication.h"
 
 #include <Carbon/Carbon.h>
 
@@ -370,12 +370,12 @@ static void qt_mac_send_modifiers_changed(quint32 modifiers, QObject *object)
     }
 }
 
-MacApplication::MacApplication( int& argc, char* argv[] )
+MacCarbonApplication::MacCarbonApplication( int& argc, char* argv[] )
     : QApplication( argc, argv )
 {
 }
 
-MacApplication::~MacApplication()
+MacCarbonApplication::~MacCarbonApplication()
 {
 }
 
@@ -412,7 +412,7 @@ static QList< QShortcut* > activeShortcuts( const QKeySequence& seq, bool autore
     return result;
 }
 
-bool MacApplication::macEventFilter( EventHandlerCallRef caller, EventRef event )
+bool MacCarbonApplication::macEventFilter( EventHandlerCallRef caller, EventRef event )
 {
     switch( GetEventClass( event ) )
     {
@@ -453,4 +453,4 @@ bool MacApplication::macEventFilter( EventHandlerCallRef caller, EventRef event 
     return QApplication::macEventFilter( caller, event );
 }
 
-#include "mac_application.moc"
+#include "MacCarbonApplication.moc"

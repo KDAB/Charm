@@ -63,8 +63,8 @@ IF ( QT4_FOUND )
 	set(HAVE_LIBXSS 0)
 	IF( APPLE AND NOT QT_MAC_USE_COCOA )
 	   SET( CharmApplication_SRCS 
-		      ${CharmApplication_SRCS} Idle/MacOsIdleDetector.cpp
-              mac_application.cpp )
+              ${CharmApplication_SRCS} Idle/MacCarbonIdleDetector.cpp
+              MacCarbonApplication.cpp )
 	   EXEC_PROGRAM( sw_vers ARGS -buildVersion OUTPUT_VARIABLE DARWIN_BUILDVERSION )
 	   STRING(REGEX MATCH "^[0-9]+" DARWIN_VERSION ${DARWIN_BUILDVERSION})
 #	   MESSAGE(STATUS "DARWIN_VERSION=${DARWIN_VERSION}")

@@ -14,7 +14,7 @@
 #include <QMenu>
 #include <QAction>
 #if defined Q_WS_MAC && !defined QT_MAC_USE_COCOA
-#include "mac_application.h"
+#include "MacCarbonApplication.h"
 #else
 #include <QApplication>
 #endif
@@ -38,7 +38,7 @@
 class IdleDetector;
 
 #if defined Q_WS_MAC && !defined QT_MAC_USE_COCOA
-typedef MacApplication ApplicationBase;
+typedef MacCarbonApplication ApplicationBase;
 #else
 typedef QApplication ApplicationBase;
 #endif

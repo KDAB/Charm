@@ -1,17 +1,17 @@
-#ifndef MACOSIDLEDETECTOR_H
-#define MACOSIDLEDETECTOR_H
+#ifndef MACCARBONIDLEDETECTOR_H
+#define MACCARBONIDLEDETECTOR_H
 
 #include <QObject>
 
 #include "IdleDetector.h"
 
-class MacOsIdleDetector : public IdleDetector
+class MacCarbonIdleDetector : public IdleDetector
 {
     Q_OBJECT
 
 public:
-    explicit MacOsIdleDetector( QObject* parent = 0 );
-    ~MacOsIdleDetector();
+    explicit MacCarbonIdleDetector( QObject* parent = 0 );
+    ~MacCarbonIdleDetector();
 
 
 private:

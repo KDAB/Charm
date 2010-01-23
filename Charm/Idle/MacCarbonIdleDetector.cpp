@@ -10,9 +10,9 @@
 #include <IOKit/IOMessage.h>
 #include <Carbon/Carbon.h>
 
-#include "MacOsIdleDetector.h"
+#include "MacCarbonIdleDetector.h"
 
-class MacOsIdleDetector::Private
+class MacCarbonIdleDetector::Private
 {
 public:
     // a reference to the Root Power Domain IOService
@@ -23,8 +23,8 @@ public:
     io_object_t notifierObject;
     // this parameter is passed to the callback
     void* refCon;
-    // the pointer back to the MacOsIdleDetector
-    MacOsIdleDetector* papa;
+    // the pointer back to the MacCarbonIdleDetector
+    MacCarbonIdleDetector* papa;
     // idle start time
     QDateTime idleStartTime;
 
@@ -33,7 +33,7 @@ public:
         natural_t messageType, void* messageArgument )
     {
         // hauahauaha!
-        MacOsIdleDetector::Private* d = static_cast<MacOsIdleDetector::Private*>( refCon );
+        MacCarbonIdleDetector::Private* d = static_cast<MacCarbonIdleDetector::Private*>( refCon );
         long argument = reinterpret_cast<long>( messageArgument ); // yummy
 
         // the case statements trigger warnings, because those
@@ -52,7 +52,7 @@ public:
                IOAllowPowerChange or IOCancelPowerChange, the system
                will wait 30 seconds then go to sleep.
             */
-            qDebug() << "MacOsIdleDetector: system will go to idle sleep.";
+            qDebug() << "MacCarbonIdleDetector: system will go to idle sleep.";
             // we will allow idle sleep
             IOAllowPowerChange( d->root_port, argument );
             d->idleStartTime = QDateTime::currentDateTime();
@@ -67,17 +67,17 @@ public:
                returns kIOReturnSuccess, however the system WILL still
                go to sleep.
             */
-            qDebug() << "MacOsIdleDetector: system will go to sleep.";
+            qDebug() << "MacCarbonIdleDetector: system will go to sleep.";
             IOAllowPowerChange( d->root_port, argument );
             d->idleStartTime = QDateTime::currentDateTime();
             break;
 
         case kIOMessageSystemWillPowerOn:
-            qDebug() << "MacOsIdleDetector: system has started the wake up process.";
+            qDebug() << "MacCarbonIdleDetector: system has started the wake up process.";
             break;
 
         case kIOMessageSystemHasPoweredOn:
-            qDebug() << "MacOsIdleDetector: system finished waking up.";
+            qDebug() << "MacCarbonIdleDetector: system finished waking up.";
             d->papa->idle();
             break;
 
@@ -90,13 +90,13 @@ public:
     static OSStatus sessionEventsHandler ( EventHandlerCallRef nextHandler, EventRef event, void* refCon )
     {
         // hauahauaha!
-        MacOsIdleDetector::Private* d = static_cast<MacOsIdleDetector::Private*>( refCon );
+        MacCarbonIdleDetector::Private* d = static_cast<MacCarbonIdleDetector::Private*>( refCon );
 
         if ( GetEventKind( event ) == kEventSystemDisplaysAsleep ) {
-            qDebug() << "MacOsIdleDetector: system displays go to sleep";
+            qDebug() << "MacCarbonIdleDetector: system displays go to sleep";
             d->idleStartTime = QDateTime::currentDateTime();
         } else if ( GetEventKind( event ) == kEventSystemDisplaysAwake ) {
-            qDebug() << "MacOsIdleDetector: system displays woke up";
+            qDebug() << "MacCarbonIdleDetector: system displays woke up";
             d->papa->idle();
         }
         return noErr;
@@ -104,7 +104,7 @@ public:
 #endif
 };
 
-MacOsIdleDetector::MacOsIdleDetector( QObject* parent )
+MacCarbonIdleDetector::MacCarbonIdleDetector( QObject* parent )
     : IdleDetector( parent )
     , d( new Private )
 {
@@ -134,7 +134,7 @@ MacOsIdleDetector::MacOsIdleDetector( QObject* parent )
     switchEventTypes[0].eventKind = kEventSystemDisplaysAsleep;
     switchEventTypes[1].eventClass = kEventClassSystem;
     switchEventTypes[1].eventKind = kEventSystemDisplaysAwake;
-    EventHandlerUPP sessionEventsHandler = NewEventHandlerUPP( MacOsIdleDetector::Private::sessionEventsHandler );
+    EventHandlerUPP sessionEventsHandler = NewEventHandlerUPP( MacCarbonIdleDetector::Private::sessionEventsHandler );
     OSStatus err = InstallApplicationEventHandler( sessionEventsHandler, 2, switchEventTypes,  d,  NULL );
     if ( err != 0 ) {
         qDebug() << "Warning: cannot install session events handler:" << err;
@@ -142,7 +142,7 @@ MacOsIdleDetector::MacOsIdleDetector( QObject* parent )
 #endif
 }
 
-MacOsIdleDetector::~MacOsIdleDetector()
+MacCarbonIdleDetector::~MacCarbonIdleDetector()
 {
     // we no longer want sleep notifications:
     // remove the sleep notification port from the application runloop
@@ -162,12 +162,12 @@ MacOsIdleDetector::~MacOsIdleDetector()
 }
 
 
-void MacOsIdleDetector::idle()
+void MacCarbonIdleDetector::idle()
 {
     maybeIdle( IdlePeriod( d->idleStartTime, QDateTime::currentDateTime() ) );
 }
 
-#include "MacOsIdleDetector.moc"
+#include "MacCarbonIdleDetector.moc"
 
 #endif
 
