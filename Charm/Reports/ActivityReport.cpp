@@ -34,9 +34,14 @@ ActivityReportConfigurationPage::ActivityReportConfigurationPage( ReportDialog* 
              SLOT( slotTimeSpanSelected( int ) ) );
     connect( m_ui->checkBoxSubTasksOnly, SIGNAL( toggled( bool ) ),
              SLOT( slotCheckboxSubtasksOnlyChecked( bool ) ) );
+    connect( m_ui->checkBoxExcludeTasks, SIGNAL( toggled( bool ) ),
+             SLOT( slotCheckBoxExcludeTasksChecked( bool ) ) );
     connect( m_ui->toolButtonSelectTask, SIGNAL( clicked() ),
              SLOT( slotSelectTask() ) );
+    connect( m_ui->toolButtonExcludeTask, SIGNAL( clicked() ),
+             SLOT( slotExcludeTask() ) );
     slotCheckboxSubtasksOnlyChecked( m_ui->checkBoxSubTasksOnly->isChecked() );
+    slotCheckBoxExcludeTasksChecked( m_ui->checkBoxExcludeTasks->isChecked() );
     QTimer::singleShot( 0, this, SLOT( slotDelayedInitialization() ) );
 }
 
@@ -101,17 +106,47 @@ void ActivityReportConfigurationPage::slotCheckboxSubtasksOnlyChecked( bool chec
     }
 }
 
+void ActivityReportConfigurationPage::slotCheckBoxExcludeTasksChecked( bool checked )
+{
+    if ( checked && m_rootExcludeTask == 0 ) {
+        slotExcludeTask();
+    }
+
+    if ( ! checked ) {
+        m_rootExcludeTask = 0;
+        m_ui->labelExcludeTaskName->setText( tr( "(No Tasks)" ) );
+    }
+}
+
 void ActivityReportConfigurationPage::slotSelectTask()
 {
-    SelectTaskDialog dialog( this );
-    if ( dialog.exec() ) {
-        m_rootTask = dialog.selectedTask();
+    if ( selectTask( m_rootTask ) ) {
         const TaskTreeItem& item = DATAMODEL->taskTreeItem( m_rootTask );
         m_ui->labelTaskName->setText( tasknameWithParents( item.task() ) );
     } else {
         if ( m_rootTask == 0 )
             m_ui->checkBoxSubTasksOnly->setChecked( false );
     }
+}
+
+void ActivityReportConfigurationPage::slotExcludeTask()
+{
+    if ( selectTask( m_rootExcludeTask ) ) {
+        const TaskTreeItem& item = DATAMODEL->taskTreeItem( m_rootExcludeTask );
+        m_ui->labelExcludeTaskName->setText( tasknameWithParents( item.task() ) );
+    } else {
+        if ( m_rootExcludeTask == 0 )
+            m_ui->checkBoxExcludeTasks->setChecked( false );
+    }
+}
+
+bool ActivityReportConfigurationPage::selectTask(TaskId& task)
+{
+    SelectTaskDialog dialog( this );
+    const bool taskSelected = dialog.exec();
+    if ( taskSelected )
+        task = dialog.selectedTask();
+    return taskSelected;
 }
 
 void ActivityReportConfigurationPage::slotOkClicked()
@@ -133,7 +168,7 @@ QDialog* ActivityReportConfigurationPage::makeReportPreviewDialog( QWidget* pare
         end = m_timespans[index].timespan.second;
     }
     ActivityReport* report = new ActivityReport( parent );
-    report->setReportProperties( start, end, m_rootTask );
+    report->setReportProperties( start, end, m_rootTask, m_rootExcludeTask );
     return report;
 }
 
@@ -147,11 +182,12 @@ ActivityReport::~ActivityReport()
 }
 
 void ActivityReport::setReportProperties(
-    const QDate& start, const QDate& end, TaskId rootTask )
+    const QDate& start, const QDate& end, TaskId rootTask, TaskId rootExcludeTask )
 {
     m_start = start;
     m_end = end;
     m_rootTask = rootTask;
+    m_rootExcludeTask = rootExcludeTask;
     slotUpdate();
 }
 
@@ -167,6 +203,11 @@ void ActivityReport::slotUpdate()
     matchingEvents = eventIdsSortedByStartTime( matchingEvents );
     if ( m_rootTask != 0 ) {
         matchingEvents = filteredBySubtree( matchingEvents, m_rootTask );
+    }
+
+    // filter unproductive events:
+    if ( m_rootExcludeTask != 0 ) {
+        matchingEvents = filteredBySubtree( matchingEvents, m_rootExcludeTask, true );
     }
 
     // calculate total:

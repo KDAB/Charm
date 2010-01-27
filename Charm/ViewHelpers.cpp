@@ -26,12 +26,14 @@ EventIdList eventIdsSortedByStartTime( EventIdList ids )
     return ids;
 }
 
-EventIdList filteredBySubtree( EventIdList ids, TaskId parent )
+EventIdList filteredBySubtree( EventIdList ids, TaskId parent, bool exclude )
 {
     EventIdList result;
+    bool isParent = false;
     Q_FOREACH( EventId id, ids ) {
         const Event& event = DATAMODEL->eventForId( id );
-        if ( parent == event.taskId() || DATAMODEL->isParentOf( parent, event.taskId() ) ) {
+        isParent = ( parent == event.taskId() || DATAMODEL->isParentOf( parent, event.taskId() ) );
+        if ( isParent != exclude ) {
             result << id;
         }
     }

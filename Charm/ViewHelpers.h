@@ -15,6 +15,6 @@ void connectControllerAndView( Controller*, CharmWindow* );
 EventIdList eventIdsSortedByStartTime( EventIdList );
 /** Return those ids in the input list that elements of the subtree
  * under the parent task, which includes the parent task. */
-EventIdList filteredBySubtree( EventIdList, TaskId parent );
+EventIdList filteredBySubtree( EventIdList, TaskId parent, bool exclude=false );
 
 #endif
