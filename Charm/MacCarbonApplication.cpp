@@ -6,6 +6,11 @@
 #include <QShortcut>
 #include <QTextCodec>
 
+/*
+ * Most of the code below has been taken from private files in Qt,
+ * specifically src/gui/kernel/qkeymapper_mac.cpp
+ */
+
 /* key maps */
 struct qt_mac_enum_mapper
 {
@@ -303,7 +308,7 @@ static bool translateKeyEventInternal(EventHandlerCallRef er, EventRef keyEvent,
                 static QTextCodec *c = 0;
                 if(!c)
                     c = QTextCodec::codecForName("Apple Roman");
-		char tmpChar = static_cast< char >( translatedChar ); // **sigh**
+        char tmpChar = static_cast< char >( translatedChar ); // **sigh**
                 *outChar = c->toUnicode(&tmpChar, 1).at(0);
             } else {
                 *qtKey = qt_mac_get_key(*outModifiers, QChar(translatedChar), keyCode);
@@ -371,45 +376,12 @@ static void qt_mac_send_modifiers_changed(quint32 modifiers, QObject *object)
 }
 
 MacCarbonApplication::MacCarbonApplication( int& argc, char* argv[] )
-    : QApplication( argc, argv )
+    : MacApplication( argc, argv )
 {
 }
 
 MacCarbonApplication::~MacCarbonApplication()
 {
-}
-
-static QList< QShortcut* > shortcuts( QWidget* parent = 0 ) 
-{
-    QList< QShortcut* > result;
-    if( parent == 0 )
-    {
-        const QWidgetList widgets = QApplication::topLevelWidgets();
-        for( QWidgetList::const_iterator it = widgets.begin(); it != widgets.end(); ++it )
-            result += shortcuts( *it ); 
-    }
-    else
-    {
-        const QList< QShortcut* > cuts = parent->findChildren< QShortcut* >();
-        for( QList< QShortcut* >::const_iterator it = cuts.begin(); it != cuts.end(); ++it )
-            if( (*it)->context() == Qt::ApplicationShortcut )
-                result.push_back( *it );
-        
-        const QList< QWidget* > children = parent->findChildren< QWidget* >();
-        for( QList< QWidget* >::const_iterator it = children.begin(); it != children.end(); ++it )
-            result += shortcuts( *it );
-    }
-    return result;
-}
-
-static QList< QShortcut* > activeShortcuts( const QKeySequence& seq, bool autorep, QWidget* parent = 0 )
-{
-    const QList< QShortcut* > cuts = shortcuts( parent );
-    QList< QShortcut* > result;
-    for( QList< QShortcut* >::const_iterator it = cuts.begin(); it != cuts.end(); ++it )
-        if( (*it)->context() == Qt::ApplicationShortcut && ((*it)->autoRepeat() == autorep || !autorep ) && (*it)->isEnabled() && (*it)->key().matches( seq ) )
-            result.push_back( *it );
-    return result;
 }
 
 bool MacCarbonApplication::macEventFilter( EventHandlerCallRef caller, EventRef event )
@@ -425,32 +397,32 @@ bool MacCarbonApplication::macEventFilter( EventHandlerCallRef caller, EventRef 
             qt_mac_send_modifiers_changed( modifiers, this );
             break;
         }
-       
+
         Qt::KeyboardModifiers modifiers;
         int qtKey;
         QChar ourChar;
         bool handled;
         if( !translateKeyEventInternal( caller, event, &qtKey, &ourChar, &modifiers, &handled ) )
             return false;
-     
+
         const bool autorep = GetEventKind( event ) == kEventRawKeyRepeat;
         if( GetEventKind( event ) == kEventRawKeyUp )
             break;
-        
+
         const QKeySequence seq( qtKey | modifiers );
         const QList< QShortcut* > active = activeShortcuts( seq, autorep );
         for( QList< QShortcut* >::const_iterator it = active.begin(); it != active.end(); ++it )
         {
             QShortcutEvent event( seq, (*it)->id() );
             QObject* const receiver = *it;
-            receiver->event( &event ); 
+            receiver->event( &event );
         }
         return !active.isEmpty();
     }
     case kEventClassAppleEvent:
         emit dockIconClicked();
     }
-    return QApplication::macEventFilter( caller, event );
+    return MacApplication::macEventFilter( caller, event );
 }
 
 #include "MacCarbonApplication.moc"

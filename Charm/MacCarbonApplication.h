@@ -1,9 +1,9 @@
 #ifndef MACCARBONAPPLICATION_H
 #define MACCARBONAPPLICATION_H
 
-#include <QApplication>
+#include "MacApplication.h"
 
-class MacCarbonApplication : public QApplication
+class MacCarbonApplication : public MacApplication
 {
     Q_OBJECT
 public:
@@ -12,9 +12,6 @@ public:
 
 protected:
     bool macEventFilter( EventHandlerCallRef caller, EventRef event );
-
-Q_SIGNALS:
-    void dockIconClicked();
 };
 
 #endif
