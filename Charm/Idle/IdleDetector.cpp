@@ -7,7 +7,11 @@
 
 // FIXME verify inclusion guard is needed (Q_OBJECT?)
 #if defined Q_WS_MAC
+#ifdef QT_MAC_USE_COCOA
+#include "MacCocoaIdleDetector.h"
+#else
 #include "MacCarbonIdleDetector.h"
+#endif
 #endif
 
 IdleDetector::IdleDetector( QObject* parent )
@@ -19,8 +23,7 @@ IdleDetector* IdleDetector::createIdleDetector( QObject* parent )
 {
 #if defined Q_WS_MAC
 #if defined QT_MAC_USE_COCOA
-    // FIXME port Carbon Idle Detector to Cocoa
-    return 0;
+    return new MacCocoaIdleDetector( parent );
 #else
     return new MacCarbonIdleDetector( parent );
 #endif

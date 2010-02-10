@@ -65,7 +65,7 @@ IF ( QT4_FOUND )
 	   SET( CharmApplication_SRCS ${CharmApplication_SRCS} MacApplication.cpp )
 	   IF( QT_MAC_USE_COCOA )
 	      SET( CharmApplication_SRCS
-	         ${CharmApplication_SRCS} #Idle/MacCocoaIdleDetector.mm
+	         ${CharmApplication_SRCS} Idle/MacCocoaIdleDetector.mm
 	         MacCocoaApplication.mm )
            ELSE( QT_MAC_USE_COCOA )
 	      SET( CharmApplication_SRCS
