@@ -14,6 +14,8 @@ class MacCocoaIdleDetector : public IdleDetector
 
 public:
     explicit MacCocoaIdleDetector( QObject* parent = 0 );
+    // This method to be public due to lack of friend classes in Objective-C and
+    // the lack inheritance of Objective-C classes from C++ ones.
     void idle();
 
 private:

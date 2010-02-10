@@ -337,6 +337,12 @@ Application& Application::instance()
 
 void Application::enterStartingUpState()
 {
+#ifdef QT_MAC_USE_COCOA
+    // Need to setup the Cocoa event handler after the default Apple ones
+    // so can't be done in the MacCocoaApplication constructor.
+    setupCocoaEventHandler();
+#endif
+
     emit goToState( Configuring );
 }
 
@@ -346,6 +352,7 @@ void Application::leaveStartingUpState()
 
 void Application::enterConfiguringState()
 {
+
     if (configure())
     { // if all ok, go to connecting state
         emit goToState(Connecting);
@@ -362,7 +369,7 @@ void Application::leaveConfiguringState()
 void Application::enterConnectingState()
 {
     try {
-	if (!m_controller.initializeBackEnd(CHARM_SQLITE_BACKEND_DESCRIPTOR))
+        if (!m_controller.initializeBackEnd(CHARM_SQLITE_BACKEND_DESCRIPTOR))
             quit();
     } catch ( CharmException& e ) {
         QMessageBox::critical( & m_tasksWindow, QObject::tr("Database Backend Error"),

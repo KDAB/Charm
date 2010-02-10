@@ -1,24 +1,62 @@
+#include <Cocoa/Cocoa.h>
+
 #include "MacCocoaApplication.h"
 
 #include <QShortcutEvent>
 
+@interface DockIconClickEventHandler : NSObject
+{
+@public
+    MacCocoaApplication* macCocoaApplication;
+}
+- (void)handleDockClickEvent:(NSAppleEventDescriptor*)event withReplyEvent:(NSAppleEventDescriptor*)replyEvent;
+@end
+
+@implementation DockIconClickEventHandler
+- (void)handleDockClickEvent:(NSAppleEventDescriptor*)event withReplyEvent:(NSAppleEventDescriptor*)replyEvent {
+    if (macCocoaApplication)
+        macCocoaApplication->dockIconClickEvent();
+}
+@end
+
 MacCocoaApplication::MacCocoaApplication( int& argc, char* argv[] )
-    : MacApplication( argc, argv )
+    : MacApplication( argc, argv ),
+    m_dockIconClickEventHandler([[DockIconClickEventHandler alloc] init])
 {
     [[NSAutoreleasePool alloc] init];
 
-    // TODO: Handle kEventClassAppleEvent/kAEReopenApplication somehow for
-    // dockIconClicked. Use applicationShouldHandleReopen delegate or
-    // legacy Apple Event handling.
     m_eventMonitor = [NSEvent addLocalMonitorForEventsMatchingMask:
-                       NSKeyDownMask handler:^(NSEvent *incomingEvent) {
+                       NSKeyDownMask handler:
+                       ^(NSEvent *incomingEvent) {
         return cocoaEventFilter(incomingEvent);
     }];
+
+    DockIconClickEventHandler* dockIconClickEventHandler =
+            static_cast<DockIconClickEventHandler*>(m_dockIconClickEventHandler);
+    dockIconClickEventHandler->macCocoaApplication = this;
 }
 
 MacCocoaApplication::~MacCocoaApplication()
 {
     [NSEvent removeMonitor:m_eventMonitor];
+}
+
+void MacCocoaApplication::setupCocoaEventHandler() const
+{
+    // TODO: This apparently uses a legacy API and we should be using the
+    // applicationShouldHandleReopen:hasVisibleWindows: method on
+    // NSApplicationDelegate but this isn't possible without nasty runtime
+    // reflection hacks until Qt is fixed. If this breaks, shout at them :)
+    [[NSAppleEventManager sharedAppleEventManager]
+     setEventHandler:m_dockIconClickEventHandler
+     andSelector:@selector(handleDockClickEvent:withReplyEvent:)
+     forEventClass:kCoreEventClass
+     andEventID:kAEReopenApplication];
+}
+
+void MacCocoaApplication::dockIconClickEvent()
+{
+    emit dockIconClicked();
 }
 
 NSEvent* MacCocoaApplication::cocoaEventFilter( NSEvent* incomingEvent )
