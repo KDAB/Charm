@@ -1,12 +1,12 @@
 #ifndef MACCOCOAIDLEDETECTOR_H
 #define MACCOCOAIDLEDETECTOR_H
 
-#include <Cocoa/Cocoa.h>
-
 #include <QObject>
 #include <QDateTime>
 
 #include "IdleDetector.h"
+
+class objc_object;
 
 class MacCocoaIdleDetector : public IdleDetector
 {
@@ -17,7 +17,7 @@ public:
     void idle();
 
 private:
-    id m_observer;
+    objc_object* m_observer;
 };
 
 #endif

@@ -1,3 +1,5 @@
+#include <Cocoa/Cocoa.h>
+
 #include "MacCocoaIdleDetector.h"
 
 #include <QDateTime>
