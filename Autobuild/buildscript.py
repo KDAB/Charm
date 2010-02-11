@@ -36,4 +36,4 @@ PlatformBuild.setBuilder( 'cmake' )
 PlatformBuild.setOptions( '-D CMAKE_BUILD_TYPE=release' )
 
 # platform build is not enabled by default: 
-Product.build( [ Debug, Release, StaticRelease ] )
+Product.build( [ Debug, Release ] ) # , StaticRelease ] )
