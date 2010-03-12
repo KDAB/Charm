@@ -25,9 +25,9 @@ MacCocoaApplication::MacCocoaApplication( int& argc, char* argv[] )
 {
     [[NSAutoreleasePool alloc] init];
 
-    m_eventMonitor = [NSEvent addLocalMonitorForEventsMatchingMask:
-                       NSKeyDownMask handler:
-                       ^(NSEvent *incomingEvent) {
+    m_eventMonitor = [NSEvent
+                      addLocalMonitorForEventsMatchingMask:NSKeyDownMask
+                      handler:^(NSEvent *incomingEvent) {
         return cocoaEventFilter(incomingEvent);
     }];
 
