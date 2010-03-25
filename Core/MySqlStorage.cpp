@@ -10,6 +10,7 @@
 
 #include "MySqlStorage.h"
 #include "CharmConstants.h"
+#include "CharmExceptions.h"
 
 // DATABASE STRUCTURE DEFINITION FOR MYSQL
 static const QString Tables[] =
@@ -163,4 +164,45 @@ int MySqlStorage::installationId() const
 bool MySqlStorage::createDatabase(Configuration& conf)
 {
 	return createDatabaseTables();
+}
+
+MySqlStorage::Parameters MySqlStorage::parseParameterEnvironmentVariable()
+{
+    // read configuration from the environment:
+    char* const databaseConfigurationString = getenv( "CHARM_DATABASE_CONFIGURATION" );
+    if ( databaseConfigurationString != 0 ) {
+        Parameters p;
+        // the string is supposed to be of the format "hostname;port;username;password"
+        // if port is 0 or empty, the default port is used
+        QStringList elements = QString::fromLocal8Bit( databaseConfigurationString ).split( ';' );
+        if ( elements.count() != 4 ) {
+            throw ParseError( QObject::tr( "Bad database configuration string format" ) );
+        } else {
+            p.host = elements.at( 0 );
+            p.name = elements.at( 2 );
+            p.password = elements.at( 3 );
+            bool ok;
+            if( ! elements.at( 1 ).isEmpty() ) {
+                p.port = elements.at( 1 ).toInt( &ok );
+                if ( ok != true || p.port < 0 ) {
+                    throw ParseError( QObject::tr(
+                            "The port must be a non-negative integer number in the database configuration string format" ) );
+                }
+            }
+        }
+        return p;
+    } else {
+        throw ParseError( QObject::tr( "Timesheet processor configuration not found (CHARM_DATABASE_CONFIGURATION). Aborting." ) );
+    }
+}
+
+void MySqlStorage::configure( const Parameters& parameters )
+{
+    database().setHostName( parameters.host );
+    database().setDatabaseName( parameters.database );
+    database().setUserName( parameters.name );
+    database().setPassword( parameters.password );
+    if ( parameters.port != 0 ) {
+       database().setPort( parameters.port );
+    }
 }

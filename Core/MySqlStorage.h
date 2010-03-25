@@ -13,20 +13,31 @@
 class MySqlStorage: public SqlStorage
 {
 public:
-	MySqlStorage();
-	virtual ~MySqlStorage();
+    struct Parameters {
+        Parameters() : port( 3309), database( "Charm" ) {}
+        unsigned int port;
+        QString database;
+        QString name;
+        QString password;
+        QString host;
+    };
 
-	QSqlDatabase& database();
-	
-	QString description() const;
-	bool connect(Configuration&);
-	bool disconnect();
-	int installationId() const;
-	bool createDatabase(Configuration&);
+    MySqlStorage();
+    virtual ~MySqlStorage();
+
+    QSqlDatabase& database();
+
+    QString description() const;
+    bool connect(Configuration&);
+    bool disconnect();
+    int installationId() const;
+    bool createDatabase(Configuration&);
     bool createDatabaseTables();
 
+    static Parameters parseParameterEnvironmentVariable();
+    void configure( const Parameters& );
 protected:
-	QString lastInsertRowFunction() const;
+    QString lastInsertRowFunction() const;
 
 private:
     QSqlDatabase m_database;

@@ -61,11 +61,11 @@ public:
     bool verifyDatabase() throw ( UnsupportedDatabaseVersionException );
     virtual bool createDatabaseTables() = 0;
 
+    // run the query and process possible errors
+    static bool runQuery( QSqlQuery& );
+
 protected:
 	virtual QString lastInsertRowFunction() const = 0;
-
-    // run the query and process possible errors
-    bool runQuery( QSqlQuery& );
 
 private:
     //  a debug helper that populates the database with canned values:

@@ -336,28 +336,28 @@ bool SqlStorage::deleteAllEvents()
 
 bool SqlStorage::runQuery(QSqlQuery& query)
 {
-	static const bool DoChitChat = false;
-	if (DoChitChat)
-		qDebug() << MARKER << endl << "SqlStorage::runQuery: executing query:"
-				<< endl << query.executedQuery();
-		bool result = query.exec();
-		if ( DoChitChat )
-		{
-			if ( result )
-			{
+    static const bool DoChitChat = false;
+    if (DoChitChat)
+        qDebug() << MARKER << endl << "SqlStorage::runQuery: executing query:"
+                << endl << query.executedQuery();
+    bool result = query.exec();
+    if ( DoChitChat )
+    {
+        if ( result )
+        {
 
-				qDebug() << "SqlStorage::runQuery: SUCCESS" << endl << MARKER;
-			}
-			else
-			{
-				qDebug() << "SqlStorage::runQuery: FAILURE" << endl
-				<< "Database says: " << query.lastError().databaseText() << endl
-				<< "Driver says:   " << query.lastError().driverText() << endl
-				<< MARKER;
-			}
-		}
-		return result;
-	}
+            qDebug() << "SqlStorage::runQuery: SUCCESS" << endl << MARKER;
+        }
+        else
+        {
+            qDebug() << "SqlStorage::runQuery: FAILURE" << endl
+                    << "Database says: " << query.lastError().databaseText() << endl
+                    << "Driver says:   " << query.lastError().driverText() << endl
+                    << MARKER;
+        }
+    }
+    return result;
+}
 
 void SqlStorage::stateChanged(State previous)
 {

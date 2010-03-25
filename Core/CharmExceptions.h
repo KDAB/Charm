@@ -16,10 +16,17 @@ private:
     QString m_message;
 };
 
+class ParseError : public CharmException {
+public:
+    explicit ParseError( const QString& text = QString() )
+        : CharmException( text )
+    {}
+};
+
 class XmlSerializationException : public CharmException
 {
 public:
-	XmlSerializationException( const QString& message )
+    explicit XmlSerializationException( const QString& message )
         : CharmException( message )
     {}
 };
@@ -27,7 +34,7 @@ public:
 class UnsupportedDatabaseVersionException : public CharmException
 {
 public:
-	UnsupportedDatabaseVersionException( const QString& message )
+    explicit UnsupportedDatabaseVersionException( const QString& message )
         : CharmException( message )
     {}
 };
@@ -35,7 +42,7 @@ public:
 class InvalidTaskListException : public CharmException
 {
 public:
-    InvalidTaskListException( const QString& message )
+    explicit InvalidTaskListException( const QString& message )
         : CharmException( message )
     {}
 };

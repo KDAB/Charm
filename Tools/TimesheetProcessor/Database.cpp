@@ -74,54 +74,32 @@ QSqlDatabase& Database::database()
 {
 	return m_storage.database();
 }
+
 void Database::login() throw (TimesheetProcessorException )
 {
-	QString name( "timecheater" );
-	QString pass( "polkadots" );
-	QString host( "127.0.0.1" );
-	QString database( "Charm" );
-	unsigned int port = 8889;
+    MySqlStorage::Parameters parameters;
+    try {
+        parameters = MySqlStorage::parseParameterEnvironmentVariable();
+    } catch( ParseError& e ) {
+        throw TimesheetProcessorException( e.what() );
+    }
+    m_storage.configure( parameters );
+    bool ok = m_storage.database().open();
+    if ( !ok ) {
+        QSqlError error = m_storage.database().lastError();
 
-	// read configuration from the environment:
-	char* databaseConfigurationString = getenv( "CHARM_DATABASE_CONFIGURATION" );
-	if ( databaseConfigurationString != 0 ) {
-		// the string is supposed to be of the format "hostname;port;username;password"
-		// of port is 0; the default port is used
-		QStringList elements = QString::fromLocal8Bit( databaseConfigurationString ).split( ';' );
-		if ( elements.count() != 4 ) {
-			throw TimesheetProcessorException( QObject::tr( "Bad database configuration string format" ) );
-		} else {
-			bool ok;
-			host = elements.at( 0 );
-			port = elements.at( 1 ).toInt( &ok );
-			name = elements.at( 2 );
-			pass = elements.at( 3 );
-			if ( ok != true || port < 0 ) {
-				throw TimesheetProcessorException( QObject::tr(
-						"The port must be a non-negative integer number in the database configuration string format" ) );
-			}
-		}
-	}
-	m_storage.database().setHostName( host );
-	m_storage.database().setDatabaseName( database );
-	m_storage.database().setUserName( name );
-	m_storage.database().setPassword( pass );
-	if ( port != 0 ) {
-		m_storage.database().setPort( port );
-	}
-	bool ok = m_storage.database().open();
-	if ( !ok ) {
-		QSqlError error = m_storage.database().lastError();
-
-		QString msg = QObject::tr( "Cannot connect to database %1 on host %2, database said "
-			"\"%3\", driver said \"%4\"" ) .arg( database ) .arg( host ) .arg( error.driverText() ) .arg( error.databaseText() );
-		throw TimesheetProcessorException( msg );
-	}
-        // check if the driver has transaction support
-        if( ! m_storage.database().driver()->hasFeature( QSqlDriver::Transactions ) ) {
-            QString msg = QObject::tr( "The database driver in use does not support transactions. Transactions are required." );
-            throw TimesheetProcessorException( msg );
-        }
+        QString msg = QObject::tr( "Cannot connect to database %1 on host %2, database said "
+                                   "\"%3\", driver said \"%4\"" )
+                .arg( parameters.database ) .arg( parameters.host )
+                .arg( error.driverText() )
+                .arg( error.databaseText() );
+        throw TimesheetProcessorException( msg );
+    }
+    // check if the driver has transaction support
+    if( ! m_storage.database().driver()->hasFeature( QSqlDriver::Transactions ) ) {
+        QString msg = QObject::tr( "The database driver in use does not support transactions. Transactions are required." );
+        throw TimesheetProcessorException( msg );
+    }
 }
 
 void Database::initializeDatabase() throw (TimesheetProcessorException )

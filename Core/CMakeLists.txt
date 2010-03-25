@@ -10,6 +10,7 @@ IF ( QT4_FOUND )
    
    SET( CharmCore_SRCS 
 		       CharmConstants.cpp
+                        CharmExceptions.cpp
 		       Controller.cpp
 		       SqLiteStorage.cpp
 		       MySqlStorage.cpp

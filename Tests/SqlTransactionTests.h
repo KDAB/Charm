@@ -13,6 +13,12 @@ public:
 private slots:
     void testMySqlDriverRequirements();
     void testSqLiteDriverRequirements();
+    void testMySqlTransactionRollback();
+    void testMySqlTransactionCommit();
+    void testMySqlNestedTransactions();
+
+private:
+    MySqlStorage prepareMySqlStorage();
 };
 
 
