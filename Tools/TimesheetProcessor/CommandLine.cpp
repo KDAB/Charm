@@ -258,7 +258,7 @@ void CommandLine::usage()
 			<< endl
 			<< "   * TimesheetProzessor -v                                         <-- print version"
 			<< endl
-			<< "   * TimesheetProzessor -a filename -i index -u userid -m comment  <-- add timesheet from file with index"
+                        << "   * TimesheetProzessor -a filename -u userid -m comment  <-- add timesheet from file"
 			<< endl
 			<< "   * TimesheetProzessor -r -i index -u userid                      <-- remove timesheet at index"
 			<< endl

@@ -93,6 +93,17 @@ IF ( QT4_FOUND )
    TARGET_LINK_LIBRARIES( ImportExportTests ${QT_QTXML_LIBRARY} )
    TARGET_LINK_LIBRARIES( ImportExportTests ${QT_LIBRARIES} )
 
+   # Sql Transaction Tests:
+   SET( SqlTransactionTests_SRCS SqlTransactionTests.cpp )
+
+   QT4_AUTOMOC( ${SqlTransactionTests_SRCS} )
+
+   ADD_EXECUTABLE( SqlTransactionTests ${SqlTransactionTests_SRCS} )
+
+   TARGET_LINK_LIBRARIES( SqlTransactionTests ${QT_QTTEST_LIBRARY} )
+   TARGET_LINK_LIBRARIES( SqlTransactionTests ${QT_QTXML_LIBRARY} )
+   TARGET_LINK_LIBRARIES( SqlTransactionTests ${QT_LIBRARIES} )
+
    # now add the tests:
    ADD_TEST( SqLiteStorageTests ${EXECUTABLE_OUTPUT_PATH}/SqLiteStorageTests )
    ADD_TEST( ControllerTests ${EXECUTABLE_OUTPUT_PATH}/ControllerTests )
@@ -101,6 +112,7 @@ IF ( QT4_FOUND )
    ADD_TEST( XmlSerializationTests ${EXECUTABLE_OUTPUT_PATH}/XmlSerializationTests )
    ADD_TEST( TaskStructureTests ${EXECUTABLE_OUTPUT_PATH}/TaskStructureTests )
    ADD_TEST( ImportExportTests ${EXECUTABLE_OUTPUT_PATH}/ImportExportTests )
+   ADD_TEST( SqlTransactionTests ${EXECUTABLE_OUTPUT_PATH}/SqlTransactionTests )
 
 ENDIF ( QT4_FOUND )
 

@@ -1,7 +1,7 @@
 # this is the CMake Project File for Charm
 PROJECT( Charm )
 SET( Charm_VERSION_MAJOR "1" )
-SET( Charm_VERSION_MINOR "3" )
+SET( Charm_VERSION_MINOR "4" )
 SET( Charm_VERSION_PATCH "0" )
 SET( Charm_VERSION_COUNT 3 )
 SET( Charm_VERSION "${Charm_VERSION_MAJOR}.${Charm_VERSION_MINOR}.${Charm_VERSION_PATCH}" )

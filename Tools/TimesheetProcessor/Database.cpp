@@ -1,4 +1,5 @@
 #include <QSqlDatabase>
+#include <QSqlDriver>
 #include <QSqlError>
 #include <QSqlQuery>
 #include <QSqlRecord>
@@ -116,6 +117,11 @@ void Database::login() throw (TimesheetProcessorException )
 			"\"%3\", driver said \"%4\"" ) .arg( database ) .arg( host ) .arg( error.driverText() ) .arg( error.databaseText() );
 		throw TimesheetProcessorException( msg );
 	}
+        // check if the driver has transaction support
+        if( ! m_storage.database().driver()->hasFeature( QSqlDriver::Transactions ) ) {
+            QString msg = QObject::tr( "The database driver in use does not support transactions. Transactions are required." );
+            throw TimesheetProcessorException( msg );
+        }
 }
 
 void Database::initializeDatabase() throw (TimesheetProcessorException )
