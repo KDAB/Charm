@@ -120,13 +120,13 @@ void Database::initializeDatabase() throw (TimesheetProcessorException )
 
 void Database::addEvent( const Event& event )
 {
-	Event newEvent = m_storage.makeEvent();
-	int id = newEvent.id();
-	newEvent = event;
-	newEvent.setId( id );
-	if ( !m_storage.modifyEvent( newEvent ) ) {
-		throw TimesheetProcessorException( "Cannot add event" );
-	}
+    Event newEvent = m_storage.makeEventNoTransaction();
+    int id = newEvent.id();
+    newEvent = event;
+    newEvent.setId( id );
+    if ( !m_storage.modifyEventNoTransaction( newEvent ) ) {
+        throw TimesheetProcessorException( "Cannot add event" );
+    }
 }
 
 void Database::deleteEventsForReport( int userid, int index )

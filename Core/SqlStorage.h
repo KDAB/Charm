@@ -45,8 +45,10 @@ public:
     // implement event database functions:
     EventList getAllEvents();
     Event makeEvent();
+    Event makeEventNoTransaction();
     Event getEvent( int eventid );
     bool modifyEvent( const Event& event );
+    bool modifyEventNoTransaction( const Event& event );
     bool deleteEvent( const Event& event );
     bool deleteAllEvents();
 

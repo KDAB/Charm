@@ -217,66 +217,72 @@ EventList SqlStorage::getAllEvents()
 
 Event SqlStorage::makeEvent()
 {
-	SqlRaiiTransactor transactor(database());
-	bool result;
-	Event event;
+    SqlRaiiTransactor transactor(database());
+    Event event = makeEventNoTransaction();
+    if( event.isValid() ) {
+        transactor.commit();
+    }
+    return event;
+}
 
-	{ // insert a new record in the database
-		const char* statement = "INSERT into Events values "
-			"( NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL );";
-		QSqlQuery query(database());
-		query.prepare(statement);
-		result = runQuery(query);
-		Q_ASSERT(result); // this has to suceed
-	}
-	if (result)
-	{ // retrieve the AUTOINCREMENT id value of it
-		const QString statement = QString::fromLocal8Bit(
-				"SELECT id from Events WHERE id = %1();") .arg(
-				lastInsertRowFunction());
-		QSqlQuery query(database());
-		query.prepare(statement);
-		result = runQuery(query);
-		if (result && query.next())
-		{
-			int indexField = query.record().indexOf("id");
-			event.setId(query.value(indexField).toInt());
-			event.setInstallationId(installationId());
-			Q_ASSERT(event.id() > 0);
-		}
-		else
-		{
-			Q_ASSERT_X(false, "SqlStorage::makeEvent",
-					"database implementation error (SELECT)");
-		}
-	}
-	if (result)
-	{
-		// modify the created record to make sure event_id is unique
-		// within the installation:
-		const char* statement = "UPDATE Events SET event_id = :event_id, "
-			"installation_id = :installation, report_id = :report_id WHERE id = :id;";
-		QSqlQuery query(database());
-		query.prepare(statement);
-		query.bindValue(":event_id", event.id());
-		query.bindValue(":installation_id", event.installationId());
-		query.bindValue(":report_id", event.reportId());
-		query.bindValue(":id", event.id());
-		result = runQuery(query);
-		Q_ASSERT_X(result, "SqlStorage::makeEvent",
-				"database implementation error (UPDATE)");
-	}
+Event SqlStorage::makeEventNoTransaction()
+{
+    bool result;
+    Event event;
 
-	if (result)
-	{
-		transactor.commit();
-		Q_ASSERT(event.isValid());
-		return event;
-	}
-	else
-	{
-		return Event();
-	}
+    { // insert a new record in the database
+        const char* statement = "INSERT into Events values "
+                                "( NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL );";
+        QSqlQuery query(database());
+        query.prepare(statement);
+        result = runQuery(query);
+        Q_ASSERT(result); // this has to suceed
+    }
+    if (result)
+    { // retrieve the AUTOINCREMENT id value of it
+        const QString statement = QString::fromLocal8Bit(
+                "SELECT id from Events WHERE id = %1();") .arg(
+                        lastInsertRowFunction());
+        QSqlQuery query(database());
+        query.prepare(statement);
+        result = runQuery(query);
+        if (result && query.next())
+        {
+            int indexField = query.record().indexOf("id");
+            event.setId(query.value(indexField).toInt());
+            event.setInstallationId(installationId());
+            Q_ASSERT(event.id() > 0);
+        }
+        else
+        {
+            Q_ASSERT_X(false, "SqlStorage::makeEvent",
+                       "database implementation error (SELECT)");
+        }
+    }
+    if (result)
+    {
+        // modify the created record to make sure event_id is unique
+        // within the installation:
+        const char* statement = "UPDATE Events SET event_id = :event_id, "
+                                "installation_id = :installation, report_id = :report_id WHERE id = :id;";
+        QSqlQuery query(database());
+        query.prepare(statement);
+        query.bindValue(":event_id", event.id());
+        query.bindValue(":installation_id", event.installationId());
+        query.bindValue(":report_id", event.reportId());
+        query.bindValue(":id", event.id());
+        result = runQuery(query);
+        Q_ASSERT_X(result, "SqlStorage::makeEvent",
+                   "database implementation error (UPDATE)");
+    }
+
+    if (result)
+    {
+        Q_ASSERT(event.isValid());
+        return event;
+    } else {
+        return Event();
+    }
 }
 
 Event SqlStorage::getEvent(int id)
@@ -299,7 +305,19 @@ Event SqlStorage::getEvent(int id)
 		return Event();
 	}
 }
-bool SqlStorage::modifyEvent(const Event& event)
+
+bool SqlStorage:: modifyEvent( const Event& event )
+{
+    SqlRaiiTransactor transactor( database() );
+    if( modifyEventNoTransaction( event ) ) {
+        transactor.commit();
+        return true;
+    } else {
+        return false;
+    }
+}
+
+bool SqlStorage::modifyEventNoTransaction(const Event& event)
 {
 	QSqlQuery query(database());
 	query.prepare("UPDATE Events set task = :task, comment = :comment, "
