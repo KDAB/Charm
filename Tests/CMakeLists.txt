@@ -112,7 +112,10 @@ IF ( QT4_FOUND )
    ADD_TEST( XmlSerializationTests ${EXECUTABLE_OUTPUT_PATH}/XmlSerializationTests )
    ADD_TEST( TaskStructureTests ${EXECUTABLE_OUTPUT_PATH}/TaskStructureTests )
    ADD_TEST( ImportExportTests ${EXECUTABLE_OUTPUT_PATH}/ImportExportTests )
-   ADD_TEST( SqlTransactionTests ${EXECUTABLE_OUTPUT_PATH}/SqlTransactionTests )
+   IF ( CHARM_DATABASE_CONFIGURATION )
+       ADD_TEST( SqlTransactionTests ${EXECUTABLE_OUTPUT_PATH}/SqlTransactionTests )
+       SET_PROPERTY( TEST SqlTransactionTests PROPERTY ENVIRONMENT "CHARM_DATABASE_CONFIGURATION=${CHARM_DATABASE_CONFIGURATION}" )
+   ENDIF ( CHARM_DATABASE_CONFIGURATION )
 
 ENDIF ( QT4_FOUND )
 
