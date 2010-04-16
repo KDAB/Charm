@@ -14,6 +14,7 @@
 #include <QMetaType>
 #include <QMessageBox>
 #include <QShortcut>
+#include <QSessionManager>
 #include <QSystemTrayIcon>
 
 #include <Core/CharmConstants.h>
@@ -22,8 +23,6 @@
 #include "ViewHelpers.h"
 #include "Data.h"
 #include "Application.h"
-#include <QSessionManager>
-#include "SpecialKeysEventFilter.h"
 #include "ConfigurationDialog.h"
 #include "Idle/IdleDetector.h"
 #include "Uniquifier.h"
@@ -176,24 +175,9 @@ Application::Application(int& argc, char** argv)
     m_windowMenu.addSeparator();
     m_windowMenu.addAction( &m_actionReporting );
 
-    // FIXME ifndef?
 #ifdef Q_WS_MAC
-#if 0
-    // FIXME parametrize, handle the same for all windows
-    SpecialKeysEventFilter* filter = new SpecialKeysEventFilter( this );
-    installEventFilter( filter );
-#endif
-    // MIRKO_TEMP_REM
-    /*
-      connect( filter, SIGNAL( toggleWindow1Visibility() ),
-      &m_mainWindow, SLOT( slotShowHideView() ) );
-      connect( filter, SIGNAL( toggleWindow2Visibility() ),
-      &m_timeTracker, SLOT( slotShowHide() ) );
-    */
-    // FIXME fix
     connect( QApplication::instance(), SIGNAL( dockIconClicked() ), this, SLOT( slotOpenLastClosedWindow() ) );
 #endif
-    // ^^^
 
     // set up idle detection
     m_idleDetector = IdleDetector::createIdleDetector( this );

@@ -11,7 +11,6 @@ IF ( QT4_FOUND )
    SET( CharmApplication_SRCS 
 		       CharmWindow.cpp
 		       Application.cpp
-		       SpecialKeysEventFilter.cpp
 		       ViewHelpers.cpp
 		       TaskIdDialog.cpp
 		       Data.cpp
@@ -74,7 +73,6 @@ IF ( QT4_FOUND )
 	   ENDIF( QT_MAC_USE_COCOA )
 	   EXEC_PROGRAM( sw_vers ARGS -buildVersion OUTPUT_VARIABLE DARWIN_BUILDVERSION )
 	   STRING(REGEX MATCH "^[0-9]+" DARWIN_VERSION ${DARWIN_BUILDVERSION})
-#	   MESSAGE(STATUS "DARWIN_VERSION=${DARWIN_VERSION}")
 	   ADD_DEFINITIONS( -DDARWIN_VERSION=${DARWIN_VERSION} )
         ELSE( APPLE )
 	    IF( UNIX )
@@ -125,19 +123,19 @@ IF ( QT4_FOUND )
     SET( Charm_SRCS Charm.cpp )
     QT4_AUTOMOC (${Charm_SRCS} )
 
-	IF( APPLE )
-	        TARGET_LINK_LIBRARIES( CharmApplication IOKit )
-		SET( MACOSX_BUNDLE_INFO_STRING "Charm - Version ${Charm_VERSION}" )
-		SET( MACOSX_BUNDLE_BUNDLE_VERSION "${Charm_VERSION}" )
-		SET( MACOSX_BUNDLE_ICON_FILE "Charm.icns" )
-		SET( MACOSX_BUNDLE_GUI_IDENTIFIER "net.kdab" )
-		SET( MACOSX_BUNDLE_BUNDLE_NAME "Charm" )
+    IF( APPLE )
+        TARGET_LINK_LIBRARIES( CharmApplication IOKit )
+        SET( MACOSX_BUNDLE_INFO_STRING "Charm - Version ${Charm_VERSION}" )
+        SET( MACOSX_BUNDLE_BUNDLE_VERSION "${Charm_VERSION}" )
+        SET( MACOSX_BUNDLE_ICON_FILE "Charm.icns" )
+        SET( MACOSX_BUNDLE_GUI_IDENTIFIER "net.kdab" )
+        SET( MACOSX_BUNDLE_BUNDLE_NAME "Charm" )
+
+        EXEC_PROGRAM( "mkdir -p ${Charm_BINARY_DIR}/Charm/Charm.app/Contents/Resources")
+        EXEC_PROGRAM( "cp ${Charm_SOURCE_DIR}/Charm/Icons/Charm.icns ${Charm_BINARY_DIR}/Charm/Charm.app/Contents/Resources/")
 		
-		EXEC_PROGRAM( "mkdir -p ${Charm_BINARY_DIR}/Charm/Charm.app/Contents/Resources")
-		EXEC_PROGRAM( "cp ${Charm_SOURCE_DIR}/Charm/Icons/Charm.icns ${Charm_BINARY_DIR}/Charm/Charm.app/Contents/Resources/")
-		
-		SET( CMAKE_MODULE_PATH ${Charm_SOURCE_DIR}/Charm/ ${CMAKE_MODULE_PATH} )
-	ENDIF( APPLE)
+        SET( CMAKE_MODULE_PATH ${Charm_SOURCE_DIR}/Charm/ ${CMAKE_MODULE_PATH} )
+    ENDIF( APPLE)
 
     IF( WIN32 )
         LINK_LIBRARIES( ${QT_QTMAIN_LIBRARY} )
@@ -180,4 +178,3 @@ ENDIF ( QT4_FOUND )
 IF ( NOT QT4_FOUND )
    MESSAGE( "Fatal: Qt 4 not found." )
 ENDIF ( NOT QT4_FOUND) 
-
