@@ -71,7 +71,6 @@ namespace XmlSerialization {
 }
 
 void TaskExport::writeTo( const QString& filename, const TaskList& tasks )
-    throw( XmlSerializationException )
 {
     QDomDocument document = XmlSerialization::createXmlTemplate( "taskdefinitions" );
     QDomElement metadata = XmlSerialization::metadataElement( document );

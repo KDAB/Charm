@@ -22,9 +22,7 @@ namespace XmlSerialization {
 class TaskExport {
 public:
     // the only method that deals with writing:
-    static void writeTo( const QString& filename, const TaskList& tasks )
-        throw( XmlSerializationException );
-
+    static void writeTo( const QString& filename, const TaskList& tasks );
     void readFrom( const QString& filename );
     const TaskList& tasks() const;
     QDateTime exportTime() const;
