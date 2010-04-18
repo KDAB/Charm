@@ -18,7 +18,9 @@ TaskTreeItem::TaskTreeItem( const Task& task, TaskTreeItem* parent )
 
 TaskTreeItem::TaskTreeItem( const TaskTreeItem& other )
 {
-    *this = other;
+    if( this != &other ) {
+        *this = other;
+    }
 }
 
 void TaskTreeItem::operator=( const TaskTreeItem& other )
