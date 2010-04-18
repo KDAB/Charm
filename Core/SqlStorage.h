@@ -60,20 +60,16 @@ public:
     bool setMetaData( const QString&,  const QString& );
     QString getMetaData( const QString& );
 
-    bool verifyDatabase() throw ( UnsupportedDatabaseVersionException );
+    bool verifyDatabase();
     virtual bool createDatabaseTables() = 0;
 
     // run the query and process possible errors
     static bool runQuery( QSqlQuery& );
 
 protected:
-	virtual QString lastInsertRowFunction() const = 0;
+    virtual QString lastInsertRowFunction() const = 0;
 
 private:
-    //  a debug helper that populates the database with canned values:
-    void populateDatabase();
-
-
     Event makeEventFromRecord( const QSqlRecord& );
     Task makeTaskFromRecord( const QSqlRecord& );
 };

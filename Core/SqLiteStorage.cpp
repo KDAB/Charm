@@ -139,9 +139,6 @@ bool SqLiteStorage::createDatabaseTables()
 	}
 
 	error = error || ! setMetaData(CHARM_DATABASE_VERSION_DESCRIPTOR, QString().setNum( CHARM_DATABASE_VERSION) );
-	// FIXME temp remove this:
-	// populateDatabase();
-
 	return ! error;
 }
 

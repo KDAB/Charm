@@ -68,11 +68,11 @@ public:
 
     QDomElement toXml( QDomDocument ) const;
 
-    static Task fromXml( const QDomElement&, int databaseSchemaVersion = 1 ) throw( XmlSerializationException );
+    static Task fromXml( const QDomElement&, int databaseSchemaVersion = 1 );
 
-    static TaskList readTasksElement( const QDomElement&, int databaseSchemaVersion = 1 ) throw( XmlSerializationException );
+    static TaskList readTasksElement( const QDomElement&, int databaseSchemaVersion = 1 );
 
-    static QDomElement makeTasksElement( QDomDocument, const TaskList& ) throw( XmlSerializationException );
+    static QDomElement makeTasksElement( QDomDocument, const TaskList& );
 
     static bool checkForUniqueTaskIds( TaskList tasks );
 

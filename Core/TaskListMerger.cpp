@@ -31,7 +31,7 @@ void TaskListMerger::calculateResults() const
 {
     if ( m_resultsValid ) return;
 
-    // insert sentinels to end of list:
+    // insert sentinels at end of list:
     const TaskId maxId = qMax(
         m_oldTasks.isEmpty() ? 0 : m_oldTasks.last().id(),
         m_newTasks.isEmpty() ? 0 : m_newTasks.last().id() );

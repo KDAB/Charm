@@ -424,8 +424,6 @@ QString Controller::importDatabaseFromXml( const QDomDocument& document )
                 importedEvents.append( event );
             }
         }
-        // FIXME needs better error handling:
-        //
     } catch ( XmlSerializationException& e ) {
         qDebug() << "Controller::importDatabaseFromXml: things fucked up:" << e.what();
         return tr( "The Export file is invalid." );

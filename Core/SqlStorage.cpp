@@ -24,7 +24,7 @@ SqlStorage::~SqlStorage()
 {
 }
 
-bool SqlStorage::verifyDatabase() throw (UnsupportedDatabaseVersionException )
+bool SqlStorage::verifyDatabase()
 {
 	// if the database is empty, it is not ok :-)
 	if( database().tables().isEmpty() )
@@ -382,87 +382,6 @@ void SqlStorage::stateChanged(State previous)
 	Q_UNUSED(previous);
 	// atm, SqlStorage does not care about state
 	// qDebug() << "SqlStorage::stateChanged: NOT IMPLEMENTED"
-}
-
-void SqlStorage::populateDatabase()
-{
-	// temp
-	// qDebug() << "SqlStorage::populateDatabase: filling in canned values";
-
-	// simulated startup behaviour:
-	TaskList tasks;
-
-	// read the project codes and make plain list:
-	// FIXME this is just for development:
-	QFile projectsFile("projectcodes.txt");
-	if (projectsFile.open(QIODevice::ReadOnly))
-	{
-		QTextStream stream(&projectsFile);
-		QString line;
-		while (!(line = stream.readLine()).isNull())
-		{
-			// weed out comment lines:
-			// (everything that does not start with a number)
-			if (line.length() < 4 ) continue;
-			QString idText = line.left( 4 );
-			QString text = line.right( line.length() - 4 );
-			bool isNumber;
-			int id = idText.toInt( &isNumber );
-			if ( !isNumber ) continue;
-			text = text.trimmed();
-			// weed out categories (1000-1100 Stuff)
-			if ( text.at( 0 ) == '-' ) continue;
-			// now we can make a task with id as the number and text
-			// as the description:
-			Task task;
-			task.setId( id );
-			task.setName( text );
-			tasks.append( task );
-		}
-		qDebug() << "SqlStorage::populateDatabase: imported" << tasks.size()
-		<< "tasks from" << projectsFile.fileName();
-		// now heuristically determine the task relationships:
-		for ( int i = 0; i < tasks.size(); ++i )
-		{
-			int possibleParent = tasks[i].id();
-			int divisor = 10;
-			while ( possibleParent> divisor )
-			{
-
-				possibleParent = ( possibleParent / divisor ) * divisor;
-				divisor *= 10;
-				if ( possibleParent == tasks[i].id() ) continue;
-				//                 qDebug() << "SqlStorage::populateDatabase: task"
-				//                          << tasks[i].id() << "?" << possibleParent;
-				for ( int j = 0; j < tasks.size(); ++j )
-				{
-					if ( tasks[j].id() == possibleParent )
-					{
-						tasks[i].setParent( tasks[j].id() );
-						//                         qDebug() << "SqlStorage::populateDatabase: setting"
-						//                                  << tasks[j].name() << "as parent of"
-						//                                  << tasks[i].name();
-					}
-				}
-			}
-		}
-	}
-	else
-	{
-		qDebug() << "SqlStorage::populateDatabase: not importing tasks";
-	}
-
-	SqlRaiiTransactor transactor( database() );
-	Q_ASSERT( transactor.isActive() ); // sqlite supports transactions
-	for ( int i = 0; i < tasks.size(); ++i )
-	{
-		if ( ! addTask( tasks[i] ) )
-		{
-			Q_ASSERT_X( false, "SqlStorage::populateDatabase",
-			"Cannot add to database" );
-		}
-	}
-	transactor.commit();
 }
 
 User SqlStorage::getUser(int userid)

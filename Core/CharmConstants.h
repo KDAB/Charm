@@ -6,7 +6,7 @@
 #include "CharmDataModel.h"
 #include "Configuration.h"
 
-// increment then SQL DB format changes:
+// increment when SQL DB format changes:
 #define CHARM_DATABASE_VERSION_DESCRIPTOR "CharmDatabaseSchemaVersion"
 #define CHARM_DATABASE_VERSION_BEFORE_TASK_EXPIRY 2
 #define CHARM_DATABASE_VERSION 3

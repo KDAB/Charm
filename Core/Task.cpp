@@ -35,13 +35,13 @@ QString Task::taskListTagName()
 
 bool Task::operator == ( const Task& other ) const
 {
-	return
-	other.id() == id()
-	&& other.parent() == parent()
-	&& other.name() == name()
-	&& other.subscribed() == subscribed()
-	&& other.validFrom() == validFrom()
-	&& other.validUntil() == validUntil();
+    return
+            other.id() == id()
+            && other.parent() == parent()
+            && other.name() == name()
+            && other.subscribed() == subscribed()
+            && other.validFrom() == validFrom()
+            && other.validUntil() == validUntil();
 }
 
 TaskId Task::id() const
@@ -163,7 +163,6 @@ QDomElement Task::toXml(QDomDocument document) const
 }
 
 Task Task::fromXml(const QDomElement& element, int databaseSchemaVersion)
-    throw(XmlSerializationException )
 {   // in case any task object creates trouble with
     // serialization/deserialization, add an object of it to
     // void XmlSerializationTests::testTaskSerialization()
@@ -198,7 +197,7 @@ Task Task::fromXml(const QDomElement& element, int databaseSchemaVersion)
     return task;
 }
 
-TaskList Task::readTasksElement( const QDomElement& element, int databaseSchemaVersion ) throw( XmlSerializationException )
+TaskList Task::readTasksElement( const QDomElement& element, int databaseSchemaVersion )
 {
     if ( element.tagName() == taskListTagName() ) {
         TaskList tasks;
@@ -217,7 +216,7 @@ TaskList Task::readTasksElement( const QDomElement& element, int databaseSchemaV
 }
 
 
-QDomElement Task::makeTasksElement( QDomDocument document, const TaskList& tasks ) throw( XmlSerializationException )
+QDomElement Task::makeTasksElement( QDomDocument document, const TaskList& tasks )
 {
     QDomElement element = document.createElement( taskListTagName() );
     Q_FOREACH( const Task& task, tasks ) {

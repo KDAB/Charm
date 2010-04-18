@@ -86,7 +86,7 @@ protected:
 	 * It will throw an UnsupportedDatabaseVersionException if the database version does
 	 * not match the one the client was compiled against.
 	 */
-	virtual bool verifyDatabase() throw ( UnsupportedDatabaseVersionException ) = 0;
+        virtual bool verifyDatabase() = 0;
 
 };
 
