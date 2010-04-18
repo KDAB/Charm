@@ -79,16 +79,6 @@ void TimeSpans::slotUpdateTimeSpans()
     if ( m_today.timespan.first == QDate::currentDate() )
         return;
 
-//     // if we are just starting up, continue
-//     if ( ! m_today.timespan.first.isValid() ) {
-//         qDebug() << "TimeSpans::slotUpdateTimeSpans: today is"
-//                  << "today. The world is round.";
-//     } else {
-//         // today has passed (for example, the computer was suspended)
-//         qDebug() << "TimeSpans::slotUpdateTimeSpans: today is yesterday."
-//                  << "Slavery is freedom. The world is flat.";
-//     }
-
     QTime now = QTime::currentTime();
 
     QDate today = QDate::currentDate();
@@ -139,16 +129,6 @@ void TimeSpans::slotUpdateTimeSpans()
                   m_thisMonth.timespan.second.addMonths( -1 ) );
 
     emit timeSpansChanged();
-//     qDebug() << "TimeSpans::slotUpdateTimeSpans: this is where we ar at:" << endl
-//              << "--> today:" << m_today.timespan << endl
-//              << "--> yesterday:" << m_yesterday.timespan << endl
-//              << "--> day before yesterday:" << m_dayBeforeYesterday.timespan << endl
-//              << "--> this week:" << m_thisWeek.timespan << endl
-//              << "--> last week:" << m_lastWeek.timespan << endl
-//              << "--> week before last:" << m_theWeekBeforeLast.timespan << endl
-//              << "--> this month:" << m_thisMonth.timespan << endl
-//              << "--> last month:" << m_lastMonth.timespan << endl
-//              << "--> next update in" << msecsUntil5SecsPastMidnight / 60000 << "minutes.";
 }
 
 #include "TimeSpans.moc"
