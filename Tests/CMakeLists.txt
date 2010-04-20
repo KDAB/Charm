@@ -9,7 +9,7 @@ IF ( QT4_FOUND )
    INCLUDE_DIRECTORIES( ../ )
    include (${QT_USE_FILE})
 
-   LINK_DIRECTORIES( ../Core )
+   LINK_DIRECTORIES( ${Charm_SOURCE_DIR}/Core )
    LINK_LIBRARIES( CharmCore )
    LINK_LIBRARIES( ${QT_QTCORE_LIBRARY} )
    IF( APPLE )
