@@ -13,7 +13,6 @@
 #include <QSettings>
 #include <QMetaType>
 #include <QMessageBox>
-#include <QShortcut>
 #include <QSessionManager>
 #include <QSystemTrayIcon>
 
