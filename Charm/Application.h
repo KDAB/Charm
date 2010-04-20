@@ -35,7 +35,7 @@
 #include "CharmWindow.h"
 #include "TasksWindow.h"
 #include "EventWindow.h"
-#include "TimeTrackingView.h"
+#include "TimeTrackingView/TimeTrackingView.h"
 #include "ModelConnector.h"
 
 // FIXME read configuration name from command line

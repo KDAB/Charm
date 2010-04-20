@@ -9,7 +9,7 @@ IF ( QT4_FOUND )
    include (${QT_USE_FILE})
 
    SET( CharmApplication_SRCS 
-		       CharmWindow.cpp
+                       CharmWindow.cpp
 		       Application.cpp
 		       ViewHelpers.cpp
 		       TaskIdDialog.cpp
@@ -33,8 +33,10 @@ IF ( QT4_FOUND )
 		       EventModelFilter.cpp
 		       TasksViewDelegate.cpp 
 		       CharmAboutDialog.cpp
-		       TimeTrackingView.cpp
-		       TimeTrackingSummaryWidget.cpp
+                        TimeTrackingView/TimeTrackingView.cpp
+                        TimeTrackingView/TimeTrackingSummaryWidget.cpp
+                        TimeTrackingView/WeeklySummary.cpp
+                        TimeTrackingView/TimeTrackingTaskSelector.cpp
 		       # OpeningScene.cpp
 		       IdleWidget.cpp
 		       Reports/ReportDialog.cpp
@@ -92,7 +94,7 @@ IF ( QT4_FOUND )
         configure_file(config-charm.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-charm.h )
 
 
-    
+
     QT4_AUTOMOC ( ${CharmApplication_SRCS} )
 
     QT4_WRAP_UI( UiGenerated_SRCS
@@ -111,8 +113,8 @@ IF ( QT4_FOUND )
 		       EventEditor.ui
 		       SelectTaskDialog.ui
 		       CharmAboutDialog.ui
-		       TimeTrackingView.ui
-		       Idle/IdleCorrectionDialog.ui )
+                        TimeTrackingView/TimeTrackingView.ui
+                       Idle/IdleCorrectionDialog.ui )
 
     QT4_ADD_RESOURCES ( Resources_SRCS CharmResources.qrc )
 

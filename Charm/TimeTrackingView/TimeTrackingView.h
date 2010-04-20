@@ -5,7 +5,7 @@
 #include "Core/CharmDataModelAdapterInterface.h"
 
 #include "CharmWindow.h"
-#include "TimeTrackingSummaryWidget.h"
+#include "TimeTrackingView/WeeklySummary.h"
 
 class CharmCommand;
 class TimeTrackingSummaryWidget;
@@ -29,6 +29,7 @@ public:
     void restore();
     void quit();
 
+    void showEvent( QShowEvent* );
     // model adapter:
     void resetTasks();
     void taskAboutToBeAdded( TaskId parent, int pos );
@@ -58,7 +59,7 @@ signals:
 private:
     TimeTrackingSummaryWidget* summaryWidget();
     Ui::TimeTrackingView* m_ui;
-    QVector<TimeTrackingSummaryWidget::WeeklySummary> m_summaries;
+    QVector<WeeklySummary> m_summaries;
 };
 
 #endif

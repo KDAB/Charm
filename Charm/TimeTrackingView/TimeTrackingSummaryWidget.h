@@ -9,19 +9,11 @@
 #include <QTimeLine>
 
 #include "Core/Task.h"
-
-#define DAYS_IN_WEEK 7
+#include "TimeTrackingTaskSelector.h"
 
 class TimeTrackingSummaryWidget : public QWidget
 {
     Q_OBJECT
-public:
-    struct WeeklySummary {
-        TaskId task;
-        QString taskname;
-        QVector<int> durations;
-        WeeklySummary() : task( 0 ), durations( DAYS_IN_WEEK, 0 ) {}
-    };
 private:
     struct DataField {
         DataField() : hasHighlight( false ), storeAsActive( false ) {}
@@ -54,15 +46,12 @@ signals:
     void stopEvent();
 
 private slots:
-    void slotGoStopToggled( bool );
-    void slotActionSelected( QAction* );
     void slotPulseValueChanged( qreal );
 
 private:
     DataField data( int column, int row );
     int columnCount() const { return 9; }
     int rowCount() const { return qMax( 6, m_summaries.count() ) + 3; }
-    void selectSummary( int position );
     int getSummaryAt( const QPoint& position );
 
     int taskColumnWidth() const;
@@ -74,13 +63,9 @@ private:
     mutable QRect m_cachedDayFieldRect;
     mutable QFont m_fixedFont;
     mutable QFont m_narrowFont;
-    QToolButton m_stopGoButton;
-    QToolButton m_taskSelector;
-    QMenu m_menu;
-    QList<QAction*> m_currentActions;
+    TimeTrackingTaskSelector* m_taskSelector;
     QList<QRect> m_activeFieldRects;
     QTimeLine m_pulse;
-    int m_selectedSummary;
 };
 
 #endif

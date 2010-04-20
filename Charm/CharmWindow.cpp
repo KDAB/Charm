@@ -4,6 +4,8 @@
 #include <QSettings>
 #include <QShortcut>
 #include <QKeySequence>
+#include <QToolButton>
+
 #include <Core/CharmCommand.h>
 #include <Core/CharmConstants.h>
 

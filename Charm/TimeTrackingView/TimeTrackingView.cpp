@@ -31,6 +31,11 @@ TimeTrackingView::TimeTrackingView( QWidget* parent )
              SLOT( slotStopEvent() ) );
 }
 
+void TimeTrackingView::showEvent( QShowEvent* e )
+{
+    CharmWindow::showEvent( e );
+}
+
 
 TimeTrackingView::~TimeTrackingView()
 {
@@ -52,7 +57,7 @@ void TimeTrackingView::stateChanged( State previous )
         connect( &Application::instance().timeSpans(), SIGNAL( timeSpansChanged() ),
                  SLOT( slotSelectTasksToShow() ) );
         DATAMODEL->registerAdapter( this );
-        summaryWidget()->setSummaries( QVector<TimeTrackingSummaryWidget::WeeklySummary>() );
+        summaryWidget()->setSummaries( QVector<WeeklySummary>() );
         summaryWidget()->handleActiveEvents();
         break;
     }
@@ -173,7 +178,7 @@ void TimeTrackingView::slotSelectTasksToShow()
     std::unique_copy( taskIds.begin(), taskIds.end(), std::back_inserter( uniqueTaskIds ) );
     Q_ASSERT( events.size() == eventIds.size() );
     // retrieve task information
-    QVector<TimeTrackingSummaryWidget::WeeklySummary> summaries( uniqueTaskIds.size() );
+    QVector<WeeklySummary> summaries( uniqueTaskIds.size() );
     for ( int i = 0; i < uniqueTaskIds.size(); ++i ) {
         summaries[i].task = uniqueTaskIds.at( i );
         const Task& task = DATAMODEL->getTask( uniqueTaskIds[i] );
@@ -184,7 +189,7 @@ void TimeTrackingView::slotSelectTasksToShow()
         // find the index for this event:
         TaskIdList::iterator it = std::find( uniqueTaskIds.begin(), uniqueTaskIds.end(), event.taskId() );
         if ( it != uniqueTaskIds.end() ) {
-            int index = std::distance( uniqueTaskIds.begin(), it );
+            const int index = std::distance( uniqueTaskIds.begin(), it );
             Q_ASSERT( index >= 0 && index < summaries.size() );
             const int dayOfWeek = event.startDateTime().date().dayOfWeek() - 1;
             Q_ASSERT( dayOfWeek >= 0 && dayOfWeek < 7 );

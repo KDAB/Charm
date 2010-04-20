@@ -18,9 +18,7 @@ const int Margin = 2;
 
 TimeTrackingSummaryWidget::TimeTrackingSummaryWidget( QWidget* parent )
     : QWidget( parent )
-    , m_stopGoButton( this )
-    , m_taskSelector( this )
-    , m_selectedSummary( -1 )
+    , m_taskSelector( new TimeTrackingTaskSelector( this ) )
 {
 #ifdef Q_WS_MAC
     m_fixedFont.setFamily( "Andale Mono" );
@@ -35,21 +33,16 @@ TimeTrackingSummaryWidget::TimeTrackingSummaryWidget( QWidget* parent )
     //
     setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
     // plumbing
-    m_stopGoButton.setCheckable( true );
-    connect( &m_stopGoButton, SIGNAL( clicked( bool ) ),
-             SLOT( slotGoStopToggled( bool ) ) );
-    m_taskSelector.setEnabled( false );
-    m_taskSelector.setPopupMode( QToolButton::InstantPopup );
-    m_taskSelector.setMenu( &m_menu );
-    m_taskSelector.setText( tr( "Select Task" ) );
     m_pulse.setLoopCount( 0 );
     m_pulse.setDuration( 2000 );
     m_pulse.setUpdateInterval( 160 ); // any smaller value uses too much cpu
     m_pulse.setCurveShape( QTimeLine::SineCurve );
     connect( &m_pulse, SIGNAL( valueChanged( qreal ) ),
              SLOT( slotPulseValueChanged( qreal ) ) );
-    connect( &m_menu, SIGNAL( triggered( QAction* ) ),
-             SLOT( slotActionSelected( QAction* ) ) );
+    connect( m_taskSelector, SIGNAL( startEvent( TaskId ) ),
+             SIGNAL( startEvent( TaskId ) ) );
+    connect( m_taskSelector, SIGNAL( stopEvent( TaskId ) ),
+             SIGNAL( stopEvent() ) );
 }
 
 QSize TimeTrackingSummaryWidget::sizeHint() const
@@ -70,8 +63,8 @@ QSize TimeTrackingSummaryWidget::minimumSizeHint() const
 {
     if ( ! m_cachedMinimumSizeHint.isValid() ) {
         // the header row, task rows, and totals row are all of the same height
-        const QFontMetrics fixedFontMetrics = QFontMetrics( m_fixedFont );
-        const QFontMetrics narrowFontMetrics = QFontMetrics( m_narrowFont );
+        const QFontMetrics fixedFontMetrics( m_fixedFont );
+        const QFontMetrics narrowFontMetrics( m_narrowFont );
         const QRect totalsColumnFieldRect(
             fixedFontMetrics.boundingRect( "100:00" )
             .adjusted( 0, 0, 2 * Margin, 2 * Margin ) );
@@ -82,9 +75,9 @@ QSize TimeTrackingSummaryWidget::minimumSizeHint() const
         const QRect taskColumnFieldRect = narrowFontMetrics.boundingRect(
             tr( "KDABStuffngy" ) )
                                           .adjusted( 0, 0, 2 * Margin, 2 * Margin );
-        // the tracking row needs to accomodate a tool button:
-        const QSize buttonSizeHint = m_stopGoButton.sizeHint();
-        const int trackingRowHeight = qMax( fieldHeight, buttonSizeHint.height() + 2 * Margin );
+        // the tracking row needs to accomodate the task selector widget
+        const QSize taskSelectorSizeHint = m_taskSelector->sizeHint();
+        const int trackingRowHeight = qMax( fieldHeight, taskSelectorSizeHint.height() + 2 * Margin );
 
         const int minimumWidth =
             totalsColumnFieldRect.width()
@@ -148,7 +141,7 @@ void TimeTrackingSummaryWidget::paintEvent( QPaintEvent* e )
         }
     }
     // paint the tracking row
-    const int left = m_stopGoButton.geometry().right() + Margin;
+    const int left = m_taskSelector->geometry().right() + Margin;
     const int top = ( rowCount() - 1 ) * FieldHeight;
     const QRect fieldRect( 0, top, width(), height() - top );
     if ( e->rect().contains( fieldRect ) ) {
@@ -164,21 +157,16 @@ void TimeTrackingSummaryWidget::paintEvent( QPaintEvent* e )
 void TimeTrackingSummaryWidget::resizeEvent( QResizeEvent* )
 {
     sizeHint(); // make sure cached values are updated
-    m_stopGoButton.resize( m_stopGoButton.sizeHint() );
-    m_stopGoButton.move( Margin, height() - Margin - m_stopGoButton.height() );
-    const int left = m_stopGoButton.geometry().right() + Margin;
-    const int remainingWidth = width() - Margin - left;
-    const QRect selectorGeometry( left, m_stopGoButton.geometry().top(),
-                                  remainingWidth, m_stopGoButton.height() );
-    m_taskSelector.setGeometry( selectorGeometry );
+    m_taskSelector->resize( width() - 2*Margin, m_taskSelector->sizeHint().height() );
+    m_taskSelector->move( Margin, height() - Margin - m_taskSelector->height() );
 }
 
 void TimeTrackingSummaryWidget::mousePressEvent( QMouseEvent* event )
 {
     if ( ! isTracking() ) {
         const int position = getSummaryAt( event->pos() );
-        if ( position >= 0 ) {
-            selectSummary( position );
+        if ( position >= 0 && position < m_summaries.size() ) {
+            m_taskSelector->taskSelected( m_summaries.at( position ) );
         }
     }
 }
@@ -189,7 +177,8 @@ void TimeTrackingSummaryWidget::mouseDoubleClickEvent( QMouseEvent* event )
         // start tracking
         const int position = getSummaryAt( event->pos() );
         if ( position >= 0 ) {
-            slotGoStopToggled( true );
+            const TaskId id = m_summaries.at( position ).task;
+            emit startEvent( id );
         }
     }
 }
@@ -315,47 +304,14 @@ void TimeTrackingSummaryWidget::setSummaries( QVector<WeeklySummary> s )
     updateGeometry();
     update();
     // populate menu:
-    qDeleteAll( m_currentActions );
-    m_currentActions.clear();
-    Q_FOREACH( const WeeklySummary& s, m_summaries ) {
-        m_currentActions << m_menu.addAction( s.taskname );
-    }
+    m_taskSelector->populate( m_summaries );
     // FIXME maybe remember last selected task
     handleActiveEvents();
-}
-
-void TimeTrackingSummaryWidget::slotGoStopToggled( bool on )
-{
-    Q_ASSERT( ( m_selectedSummary >= 0 && m_selectedSummary < m_summaries.size() )
-              || m_selectedSummary == -1 );
-
-    if ( on ) {
-        if ( m_selectedSummary != -1 ) {
-            emit startEvent( m_summaries[m_selectedSummary].task );
-        }
-    } else {
-        emit stopEvent();
-    }
 }
 
 bool TimeTrackingSummaryWidget::isTracking() const
 {
     return DATAMODEL->activeEventCount() > 0;
-}
-
-void TimeTrackingSummaryWidget::slotActionSelected( QAction* action )
-{
-    QList<QAction*>::iterator it = std::find( m_currentActions.begin(), m_currentActions.end(), action );
-    const int position = std::distance( m_currentActions.begin(), it );
-    selectSummary( position );
-}
-
-void TimeTrackingSummaryWidget::selectSummary( int position )
-{
-    Q_ASSERT( position >= 0 && position < m_summaries.size() );
-    m_selectedSummary = position;
-    m_taskSelector.setText( m_summaries[m_selectedSummary].taskname );
-    m_stopGoButton.setEnabled( true );
 }
 
 void TimeTrackingSummaryWidget::handleActiveEvents()
@@ -364,31 +320,15 @@ void TimeTrackingSummaryWidget::handleActiveEvents()
     const int activeEventCount = DATAMODEL->activeEventCount();
     Q_ASSERT( activeEventCount >= 0 );
 
-    bool taskSelected = m_selectedSummary >= 0 && m_selectedSummary < m_summaries.size();
-
+    m_taskSelector->handleActiveEvents( activeEventCount, m_summaries );
     if ( activeEventCount > 1 ) {
-        m_stopGoButton.setIcon( Data::recorderGoIcon() );
-        m_stopGoButton.setText( tr( "Start" ) );
-        m_taskSelector.setEnabled( false );
-        m_stopGoButton.setEnabled( false );
-        m_stopGoButton.setChecked( true );
-        qDebug() << "TimeTrackingView::eventActivated: disable GUI, multiple events are active!";
         if ( m_pulse.state() != QTimeLine::Running ) m_pulse.start();
     } else if ( activeEventCount == 1 ) {
-        m_stopGoButton.setIcon( Data::recorderStopIcon() );
-        m_stopGoButton.setText( tr( "Stop" ) );
-        m_stopGoButton.setEnabled( true );
-        m_taskSelector.setEnabled( false );
-        m_stopGoButton.setChecked( true );
         if ( m_pulse.state() != QTimeLine::Running ) m_pulse.start();
     } else {
-        m_stopGoButton.setIcon( Data::recorderGoIcon() );
-        m_stopGoButton.setText( tr( "Start" ) );
-        m_taskSelector.setEnabled( ! m_summaries.isEmpty() );
-        m_stopGoButton.setEnabled( taskSelected );
-        m_stopGoButton.setChecked( false );
         m_pulse.stop();
     }
+
 }
 
 void TimeTrackingSummaryWidget::slotPulseValueChanged( qreal value )
