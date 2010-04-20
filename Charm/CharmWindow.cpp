@@ -137,8 +137,8 @@ void CharmWindow::keyPressEvent( QKeyEvent* event )
     if ( event->type() == QEvent::KeyPress ) {
         QKeyEvent *keyEvent = static_cast<QKeyEvent*>( event );
         if ( keyEvent->modifiers() & Qt::ControlModifier
-             && keyEvent->key() == Qt::Key_W ) {
-            // we must be visible, otherwise we would not get the event
+             && keyEvent->key() == Qt::Key_W
+             && isVisible() ) {
             showHideView();
         }
     }
