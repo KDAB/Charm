@@ -68,6 +68,7 @@ IF ( QT4_FOUND )
 	      SET( CharmApplication_SRCS
 	         ${CharmApplication_SRCS} Idle/MacCocoaIdleDetector.mm
 	         MacCocoaApplication.mm )
+              SET(CMAKE_EXE_LINKER_FLAGS "-framework Foundation -framework AppKit")
            ELSE( QT_MAC_USE_COCOA )
 	      SET( CharmApplication_SRCS
                  ${CharmApplication_SRCS} Idle/MacCarbonIdleDetector.cpp
