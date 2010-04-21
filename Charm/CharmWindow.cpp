@@ -140,6 +140,7 @@ void CharmWindow::keyPressEvent( QKeyEvent* event )
              && keyEvent->key() == Qt::Key_W
              && isVisible() ) {
             showHideView();
+            return;
         }
     }
     QMainWindow::keyPressEvent( event );
