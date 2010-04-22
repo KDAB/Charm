@@ -40,8 +40,7 @@ void TimeTrackingView::showEvent( QShowEvent* e )
 TimeTrackingView::~TimeTrackingView()
 {
     DATAMODEL->unregisterAdapter( this );
-    //FIXME: Bad memory access
-    //delete m_ui;
+    delete m_ui;
     m_ui = 0;
 }
 

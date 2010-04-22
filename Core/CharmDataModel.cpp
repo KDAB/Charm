@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <queue>
 
 #include <QList>
 #include <QtDebug>
@@ -522,6 +523,76 @@ EventIdList CharmDataModel::activeEvents() const
     return m_activeEventIds;
 }
 
+struct TaskWithCount {
+    TaskId id;
+    unsigned int count;
+
+    bool operator<( const TaskWithCount& other ) const {
+        return count < other.count;
+    }
+};
+
+struct TaskWithLastUseDate {
+    TaskId id;
+    QDateTime lastUse;
+
+    bool operator<( const TaskWithLastUseDate& other ) const {
+        return lastUse < other.lastUse;
+    }
+};
+
+TaskIdList CharmDataModel::mostFrequentlyUsedTasks() const
+{
+    QMap<TaskId, unsigned > mfuMap;
+    const EventMap& events = eventMap();
+    for( EventMap::const_iterator it = events.begin(); it != events.end(); ++it ) {
+        const TaskId id = it->second.taskId();
+        // process use count
+        const unsigned count  = mfuMap[id] + 1;
+        mfuMap[id] = count;
+    }
+    std::priority_queue<TaskWithCount> mfuTasks;
+    for( QMap<TaskId, unsigned >::const_iterator it = mfuMap.begin(); it != mfuMap.end(); ++it ) {
+        TaskWithCount t;
+        t.id = it.key();
+        t.count = it.value();
+        mfuTasks.push( t );
+    }
+    TaskIdList mfu;
+    while( ! mfuTasks.empty() ) {
+        const TaskWithCount t = mfuTasks.top();
+        mfuTasks.pop();
+        mfu.append( t.id );
+    }
+    return mfu;
+}
+
+TaskIdList CharmDataModel::mostRecentlyUsedTasks() const
+{
+    QMap<TaskId, QDateTime> mruMap;
+    const EventMap& events = eventMap();
+    for( EventMap::const_iterator it = events.begin(); it != events.end(); ++it ) {
+        const TaskId id = it->second.taskId();
+        // process use date
+        const QDateTime date = it->second.startDateTime();
+        mruMap[id]= qMax( mruMap[id], date );
+    }
+    std::priority_queue<TaskWithLastUseDate> mruTasks;
+    for( QMap<TaskId, QDateTime>::const_iterator it = mruMap.begin(); it != mruMap.end(); ++it ) {
+        TaskWithLastUseDate t;
+        t.id = it.key();
+        t.lastUse = it.value();
+        if( t.id != 0 ) mruTasks.push( t );
+    }
+    TaskIdList mru;
+    while( ! mruTasks.empty() ) {
+        const TaskWithLastUseDate t = mruTasks.top();
+        mruTasks.pop();
+        Q_ASSERT( t.id != 0 );
+        mru.append( t.id );
+    }
+
+    return mru;
+}
+
 #include "CharmDataModel.moc"
-
-

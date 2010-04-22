@@ -80,6 +80,13 @@ public:
     /** Activate this event. */
     bool activateEvent( const Event& );
 
+    /** Provide a list of the most frequently used tasks.
+      * Only tasks that have been used so far will be taken into account, so the list might be empty. */
+    TaskIdList mostFrequentlyUsedTasks() const;
+    /** Provide a list of the most recently used tasks.
+      * Only tasks that have been used so far will be taken into account, so the list might be empty. */
+    TaskIdList mostRecentlyUsedTasks() const;
+
 signals:
     // these need to be implemented in the respective application to
     // be able to track time:

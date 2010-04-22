@@ -1,8 +1,12 @@
 #include <QMenu>
+#include <QDateTime>
 #include <QToolButton>
 
 #include "Core/Task.h"
+#include "Core/Event.h"
 #include "Data.h"
+#include "ViewHelpers.h"
+#include "Reports/CharmReport.h"
 
 #include "TimeTrackingTaskSelector.h"
 
@@ -17,7 +21,7 @@ TimeTrackingTaskSelector::TimeTrackingTaskSelector(QWidget *parent)
 {
     connect( m_menu, SIGNAL( triggered( QAction* ) ),
              SLOT( slotActionSelected( QAction* ) ) );
-
+    m_menu->setSeparatorsCollapsible( true );
     m_stopGoButton->setCheckable( true );
     connect( m_stopGoButton, SIGNAL( clicked( bool ) ),
              SLOT( slotGoStopToggled( bool ) ) );
@@ -42,17 +46,54 @@ void TimeTrackingTaskSelector::resizeEvent( QResizeEvent* )
     m_taskSelectorButton->move( m_stopGoButton->width(), 0 );
 }
 
+/** a helper function that takes an entry from the fromList if it is not empty, checks if it is
+ * already contained in the list of visited tasks, and if not, prepends it into the targetList
+ * all parameters may be modified
+ */
+void insertHelper( TaskIdList& targetList, QSet<TaskId>& visitedTasks, TaskIdList& fromList )
+{
+    if( ! fromList.isEmpty() ) {
+        TaskId id = fromList.takeFirst();
+        if( ! visitedTasks.contains( id ) ) {
+            visitedTasks.insert( id );
+            targetList.append( id );
+        }
+    }
+}
+
 void TimeTrackingTaskSelector::populate( const QVector<WeeklySummary>& summaries )
 {
     m_menu->clear();
     m_taskSelectorButton->setDisabled( summaries.isEmpty() );
+
+    QSet<TaskId> visitedTasks;
     Q_FOREACH( const WeeklySummary& s, summaries ) {
+        visitedTasks.insert( s.task );
         QAction* action = new QAction( s.taskname, m_menu );
         action->setProperty( CUSTOM_TASK_PROPERTY_NAME, QVariant::fromValue( s.task ) );
         Q_ASSERT( action->property( CUSTOM_TASK_PROPERTY_NAME ).value<TaskId>() == s.task );
         m_menu->addAction( action );
     }
-    // FIXME add most-recently-used list
+
+    // build a list of "interesting" tasks
+    TaskIdList mru = DATAMODEL->mostRecentlyUsedTasks();
+    TaskIdList mfu = DATAMODEL->mostFrequentlyUsedTasks();
+    // ... merge the two lists into one interesting one:
+    TaskIdList merged;
+    while( merged.count() < 15 ) { // arbitrary hardcoded number warning
+        insertHelper( merged, visitedTasks, mru );
+        insertHelper( merged, visitedTasks, mru );
+        insertHelper( merged, visitedTasks, mfu );
+        if( mru.isEmpty() && mfu.isEmpty() ) break;
+    }
+    // add to menu
+    m_menu->addSeparator();
+    Q_FOREACH( TaskId id, merged ) {
+        const Task& task = DATAMODEL->getTask( id );
+        QAction* action = new QAction( tasknameWithParents( task ), m_menu );
+        action->setProperty( CUSTOM_TASK_PROPERTY_NAME, QVariant::fromValue( id ) );
+        m_menu->addAction( action );
+    }
 }
 
 void TimeTrackingTaskSelector::handleActiveEvents( int activeEventCount, const QVector<WeeklySummary>& summaries )
