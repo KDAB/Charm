@@ -11,6 +11,8 @@
 #include "Core/Task.h"
 #include "TimeTrackingTaskSelector.h"
 
+class QPalette;
+
 class TimeTrackingSummaryWidget : public QWidget
 {
     Q_OBJECT
@@ -23,6 +25,21 @@ private:
         bool storeAsActive;
         QBrush highlight;
         QFont font;
+    };
+
+    /** A struct to store the attributes used during painting.
+      The initialize function has and this class have been factored out for performance reasonsduring profiling. */
+    struct PaintAttributes {
+        QBrush headerBrush;
+        QBrush taskBrushEven;
+        QBrush taskBrushOdd;
+        QBrush totalsRowBrush;
+        QBrush totalsRowEvenDayBrush;
+        QBrush headerEvenDayBrush;
+        QBrush halfHighlight;
+        QColor pulseColor;
+        float dim;
+        void initialize( const QPalette& palette );
     };
 
 public:
@@ -66,6 +83,7 @@ private:
     TimeTrackingTaskSelector* m_taskSelector;
     QList<QRect> m_activeFieldRects;
     QTimeLine m_pulse;
+    PaintAttributes m_paintAttributes;
 };
 
 #endif

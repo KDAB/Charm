@@ -5,7 +5,7 @@ export MACOSX_DEPLOYMENT_TARGET=10.4
 # CHARM_BUILD_STATIC_QT is necessary to link static plugins
 # ../charm-1.2/ is the src directory
 cmake -DCMAKE_BUILD_TYPE=release \
-	-DCHARM_BUILD_STATIC_QT:BOOL=TRUE \
-	-DCMAKE_OSX_SYSROOT:STRING=/Developer/SDKs/MacOSX10.4u.sdk/ \
-	../charm-1.2/
+        -DCHARM_BUILD_STATIC_QT:BOOL=TRUE \
+        -DCMAKE_OSX_SYSROOT:STRING=/Developer/SDKs/MacOSX10.4u.sdk/ \
+        ../charm-1.2/
 make && make install

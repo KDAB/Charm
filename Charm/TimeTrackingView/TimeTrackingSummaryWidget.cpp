@@ -35,7 +35,7 @@ TimeTrackingSummaryWidget::TimeTrackingSummaryWidget( QWidget* parent )
     // plumbing
     m_pulse.setLoopCount( 0 );
     m_pulse.setDuration( 2000 );
-    m_pulse.setUpdateInterval( 160 ); // any smaller value uses too much cpu
+    m_paintAttributes.initialize( palette() );
     m_pulse.setCurveShape( QTimeLine::SineCurve );
     connect( &m_pulse, SIGNAL( valueChanged( qreal ) ),
              SLOT( slotPulseValueChanged( qreal ) ) );
@@ -43,6 +43,20 @@ TimeTrackingSummaryWidget::TimeTrackingSummaryWidget( QWidget* parent )
              SIGNAL( startEvent( TaskId ) ) );
     connect( m_taskSelector, SIGNAL( stopEvent( TaskId ) ),
              SIGNAL( stopEvent() ) );
+}
+
+void TimeTrackingSummaryWidget::PaintAttributes::initialize( const QPalette& palette ) {
+    headerBrush = palette.mid();
+    taskBrushEven = palette.light();
+    taskBrushOdd = palette.midlight();
+    totalsRowBrush = headerBrush;
+    totalsRowEvenDayBrush = QBrush( taskBrushEven.color().darker(125) );
+    headerEvenDayBrush = totalsRowEvenDayBrush;
+    QColor dimHighlight = palette.highlight().color();
+    dim = 0.25;
+    dimHighlight.setAlphaF( dim * dimHighlight.alphaF() );
+    const QBrush halfHighlight( dimHighlight );
+    pulseColor = palette.highlight().color();
 }
 
 QSize TimeTrackingSummaryWidget::sizeHint() const
@@ -205,12 +219,6 @@ int TimeTrackingSummaryWidget::taskColumnWidth() const
 
 TimeTrackingSummaryWidget::DataField TimeTrackingSummaryWidget::data( int column, int row )
 {
-    const QBrush& HeaderBrush = palette().mid();
-    const QBrush& TaskBrushEven = palette().light();
-    const QBrush& TaskBrushOdd = palette().midlight();
-    const QBrush& TotalsRowBrush = HeaderBrush;
-    const QBrush TotalsRowEvenDayBrush = QBrush( TaskBrushEven.color().darker(125));
-    const QBrush HeaderEvenDayBrush = TotalsRowEvenDayBrush;
     const int HeaderRow = 0;
     const int TotalsRow = rowCount() - 2;
     const int TrackingRow = rowCount() - 1;
@@ -229,13 +237,15 @@ TimeTrackingSummaryWidget::DataField TimeTrackingSummaryWidget::data( int column
         } else {
             field.text = QDate::shortDayName( column );
         }
-        field.background = (Day % 2) ?  HeaderBrush: HeaderEvenDayBrush;
+        field.background = (Day % 2)
+                           ? m_paintAttributes.headerBrush
+                               : m_paintAttributes.headerEvenDayBrush;
     } else if ( row == TotalsRow ) {
-        field.background = TotalsRowBrush;
+        field.background = m_paintAttributes.totalsRowBrush;
         if ( column == TaskColumn ) {
             // field.text = tr( "Total" );
         } else if ( column == TotalsColumn ) {
-        	int total = 0;
+                int total = 0;
             Q_FOREACH( const WeeklySummary& s, m_summaries ) {
                 total += std::accumulate( s.durations.begin(), s.durations.end(), 0 );
             }
@@ -246,27 +256,24 @@ TimeTrackingSummaryWidget::DataField TimeTrackingSummaryWidget::data( int column
                 total += s.durations[Day];
             }
             field.text = hoursAndMinutes( total );
-            field.background = (Day % 2) ?  TotalsRowBrush: TotalsRowEvenDayBrush;
+            field.background = (Day % 2)
+                               ? m_paintAttributes.totalsRowBrush
+                                   : m_paintAttributes.totalsRowEvenDayBrush;
         }
     } else if ( row == TrackingRow ) {
         // we only return one value, the paint method will treat this
         // column as a special case
-        field.background = TaskBrushOdd;
-
+        field.background = m_paintAttributes.taskBrushOdd;
         // field.text = tr( " 00:45 2345 KDAB/HR/Project Time Bookkeeping" );
     } else { // a task row
-        field.background = row % 2 ? TaskBrushEven : TaskBrushOdd;
+        field.background = row % 2 ? m_paintAttributes.taskBrushEven
+            : m_paintAttributes.taskBrushOdd;
         if ( m_summaries.size() > row - 1 ) {
             const int index = row - 1; // index into summaries
             const bool active = DATAMODEL->isTaskActive( m_summaries[index].task );
-            QColor dimHighlight( palette().highlight().color() );
-            const float dim = 0.25;
-            dimHighlight.setAlphaF( dim * dimHighlight.alphaF() );
-            const QBrush halfHighlight( dimHighlight );
-
             if ( active ) {
                 field.hasHighlight = true;
-                field.highlight = halfHighlight;
+                field.highlight = m_paintAttributes.halfHighlight;
             }
             int day = column - 1;
             if ( column == TaskColumn ) {
@@ -283,10 +290,12 @@ TimeTrackingSummaryWidget::DataField TimeTrackingSummaryWidget::data( int column
                 if ( day == QDate::currentDate().dayOfWeek() -1 ) {
                     field.hasHighlight = true;
                     field.storeAsActive = active;
-                    QColor pulseColor = palette().highlight().color();
-                    pulseColor.setAlphaF( dim + ( 1.0 - dim ) * m_pulse.currentValue() );
+                    QColor pulseColor = m_paintAttributes.pulseColor;
+                    pulseColor.setAlphaF( m_paintAttributes.dim
+                                          + ( 1.0 - m_paintAttributes.dim )
+                                          * m_pulse.currentValue() );
                     const QBrush pulseBrush( pulseColor );
-                    field.highlight = active ? pulseBrush : halfHighlight;
+                    field.highlight = active ? pulseBrush : m_paintAttributes.halfHighlight;
                 }
             }
         }
