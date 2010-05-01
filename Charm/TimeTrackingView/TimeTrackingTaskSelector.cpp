@@ -15,8 +15,8 @@
 TimeTrackingTaskSelector::TimeTrackingTaskSelector(QWidget *parent)
     : QWidget(parent)
     , m_stopGoButton( new QToolButton( this ) )
-    , m_menu( new QMenu() )
     , m_taskSelectorButton( new QToolButton( this ) )
+    , m_menu( new QMenu( m_taskSelectorButton ) )
     , m_selectedTask( 0 )
 {
     connect( m_menu, SIGNAL( triggered( QAction* ) ),

@@ -16,6 +16,7 @@ class TimeTrackingTaskSelector : public QWidget
     Q_OBJECT
 public:
     explicit TimeTrackingTaskSelector(QWidget *parent = 0);
+
     void populate( const QVector<WeeklySummary>& summaries  );
     void handleActiveEvents( int count, const QVector<WeeklySummary>& summaries );
     void taskSelected( const WeeklySummary& );
@@ -35,8 +36,8 @@ private:
     void taskSelected( const QString& taskname, TaskId id );
 
     QToolButton* m_stopGoButton;
-    QMenu *m_menu;
     QToolButton* m_taskSelectorButton;
+    QMenu *m_menu;
     TaskId m_selectedTask;
 };
 
