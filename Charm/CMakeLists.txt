@@ -45,7 +45,6 @@ IF ( QT4_FOUND )
 		       Reports/ActivityReport.cpp 
 		       Reports/WeeklyTimeSheet3.cpp
 		       Reports/ReportPreviewWindow.cpp 
-		       Reports/ParagraphFormatCollection.cpp
 		       Commands/CommandRelayCommand.cpp
 		       Commands/CommandModifyEvent.cpp
 		       Commands/CommandDeleteEvent.cpp

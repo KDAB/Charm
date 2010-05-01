@@ -7,7 +7,6 @@
 #include "CharmReport.h"
 #include "Core/CharmDataModel.h"
 #include "ReportPreviewWindow.h"
-#include "ParagraphFormatCollection.h"
 
 CharmReport::CharmReport( QObject* parent )
     : QObject( parent )
@@ -39,104 +38,6 @@ void CharmReport::makeReportPreviewWindow()
 int pointSize( double relSize, float scale )
 {
     return static_cast<int>( relSize * scale );
-}
-
-ParagraphFormatCollection& CharmReport::paragraphFormats()
-{
-    static bool Initialized = false;
-    static ParagraphFormatCollection Formats;
-    if ( !Initialized ) {
-        // initialize defaults
-        const float FontBaseSize = 10.0;
-        const float FontScaleFactor = 1.0;
-
-#define RELFONTSIZE(x) ( pointSize( (x) * FontBaseSize, FontScaleFactor) )
-
-        {   // default
-            ParagraphFormat format;
-            format.setName( "default" );
-            format.blockFormat().setAlignment( Qt::AlignLeft );
-            format.blockFormat().setBottomMargin( 6 );
-            format.charFormat().setFontPointSize( RELFONTSIZE( 1.2 ) );
-            format.charFormat().setFontFamily( "Times" );
-            Formats.add( format);
-        }
-        // headlines
-        {   // headline - level 0
-            ParagraphFormat format = Formats.format( "default" );
-            format.setName( "Headline" );
-            format.blockFormat().setBottomMargin( 12 );
-            format.charFormat().setFontPointSize( RELFONTSIZE( 2.0 ) );
-            Formats.add( format );
-        }
-        {   // headline - level 1
-            ParagraphFormat format = Formats.format( "default" );
-            format.setName( "Headline1" );
-            format.blockFormat().setBottomMargin( 9 );
-            format.charFormat().setFontPointSize( RELFONTSIZE( 1.66666 ) );
-            Formats.add( format );
-        }
-        {   // text format - small text
-            ParagraphFormat format = Formats.format( "default" );
-            format.setName( "default-small" );
-            format.charFormat().setFontPointSize( RELFONTSIZE( 0.9 ) );
-            Formats.add( format );
-        }
-        {   // text format - default italic
-            ParagraphFormat format = Formats.format( "default" );
-            format.setName( "default-italic" );
-            format.charFormat().setFontItalic( true );
-            Formats.add( format );
-        }
-        {   // text format - default sans
-            ParagraphFormat format = Formats.format( "default" );
-            format.setName( "default-sans" );
-            format.charFormat().setFontFamily( "Sans Serif" );
-            Formats.add( format );
-        }
-
-
-        // more advanced formats: take the primitives, and make them semantic:
-        {   // basic table format
-            ParagraphFormat format = Formats.format( "default-sans" );
-            format.setName( "table-data" );
-            format.charFormat().setFontPointSize( RELFONTSIZE( 0.9 ) );
-            Formats.add( format );
-        }
-        {   // table format, italic
-            ParagraphFormat format = Formats.format( "default-sans" );
-            format.setName( "table-data-italic" );
-            format.charFormat().setFontItalic( true );
-            format.charFormat().setFontPointSize( RELFONTSIZE( 0.9 ) );
-            Formats.add( format );
-        }
-        {   // table header cells
-            ParagraphFormat format = Formats.format( "table-data" );
-            format.setName( "table-header" );
-            format.charFormat().setFontPointSize( RELFONTSIZE( 1.2 ) );
-            Formats.add( format );
-        }
-
-
-        {   // table header cells - odd rows
-            ParagraphFormat format = Formats.format( "table-data" );
-            format.setName( "table-data-odd" );
-            Formats.add( format );
-        }
-
-        {   // table header cells - even rows
-            ParagraphFormat format = Formats.format( "table-data" );
-            format.setName( "table-data-even" );
-            format.blockFormat().setBackground( QBrush( "lightgray" ) );
-            Formats.add( format );
-        }
-
-
-
-        Initialized = true;
-    }
-
-    return Formats;
 }
 
 QString tasknameWithParents( const Task& task )
