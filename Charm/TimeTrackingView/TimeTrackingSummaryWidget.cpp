@@ -19,6 +19,7 @@ const int Margin = 2;
 TimeTrackingSummaryWidget::TimeTrackingSummaryWidget( QWidget* parent )
     : QWidget( parent )
     , m_taskSelector( new TimeTrackingTaskSelector( this ) )
+    , m_dayOfWeek( 0 )
 {
 #ifdef Q_WS_MAC
     m_fixedFont.setFamily( "Andale Mono" );
@@ -246,7 +247,7 @@ void TimeTrackingSummaryWidget::data( DataField& field, int column, int row )
         if ( column == TaskColumn ) {
             // field.text = tr( "Total" );
         } else if ( column == TotalsColumn ) {
-                int total = 0;
+            int total = 0;
             Q_FOREACH( const WeeklySummary& s, m_summaries ) {
                 total += std::accumulate( s.durations.begin(), s.durations.end(), 0 );
             }
@@ -288,7 +289,7 @@ void TimeTrackingSummaryWidget::data( DataField& field, int column, int row )
                 int duration = m_summaries[index].durations[day];
                 field.text = duration > 0 ? hoursAndMinutes( duration) : QString();
                 // highlight today as well, with the half highlight:
-                if ( day == QDate::currentDate().dayOfWeek() -1 ) {
+                if ( day == m_dayOfWeek -1 ) {
                     field.hasHighlight = true;
                     field.storeAsActive = active;
                     QColor pulseColor = m_paintAttributes.pulseColor;
@@ -309,6 +310,7 @@ void TimeTrackingSummaryWidget::setSummaries( QVector<WeeklySummary> s )
     m_summaries = s;
     m_cachedMinimumSizeHint = QSize();
     m_cachedSizeHint = QSize();
+    m_dayOfWeek = QDate::currentDate().dayOfWeek();
     updateGeometry();
     update();
     // populate menu:

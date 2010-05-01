@@ -85,6 +85,8 @@ private:
     QTimeLine m_pulse;
     PaintAttributes m_paintAttributes;
     DataField m_defaultField;
+    /** Stored for performance reasons, QDate::currentDate() is expensive. */
+    int m_dayOfWeek;
 };
 
 #endif
