@@ -1,4 +1,5 @@
 #include <QObject>
+#include <QTextStream>
 
 #include "CharmConstants.h"
 #include "Controller.h"
@@ -79,9 +80,11 @@ QString hoursAndMinutes( int duration )
         int hours = minutes / 60;
         minutes = minutes % 60;
 
-        return QString( "%1:%2" ).
-            arg( hours, 2, 10, QChar( '0' ) ).
-            arg( minutes, 2, 10, QChar( '0' ) );
+        QString text;
+        QTextStream stream( &text );
+        stream << qSetFieldWidth( 2 ) << qSetPadChar( QChar( '0' ) )
+                << hours << qSetFieldWidth( 0 ) << ":" << qSetFieldWidth( 2 ) << minutes;
+        return text;
     } else {
         return QObject::tr( "00:00" );
     }
