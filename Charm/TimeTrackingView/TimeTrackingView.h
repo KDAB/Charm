@@ -54,7 +54,6 @@ private slots:
 
 signals:
     void emitCommand( CharmCommand* );
-    void visibilityChanged( bool ); // reimpl from ViewInterface
 
 private:
     TimeTrackingSummaryWidget* summaryWidget();

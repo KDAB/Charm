@@ -113,7 +113,8 @@ void TimeTrackingSummaryWidget::paintEvent( QPaintEvent* e )
     // all attributes are determined in data(), we just paint the rects:
     for ( int row = 0; row < rowCount() - 1; ++row ) {
         for ( int column = 0; column < columnCount(); ++column ) {
-            DataField field = data( column, row );
+            DataField field = m_defaultField;
+            data( field, column, row );
             int alignment = Qt::AlignRight | Qt::AlignVCenter;
             if ( row == 0 ) {
                 alignment = Qt::AlignCenter | Qt::AlignVCenter;
@@ -160,7 +161,8 @@ void TimeTrackingSummaryWidget::paintEvent( QPaintEvent* e )
     const QRect fieldRect( 0, top, width(), height() - top );
     if ( e->rect().contains( fieldRect ) ) {
         const QRect textRect = fieldRect.adjusted( left + Margin, Margin, -Margin, -Margin );
-        const DataField field = data( 0, rowCount() - 1 );
+        DataField field = m_defaultField;
+        data( field, 0, rowCount() - 1 );
         painter.setBrush( field.background );
         painter.setPen( Qt::NoPen );
         painter.drawRect( fieldRect );
@@ -217,7 +219,7 @@ int TimeTrackingSummaryWidget::taskColumnWidth() const
     return width() - m_cachedTotalsFieldRect.width() - 7 * m_cachedDayFieldRect.width();
 }
 
-TimeTrackingSummaryWidget::DataField TimeTrackingSummaryWidget::data( int column, int row )
+void TimeTrackingSummaryWidget::data( DataField& field, int column, int row )
 {
     const int HeaderRow = 0;
     const int TotalsRow = rowCount() - 2;
@@ -226,7 +228,6 @@ TimeTrackingSummaryWidget::DataField TimeTrackingSummaryWidget::data( int column
     const int TotalsColumn = columnCount() - 1;
     const int Day = column - 1;
 
-    DataField field;
     field.font = m_fixedFont;
     if ( row == HeaderRow ) {
         field.font = m_narrowFont;
@@ -300,8 +301,6 @@ TimeTrackingSummaryWidget::DataField TimeTrackingSummaryWidget::data( int column
             }
         }
     }
-
-    return field;
 }
 
 void TimeTrackingSummaryWidget::setSummaries( QVector<WeeklySummary> s )

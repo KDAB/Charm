@@ -66,7 +66,7 @@ private slots:
     void slotPulseValueChanged( qreal );
 
 private:
-    DataField data( int column, int row );
+    void data( DataField& out, int column, int row );
     int columnCount() const { return 9; }
     int rowCount() const { return qMax( 6, m_summaries.count() ) + 3; }
     int getSummaryAt( const QPoint& position );
@@ -84,6 +84,7 @@ private:
     QList<QRect> m_activeFieldRects;
     QTimeLine m_pulse;
     PaintAttributes m_paintAttributes;
+    DataField m_defaultField;
 };
 
 #endif
