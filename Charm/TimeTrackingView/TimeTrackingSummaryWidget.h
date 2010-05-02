@@ -89,6 +89,9 @@ private:
     int m_dayOfWeek;
     /** Stored for performance reasons, QDate::shortDayName() is slow on Mac. */
     QString m_shortDayNames[7];
+    /** Stored for performance reasons, QFontMetrics::elidedText is slow if called many times. */
+    QMap<QString, QString> m_elidedTexts;
+    QString elidedText( const QString& text, const QFont& font, int width );
 };
 
 #endif

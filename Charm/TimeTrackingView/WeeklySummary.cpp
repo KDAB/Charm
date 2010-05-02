@@ -1,3 +1,5 @@
+#include <QFontMetrics>
+
 #include "WeeklySummary.h"
 
 WeeklySummary::WeeklySummary()

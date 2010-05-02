@@ -132,9 +132,7 @@ void TimeTrackingSummaryWidget::paintEvent( QPaintEvent* e )
                                    m_cachedTotalsFieldRect.width(), FieldHeight );
             } else if ( column == 0 ) { // task column
                 fieldRect = QRect( 0, y, taskColumnWidth(), FieldHeight );
-                QFontMetrics metrics( field.font );
-                field.text = metrics.elidedText( field.text, Qt::ElideLeft,
-                                                 fieldRect.width() - 2*Margin );
+                field.text = elidedText( field.text, field.font, fieldRect.width() - 2*Margin );
             } else if ( column > 0 ) { //  a task
                 fieldRect = QRect( width() - m_cachedTotalsFieldRect.width()
                                    - 8 * m_cachedDayFieldRect.width()
@@ -179,6 +177,7 @@ void TimeTrackingSummaryWidget::resizeEvent( QResizeEvent* )
     sizeHint(); // make sure cached values are updated
     m_taskSelector->resize( width() - 2*Margin, m_taskSelector->sizeHint().height() );
     m_taskSelector->move( Margin, height() - Margin - m_taskSelector->height() );
+    m_elidedTexts.clear();
 }
 
 void TimeTrackingSummaryWidget::mousePressEvent( QMouseEvent* event )
@@ -314,6 +313,7 @@ void TimeTrackingSummaryWidget::setSummaries( QVector<WeeklySummary> s )
     m_cachedMinimumSizeHint = QSize();
     m_cachedSizeHint = QSize();
     m_dayOfWeek = QDate::currentDate().dayOfWeek();
+    m_elidedTexts.clear();
     updateGeometry();
     update();
     // populate menu:
@@ -353,6 +353,17 @@ void TimeTrackingSummaryWidget::slotPulseValueChanged( qreal value )
             update( rect );
         }
     }
+}
+
+QString TimeTrackingSummaryWidget::elidedText( const QString& text, const QFont& font, int width )
+{
+    if( ! m_elidedTexts.contains( text ) ) {
+        QFontMetrics metrics( font );
+        const QString elided = metrics.elidedText( text, Qt::ElideLeft, width );
+        m_elidedTexts.insert( text, elided );
+    }
+    Q_ASSERT( m_elidedTexts.contains( text ) );
+    return m_elidedTexts.value( text );
 }
 
 #include "TimeTrackingSummaryWidget.moc"
