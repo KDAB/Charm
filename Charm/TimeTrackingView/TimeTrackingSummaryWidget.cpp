@@ -38,6 +38,9 @@ TimeTrackingSummaryWidget::TimeTrackingSummaryWidget( QWidget* parent )
     m_pulse.setDuration( 2000 );
     m_paintAttributes.initialize( palette() );
     m_pulse.setCurveShape( QTimeLine::SineCurve );
+    for( int i = 0; i < 7; ++i ) {
+        m_shortDayNames[i] = QDate::shortDayName( i + 1 );
+    }
     connect( &m_pulse, SIGNAL( valueChanged( qreal ) ),
              SLOT( slotPulseValueChanged( qreal ) ) );
     connect( m_taskSelector, SIGNAL( startEvent( TaskId ) ),
@@ -237,7 +240,7 @@ void TimeTrackingSummaryWidget::data( DataField& field, int column, int row )
         } else if ( column == TotalsColumn ) {
             field.text = tr( "Total" );
         } else {
-            field.text = QDate::shortDayName( column );
+            field.text = m_shortDayNames[ column - 1 ];
         }
         field.background = (Day % 2)
                            ? m_paintAttributes.headerBrush

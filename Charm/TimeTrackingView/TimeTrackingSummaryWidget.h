@@ -87,6 +87,8 @@ private:
     DataField m_defaultField;
     /** Stored for performance reasons, QDate::currentDate() is expensive. */
     int m_dayOfWeek;
+    /** Stored for performance reasons, QDate::shortDayName() is slow on Mac. */
+    QString m_shortDayNames[7];
 };
 
 #endif
