@@ -64,8 +64,6 @@ void insertHelper( TaskIdList& targetList, QSet<TaskId>& visitedTasks, TaskIdLis
 void TimeTrackingTaskSelector::populate( const QVector<WeeklySummary>& summaries )
 {
     m_menu->clear();
-    m_taskSelectorButton->setDisabled( summaries.isEmpty() );
-
     QSet<TaskId> visitedTasks;
     Q_FOREACH( const WeeklySummary& s, summaries ) {
         visitedTasks.insert( s.task );
@@ -94,6 +92,8 @@ void TimeTrackingTaskSelector::populate( const QVector<WeeklySummary>& summaries
         action->setProperty( CUSTOM_TASK_PROPERTY_NAME, QVariant::fromValue( id ) );
         m_menu->addAction( action );
     }
+    // enable the selector button if the menu is not empty
+    m_taskSelectorButton->setDisabled( m_menu->actions().isEmpty() );
 }
 
 void TimeTrackingTaskSelector::handleActiveEvents( int activeEventCount, const QVector<WeeklySummary>& summaries )
@@ -113,7 +113,7 @@ void TimeTrackingTaskSelector::handleActiveEvents( int activeEventCount, const Q
     } else {
         m_stopGoButton->setIcon( Data::recorderGoIcon() );
         m_stopGoButton->setText( tr( "Start" ) );
-        m_taskSelectorButton->setEnabled( !summaries.isEmpty() );
+        m_taskSelectorButton->setDisabled( m_menu->actions().isEmpty() );
         m_stopGoButton->setEnabled( m_selectedTask != 0 );
         m_stopGoButton->setChecked( false );
     }
