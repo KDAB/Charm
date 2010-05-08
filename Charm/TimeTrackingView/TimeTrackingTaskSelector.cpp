@@ -18,6 +18,7 @@ TimeTrackingTaskSelector::TimeTrackingTaskSelector(QWidget *parent)
     , m_taskSelectorButton( new QToolButton( this ) )
     , m_menu( new QMenu( m_taskSelectorButton ) )
     , m_selectedTask( 0 )
+    , m_manuallySelectedTask( 0 )
 {
     connect( m_menu, SIGNAL( triggered( QAction* ) ),
              SLOT( slotActionSelected( QAction* ) ) );
@@ -72,7 +73,17 @@ void TimeTrackingTaskSelector::populate( const QVector<WeeklySummary>& summaries
         Q_ASSERT( action->property( CUSTOM_TASK_PROPERTY_NAME ).value<TaskId>() == s.task );
         m_menu->addAction( action );
     }
-
+    // insert the manually selected task, if one is set:
+    m_menu->addSeparator();
+    if( m_manuallySelectedTask > 0 && ! visitedTasks.contains( m_manuallySelectedTask )) {
+        visitedTasks.insert( m_manuallySelectedTask );
+        const Task& task = DATAMODEL->getTask( m_manuallySelectedTask );
+        QAction* action = new QAction( tasknameWithParents( task ), m_menu );
+        action->setProperty( CUSTOM_TASK_PROPERTY_NAME, QVariant::fromValue( m_manuallySelectedTask ) );
+        m_menu->addAction( action );
+    }
+    // ... add action to select a task:
+    // ...
     // build a list of "interesting" tasks
     TaskIdList mru = DATAMODEL->mostRecentlyUsedTasks();
     TaskIdList mfu = DATAMODEL->mostFrequentlyUsedTasks();

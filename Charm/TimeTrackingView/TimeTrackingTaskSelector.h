@@ -39,6 +39,7 @@ private:
     QToolButton* m_taskSelectorButton;
     QMenu *m_menu;
     TaskId m_selectedTask;
+    TaskId m_manuallySelectedTask;
 };
 
 #endif // TIMETRACKINGTASKSELECTOR_H
