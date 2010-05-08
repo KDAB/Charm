@@ -139,7 +139,12 @@ void TimeTrackingTaskSelector::handleActiveEvents( int activeEventCount, const Q
         m_stopGoButton->setIcon( Data::recorderGoIcon() );
         m_stopGoButton->setText( tr( "Start" ) );
         m_taskSelectorButton->setDisabled( m_menu->actions().isEmpty() );
-        m_stopGoButton->setEnabled( m_selectedTask != 0 );
+        if( m_selectedTask != 0 ) {
+            const Task& task = DATAMODEL->getTask( m_selectedTask );
+            m_stopGoButton->setEnabled( task.isCurrentlyValid() );
+        } else {
+            m_stopGoButton->setEnabled( false );
+        }
         m_stopGoButton->setChecked( false );
     }
 }
