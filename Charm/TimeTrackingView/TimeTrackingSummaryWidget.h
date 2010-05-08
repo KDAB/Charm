@@ -64,6 +64,7 @@ signals:
 
 private slots:
     void slotPulseValueChanged( qreal );
+    void slotUpdateSummaries();
 
 private:
     void data( DataField& out, int column, int row );

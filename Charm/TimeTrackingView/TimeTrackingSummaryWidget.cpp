@@ -26,12 +26,11 @@ TimeTrackingSummaryWidget::TimeTrackingSummaryWidget( QWidget* parent )
     m_fixedFont.setPointSize( 11 );
     m_narrowFont = font(); // stay with the desktop
     m_narrowFont.setPointSize( 11 );
-#elif defined Q_WS_X11
+#else
     m_fixedFont = font();
     m_fixedFont.setPointSizeF( 0.9 * m_fixedFont.pointSizeF() );
     m_narrowFont = m_fixedFont;
 #endif
-    //
     setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
     // plumbing
     m_pulse.setLoopCount( 0 );
@@ -47,6 +46,8 @@ TimeTrackingSummaryWidget::TimeTrackingSummaryWidget( QWidget* parent )
              SIGNAL( startEvent( TaskId ) ) );
     connect( m_taskSelector, SIGNAL( stopEvent( TaskId ) ),
              SIGNAL( stopEvent() ) );
+    connect( m_taskSelector, SIGNAL( updateSummariesPlease() ),
+             SLOT( slotUpdateSummaries() ) );
 }
 
 void TimeTrackingSummaryWidget::PaintAttributes::initialize( const QPalette& palette ) {
@@ -364,6 +365,11 @@ QString TimeTrackingSummaryWidget::elidedText( const QString& text, const QFont&
     }
     Q_ASSERT( m_elidedTexts.contains( text ) );
     return m_elidedTexts.value( text );
+}
+
+void TimeTrackingSummaryWidget::slotUpdateSummaries()
+{
+    setSummaries( m_summaries );
 }
 
 #include "TimeTrackingSummaryWidget.moc"

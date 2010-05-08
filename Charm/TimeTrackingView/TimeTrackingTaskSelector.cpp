@@ -1,3 +1,6 @@
+#include <QtDebug>
+
+#include <QMap>
 #include <QMenu>
 #include <QDateTime>
 #include <QToolButton>
@@ -7,6 +10,7 @@
 #include "Data.h"
 #include "ViewHelpers.h"
 #include "Reports/CharmReport.h"
+#include "Charm/SelectTaskDialog.h"
 
 #include "TimeTrackingTaskSelector.h"
 
@@ -19,6 +23,7 @@ TimeTrackingTaskSelector::TimeTrackingTaskSelector(QWidget *parent)
     , m_menu( new QMenu( m_taskSelectorButton ) )
     , m_selectedTask( 0 )
     , m_manuallySelectedTask( 0 )
+    , m_taskManuallySelected( false )
 {
     connect( m_menu, SIGNAL( triggered( QAction* ) ),
              SLOT( slotActionSelected( QAction* ) ) );
@@ -47,16 +52,21 @@ void TimeTrackingTaskSelector::resizeEvent( QResizeEvent* )
     m_taskSelectorButton->move( m_stopGoButton->width(), 0 );
 }
 
-/** a helper function that takes an entry from the fromList if it is not empty, checks if it is
- * already contained in the list of visited tasks, and if not, prepends it into the targetList
- * all parameters may be modified
+/** A helper function that takes an entry from the fromList if it is not empty, checks if it is
+ * already contained in the list of visited tasks, and if not, prepends it into the targetList,
+ * and creates a menu action.
+ * All parameters may be modified.
  */
-void insertHelper( TaskIdList& targetList, QSet<TaskId>& visitedTasks, TaskIdList& fromList )
+void insertHelper( QMenu* menu, TaskIdList& targetList, QMap<TaskId, QAction*>& visitedTasks, TaskIdList& fromList )
 {
     if( ! fromList.isEmpty() ) {
         TaskId id = fromList.takeFirst();
         if( ! visitedTasks.contains( id ) ) {
-            visitedTasks.insert( id );
+            const Task& task = DATAMODEL->getTask( id );
+            QAction* action = new QAction( tasknameWithParents( task ), menu );
+            action->setProperty( CUSTOM_TASK_PROPERTY_NAME, QVariant::fromValue( id ) );
+            menu->addAction( action );
+            visitedTasks.insert( id, action );
             targetList.append( id );
         }
     }
@@ -65,10 +75,10 @@ void insertHelper( TaskIdList& targetList, QSet<TaskId>& visitedTasks, TaskIdLis
 void TimeTrackingTaskSelector::populate( const QVector<WeeklySummary>& summaries )
 {
     m_menu->clear();
-    QSet<TaskId> visitedTasks;
+    QMap<TaskId, QAction*> visitedTasks;
     Q_FOREACH( const WeeklySummary& s, summaries ) {
-        visitedTasks.insert( s.task );
         QAction* action = new QAction( s.taskname, m_menu );
+        visitedTasks.insert( s.task, action );
         action->setProperty( CUSTOM_TASK_PROPERTY_NAME, QVariant::fromValue( s.task ) );
         Q_ASSERT( action->property( CUSTOM_TASK_PROPERTY_NAME ).value<TaskId>() == s.task );
         m_menu->addAction( action );
@@ -76,32 +86,36 @@ void TimeTrackingTaskSelector::populate( const QVector<WeeklySummary>& summaries
     // insert the manually selected task, if one is set:
     m_menu->addSeparator();
     if( m_manuallySelectedTask > 0 && ! visitedTasks.contains( m_manuallySelectedTask )) {
-        visitedTasks.insert( m_manuallySelectedTask );
         const Task& task = DATAMODEL->getTask( m_manuallySelectedTask );
         QAction* action = new QAction( tasknameWithParents( task ), m_menu );
+        visitedTasks.insert( m_manuallySelectedTask, action );
         action->setProperty( CUSTOM_TASK_PROPERTY_NAME, QVariant::fromValue( m_manuallySelectedTask ) );
         m_menu->addAction( action );
     }
     // ... add action to select a task:
-    // ...
+    QAction* selectTaskAction = new QAction( tr( "Select other task..." ), m_menu );
+    connect( selectTaskAction, SIGNAL( triggered() ), SLOT( slotManuallySelectTask() ) );
+    m_menu->addAction( selectTaskAction );
     // build a list of "interesting" tasks
     TaskIdList mru = DATAMODEL->mostRecentlyUsedTasks();
     TaskIdList mfu = DATAMODEL->mostFrequentlyUsedTasks();
     // ... merge the two lists into one interesting one:
-    TaskIdList merged;
-    while( merged.count() < 15 ) { // arbitrary hardcoded number warning
-        insertHelper( merged, visitedTasks, mru );
-        insertHelper( merged, visitedTasks, mru );
-        insertHelper( merged, visitedTasks, mfu );
-        if( mru.isEmpty() && mfu.isEmpty() ) break;
-    }
     // add to menu
     m_menu->addSeparator();
-    Q_FOREACH( TaskId id, merged ) {
-        const Task& task = DATAMODEL->getTask( id );
-        QAction* action = new QAction( tasknameWithParents( task ), m_menu );
-        action->setProperty( CUSTOM_TASK_PROPERTY_NAME, QVariant::fromValue( id ) );
-        m_menu->addAction( action );
+    TaskIdList merged;
+    while( merged.count() < 15 ) { // arbitrary hardcoded number warning
+        insertHelper( m_menu, merged, visitedTasks, mru );
+        insertHelper( m_menu, merged, visitedTasks, mru );
+        insertHelper( m_menu, merged, visitedTasks, mfu );
+        if( mru.isEmpty() && mfu.isEmpty() ) break;
+    }
+    // finally, select the task that the user has just selected
+    if( m_taskManuallySelected ) {
+        QAction* action = visitedTasks.value( m_manuallySelectedTask );
+        Q_ASSERT_X( action != 0, Q_FUNC_INFO, "the manually selected task should always be in the menu" );
+        m_menu->setActiveAction( action );
+        slotActionSelected( action );
+        m_taskManuallySelected = false;
     }
     // enable the selector button if the menu is not empty
     m_taskSelectorButton->setDisabled( m_menu->actions().isEmpty() );
@@ -133,7 +147,9 @@ void TimeTrackingTaskSelector::handleActiveEvents( int activeEventCount, const Q
 void TimeTrackingTaskSelector::slotActionSelected( QAction* action )
 {
     TaskId taskId = action->property( CUSTOM_TASK_PROPERTY_NAME ).value<TaskId>();
-    taskSelected( action->text(), taskId );
+    if( taskId > 0 ) {
+        taskSelected( action->text(), taskId );
+    }
 }
 
 void TimeTrackingTaskSelector::taskSelected( const QString& taskname, TaskId id )
@@ -156,6 +172,16 @@ void TimeTrackingTaskSelector::slotGoStopToggled( bool on )
 void TimeTrackingTaskSelector::taskSelected( const WeeklySummary& summary )
 {
     taskSelected( summary.taskname, summary.task );
+}
+
+void TimeTrackingTaskSelector::slotManuallySelectTask()
+{
+    SelectTaskDialog dialog( this );
+    if( dialog.exec() ) {
+        m_manuallySelectedTask = dialog.selectedTask();
+        m_taskManuallySelected = true;
+    }
+    emit updateSummariesPlease();
 }
 
 #include "TimeTrackingTaskSelector.moc"
