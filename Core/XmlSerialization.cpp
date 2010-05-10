@@ -8,13 +8,21 @@
 
 namespace XmlSerialization {
 
+    QString reportTagName() { 
+        return "charmreport";
+    }
+    
+    QString reportTypeAttribute() {
+        return "type";
+    }
+
     QDomDocument createXmlTemplate( QString docClass )
     {
-        QDomDocument doc( "charmreport" );
+        QDomDocument doc( reportTagName() );
 
         // root element:
-        QDomElement root = doc.createElement( "charmreport" );
-        root.setAttribute( "type", docClass );
+        QDomElement root = doc.createElement( reportTagName() );
+        root.setAttribute( reportTypeAttribute(), docClass );
         doc.appendChild( root );
 
         // metadata:
@@ -70,9 +78,14 @@ namespace XmlSerialization {
 
 }
 
+QString TaskExport::reportType()
+{
+    return "taskdefinitions";
+}
+
 void TaskExport::writeTo( const QString& filename, const TaskList& tasks )
 {
-    QDomDocument document = XmlSerialization::createXmlTemplate( "taskdefinitions" );
+    QDomDocument document = XmlSerialization::createXmlTemplate( reportType() );
     QDomElement metadata = XmlSerialization::metadataElement( document );
     QDomElement report = XmlSerialization::reportElement( document );
 
@@ -111,7 +124,14 @@ void TaskExport::readFrom( const QString& filename )
         throw XmlSerializationException( QObject::tr( "Cannot read file" ) );
     }
 
-    // now read
+    // now read and check for the correct report type
+    QDomElement rootElement = document.documentElement();
+    const QString tagName = rootElement.tagName();
+    const QString typeAttribute = rootElement.attribute( XmlSerialization::reportTypeAttribute() );
+    if( tagName != XmlSerialization::reportTagName() || typeAttribute != reportType() ) {
+        throw XmlSerializationException( QObject::tr( "This file is not a Charm task definition file. Please double-check." ) );
+    }
+
     QDomElement metadata = XmlSerialization::metadataElement( document );
     QDomElement report = XmlSerialization::reportElement( document );
 

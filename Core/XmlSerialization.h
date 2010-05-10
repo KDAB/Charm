@@ -26,6 +26,8 @@ public:
     void readFrom( const QString& filename );
     const TaskList& tasks() const;
     QDateTime exportTime() const;
+    static QString reportType();
+
 private:
     TaskList m_tasks;
     QString m_userName;

@@ -194,13 +194,11 @@ void TasksWindow::slotImportTasks()
                 sendCommand( cmd );
             }
         }
-    } catch(  InvalidTaskListException& e ) {
-        QMessageBox::critical( this, tr(  "Invalid Task Definitions" ),
-                               tr( "The selected task definitions are invalid and cannot be imported." ) );
-        return;
-    } catch( XmlSerializationException& e ) {
-        QMessageBox::critical( this, tr(  "Invalid Task Definitions" ),
-                               tr( "The selected task definitions are invalid and cannot be imported." ) );
+    } catch(  CharmException& e ) {
+        const QString message = e.what().isEmpty()
+                                ?  tr( "The selected task definitions are invalid and cannot be imported." )
+                                    : tr( "There was an error importing the task definitions:<br />%1" ).arg( e.what() );
+        QMessageBox::critical( this, tr(  "Invalid Task Definitions" ), message);
         return;
     }
 }
