@@ -154,6 +154,7 @@ void TimeTrackingTaskSelector::slotActionSelected( QAction* action )
     TaskId taskId = action->property( CUSTOM_TASK_PROPERTY_NAME ).value<TaskId>();
     if( taskId > 0 ) {
         taskSelected( action->text(), taskId );
+        emit updateSummariesPlease();
     }
 }
 
@@ -185,8 +186,8 @@ void TimeTrackingTaskSelector::slotManuallySelectTask()
     if( dialog.exec() ) {
         m_manuallySelectedTask = dialog.selectedTask();
         m_taskManuallySelected = true;
+        emit updateSummariesPlease();
     }
-    emit updateSummariesPlease();
 }
 
 #include "TimeTrackingTaskSelector.moc"

@@ -118,14 +118,7 @@ void TimeTrackingSummaryWidget::paintEvent( QPaintEvent* e )
     // all attributes are determined in data(), we just paint the rects:
     for ( int row = 0; row < rowCount() - 1; ++row ) {
         for ( int column = 0; column < columnCount(); ++column ) {
-            DataField field = m_defaultField;
-            data( field, column, row );
-            int alignment = Qt::AlignRight | Qt::AlignVCenter;
-            if ( row == 0 ) {
-                alignment = Qt::AlignCenter | Qt::AlignVCenter;
-            } else if ( column == 0 && row < rowCount() - 1 ) {
-                alignment = Qt::AlignLeft | Qt::AlignVCenter;
-            }
+            // get the rectangle of the field that will be drawn
             QRect fieldRect;
             const int y = row * FieldHeight;
             if ( column == columnCount() - 1 ) { // totals column
@@ -133,15 +126,26 @@ void TimeTrackingSummaryWidget::paintEvent( QPaintEvent* e )
                                    m_cachedTotalsFieldRect.width(), FieldHeight );
             } else if ( column == 0 ) { // task column
                 fieldRect = QRect( 0, y, taskColumnWidth(), FieldHeight );
-                field.text = elidedText( field.text, field.font, fieldRect.width() - 2*Margin );
             } else if ( column > 0 ) { //  a task
                 fieldRect = QRect( width() - m_cachedTotalsFieldRect.width()
                                    - 8 * m_cachedDayFieldRect.width()
                                    + column * m_cachedDayFieldRect.width(), y,
                                    m_cachedDayFieldRect.width(), FieldHeight );
             }
-            if ( field.storeAsActive ) m_activeFieldRects << fieldRect;
-            if ( e->rect().contains( fieldRect ) ) {
+            // paint the field, if it is in the dirty region
+            if( e->rect().contains( fieldRect ) ) {
+                DataField field = m_defaultField;
+                data( field, column, row );
+                int alignment = Qt::AlignRight | Qt::AlignVCenter;
+                if ( row == 0 ) {
+                    alignment = Qt::AlignCenter | Qt::AlignVCenter;
+                } else if ( column == 0 && row < rowCount() - 1 ) {
+                    alignment = Qt::AlignLeft | Qt::AlignVCenter;
+                }
+                if( column == 0 ) { // task column
+                    field.text = elidedText( field.text, field.font, fieldRect.width() - 2*Margin );
+                }
+                if ( field.storeAsActive ) m_activeFieldRects << fieldRect;
                 const QRect textRect = fieldRect.adjusted( Margin, Margin, -Margin, -Margin );
                 if ( field.hasHighlight ) {
                     painter.setBrush( field.highlight );
