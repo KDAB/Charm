@@ -80,6 +80,8 @@ public:
 
     QMenu& windowMenu();
     QMenu& fileMenu();
+    QMenu& helpMenu();
+
     /** The main view is the window responsible for managing state during command execution.
      * It is an internal concept, not a notion for the end user. */
     CharmWindow& mainView();
@@ -125,7 +127,6 @@ private:
     State m_state;
     ModelConnector m_model;
     Controller m_controller;
-    // MainWindow m_mainWindow;
     TasksWindow m_tasksWindow;
     EventWindow m_eventWindow;
     TimeTrackingView m_timeTracker;
@@ -134,8 +135,7 @@ private:
     QMenu m_dockMenu;
     QMenu m_windowMenu;
     QMenu m_appMenu;
-    // QAction m_actionShowHideView;
-    // QAction m_actionShowHideTimeTracker;
+    QMenu m_helpMenu;
     QAction m_actionStopAllTasks;
     QAction m_actionQuit;
     QAction m_actionAboutDialog;

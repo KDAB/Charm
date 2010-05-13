@@ -58,6 +58,7 @@ public slots:
     void configurationChanged();
 
 private:
+    void handleShowHide( bool visible );
     QString m_windowName;
     QAction* m_showHideAction;
     int m_windowNumber; // Mac numerical window number, used for shortcut etc

@@ -25,12 +25,11 @@ CharmWindow::CharmWindow( const QString& name, QWidget* parent )
 {
     setWindowName( name );
     setWindowIcon( Data::charmIcon() );
+    handleShowHide( false );
     connect( m_showHideAction, SIGNAL( triggered( bool ) ), SLOT( showHideView() ) );
-    // FIXME make work with Mac menu merging
-    show();
 }
 
-void CharmWindow::stateChanged( State previous )
+void CharmWindow::stateChanged( State )
 {
     switch( Application::instance().state() ) {
     case Connecting:
@@ -43,6 +42,7 @@ void CharmWindow::stateChanged( State previous )
         menuBar()->addMenu( & Application::instance().fileMenu() );
         insertEditMenu();
         menuBar()->addMenu( & Application::instance().windowMenu() );
+        menuBar()->addMenu( & Application::instance().helpMenu() );
         setEnabled( true );
         break;
     case Disconnecting:
@@ -105,15 +105,13 @@ void CharmWindow::restore()
 
 void CharmWindow::showEvent( QShowEvent* e )
 {
-    m_showHideAction->setText( tr( "Hide %1 Window" ).arg( m_windowName ) );
-    emit visibilityChanged( true );
+    handleShowHide( true );
     QMainWindow::showEvent( e );
 }
 
 void CharmWindow::hideEvent( QHideEvent* e )
 {
-    m_showHideAction->setText( tr( "Show %1 Window" ).arg( m_windowName ) );
-    emit visibilityChanged( false );
+    handleShowHide( false );
     QMainWindow::hideEvent( e );
 }
 
@@ -124,6 +122,14 @@ void CharmWindow::sendCommand( CharmCommand* cmd )
     CommandRelayCommand* relay = new CommandRelayCommand( this );
     relay->setCommand( cmd );
     emit emitCommand( relay );
+}
+
+void CharmWindow::handleShowHide( bool visible )
+{
+    const QString text = visible ?  tr( "Hide %1 Window" ).arg( m_windowName )
+        :  tr( "Show %1 Window" ).arg( m_windowName );
+    m_showHideAction->setText( text );
+    emit visibilityChanged( visible );
 }
 
 void CharmWindow::commitCommand( CharmCommand* command )

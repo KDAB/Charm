@@ -151,10 +151,6 @@ Application::Application(int& argc, char** argv)
 
     // set up Charm menu:
     m_appMenu.setTitle ( tr( "File" ) );
-    m_appMenu.addAction( &m_actionPreferences );
-    m_actionPreferences.setEnabled( true );
-    m_appMenu.addAction( &m_actionAboutDialog );
-    m_appMenu.addSeparator();
     m_appMenu.addAction( &m_actionExportToXml );
     m_appMenu.addAction( &m_actionImportFromXml );
     m_appMenu.addSeparator();
@@ -173,6 +169,12 @@ Application::Application(int& argc, char** argv)
              &m_tasksWindow, SLOT( slotReportDialog() ) );
     m_windowMenu.addSeparator();
     m_windowMenu.addAction( &m_actionReporting );
+    m_windowMenu.addAction( &m_actionPreferences );
+    m_actionPreferences.setEnabled( true );
+
+    // create help menu:
+    m_helpMenu.setTitle( tr( "Help" ) );
+    m_helpMenu.addAction( &m_actionAboutDialog );
 
 #ifdef Q_WS_MAC
     connect( QApplication::instance(), SIGNAL( dockIconClicked() ), this, SLOT( slotOpenLastClosedWindow() ) );
@@ -204,6 +206,11 @@ QMenu& Application::windowMenu()
 QMenu& Application::fileMenu()
 {
     return m_appMenu;
+}
+
+QMenu& Application::helpMenu()
+{
+    return m_helpMenu;
 }
 
 void Application::setState(State state)
