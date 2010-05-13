@@ -113,7 +113,7 @@ void TimeTrackingTaskSelector::populate( const QVector<WeeklySummary>& summaries
     if( m_taskManuallySelected ) {
         QAction* action = visitedTasks.value( m_manuallySelectedTask );
         Q_ASSERT_X( action != 0, Q_FUNC_INFO, "the manually selected task should always be in the menu" );
-        m_menu->setActiveAction( action );
+        // this sets the correct text on the button
         slotActionSelected( action );
         m_taskManuallySelected = false;
     }
@@ -121,8 +121,9 @@ void TimeTrackingTaskSelector::populate( const QVector<WeeklySummary>& summaries
     m_taskSelectorButton->setDisabled( m_menu->actions().isEmpty() );
 }
 
-void TimeTrackingTaskSelector::handleActiveEvents( int activeEventCount, const QVector<WeeklySummary>& summaries )
+void TimeTrackingTaskSelector::handleActiveEvents()
 {
+    const int activeEventCount = DATAMODEL->activeEventCount();
     if ( activeEventCount > 1 ) {
         m_stopGoButton->setIcon( Data::recorderGoIcon() );
         m_stopGoButton->setText( tr( "Start" ) );
@@ -154,7 +155,7 @@ void TimeTrackingTaskSelector::slotActionSelected( QAction* action )
     TaskId taskId = action->property( CUSTOM_TASK_PROPERTY_NAME ).value<TaskId>();
     if( taskId > 0 ) {
         taskSelected( action->text(), taskId );
-        emit updateSummariesPlease();
+        handleActiveEvents();
     }
 }
 

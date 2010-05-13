@@ -338,7 +338,7 @@ void TimeTrackingSummaryWidget::handleActiveEvents()
     const int activeEventCount = DATAMODEL->activeEventCount();
     Q_ASSERT( activeEventCount >= 0 );
 
-    m_taskSelector->handleActiveEvents( activeEventCount, m_summaries );
+    m_taskSelector->handleActiveEvents();
     if ( activeEventCount > 1 ) {
         if ( m_pulse.state() != QTimeLine::Running ) m_pulse.start();
     } else if ( activeEventCount == 1 ) {

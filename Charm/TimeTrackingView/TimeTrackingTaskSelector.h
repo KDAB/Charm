@@ -18,7 +18,7 @@ public:
     explicit TimeTrackingTaskSelector(QWidget *parent = 0);
 
     void populate( const QVector<WeeklySummary>& summaries  );
-    void handleActiveEvents( int count, const QVector<WeeklySummary>& summaries );
+    void handleActiveEvents();
     void taskSelected( const WeeklySummary& );
 
     void resizeEvent( QResizeEvent* );
