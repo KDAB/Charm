@@ -43,7 +43,7 @@ public:
     /** Receive a command from the view. */
     virtual void executeCommand( CharmCommand* ) = 0;
     /** Export the database contents into a XML document. */
-    virtual QDomDocument exportDatabasetoXml() const throw ( XmlSerializationException ) = 0 ;
+    virtual QDomDocument exportDatabasetoXml() const = 0 ;
     /** Import the content of the Xml document into the currently open database.
      *  This will modify the database.
      *  @return An empty string on no error, an human-readable error message otherwise.

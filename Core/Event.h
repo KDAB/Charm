@@ -67,7 +67,7 @@ public:
 
     QDomElement toXml( QDomDocument ) const;
 
-    static Event fromXml( const QDomElement&,  int databaseSchemaVersion = 1 ) throw ( XmlSerializationException );
+    static Event fromXml( const QDomElement&,  int databaseSchemaVersion = 1 );
 
 private:
     /** The id of the user who owns the event. */

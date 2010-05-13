@@ -42,6 +42,7 @@ private slots:
 
     void cleanupTestCase();
 
+
 private:
 
     ControllerInterface* m_controller;

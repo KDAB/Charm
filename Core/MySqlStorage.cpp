@@ -7,6 +7,7 @@
 #include <QSqlDatabase>
 #include <QStringList>
 #include <QSqlQuery>
+#include <QProcess>
 
 #include "MySqlStorage.h"
 #include "CharmConstants.h"
@@ -20,8 +21,8 @@ static const int NumberOfTables = sizeof Tables / sizeof Tables[0];
 
 struct Field
 {
-	QString name;
-	QString type;
+        QString name;
+        QString type;
 };
 
 typedef Field Fields;
@@ -76,12 +77,12 @@ static const Fields Users_Fields[] =
 
 static const Fields* Database_Fields[NumberOfTables] =
 { MetaData_Fields, Installations_Fields, Tasks_Fields, Event_Fields,
-		Subscriptions_Fields, Users_Fields };
+                Subscriptions_Fields, Users_Fields };
 
 const char DatabaseName[] = "mysql.charm.kdab.net";
 
 MySqlStorage::MySqlStorage() :
-	SqlStorage(), m_database(QSqlDatabase::addDatabase("QMYSQL", DatabaseName))
+        SqlStorage(), m_database(QSqlDatabase::addDatabase("QMYSQL", DatabaseName))
 {
 }
 
@@ -91,83 +92,84 @@ MySqlStorage::~MySqlStorage()
 
 bool MySqlStorage::createDatabaseTables()
 {
-	Q_ASSERT_X(database().open(), "SqlStorage::createDatabase",
-			"Connection to database must be established first");
+        Q_ASSERT_X(database().open(), "SqlStorage::createDatabase",
+                        "Connection to database must be established first");
 
-	bool error = false;
-	// create tables:
-	for (int i = 0; i < NumberOfTables; ++i)
-	{
-		if (!database().tables().contains(Tables[i]))
-		{
-			QString statement;
-			QTextStream stream(&statement, QIODevice::WriteOnly);
+        bool error = false;
+        // create tables:
+        for (int i = 0; i < NumberOfTables; ++i)
+        {
+                if (!database().tables().contains(Tables[i]))
+                {
+                        QString statement;
+                        QTextStream stream(&statement, QIODevice::WriteOnly);
 
-			stream << "CREATE table  `" << Tables[i] << "` (";
-			const Field* field = Database_Fields[i];
-			while (field->name != QString::null )
-			{
-				stream << " `" << field->name << "` "
-				<< field->type;
-				++field;
-				if ( field->name != QString::null ) stream << ", ";
-			}
-			stream << ");";
+                        stream << "CREATE table  `" << Tables[i] << "` (";
+                        const Field* field = Database_Fields[i];
+                        while (field->name != QString::null )
+                        {
+                                stream << " `" << field->name << "` "
+                                << field->type;
+                                ++field;
+                                if ( field->name != QString::null ) stream << ", ";
+                        }
+                        stream << ");";
 
-			QSqlQuery query( database() );
-			qDebug() << statement;
-			query.prepare( statement );
-			if ( ! runQuery( query ) )
-			{
-				error = true;
-			}
-		}
-	}
+                        QSqlQuery query( database() );
+                        qDebug() << statement;
+                        query.prepare( statement );
+                        if ( ! runQuery( query ) )
+                        {
+                                error = true;
+                        }
+                }
+        }
 
-	error = error || ! setMetaData(CHARM_DATABASE_VERSION_DESCRIPTOR, QString().setNum( CHARM_DATABASE_VERSION) );
-	return ! error;
+        error = error || ! setMetaData(CHARM_DATABASE_VERSION_DESCRIPTOR, QString().setNum( CHARM_DATABASE_VERSION) );
+        return ! error;
 }
 
 QString MySqlStorage::lastInsertRowFunction() const
 {
-	return QString::fromLocal8Bit("last_insert_id");
+        return QString::fromLocal8Bit("last_insert_id");
 }
 
 QSqlDatabase& MySqlStorage::database()
 {
-	return m_database;
+        return m_database;
 }
 
 QString MySqlStorage::description() const
 {
-	return QObject::tr("Remote MySql Database");
+        return QObject::tr("Remote MySql Database");
 }
 
 bool MySqlStorage::connect(Configuration&)
 {
-	return false; // not implemented, needs the right information in Configuration
+        return false; // not implemented, needs the right information in Configuration
 }
 
 bool MySqlStorage::disconnect()
 {
-	return false; // not implemented
+        return false; // not implemented
 }
 
 int MySqlStorage::installationId() const
 {
-	return -1; // not implemented
+        return -1; // not implemented
 }
 
 bool MySqlStorage::createDatabase(Configuration& conf)
 {
-	return createDatabaseTables();
+        return createDatabaseTables();
 }
 
 MySqlStorage::Parameters MySqlStorage::parseParameterEnvironmentVariable()
 {
     // read configuration from the environment:
-    char* const databaseConfigurationString = getenv( "CHARM_DATABASE_CONFIGURATION" );
-    if ( databaseConfigurationString != 0 ) {
+    const QByteArray databaseConfigurationString = qgetenv( "CHARM_DATABASE_CONFIGURATION" );
+
+    if ( ! databaseConfigurationString.isEmpty() ) {
         Parameters p;
         // the string is supposed to be of the format "hostname;port;username;password"
         // if port is 0 or empty, the default port is used

@@ -227,14 +227,14 @@ void ControllerTests::toAndFromXmlTest()
     } else {
         TaskList tasksAfter = m_controller->storage()->getAllTasks();
         if( tasksBefore != tasksAfter ) {
-        	qDebug() << "XML Document created during failed test:" << endl
-				<< document.toString();
-			Q_FOREACH( Task task, tasksBefore ) {
-				task.dump();
-			}
-			Q_FOREACH( Task task, tasksAfter ) {
-				task.dump();
-			}
+                qDebug() << "XML Document created during failed test:" << endl
+                                << document.toString();
+                        Q_FOREACH( Task task, tasksBefore ) {
+                                task.dump();
+                        }
+                        Q_FOREACH( Task task, tasksAfter ) {
+                                task.dump();
+                        }
         }
         QVERIFY( tasksBefore == tasksAfter );
         EventList eventsAfter = m_controller->storage()->getAllEvents();

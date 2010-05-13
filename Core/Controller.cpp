@@ -269,10 +269,10 @@ void Controller::provideMetaData( Configuration& configuration)
 
     int buttonStyleValue = m_storage->getMetaData( MetaKey_Key_ToolButtonStyle ).toInt( &ok );
     if( ok ) {
-    	Qt::ToolButtonStyle buttonStyle = static_cast<Qt::ToolButtonStyle> ( buttonStyleValue );
-    	configuration.toolButtonStyle = buttonStyle;
+        Qt::ToolButtonStyle buttonStyle = static_cast<Qt::ToolButtonStyle> ( buttonStyleValue );
+        configuration.toolButtonStyle = buttonStyle;
     } else {
-    	configuration.toolButtonStyle = Qt::ToolButtonIconOnly;
+        configuration.toolButtonStyle = Qt::ToolButtonIconOnly;
     }
 
     configuration.showStatusBar = boolForString(
@@ -333,7 +333,7 @@ const QString VersionElement( "version" );
 const QString TasksElement( "tasks" );
 const QString EventsElement( "events" );
 
-QDomDocument Controller::exportDatabasetoXml() const throw ( XmlSerializationException )
+QDomDocument Controller::exportDatabasetoXml() const
 {
     QDomDocument document( "charmdatabase" );
     // root element:

@@ -89,4 +89,3 @@ QString hoursAndMinutes( int duration )
         return QObject::tr( "00:00" );
     }
 }
-
