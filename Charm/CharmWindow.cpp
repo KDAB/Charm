@@ -39,10 +39,10 @@ void CharmWindow::stateChanged( State )
         break;
     case Connected:
         configurationChanged();
-        menuBar()->addMenu( & Application::instance().fileMenu() );
+        menuBar()->addMenu( Application::instance().createFileMenu() );
         insertEditMenu();
-        menuBar()->addMenu( & Application::instance().windowMenu() );
-        menuBar()->addMenu( & Application::instance().helpMenu() );
+        menuBar()->addMenu( Application::instance().createWindowMenu() );
+        menuBar()->addMenu( Application::instance().createHelpMenu() );
         setEnabled( true );
         break;
     case Disconnecting:

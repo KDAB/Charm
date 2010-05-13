@@ -138,6 +138,7 @@ Application::Application(int& argc, char** argv)
     m_actionPreferences.setIcon( Data::configureIcon() );
     connect( &m_actionPreferences, SIGNAL( triggered( bool ) ),
              &m_tasksWindow,  SLOT( slotEditPreferences( bool ) ) );
+    m_actionPreferences.setEnabled( true );
 
     m_actionImportFromXml.setText( tr( "Import from Previous Export..." ) );
     connect( &m_actionImportFromXml, SIGNAL( triggered() ),
@@ -148,33 +149,10 @@ Application::Application(int& argc, char** argv)
     m_actionImportTasks.setText( tr( "Import Task Definitions..." ) );
     connect( &m_actionImportTasks, SIGNAL( triggered() ),
              &m_tasksWindow,  SLOT( slotImportTasks() ) );
-
-    // set up Charm menu:
-    m_appMenu.setTitle ( tr( "File" ) );
-    m_appMenu.addAction( &m_actionExportToXml );
-    m_appMenu.addAction( &m_actionImportFromXml );
-    m_appMenu.addSeparator();
-    m_appMenu.addAction( &m_actionImportTasks );
-    m_appMenu.addSeparator();
-    m_appMenu.addAction( &m_actionQuit );
-
-    // create window menu:
-    m_windowMenu.setTitle( tr( "Window" ) );
-    Q_FOREACH( CharmWindow* window, m_windows ) {
-        m_windowMenu.addAction( window->showHideAction() );
-    }
     m_actionReporting.setText( tr( "Reports..." ) );
     m_actionReporting.setShortcut( Qt::CTRL + Qt::Key_R );
     connect( &m_actionReporting, SIGNAL( triggered() ),
              &m_tasksWindow, SLOT( slotReportDialog() ) );
-    m_windowMenu.addSeparator();
-    m_windowMenu.addAction( &m_actionReporting );
-    m_windowMenu.addAction( &m_actionPreferences );
-    m_actionPreferences.setEnabled( true );
-
-    // create help menu:
-    m_helpMenu.setTitle( tr( "Help" ) );
-    m_helpMenu.addAction( &m_actionAboutDialog );
 
 #ifdef Q_WS_MAC
     connect( QApplication::instance(), SIGNAL( dockIconClicked() ), this, SLOT( slotOpenLastClosedWindow() ) );
@@ -198,19 +176,39 @@ Application::~Application()
 {
 }
 
-QMenu& Application::windowMenu()
+QMenu* Application::createWindowMenu()
 {
-    return m_windowMenu;
+    QMenu* menu = new QMenu();
+    menu->setTitle( tr( "Window" ) );
+    Q_FOREACH( CharmWindow* window, m_windows ) {
+        menu->addAction( window->showHideAction() );
+    }
+    menu->addSeparator();
+    menu->addAction( &m_actionReporting );
+    menu->addAction( &m_actionPreferences );
+
+    return menu;
 }
 
-QMenu& Application::fileMenu()
+QMenu* Application::createFileMenu()
 {
-    return m_appMenu;
+    QMenu* menu = new QMenu();
+    menu->setTitle ( tr( "File" ) );
+    menu->addAction( &m_actionExportToXml );
+    menu->addAction( &m_actionImportFromXml );
+    menu->addSeparator();
+    menu->addAction( &m_actionImportTasks );
+    menu->addSeparator();
+    menu->addAction( &m_actionQuit );
+    return menu;
 }
 
-QMenu& Application::helpMenu()
+QMenu* Application::createHelpMenu()
 {
-    return m_helpMenu;
+    QMenu* menu = new QMenu();
+    menu->setTitle( tr( "Help" ) );
+    menu->addAction( &m_actionAboutDialog );
+    return menu;
 }
 
 void Application::setState(State state)

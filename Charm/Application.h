@@ -39,6 +39,7 @@
 #include "ModelConnector.h"
 
 // FIXME read configuration name from command line
+
 class IdleDetector;
 
 #ifdef Q_WS_MAC
@@ -78,9 +79,9 @@ public:
 
     State state() const;
 
-    QMenu& windowMenu();
-    QMenu& fileMenu();
-    QMenu& helpMenu();
+    QMenu* createWindowMenu();
+    QMenu* createFileMenu();
+    QMenu* createHelpMenu();
 
     /** The main view is the window responsible for managing state during command execution.
      * It is an internal concept, not a notion for the end user. */
@@ -127,15 +128,9 @@ private:
     State m_state;
     ModelConnector m_model;
     Controller m_controller;
-    TasksWindow m_tasksWindow;
-    EventWindow m_eventWindow;
-    TimeTrackingView m_timeTracker;
     QSystemTrayIcon m_trayIcon;
     QMenu m_systrayContextMenu;
     QMenu m_dockMenu;
-    QMenu m_windowMenu;
-    QMenu m_appMenu;
-    QMenu m_helpMenu;
     QAction m_actionStopAllTasks;
     QAction m_actionQuit;
     QAction m_actionAboutDialog;
@@ -144,6 +139,9 @@ private:
     QAction m_actionImportFromXml;
     QAction m_actionImportTasks;
     QAction m_actionReporting;
+    TasksWindow m_tasksWindow;
+    EventWindow m_eventWindow;
+    TimeTrackingView m_timeTracker;
 
     IdleDetector* m_idleDetector;
     CharmWindow* m_closedWindow;
