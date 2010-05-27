@@ -1,9 +1,9 @@
 #ifndef IMPORTEXPORTTESTS_H
 #define IMPORTEXPORTTESTS_H
 
-#include <QObject>
+#include "TestApplication.h"
 
-class ImportExportTests : public QObject
+class ImportExportTests : public TestApplication
 {
     Q_OBJECT
 
@@ -11,8 +11,10 @@ public:
     ImportExportTests();
 
 private slots:
-    // void importExportTest_data();
-    // void importExportTest();
+    void initTestCase();
+        // void importExportTest_data();
+    void importExportTest();
+    void cleanupTestCase();
 };
 
 #endif

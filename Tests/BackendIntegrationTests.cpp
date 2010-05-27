@@ -12,59 +12,25 @@
 
 #include "BackendIntegrationTests.h"
 
-const int UserId = 1;
-const int InstallationId = 1;
-
 BackendIntegrationTests::BackendIntegrationTests()
-    : QObject()
-    , m_configuration( Configuration::instance() )
-    , m_localPath( "./BackendIntegrationTestDatabase.db" )
+    : TestApplication()
 {
 }
 
 void BackendIntegrationTests::initTestCase()
 {
-    QFileInfo file( m_localPath );
-    if ( file.exists() ) {
-        qDebug() << "test database file exists, deleting";
-        QDir dir( file.absoluteDir() );
-        QVERIFY( dir.remove( file.fileName() ) );
-    }
-
-    // well, here it gets a bit more challenging - this is not for
-    // sissies:
-    // - make a controller
-    // - make it create a local storage backend
-    // - make a data model and connect it to the controller
-    // - stimulate the controller and see if the right content ends up
-    //   in the database and the model
-    // -----
-    // ... make the controller:
-    m_configuration.installationId = InstallationId;
-    m_configuration.user.setId( UserId );
-    m_configuration.localStorageType = CHARM_SQLITE_BACKEND_DESCRIPTOR;
-    m_configuration.localStorageDatabase = m_localPath;
-    m_configuration.newDatabase = true;
-    m_controller = new Controller;
-    // ... initialize the backend:
-    QVERIFY( m_controller->initializeBackEnd( CHARM_SQLITE_BACKEND_DESCRIPTOR ) );
-    QVERIFY( m_controller->connectToBackend() );
-    // ... make the data model:
-    m_model = new CharmDataModel;
-    // ... connect model and controller:
-    connectControllerAndModel( m_controller, m_model );
-    QVERIFY( m_controller->storage() != 0 );
+    initialize();
 }
 
 void BackendIntegrationTests::initialValuesTest()
 {
     // storage:
-    QVERIFY( m_controller->storage()->getAllTasks().isEmpty() );
-    QVERIFY( m_controller->storage()->getAllEvents().isEmpty() );
-    QVERIFY( m_controller->storage()->getUser( UserId ).isValid() );
-    QVERIFY( m_controller->storage()->getInstallation( InstallationId ).isValid() );
+    QVERIFY( controller()->storage()->getAllTasks().isEmpty() );
+    QVERIFY( controller()->storage()->getAllEvents().isEmpty() );
+    QVERIFY( controller()->storage()->getUser( testUserId() ).isValid() );
+    QVERIFY( controller()->storage()->getInstallation( testInstallationId() ).isValid() );
     // model:
-    QVERIFY( m_model->taskTreeItem( 0 ).childCount() == 0 );
+    QVERIFY( model()->taskTreeItem( 0 ).childCount() == 0 );
 }
 
 void BackendIntegrationTests::simpleCreateModifyDeleteTaskTest()
@@ -73,27 +39,27 @@ void BackendIntegrationTests::simpleCreateModifyDeleteTaskTest()
     Task task1b( task1 );
     task1b.setName( "Task 1, modified" );
     // add:
-    m_controller->addTask( task1 );
-    QVERIFY( m_controller->storage()->getAllTasks().size() == 1 );
-    QVERIFY( m_controller->storage()->getAllTasks().first() == task1 );
-    QVERIFY( m_model->taskTreeItem( task1.id() ).task() == task1 );
+    controller()->addTask( task1 );
+    QVERIFY( controller()->storage()->getAllTasks().size() == 1 );
+    QVERIFY( controller()->storage()->getAllTasks().first() == task1 );
+    QVERIFY( model()->taskTreeItem( task1.id() ).task() == task1 );
     // modify:
-    m_controller->modifyTask( task1b );
-    QVERIFY( m_controller->storage()->getAllTasks().size() == 1 );
-    QVERIFY( m_controller->storage()->getAllTasks().first() == task1b );
-    QVERIFY( m_model->taskTreeItem( task1.id() ).task() == task1b );
+    controller()->modifyTask( task1b );
+    QVERIFY( controller()->storage()->getAllTasks().size() == 1 );
+    QVERIFY( controller()->storage()->getAllTasks().first() == task1b );
+    QVERIFY( model()->taskTreeItem( task1.id() ).task() == task1b );
     // delete:
-    m_controller->deleteTask( task1 );
-    QVERIFY( m_controller->storage()->getAllTasks().size() == 0 );
-    QVERIFY( m_model->taskTreeItem( 0 ).childCount() == 0 );
+    controller()->deleteTask( task1 );
+    QVERIFY( controller()->storage()->getAllTasks().size() == 0 );
+    QVERIFY( model()->taskTreeItem( 0 ).childCount() == 0 );
 }
 
 void BackendIntegrationTests::biggerCreateModifyDeleteTaskTest()
 {
     const TaskList& tasks = referenceTasks();
     // make sure everything is cleaned up:
-    QVERIFY( m_controller->storage()->getAllTasks().isEmpty() );
-    QVERIFY( m_model->taskTreeItem( 0 ).childCount() == 0 );
+    QVERIFY( controller()->storage()->getAllTasks().isEmpty() );
+    QVERIFY( model()->taskTreeItem( 0 ).childCount() == 0 );
 
     // add one task after the other, and compare the lists in storage
     // and in the model:
@@ -101,41 +67,35 @@ void BackendIntegrationTests::biggerCreateModifyDeleteTaskTest()
     for ( int i = 0; i < tasks.size(); ++ i )
     {
         currentTasks.append( tasks[i] );
-        m_controller->addTask( tasks[i] );
-        QVERIFY( contentsEqual( m_controller->storage()->getAllTasks(), currentTasks ) );
-        QVERIFY( contentsEqual( m_model->getAllTasks(), currentTasks ) );
+        controller()->addTask( tasks[i] );
+        QVERIFY( contentsEqual( controller()->storage()->getAllTasks(), currentTasks ) );
+        QVERIFY( contentsEqual( model()->getAllTasks(), currentTasks ) );
     }
     // modify the tasks:
     for ( int i = 0; i < currentTasks.size(); ++i )
     {
         currentTasks[i].setName( currentTasks[i].name() + " - modified" );
-        m_controller->modifyTask( currentTasks[i] );
-        QVERIFY( contentsEqual( m_controller->storage()->getAllTasks(), currentTasks ) );
-        QVERIFY( contentsEqual( m_model->getAllTasks(), currentTasks ) );
+        controller()->modifyTask( currentTasks[i] );
+        QVERIFY( contentsEqual( controller()->storage()->getAllTasks(), currentTasks ) );
+        QVERIFY( contentsEqual( model()->getAllTasks(), currentTasks ) );
     }
     // delete the tasks (in reverse, because they depend on each
     // other):
     for ( int i = currentTasks.size(); i > 0; --i )
     {
-        m_controller->deleteTask( currentTasks[i-1] );
+        controller()->deleteTask( currentTasks[i-1] );
         currentTasks.removeAt( i-1 );
-        QVERIFY( contentsEqual( m_controller->storage()->getAllTasks(), currentTasks ) );
-        QVERIFY( contentsEqual( m_model->getAllTasks(), currentTasks ) );
+        QVERIFY( contentsEqual( controller()->storage()->getAllTasks(), currentTasks ) );
+        QVERIFY( contentsEqual( model()->getAllTasks(), currentTasks ) );
     }
     // all gone?
-    QVERIFY( m_controller->storage()->getAllTasks().isEmpty() );
-    QVERIFY( m_model->taskTreeItem( 0 ).childCount() == 0 );
+    QVERIFY( controller()->storage()->getAllTasks().isEmpty() );
+    QVERIFY( model()->taskTreeItem( 0 ).childCount() == 0 );
 }
 
 void BackendIntegrationTests::cleanupTestCase ()
 {
-    QVERIFY( m_controller->disconnectFromBackend() );
-    delete m_model; m_model = 0;
-    delete m_controller; m_controller = 0;
-    if ( QDir::home().exists( m_localPath ) ) {
-        bool result = QDir::home().remove( m_localPath );
-        QVERIFY( result );
-    }
+    destroy();
 }
 
 const TaskList& BackendIntegrationTests::referenceTasks()

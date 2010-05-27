@@ -391,6 +391,7 @@ QString Controller::importDatabaseFromXml( const QDomDocument& document )
     EventList importedEvents;
     int databaseSchemaVersion;
 
+    // FIXME test for the file to be a database export, not (for example) a task definitions export
     try {
         QDomElement rootElement = document.documentElement();
         bool ok;

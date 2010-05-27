@@ -17,6 +17,7 @@ IF ( QT4_FOUND )
        LINK_LIBRARIES( ${SECURITY} )
    ENDIF( APPLE )
 
+   SET( TestApplication_SRCS TestApplication.cpp )
    # SqLiteStorageTests
 
    SET( SqLiteStorageTests_SRCS SqLiteStorageTests.cpp )
@@ -51,7 +52,7 @@ IF ( QT4_FOUND )
    TARGET_LINK_LIBRARIES( CharmDataModelTests ${QT_LIBRARIES} )
 
    # BackendIntegrationTests
-   SET( BackendIntegrationTests_SRCS BackendIntegrationTests.cpp )
+   SET( BackendIntegrationTests_SRCS BackendIntegrationTests.cpp ${TestApplication_SRCS} )
 
    QT4_AUTOMOC( ${BackendIntegrationTests_SRCS} )
 
@@ -83,7 +84,7 @@ IF ( QT4_FOUND )
    TARGET_LINK_LIBRARIES( XmlSerializationTests ${QT_LIBRARIES} )
 
    # Database Import/Export Tests:
-   SET( ImportExportTests_SRCS ImportExportTests.cpp )
+   SET( ImportExportTests_SRCS ImportExportTests.cpp ${TestApplication_SRCS} )
 
    QT4_AUTOMOC( ${ImportExportTests_SRCS} )
 

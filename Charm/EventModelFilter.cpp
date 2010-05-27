@@ -8,7 +8,7 @@ EventModelFilter::EventModelFilter( CharmDataModel* model, QObject* parent )
 {
     setSourceModel( &m_model );
     setDynamicSortFilter( true );
-    sort( 0 );
+    sort( 0, Qt::AscendingOrder );
 
     connect( &m_model, SIGNAL( eventActivationNotice( EventId ) ),
              SIGNAL( eventActivationNotice( EventId ) ) );

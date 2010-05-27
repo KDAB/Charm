@@ -2,15 +2,16 @@
     <qresource prefix="/checkForUniqueTaskIdsTest">
 	<file>Data/simple-tasklists.xml</file>
     </qresource>
-    <qresource prefix="/mergeTaskListsTest">	
-	<file>Data/tasklist-merges.xml</file>
+    <qresource prefix="/importExportTest">
+        <file>Data/test-database-export.charmdatabaseexport</file>
     </qresource>
-    <qresource prefix="/checkForTreenessTest">	
-	<file>Data/tasklist-treeness.xml</file>
+    <qresource prefix="/mergeTaskListsTest">
+        <file>Data/tasklist-merges.xml</file>
     </qresource>
-    <qresource prefix="/testTaskExportImport">	
-	<file>Data/test-tasklistexport.xml</file>
+    <qresource prefix="/checkForTreenessTest">
+        <file>Data/tasklist-treeness.xml</file>
+    </qresource>
+    <qresource prefix="/testTaskExportImport">
+        <file>Data/test-tasklistexport.xml</file>
     </qresource>
 </RCC>
-
-
