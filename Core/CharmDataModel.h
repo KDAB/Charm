@@ -24,6 +24,7 @@ class QAbstractItemModel;
 class CharmDataModel : public QObject
 {
     Q_OBJECT
+    friend class ImportExportTests;
 
 public:
     CharmDataModel();
@@ -87,6 +88,8 @@ public:
       * Only tasks that have been used so far will be taken into account, so the list might be empty. */
     TaskIdList mostRecentlyUsedTasks() const;
 
+    bool operator==( const CharmDataModel& other ) const;
+
 signals:
     // these need to be implemented in the respective application to
     // be able to track time:
@@ -126,6 +129,9 @@ private:
 
 private slots:
     void eventUpdateTimerEvent();
-};
 
+private:
+    // functions only used for testing:
+    CharmDataModel* clone() const;
+};
 #endif

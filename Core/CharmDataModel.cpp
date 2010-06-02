@@ -595,4 +595,24 @@ TaskIdList CharmDataModel::mostRecentlyUsedTasks() const
     return mru;
 }
 
+bool CharmDataModel::operator==( const CharmDataModel& other ) const
+{
+    // not compared: m_timer, m_adapters
+    if( &other == this ) {
+        return true;
+    }
+    return getAllTasks() == other.getAllTasks()
+            && m_events == other.m_events
+            && m_activeEventIds == other.m_activeEventIds;
+}
+
+CharmDataModel* CharmDataModel::clone() const
+{
+    CharmDataModel* c = new CharmDataModel();
+    c->setAllTasks( getAllTasks() );
+    c->m_events = m_events;
+    c->m_activeEventIds = m_activeEventIds;
+    return c;
+}
+
 #include "CharmDataModel.moc"

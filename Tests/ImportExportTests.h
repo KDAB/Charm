@@ -12,9 +12,11 @@ public:
 
 private slots:
     void initTestCase();
-        // void importExportTest_data();
     void importExportTest();
     void cleanupTestCase();
+
+private:
+    void importDatabase( const QString& filename );
 };
 
 #endif
