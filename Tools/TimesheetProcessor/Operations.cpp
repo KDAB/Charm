@@ -83,8 +83,8 @@ void addTimesheet(const CommandLine& cmd)
     }
 
     int totalSeconds = 0;
-    QDomElement element = effortElement.firstChildElement("event");
-    for (; !element.isNull(); element = element.nextSiblingElement("event"))
+    QDomElement element = effortElement.firstChildElement( Event::tagName() );
+    for (; !element.isNull(); element = element.nextSiblingElement( Event::tagName() ) )
     {
         try {
             Event e = Event::fromXml(element);
