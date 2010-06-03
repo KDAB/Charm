@@ -8,6 +8,8 @@
 #include "Core/MySqlStorage.h"
 #include "Exceptions.h"
 
+class SqlRaiiTransactor;
+
 class Database
 {
 public:
@@ -16,7 +18,7 @@ public:
 
     void login() throw ( TimesheetProcessorException );
     void initializeDatabase() throw ( TimesheetProcessorException );
-    void addEvent( const Event& event );
+    void addEvent( const Event& event, const SqlRaiiTransactor& );
     void deleteEventsForReport ( int userid, int index );
     void checkUserid( int id ) throw (TimesheetProcessorException );
     User getOrCreateUserByName( QString name ) throw (TimesheetProcessorException );

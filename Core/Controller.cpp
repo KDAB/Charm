@@ -1,6 +1,6 @@
 #include <QtDebug>
 
-
+#include "SqlRaiiTransactor.h"
 #include "Task.h"
 #include "Event.h"
 #include "CharmConstants.h"
@@ -427,52 +427,20 @@ QString Controller::importDatabaseFromXml( const QDomDocument& document )
         qDebug() << "Controller::importDatabaseFromXml: things fucked up:" << e.what();
         return tr( "The Export file is invalid." );
     }
-//    qDebug() << "Controller::importDatabaseFromXml:" << importedTasks.size() << "tasks parsed from Xml file,"
-//             << importedEvents.size() << "events parsed from Xml file.";
 
-    // clear subscriptions, tasks and events:
-    if ( !m_storage->deleteAllEvents() ) {
-        return tr( "Error deleting the existing events." );
+    const QString error = m_storage->setAllTasksAndEvents( CONFIGURATION.user, importedTasks, importedEvents );
+    if( !error.isEmpty() ) {
+        // the database should be unchanged, and the model will update on return
+        return tr( "Error importing tasks and events from the file:<br />%1" )
+                .arg( error );
     }
-    Q_ASSERT( m_storage->getAllEvents().isEmpty() );
-    if ( !m_storage->deleteAllTasks() ) {
-        return tr( "Error deleting the existing tasks." );
-    }
-    Q_ASSERT( m_storage->getAllTasks().isEmpty() );
+
+    // FIXME needed?
 
     // tell the model that the tasks and events have vanished:
     emit allEvents( EventList() );
     emit definedTasks( TaskList() );
 
-    // now import Events and Tasks from the XML document:
-    Q_FOREACH( Task task, importedTasks ) {
-        // don't use our own addTask method, it emits signals and that
-        // confuses the model, because the task tree is not inserted depth-first:
-        if ( m_storage->addTask( task ) ) {
-            updateSubscriptionForTask( task );
-        } else {
-            return tr( "Cannot add imported tasks." );
-        }
-    }
-    Q_FOREACH( Event event, importedEvents ) {
-        if ( ! event.isValid() ) continue;
-        Task task = m_storage->getTask( event.taskId() );
-        if ( !task.isValid() ) {
-            // semantical error
-            continue;
-        }
-        Event newEvent = makeEvent( task );
-        int id = newEvent.id();
-        newEvent = event;
-        newEvent.setId( id );
-        if ( !modifyEvent( newEvent ) ) {
-            return tr( "Error adding imported event." );
-        }
-    }
-//    qDebug() << "Controller::importDatabaseFromXml:" << m_storage->getAllTasks().count() << "tasks,"
-//		<< m_storage->getAllEvents().count() << "events imported from Xml file.";
-//
-    // done
     return QString();
 }
 

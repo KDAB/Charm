@@ -12,6 +12,7 @@
 
 class Event;
 class Configuration;
+class SqlRaiiTransactor;
 
 class StorageInterface
 {
@@ -49,19 +50,24 @@ public:
 	virtual TaskList getAllTasks() = 0;
         virtual bool setAllTasks( const User& user, const TaskList& tasks ) = 0;
 	virtual bool addTask(const Task& task) = 0;
+        virtual bool addTask( const Task& task, const SqlRaiiTransactor& ) = 0;
 	virtual Task getTask(int taskId) = 0;
 	virtual bool modifyTask(const Task& task) = 0;
 	virtual bool deleteTask(const Task& task) = 0;
 	virtual bool deleteAllTasks() = 0;
+        virtual bool deleteAllTasks( const SqlRaiiTransactor& ) = 0;
 
 	// event database functions:
 	virtual EventList getAllEvents() = 0;
 	// all events are created by the storage interface
 	virtual Event makeEvent() = 0;
-	virtual Event getEvent(int eventId)= 0;
-	virtual bool modifyEvent(const Event& event) = 0;
-	virtual bool deleteEvent(const Event& event) = 0;
+        virtual Event makeEvent( const SqlRaiiTransactor& ) = 0;
+        virtual Event getEvent(int eventId)= 0;
+        virtual bool modifyEvent( const Event& event ) = 0;
+        virtual bool modifyEvent( const Event& event, const SqlRaiiTransactor& ) = 0;
+        virtual bool deleteEvent(const Event& event) = 0;
 	virtual bool deleteAllEvents() = 0;
+        virtual bool deleteAllEvents( const SqlRaiiTransactor& ) = 0;
 
 	// subscription management functions
 	// (subscriptions cannot be modified, they are just boolean flags)
@@ -72,6 +78,11 @@ public:
 	// database metadata management functions
 	virtual bool setMetaData(const QString& key, const QString& value) = 0;
 	virtual QString getMetaData(const QString& key) = 0;
+
+        /*! @brief update all tasks and events in a single-transaction during imports
+          @return an empty String on success, an error message otherwise
+          */
+        virtual QString setAllTasksAndEvents( const User&, const TaskList&, const EventList& ) = 0;
 
 protected:
 	// Put the basic database structure into the database.

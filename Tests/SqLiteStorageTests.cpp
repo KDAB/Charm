@@ -41,7 +41,7 @@ void SqLiteStorageTests::connectAndCreateDatabaseTest()
 
 void SqLiteStorageTests::makeModifyDeleteInstallationTest()
 {
-	int userId = 42;
+    int userId = 42;
     // make two installation ids:
     QString name1 = "Installation-1";
     Installation installation1 = m_storage->createInstallation( name1 );

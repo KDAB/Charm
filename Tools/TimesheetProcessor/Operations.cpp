@@ -153,7 +153,7 @@ void addTimesheet(const CommandLine& cmd)
             // FIXME check for reporting period for the task, not implemented in the DB
             e.setUserId( cmd.userid() );
             e.setReportId( index );
-            database.addEvent( e );
+            database.addEvent( e, transaction );
         }
 
         transaction.commit();

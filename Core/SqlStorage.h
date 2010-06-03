@@ -36,21 +36,24 @@ public:
     // implement task database functions:
     TaskList getAllTasks();
     bool setAllTasks( const User& user, const TaskList& tasks );
-    bool addTask ( const Task& task );
+    bool addTask( const Task& task );
+    bool addTask( const Task& task, const SqlRaiiTransactor& );
     Task getTask( int taskid );
     bool modifyTask( const Task& task );
     bool deleteTask( const Task& task );
     bool deleteAllTasks();
+    bool deleteAllTasks( const SqlRaiiTransactor& );
 
     // implement event database functions:
     EventList getAllEvents();
     Event makeEvent();
-    Event makeEventNoTransaction();
+    Event makeEvent( const SqlRaiiTransactor& );
     Event getEvent( int eventid );
     bool modifyEvent( const Event& event );
-    bool modifyEventNoTransaction( const Event& event );
+    bool modifyEvent( const Event& event, const SqlRaiiTransactor& );
     bool deleteEvent( const Event& event );
     bool deleteAllEvents();
+    bool deleteAllEvents( const SqlRaiiTransactor& );
 
     // implement subscription management functions:
     bool addSubscription( User, Task );
@@ -59,6 +62,9 @@ public:
     // implement metadata management functions:
     bool setMetaData( const QString&,  const QString& );
     QString getMetaData( const QString& );
+
+    // implement import functions:
+    QString setAllTasksAndEvents( const User&, const TaskList&, const EventList& );
 
     bool verifyDatabase();
     virtual bool createDatabaseTables() = 0;

@@ -118,13 +118,13 @@ void Database::initializeDatabase() throw (TimesheetProcessorException )
 	}
 }
 
-void Database::addEvent( const Event& event )
+void Database::addEvent( const Event& event, const SqlRaiiTransactor& t )
 {
-    Event newEvent = m_storage.makeEventNoTransaction();
+    Event newEvent = m_storage.makeEvent( t );
     int id = newEvent.id();
     newEvent = event;
     newEvent.setId( id );
-    if ( !m_storage.modifyEventNoTransaction( newEvent ) ) {
+    if ( !m_storage.modifyEvent( newEvent, t ) ) {
         throw TimesheetProcessorException( "Cannot add event" );
     }
 }

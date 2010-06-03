@@ -96,35 +96,44 @@ bool SqlStorage::setAllTasks( const User& user, const TaskList& tasks )
 
 bool SqlStorage::addTask(const Task& task)
 {
-	QSqlQuery query(database());
-	query.prepare("INSERT into Tasks (task_id, name, parent, validfrom, validuntil) "
-		"values ( :task_id, :name, :parent, :validfrom, :validuntil);");
-	query.bindValue(":task_id", task.id());
-	query.bindValue(":name", task.name());
-	query.bindValue(":parent", task.parent());
-	query.bindValue(":validfrom", task.validFrom() );
-	query.bindValue(":validuntil", task.validUntil() );
-	return runQuery(query);
+    SqlRaiiTransactor t( database() );
+    if( addTask( task, t ) ) {
+        t.commit();
+        return true;
+    } else {
+        return false;
+    }
 }
 
-Task SqlStorage::getTask(int taskid)
+bool SqlStorage::addTask(const Task& task, const SqlRaiiTransactor& )
 {
-	QSqlQuery query(database());
-	const char
-			statement[] =
-					"SELECT * FROM Tasks LEFT JOIN Subscriptions ON Tasks.task_id = Subscriptions.task WHERE task_id = :id;";
-	query.prepare(statement);
-	query.bindValue(":id", taskid);
+    QSqlQuery query(database());
+    query.prepare("INSERT into Tasks (task_id, name, parent, validfrom, validuntil) "
+                  "values ( :task_id, :name, :parent, :validfrom, :validuntil);");
+    query.bindValue(":task_id", task.id());
+    query.bindValue(":name", task.name());
+    query.bindValue(":parent", task.parent());
+    query.bindValue(":validfrom", task.validFrom() );
+    query.bindValue(":validuntil", task.validUntil() );
+    return runQuery(query);
+}
 
-	if (runQuery(query) && query.next())
-	{
-		Task task = makeTaskFromRecord( query.record() );
-		return task;
-	}
-	else
-	{
-		return Task();
-	}
+
+
+Task SqlStorage::getTask( int taskid )
+{
+    QSqlQuery query(database());
+    const char statement[] = "SELECT * FROM Tasks LEFT JOIN Subscriptions ON Tasks.task_id = Subscriptions.task WHERE task_id = :id;";
+    query.prepare(statement);
+    query.bindValue(":id", taskid);
+
+    if (runQuery(query) && query.next())
+    {
+        Task task = makeTaskFromRecord( query.record() );
+        return task;
+    } else {
+        return Task();
+    }
 }
 
 bool SqlStorage::modifyTask(const Task& task)
@@ -162,10 +171,22 @@ bool SqlStorage::deleteTask(const Task& task)
 
 bool SqlStorage::deleteAllTasks()
 {
-	QSqlQuery query(database());
-	query.prepare("DELETE from Tasks;");
-	return runQuery(query);
+    SqlRaiiTransactor t ( database() );
+    if( deleteAllTasks( t ) ) {
+        t.commit();
+        return true;
+    } else {
+        return false;
+    }
 }
+
+bool SqlStorage::deleteAllTasks( const SqlRaiiTransactor& )
+{
+    QSqlQuery query(database());
+    query.prepare("DELETE from Tasks;");
+    return runQuery(query);
+}
+
 
 Event SqlStorage::makeEventFromRecord(const QSqlRecord& record)
 {
@@ -218,14 +239,14 @@ EventList SqlStorage::getAllEvents()
 Event SqlStorage::makeEvent()
 {
     SqlRaiiTransactor transactor(database());
-    Event event = makeEventNoTransaction();
+    Event event = makeEvent( transactor );
     if( event.isValid() ) {
         transactor.commit();
     }
     return event;
 }
 
-Event SqlStorage::makeEventNoTransaction()
+Event SqlStorage::makeEvent( const SqlRaiiTransactor& )
 {
     bool result;
     Event event;
@@ -309,7 +330,7 @@ Event SqlStorage::getEvent(int id)
 bool SqlStorage:: modifyEvent( const Event& event )
 {
     SqlRaiiTransactor transactor( database() );
-    if( modifyEventNoTransaction( event ) ) {
+    if( modifyEvent( event, transactor ) ) {
         transactor.commit();
         return true;
     } else {
@@ -317,7 +338,7 @@ bool SqlStorage:: modifyEvent( const Event& event )
     }
 }
 
-bool SqlStorage::modifyEventNoTransaction(const Event& event)
+bool SqlStorage::modifyEvent(const Event& event, const SqlRaiiTransactor& )
 {
 	QSqlQuery query(database());
 	query.prepare("UPDATE Events set task = :task, comment = :comment, "
@@ -345,9 +366,20 @@ bool SqlStorage::deleteEvent(const Event& event)
 
 bool SqlStorage::deleteAllEvents()
 {
-	QSqlQuery query(database());
-	query.prepare("DELETE from Events;");
-	return runQuery(query);
+    SqlRaiiTransactor transactor( database() );
+    if( deleteAllEvents( transactor ) ) {
+        transactor.commit();
+        return true;
+    } else {
+        return false;
+    }
+}
+
+bool SqlStorage::deleteAllEvents( const SqlRaiiTransactor& )
+{
+        QSqlQuery query(database());
+        query.prepare("DELETE from Events;");
+        return runQuery(query);
 }
 
 #define MARKER "============================================================"
@@ -745,3 +777,54 @@ Task SqlStorage::makeTaskFromRecord( const QSqlRecord& record )
 	}
 	return task;
 }
+
+QString SqlStorage::setAllTasksAndEvents( const User& user, const TaskList& tasks, const EventList& events)
+{
+    SqlRaiiTransactor transactor( database() );
+
+    // clear subscriptions, tasks and events:
+    if ( ! deleteAllEvents( transactor ) ) {
+        return QObject::tr( "Error deleting the existing events." );
+    }
+    Q_ASSERT( getAllEvents().isEmpty() );
+    if ( ! deleteAllTasks( transactor ) ) {
+        return QObject::tr( "Error deleting the existing tasks." );
+    }
+    Q_ASSERT( getAllTasks().isEmpty() );
+
+    // now import Events and Tasks from the XML document:
+    Q_FOREACH( Task task, tasks ) {
+        // don't use our own addTask method, it emits signals and that
+        // confuses the model, because the task tree is not inserted depth-first:
+        if ( addTask( task, transactor ) ) {
+            if ( task.subscribed() ) {
+                bool result = addSubscription( user, task );
+                Q_ASSERT( result ); Q_UNUSED( result );
+            } else {
+                bool result = deleteSubscription( user, task );
+                Q_ASSERT( result ); Q_UNUSED( result );
+            }
+        } else {
+            return QObject::tr( "Cannot add imported tasks." );
+        }
+    }
+    Q_FOREACH( Event event, events ) {
+        if ( ! event.isValid() ) continue;
+        Task task = getTask( event.taskId() );
+        if ( !task.isValid() ) {
+            // semantical error
+            continue;
+        }
+        Event newEvent = makeEvent( transactor );
+        int id = newEvent.id();
+        newEvent = event;
+        newEvent.setId( id );
+        if ( !modifyEvent( newEvent, transactor ) ) {
+            return QObject::tr( "Error adding imported event." );
+        }
+    }
+
+    transactor.commit();
+    return QString();
+}
+
