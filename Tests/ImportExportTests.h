@@ -13,6 +13,8 @@ public:
 private slots:
     void initTestCase();
     void importExportTest();
+    void importBenchmark();
+    void exportBenchmark();
     void cleanupTestCase();
 
 private:

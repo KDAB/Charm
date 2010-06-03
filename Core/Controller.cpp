@@ -400,10 +400,8 @@ QString Controller::importDatabaseFromXml( const QDomDocument& document )
 
         QDomElement metadataElement = rootElement.firstChildElement( MetaDataElement );
         QDomElement tasksElement = rootElement.firstChildElement( TasksElement );
-        // FIXME refactor XML element names into CharmConstants or
-        // static members:
-        for ( QDomElement element = tasksElement.firstChildElement( "task" );
-              !element.isNull(); element = element.nextSiblingElement( "task" ) ) {
+        for ( QDomElement element = tasksElement.firstChildElement( Task::tagName() );
+              !element.isNull(); element = element.nextSiblingElement( Task::tagName() ) ) {
             Task task = Task::fromXml( element, databaseSchemaVersion );
             if ( ! task.isValid() ) {
                 qDebug() << "The following task is invalid and will not be added:";
@@ -414,8 +412,8 @@ QString Controller::importDatabaseFromXml( const QDomDocument& document )
             }
         }
         QDomElement eventsElement = rootElement.firstChildElement( EventsElement );
-        for ( QDomElement element = eventsElement.firstChildElement( "event" );
-              !element.isNull(); element = element.nextSiblingElement( "event" ) ) {
+        for ( QDomElement element = eventsElement.firstChildElement( Event::tagName() );
+              !element.isNull(); element = element.nextSiblingElement( Event::tagName() ) ) {
             Event event = Event::fromXml( element, databaseSchemaVersion );
             if ( ! event.isValid() ) {
                 qDebug() << "The following event is invalid and will not be added:";
@@ -429,8 +427,8 @@ QString Controller::importDatabaseFromXml( const QDomDocument& document )
         qDebug() << "Controller::importDatabaseFromXml: things fucked up:" << e.what();
         return tr( "The Export file is invalid." );
     }
-    qDebug() << "Controller::importDatabaseFromXml:" << importedTasks.size() << "tasks parsed from Xml file,"
-             << importedEvents.size() << "events parsed from Xml file.";
+//    qDebug() << "Controller::importDatabaseFromXml:" << importedTasks.size() << "tasks parsed from Xml file,"
+//             << importedEvents.size() << "events parsed from Xml file.";
 
     // clear subscriptions, tasks and events:
     if ( !m_storage->deleteAllEvents() ) {

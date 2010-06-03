@@ -171,6 +171,12 @@ QDomElement Event::toXml( QDomDocument document ) const
     return element;
 }
 
+QString Event::tagName()
+{
+    static const QString tag( QString::fromAscii( "event" ) );
+    return tag;
+}
+
 Event Event::fromXml( const QDomElement& element, int databaseSchemaVersion )
 {   // in case any event object creates trouble with
     // serialization/deserialization, add an object of it to

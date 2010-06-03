@@ -68,6 +68,7 @@ public:
     QDomElement toXml( QDomDocument ) const;
 
     static Event fromXml( const QDomElement&,  int databaseSchemaVersion = 1 );
+    static QString tagName();
 
 private:
     /** The id of the user who owns the event. */

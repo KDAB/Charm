@@ -62,6 +62,28 @@ void ImportExportTests::importExportTest()
 //    }
 }
 
+void ImportExportTests::importBenchmark()
+{
+    const QString filename = ":/importExportTest/Data/test-database-export.charmdatabaseexport";
+    QBENCHMARK {
+        importDatabase( filename );
+    }
+}
+
+void ImportExportTests::exportBenchmark()
+{
+    const QString filename = ":/importExportTest/Data/test-database-export.charmdatabaseexport";
+    const QString localFileName( "ImportExportTests-temp.charmdatabaseexport" );
+    importDatabase( filename );
+    QBENCHMARK {
+        QDomDocument exportDoc = controller()->exportDatabasetoXml();
+        QFile outfile( localFileName );
+        QVERIFY( outfile.open( QIODevice::ReadWrite ) );
+        QTextStream stream( &outfile );
+        exportDoc.save( stream, 4 ); // FIXME save does no kind of error reporting?
+    }
+}
+
 void ImportExportTests::cleanupTestCase ()
 {
     destroy();
@@ -80,3 +102,4 @@ void ImportExportTests::importDatabase( const QString& filename )
 QTEST_MAIN( ImportExportTests )
 
 #include "ImportExportTests.moc"
+
