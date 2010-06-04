@@ -7,22 +7,15 @@
 #include <QSqlDriver>
 #include <QSqlError>
 
+#include "CharmExceptions.h"
+
 class SqlRaiiTransactor {
 public:
-    class TransactionException : public std::exception {
+    class TransactionException : public CharmException {
     public:
         explicit TransactionException( const QString& text = QString() )
-            : mWhat( text )
+            : CharmException( text )
         {}
-
-        ~TransactionException() throw()
-        {}
-
-        const char* what() const throw() {
-            return qPrintable( mWhat );
-        }
-    private:
-        QString mWhat;
     };
 
     SqlRaiiTransactor( QSqlDatabase& database )
