@@ -75,11 +75,11 @@ bool SqlStorage::setAllTasks( const User& user, const TaskList& tasks )
     SqlRaiiTransactor transactor(database());
     const TaskList oldTasks = getAllTasks();
     // clear tasks
-    deleteAllTasks();
+    deleteAllTasks( transactor );
     // add tasks
     Q_FOREACH( Task task, tasks ) {
         task.setSubscribed( false );
-        addTask( task );
+        addTask( task, transactor );
     }
     // try to restore subscriptions where possible
     Q_FOREACH( const Task& oldTask, oldTasks ) {
