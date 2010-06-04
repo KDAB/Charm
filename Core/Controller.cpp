@@ -1,5 +1,6 @@
 #include <QtDebug>
 
+#include "CharmExceptions.h"
 #include "SqlRaiiTransactor.h"
 #include "Task.h"
 #include "Event.h"

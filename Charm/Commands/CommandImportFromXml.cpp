@@ -3,7 +3,6 @@
 #include <QFile>
 #include <QTextStream>
 
-#include <Core/CharmExceptions.h>
 #include <Core/ControllerInterface.h>
 
 #include "CharmWindow.h"

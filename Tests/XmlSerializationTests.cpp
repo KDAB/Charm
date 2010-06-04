@@ -3,6 +3,7 @@
 #include <QtTest/QtTest>
 
 #include "Core/CharmConstants.h"
+#include "Core/CharmExceptions.h"
 #include "Core/Event.h"
 #include "Core/XmlSerialization.h"
 #include "XmlSerializationTests.h"

@@ -5,8 +5,8 @@
 
 #include "Core/Task.h"
 #include "Core/TaskListMerger.h"
-#include "Core/CharmConstants.h"
 #include "Core/CharmExceptions.h"
+#include "Core/CharmConstants.h"
 
 #include "TestHelpers.h"
 #include "TaskStructureTests.h"

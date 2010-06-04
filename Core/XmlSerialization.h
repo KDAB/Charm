@@ -5,7 +5,6 @@
 #include <QString>
 
 #include "Task.h"
-#include "CharmExceptions.h"
 
 namespace XmlSerialization {
 

@@ -12,6 +12,7 @@ IF ( QT4_FOUND )
 		       CharmConstants.cpp
                         CharmExceptions.cpp
 		       Controller.cpp
+                        SqlRaiiTransactor.cpp
 		       SqLiteStorage.cpp
 		       MySqlStorage.cpp
 		       Configuration.cpp

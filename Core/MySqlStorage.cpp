@@ -11,7 +11,6 @@
 
 #include "MySqlStorage.h"
 #include "CharmConstants.h"
-#include "CharmExceptions.h"
 
 // DATABASE STRUCTURE DEFINITION FOR MYSQL
 static const QString Tables[] =

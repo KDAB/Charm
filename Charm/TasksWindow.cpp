@@ -6,6 +6,7 @@
 #include <QMenuBar>
 
 #include <Core/CharmConstants.h>
+#include <Core/CharmExceptions.h>
 #include <Core/TaskListMerger.h>
 #include <Core/XmlSerialization.h>
 

@@ -1,3 +1,4 @@
+#include "CharmExceptions.h"
 #include "TaskListMerger.h"
 
 TaskListMerger::TaskListMerger()

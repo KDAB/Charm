@@ -5,6 +5,7 @@
 
 #include "Task.h"
 #include "CharmConstants.h"
+#include "CharmExceptions.h"
 
 Task::Task() :
 	m_id(0), m_parent(0), m_subscribed(false)

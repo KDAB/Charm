@@ -10,6 +10,7 @@
 #include "Event.h"
 #include "State.h"
 #include "SqlStorage.h"
+#include "CharmExceptions.h"
 #include "SqlRaiiTransactor.h"
 #include "CharmConstants.h"
 

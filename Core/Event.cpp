@@ -1,6 +1,7 @@
 #include <QDomElement>
 #include <QDomText>
 
+#include "CharmExceptions.h"
 #include "Event.h"
 
 Event::Event()

@@ -1,60 +1,16 @@
 #ifndef SQLRAIITRANSACTOR_H
 #define SQLRAIITRANSACTOR_H
 
-#include <exception>
-
-#include <QSqlDatabase>
-#include <QSqlDriver>
-#include <QSqlError>
-
-#include "CharmExceptions.h"
+class QSqlDatabase;
 
 class SqlRaiiTransactor {
 public:
-    class TransactionException : public CharmException {
-    public:
-        explicit TransactionException( const QString& text = QString() )
-            : CharmException( text )
-        {}
-    };
+    SqlRaiiTransactor( QSqlDatabase& database );
+    ~SqlRaiiTransactor();
 
-    SqlRaiiTransactor( QSqlDatabase& database )
-        : m_database ( database )
-    {
-        if ( ! database.driver()->hasFeature( QSqlDriver::Transactions ) ) {
-            throw TransactionException( QObject::tr( "Database driver does not support transactions." ) );
-        }
-        m_active = m_database.transaction();
-        if ( ! m_active ) {
-            qWarning() << "Failed to begin transaction: " << m_database.lastError().text();
-            throw TransactionException( QObject::tr( "Starting a transaction failed." ) );
-        }
-    }
+    bool isActive() const;
 
-    ~SqlRaiiTransactor() {
-        if ( m_active ) {
-            if ( ! m_database.rollback() ) {
-                throw TransactionException( QObject::tr( "Database error, transaction rollback failed." ) );
-                qWarning() << "Failed to rollback transaction: " << m_database.lastError().text();
-            }
-        }
-    }
-
-    bool isActive() const {
-        return m_active;
-    }
-
-    bool commit() {
-        if ( m_active ) {
-            if ( m_database.commit() ) {
-                m_active = false;
-                return true;
-            }
-            throw TransactionException( QObject::tr( "Failed to commit transaction: " ) + m_database.lastError().text() );
-        }
-        return false;
-    }
-
+    bool commit();
 private:
     bool m_active;
     QSqlDatabase& m_database;

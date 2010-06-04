@@ -6,6 +6,7 @@
 #include <QFile>
 
 #include "Core/Event.h"
+#include "Core/CharmExceptions.h"
 #include <Core/XmlSerialization.h>
 
 #include "Exceptions.h"

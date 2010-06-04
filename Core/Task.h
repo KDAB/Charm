@@ -11,8 +11,6 @@
 #include <QDomDocument>
 #include <QDateTime>
 
-#include "CharmExceptions.h"
-
 typedef int TaskId;
 Q_DECLARE_METATYPE( TaskId )
 

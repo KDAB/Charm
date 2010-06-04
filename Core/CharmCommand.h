@@ -31,9 +31,6 @@ class CommandEmitterInterface;
     execute() is called by the controller.
     finalize() is called by the view after the controller has returned
     the command to the view.
-
-    FIXME: The parameter list for prepare and finalize is undecided
-    yet.
 */
 
 class CharmCommand : public QObject

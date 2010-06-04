@@ -10,7 +10,6 @@
 #include <QDomDocument>
 
 #include "Task.h"
-#include "CharmExceptions.h"
 
 typedef int EventId;
 

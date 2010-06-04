@@ -8,7 +8,6 @@
 #include <QtAlgorithms>
 #include <QDomDocument>
 
-#include <Core/CharmExceptions.h>
 #include <Core/Configuration.h>
 
 #include <QTimer>
