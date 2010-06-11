@@ -2,15 +2,14 @@
 import copy, os, platform
 from AutobuildCore.Configuration import Configuration
 from AutobuildCore.Project import Project
-from AutobuildCore.Callbacks.DynamicUploadLocation import BranchNamePackageSubdir
+# from AutobuildCore.Callbacks.DynamicUploadLocation import BranchNamePackageSubdir
 from AutobuildCore.Callbacks.ConfigurationBuildSequence import ConfigurationBuildSequence
 from AutobuildCore.Callbacks.BuildInformation import BuildInformation
 
-scmPath = 'svn://kde.codeyard.cs.ru.nl/home/kde/trunk/playground/utils/charm'
 Product = Project( 'Charm', '0.4.2' )
-Product.setScmUrl( scmPath + '/trunk' )
+Product.setScmUrl( 'http://git.gitorious.org/charm/charm.git' )
 Product.setScmSrcDir( '' )
-Product.addCallback( BranchNamePackageSubdir( scmPath ) )
+# Product.addCallback( BranchNamePackageSubdir( scmPath ) )
 
 Debug = Configuration( Product, 'Shared Debug' )
 Debug.addCallback( ConfigurationBuildSequence( 'conf-bin-package', '*Static*', False, False ) ) # do not package shared builds
