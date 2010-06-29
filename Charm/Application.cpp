@@ -115,6 +115,7 @@ Application::Application(int& argc, char** argv)
 #if defined Q_WS_MAC
     m_dockMenu.addAction( &m_actionStopAllTasks );
     qt_mac_set_dock_menu( &m_dockMenu);
+    QCoreApplication::setAttribute( Qt::AA_DontShowIconsInMenus );
 #endif
 
     Q_FOREACH( CharmWindow* window, m_windows ) {
