@@ -15,6 +15,7 @@
 #include <QMessageBox>
 #include <QSessionManager>
 #include <QSystemTrayIcon>
+#include <QDesktopServices>
 
 #include <Core/CharmConstants.h>
 #include <Core/SqLiteStorage.h>
@@ -464,10 +465,10 @@ bool Application::configure()
             << CONFIGURATION.configurationName;
         // FIXME maybe move to Configuration::loadDefaults
 #ifdef NDEBUG
-        CONFIGURATION.localStorageDatabase = QDir::homePath() + QDir::separator() + ".Charm/Charm.db";
+        CONFIGURATION.localStorageDatabase = QDesktopServices::storageLocation(QDesktopServices::DataLocation) + QDir::separator() + "Charm.db";
 #else
-        CONFIGURATION.localStorageDatabase = QDir::homePath()
-                                             + QDir::separator() + ".Charm/Charm_debug.db";
+        CONFIGURATION.localStorageDatabase = QDesktopServices::storageLocation(QDesktopServices::DataLocation)
+                                             + QDir::separator() + "Charm_debug.db";
 #endif
         ConfigurationDialog dialog(CONFIGURATION, &m_tasksWindow);
         if (dialog.exec())
