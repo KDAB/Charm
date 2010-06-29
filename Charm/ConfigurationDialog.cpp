@@ -68,7 +68,7 @@ void ConfigurationDialog::on_sqliteDoneButton_clicked()
 
 void ConfigurationDialog::on_sqliteLocationButton_clicked()
 {
-    QString filename = QFileDialog::getOpenFileName( this, tr( "Choose Database Location..." ) );
+    QString filename = QFileDialog::getSaveFileName( this, tr( "Choose Database Location..." ) );
     if ( ! filename.isNull() )
     {
         m_ui.sqliteLocation->setText( filename );
