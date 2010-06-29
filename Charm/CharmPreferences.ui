@@ -20,7 +20,7 @@
      </property>
      <widget class="QWidget" name="tabDatabase" >
       <attribute name="title" >
-       <string>DataBase Options</string>
+       <string>Database Options</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout" >
        <item>
