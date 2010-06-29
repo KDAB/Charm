@@ -78,7 +78,7 @@ static const Fields* Database_Fields[NumberOfTables] =
 { MetaData_Fields, Installations_Fields, Tasks_Fields, Event_Fields,
                 Subscriptions_Fields, Users_Fields };
 
-const char DatabaseName[] = "mysql.charm.kdab.net";
+const char DatabaseName[] = "mysql.charm.kdab.com";
 
 MySqlStorage::MySqlStorage() :
         SqlStorage(), m_database(QSqlDatabase::addDatabase("QMYSQL", DatabaseName))

@@ -77,7 +77,7 @@ static const Fields* Database_Fields[NumberOfTables] =
 		Subscriptions_Fields, Users_Fields };
 
 
-const char DatabaseName[] = "charm.kdab.net";
+const char DatabaseName[] = "charm.kdab.com";
 const char DriverName[] = "QSQLITE";
 
 SqLiteStorage::SqLiteStorage()

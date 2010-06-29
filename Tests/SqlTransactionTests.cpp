@@ -18,14 +18,14 @@ void SqlTransactionTests::testMySqlDriverRequirements()
 {
     const char DriverName[] = "QMYSQL";
     QVERIFY( QSqlDatabase::isDriverAvailable( DriverName ) );
-    QSqlDatabase db = QSqlDatabase::addDatabase( DriverName, "test-mysql.charm.kdab.net" );
+    QSqlDatabase db = QSqlDatabase::addDatabase( DriverName, "test-mysql.charm.kdab.com" );
 }
 
 void SqlTransactionTests::testSqLiteDriverRequirements()
 {
     const char DriverName[] = "QSQLITE";
     QVERIFY( QSqlDatabase::isDriverAvailable( DriverName ) );
-    QSqlDatabase db = QSqlDatabase::addDatabase( DriverName, "test-sqlite.charm.kdab.net" );
+    QSqlDatabase db = QSqlDatabase::addDatabase( DriverName, "test-sqlite.charm.kdab.com" );
     QSqlDriver* driver  = db.driver();
     QVERIFY( driver->hasFeature( QSqlDriver::Transactions ) );
 }

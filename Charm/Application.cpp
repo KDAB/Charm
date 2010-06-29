@@ -55,7 +55,7 @@ Application::Application(int& argc, char** argv)
     // application metadata setup
     // note that this modifies the behaviour of QSettings:
     QCoreApplication::setOrganizationName("KDAB");
-    QCoreApplication::setOrganizationDomain("kdab.net");
+    QCoreApplication::setOrganizationDomain("kdab.com");
     QCoreApplication::setApplicationName("Charm");
 
     Q_INIT_RESOURCE(CharmResources);
