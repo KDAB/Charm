@@ -72,22 +72,6 @@ const QIcon& Data::editEventIcon()
 	return icon;
 }
 
-const QIcon& Data::previousEventIcon()
-{
-	Q_ASSERT_X(!QPixmap(":/Charm/previous.png").isNull(),
-			"Data::previousEventIcon", "Required resource not available");
-	static QIcon icon(QPixmap(":/Charm/previous.png"));
-	return icon;
-}
-
-const QIcon& Data::nextEventIcon()
-{
-	Q_ASSERT_X(!QPixmap(":/Charm/next.png").isNull(),
-			"Data::previousEventIcon", "Required resource not available");
-	static QIcon icon(QPixmap(":/Charm/next.png"));
-	return icon;
-}
-
 const QPixmap& Data::activePixmap()
 {
 	static QPixmap pixmap(":/Charm/active.png");
@@ -96,13 +80,6 @@ const QPixmap& Data::activePixmap()
 	return pixmap;
 }
 
-const QPixmap& Data::checkIcon()
-{
-	static QPixmap pixmap(":/Charm/check.png");
-	Q_ASSERT_X(!pixmap.isNull(), "Data::checkIcon",
-			"Required resource not available");
-	return pixmap;
-}
 
 const QIcon& Data::quitCharmIcon()
 {
@@ -138,35 +115,8 @@ const QPixmap& Data::editorLockedPixmap()
 
 const QPixmap& Data::editorDirtyPixmap()
 {
-	static QPixmap pixmap(":/Charm/editor_dirty.png");
-	Q_ASSERT_X(!pixmap.isNull(), "Data::editorDirtyPixmap",
-			"Required resource not available");
-	return pixmap;
+        static QPixmap pixmap(":/Charm/editor_dirty.png");
+        Q_ASSERT_X(!pixmap.isNull(), "Data::editorDirtyPixmap",
+                        "Required resource not available");
+        return pixmap;
 }
-
-const QPixmap& Data::recorderStopIcon()
-{
-    static QPixmap pixmap( ":/Charm/recorder_stop.png" );
-    Q_ASSERT_X(!pixmap.isNull(), "Data::recorderStopIcon",
-               "Required resource not available");
-    return pixmap;
-}
-
-const QPixmap& Data::recorderGoIcon()
-{
-    static QPixmap pixmap( ":/Charm/recorder_go.png" );
-    Q_ASSERT_X(!pixmap.isNull(), "Data::recorderGoIcon",
-               "Required resource not available");
-    return pixmap;
-}
-
-const QPixmap& Data::backdropPixmap()
-{
-	Q_ASSERT_X(QFile::exists(":/Backdrops/backdrop1.jpg"),
-			"Data::backdropPixmap", "Required resource not available");
-	static QPixmap pixmap(":/Backdrops/backdrop1.jpg");
-	Q_ASSERT_X(!pixmap.isNull(), "Data::backdropPixmap",
-			"Required resource cannot be loaded (JPG image plugin missing?)");
-	return pixmap;
-}
-

@@ -125,19 +125,19 @@ void TimeTrackingTaskSelector::handleActiveEvents()
 {
     const int activeEventCount = DATAMODEL->activeEventCount();
     if ( activeEventCount > 1 ) {
-        m_stopGoButton->setIcon( Data::recorderGoIcon() );
+        m_stopGoButton->setIcon( Data::goIcon() );
         m_stopGoButton->setText( tr( "Start" ) );
         m_taskSelectorButton->setEnabled( false );
         m_stopGoButton->setEnabled( false );
         m_stopGoButton->setChecked( true );
     } else if ( activeEventCount == 1 ) {
-        m_stopGoButton->setIcon( Data::recorderStopIcon() );
+        m_stopGoButton->setIcon( Data::stopIcon() );
         m_stopGoButton->setText( tr( "Stop" ) );
         m_stopGoButton->setEnabled( true );
         m_taskSelectorButton->setEnabled( false );
         m_stopGoButton->setChecked( true );
     } else {
-        m_stopGoButton->setIcon( Data::recorderGoIcon() );
+        m_stopGoButton->setIcon( Data::goIcon() );
         m_stopGoButton->setText( tr( "Start" ) );
         m_taskSelectorButton->setDisabled( m_menu->actions().isEmpty() );
         if( m_selectedTask != 0 ) {

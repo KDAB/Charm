@@ -1,28 +1,18 @@
 <RCC>
     <qresource prefix="/Charm">
-		<file alias="go.png">Icons/player_play.png</file>
-		<file alias="stop.png">Icons/player_stop.png</file>
-		<file alias="active.png">Icons/1rightarrow.png</file>
-		<file alias="check.png">Icons/apply.png</file>
-		<file alias="new.png">Icons/filenew.png</file>
-		<file alias="deletetask.png">Icons/editdelete.png</file>
-		<file alias="edit.png">Icons/draw-freehand.png</file>
-		<file alias="next.png">Icons/forward.png</file>
-		<file alias="previous.png">Icons/back.png</file>
-		<file alias="charmicon.png">Icons/Charm-512x512.png</file>
-		<file alias="charmtrayicon.png">Icons/charmtrayicon.png</file>
-	    <file alias="quitcharm.png">Icons/exit.png</file>
-	    <file alias="clearfilter.png">Icons/locationbar_erase.png</file>
-	    <file alias="configure.png">Icons/configure.png</file>
-		<file alias="editor_dirty.png">Icons/knewstuff.png</file>
-		<file alias="editor_locked.png">Icons/encrypted.png</file>
-		<file alias="report_stylesheet.sty">Reports/report_stylesheet.sty</file>
-		<file alias="recorder_stop.png">Icons/media-playback-stop.png</file>
-		<file alias="recorder_go.png">Icons/media-playback-start.png</file>
-    </qresource>
-    <qresource prefix="/Backdrops">
-		<file alias="backdrop1.jpg">Icons/CharmBackdrop600.jpg</file>
+        <file alias="charmtrayicon.png">Icons/charmtrayicon.png</file>
+        <file alias="configure.png">Icons/configure.png</file>
+        <file alias="report_stylesheet.sty">Reports/report_stylesheet.sty</file>
+        <file alias="clearfilter.png">Icons/edit-clear-locationbar-ltr.png</file>
+        <file alias="active.png">Icons/arrow-right.png</file>
+        <file alias="editor_locked.png">Icons/document-encrypt.png</file>
+        <file alias="new.png">Icons/document-new.png</file>
+        <file alias="quitcharm.png">Icons/application-exit.png</file>
+        <file alias="editor_dirty.png">Icons/favorites.png</file>
+        <file alias="charmicon.png">Icons/Charm-256x256.png</file>
+        <file alias="deletetask.png">Icons/document-close.png</file>
+        <file alias="edit.png">Icons/document-edit.png</file>
+        <file alias="go.png">Icons/media-playback-start.png</file>
+        <file alias="stop.png">Icons/media-playback-stop.png</file>
     </qresource>
 </RCC>
-
-
