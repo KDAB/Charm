@@ -14,5 +14,6 @@
         <file alias="edit.png">Icons/document-edit.png</file>
         <file alias="go.png">Icons/media-playback-start.png</file>
         <file alias="stop.png">Icons/media-playback-stop.png</file>
+        <file alias="charmabout.png">Icons/Charm-64x64.png</file>
     </qresource>
 </RCC>
