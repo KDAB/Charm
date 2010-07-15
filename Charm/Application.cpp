@@ -497,10 +497,9 @@ void Application::slotTrayIconActivated( QSystemTrayIcon::ActivationReason reaso
         // m_systrayContextMenu.show();
         break;
     case QSystemTrayIcon::DoubleClick:
-        // MIRKO_TEMP_REM?
-        /*
-        m_mainWindow.slotShowHideView();
-        */
+#ifndef Q_WS_MAC
+        m_timeTracker.showHideView();
+#endif
         break;
     case QSystemTrayIcon::Trigger:
         // single click
