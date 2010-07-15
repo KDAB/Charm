@@ -41,5 +41,5 @@ GenericName[x-test]=xxTime Trackerxx
 Exec=Charm
 Icon=Charm-128x128
 Type=Application
-Categories=Qt;KDE;Office;
+Categories=Qt;KDE;Utility;TimeUtility
 X-KDE-StartupNotify=true
