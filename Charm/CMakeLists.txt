@@ -158,7 +158,7 @@ IF ( QT4_FOUND )
 
     IF( UNIX AND NOT APPLE )
         SET( XDG_APPS_INSTALL_DIR share/applications )
-        SET( ICON_INSTALL_DIR share/icons )
+        SET( ICON_INSTALL_DIR share/icons/hicolor/128x128/apps )
         INSTALL( FILES Charm.desktop DESTINATION ${XDG_APPS_INSTALL_DIR} )
         INSTALL( FILES Icons/Charm-128x128.png DESTINATION ${ICON_INSTALL_DIR} )
         INSTALL( TARGETS Charm DESTINATION bin )
