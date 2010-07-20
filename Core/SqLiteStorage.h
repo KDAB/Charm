@@ -2,6 +2,7 @@
 #define SQLITESTORAGE_H
 
 #include <QSqlDatabase>
+#include <QDir>
 
 #include "SqlStorage.h"
 
@@ -23,6 +24,7 @@ public:
 protected:
     bool createDatabase( Configuration& );
     bool createDatabaseTables();
+    bool migrateDatabaseDirectory(QDir, QDir) const;
     QString lastInsertRowFunction() const;
 
 private:
