@@ -24,7 +24,7 @@ public:
 protected:
     bool createDatabase( Configuration& );
     bool createDatabaseTables();
-    bool migrateDatabaseDirectory(QDir, QDir) const;
+    bool migrateDatabaseDirectory( QDir, QDir ) const;
     QString lastInsertRowFunction() const;
 
 private:
