@@ -465,12 +465,19 @@ bool Application::configure()
             << "Application::configure: no complete configuration found for configuration name"
             << CONFIGURATION.configurationName;
         // FIXME maybe move to Configuration::loadDefaults
+
+        const QString storageDatabaseDirectory =
+                QDesktopServices::storageLocation(QDesktopServices::DataLocation) + QDir::separator();
+        const QString storageDatabaseFile = "Charm.db";
+        const QString storageDatabaseFileDebug = "Charm_debug.db";
+        const QString storageDatabase = storageDatabaseDirectory + storageDatabaseFile;
+        const QString storageDatabaseDebug = storageDatabaseDirectory + storageDatabaseFileDebug;
 #ifdef NDEBUG
-        CONFIGURATION.localStorageDatabase = QDesktopServices::storageLocation(QDesktopServices::DataLocation) + QDir::separator() + "Charm.db";
+        CONFIGURATION.localStorageDatabase = storageDatabaseDebug;
 #else
-        CONFIGURATION.localStorageDatabase = QDesktopServices::storageLocation(QDesktopServices::DataLocation)
-                                             + QDir::separator() + "Charm_debug.db";
+        CONFIGURATION.localStorageDatabase = storageDatabase;
 #endif
+
         ConfigurationDialog dialog(CONFIGURATION, &m_tasksWindow);
         if (dialog.exec())
         {
