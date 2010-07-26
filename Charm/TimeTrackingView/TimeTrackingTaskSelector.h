@@ -43,7 +43,7 @@ public:
 
 signals:
     void startEvent( TaskId );
-    void stopEvent( TaskId );
+    void stopEvents();
     void updateSummariesPlease();
 
 private slots:

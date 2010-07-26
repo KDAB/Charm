@@ -236,9 +236,10 @@ void TimeTrackingTaskSelector::taskSelected( const QString& taskname, TaskId id 
 void TimeTrackingTaskSelector::slotGoStopToggled( bool on )
 {
     if( on ) {
+        Q_ASSERT( m_selectedTask );
         emit startEvent( m_selectedTask );
     } else {
-        emit stopEvent( m_selectedTask );
+        emit stopEvents();
     }
 }
 

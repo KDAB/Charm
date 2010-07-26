@@ -60,7 +60,7 @@ public:
 signals:
     void maybeShrink();
     void startEvent( TaskId );
-    void stopEvent();
+    void stopEvents();
 
 private slots:
     void slotPulseValueChanged( qreal );
