@@ -65,7 +65,7 @@ public:
     bool taskExists( TaskId id );
     /** True if task is in the subtree below parent.
      * parent is not element of the subtree, and thus not it's own child. */
-    bool isParentOf( TaskId parent, TaskId task );
+    bool isParentOf( TaskId parent, TaskId task ) const;
 
     // handling of active events:
     /** Is an event active for the task with this id? */

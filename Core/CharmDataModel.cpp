@@ -499,7 +499,7 @@ EventIdList CharmDataModel::eventsThatStartInTimeFrame( const TimeSpan& timeSpan
         QDateTime( timeSpan.second ) );
 }
 
-bool CharmDataModel::isParentOf( TaskId parent, TaskId id )
+bool CharmDataModel::isParentOf( TaskId parent, TaskId id ) const
 {
     Q_ASSERT_X( parent != 0, "CharmDataModel::isParentOf",
                 "parent is invalid (0)" );
