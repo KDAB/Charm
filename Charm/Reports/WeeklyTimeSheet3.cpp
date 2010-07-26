@@ -34,7 +34,12 @@ WTSConfigurationPage::WTSConfigurationPage( ReportDialog* parent )
              SLOT( slotSelectTask() ) );
     connect( m_ui->checkBoxSubTasksOnly, SIGNAL( toggled( bool ) ),
              SLOT( slotCheckboxSubtasksOnlyChecked( bool ) ) );
-
+    connect( m_ui->dateEditDay, SIGNAL(dateChanged(QDate)),
+             this, SLOT(slotManualDateSelectionChanged()) );
+    connect( m_ui->spinBoxWeek, SIGNAL(valueChanged(int)),
+             this, SLOT(slotManualDateSelectionChanged()) );
+    connect( m_ui->spinBoxYear, SIGNAL(valueChanged(int)),
+             this, SLOT(slotManualDateSelectionChanged()) );
     m_ui->comboBoxWeek->setCurrentIndex( 1 );
     slotCheckboxSubtasksOnlyChecked( m_ui->checkBoxSubTasksOnly->isChecked() );
 
@@ -131,6 +136,60 @@ void WTSConfigurationPage::slotCheckboxSubtasksOnlyChecked( bool checked )
     if ( ! checked ) {
         m_rootTask = 0;
         m_ui->labelTaskName->setText( tr( "(All Tasks)" ) );
+    }
+}
+
+
+// number of weeks per year differs between 52 and 53, so we need to set the maximum value accordingly, and fix the value if the user flips through years
+static void fixWeek( QSpinBox* yearSb, QSpinBox* weekSb ) {
+    const int week = weekSb->value();
+    const int maxWeek = QDate( yearSb->value(), 12, 31 ).weekNumber();
+    const int newWeek = qMin( maxWeek, week );
+    weekSb->blockSignals( true );
+    weekSb->setMaximum( maxWeek );
+    weekSb->setValue( newWeek );
+    weekSb->blockSignals( false );
+}
+
+//find date for a certain weekday in week no/year
+static QDate dayInWeek( int year, int week, int day ) {
+    QDate start( year, 1, 1 );
+    if ( start.weekNumber() != 1 ) // if Jan 1st is not in the week 1 (but week 53 of the previous year), add a week
+        start = start.addDays( 7 );
+    int wdyear = 0;
+    const int wdweek = start.weekNumber( &wdyear );
+    // now we really should be in week 1 of year
+    Q_ASSERT( wdweek == 1 );
+    Q_ASSERT( wdyear == year );
+    //now go to the requested weekday, in week 1:
+    start = start.addDays( day - start.dayOfWeek() );
+    //now go forward to the requested week no.
+    const QDate date = start.addDays( 7 * ( week - 1 ) );
+    return date;
+}
+
+void WTSConfigurationPage::slotManualDateSelectionChanged()
+{
+    if ( sender() == m_ui->spinBoxWeek || sender() == m_ui->spinBoxYear ) {
+        //spinboxes changed, update date edit
+        fixWeek( m_ui->spinBoxYear, m_ui->spinBoxWeek );
+        const int week = m_ui->spinBoxWeek->value();
+        const int year = m_ui->spinBoxYear->value();
+        const int weekday = m_ui->dateEditDay->date().dayOfWeek(); //preserve day of week
+        m_ui->dateEditDay->blockSignals( true );
+        m_ui->dateEditDay->setDate( dayInWeek( year, week, weekday ) );
+        m_ui->dateEditDay->blockSignals( false );
+    } else {
+        //date edit changed, update spinboxes
+        const QDate date = m_ui->dateEditDay->date();
+        int year = 0;
+        const int week = date.weekNumber( &year );
+        m_ui->spinBoxYear->blockSignals( true );
+        m_ui->spinBoxWeek->blockSignals( true );
+        m_ui->spinBoxYear->setValue( year );
+        m_ui->spinBoxWeek->setValue( week );
+        m_ui->spinBoxWeek->blockSignals( false );
+        m_ui->spinBoxYear->blockSignals( false );
     }
 }
 

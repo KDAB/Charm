@@ -32,6 +32,7 @@ private slots:
     void slotStandardTimeSpansChanged();
     void slotWeekComboItemSelected( int );
     void slotSelectTask();
+    void slotManualDateSelectionChanged();
 
 private:
     Ui::WeeklyTimeSheetConfigurationPage* m_ui;
