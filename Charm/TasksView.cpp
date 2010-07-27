@@ -199,7 +199,7 @@ void TasksView::addTaskHelper( const Task& parent )
 {
     ViewFilter* filter = Application::instance().model().taskModel();
     Task task;
-    int suggestedId = 1;
+    int suggestedId = parent.isValid() ? parent.id() : 1;
     if ( parent.isValid() ) {
         task.setParent( parent.id() );
         // subscribe if the parent is subscribed:
