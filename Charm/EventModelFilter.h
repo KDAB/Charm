@@ -18,7 +18,7 @@ class EventModelFilter : public QSortFilterProxyModel,
     Q_OBJECT
 
 public:
-    EventModelFilter( CharmDataModel*, QObject* parent = 0 );
+    explicit EventModelFilter( CharmDataModel*, QObject* parent = 0 );
     virtual ~EventModelFilter();
 
     /** Returns the total number of seconds of all events in the model. */
