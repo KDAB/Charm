@@ -216,6 +216,10 @@ void TasksView::addTaskHelper( const Task& parent )
         task.setName( dialog.taskName() );
         CommandAddTask* cmd = new CommandAddTask( task, this );
         emit emitCommand( cmd );
+        if ( parent.isValid() ) {
+            const QModelIndex parentIdx = filter->indexForTaskId( parent.id() );
+            m_ui->treeView->setExpanded( parentIdx, true );
+        }
     }
 }
 
