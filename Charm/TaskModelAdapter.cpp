@@ -100,6 +100,8 @@ QVariant TaskModelAdapter::data( const QModelIndex& index, int role ) const
         return item->task().name();
     case TasksViewRole_RunningTime:
         return hoursAndMinutes( activeEvent.duration() );
+    case TasksViewRole_TaskId:
+        return id;
     case Qt::EditRole: // we edit the comment
     case TasksViewRole_Comment:
         return activeEvent.comment();

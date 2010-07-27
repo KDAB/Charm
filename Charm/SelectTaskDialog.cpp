@@ -55,6 +55,7 @@ SelectTaskDialog::SelectTaskDialog( QWidget* parent )
 {
     m_ui->setupUi( this );
     m_ui->treeView->setModel( &m_proxy );
+    m_ui->treeView->expandAll();
     m_ui->treeView->header()->hide();
     m_ui->treeView->setFont( TasksView::configuredFont() );
     connect( m_ui->treeView->selectionModel(),
@@ -138,9 +139,11 @@ void SelectTaskDialog::slotFilterTextChanged( const QString& text )
 {
     QString filtertext = text.simplified();
     filtertext.replace( ' ', '*' );
-    m_proxy.setFilterWildcard( filtertext );
 
+    Charm::saveExpandStates( m_ui->treeView, &m_expansionStates );
+    m_proxy.setFilterWildcard( filtertext );
     m_ui->buttonClearFilter->setEnabled( ! text.isEmpty() );
+    Charm::restoreExpandStates( m_ui->treeView, &m_expansionStates );
 }
 
 void SelectTaskDialog::slotAccepted()

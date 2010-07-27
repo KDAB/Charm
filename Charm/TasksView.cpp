@@ -373,10 +373,11 @@ void TasksView::configureUi()
      ViewFilter* filter = Application::instance().model().taskModel();
      QString filtertext = filtertextRaw.simplified();
      filtertext.replace( ' ', '*' );
-     filter->setFilterWildcard( filtertext );
 
+     Charm::saveExpandStates( m_ui->treeView, &m_expansionStates );
+     filter->setFilterWildcard( filtertext );
      m_ui->buttonClearFilter->setEnabled( ! filtertextRaw.isEmpty() );
-     if ( ! filtertextRaw.isEmpty() ) m_ui->treeView->expandAll();
+     Charm::restoreExpandStates( m_ui->treeView, &m_expansionStates );
  }
 
  void TasksView::taskPrefilteringChanged()
