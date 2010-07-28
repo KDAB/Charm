@@ -471,6 +471,7 @@ bool Application::configure()
         CONFIGURATION.localStorageDatabase = QDesktopServices::storageLocation(QDesktopServices::DataLocation)
                                              + QDir::separator() + "Charm_debug.db";
 #endif
+        CONFIGURATION.localStorageDatabase = QDir::toNativeSeparators(CONFIGURATION.localStorageDatabase);
         ConfigurationDialog dialog(CONFIGURATION, &m_tasksWindow);
         if (dialog.exec())
         {
