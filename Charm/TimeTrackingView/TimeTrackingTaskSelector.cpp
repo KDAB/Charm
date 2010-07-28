@@ -1,9 +1,16 @@
 #include <QtDebug>
 
+#include <QAction>
 #include <QMap>
 #include <QMenu>
 #include <QDateTime>
 #include <QToolButton>
+#include <QVBoxLayout>
+#include <QPointer>
+#include <QLineEdit>
+#include <QTextEdit>
+#include <QDialogButtonBox>
+#include <QMessageBox>
 
 #include "Core/Task.h"
 #include "Core/Event.h"
@@ -16,9 +23,49 @@
 
 #define CUSTOM_TASK_PROPERTY_NAME "CUSTOM_TASK_PROPERTY"
 
+CommentEditorPopup::CommentEditorPopup( QWidget* parent )
+    : QDialog( parent )
+    , m_edit( new QTextEdit )
+{
+    setWindowTitle( tr("Comment Event") );
+    const EventIdList events = DATAMODEL->activeEvents();
+    Q_ASSERT( events.size() == 1 );
+    m_id = events.first();
+    QVBoxLayout* layout = new QVBoxLayout( this );
+    layout->setMargin( 0 );
+    m_edit = new QTextEdit;
+    m_edit->setTabChangesFocus( true );
+    m_edit->setPlainText( DATAMODEL->eventForId( m_id ).comment() );
+    layout->addWidget( m_edit );
+    QDialogButtonBox* box = new QDialogButtonBox;
+    box->setStandardButtons( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
+    connect( box, SIGNAL(accepted()), this, SLOT(accept()) );
+    connect( box, SIGNAL(rejected()), this, SLOT(reject()) );
+    layout->addWidget( box );
+    m_edit->setFocus( Qt::TabFocusReason );
+}
+
+void CommentEditorPopup::accept() {
+    const QString t = m_edit->toPlainText();
+    Event event = DATAMODEL->eventForId( m_id );
+    if ( event.isValid() ) {
+        event.setComment( t );
+        DATAMODEL->modifyEvent( event );
+    } else { // event already gone? should never happen, but you never know
+        QPointer<QObject> that( this );
+        QMessageBox::critical( this, tr("Error"), tr("Could not save the comment, the edited event was deleted in the meantime."), QMessageBox::Ok );
+        if ( !that ) // in case the popup was deleted while the msg box was open
+            return;
+    }
+    QDialog::accept();
+}
+
 TimeTrackingTaskSelector::TimeTrackingTaskSelector(QWidget *parent)
     : QWidget(parent)
     , m_stopGoButton( new QToolButton( this ) )
+    , m_stopGoAction( new QAction( this ) )
+    , m_editCommentButton( new QToolButton( this ) )
+    , m_editCommentAction( new QAction( this ) )
     , m_taskSelectorButton( new QToolButton( this ) )
     , m_menu( new QMenu( m_taskSelectorButton ) )
     , m_selectedTask( 0 )
@@ -28,9 +75,18 @@ TimeTrackingTaskSelector::TimeTrackingTaskSelector(QWidget *parent)
     connect( m_menu, SIGNAL( triggered( QAction* ) ),
              SLOT( slotActionSelected( QAction* ) ) );
     m_menu->setSeparatorsCollapsible( true );
-    m_stopGoButton->setCheckable( true );
-    connect( m_stopGoButton, SIGNAL( clicked( bool ) ),
-             SLOT( slotGoStopToggled( bool ) ) );
+    m_stopGoAction = new QAction( this );
+    m_stopGoAction->setShortcut( QKeySequence( Qt::Key_Space ) );
+    m_stopGoAction->setCheckable( true );
+    connect( m_stopGoAction, SIGNAL(triggered(bool)), SLOT(slotGoStopToggled(bool)) );
+    m_stopGoButton->setDefaultAction( m_stopGoAction );
+
+    m_editCommentAction->setIcon( Data::editEventIcon() );
+    m_editCommentAction->setShortcut( QKeySequence( Qt::Key_Return ) );
+    connect( m_editCommentAction, SIGNAL( triggered(bool) ),
+             SLOT( slotEditCommentClicked() ) );
+    m_editCommentButton->setDefaultAction( m_editCommentAction );
+
     m_taskSelectorButton->setEnabled( false );
     m_taskSelectorButton->setPopupMode( QToolButton::InstantPopup );
     m_taskSelectorButton->setMenu( m_menu );
@@ -47,9 +103,11 @@ void TimeTrackingTaskSelector::resizeEvent( QResizeEvent* )
 {
     m_stopGoButton->resize( m_stopGoButton->sizeHint() );
     m_stopGoButton->move( 0, 0 );
-    const QSize space( width() - m_stopGoButton->width(), height() );
+    m_editCommentButton->resize( m_editCommentButton->sizeHint() );
+    m_editCommentButton->move( m_stopGoButton->width(), 0 );
+    const QSize space( width() - m_stopGoButton->width() - m_editCommentButton->width(), height() );
     m_taskSelectorButton->resize( space );
-    m_taskSelectorButton->move( m_stopGoButton->width(), 0 );
+    m_taskSelectorButton->move( m_stopGoButton->width() + m_editCommentButton->width(), 0 );
 }
 
 /** A helper function that takes an entry from the fromList if it is not empty, checks if it is
@@ -121,32 +179,41 @@ void TimeTrackingTaskSelector::populate( const QVector<WeeklySummary>& summaries
     m_taskSelectorButton->setDisabled( m_menu->actions().isEmpty() );
 }
 
+void TimeTrackingTaskSelector::slotEditCommentClicked() {
+    QPointer<CommentEditorPopup> popup( new CommentEditorPopup( this ) );
+    popup->exec();
+    delete popup;
+}
+
 void TimeTrackingTaskSelector::handleActiveEvents()
 {
     const int activeEventCount = DATAMODEL->activeEventCount();
     if ( activeEventCount > 1 ) {
-        m_stopGoButton->setIcon( Data::goIcon() );
-        m_stopGoButton->setText( tr( "Start" ) );
+        m_stopGoAction->setIcon( Data::goIcon() );
+        m_stopGoAction->setText( tr( "Start" ) );
         m_taskSelectorButton->setEnabled( false );
-        m_stopGoButton->setEnabled( false );
-        m_stopGoButton->setChecked( true );
+        m_stopGoAction->setEnabled( false );
+        m_stopGoAction->setChecked( true );
+        m_editCommentAction->setEnabled( false );
     } else if ( activeEventCount == 1 ) {
-        m_stopGoButton->setIcon( Data::stopIcon() );
-        m_stopGoButton->setText( tr( "Stop" ) );
-        m_stopGoButton->setEnabled( true );
+        m_stopGoAction->setIcon( Data::stopIcon() );
+        m_stopGoAction->setText( tr( "Stop" ) );
+        m_stopGoAction->setEnabled( true );
         m_taskSelectorButton->setEnabled( false );
-        m_stopGoButton->setChecked( true );
+        m_stopGoAction->setChecked( true );
+        m_editCommentAction->setEnabled( true );
     } else {
-        m_stopGoButton->setIcon( Data::goIcon() );
-        m_stopGoButton->setText( tr( "Start" ) );
+        m_stopGoAction->setIcon( Data::goIcon() );
+        m_stopGoAction->setText( tr( "Start" ) );
         m_taskSelectorButton->setDisabled( m_menu->actions().isEmpty() );
         if( m_selectedTask != 0 ) {
             const Task& task = DATAMODEL->getTask( m_selectedTask );
-            m_stopGoButton->setEnabled( task.isCurrentlyValid() );
+            m_stopGoAction->setEnabled( task.isCurrentlyValid() );
         } else {
-            m_stopGoButton->setEnabled( false );
+            m_stopGoAction->setEnabled( false );
         }
-        m_stopGoButton->setChecked( false );
+        m_stopGoAction->setChecked( false );
+        m_editCommentAction->setEnabled( false );
     }
 }
 
@@ -162,17 +229,17 @@ void TimeTrackingTaskSelector::slotActionSelected( QAction* action )
 void TimeTrackingTaskSelector::taskSelected( const QString& taskname, TaskId id )
 {
     m_selectedTask = id;
-    m_stopGoButton->setEnabled( true );
+    m_stopGoAction->setEnabled( true );
     m_taskSelectorButton->setText( taskname );
 }
 
 void TimeTrackingTaskSelector::slotGoStopToggled( bool on )
 {
-    Q_ASSERT( m_selectedTask != 0 );
     if( on ) {
+        Q_ASSERT( m_selectedTask );
         emit startEvent( m_selectedTask );
     } else {
-        emit stopEvent( m_selectedTask );
+        emit stopEvents();
     }
 }
 

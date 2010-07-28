@@ -27,7 +27,7 @@ TimeTrackingView::TimeTrackingView( QWidget* parent )
     setCentralWidget( widget );
     connect( m_ui->summaryWidget, SIGNAL( startEvent( TaskId ) ),
              SLOT( slotStartEvent( TaskId ) ) );
-    connect( m_ui->summaryWidget, SIGNAL( stopEvent() ),
+    connect( m_ui->summaryWidget, SIGNAL( stopEvents() ),
              SLOT( slotStopEvent() ) );
 }
 

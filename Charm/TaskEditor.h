@@ -21,7 +21,7 @@ class TaskEditor: public QDialog
 	Q_OBJECT
 
 public:
-	TaskEditor( QWidget* parent = 0 );
+        explicit TaskEditor( QWidget* parent = 0 );
 	virtual ~TaskEditor();
 
 	void setTask( const Task& task );

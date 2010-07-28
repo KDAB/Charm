@@ -2,6 +2,7 @@
 #define SELECTTASKDIALOG_H
 
 #include <QDialog>
+#include <QHash>
 #include <QSortFilterProxyModel>
 
 #include "ViewFilter.h"
@@ -17,7 +18,7 @@ class SelectTaskDialogProxy : public ViewFilter
     Q_OBJECT
 
 public:
-    SelectTaskDialogProxy( CharmDataModel*, QObject* parent = 0 );
+    explicit SelectTaskDialogProxy( CharmDataModel*, QObject* parent = 0 );
 
     Qt::ItemFlags flags( const QModelIndex & index ) const;
     QVariant data( const QModelIndex& index, int role = Qt::DisplayRole ) const;
@@ -31,7 +32,7 @@ class SelectTaskDialog : public QDialog
     Q_OBJECT
 
 public:
-    SelectTaskDialog( QWidget* parent );
+    explicit SelectTaskDialog( QWidget* parent=0 );
     ~SelectTaskDialog();
 
     TaskId selectedTask() const;
@@ -50,6 +51,7 @@ private:
     Ui::SelectTaskDialog* m_ui;
     TaskId m_selectedTask;
     SelectTaskDialogProxy m_proxy;
+    QHash<TaskId,bool> m_expansionStates;
 };
 
 #endif

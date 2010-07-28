@@ -40,6 +40,17 @@ IF ( QT4_FOUND )
    TARGET_LINK_LIBRARIES( ControllerTests ${QT_QTTEST_LIBRARY} )
    TARGET_LINK_LIBRARIES( ControllerTests ${QT_LIBRARIES} )
 
+   # DatesTests
+
+   SET( DatesTests_SRCS DatesTests.cpp )
+
+   QT4_AUTOMOC( ${DatesTests_SRCS} )
+
+   ADD_EXECUTABLE( DatesTests ${DatesTests_SRCS} )
+
+   TARGET_LINK_LIBRARIES( DatesTests ${QT_QTTEST_LIBRARY} )
+   TARGET_LINK_LIBRARIES( DatesTests ${QT_LIBRARIES} )
+
    # CharmDataModelTests
 
    SET( CharmDataModelTests_SRCS CharmDataModelTests.cpp )

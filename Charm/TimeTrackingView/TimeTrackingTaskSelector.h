@@ -3,13 +3,30 @@
 
 #include <QWidget>
 #include <QVector>
+#include <QDialog>
 
+#include "Core/Event.h"
 #include "Core/Task.h"
 
 #include "WeeklySummary.h"
 
+class QAction;
 class QMenu;
 class QToolButton;
+class QTextEdit;
+
+class CommentEditorPopup : public QDialog {
+    Q_OBJECT
+public:
+    explicit CommentEditorPopup( QWidget* parent=0 );
+
+public Q_SLOTS:
+    void accept();
+
+private:
+    QTextEdit* m_edit;
+    EventId m_id;
+};
 
 class TimeTrackingTaskSelector : public QWidget
 {
@@ -26,17 +43,21 @@ public:
 
 signals:
     void startEvent( TaskId );
-    void stopEvent( TaskId );
+    void stopEvents();
     void updateSummariesPlease();
 
 private slots:
     void slotActionSelected( QAction* );
     void slotGoStopToggled( bool );
+    void slotEditCommentClicked();
     void slotManuallySelectTask();
 
 private:
     void taskSelected( const QString& taskname, TaskId id );
     QToolButton* m_stopGoButton;
+    QAction* m_stopGoAction;
+    QToolButton* m_editCommentButton;
+    QAction* m_editCommentAction;
     QToolButton* m_taskSelectorButton;
     QMenu *m_menu;
     /** The task that has been selected from the menu. */

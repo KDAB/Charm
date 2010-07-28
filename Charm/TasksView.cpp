@@ -199,7 +199,7 @@ void TasksView::addTaskHelper( const Task& parent )
 {
     ViewFilter* filter = Application::instance().model().taskModel();
     Task task;
-    int suggestedId = 1;
+    int suggestedId = parent.isValid() ? parent.id() : 1;
     if ( parent.isValid() ) {
         task.setParent( parent.id() );
         // subscribe if the parent is subscribed:
@@ -216,6 +216,10 @@ void TasksView::addTaskHelper( const Task& parent )
         task.setName( dialog.taskName() );
         CommandAddTask* cmd = new CommandAddTask( task, this );
         emit emitCommand( cmd );
+        if ( parent.isValid() ) {
+            const QModelIndex parentIdx = filter->indexForTaskId( parent.id() );
+            m_ui->treeView->setExpanded( parentIdx, true );
+        }
     }
 }
 
@@ -373,10 +377,11 @@ void TasksView::configureUi()
      ViewFilter* filter = Application::instance().model().taskModel();
      QString filtertext = filtertextRaw.simplified();
      filtertext.replace( ' ', '*' );
-     filter->setFilterWildcard( filtertext );
 
+     Charm::saveExpandStates( m_ui->treeView, &m_expansionStates );
+     filter->setFilterWildcard( filtertext );
      m_ui->buttonClearFilter->setEnabled( ! filtertextRaw.isEmpty() );
-     if ( ! filtertextRaw.isEmpty() ) m_ui->treeView->expandAll();
+     Charm::restoreExpandStates( m_ui->treeView, &m_expansionStates );
  }
 
  void TasksView::taskPrefilteringChanged()

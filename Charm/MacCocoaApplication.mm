@@ -78,7 +78,7 @@ NSEvent* MacCocoaApplication::cocoaEventFilter( NSEvent* incomingEvent )
     const bool autoRepeat = [incomingEvent isARepeat];
 
     const QList< QShortcut* > active = activeShortcuts( keySequence, autoRepeat );
-    foreach( QShortcut* const shortcut, active )
+    Q_FOREACH( QShortcut* const shortcut, active )
     {
         QShortcutEvent event( keySequence, shortcut->id() );
         QObject* const receiver = shortcut;

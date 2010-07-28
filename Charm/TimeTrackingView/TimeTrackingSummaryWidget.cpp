@@ -44,8 +44,8 @@ TimeTrackingSummaryWidget::TimeTrackingSummaryWidget( QWidget* parent )
              SLOT( slotPulseValueChanged( qreal ) ) );
     connect( m_taskSelector, SIGNAL( startEvent( TaskId ) ),
              SIGNAL( startEvent( TaskId ) ) );
-    connect( m_taskSelector, SIGNAL( stopEvent( TaskId ) ),
-             SIGNAL( stopEvent() ) );
+    connect( m_taskSelector, SIGNAL( stopEvents() ),
+             SIGNAL( stopEvents() ) );
     connect( m_taskSelector, SIGNAL( updateSummariesPlease() ),
              SLOT( slotUpdateSummaries() ) );
 }

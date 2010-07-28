@@ -86,6 +86,7 @@ private:
     QAction m_actionEditTask;
     QAction m_actionDeleteTask;
     StatusBarWidget* m_statusBarWidget;
+    QHash<TaskId,bool> m_expansionStates;
 };
 
 #endif
