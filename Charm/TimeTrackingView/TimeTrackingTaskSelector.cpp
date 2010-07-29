@@ -251,11 +251,14 @@ void TimeTrackingTaskSelector::taskSelected( const WeeklySummary& summary )
 void TimeTrackingTaskSelector::slotManuallySelectTask()
 {
     SelectTaskDialog dialog( this );
-    if( dialog.exec() ) {
-        m_manuallySelectedTask = dialog.selectedTask();
-        m_taskManuallySelected = true;
-        emit updateSummariesPlease();
-    }
+    if( !dialog.exec() )
+        return;
+    m_manuallySelectedTask = dialog.selectedTask();
+    if ( m_selectedTask <= 0 )
+        m_selectedTask = m_manuallySelectedTask;
+    m_taskManuallySelected = true;
+    handleActiveEvents();
+    emit updateSummariesPlease();
 }
 
 #include "TimeTrackingTaskSelector.moc"
