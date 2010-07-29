@@ -502,13 +502,11 @@ void Application::slotTrayIconActivated( QSystemTrayIcon::ActivationReason reaso
         // show context menu
         // m_systrayContextMenu.show();
         break;
+    case QSystemTrayIcon::Trigger: //(single click)
     case QSystemTrayIcon::DoubleClick:
 #ifndef Q_WS_MAC
         m_timeTracker.showHideView();
 #endif
-        break;
-    case QSystemTrayIcon::Trigger:
-        // single click
         break;
     case QSystemTrayIcon::MiddleClick:
         // ...
