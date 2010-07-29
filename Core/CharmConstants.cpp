@@ -73,13 +73,21 @@ void connectControllerAndModel( Controller* controller, CharmDataModel* model )
                       model, SLOT( deleteTask( const Task& ) ) );
 }
 
+static QString formatDecimal( double d ) {
+    const QString s = QLocale::system().toString( d, 'f', 2 );
+    if ( d > -10 && d < 10 ) //hack to get the hours always have two decimals: e.g. 00.50 instead of 0.50
+        return QLatin1String("0") + s;
+    else
+        return s;
+}
+
 QString hoursAndMinutes( int duration )
 {
     if ( duration == 0 ) {
         if ( CONFIGURATION.durationFormat == Configuration::Minutes )
             return QObject::tr( "00:00" );
         else
-            return QLocale::system().toString( 0.0, 'f', 2 );
+            return formatDecimal( 0.0 );
     }
     int minutes = duration / 60;
     int hours = minutes / 60;
@@ -92,6 +100,6 @@ QString hoursAndMinutes( int duration )
                 << hours << qSetFieldWidth( 0 ) << ":" << qSetFieldWidth( 2 ) << minutes;
         return text;
     } else { //Decimal
-        return QLocale::system().toString( hours + minutes / 60., 'f', 2 );
+        return formatDecimal(hours + minutes / 60  );
     }
 }
