@@ -48,10 +48,10 @@ Application::Application(int& argc, char** argv)
     , m_actionReporting( this )
     , m_idleDetector( 0 )
     , m_closedWindow( 0 )
+    , m_windows( QList<CharmWindow*> () << &m_tasksWindow << &m_eventWindow << &m_timeTracker )
     , m_timeTrackerHiddenFromSystrayToggle( false )
     , m_tasksWindowHiddenFromSystrayToggle( false )
     , m_eventWindowHiddenFromSystrayToggle( false )
-    , m_windows( QList<CharmWindow*> () << &m_tasksWindow << &m_eventWindow << &m_timeTracker )
 {
     // QApplication setup
     setQuitOnLastWindowClosed(false);
