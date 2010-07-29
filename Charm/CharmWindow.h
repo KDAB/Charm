@@ -46,6 +46,8 @@ public:
     virtual void saveGuiState();
     virtual void restoreGuiState();
 
+    static bool showHideView( QWidget* w );
+
 signals:
     /* reimpl */ void visibilityChanged( bool );
     /* reimpl */ void saveConfiguration();

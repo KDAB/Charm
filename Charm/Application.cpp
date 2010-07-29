@@ -48,6 +48,9 @@ Application::Application(int& argc, char** argv)
     , m_actionReporting( this )
     , m_idleDetector( 0 )
     , m_closedWindow( 0 )
+    , m_timeTrackerHiddenFromSystrayToggle( false )
+    , m_tasksWindowHiddenFromSystrayToggle( false )
+    , m_eventWindowHiddenFromSystrayToggle( false )
     , m_windows( QList<CharmWindow*> () << &m_tasksWindow << &m_eventWindow << &m_timeTracker )
 {
     // QApplication setup
@@ -498,6 +501,40 @@ bool Application::configure()
     return true;
 }
 
+void Application::toggleShowHide()
+{
+    if ( m_timeTracker.isHidden() && m_tasksWindow.isHidden() && m_eventWindow.isHidden() ) {
+        int raised = 0;
+        if ( m_eventWindowHiddenFromSystrayToggle ) {
+            CharmWindow::showHideView( &m_eventWindow );
+            m_eventWindowHiddenFromSystrayToggle = false;
+            ++raised;
+        }
+        if ( m_tasksWindowHiddenFromSystrayToggle ) {
+            CharmWindow::showHideView( &m_tasksWindow );
+            m_tasksWindowHiddenFromSystrayToggle = false;
+            ++raised;
+        }
+        if ( m_timeTrackerHiddenFromSystrayToggle || raised == 0 ) { // if no view was visible and the user did not toggle other views before, raise the timetracker
+            m_timeTracker.showHideView();
+            m_timeTrackerHiddenFromSystrayToggle = false;
+        }
+    } else {
+        if ( m_timeTracker.isVisible() ) {
+            m_timeTracker.hide();
+            m_timeTrackerHiddenFromSystrayToggle = true;
+        }
+        if ( m_tasksWindow.isVisible() ) {
+            m_tasksWindow.hide();
+            m_tasksWindowHiddenFromSystrayToggle = true;
+        }
+        if ( m_eventWindow.isVisible() ) {
+            m_eventWindow.hide();
+            m_eventWindowHiddenFromSystrayToggle = true;
+        }
+    }
+}
+
 void Application::slotTrayIconActivated( QSystemTrayIcon::ActivationReason reason )
 {
     switch( reason ) {
@@ -508,7 +545,7 @@ void Application::slotTrayIconActivated( QSystemTrayIcon::ActivationReason reaso
     case QSystemTrayIcon::Trigger: //(single click)
     case QSystemTrayIcon::DoubleClick:
 #ifndef Q_WS_MAC
-        m_timeTracker.showHideView();
+        toggleShowHide();
 #endif
         break;
     case QSystemTrayIcon::MiddleClick:

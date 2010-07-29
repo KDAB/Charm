@@ -124,6 +124,7 @@ private:
     void leaveDisconnectingState();
     void enterShuttingDownState();
     void leaveShuttingDownState();
+    void toggleShowHide();
 
     State m_state;
     ModelConnector m_model;
@@ -142,10 +143,12 @@ private:
     TasksWindow m_tasksWindow;
     EventWindow m_eventWindow;
     TimeTrackingView m_timeTracker;
-
     IdleDetector* m_idleDetector;
     CharmWindow* m_closedWindow;
     const QList<CharmWindow*> m_windows;
+    bool m_timeTrackerHiddenFromSystrayToggle;
+    bool m_tasksWindowHiddenFromSystrayToggle;
+    bool m_eventWindowHiddenFromSystrayToggle;
 
     // All statics are created as members of Application. This is
     // supposed to help on Windows, where constructors for statics

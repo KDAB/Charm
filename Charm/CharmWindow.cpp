@@ -152,16 +152,22 @@ void CharmWindow::keyPressEvent( QKeyEvent* event )
     QMainWindow::keyPressEvent( event );
 }
 
-void CharmWindow::showHideView()
+bool CharmWindow::showHideView( QWidget* w )
 {
     // hide or restore the view
-    if ( isVisible() ) {
-        hide();
+    if ( w->isVisible() ) {
+        w->hide();
+        return false;
     } else {
-        show();
-        restore();
-        raise();
+        w->show();
+        w->raise();
+        return true;
     }
+}
+
+void CharmWindow::showHideView()
+{
+    showHideView( this );
 }
 
 void CharmWindow::configurationChanged()
