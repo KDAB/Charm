@@ -232,6 +232,8 @@ bool SqLiteStorage::connect( Configuration& configuration )
 
 bool SqLiteStorage::migrateDatabaseDirectory( QDir oldDirectory, QDir newDirectory ) const
 {
+    if ( oldDirectory == newDirectory )
+        return true;
     qDebug() << "Application::configure: migrating Charm database directory contents from"
              << oldDirectory.absolutePath() << "to" << newDirectory.absolutePath();
 
