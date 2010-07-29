@@ -30,13 +30,7 @@ public:
     explicit TasksView ( QWidget* parent = 0 );
     ~TasksView();
 
-    void closeEvent( QCloseEvent* );
-    void showEvent( QShowEvent* );
-    // void hideEvent( QHideEvent* );
-
     // implement ViewModeInterface:
-    void saveGuiState();
-    void restoreGuiState();
     void stateChanged( State previous );
     void configurationChanged();
     void setModel( ModelConnector* );
@@ -71,8 +65,11 @@ private slots:
     // this method is called everytime the UI actions need update, for
     // example when the current index changes:
     void configureUi();
+    void restoreGuiState();
 
 private:
+    void saveGuiState();
+
     // helper to retrieve selected task:
     Task selectedTask();
     void addTaskHelper( const Task& parent );
@@ -86,7 +83,6 @@ private:
     QAction m_actionEditTask;
     QAction m_actionDeleteTask;
     StatusBarWidget* m_statusBarWidget;
-    QHash<TaskId,bool> m_expansionStates;
 };
 
 #endif

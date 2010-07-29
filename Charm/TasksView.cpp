@@ -244,16 +244,6 @@ void TasksView::configureUi()
     m_actionEndEvent.setEnabled( selected && active && ! cannotStop );
 }
 
- void TasksView::closeEvent( QCloseEvent* )
- {
-     saveGuiState();
- }
-
- void TasksView::showEvent( QShowEvent* )
- {
-     restoreGuiState();
- }
-
  void TasksView::stateChanged( State previous )
  {
      switch( Application::instance().state() ) {
@@ -272,9 +262,12 @@ void TasksView::configureUi()
      }
      break;
      case Connected:
-         restoreGuiState();
+         //the model is populated when entering Connected, so delay state restore
+         QMetaObject::invokeMethod( this, "restoreGuiState", Qt::QueuedConnection );
          break;
      case Disconnecting:
+         saveGuiState();
+         break;
      case ShuttingDown:
      case Dead:
      default:
@@ -297,7 +290,7 @@ void TasksView::configureUi()
          // expanded tasks
          TaskList tasks = MODEL.charmDataModel()->getAllTasks();
          TaskIdList expandedTasks;
-         Q_FOREACH( Task task, tasks ) {
+         Q_FOREACH( const Task& task, tasks ) {
              QModelIndex index( filter->indexForTaskId( task.id() ) );
              if ( m_ui->treeView->isExpanded( index ) ) {
                  expandedTasks << task.id();
@@ -324,7 +317,7 @@ void TasksView::configureUi()
              m_ui->treeView->setCurrentIndex(index);
          }
 
-         Q_FOREACH( TaskId id, state.expandedTasks() ) {
+         Q_FOREACH( const TaskId& id, state.expandedTasks() ) {
              QModelIndex index( filter->indexForTaskId( id ) );
              if ( index.isValid() ) {
                  m_ui->treeView->expand( index );
@@ -370,6 +363,7 @@ void TasksView::configureUi()
  {
      Q_ASSERT( m_ui );
      m_ui->treeView->setModel( connector->taskModel() );
+     restoreGuiState();
  }
 
  void TasksView::slotFiltertextChanged( const QString& filtertextRaw )
@@ -378,10 +372,10 @@ void TasksView::configureUi()
      QString filtertext = filtertextRaw.simplified();
      filtertext.replace( ' ', '*' );
 
-     Charm::saveExpandStates( m_ui->treeView, &m_expansionStates );
+     saveGuiState();
      filter->setFilterWildcard( filtertext );
      m_ui->buttonClearFilter->setEnabled( ! filtertextRaw.isEmpty() );
-     Charm::restoreExpandStates( m_ui->treeView, &m_expansionStates );
+     restoreGuiState();
  }
 
  void TasksView::taskPrefilteringChanged()
