@@ -106,8 +106,6 @@ Application::Application(int& argc, char** argv)
     m_systrayContextMenu.addAction( &m_actionStopAllTasks );
     m_systrayContextMenu.addSeparator();
 
-    // MIRKO_TEMP_REM where to put quit action?
-    // m_systrayContextMenu.addAction( m_mainWindow.actionQuit() );
     m_trayIcon.setContextMenu( &m_systrayContextMenu );
     m_trayIcon.setIcon( Data::charmTrayIcon() );
     m_trayIcon.show();
@@ -124,6 +122,11 @@ Application::Application(int& argc, char** argv)
         m_dockMenu.addAction( window->showHideAction() );
 #endif
     }
+
+#ifndef Q_WS_MAC
+    m_systrayContextMenu.addSeparator();
+    m_systrayContextMenu.addAction( &m_actionQuit );
+#endif
 
     // set up actions:
     m_actionQuit.setShortcut( Qt::CTRL + Qt::Key_Q );
