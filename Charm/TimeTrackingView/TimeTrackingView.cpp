@@ -21,7 +21,7 @@ TimeTrackingView::TimeTrackingView( QWidget* parent )
 {
     setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
     setWindowNumber( 3 );
-    setWindowIdentifier( tr( "window_tracking" ) );
+    setWindowIdentifier( QLatin1String( "window_tracking" ) );
     QWidget* widget = new QWidget( this );
     m_ui->setupUi( widget );
     setCentralWidget( widget );

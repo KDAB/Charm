@@ -32,7 +32,7 @@ TasksWindow::TasksWindow( QWidget* parent )
     , m_reportDialog( this )
 {
     setWindowNumber( 1 );
-    setWindowIdentifier( tr( "window_tasks" ) );
+    setWindowIdentifier( QLatin1String( "window_tasks" ) );
     setCentralWidget( m_tasksView );
     connect( m_tasksView, SIGNAL( emitCommand( CharmCommand* ) ),
              SIGNAL( emitCommand( CharmCommand* ) ) );

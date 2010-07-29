@@ -9,7 +9,7 @@ EventWindow::EventWindow( QWidget* parent )
     , m_eventView( new EventView( this ) )
 {
     setWindowNumber( 2 );
-    setWindowIdentifier( tr( "window_events" ) );
+    setWindowIdentifier( QLatin1String( "window_events" ) );
     setCentralWidget( m_eventView );
     connect( m_eventView, SIGNAL( emitCommand( CharmCommand* ) ),
              SIGNAL( emitCommand( CharmCommand* ) ) );
