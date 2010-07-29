@@ -29,6 +29,18 @@ CharmPreferences::CharmPreferences( const Configuration& config,
     default:
         Q_ASSERT( false ); // somebody added an option
     };
+
+    switch ( config.durationFormat ) {
+    case Configuration::Minutes:
+        m_ui.cbDurationFormat->setCurrentIndex( 0 );
+        break;
+    case Configuration::Decimal:
+        m_ui.cbDurationFormat->setCurrentIndex( 1 );
+        break;
+    default:
+        Q_ASSERT( !"unhandled DurationFormat enum value" );
+    }
+
     switch( config.toolButtonStyle ) {
     case Qt::ToolButtonIconOnly:
         m_ui.cbToolButtonStyle->setCurrentIndex( 0 );
@@ -67,6 +79,19 @@ bool CharmPreferences::always24hEditing() const
 bool CharmPreferences::detectIdling() const
 {
     return m_ui.cbIdleDetection->isChecked();
+}
+
+Configuration::DurationFormat CharmPreferences::durationFormat() const
+{
+    switch (m_ui.cbDurationFormat->currentIndex() ) {
+    case 0:
+        return Configuration::Minutes;
+    case 1:
+        return Configuration::Decimal;
+    default:
+        Q_ASSERT( !"Unexpected combobox item for DurationFormat" );
+    }
+    return Configuration::Minutes;
 }
 
 Configuration::TaskTrackerFontSize CharmPreferences::taskTrackerFontSize() const

@@ -37,7 +37,7 @@ void EventDisplay::setEvent( const Event& event )
 	m_ui->labelTaskName->setText( tasknameWithParents( taskTreeItem.task() ) );
 	m_ui->labelStart->setText( m_event.startDateTime().toString( Qt::SystemLocaleShortDate) );
 	m_ui->labelEnd->setText( m_event.endDateTime().toString( Qt::SystemLocaleShortDate) );
-	m_ui->labelDuration->setText( hoursAndMinutes( m_event.duration() ) );
+        m_ui->labelDuration->setText( hoursAndMinutes( m_event.duration() ) );
 	const int weeknumber = m_event.startDateTime().date().weekNumber();
 	m_ui->labelWeeknumber->setText( tr("%1").arg( weeknumber ) );
 	m_ui->labelComment->setText( m_event.comment() );

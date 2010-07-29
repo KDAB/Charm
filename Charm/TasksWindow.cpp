@@ -81,6 +81,7 @@ void TasksWindow::slotEditPreferences( bool )
         CONFIGURATION.oneEventAtATime = dialog.oneEventAtATime();
         CONFIGURATION.taskTrackerFontSize = dialog.taskTrackerFontSize();
         CONFIGURATION.always24hEditing = dialog.always24hEditing();
+        CONFIGURATION.durationFormat = dialog.durationFormat();
         CONFIGURATION.toolButtonStyle = dialog.toolButtonStyle();
         CONFIGURATION.detectIdling = dialog.detectIdling();
         emit saveConfiguration();

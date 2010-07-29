@@ -27,6 +27,7 @@ const QString MetaKey_Key_LocalStorageType = "LocalStorageType";
 const QString MetaKey_Key_SubscribedTasksOnly = "SubscribedTasksOnly";
 const QString MetaKey_Key_TaskTrackerFontSize = "TaskTrackerFontSize";
 const QString MetaKey_Key_24hEditing = "Key24hEditing";
+const QString MetaKey_Key_DurationFormat = "DurationFormat";
 const QString MetaKey_Key_IdleDetection = "IdleDetection";
 const QString MetaKey_Key_ToolButtonStyle = "ToolButtonStyle";
 const QString MetaKey_Key_ShowStatusBar = "ShowStatusBar";
@@ -74,18 +75,23 @@ void connectControllerAndModel( Controller* controller, CharmDataModel* model )
 
 QString hoursAndMinutes( int duration )
 {
-    if ( duration > 0 )
-    {
-        int minutes = duration / 60;
-        int hours = minutes / 60;
-        minutes = minutes % 60;
+    if ( duration == 0 ) {
+        if ( CONFIGURATION.durationFormat == Configuration::Minutes )
+            return QObject::tr( "00:00" );
+        else
+            return QLocale::system().toString( 0.0, 'f', 2 );
+    }
+    int minutes = duration / 60;
+    int hours = minutes / 60;
+    minutes = minutes % 60;
 
+    if ( CONFIGURATION.durationFormat == Configuration::Minutes ) {
         QString text;
         QTextStream stream( &text );
         stream << qSetFieldWidth( 2 ) << qSetPadChar( QChar( '0' ) )
                 << hours << qSetFieldWidth( 0 ) << ":" << qSetFieldWidth( 2 ) << minutes;
         return text;
-    } else {
-        return QObject::tr( "00:00" );
+    } else { //Decimal
+        return QLocale::system().toString( hours + minutes / 60., 'f', 2 );
     }
 }

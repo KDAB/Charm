@@ -199,6 +199,8 @@ void Controller::persistMetaData( Configuration& configuration )
           QString().setNum( configuration.taskTrackerFontSize ) },
         { MetaKey_Key_24hEditing,
           stringForBool( configuration.always24hEditing ) },
+        { MetaKey_Key_DurationFormat,
+          QString::number( configuration.durationFormat ) },
         { MetaKey_Key_IdleDetection,
           stringForBool( configuration.detectIdling ) },
         { MetaKey_Key_ToolButtonStyle,
@@ -242,6 +244,18 @@ void Controller::provideMetaData( Configuration& configuration)
         default:
         case Configuration::TaskTrackerFont_Regular:
             configuration.taskTrackerFontSize = Configuration::TaskTrackerFont_Regular;
+        }
+    }
+
+    const int durationFormatValue = m_storage->getMetaData( MetaKey_Key_DurationFormat ).toInt( &ok );
+    if ( ok ) {
+        switch ( durationFormatValue ) {
+        case Configuration::Minutes:
+            configuration.durationFormat = Configuration::Minutes;
+            break;
+        case Configuration::Decimal:
+            configuration.durationFormat = Configuration::Decimal;
+            break;
         }
     }
 

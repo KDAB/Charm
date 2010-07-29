@@ -25,6 +25,11 @@ public:
         TaskPrefilter_NumberOfModes
     };
 
+    enum DurationFormat {
+        Minutes=0,
+        Decimal
+    };
+
     bool operator== ( const Configuration& other ) const;
 
     static Configuration& instance();
@@ -46,6 +51,7 @@ public:
     TaskPrefilteringMode taskPrefilteringMode;
     TaskTrackerFontSize taskTrackerFontSize;
     bool always24hEditing;
+    DurationFormat durationFormat;
     Qt::ToolButtonStyle toolButtonStyle;
     bool showStatusBar;
     bool detectIdling;
@@ -70,7 +76,7 @@ private:
     // these are all the persisted metadata settings, and the constructor is only used during test runs:
     Configuration( bool eventsInLeafsOnly, bool oneEventAtATime, User user,
                    TaskPrefilteringMode taskPrefilteringMode, TaskTrackerFontSize,
-                   bool always24hEditing, bool detectIdling,
+                   bool always24hEditing, DurationFormat durationFormat, bool detectIdling,
                    Qt::ToolButtonStyle buttonstyle, bool showStatusBar );
     Configuration();
 };

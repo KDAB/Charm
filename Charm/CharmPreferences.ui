@@ -1,7 +1,8 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>CharmPreferences</class>
- <widget class="QDialog" name="CharmPreferences" >
-  <property name="geometry" >
+ <widget class="QDialog" name="CharmPreferences">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -9,43 +10,43 @@
     <height>205</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Charm Configuration</string>
   </property>
-  <layout class="QVBoxLayout" >
+  <layout class="QVBoxLayout">
    <item>
-    <widget class="QTabWidget" name="tabWidget" >
-     <property name="currentIndex" >
+    <widget class="QTabWidget" name="tabWidget">
+     <property name="currentIndex">
       <number>1</number>
      </property>
      <widget class="QWidget" name="tabDatabase" >
       <attribute name="title" >
        <string>Database Options</string>
       </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout" >
+      <layout class="QVBoxLayout" name="verticalLayout">
        <item>
-        <widget class="QCheckBox" name="cbEventsInLeavesOnly" >
-         <property name="text" >
+        <widget class="QCheckBox" name="cbEventsInLeavesOnly">
+         <property name="text">
           <string>only record events for tasks that do not have children</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QCheckBox" name="cbOneEventAtATime" >
-         <property name="text" >
+        <widget class="QCheckBox" name="cbOneEventAtATime">
+         <property name="text">
           <string>only allow one event at a time</string>
          </property>
         </widget>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout" />
+        <layout class="QHBoxLayout" name="horizontalLayout"/>
        </item>
        <item>
         <spacer>
-         <property name="orientation" >
+         <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>
-         <property name="sizeHint" stdset="0" >
+         <property name="sizeHint" stdset="0">
           <size>
            <width>20</width>
            <height>40</height>
@@ -55,96 +56,117 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tabAppearance" >
-      <attribute name="title" >
+     <widget class="QWidget" name="tabAppearance">
+      <attribute name="title">
        <string>Appearance</string>
       </attribute>
-      <layout class="QFormLayout" name="formLayout" >
-       <item row="0" column="0" >
-        <widget class="QLabel" name="label" >
-         <property name="text" >
+      <layout class="QFormLayout" name="formLayout">
+       <item row="0" column="0">
+        <widget class="QLabel" name="label">
+         <property name="text">
           <string>Task Tracker Font Size:</string>
          </property>
         </widget>
        </item>
-       <item row="0" column="1" >
-        <widget class="QComboBox" name="cbTaskTrackerFontSize" >
+       <item row="0" column="1">
+        <widget class="QComboBox" name="cbTaskTrackerFontSize">
          <item>
-          <property name="text" >
+          <property name="text">
            <string>Small</string>
           </property>
          </item>
          <item>
-          <property name="text" >
+          <property name="text">
            <string>Regular (Application Font)</string>
           </property>
          </item>
          <item>
-          <property name="text" >
+          <property name="text">
            <string>Large</string>
           </property>
          </item>
         </widget>
        </item>
-       <item row="1" column="0" >
-        <widget class="QLabel" name="label_2" >
-         <property name="text" >
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_2">
+         <property name="text">
           <string>Buttons show</string>
          </property>
         </widget>
        </item>
-       <item row="1" column="1" >
-        <widget class="QComboBox" name="cbToolButtonStyle" >
+       <item row="1" column="1">
+        <widget class="QComboBox" name="cbToolButtonStyle">
          <item>
-          <property name="text" >
+          <property name="text">
            <string>Icons</string>
           </property>
          </item>
          <item>
-          <property name="text" >
+          <property name="text">
            <string>Text</string>
           </property>
          </item>
          <item>
-          <property name="text" >
+          <property name="text">
            <string>Icons and Text</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_3">
+         <property name="text">
+          <string>Duration format (requires restart)</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QComboBox" name="cbDurationFormat">
+         <item>
+          <property name="text">
+           <string>Minutes (hh:mm)</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Decimal (h.xx)</string>
           </property>
          </item>
         </widget>
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab" >
-      <attribute name="title" >
+     <widget class="QWidget" name="tab">
+      <attribute name="title">
        <string>Esoteric Options</string>
       </attribute>
-      <layout class="QVBoxLayout" >
+      <layout class="QVBoxLayout">
        <item>
-        <widget class="QCheckBox" name="cb24hEditing" >
-         <property name="toolTip" >
-          <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
+        <widget class="QCheckBox" name="cb24hEditing">
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=" font-family:'Lucida Grande'; font-size:13pt; font-weight:400; font-style:normal; text-decoration:none;">
-&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">use 24h time values for editing, independently of the global locale setup&lt;/p>&lt;/body>&lt;/html></string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Lucida Grande'; font-size:13pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;use 24h time values for editing, independently of the global locale setup&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
-         <property name="text" >
+         <property name="text">
           <string>always use 24h time format when editing</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QCheckBox" name="cbIdleDetection" >
-         <property name="text" >
+        <widget class="QCheckBox" name="cbIdleDetection">
+         <property name="text">
           <string>Enable Idle Detection</string>
          </property>
         </widget>
        </item>
        <item>
         <spacer>
-         <property name="orientation" >
+         <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>
-         <property name="sizeHint" stdset="0" >
+         <property name="sizeHint" stdset="0">
           <size>
            <width>20</width>
            <height>40</height>
@@ -157,11 +179,11 @@ p, li { white-space: pre-wrap; }
     </widget>
    </item>
    <item>
-    <widget class="QDialogButtonBox" name="buttonBox" >
-     <property name="orientation" >
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <property name="standardButtons" >
+     <property name="standardButtons">
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
      </property>
     </widget>
@@ -178,11 +200,11 @@ p, li { white-space: pre-wrap; }
    <receiver>CharmPreferences</receiver>
    <slot>accept()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>248</x>
      <y>254</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>157</x>
      <y>274</y>
     </hint>
@@ -194,11 +216,11 @@ p, li { white-space: pre-wrap; }
    <receiver>CharmPreferences</receiver>
    <slot>reject()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>316</x>
      <y>260</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>286</x>
      <y>274</y>
     </hint>
