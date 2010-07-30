@@ -9,8 +9,6 @@
  #include <X11/extensions/scrnsaver.h>
 #endif // HAVE_LIBXSS
 
-const int IDLE_CHECK_INTERVAL= 30; // In seconds
-
 
 bool X11IdleDetector::idleCheckPossible()
 {
@@ -25,11 +23,14 @@ bool X11IdleDetector::idleCheckPossible()
 X11IdleDetector::X11IdleDetector( QObject* parent )
     : IdleDetector( parent )
 {
-    QTimer* timer = new QTimer( this );
-    connect( timer, SIGNAL( timeout() ), this, SLOT( checkIdleness() ) );
-    timer->start( IDLE_CHECK_INTERVAL * 1000 );
-
+    connect( &m_timer, SIGNAL( timeout() ), this, SLOT( checkIdleness() ) );
+    m_timer.start( idlenessDuration() );
     m_heartbeat = QDateTime::currentDateTime();
+}
+
+void X11IdleDetector::idlenessDurationChanged() {
+    m_timer.stop();
+    m_timer.start( idlenessDuration() );
 }
 
 void X11IdleDetector::checkIdleness()
@@ -39,7 +40,7 @@ void X11IdleDetector::checkIdleness()
     XScreenSaverQueryInfo(QX11Info::display(), QX11Info::appRootWindow(), _mit_info);
     int idleSecs = _mit_info->idle/1000;
 
-    if (idleSecs >= PERIOD_FOR_IDLENESS)
+    if (idleSecs >= idlenessDuration())
         maybeIdle( IdlePeriod(QDateTime::currentDateTime().addSecs( -idleSecs ),
                               QDateTime::currentDateTime() ) );
 #endif // HAVE_LIBXSS
