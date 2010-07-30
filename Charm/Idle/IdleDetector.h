@@ -30,7 +30,15 @@ public:
     /** Clear the recorded idle periods. */
     void clear();
 
+    /**
+     * the number of seconds after which the detector should notify idleness
+     * @return the duration in seconds
+     */
+    int idlenessDuration() const;
+    void setIdlenessDuration( int seconds );
+
 protected:
+    virtual void idlenessDurationChanged() {}
     explicit IdleDetector( QObject* parent = 0 );
     virtual ~IdleDetector() {}
     void maybeIdle( IdlePeriod period );
@@ -40,6 +48,7 @@ Q_SIGNALS:
 
 private:
     IdlePeriods m_idlePeriods;
+    int m_idlenessDuration;
 };
 
 #endif

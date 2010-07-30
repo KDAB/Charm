@@ -10,7 +10,6 @@
 #endif // HAVE_LIBXSS
 
 const int IDLE_CHECK_INTERVAL= 30; // In seconds
-const int PERIOD_FOR_IDLENESS = 10*60; // In seconds
 
 
 bool X11IdleDetector::idleCheckPossible()
@@ -45,7 +44,7 @@ void X11IdleDetector::checkIdleness()
                               QDateTime::currentDateTime() ) );
 #endif // HAVE_LIBXSS
 
-    if ( m_heartbeat.secsTo( QDateTime::currentDateTime() ) > PERIOD_FOR_IDLENESS )
+    if ( m_heartbeat.secsTo( QDateTime::currentDateTime() ) > idlenessDuration() )
         maybeIdle( IdlePeriod( m_heartbeat, QDateTime::currentDateTime() ) );
     m_heartbeat = QDateTime::currentDateTime();
 }

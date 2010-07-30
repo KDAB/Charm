@@ -14,8 +14,17 @@
 #endif
 #endif
 
+#ifdef Q_OS_WIN
+# include "WindowsIdleDetector.h"
+#endif
+
 IdleDetector::IdleDetector( QObject* parent )
     : QObject( parent )
+#ifdef NDEBUG
+    , m_idlenessDuration( 10 )
+#else
+    , m_idlenessDuration( 3 * 60 )
+#endif
 {
 }
 
@@ -28,9 +37,7 @@ IdleDetector* IdleDetector::createIdleDetector( QObject* parent )
     return new MacCarbonIdleDetector( parent );
 #endif
 #elif defined Q_WS_WIN
-    // FIXME implement Windows Idle Detector
-    // return new ...
-    return 0;
+    return new WindowsIdleDetector( parent );
 #elif defined Q_WS_X11
     if ( X11IdleDetector::idleCheckPossible() ) {
         return new X11IdleDetector( parent );
@@ -47,17 +54,23 @@ IdleDetector::IdlePeriods IdleDetector::idlePeriods() const
     return m_idlePeriods;
 }
 
+void IdleDetector::setIdlenessDuration( int seconds ) {
+    if ( m_idlenessDuration == seconds )
+        return;
+    m_idlenessDuration = seconds;
+    idlenessDurationChanged();
+}
+
+int IdleDetector::idlenessDuration() const {
+    return m_idlenessDuration;
+}
+
 void IdleDetector::maybeIdle( IdlePeriod period )
 {
     if ( ! Configuration::instance().detectIdling ) {
         return;
     }
 
-#ifdef NDEBUG
-    const int MinimumSeconds = 180;
-#else
-    const int MinimumSeconds = 10;
-#endif
     // merge overlapping idle periods
     IdlePeriods periods ( idlePeriods() );
     periods << period;
@@ -83,7 +96,7 @@ void IdleDetector::maybeIdle( IdlePeriod period )
             }
             periods.pop_front();
         }
-        if ( first.first.secsTo( first.second ) >= MinimumSeconds ) {
+        if ( first.first.secsTo( first.second ) >= idlenessDuration() ) {
             // we ignore idle period of less than MinimumSeconds
             m_idlePeriods << first;
         }

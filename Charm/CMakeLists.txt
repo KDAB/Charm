@@ -93,7 +93,13 @@ IF( QT4_FOUND )
          ENDIF( X11_FOUND )
       ENDIF( UNIX )
    ENDIF( APPLE )
-   CONFIGURE_FILE( config-charm.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-charm.h )
+   IF ( WIN32 )
+   SET( CharmApplication_SRCS
+        ${CharmApplication_SRCS}
+        Idle/WindowsIdleDetector.cpp )
+   ENDIF( WIN32 )
+
+  CONFIGURE_FILE( config-charm.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-charm.h )
 
    QT4_AUTOMOC( ${CharmApplication_SRCS} )
 
