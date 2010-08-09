@@ -100,6 +100,6 @@ QString hoursAndMinutes( int duration )
                 << hours << qSetFieldWidth( 0 ) << ":" << qSetFieldWidth( 2 ) << minutes;
         return text;
     } else { //Decimal
-        return formatDecimal(hours + minutes / 60  );
+        return formatDecimal(hours + minutes / 60.0  );
     }
 }
