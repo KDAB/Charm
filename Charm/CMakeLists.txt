@@ -175,16 +175,36 @@ IF( QT4_FOUND )
       INSTALL( TARGETS Charm DESTINATION . )
    ENDIF( UNIX AND NOT APPLE )
 
-   IF( APPLE )
+   IF ( WIN32 )
+      SET( CMAKE_SKIP_INSTALL_RULES TRUE )
+      INSTALL( FILES ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS} DESTINATION . )
+
       INSTALL( CODE "
-      IF( \${CMAKE_INSTALL_PREFIX} MATCHES .*/_CPack_Packages/.* )
-         INCLUDE( GetPrerequisites )
-         INCLUDE( \"${CMAKE_SOURCE_DIR}/CMake/Modules/BundleUtilities.cmake\" )
-         SET( chmod_bundle_items TRUE )
-         FIXUP_BUNDLE( \"\${CMAKE_INSTALL_PREFIX}/Charm.app\" \"\" \"\" )
-      ENDIF( \${CMAKE_INSTALL_PREFIX} MATCHES .*/_CPack_Packages/.* )
+
+   IF( \${CMAKE_INSTALL_PREFIX} MATCHES .*/_CPack_Packages/.* )
+      INCLUDE( GetPrerequisites )
+      SET( EXECUTABLE \"\${CMAKE_INSTALL_PREFIX}/Charm${CMAKE_EXECUTABLE_SUFFIX}\" )
+      SET( EXECUTABLE \"\${CMAKE_INSTALL_PREFIX}/Charm.app/Contents/MacOS/Charm\" )
+      GET_PREREQUISITES( \"\${EXECUTABLE}\" PREREQUISITES 1 1 \"\${EXECUTABLE}\" \"\"  )
+      FILE( INSTALL DESTINATION \"\${CMAKE_INSTALL_PREFIX}/\" TYPE FILES \${PREREQUISITES} )
+   ENDIF( \${CMAKE_INSTALL_PREFIX} MATCHES .*/_CPack_Packages/.* )
+
       " )
-   ENDIF( APPLE )
+   ENDIF ( WIN32 )
+
+   IF ( APPLE )
+      INSTALL( CODE "
+
+   IF( \${CMAKE_INSTALL_PREFIX} MATCHES .*/_CPack_Packages/.* )
+      INCLUDE( GetPrerequisites )
+      INCLUDE( \"${CMAKE_SOURCE_DIR}/CMake/Modules/BundleUtilities.cmake\" )
+      SET( chmod_bundle_items TRUE )
+      FIXUP_BUNDLE( \"\${CMAKE_INSTALL_PREFIX}/Charm.app\" \"\" \"\" )
+   ENDIF( \${CMAKE_INSTALL_PREFIX} MATCHES .*/_CPack_Packages/.* )
+
+      " )
+   ENDIF ( APPLE )
+
 ELSE( QT4_FOUND )
    MESSAGE( "Fatal: Qt 4 not found." )
 ENDIF( QT4_FOUND )
