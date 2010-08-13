@@ -1,4 +1,4 @@
-<h1>Charm - the Cross-Platform Time Tracker</h1>
+=== Charm - the Cross-Platform Time Tracker ===
 Whether you are a busy professional and you need to keep track of the
 time you spend on your projects, or you are a student who
 wants to know why you always have to rush right before the exam -
@@ -15,7 +15,7 @@ done for three hours on Wednesday again, the activity report for the
 "Ironing Laundry" task would list the event on tuesday, the event on
 wednesday and a total of five hours.
 
-<h1>Tasks</h1>
+=== Tasks ===
 By default, the list of tasks known to Charm is empty. They have to be
 created manually. So the first time work is done on a task, the task
 entry needs to be created in the task list. Then, by selecting a task
@@ -30,29 +30,29 @@ recommended to create rather few top level tasks, since tasks are also
 used to group in reports. Other tasks can then be created as children
 or even grandchildren of the top level tasks.
 
-<h1>Events</h1>
+=== Events ===
 Every time time is recorded for a task, an event is created. What
 events exist can be seen in the event editor (View->Event
 Editor). Also, new events can be created there (without recording
 them), modified or deleted.
 
 
-<h1>Reports</h1>
-<h2>Activity Reports</h2>
+=== Reports ===
+== Activity Reports ==
 Activity Reports group all events that happened in a certain time
 frame, like a day or a week. They are handy to get an overview of what
 was worked on during that time.
 
-<h2>Time Sheets</h2>
+== Time Sheets ==
 Time Sheets are created per week, and group event time to tasks and
 week days. Time Sheets are great to report to the boss, you see.
 
-<h1>Charm Preferences</h1>
+=== Charm Preferences ===
 Altough Charm has been developed under a philosophy to "Simply get it
 right.", everything is not for everybody. Some behaviour of Charm can
 thus be customized.
 
-<h2>Database Options</h2>
+== Database Options ==
 Sometimes, it makes no sense to book time to parent tasks. Instead,
 the parent tasks collate the time of the leaf tasks. Check "only
 record events for tasks that do not have children" to configure that
@@ -61,10 +61,10 @@ behaviour. By default, events can be recorded for all events.
 Then, most of the times it makes sense to only record events for one
 task at a time. Check "only allow one event at a time" for that.
 
-<h2>Appearance</h2>
+== Appearance ==
 The font size of the task tracker can be configured in this tab.
 
-<h2>Esoteric Options</h2>
+== Esoteric Options ==
 Some friends of us are strange folk. That is expected, for they are
 geeks and artists and coders. Since those are known to be very
 professional, efficient people, the options in this tab offer
@@ -77,7 +77,7 @@ formats. Some still prefer to enter 24 hour times, since it is much
 faster. Check "always use 24h time format when editing" to configure
 this. By default it is off.
 
-<h1>Authors and License</h1>
+=== Authors and License ===
 Charm has been developed by Mirko Boehm (mirko@kde.org), as a work of
 fun and experimentation. Other contributors are Pradeepto Bhattacharya
 and Till Adam.
