@@ -76,7 +76,7 @@ void WindowsIdleDetector::timeout() {
     }
 
     const qint64 dwTime = static_cast<qint64>( lif.dwTime );
-    const qint64 ctk = static_cast<qint64>( GetTickCount64() );
+    const qint64 ctk = static_cast<qint64>( GetTickCount() );
     const int idleSecs = ( ctk - dwTime ) / 1000;
     if ( idleSecs >= idlenessDuration() )
         maybeIdle( IdlePeriod(QDateTime::currentDateTime().addSecs( -idleSecs ),
