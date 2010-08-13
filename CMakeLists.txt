@@ -51,15 +51,6 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 # since cmake 2.4.1
 set(CMAKE_INCLUDE_DIRECTORIES_PROJECT_BEFORE ON)
 
-# some magic to put Subversion information in the code:
-# (note: commented out, since this requires a network connection)
-# FIND_PACKAGE( Subversion )
-#IF( Subversion_FOUND )
-#    Subversion_WC_INFO( ${Charm_SOURCE_DIR} Charm )
-#    MESSAGE( "Building Revision ${Charm_WC_REVISION} of Charm" )
-#    MESSAGE( "Building from ${Charm_WC_URL}" )
-#ENDIF( Subversion_FOUND )
-
 # GCC compiler settings:
 IF (CMAKE_COMPILER_IS_GNUCXX)
     ADD_DEFINITIONS( -Wall -Wundef -Wcast-align -Wchar-subscripts -Wpointer-arith 
