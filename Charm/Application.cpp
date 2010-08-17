@@ -175,6 +175,9 @@ Application::Application(int& argc, char** argv)
         connect( m_idleDetector, SIGNAL( maybeIdle() ), SLOT( slotMaybeIdle() ) );
     }
 
+	// add default plugin path for deployment
+	addLibraryPath( applicationDirPath() + "/plugins" );
+
     // Ladies and gentlemen, please raise upon your seats -
     // the show is about to begin:
     emit goToState(StartingUp);
