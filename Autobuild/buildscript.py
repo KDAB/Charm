@@ -24,11 +24,6 @@ Release.setConfigName( 'Shared Release' )
 Release.setPackageDependencies( [ 'Qt-4.[4-9].?-Shared-Release' ] )
 Release.setOptions( '-D CMAKE_BUILD_TYPE=release -D CHARM_ENABLE_TOOLS_BUILD:BOOL=true' )
 
-StaticRelease = copy.copy( Debug )
-StaticRelease.setConfigName( 'Static Release' )
-StaticRelease.setPackageDependencies( [ 'Qt-4.[4-9].?-Static-Release' ] )
-StaticRelease.setOptions( '-D CMAKE_BUILD_TYPE=release -D CHARM_BUILD_STATIC_QT:BOOL=true' )
-
 # a configuration that does not use any Autobuild environments
 PlatformBuild = Configuration( Product, "Platform Build" )
 PlatformBuild.setBuilder( 'cmake' )

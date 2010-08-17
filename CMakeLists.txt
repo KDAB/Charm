@@ -10,7 +10,6 @@ IF( NOT ${CMAKE_BUILD_TYPE} )
    SET( CMAKE_BUILD_TYPE "Release" )
 ENDIF( NOT ${CMAKE_BUILD_TYPE} )
 
-# Charm uses layout and QPalette elements from Qt 4.4
 SET(QT_MIN_VERSION "4.4.0")
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 FIND_PACKAGE( Qt4 REQUIRED )
@@ -35,15 +34,6 @@ ELSE()
     SET( AUTOBUILD_INFO_AUTOBUILD_VERSION "not found" CACHE STRING "Autobuild not discovered" )
 ENDIF()
 
-#
-# NOTE: 
-# If you are building against a static Qt, you need to set an extra variable on 
-# the command line: CHARM_BUILD_STATIC_QT:BOOL=ON
-# 
-# we do not set this anymore, turn it of by providing the option on
-# the cmake command line ( -DCMAKE_COLOR_MAKEFILE=off )
-# SET( CMAKE_COLOR_MAKEFILE off )
-
 # Always include srcdir and builddir in include path
 # This saves typing ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY} in
 # about every subdir since cmake 2.4.0
@@ -63,49 +53,7 @@ IF (CMAKE_COMPILER_IS_GNUCXX)
     ADD_DEFINITIONS( -fvisibility=hidden )
 # to be added:       
 #	-Woverloaded-virtual  -Wshadow 
-# FIXME we might want this one back in, but Qt 4.4.3 spits gazillions of warnings with it on Linux-64:
-#       -Wconversion
-#  -Wnon-virtual-dtor # Qt has too many of those already
 ENDIF (CMAKE_COMPILER_IS_GNUCXX)
-
-IF( CHARM_BUILD_STATIC_QT )
-    ADD_DEFINITIONS( -DCHARM_BUILD_STATIC_QT )
-    IF( UNIX )
-        IF( NOT APPLE )
-	    # specify the extra libraries, they are not specified in the Qt4 module because the 
-	    # Qt libs are static
-	    FIND_PACKAGE( JPEG REQUIRED ) 
-	    FIND_PACKAGE( Freetype REQUIRED ) 
-	    FIND_PACKAGE( X11 REQUIRED ) 
-	    FIND_PACKAGE( JPEG REQUIRED ) 
-	    FIND_PACKAGE( PNG REQUIRED ) 
-
-	    FIND_LIBRARY( FONT_CONFIG_LIB NAMES fontconfig PATH /usr/lib )
-	    IF( FONT_CONFIG_LIB ) 
-		MESSAGE( "Found Fontconfig" )
-		LINK_LIBRARIES( ${FONT_CONFIG_LIB} )
-	    ELSE( FONT_CONFIG_LIB )
-		MESSAGE(FATAL_ERROR "Fontconfig library not found" )
-	    ENDIF( FONT_CONFIG_LIB ) 
-	
-	    LINK_LIBRARIES( ${JPEG_LIBRARY} )
-	    LINK_LIBRARIES( ${X11_SM_LIB} )
-	    LINK_LIBRARIES( ${X11_ICE_LIB} )
-	    LINK_LIBRARIES( ${PNG_LIBRARY} )
-	    LINK_LIBRARIES( ${FREETYPE_LIBRARY} )
-	    LINK_LIBRARIES( ${X11_Xrender_LIB} )
-	    LINK_LIBRARIES( ${X11_Xrandr_LIB} )
-	    LINK_LIBRARIES( ${X11_Xinput_LIB} )
-	    LINK_LIBRARIES( ${QT_QTXML_LIBRARY} )
-	    LINK_LIBRARIES( ${QT_X11_Xext_LIBRARY} )
-      
-	    # FIXME why does FIND_PACKAGE( GTK ... ) not find this?
-	    LINK_LIBRARIES( glib-2.0 )
-	    LINK_LIBRARIES( gobject-2.0 )
-	    LINK_LIBRARIES( gthread-2.0 )
-	ENDIF( NOT APPLE )
-    ENDIF( UNIX )
-ENDIF( CHARM_BUILD_STATIC_QT )    
 
 ADD_SUBDIRECTORY( Core )
 ADD_SUBDIRECTORY( Charm )
