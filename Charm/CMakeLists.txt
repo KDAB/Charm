@@ -226,10 +226,13 @@ IF( QT4_FOUND )
       INSTALL( CODE "
 
    IF( \${CMAKE_INSTALL_PREFIX} MATCHES .*/_CPack_Packages/.* )
+      FILE( INSTALL DESTINATION \"\${CMAKE_INSTALL_PREFIX}/Charm.app/Contents/plugins/sqldrivers\" TYPE FILES \${QT_SQL_PLUGINS} )
+      FILE( GLOB QT_SQL_PLUGINS \"\${CMAKE_INSTALL_PREFIX}/Charm.app/Contents/plugins/sqldrivers/*\" )
+
       INCLUDE( GetPrerequisites )
       INCLUDE( \"${CMAKE_SOURCE_DIR}/CMake/Modules/BundleUtilities.cmake\" )
       SET( chmod_bundle_items TRUE )
-      FIXUP_BUNDLE( \"\${CMAKE_INSTALL_PREFIX}/Charm.app\" \"${QT_SQL_PLUGINS}\" \"\" )
+      FIXUP_BUNDLE( \"\${CMAKE_INSTALL_PREFIX}/Charm.app\" \"\${QT_SQL_PLUGINS}\" \"\" )
    ENDIF( \${CMAKE_INSTALL_PREFIX} MATCHES .*/_CPack_Packages/.* )
 
       " )

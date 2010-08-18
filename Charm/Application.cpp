@@ -175,8 +175,11 @@ Application::Application(int& argc, char** argv)
         connect( m_idleDetector, SIGNAL( maybeIdle() ), SLOT( slotMaybeIdle() ) );
     }
 
-	// add default plugin path for deployment
-	addLibraryPath( applicationDirPath() + "/plugins" );
+    // add default plugin path for deployment
+    addLibraryPath( applicationDirPath() + "/plugins" );
+
+	if ( applicationDirPath().endsWith("MacOS") )
+        addLibraryPath( applicationDirPath() + "/../plugins");
 
     // Ladies and gentlemen, please raise upon your seats -
     // the show is about to begin:
