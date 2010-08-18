@@ -201,6 +201,8 @@ void WTSConfigurationPage::slotStandardTimeSpansChanged()
     {
         m_ui->comboBoxWeek->addItem( m_weekInfo[i].name );
     }
+    // Set current index to "Last Week" as that's what you'll usually want
+    m_ui->comboBoxWeek->setCurrentIndex( 1 );
 }
 
 void WTSConfigurationPage::slotWeekComboItemSelected( int index )
