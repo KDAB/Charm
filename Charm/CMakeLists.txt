@@ -215,7 +215,7 @@ IF( QT4_FOUND )
       FILE( INSTALL DESTINATION \"\${CMAKE_INSTALL_PREFIX}/\" TYPE FILES \${MSVC_RUNTIME} )
 
       IF( QT_SQL_PLUGINS )
-         FILE( INSTALL DESTINATION \"\${CMAKE_INSTALL_PREFIX}/plugins/sqldrivers\" TYPE FILES \${QT_SQL_PLUGINS} )
+         FILE( INSTALL DESTINATION \"\${CMAKE_INSTALL_PREFIX}/PlugIns/sqldrivers\" TYPE FILES \${QT_SQL_PLUGINS} )
       ENDIF( QT_SQL_PLUGINS )
 
       INCLUDE( GetPrerequisites )
@@ -234,8 +234,9 @@ IF( QT4_FOUND )
       INSTALL( CODE "
 
    IF( \${CMAKE_INSTALL_PREFIX} MATCHES .*/_CPack_Packages/.* )
-      FILE( INSTALL DESTINATION \"\${CMAKE_INSTALL_PREFIX}/Charm.app/Contents/plugins/sqldrivers\" TYPE FILES \${QT_SQL_PLUGINS} )
-      FILE( GLOB QT_SQL_PLUGINS \"\${CMAKE_INSTALL_PREFIX}/Charm.app/Contents/plugins/sqldrivers/*\" )
+      FILE( INSTALL DESTINATION \"\${CMAKE_INSTALL_PREFIX}/Charm.app/Contents/PlugIns/sqldrivers\" TYPE FILES \${QT_SQL_PLUGINS} )
+      FILE( GLOB QT_SQL_PLUGINS \"\${CMAKE_INSTALL_PREFIX}/Charm.app/Contents/PlugIns/sqldrivers/*\" )
+      FILE( WRITE \"\${CMAKE_INSTALL_PREFIX}/Charm.app/Contents/Resources/qt.conf\" \"[Paths]\nPlugins = PlugIns\" )
 
       INCLUDE( GetPrerequisites )
       INCLUDE( \"${CMAKE_SOURCE_DIR}/CMake/Modules/BundleUtilities.cmake\" )
