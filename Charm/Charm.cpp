@@ -1,8 +1,6 @@
 #include <QMessageBox>
 #include <QtPlugin>
 
-#include "Core/CharmVersion.h"
-
 #include "Application.h"
 
 int main ( int argc, char** argv )
