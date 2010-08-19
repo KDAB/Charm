@@ -5,10 +5,6 @@
 
 #include "Application.h"
 
-#if defined CHARM_BUILD_STATIC_QT
-Q_IMPORT_PLUGIN(qjpeg)
-#endif
-
 int main ( int argc, char** argv )
 {
 	if (argc == 2 && qstrcmp(argv[1], "--version") == 0) {
