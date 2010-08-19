@@ -5,8 +5,6 @@
 
 #include <QObject>
 
-#include "Core/CharmVersion.h"
-
 #include "CommandLine.h"
 #include "Exceptions.h"
 #include "Operations.h"

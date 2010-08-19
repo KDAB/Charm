@@ -9,8 +9,6 @@ extern "C"
 #include <QObject>
 #include <QFile>
 
-#include "Core/CharmVersion.h"
-
 #include "Exceptions.h"
 #include "Options.h"
 
