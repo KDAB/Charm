@@ -678,7 +678,7 @@ void  WeeklyTimeSheetReport::slotSaveToXml()
                     events[key].setId( -events[key].id() ); // "synthetic" :-)
                     // move to start at midnight:
                     // never, never, never use setTime() here, it breaks on DST changes! (twice a year)
-                    QDateTime start( event.startDateTime().date() );
+                    QDateTime start( event.startDateTime().date(), QTime(), Qt::UTC );
                     QDateTime end( start.addSecs( event.duration() ) );
                     events[key].setStartDateTime( start );
                     events[key].setEndDateTime( end );
