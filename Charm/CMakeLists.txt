@@ -141,8 +141,8 @@ IF( QT4_FOUND )
       SET( MACOSX_BUNDLE_GUI_IDENTIFIER "com.kdab" )
       SET( MACOSX_BUNDLE_BUNDLE_NAME "Charm" )
 
-      EXECUTE_PROCESS( COMMAND "${CMAKE_COMMAND} -E make_directory ${Charm_BINARY_DIR}/Charm/Charm.app/Contents/Resources"
-                       COMMAND "${CMAKE_COMMAND} -E copy_if_different ${Charm_SOURCE_DIR}/Charm/Icons/Charm.icns ${Charm_BINARY_DIR}/Charm/Charm.app/Contents/Resources/" )
+      EXECUTE_PROCESS( COMMAND ${CMAKE_COMMAND} -E make_directory ${Charm_BINARY_DIR}/Charm/Charm.app/Contents/Resources )
+      EXECUTE_PROCESS( COMMAND ${CMAKE_COMMAND} -E copy_if_different ${Charm_SOURCE_DIR}/Charm/Icons/Charm.icns ${Charm_BINARY_DIR}/Charm/Charm.app/Contents/Resources/ )
 
       SET( CMAKE_MODULE_PATH ${Charm_SOURCE_DIR}/Charm/ ${CMAKE_MODULE_PATH} )
    ENDIF( APPLE )
