@@ -676,13 +676,14 @@ void  WeeklyTimeSheetReport::slotSaveToXml()
                     // add this event:
                     events[key] = event;
                     events[key].setId( -events[key].id() ); // "synthetic" :-)
-                    // move to start at midnight:
+                    // move to start at midnight in UTC (for privacy reasons)
                     // never, never, never use setTime() here, it breaks on DST changes! (twice a year)
-                    QDateTime start( event.startDateTime().date(), QTime(), Qt::UTC );
+                    QDateTime start( event.startDateTime().date(), QTime(0, 0, 0, 0), Qt::UTC );
                     QDateTime end( start.addSecs( event.duration() ) );
                     events[key].setStartDateTime( start );
                     events[key].setEndDateTime( end );
                     Q_ASSERT( events[key].duration() == event.duration() );
+                    Q_ASSERT( start.time() == QTime(0, 0, 0, 0) );
                 }
             }
             // create elements:

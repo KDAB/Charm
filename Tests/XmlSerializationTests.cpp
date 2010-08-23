@@ -60,6 +60,8 @@ void XmlSerializationTests::testEventSerialization()
             QVERIFY( event.startDateTime() == readEvent.startDateTime() );
             QVERIFY( event.endDateTime() == readEvent.endDateTime() );
             QVERIFY( event == readEvent );
+            qDebug() << event.startDateTime();
+            QVERIFY( event.startDateTime().time() == QTime() );
         } catch( CharmException& e ) {
             qDebug() << "XmlSerializationTests::testEventSerialization: exception caught ("
                      << e.what() << ")";
