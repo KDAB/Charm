@@ -452,8 +452,9 @@ void Application::slotGoToConnectedState()
 }
 
 static QString charmDataDir() {
-    if (const char* charmHome = qgetenv("CHARM_HOME"))
-        return QFile::decodeName(charmHome) + QLatin1String("/data/");
+    const QByteArray charmHome = qgetenv("CHARM_HOME");
+    if ( !charmHome.isEmpty() )
+        return QFile::decodeName( charmHome ) + QLatin1String("/data/");
     else
         return QDesktopServices::storageLocation(QDesktopServices::DataLocation) + QLatin1Char('/');
 }

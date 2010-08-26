@@ -13,7 +13,8 @@ int main ( int argc, char** argv )
         return 0;
     }
 
-    if ( const char* charmHomeEnv = qgetenv("CHARM_HOME") ) {
+    const QByteArray charmHomeEnv = qgetenv("CHARM_HOME");
+    if ( !charmHomeEnv.isEmpty() ) {
         const QString charmHome = QFile::decodeName( charmHomeEnv );
         const QString user = charmHome + QLatin1String("/userConfig");
         const QString sys = charmHome + QLatin1String("/systemConfig");
