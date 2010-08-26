@@ -450,6 +450,14 @@ void Application::slotGoToConnectedState()
         emit goToState(Connected);
     }
 }
+
+static QString charmDataDir() {
+    if (const char* charmHome = qgetenv("CHARM_HOME"))
+        return QFile::decodeName(charmHome) + QLatin1String("/data/");
+    else
+        return QDesktopServices::storageLocation(QDesktopServices::DataLocation) + QLatin1Char('/');
+}
+
 bool Application::configure()
 {
     if (CONFIGURATION.failure == true)
@@ -478,8 +486,7 @@ bool Application::configure()
             << CONFIGURATION.configurationName;
         // FIXME maybe move to Configuration::loadDefaults
 
-        const QString storageDatabaseDirectory =
-                QDesktopServices::storageLocation(QDesktopServices::DataLocation) + QDir::separator();
+        const QString storageDatabaseDirectory = charmDataDir();
         const QString storageDatabaseFile = "Charm.db";
         const QString storageDatabaseFileDebug = "Charm_debug.db";
         const QString storageDatabase = storageDatabaseDirectory + storageDatabaseFile;
