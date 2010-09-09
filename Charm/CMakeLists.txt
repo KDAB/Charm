@@ -230,7 +230,7 @@ IF( QT4_FOUND )
       ENDIF( APPLE )
 
       INCLUDE( \"${CMAKE_SOURCE_DIR}/CMake/Modules/BundleUtilities.cmake\" )
-      SET( chmod_bundle_items TRUE )
+      SET( BU_CHMOD_BUNDLE_ITEMS TRUE )
       FIXUP_BUNDLE( \"\${CMAKE_INSTALL_PREFIX}/${EXECUTABLE}\" \"\${QT_SQL_PLUGINS}\" \"${QT_LIBRARY_DIR}\" )
    ENDIF( \${CMAKE_INSTALL_PREFIX} MATCHES .*/_CPack_Packages/.* OR WIN32 )
 
