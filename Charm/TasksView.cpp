@@ -463,10 +463,10 @@ void TasksView::configureUi()
      ViewFilter* filter = Application::instance().model().taskModel();
      Q_ASSERT( filter );
      // find current selection
-     QItemSelection selection = m_ui->treeView->selectionModel()->selection();
+     QModelIndexList selection = m_ui->treeView->selectionModel()->selectedIndexes();
      // match it to a task:
      if ( selection.size() > 0 ) {
-         return filter->taskForIndex( selection.indexes().first() );
+         return filter->taskForIndex( selection.first() );
      } else {
          return Task();
      }
