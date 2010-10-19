@@ -24,13 +24,14 @@ X11IdleDetector::X11IdleDetector( QObject* parent )
     : IdleDetector( parent )
 {
     connect( &m_timer, SIGNAL( timeout() ), this, SLOT( checkIdleness() ) );
-    m_timer.start( idlenessDuration() );
+    m_timer.start( idlenessDuration() * 1000 / 5 );
     m_heartbeat = QDateTime::currentDateTime();
 }
 
-void X11IdleDetector::idlenessDurationChanged() {
+void X11IdleDetector::idlenessDurationChanged()
+{
     m_timer.stop();
-    m_timer.start( idlenessDuration() );
+    m_timer.start( idlenessDuration() * 1000 / 5 );
 }
 
 void X11IdleDetector::checkIdleness()
@@ -38,7 +39,7 @@ void X11IdleDetector::checkIdleness()
 #if defined(Q_WS_X11) && defined(HAVE_LIBXSS)
     XScreenSaverInfo* _mit_info = XScreenSaverAllocInfo();
     XScreenSaverQueryInfo(QX11Info::display(), QX11Info::appRootWindow(), _mit_info);
-    int idleSecs = _mit_info->idle/1000;
+    const int idleSecs = _mit_info->idle / 1000;
 
     if (idleSecs >= idlenessDuration())
         maybeIdle( IdlePeriod(QDateTime::currentDateTime().addSecs( -idleSecs ),
