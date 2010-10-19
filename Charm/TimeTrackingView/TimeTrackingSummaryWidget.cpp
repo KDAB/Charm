@@ -332,6 +332,19 @@ bool TimeTrackingSummaryWidget::isTracking() const
     return DATAMODEL->activeEventCount() > 0;
 }
 
+void TimeTrackingSummaryWidget::showEvent( QShowEvent* event )
+{
+    if ( isTracking() && m_pulse.state() != QTimeLine::Running )
+        m_pulse.start();
+    QWidget::showEvent( event );
+}
+
+void TimeTrackingSummaryWidget::hideEvent( QHideEvent* event )
+{
+    m_pulse.stop();
+    QWidget::hideEvent( event );
+}
+
 void TimeTrackingSummaryWidget::handleActiveEvents()
 {
     m_activeFieldRects.clear();
@@ -339,10 +352,9 @@ void TimeTrackingSummaryWidget::handleActiveEvents()
     Q_ASSERT( activeEventCount >= 0 );
 
     m_taskSelector->handleActiveEvents();
-    if ( activeEventCount > 1 ) {
-        if ( m_pulse.state() != QTimeLine::Running ) m_pulse.start();
-    } else if ( activeEventCount == 1 ) {
-        if ( m_pulse.state() != QTimeLine::Running ) m_pulse.start();
+    if ( isTracking() ) {
+        if ( m_pulse.state() != QTimeLine::Running )
+            m_pulse.start();
     } else {
         m_pulse.stop();
     }

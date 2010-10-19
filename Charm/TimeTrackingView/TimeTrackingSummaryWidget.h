@@ -57,6 +57,10 @@ public:
 
     bool isTracking() const;
 
+protected:
+    void showEvent( QShowEvent* event );
+    void hideEvent( QHideEvent* event );
+
 signals:
     void maybeShrink();
     void startEvent( TaskId );
