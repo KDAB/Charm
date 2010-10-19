@@ -20,11 +20,7 @@
 
 IdleDetector::IdleDetector( QObject* parent )
     : QObject( parent )
-#ifdef NDEBUG
-    , m_idlenessDuration( 10 )
-#else
     , m_idlenessDuration( 3 * 60 )
-#endif
 {
 }
 
