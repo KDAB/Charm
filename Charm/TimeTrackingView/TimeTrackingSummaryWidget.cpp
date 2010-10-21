@@ -204,7 +204,7 @@ void TimeTrackingSummaryWidget::mouseDoubleClickEvent( QMouseEvent* event )
         return;
 
     const TaskId id = m_summaries.at( position ).task;
-    if ( !DATAMODEL->isEventActive( id ) ) {
+    if ( !DATAMODEL->isTaskActive( id ) ) {
         emit stopEvents();
         emit startEvent( id );
     }
