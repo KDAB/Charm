@@ -235,7 +235,9 @@ void TasksWindow::maybeIdle()
         // FIXME with this option, we can only change the events to
         // the start time of one idle period, I chose to use the last
         // one:
-        const IdleDetector::IdlePeriod& period = detector->idlePeriods().last();
+        Q_ASSERT( !detector->idlePeriods().isEmpty() );
+        const IdleDetector::IdlePeriod period = detector->idlePeriods().last();
+
         Q_FOREACH ( EventId eventId, activeEvents ) {
             Event event = DATAMODEL->eventForId( eventId );
             if ( event.isValid() ) {
