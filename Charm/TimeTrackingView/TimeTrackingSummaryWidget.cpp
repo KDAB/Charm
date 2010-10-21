@@ -351,8 +351,7 @@ void TimeTrackingSummaryWidget::hideEvent( QHideEvent* event )
 void TimeTrackingSummaryWidget::handleActiveEvents()
 {
     m_activeFieldRects.clear();
-    const int activeEventCount = DATAMODEL->activeEventCount();
-    Q_ASSERT( activeEventCount >= 0 );
+    Q_ASSERT( DATAMODEL->activeEventCount() >= 0 );
 
     m_taskSelector->handleActiveEvents();
     if ( isTracking() ) {
