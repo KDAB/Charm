@@ -463,9 +463,6 @@
      <property name="margin" >
       <number>12</number>
      </property>
-     <property name="buddy" >
-      <cstring>pushButtonSelectTask</cstring>
-     </property>
     </widget>
    </item>
    <item>

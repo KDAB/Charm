@@ -460,9 +460,6 @@
      <property name="margin" >
       <number>12</number>
      </property>
-     <property name="buddy" >
-      <cstring></cstring>
-     </property>
     </widget>
    </item>
    <item>
