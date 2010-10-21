@@ -38,8 +38,11 @@ void X11IdleDetector::checkIdleness()
 {
 #if defined(Q_WS_X11) && defined(HAVE_LIBXSS)
     XScreenSaverInfo* _mit_info = XScreenSaverAllocInfo();
+    if (!_mit_info)
+        return;
     XScreenSaverQueryInfo(QX11Info::display(), QX11Info::appRootWindow(), _mit_info);
     const int idleSecs = _mit_info->idle / 1000;
+    XFree(_mit_info);
 
     if (idleSecs >= idlenessDuration())
         maybeIdle( IdlePeriod(QDateTime::currentDateTime().addSecs( -idleSecs ),
