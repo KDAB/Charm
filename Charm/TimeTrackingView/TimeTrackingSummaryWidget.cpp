@@ -197,13 +197,16 @@ void TimeTrackingSummaryWidget::mousePressEvent( QMouseEvent* event )
 
 void TimeTrackingSummaryWidget::mouseDoubleClickEvent( QMouseEvent* event )
 {   // we rely on the mouse press event that was received before the doubleclick!
-    if( ! isTracking() ) {
-        // start tracking
-        const int position = getSummaryAt( event->pos() );
-        if ( position >= 0 ) {
-            const TaskId id = m_summaries.at( position ).task;
-            emit startEvent( id );
-        }
+
+    // start tracking
+    const int position = getSummaryAt( event->pos() );
+    if ( position < 0 )
+        return;
+
+    const TaskId id = m_summaries.at( position ).task;
+    if ( !DATAMODEL->isEventActive( id ) ) {
+        emit stopEvents();
+        emit startEvent( id );
     }
 }
 
