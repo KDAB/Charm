@@ -1,25 +1,12 @@
-IF ( QT4_FOUND )
-   INCLUDE_DIRECTORIES( ${QT_INCLUDE_DIR} )
-   INCLUDE_DIRECTORIES( ${QT_QTCORE_INCLUDE_DIR} )
-   INCLUDE_DIRECTORIES( ${QT_QTSQL_INCLUDE_DIR} )
-   INCLUDE_DIRECTORIES( ${QT_QTXML_INCLUDE_DIR} )
-   INCLUDE_DIRECTORIES( ../.. ) # Charm root
-   include (${QT_USE_FILE})
+INCLUDE_DIRECTORIES( ${Charm_SOURCE_DIR} )
 
-   LINK_LIBRARIES( ${QT_QTCORE_LIBRARY} )
-   LINK_LIBRARIES( ${QT_QTXML_LIBRARY} )
-   LINK_LIBRARIES( ${QT_QTSQL_LIBRARY} )
-   
-   SET( TimesheetGenerator_SRCS main.cpp Options.cpp )
-   QT4_AUTOMOC ( ${TimesheetGenerator_SRCS} )
+SET(
+	TimesheetGenerator_SRCS
+	main.cpp
+	Options.cpp
+)
 
-   ADD_EXECUTABLE( TimesheetGenerator ${TimesheetGenerator_SRCS} )
-   TARGET_LINK_LIBRARIES( TimesheetGenerator CharmCore )
-   TARGET_LINK_LIBRARIES( TimesheetGenerator ${QT_LIBRARIES} )
-   INSTALL( TARGETS TimesheetGenerator DESTINATION bin )
-ENDIF ( QT4_FOUND )
-
-IF ( NOT QT4_FOUND )
-   MESSAGE( "Fatal: Qt 4 not found." )
-ENDIF ( NOT QT4_FOUND) 
-
+QT4_AUTOMOC( ${TimesheetGenerator_SRCS} )
+ADD_EXECUTABLE( TimesheetGenerator ${TimesheetGenerator_SRCS} )
+TARGET_LINK_LIBRARIES( TimesheetGenerator CharmCore ${QT_LIBRARIES} )
+INSTALL( TARGETS TimesheetGenerator DESTINATION ${BIN_INSTALL_DIR} )
