@@ -16,6 +16,7 @@
 #include "SelectTaskDialog.h"
 #include "WeeklyTimeSheet3.h"
 #include "CharmReport.h"
+#include "DateEntrySyncer.h"
 
 #include "ui_WeeklyTimeSheetConfigurationPage.h"
 
@@ -35,14 +36,10 @@ WTSConfigurationPage::WTSConfigurationPage( ReportDialog* parent )
              SLOT( slotSelectTask() ) );
     connect( m_ui->checkBoxSubTasksOnly, SIGNAL( toggled( bool ) ),
              SLOT( slotCheckboxSubtasksOnlyChecked( bool ) ) );
-    connect( m_ui->dateEditDay, SIGNAL(dateChanged(QDate)),
-             this, SLOT(slotManualDateSelectionChanged()) );
-    connect( m_ui->spinBoxWeek, SIGNAL(valueChanged(int)),
-             this, SLOT(slotManualDateSelectionChanged()) );
-    connect( m_ui->spinBoxYear, SIGNAL(valueChanged(int)),
-             this, SLOT(slotManualDateSelectionChanged()) );
     m_ui->comboBoxWeek->setCurrentIndex( 1 );
     slotCheckboxSubtasksOnlyChecked( m_ui->checkBoxSubTasksOnly->isChecked() );
+
+    new DateEntrySyncer( m_ui->spinBoxWeek, m_ui->spinBoxYear, m_ui->dateEditDay );
 
     QTimer::singleShot( 0, this, SLOT( slotDelayedInitialization() ) );
 }
@@ -137,54 +134,6 @@ void WTSConfigurationPage::slotCheckboxSubtasksOnlyChecked( bool checked )
     if ( ! checked ) {
         m_rootTask = 0;
         m_ui->labelTaskName->setText( tr( "(All Tasks)" ) );
-    }
-}
-
-
-static int numberOfWeeksInYear( int year ) {
-    QDate tmp( year, 12, 31 );
-    int wy = 0;
-    while (tmp.weekNumber( &wy ) == 1 )
-        tmp = tmp.addDays( -1 );
-    Q_ASSERT( wy == year );
-    return tmp.weekNumber();
-}
-
-// number of weeks per year differs between 52 and 53, so we need to set the maximum value accordingly, and fix the value if the user flips through years
-static void fixWeek( QSpinBox* yearSb, QSpinBox* weekSb ) {
-    const int year = yearSb->value();
-    const int week = weekSb->value();
-    const int maxWeek = numberOfWeeksInYear( year );
-    Q_ASSERT( maxWeek >= 52 );
-    const int newWeek = qMin( maxWeek, week );
-    weekSb->blockSignals( true );
-    weekSb->setMaximum( maxWeek );
-    weekSb->setValue( newWeek );
-    weekSb->blockSignals( false );
-}
-
-void WTSConfigurationPage::slotManualDateSelectionChanged()
-{
-    if ( sender() == m_ui->spinBoxWeek || sender() == m_ui->spinBoxYear ) {
-        //spinboxes changed, update date edit
-        fixWeek( m_ui->spinBoxYear, m_ui->spinBoxWeek );
-        const int week = m_ui->spinBoxWeek->value();
-        const int year = m_ui->spinBoxYear->value();
-        const int weekday = m_ui->dateEditDay->date().dayOfWeek(); //preserve day of week
-        m_ui->dateEditDay->blockSignals( true );
-        m_ui->dateEditDay->setDate( Charm::dateByWeekNumberAndWeekDay( year, week, weekday ) );
-        m_ui->dateEditDay->blockSignals( false );
-    } else {
-        //date edit changed, update spinboxes
-        const QDate date = m_ui->dateEditDay->date();
-        int year = 0;
-        const int week = date.weekNumber( &year );
-        m_ui->spinBoxYear->blockSignals( true );
-        m_ui->spinBoxWeek->blockSignals( true );
-        m_ui->spinBoxYear->setValue( year );
-        m_ui->spinBoxWeek->setValue( week );
-        m_ui->spinBoxWeek->blockSignals( false );
-        m_ui->spinBoxYear->blockSignals( false );
     }
 }
 

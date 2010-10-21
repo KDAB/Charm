@@ -19,6 +19,7 @@ IF( QT4_FOUND )
         TasksWindow.cpp
         TaskEditor.cpp
         GUIState.cpp
+        DateEntrySyncer.cpp
         EventView.cpp
         EventWindow.cpp
         EventEditor.cpp

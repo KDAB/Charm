@@ -9,6 +9,7 @@
 #include <QDomDocument>
 
 #include <Core/Configuration.h>
+#include <Core/Dates.h>
 
 #include <QTimer>
 
@@ -17,6 +18,8 @@
 #include "CharmReport.h"
 #include "SelectTaskDialog.h"
 #include "ActivityReport.h"
+#include "DateEntrySyncer.h"
+
 #include "ui_ActivityReportConfigurationPage.h"
 
 ActivityReportConfigurationPage::ActivityReportConfigurationPage( ReportDialog* parent )
@@ -41,6 +44,9 @@ ActivityReportConfigurationPage::ActivityReportConfigurationPage( ReportDialog* 
              SLOT( slotExcludeTask() ) );
     slotCheckboxSubtasksOnlyChecked( m_ui->checkBoxSubTasksOnly->isChecked() );
     slotCheckBoxExcludeTasksChecked( m_ui->checkBoxExcludeTasks->isChecked() );
+
+    new DateEntrySyncer(m_ui->spinBoxWeek, m_ui->spinBoxYear, 0 );
+
     QTimer::singleShot( 0, this, SLOT( slotDelayedInitialization() ) );
 }
 
@@ -68,11 +74,15 @@ void ActivityReportConfigurationPage::slotDelayedInitialization()
 void ActivityReportConfigurationPage::slotStandardTimeSpansChanged()
 {
     m_timespans = Application::instance().timeSpans().standardTimeSpans();
-    NamedTimeSpan custom = {
-        tr( "Manual Selection" ),
+    NamedTimeSpan customWeek = {
+        tr( "Select Week" ),
         Application::instance().timeSpans().thisWeek().timespan
     };
-    m_timespans << custom;
+    NamedTimeSpan customRange = {
+        tr( "Select Range" ),
+        Application::instance().timeSpans().thisWeek().timespan
+    };
+    m_timespans << customWeek << customRange;
     m_ui->comboBox->clear();
     for ( int i = 0; i < m_timespans.size(); ++i )
     {
@@ -84,9 +94,19 @@ void ActivityReportConfigurationPage::slotTimeSpanSelected( int index )
 {
     if ( m_ui->comboBox->count() == 0 || index == -1 ) return;
     Q_ASSERT( m_ui->comboBox->count() > index );
-    if ( index == m_timespans.size() -1 ) { // manual selection
+    if ( index >= m_timespans.size() - 2 ) { // manual selection
         m_ui->groupBox->setEnabled( true );
+        const bool isRange = index == m_timespans.size() - 1;
+        m_ui->labelFrom->setEnabled( isRange );
+        m_ui->labelTo->setEnabled( isRange );
+        m_ui->dateEditEnd->setEnabled( isRange );
+        m_ui->dateEditStart->setEnabled( isRange );
+        m_ui->labelWeek->setEnabled( !isRange );
+        m_ui->spinBoxWeek->setEnabled( !isRange );
+        m_ui->spinBoxYear->setEnabled( !isRange );
     } else {
+        m_ui->spinBoxYear->setValue( m_timespans[index].timespan.first.year() );
+        m_ui->spinBoxWeek->setValue( m_timespans[index].timespan.first.weekNumber() );
         m_ui->dateEditStart->setDate( m_timespans[index].timespan.first );
         m_ui->dateEditEnd->setDate( m_timespans[index].timespan.second );
         m_ui->groupBox->setEnabled( false );
@@ -157,15 +177,18 @@ void ActivityReportConfigurationPage::slotOkClicked()
 QDialog* ActivityReportConfigurationPage::makeReportPreviewDialog( QWidget* parent )
 {
     QDate start, end;
-    int index = m_ui->comboBox->currentIndex();
-    if ( index == m_timespans.size() -1 ) {
-        // manual selection
+    const int index = m_ui->comboBox->currentIndex();
+    if ( index == m_timespans.size() - 1 ) { //Range
         start = m_ui->dateEditStart->date();
         end = m_ui->dateEditEnd->date();
+    } else if ( index == m_timespans.size() - 2 ) { //Week
+        start = Charm::dateByWeekNumberAndWeekDay( m_ui->spinBoxYear->value(), m_ui->spinBoxWeek->value(), 1 );
+        end = start.addDays( 6 );
     } else {
         start = m_timespans[index].timespan.first;
         end = m_timespans[index].timespan.second;
     }
+
     ActivityReport* report = new ActivityReport( parent );
     report->setReportProperties( start, end, m_rootTask, m_rootExcludeTask );
     return report;
