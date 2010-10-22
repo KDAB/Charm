@@ -5,8 +5,8 @@ SET( TEST_LIBRARIES CharmCore ${QT_QTTEST_LIBRARY} ${QT_LIBRARIES} )
 QT4_ADD_RESOURCES( TestDataResources_SRCS TestData.qrc )
 
 IF( APPLE )
-    FIND_LIBRARY( SECURITY_FRAMEWORK FRAMEWORK required NAMES Security )
-    LIST( APPEND TEST_LIBRARIES ${SECURITY_FRAMEWORK} )
+	FIND_LIBRARY( SECURITY_FRAMEWORK FRAMEWORK required NAMES Security )
+	LIST( APPEND TEST_LIBRARIES ${SECURITY_FRAMEWORK} )
 ENDIF()
 
 SET( SqLiteStorageTests_SRCS SqLiteStorageTests.cpp )
@@ -59,7 +59,7 @@ ADD_EXECUTABLE(
 	${XmlSerializationTests_SRCS}
 	${TestDataResources_SRCS}
 )
-TARGET_LINK_LIBRARIES( XmlSerializationTests ${TEST_LIBRARIES}  )
+TARGET_LINK_LIBRARIES( XmlSerializationTests ${TEST_LIBRARIES} )
 ADD_TEST( NAME XmlSerializationTests COMMAND XmlSerializationTests )
 
 SET( ImportExportTests_SRCS ImportExportTests.cpp ${TestApplication_SRCS} )

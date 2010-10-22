@@ -1,2 +1,2 @@
 /* Define if you have libXss installed */
-#cmakedefine HAVE_LIBXSS 1
+#cmakedefine X11_Xscreensaver_LIB
