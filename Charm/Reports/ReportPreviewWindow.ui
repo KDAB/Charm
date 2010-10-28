@@ -1,36 +1,37 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>ReportPreviewWindow</class>
- <widget class="QDialog" name="ReportPreviewWindow" >
-  <property name="geometry" >
+ <widget class="QDialog" name="ReportPreviewWindow">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>493</width>
+    <width>551</width>
     <height>310</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Report Preview</string>
   </property>
-  <layout class="QVBoxLayout" >
+  <layout class="QVBoxLayout">
    <item>
-    <widget class="QTextBrowser" name="textBrowser" />
+    <widget class="QTextBrowser" name="textBrowser"/>
    </item>
    <item>
-    <layout class="QHBoxLayout" >
+    <layout class="QHBoxLayout">
      <item>
-      <widget class="QPushButton" name="pushButtonClose" >
-       <property name="text" >
+      <widget class="QPushButton" name="pushButtonClose">
+       <property name="text">
         <string>&amp;Close</string>
        </property>
       </widget>
      </item>
      <item>
       <spacer>
-       <property name="orientation" >
+       <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
-       <property name="sizeHint" >
+       <property name="sizeHint" stdset="0">
         <size>
          <width>40</width>
          <height>20</height>
@@ -39,29 +40,29 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButtonUpdate" >
-       <property name="text" >
+      <widget class="QPushButton" name="pushButtonUpdate">
+       <property name="text">
         <string>&amp;Update</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButtonSave" >
-       <property name="text" >
+      <widget class="QPushButton" name="pushButtonSave">
+       <property name="text">
         <string>Save as &amp;XML...</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButtonSaveTotals" >
-       <property name="text" >
-        <string>Save &amp;Totals...</string>
+      <widget class="QPushButton" name="pushButtonSaveTotals">
+       <property name="text">
+        <string>Save &amp;totals...</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButtonPrint" >
-       <property name="text" >
+      <widget class="QPushButton" name="pushButtonPrint">
+       <property name="text">
         <string>&amp;Print...</string>
        </property>
       </widget>

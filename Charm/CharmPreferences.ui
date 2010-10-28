@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>433</width>
+    <width>499</width>
     <height>205</height>
    </rect>
   </property>
@@ -19,22 +19,22 @@
      <property name="currentIndex">
       <number>1</number>
      </property>
-     <widget class="QWidget" name="tabDatabase" >
-      <attribute name="title" >
+     <widget class="QWidget" name="tabDatabase">
+      <attribute name="title">
        <string>Database Options</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
         <widget class="QCheckBox" name="cbEventsInLeavesOnly">
          <property name="text">
-          <string>only record events for tasks that do not have children</string>
+          <string>Only record events for tasks that do not have children</string>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QCheckBox" name="cbOneEventAtATime">
          <property name="text">
-          <string>only allow one event at a time</string>
+          <string>Only allow one event at a time</string>
          </property>
         </widget>
        </item>
@@ -64,7 +64,7 @@
        <item row="0" column="0">
         <widget class="QLabel" name="label">
          <property name="text">
-          <string>Task Tracker Font Size:</string>
+          <string>Tasks window font size:</string>
          </property>
         </widget>
        </item>
@@ -90,7 +90,7 @@
        <item row="1" column="0">
         <widget class="QLabel" name="label_2">
          <property name="text">
-          <string>Buttons show</string>
+          <string>Buttons show:</string>
          </property>
         </widget>
        </item>
@@ -150,14 +150,14 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;use 24h time values for editing, independently of the global locale setup&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="text">
-          <string>always use 24h time format when editing</string>
+          <string>Always use 24h time format when editing</string>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QCheckBox" name="cbIdleDetection">
          <property name="text">
-          <string>Enable Idle Detection</string>
+          <string>Enable idle detection</string>
          </property>
         </widget>
        </item>

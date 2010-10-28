@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>368</width>
-    <height>352</height>
+    <width>402</width>
+    <height>416</height>
    </rect>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
@@ -29,7 +29,7 @@
      <item>
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>&amp;Select Week:</string>
+        <string>&amp;Select week:</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -69,7 +69,7 @@
       <item row="1" column="0">
        <widget class="QLabel" name="label_4">
         <property name="text">
-         <string>Week</string>
+         <string>Week:</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -122,7 +122,7 @@
       <item row="4" column="0">
        <widget class="QLabel" name="label_2">
         <property name="text">
-         <string>The Week containing</string>
+         <string>Week containing:</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -182,7 +182,7 @@
            </sizepolicy>
           </property>
           <property name="text">
-           <string>(Task Name)</string>
+           <string>(task name)</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
@@ -235,7 +235,7 @@
       <item>
        <widget class="QCheckBox" name="checkBoxActiveOnly">
         <property name="text">
-         <string>only show tasks with activity</string>
+         <string>Only show tasks with activity</string>
         </property>
         <property name="checked">
          <bool>true</bool>
@@ -261,7 +261,7 @@
    <item>
     <widget class="QPushButton" name="pushButtonReport">
      <property name="text">
-      <string>&amp;Create Report</string>
+      <string>&amp;Create report</string>
      </property>
     </widget>
    </item>
