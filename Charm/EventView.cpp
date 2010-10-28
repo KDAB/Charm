@@ -12,7 +12,6 @@
 #include "Core/CharmConstants.h"
 #include "Application.h"
 #include "EventView.h"
-#include "EventDisplay.h"
 #include "EventEditor.h"
 #include "Core/Configuration.h"
 #include "EventEditorDelegate.h"
@@ -30,7 +29,6 @@
 EventView::EventView( QWidget* parent )
     : QWidget( parent )
     , m_ui( new Ui::EventView )
-    , m_eventDisplay( new EventDisplay() )
     , m_model( 0 )
     , m_actionNewEvent( this )
     , m_actionEditEvent( this )
@@ -53,8 +51,6 @@ EventView::EventView( QWidget* parent )
              SLOT( slotEditEvent() ) );
     connect( &m_actionDeleteEvent, SIGNAL( triggered() ),
              SLOT( slotDeleteEvent() ) );
-    connect( m_eventDisplay, SIGNAL( editEvent( Event ) ),
-             SLOT( slotEditEvent( Event ) ) );
 //     connect( &m_commitTimer, SIGNAL( timeout() ),
 //              SLOT( slotCommitTimeout() ) );
 //     m_commitTimer.setSingleShot( true );
@@ -161,7 +157,6 @@ void EventView::slotCurrentItemChanged( const QModelIndex& start,
         m_actionEditEvent.setEnabled(true);
         Event event = m_model->eventForIndex( start );
         Q_ASSERT( event.isValid() ); // index is valid,  so...
-        m_eventDisplay->setEvent( event );
         setCurrentEvent( event );
     }
 
@@ -424,8 +419,6 @@ void EventView::slotEditEventCompleted( const Event& event )
     CommandModifyEvent* command =
         new CommandModifyEvent( event, this );
     emitCommand( command );
-
-    m_eventDisplay->setEvent( m_event );
 }
 
 

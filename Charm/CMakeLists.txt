@@ -17,7 +17,6 @@ SET(
 	EventView.cpp
 	EventWindow.cpp
 	EventEditor.cpp
-	EventDisplay.cpp
 	EventEditorDelegate.cpp
 	SelectTaskDialog.cpp
 	ModelConnector.cpp
@@ -94,7 +93,6 @@ QT4_WRAP_UI(
 	TasksView.ui
 	TaskEditor.ui
 	EventView.ui
-	EventDisplay.ui
 	EventEditor.ui
 	SelectTaskDialog.ui
 	CharmAboutDialog.ui

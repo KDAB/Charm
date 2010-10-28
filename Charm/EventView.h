@@ -79,7 +79,6 @@ private:
 
     QList<NamedTimeSpan> m_timeSpans;
     Ui::EventView* m_ui;
-    EventDisplay* m_eventDisplay;
     Event m_event;
     EventModelFilter* m_model;
     QAction m_actionNewEvent;
