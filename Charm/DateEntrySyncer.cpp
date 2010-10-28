@@ -6,11 +6,12 @@
 
 #include <Core/Dates.h>
 
-DateEntrySyncer::DateEntrySyncer( QSpinBox* week, QSpinBox* year, QDateEdit* date, QObject* parent )
+DateEntrySyncer::DateEntrySyncer( QSpinBox* week, QSpinBox* year, QDateEdit* date, int weekDay, QObject* parent )
     : QObject( parent )
     , m_week( week )
     , m_year( year )
     , m_date( date )
+    , m_weekDay( weekDay )
 {
     connect( m_week, SIGNAL(valueChanged(int)), this, SLOT(dateSelectionChanged()) );
     connect( m_year, SIGNAL(valueChanged(int)), this, SLOT(dateSelectionChanged()) );
@@ -48,9 +49,8 @@ void DateEntrySyncer::dateSelectionChanged()
         const int week = m_week->value();
         const int year = m_year->value();
         if ( m_date ) {
-            const int weekday = m_date->date().dayOfWeek(); //preserve day of week
             m_date->blockSignals( true );
-            m_date->setDate( Charm::dateByWeekNumberAndWeekDay( year, week, weekday ) );
+            m_date->setDate( Charm::dateByWeekNumberAndWeekDay( year, week, m_weekDay ) );
             m_date->blockSignals( false );
         }
     } else {
