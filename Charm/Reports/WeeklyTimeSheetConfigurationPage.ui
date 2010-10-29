@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>402</width>
-    <height>416</height>
+    <height>370</height>
    </rect>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
@@ -139,19 +139,6 @@
         </property>
        </widget>
       </item>
-      <item row="5" column="0">
-       <spacer>
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>20</width>
-          <height>40</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
      </layout>
     </widget>
    </item>
@@ -246,31 +233,35 @@
     </widget>
    </item>
    <item>
-    <spacer>
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>211</width>
-       <height>31</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item>
-    <widget class="QPushButton" name="pushButtonReport">
-     <property name="text">
-      <string>&amp;Create report</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QPushButton" name="pushButtonBack">
-     <property name="text">
-      <string>&amp;Back</string>
-     </property>
-    </widget>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QPushButton" name="pushButtonBack">
+       <property name="text">
+        <string>&amp;Back...</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButtonReport">
+       <property name="text">
+        <string>&amp;Create...</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>
