@@ -82,7 +82,6 @@ QT4_AUTOMOC( ${CharmApplication_SRCS} )
 
 QT4_WRAP_UI(
 	UiGenerated_SRCS
-	MainWindow.ui
 	ConfigurationDialog.ui
 	CharmPreferences.ui
 	TaskIdDialog.ui
