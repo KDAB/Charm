@@ -56,18 +56,23 @@ void EventEditorDelegate::paint( QPainter* painter,
     if ( event.isValid() ) {
         bool locked = DATAMODEL->isEventActive( event.id() );
         QString dateAndDuration;
-        QTextStream stream( &dateAndDuration );
+        QTextStream dateStream( &dateAndDuration );
         QDate date = event.startDateTime().date();
         QTime time = event.startDateTime().time();
         QTime endTime = event.endDateTime().time();
-        stream << date.toString( Qt::SystemLocaleDate )
+        dateStream << date.toString( Qt::SystemLocaleDate )
                << " " << time.toString( Qt::SystemLocaleDate )
                << " - " << endTime.toString( Qt::SystemLocaleDate )
-               << " (" << hoursAndMinutes( event.duration() ) << ") wk"
+               << " (" << hoursAndMinutes( event.duration() ) << ") Week "
                << date.weekNumber();
 
+        QString taskName;
+        QTextStream taskStream( &taskName );
+        taskStream << "[" << item.task().id() << "] "
+                   << tasknameWithParents( item.task() );
+
         paint( painter, option,
-               tasknameWithParents( item.task() ),
+               taskName,
                dateAndDuration,
                logDuration( event.duration() ),
                locked ? EventState_Locked : EventState_Default );
