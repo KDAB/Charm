@@ -83,6 +83,7 @@ TimeTrackingTaskSelector::TimeTrackingTaskSelector(QWidget *parent)
 
     m_editCommentAction->setIcon( Data::editEventIcon() );
     m_editCommentAction->setShortcut( QKeySequence( Qt::Key_Return ) );
+    m_editCommentAction->setToolTip( tr( "Add a comment to the running task" ) );
     connect( m_editCommentAction, SIGNAL( triggered(bool) ),
              SLOT( slotEditCommentClicked() ) );
     m_editCommentButton->setDefaultAction( m_editCommentAction );
