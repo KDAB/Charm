@@ -18,21 +18,16 @@ from core.environments.Environments import Environments
 build, project = getBuildProject( buildName = 'Charm Build', projectName = 'Charm',
 								projectVersionNumber = '1.4.0', scmUrl = 'git://github.com/KDAB/Charm.git' )
 
-# helper variable to set a CMake parameter
-enableCharmTools = CMakeVariable( 'CHARM_ENABLE_TOOLS_BUILD', 'TRUE', 'BOOL' )
-
 sharedDebug = Environments( [ 'Qt-4.[67].?-Shared-Debug' ], 'Qt 4 Shared Debug', project )
 debug = Configuration( 'Debug', sharedDebug, )
 cmakeDebug = CMakeBuilder()
-cmakeDebug.addCMakeVariable( enableCharmTools )
+cmakeDebug.addCMakeVariable( CMakeVariable( 'CHARM_ENABLE_TOOLS_BUILD', 'TRUE', 'BOOL' ) )
 debug.addPlugin( CTest() )
 debug.addPlugin( cmakeDebug )
 
 sharedRelease = Environments( [ 'Qt-4.[67].?-Shared-Release' ], 'Qt 4 Shared Release', project )
 release = Configuration( 'Release', sharedRelease )
-cmakeRelease = CMakeBuilder()
-cmakeRelease.addCMakeVariable( enableCharmTools )
-release.addPlugin( cmakeRelease )
+release.addPlugin( CMakeBuilder() )
 release.addPlugin( CTest() )
 release.addPlugin( CPack() )
 
