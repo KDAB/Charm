@@ -14,14 +14,16 @@ const QIcon& Data::charmIcon()
 
 const QIcon& Data::charmTrayIcon()
 {
-#ifndef Q_WS_MAC
-	return charmIcon();
-#else
+#ifdef Q_WS_MAC
 	Q_ASSERT_X(!QPixmap(":/Charm/charmtrayicon.png").isNull(), "Data::charmTrayIcon",
-			"Required resource not available");
+                        "Required resource not available");
 	static QIcon icon(QPixmap(":/Charm/charmtrayicon.png"));
-	return icon;
+#else
+	Q_ASSERT_X(!QPixmap(":/Charm/charmtray24.png").isNull(), "Data::charmTrayIcon",
+                        "Required resource not available");
+	static QIcon icon(QPixmap(":/Charm/charmtray24.png"));
 #endif
+	return icon;
 }
 
 const QIcon& Data::goIcon()

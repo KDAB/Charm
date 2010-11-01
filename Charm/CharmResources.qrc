@@ -1,6 +1,7 @@
 <RCC>
     <qresource prefix="/Charm">
         <file alias="charmtrayicon.png">Icons/charmtrayicon.png</file>
+        <file alias="charmtray24.png">Icons/charmtray24.png</file>
         <file alias="configure.png">Icons/configure.png</file>
         <file alias="report_stylesheet.sty">Reports/report_stylesheet.sty</file>
         <file alias="clearfilter.png">Icons/edit-clear-locationbar-ltr.png</file>
