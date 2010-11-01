@@ -1,33 +1,42 @@
-#!/usr/bin/python
-import copy, os, platform
-from AutobuildCore.Configuration import Configuration
-from AutobuildCore.Project import Project
-# from AutobuildCore.Callbacks.DynamicUploadLocation import BranchNamePackageSubdir
-from AutobuildCore.Callbacks.ConfigurationBuildSequence import ConfigurationBuildSequence
-from AutobuildCore.Callbacks.BuildInformation import BuildInformation
+#!/usr/bin/env python
 
-Product = Project( 'Charm', '0.4.2' )
-Product.setScmUrl( 'http://git.gitorious.org/charm/charm.git' )
-Product.setScmSrcDir( '' )
-# Product.addCallback( BranchNamePackageSubdir( scmPath ) )
+# This file is part of Charm.
+# -*- coding: utf-8 -*-
+# 
+# Copyright (C) 2010 Klaralvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+# Author: Mirko Boehm <mirko@kdab.com>
 
-Debug = Configuration( Product, 'Shared Debug' )
-Debug.addCallback( ConfigurationBuildSequence( 'conf-bin-package', '*Static*', False, False ) ) # do not package shared builds
-Debug.addCallback( BuildInformation() )
-Debug.setBuilder( 'cmake' )
-Debug.addPackageDependency( 'Qt-4.[4-9].?-Shared-Debug' )
-Debug.addBlacklistedPlatform( 'win32-msvc' ) # disable MSVC6
-Debug.setOptions( '-D CMAKE_BUILD_TYPE=debug -D CHARM_ENABLE_TOOLS_BUILD:BOOL=true' )
+from core.helpers.BoilerPlate import getBuildProject
+from core.Configuration import Configuration
+from core.helpers.PathResolver import PathResolver
+from core.plugins.RSyncPublisher import RSyncPublisher
+from core.plugins.builders.generators.CMakeBuilder import CMakeBuilder, CMakeVariable
+from core.plugins.packagers.CPack import CPack
+from core.plugins.testers.CTest import CTest
+from core.environments.Environments import Environments
 
-Release = copy.copy( Debug, )
-Release.setConfigName( 'Shared Release' )
-Release.setPackageDependencies( [ 'Qt-4.[4-9].?-Shared-Release' ] )
-Release.setOptions( '-D CMAKE_BUILD_TYPE=release -D CHARM_ENABLE_TOOLS_BUILD:BOOL=true' )
+build, project = getBuildProject( buildName = 'Charm Build', projectName = 'Charm',
+								projectVersionNumber = '1.4.0', scmUrl = 'git://github.com/KDAB/Charm.git' )
 
-# a configuration that does not use any Autobuild environments
-PlatformBuild = Configuration( Product, "Platform Build" )
-PlatformBuild.setBuilder( 'cmake' )
-PlatformBuild.setOptions( '-D CMAKE_BUILD_TYPE=release' )
+# helper variable to set a CMake parameter
+enableCharmTools = CMakeVariable( 'CHARM_ENABLE_TOOLS_BUILD', 'TRUE', 'BOOL' )
 
-# platform build is not enabled by default: 
-Product.build( [ Debug, Release ] ) # , StaticRelease ] )
+sharedDebug = Environments( [ 'Qt-4.[67].?-Shared-Debug' ], 'Qt 4 Shared Debug', project )
+debug = Configuration( 'Debug', sharedDebug, )
+cmakeDebug = CMakeBuilder()
+cmakeDebug.addCMakeVariable( enableCharmTools )
+debug.addPlugin( CTest() )
+debug.addPlugin( cmakeDebug )
+
+sharedRelease = Environments( [ 'Qt-4.[67].?-Shared-Release' ], 'Qt 4 Shared Release', project )
+release = Configuration( 'Release', sharedRelease )
+cmakeRelease = CMakeBuilder()
+cmakeRelease.addCMakeVariable( enableCharmTools )
+release.addPlugin( cmakeRelease )
+release.addPlugin( CTest() )
+release.addPlugin( CPack() )
+
+# add a RSync publisher (remember to set the default upload location in the configuration file!):
+project.addPlugin( RSyncPublisher( localDir = PathResolver( project.getPackagesDir ) ) )
+
+build.build()
