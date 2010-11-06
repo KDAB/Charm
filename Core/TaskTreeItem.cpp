@@ -23,14 +23,17 @@ TaskTreeItem::TaskTreeItem( const TaskTreeItem& other )
     }
 }
 
-void TaskTreeItem::operator=( const TaskTreeItem& other )
+TaskTreeItem& TaskTreeItem::operator=( const TaskTreeItem& other )
 {
-    m_children = other.m_children;
-    m_parent = other.m_parent;
-    m_task = other.m_task;
-    if ( m_parent ) {
-        m_parent->m_children.append( this );
+    if( this != &other ) {
+        m_children = other.m_children;
+        m_parent = other.m_parent;
+        m_task = other.m_task;
+        if ( m_parent ) {
+            m_parent->m_children.append( this );
+        }
     }
+    return *this;
 }
 
 TaskTreeItem::~TaskTreeItem()
