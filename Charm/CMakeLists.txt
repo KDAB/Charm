@@ -129,7 +129,6 @@ IF( APPLE )
 		COMMAND	${CMAKE_COMMAND} -E copy_if_different ${ICON} ${RESOURCES}
 	)
 
-	SET( CMAKE_MODULE_PATH ${Charm_SOURCE_DIR}/Charm/ ${CMAKE_MODULE_PATH} )
 ENDIF()
 
 IF( UNIX AND NOT APPLE )
@@ -172,7 +171,7 @@ ENDIF()
 INSTALL( TARGETS Charm DESTINATION ${BIN_INSTALL_DIR} )
 
 # Only support packaging on newer versions of CMake.
-IF( NOT "${CMAKE_VERSION}" VERSION_LESS "2.8.0" )
+IF( NOT "${CMAKE_VERSION}" VERSION_LESS "2.8.3" )
 	SET( QT_SQLDRIVERS_PLUGINS_DIR ${QT_PLUGINS_DIR}/sqldrivers )
 	IF( WIN32 )
 		FIND_FILE(
@@ -248,7 +247,7 @@ IF( NOT "${CMAKE_VERSION}" VERSION_LESS "2.8.0" )
 					FILE( WRITE \"\${CMAKE_INSTALL_PREFIX}/Charm.app/Contents/Resources/qt.conf\" \"[Paths]\nPlugins = ${PLUGINS_DIR_ONLY}\" )
 				ENDIF()
 
-				INCLUDE( \"${CMAKE_SOURCE_DIR}/CMake/Modules/BundleUtilities.cmake\" )
+				INCLUDE( \"${CMAKE_ROOT}/Modules/BundleUtilities.cmake\" )
 				SET( BU_CHMOD_BUNDLE_ITEMS TRUE )
 				FIXUP_BUNDLE( \"\${CMAKE_INSTALL_PREFIX}/${EXECUTABLE}\" \"\${QT_SQL_PLUGINS}\" \"${QT_LIBRARY_DIR}\" )
 			ENDIF()
