@@ -14,6 +14,8 @@ from core.plugins.builders.generators.CMakeBuilder import CMakeBuilder, CMakeVar
 from core.plugins.packagers.CPack import CPack
 from core.plugins.testers.CTest import CTest
 from core.environments.Environments import Environments
+from core.plugins.DoxygenGenerator import DoxygenGenerator
+import socket
 
 build, project = getBuildProject( buildName = 'Charm Build', projectName = 'Charm',
 								projectVersionNumber = '1.4.0', scmUrl = 'git://github.com/KDAB/Charm.git' )
@@ -31,7 +33,24 @@ release.addPlugin( CMakeBuilder() )
 release.addPlugin( CTest() )
 release.addPlugin( CPack() )
 
-# add a RSync publisher (remember to set the default upload location in the configuration file!):
-project.addPlugin( RSyncPublisher( localDir = PathResolver( project.getPackagesDir ) ) )
+# publish doxygen documentation:
+prep = Preprocessor( project, inputFilename = PathResolver( project.getSourceDir, 'doxygen.cfg.in' ),
+					 outputFilename = PathResolver( project.getTempDir, 'doxygen.cfg' ) )
+project.addPlugin( prep )
+gen = DoxygenGenerator()
+gen.setOptional( True )
+gen.setDoxygenFile( prep.getOutputFilename() )
+project.addPlugin( gen )
+project.addPlugin( RSyncPublisher( localDir = PathResolver( project.getDocsDir ),
+	uploadLocation = 'docs.kdab.com:/home/klaralv-web/docs.kdab.net/charm' ) )
+
+# publish packages:
+project.addPlugin( RSyncPublisher( localDir = PathResolver( project.getPackagesDir ),
+	uploadLocation = 'docs.kdab.com:/home/klaralv-web/docs.kdab.net/charm' ) )
+
+build.getSettings().setBuildStepEnabled( 'conf-package', 'c', True )
+# this is not extremely elegant, and will be merged into the main configuration later:
+if socket.gethostname() == 'bigmac.office-berlin.kdab.com':
+	build.getSettings().setBuildStepEnabled( 'project-upload-packages', 'c', True )
 
 build.build()

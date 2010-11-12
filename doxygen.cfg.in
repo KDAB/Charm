@@ -1,12 +1,10 @@
-# Doxyfile 1.5.5
-
 #---------------------------------------------------------------------------
 # Project related configuration options
 #---------------------------------------------------------------------------
 DOXYFILE_ENCODING      = UTF-8
-PROJECT_NAME           = Charm
-PROJECT_NUMBER         = trunk
-OUTPUT_DIRECTORY       = ./doc
+PROJECT_NAME           = "@@(project.settings.project.name)"
+PROJECT_NUMBER         = "@@(project.settings.project.version.number)"
+OUTPUT_DIRECTORY       = @@(project.folders.docs)/@@(project.settings.project.version.number)
 CREATE_SUBDIRS         = NO
 OUTPUT_LANGUAGE        = English
 BRIEF_MEMBER_DESC      = YES
@@ -90,7 +88,8 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = .
+INPUT                  = @@(project.folders.src)
+STRIP_FROM_PATH  = @@(project.folders.src)
 INPUT_ENCODING         = UTF-8
 FILE_PATTERNS          = *.c \
                          *.cc \
