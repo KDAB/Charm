@@ -8,6 +8,7 @@
 
 from core.helpers.BoilerPlate import getBuildProject
 from core.Configuration import Configuration
+from core.plugins.Preprocessor import Preprocessor
 from core.helpers.PathResolver import PathResolver
 from core.plugins.RSyncPublisher import RSyncPublisher
 from core.plugins.builders.generators.CMakeBuilder import CMakeBuilder, CMakeVariable
