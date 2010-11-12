@@ -68,7 +68,8 @@ void EventEditorDelegate::paint( QPainter* painter,
 
         QString taskName;
         QTextStream taskStream( &taskName );
-        taskStream << "[" << item.task().id() << "] "
+        // print leading zeroes for the TaskId, we assume all TaskIds have 4 digits
+        taskStream << "[" << QString( "%1" ).arg( item.task().id(), 4, 10, QChar( '0' ) ) << "] "
                    << tasknameWithParents( item.task() );
 
         paint( painter, option,
