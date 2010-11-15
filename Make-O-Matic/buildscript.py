@@ -38,6 +38,10 @@ release.addPlugin( CPack() )
 prep = Preprocessor( project, inputFilename = PathResolver( project.getSourceDir, 'doxygen.cfg.in' ),
 					 outputFilename = PathResolver( project.getTempDir, 'doxygen.cfg' ) )
 project.addPlugin( prep )
+footer = Preprocessor( project, inputFilename = PathResolver( project.getSourceDir, 'doxygen-footer.html.in' ),
+					 outputFilename = PathResolver( project.getTempDir, 'doxygen-footer.html' ) )
+project.addPlugin( footer )
+
 gen = DoxygenGenerator()
 gen.setOptional( True )
 gen.setDoxygenFile( prep.getOutputFilename() )

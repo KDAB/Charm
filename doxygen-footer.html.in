@@ -1,0 +1,16 @@
+<br />
+<div style="width: 100%; border-top: 2px solid;">
+<table align="center" style="border: none;" cellspacing="6px" cellpadding="3px">
+	<tr>
+		<td style="text-align: left; font-size: x-small; color: midnightblue; background-color: gainsboro;">
+		Project: @@(project.settings.project.name) @@(project.settings.project.version.number) <br />
+		URL: @@(project.settings.project.sourcelocation) at revision @@(project.settings.project.revision) <br />
+		Build Type: @@(project.settings.project.buildtype), executed at $datetime <br />
+		</td>
+	</tr>
+</table>
+
+</span>
+</div>
+</body>
+</html>
