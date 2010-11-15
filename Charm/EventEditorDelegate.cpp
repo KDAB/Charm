@@ -68,8 +68,9 @@ void EventEditorDelegate::paint( QPainter* painter,
 
         QString taskName;
         QTextStream taskStream( &taskName );
-        // print leading zeroes for the TaskId, we assume all TaskIds have 4 digits
-        taskStream << "[" << QString( "%1" ).arg( item.task().id(), 4, 10, QChar( '0' ) ) << "] "
+        // print leading zeroes for the TaskId
+        const int taskIdLength = qMax( 2, CONFIGURATION.taskPaddingLength );
+        taskStream << "[" << QString( "%1" ).arg( item.task().id(), taskIdLength, 10, QChar( '0' ) ) << "] "
                    << tasknameWithParents( item.task() );
 
         paint( painter, option,
@@ -161,7 +162,7 @@ QRect EventEditorDelegate::paint( QPainter* painter,
     // draw the duration line:
     const int Margin = 2;
     QRect durationRect( option.rect.left() + 1, detailsRect.bottom(),
-    		static_cast<int>( logDuration * ( option.rect.width() - 2 ) ), Margin  );
+                static_cast<int>( logDuration * ( option.rect.width() - 2 ) ), Margin  );
     painter->setBrush( palette.dark() );
     painter->setPen( Qt::NoPen );
     painter->drawRect( durationRect );
@@ -176,17 +177,17 @@ QRect EventEditorDelegate::paint( QPainter* painter,
 
 double EventEditorDelegate::logDuration( int duration ) const
 {   // we rely on the compiler to optimize at compile time :-)
-	if( duration <= 0) {
-		return 0;
-	}
-	if( duration <= 3600 ) {
-		return 0.2 * 1.0 / 3600.0 * duration;
-	} else {
-		const double log2 = std::log( 2.0 );
-		const double hours = 1.0 / 3600 * duration;
-		const double value = log( hours ) / log2;
-		return 0.2 * ( 1.0 + value );
-	}
+        if( duration <= 0) {
+                return 0;
+        }
+        if( duration <= 3600 ) {
+                return 0.2 * 1.0 / 3600.0 * duration;
+        } else {
+                const double log2 = std::log( 2.0 );
+                const double hours = 1.0 / 3600 * duration;
+                const double value = log( hours ) / log2;
+                return 0.2 * ( 1.0 + value );
+        }
 }
 
 #include "EventEditorDelegate.moc"
