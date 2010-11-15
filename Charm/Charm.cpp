@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include <QFile>
 #include <QMessageBox>
 #include <QtPlugin>
@@ -5,11 +7,13 @@
 #include <QString>
 
 #include "Application.h"
+#include "Core/CharmExceptions.h"
 
 int main ( int argc, char** argv )
 {
     if (argc == 2 && qstrcmp(argv[1], "--version") == 0) {
-        printf("Charm version " CHARM_VERSION "\n");
+        using namespace std;
+        cout << "Charm version " << CHARM_VERSION << endl;
         return 0;
     }
 
@@ -25,5 +29,15 @@ int main ( int argc, char** argv )
     }
 
     Application app ( argc,  argv );
-    return app.exec();
+
+    try {
+        return app.exec();
+    } catch( CharmException& e ) {
+        const QString msg( QObject::tr( "An application exception has occured. Charm will be terminated. The error message was:\n"
+                                       "%1\n"
+                                       "Please report this as a bug at https://quality.kdab.com/browse/CHM." ).arg( e.what() ) );
+        QMessageBox::critical( 0, QObject::tr( "Application Error" ), msg );
+        using namespace std;
+        cerr << qPrintable( msg ) << endl;
+    }
 }
