@@ -37,7 +37,6 @@ int main ( int argc, char** argv )
     Application app ( argc,  argv );
 
     try {
-        throw std::exception();
         return app.exec();
     } catch( CharmException& e ) {
         const QString msg( QObject::tr( "An application exception has occured. Charm will be terminated. The error message was:\n"
