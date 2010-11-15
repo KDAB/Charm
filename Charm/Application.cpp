@@ -493,9 +493,9 @@ bool Application::configure()
         const QString storageDatabase = storageDatabaseDirectory + storageDatabaseFile;
         const QString storageDatabaseDebug = storageDatabaseDirectory + storageDatabaseFileDebug;
 #ifdef NDEBUG
-        CONFIGURATION.localStorageDatabase = QDir::toNativeSeparators(storageDatabaseDebug);
-#else
         CONFIGURATION.localStorageDatabase = QDir::toNativeSeparators(storageDatabase);
+#else
+        CONFIGURATION.localStorageDatabase = QDir::toNativeSeparators(storageDatabaseDebug);
 #endif
         ConfigurationDialog dialog(CONFIGURATION, &m_tasksWindow);
         if (dialog.exec())
