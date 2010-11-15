@@ -21,6 +21,11 @@ FIND_PACKAGE( Qt4 4.6.0 COMPONENTS QtCore QtGui QtSql QtXml REQUIRED )
 INCLUDE( UseQt4 )
 ENABLE_TESTING()
 
+IF( CMAKE_BUILD_TYPE MATCHES "^[Rr]elease$" )
+        ADD_DEFINITIONS( -DQT_NO_DEBUG_OUTPUT )
+        MESSAGE( "Disabling qDebug output in release builds." )
+ENDIF()
+
 # Always include the source and build directories in the include path
 # to save doing so manually in every subdirectory.
 SET( CMAKE_INCLUDE_CURRENT_DIR ON )
@@ -101,7 +106,7 @@ IF( NOT "${CMAKE_VERSION}" VERSION_LESS "2.8.3" )
                 )
         ENDIF()
         IF( APPLE )
-                SET( CPACK_GENERATOR "DragNDrop" "ZIP" )
+                SET( CPACK_GENERATOR "DragNDrop" )
                 SET( CPACK_DMG_FORMAT "UDBZ" )
                 SET( CPACK_DMG_VOLUME_NAME "Charm" )
                 SET( CPACK_SYSTEM_NAME "OSX" )
