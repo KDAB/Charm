@@ -10,7 +10,7 @@ QDate Charm::dateByWeekNumberAndWeekDay( int year, int week, int day ) {
     int wdyear = 0;
     const int wdweek = start.weekNumber( &wdyear );
     // now we really should be in week 1 of year
-    Q_ASSERT( wdweek == 1 );
+    Q_ASSERT( wdweek == 1 ); Q_UNUSED( wdweek );
     Q_ASSERT( wdyear == year );
     //now go to the requested weekday, in week 1:
     start = start.addDays( day - start.dayOfWeek() );
