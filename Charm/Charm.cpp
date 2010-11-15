@@ -9,6 +9,12 @@
 #include "Application.h"
 #include "Core/CharmExceptions.h"
 
+void showCriticalError( const QString& msg ) {
+    QMessageBox::critical( 0, QObject::tr( "Application Error" ), msg );
+    using namespace std;
+    cerr << qPrintable( msg ) << endl;
+}
+
 int main ( int argc, char** argv )
 {
     if (argc == 2 && qstrcmp(argv[1], "--version") == 0) {
@@ -31,13 +37,20 @@ int main ( int argc, char** argv )
     Application app ( argc,  argv );
 
     try {
+        throw std::exception();
         return app.exec();
     } catch( CharmException& e ) {
         const QString msg( QObject::tr( "An application exception has occured. Charm will be terminated. The error message was:\n"
                                        "%1\n"
                                        "Please report this as a bug at https://quality.kdab.com/browse/CHM." ).arg( e.what() ) );
-        QMessageBox::critical( 0, QObject::tr( "Application Error" ), msg );
-        using namespace std;
-        cerr << qPrintable( msg ) << endl;
+        showCriticalError( msg );
+        return 1;
+    } catch( ... ) {
+        const QString msg( QObject::tr( "The application terminated with an unexpected exception.\n"
+                                       "No other information is available to debug this problem.\n"
+                                       "Please report this as a bug at https://quality.kdab.com/browse/CHM." ) );
+        showCriticalError( msg );
+        return 1;
     }
+    return 0;
 }
