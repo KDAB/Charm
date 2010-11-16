@@ -66,8 +66,7 @@ protected:
 // the following are helper functions used to create reports
 /** Return true if first starts before second. */
 bool StartsEarlier( EventId firstId, EventId secondId );
-/** Make a task name that includes the parent task's name.*/
-QString tasknameWithParents( const Task& );
+
 /** Returns true if the task p is a possibly indirect parent of the c. */
 bool isIndirectParent( const Task& p, const Task& c );
 

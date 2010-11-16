@@ -10,7 +10,6 @@
 #include "ViewHelpers.h"
 #include "EventModelFilter.h"
 #include "EventEditorDelegate.h"
-#include "Reports/CharmReport.h"
 
 EventEditorDelegate::EventEditorDelegate( EventModelFilter* model,
                                           QObject* parent )
@@ -71,7 +70,7 @@ void EventEditorDelegate::paint( QPainter* painter,
         // print leading zeroes for the TaskId
         const int taskIdLength = qMax( 2, CONFIGURATION.taskPaddingLength );
         taskStream << "[" << QString( "%1" ).arg( item.task().id(), taskIdLength, 10, QChar( '0' ) ) << "] "
-                   << tasknameWithParents( item.task() );
+                   << DATAMODEL->fullTaskName( item.task() );
 
         paint( painter, option,
                taskName,

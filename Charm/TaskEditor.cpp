@@ -14,7 +14,6 @@
 
 #include "ViewHelpers.h"
 #include "TaskEditor.h"
-#include "Reports/CharmReport.h"
 #include "ui_TaskEditor.h"
 #include "SelectTaskDialog.h"
 
@@ -46,7 +45,7 @@ void TaskEditor::setTask( const Task& task )
 	m_task = task;
 	const TaskTreeItem& taskTreeItem =
         MODEL.charmDataModel()->taskTreeItem( task.id() );
-	m_ui->labelTaskName->setText( tasknameWithParents( taskTreeItem.task() ) );
+	m_ui->labelTaskName->setText( MODEL.charmDataModel()->fullTaskName( taskTreeItem.task() ) );
 	m_ui->lineEditName->setText( task.name() );
 	if(  task.parent() != 0 ) {
 		const TaskTreeItem& parentItem =

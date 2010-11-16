@@ -11,7 +11,6 @@
 #include "ViewHelpers.h"
 
 #include "TimeTrackingView.h"
-#include "Reports/CharmReport.h"
 
 #include "ui_TimeTrackingView.h"
 
@@ -183,7 +182,7 @@ void TimeTrackingView::slotSelectTasksToShow()
     for ( int i = 0; i < uniqueTaskIds.size(); ++i ) {
         summaries[i].task = uniqueTaskIds.at( i );
         const Task& task = DATAMODEL->getTask( uniqueTaskIds[i] );
-        summaries[i].taskname = tasknameWithParents( task );
+        summaries[i].taskname = DATAMODEL->fullTaskName( task );
     }
     // now add the times to the tasks:
     Q_FOREACH( const Event& event, events ) {

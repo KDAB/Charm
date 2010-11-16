@@ -12,7 +12,6 @@
 #include "ViewHelpers.h"
 #include "EventEditor.h"
 #include "SelectTaskDialog.h"
-#include "Reports/CharmReport.h"
 #include "Commands/CommandMakeEvent.h"
 
 #include "ui_EventEditor.h"
@@ -192,7 +191,7 @@ void EventEditor::updateValues( bool all )
     int durationMinutes = qMax( ( m_event.duration() % 3600 ) / 60, 0 );
     m_ui->spinBoxHours->setValue( durationHours );
     m_ui->spinBoxMinutes->setValue( durationMinutes );
-    QString name = tasknameWithParents( taskTreeItem.task() );
+    QString name = MODEL.charmDataModel()->fullTaskName( taskTreeItem.task() );
     m_ui->labelTaskName->setText( name );
 
     if ( CONFIGURATION.always24hEditing ) {

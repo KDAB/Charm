@@ -16,7 +16,6 @@
 #include "Core/Event.h"
 #include "Data.h"
 #include "ViewHelpers.h"
-#include "Reports/CharmReport.h"
 #include "Charm/SelectTaskDialog.h"
 
 #include "TimeTrackingTaskSelector.h"
@@ -122,7 +121,7 @@ void insertHelper( QMenu* menu, TaskIdList& targetList, QMap<TaskId, QAction*>& 
         TaskId id = fromList.takeFirst();
         if( ! visitedTasks.contains( id ) ) {
             const Task& task = DATAMODEL->getTask( id );
-            QAction* action = new QAction( tasknameWithParents( task ), menu );
+            QAction* action = new QAction( DATAMODEL->fullTaskName( task ), menu );
             action->setProperty( CUSTOM_TASK_PROPERTY_NAME, QVariant::fromValue( id ) );
             menu->addAction( action );
             visitedTasks.insert( id, action );
@@ -146,7 +145,7 @@ void TimeTrackingTaskSelector::populate( const QVector<WeeklySummary>& summaries
     m_menu->addSeparator();
     if( m_manuallySelectedTask > 0 && ! visitedTasks.contains( m_manuallySelectedTask )) {
         const Task& task = DATAMODEL->getTask( m_manuallySelectedTask );
-        QAction* action = new QAction( tasknameWithParents( task ), m_menu );
+        QAction* action = new QAction( DATAMODEL->fullTaskName( task ), m_menu );
         visitedTasks.insert( m_manuallySelectedTask, action );
         action->setProperty( CUSTOM_TASK_PROPERTY_NAME, QVariant::fromValue( m_manuallySelectedTask ) );
         m_menu->addAction( action );

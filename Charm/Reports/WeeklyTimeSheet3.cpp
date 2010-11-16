@@ -112,7 +112,7 @@ void WTSConfigurationPage::showEvent( QShowEvent* )
         const TaskTreeItem& item = DATAMODEL->taskTreeItem( root );
         if ( item.isValid() ) {
             m_rootTask = root;
-            m_ui->labelTaskName->setText( tasknameWithParents( item.task() ) );
+            m_ui->labelTaskName->setText( DATAMODEL->fullTaskName( item.task() ) );
             m_ui->checkBoxSubTasksOnly->setChecked( true );
         }
     }
@@ -174,7 +174,7 @@ void WTSConfigurationPage::slotSelectTask()
     if ( dialog.exec() ) {
         m_rootTask = dialog.selectedTask();
         const TaskTreeItem& item = DATAMODEL->taskTreeItem( m_rootTask );
-        m_ui->labelTaskName->setText( tasknameWithParents( item.task() ) );
+        m_ui->labelTaskName->setText( DATAMODEL->fullTaskName( item.task() ) );
     } else {
         if ( m_rootTask == 0 )
             m_ui->checkBoxSubTasksOnly->setChecked( false );

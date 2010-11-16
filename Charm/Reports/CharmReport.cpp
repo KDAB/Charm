@@ -40,25 +40,6 @@ int pointSize( double relSize, float scale )
     return static_cast<int>( relSize * scale );
 }
 
-QString tasknameWithParents( const Task& task )
-{
-    if ( task.isValid() ) {
-        QString name = task.name().simplified();
-
-        if ( task.parent() != 0 ) {
-            const Task& parent = DATAMODEL->getTask( task.parent() );
-            if ( parent.isValid() ) {
-                name = tasknameWithParents( parent ) + '/' + name;
-            }
-        }
-        return name;
-    } else {
-        // qWarning() << "CharmReport::tasknameWithParents: WARNING: invalid task"
-        //                    << task.id();
-        return QString::null;
-    }
-}
-
 bool StartsEarlier( EventId firstId, EventId secondId )
 {
     const Event& first = DATAMODEL->eventForId( firstId );

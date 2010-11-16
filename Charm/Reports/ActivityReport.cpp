@@ -132,7 +132,7 @@ void ActivityReportConfigurationPage::slotSelectTask()
 {
     if ( selectTask( m_rootTask ) ) {
         const TaskTreeItem& item = DATAMODEL->taskTreeItem( m_rootTask );
-        m_ui->labelTaskName->setText( tasknameWithParents( item.task() ) );
+        m_ui->labelTaskName->setText( DATAMODEL->fullTaskName( item.task() ) );
     } else {
         if ( m_rootTask == 0 )
             m_ui->checkBoxSubTasksOnly->setChecked( false );
@@ -143,7 +143,7 @@ void ActivityReportConfigurationPage::slotExcludeTask()
 {
     if ( selectTask( m_rootExcludeTask ) ) {
         const TaskTreeItem& item = DATAMODEL->taskTreeItem( m_rootExcludeTask );
-        m_ui->labelExcludeTaskName->setText( tasknameWithParents( item.task() ) );
+        m_ui->labelExcludeTaskName->setText( DATAMODEL->fullTaskName( item.task() ) );
     } else {
         if ( m_rootExcludeTask == 0 )
             m_ui->checkBoxExcludeTasks->setChecked( false );
@@ -259,7 +259,7 @@ void ActivityReport::slotUpdate()
         if ( m_rootTask != 0 ) {
             QDomElement paragraph = doc.createElement( "p" );
             const Task& task = DATAMODEL->getTask( m_rootTask );
-            QString rootTaskText = tr( "Activity under task %1" ).arg( tasknameWithParents( task ) );
+            QString rootTaskText = tr( "Activity under task %1" ).arg( DATAMODEL->fullTaskName( task ) );
             QDomText rootText = doc.createTextNode( rootTaskText );
             paragraph.appendChild( rootText );
             body.appendChild( paragraph );

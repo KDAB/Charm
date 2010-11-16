@@ -88,6 +88,9 @@ public:
       * Only tasks that have been used so far will be taken into account, so the list might be empty. */
     TaskIdList mostRecentlyUsedTasks() const;
 
+    /** Create a full task name from the specified TaskId. */
+    QString fullTaskName( const Task& ) const;
+
     bool operator==( const CharmDataModel& other ) const;
 
 signals:
@@ -117,7 +120,6 @@ private:
     Task& findTask( TaskId id );
     Event& findEvent( EventId id );
 
-    QString fullTaskName( const Task& ) const;
     QString eventsString() const;
     QString durationsString() const;
     void updateToolTip();

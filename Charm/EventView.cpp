@@ -15,7 +15,6 @@
 #include "EventEditor.h"
 #include "Core/Configuration.h"
 #include "EventEditorDelegate.h"
-#include "Reports/CharmReport.h"
 #include "Core/TaskTreeItem.h"
 #include "Core/CharmDataModel.h"
 #include "SelectTaskDialog.h"
@@ -186,7 +185,7 @@ void EventView::slotDeleteEvent()
 {
     const TaskTreeItem& taskTreeItem =
         MODEL.charmDataModel()->taskTreeItem( m_event.taskId() );
-    const QString name = tasknameWithParents( taskTreeItem.task() );
+    const QString name = MODEL.charmDataModel()->fullTaskName( taskTreeItem.task() );
     const QDate date = m_event.startDateTime().date();
     const QTime time = m_event.startDateTime().time();
     const QString dateAndDuration = date.toString( Qt::SystemLocaleDate )
