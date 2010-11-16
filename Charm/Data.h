@@ -8,6 +8,7 @@ class Data {
 public:
     static const QIcon& charmIcon();
     static const QIcon& charmTrayIcon();
+    static const QIcon& charmTrayActiveIcon();
 
     static const QIcon& goIcon();
     static const QIcon& stopIcon();

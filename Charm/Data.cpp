@@ -26,6 +26,21 @@ const QIcon& Data::charmTrayIcon()
 	return icon;
 }
 
+const QIcon& Data::charmTrayActiveIcon()
+{
+    // TODO: New Nuno icons
+#ifdef Q_WS_MAC
+	Q_ASSERT_X(!QPixmap(":/Charm/active.png").isNull(), "Data::charmTrayActiveIcon",
+                        "Required resource not available");
+	static QIcon icon(QPixmap(":/Charm/active.png"));
+#else
+	Q_ASSERT_X(!QPixmap(":/Charm/active.png").isNull(), "Data::charmTrayActiveIcon",
+                        "Required resource not available");
+	static QIcon icon(QPixmap(":/Charm/active.png"));
+#endif
+	return icon;
+}
+
 const QIcon& Data::goIcon()
 {
 	Q_ASSERT_X(!QPixmap(":/Charm/go.png").isNull(), "Data::goIcon",

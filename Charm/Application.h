@@ -87,6 +87,8 @@ public:
      * It is an internal concept, not a notion for the end user. */
     CharmWindow& mainView();
 
+    QSystemTrayIcon& trayIcon();
+
     /*! \reimp */ void saveState( QSessionManager & manager );
     /*! \reimp */ void commitData( QSessionManager & manager );
 
@@ -112,6 +114,7 @@ signals:
     void goToState( State state );
 
 private:
+    QString titleString( const QString& text ) const;
     void enterStartingUpState();
     void leaveStartingUpState();
     void enterConfiguringState();

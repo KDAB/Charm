@@ -110,6 +110,7 @@ Application::Application(int& argc, char** argv)
     m_systrayContextMenu.addSeparator();
 
     m_trayIcon.setContextMenu( &m_systrayContextMenu );
+    m_trayIcon.setToolTip( tr( "No active events" ) );
     m_trayIcon.setIcon( Data::charmTrayIcon() );
     m_trayIcon.show();
 
@@ -178,7 +179,7 @@ Application::Application(int& argc, char** argv)
     // add default plugin path for deployment
     addLibraryPath( applicationDirPath() + "/plugins" );
 
-	if ( applicationDirPath().endsWith("MacOS") )
+    if ( applicationDirPath().endsWith("MacOS") )
         addLibraryPath( applicationDirPath() + "/../plugins");
 
     // Ladies and gentlemen, please raise upon your seats -
@@ -571,18 +572,29 @@ void Application::slotTrayIconActivated( QSystemTrayIcon::ActivationReason reaso
     }
 }
 
-void Application::slotCurrentBackendStatusChanged( const QString& text )
-{   // FIXME why can't this be done on stateChanged()? and if not, is
-    // maybe an app-wide metadataChanged() or configurationChanged()
-    // missing? (the latter exists)
+QString Application::titleString( const QString& text ) const
+{
     QString dbInfo;
     const QString userName = CONFIGURATION.user.name();
-    if (!userName.isEmpty())
-        dbInfo = QString("%1 - %2").arg(userName, text);
-    else
-        dbInfo = text;
+    if ( !text.isEmpty() ) {
+        if ( !userName.isEmpty()) {
+            dbInfo = QString("%1 - %2").arg(userName, text);
+        } else {
+            dbInfo = text;
+        }
+        return tr( "Charm (%1)" ).arg( dbInfo );
+    } else {
+        return tr( "Charm" );
+    }
+}
 
-    const QString title = tr("Charm (%1)").arg(dbInfo);
+void Application::slotCurrentBackendStatusChanged( const QString& text )
+{
+    const QString title = titleString( text );
+
+    // FIXME why can't this be done on stateChanged()? and if not, is
+    // maybe an app-wide metadataChanged() or configurationChanged()
+    // missing? (the latter exists)
     // MIRKO_TEMP_REM
     /*
     m_mainWindow.setWindowTitle( title );
@@ -659,6 +671,11 @@ CharmWindow& Application::mainView()
 {
     // FIXME is this any good?
     return m_tasksWindow;
+}
+
+QSystemTrayIcon& Application::trayIcon()
+{
+    return m_trayIcon;
 }
 
 void Application::slotOpenLastClosedWindow()

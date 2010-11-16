@@ -5,6 +5,7 @@
 #include <QtDebug>
 #include <QDateTime>
 #include <QSettings>
+#include <QStringList>
 
 #include "CharmConstants.h"
 #include "Configuration.h"
@@ -401,6 +402,7 @@ void CharmDataModel::startEventRequested( const Task& task )
     settings.remove( MetaKey_LastEventEditorDateTime );
 
     emit makeAndActivateEvent( task );
+    updateToolTip();
 }
 
 void CharmDataModel::endEventRequested( const Task& task )
@@ -427,6 +429,7 @@ void CharmDataModel::endEventRequested( const Task& task )
     emit requestEventModification( event );
 
     if ( m_activeEventIds.isEmpty() ) m_timer.stop();
+    updateToolTip();
 }
 
 void CharmDataModel::endAllEventsRequested()
@@ -447,6 +450,7 @@ void CharmDataModel::endAllEventsRequested()
     }
 
     m_timer.stop();
+    updateToolTip();
 }
 
 void CharmDataModel::eventUpdateTimerEvent()
@@ -459,6 +463,76 @@ void CharmDataModel::eventUpdateTimerEvent()
 
         emit requestEventModification( event );
     }
+    updateToolTip();
+}
+
+QString CharmDataModel::fullTaskName( const Task& task ) const
+{
+    if ( task.isValid() ) {
+        QString name = task.name().simplified();
+
+        if ( task.parent() != 0 ) {
+            const Task& parent = getTask( task.parent() );
+            if ( parent.isValid() ) {
+                name = fullTaskName( parent ) + '/' + name;
+            }
+        }
+        return name;
+    } else {
+        // qWarning() << "CharmReport::tasknameWithParents: WARNING: invalid task"
+        //                    << task.id();
+        return QString();
+    }
+}
+
+QString CharmDataModel::eventsString() const
+{
+    QStringList eStrList;
+    Q_FOREACH ( EventId eventId, activeEvents() ) {
+        Event event = eventForId( eventId );
+        if ( event.isValid() ) {
+            const Task& task = getTask( event.taskId() );
+            const int taskIdLength = qMax( 2, CONFIGURATION.taskPaddingLength );
+            eStrList <<
+                tr( "%1 - [%2] %3" )
+                .arg( hoursAndMinutes( event.duration() ) )
+                .arg( task.id(), taskIdLength, 10, QChar( '0' ) )
+                .arg( fullTaskName( task ) );
+        }
+    }
+    return eStrList.join( "\n" );
+}
+
+QString CharmDataModel::durationsString() const
+{
+    int totalDuration = 0;
+    Q_FOREACH ( EventId eventId, activeEvents() ) {
+        Event event = eventForId( eventId );
+        if ( event.isValid() ) {
+            totalDuration += event.duration();
+        }
+    }
+    return hoursAndMinutes( totalDuration );
+}
+
+void CharmDataModel::updateToolTip()
+{
+    QString toolTip;
+    int numEvents = activeEvents().count();
+    switch( numEvents ) {
+    case 0:
+        toolTip = tr( "No active events" );
+        break;
+    case 1:
+        toolTip = eventsString();
+        break;
+    default:
+        toolTip = tr( "<qt>%1 for %2 active events:<hr>%3</qt>" )
+                  .arg( durationsString() ).arg( numEvents ).arg( eventsString() );
+        break;
+    }
+
+    emit sysTrayUpdate( toolTip, numEvents != 0 );
 }
 
 const EventMap& CharmDataModel::eventMap() const

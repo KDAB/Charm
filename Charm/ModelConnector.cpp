@@ -1,5 +1,6 @@
 #include "ModelConnector.h"
 #include "ViewHelpers.h"
+#include "Data.h"
 
 #include "Commands/CommandModifyEvent.h"
 #include "Commands/CommandMakeAndActivateEvent.h"
@@ -14,6 +15,8 @@ ModelConnector::ModelConnector()
              SLOT( slotMakeAndActivateEvent( const Task& ) ) );
     connect( &m_dataModel, SIGNAL( requestEventModification( const Event& ) ),
              SLOT( slotRequestEventModification( const Event& ) ) );
+    connect( &m_dataModel, SIGNAL( sysTrayUpdate( const QString&, bool ) ),
+             SLOT( slotSysTrayUpdate( const QString&, bool ) ) );
 }
 
 CharmDataModel* ModelConnector::charmDataModel()
@@ -53,6 +56,12 @@ void ModelConnector::slotRequestEventModification( const Event& event )
 {
     CommandModifyEvent* command = new CommandModifyEvent( event, this );
     VIEW.sendCommand( command );
+}
+
+void ModelConnector::slotSysTrayUpdate( const QString& tooltip, bool active )
+{
+    TRAY.setToolTip( tooltip );
+    active ? TRAY.setIcon( Data::charmTrayActiveIcon() ) : TRAY.setIcon( Data::charmTrayIcon() );
 }
 
 #include "ModelConnector.moc"
