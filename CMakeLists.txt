@@ -17,13 +17,12 @@ ENDIF()
 MESSAGE( STATUS "Building Charm ${Charm_VERSION} in ${CMAKE_BUILD_TYPE} mode" )
 
 CMAKE_MINIMUM_REQUIRED( VERSION 2.6.0 )
-FIND_PACKAGE( Qt4 4.6.0 COMPONENTS QtCore QtGui QtSql QtXml REQUIRED )
+FIND_PACKAGE( Qt4 4.6.0 COMPONENTS QtMain QtCore QtGui QtSql QtXml REQUIRED )
 INCLUDE( UseQt4 )
 ENABLE_TESTING()
 
 IF( CMAKE_BUILD_TYPE MATCHES "^[Rr]elease$" )
         ADD_DEFINITIONS( -DQT_NO_DEBUG_OUTPUT )
-        MESSAGE( "Disabling qDebug output in release builds." )
 ENDIF()
 
 # Always include the source and build directories in the include path
@@ -45,8 +44,6 @@ IF( CMAKE_COMPILER_IS_GNUCXX )
         ADD_DEFINITIONS( -fvisibility=hidden )
 ENDIF()
 
-ADD_DEFINITIONS( -DCHARM_VERSION=\"${Charm_VERSION}\" )
-
 IF( UNIX AND NOT APPLE )
         SET( BIN_INSTALL_DIR bin )
         SET( DOC_INSTALL_DIR share/doc/charm/ )
@@ -55,14 +52,13 @@ ELSE()
         SET( DOC_INSTALL_DIR . )
 ENDIF()
 
+OPTION( CHARM_IDLE_DETECTION "Build the Charm idle detector" ON )
+OPTION( CHARM_TIMESHEET_TOOLS "Build the Charm timesheet tools" OFF )
+
 ADD_SUBDIRECTORY( Core )
 ADD_SUBDIRECTORY( Charm )
 
-IF( UNIX )
-        OPTION( CHARM_ENABLE_TOOLS_BUILD "Build the Charm timesheet tools" OFF )
-ENDIF()
-
-IF( UNIX AND CHARM_ENABLE_TOOLS_BUILD )
+IF( CHARM_TIMESHEET_TOOLS )
         # Only build the tools if they are explicitly requested to avoid
         # the Qt MySQL driver dependency.
         ADD_SUBDIRECTORY( Tools/TimesheetProcessor )

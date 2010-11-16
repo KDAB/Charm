@@ -24,7 +24,7 @@ build, project = getBuildProject( buildName = 'Charm Build', projectName = 'Char
 sharedDebug = Environments( [ 'Qt-4.[67].?-Shared-Debug' ], 'Qt 4 Shared Debug', project )
 debug = Configuration( 'Debug', sharedDebug, )
 cmakeDebug = CMakeBuilder()
-cmakeDebug.addCMakeVariable( CMakeVariable( 'CHARM_ENABLE_TOOLS_BUILD', 'TRUE', 'BOOL' ) )
+cmakeDebug.addCMakeVariable( CMakeVariable( 'CHARM_TIMESHEET_TOOLS', 'TRUE', 'BOOL' ) )
 debug.addPlugin( CTest() )
 debug.addPlugin( cmakeDebug )
 

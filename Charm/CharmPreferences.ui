@@ -36,6 +36,9 @@
          <property name="text">
           <string>Only allow one event at a time</string>
          </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
         </widget>
        </item>
        <item>
@@ -158,6 +161,9 @@ p, li { white-space: pre-wrap; }
         <widget class="QCheckBox" name="cbIdleDetection">
          <property name="text">
           <string>Enable idle detection</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
          </property>
         </widget>
        </item>

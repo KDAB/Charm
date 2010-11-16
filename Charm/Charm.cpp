@@ -8,6 +8,7 @@
 
 #include "Application.h"
 #include "Core/CharmExceptions.h"
+#include "Core/CharmCMake.h"
 
 void showCriticalError( const QString& msg ) {
     QMessageBox::critical( 0, QObject::tr( "Application Error" ), msg );

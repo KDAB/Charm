@@ -19,6 +19,8 @@
 
 #include <Core/CharmConstants.h>
 #include <Core/SqLiteStorage.h>
+#include <Core/CharmCMake.h>
+
 
 #include "ViewHelpers.h"
 #include "Data.h"
@@ -60,6 +62,8 @@ Application::Application(int& argc, char** argv)
     QCoreApplication::setOrganizationName("KDAB");
     QCoreApplication::setOrganizationDomain("kdab.com");
     QCoreApplication::setApplicationName("Charm");
+    QCoreApplication::setApplicationVersion(CHARM_VERSION);
+
 
     Q_INIT_RESOURCE(CharmResources);
     Q_ASSERT_X(m_instance == 0, "Application ctor",

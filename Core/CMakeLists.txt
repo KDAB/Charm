@@ -22,4 +22,4 @@ SET(
 QT4_AUTOMOC( ${CharmCore_SRCS} )
 ADD_LIBRARY( CharmCore STATIC ${CharmCore_SRCS} )
 
-
+CONFIGURE_FILE( CharmCMake.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/CharmCMake.h )
