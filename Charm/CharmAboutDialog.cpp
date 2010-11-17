@@ -1,6 +1,8 @@
 #include "CharmAboutDialog.h"
 #include "ui_CharmAboutDialog.h"
 
+#include <Core/CharmCMake.h>
+
 CharmAboutDialog::CharmAboutDialog( QWidget* parent )
     : QDialog( parent )
     , m_ui( new Ui::CharmAboutDialog )

@@ -86,7 +86,6 @@ public:
         }
     }
 
-#if DARWIN_VERSION > 8
     static OSStatus sessionEventsHandler ( EventHandlerCallRef nextHandler, EventRef event, void* refCon )
     {
         // hauahauaha!
@@ -101,7 +100,6 @@ public:
         }
         return noErr;
     }
-#endif
 };
 
 MacCarbonIdleDetector::MacCarbonIdleDetector( QObject* parent )
@@ -127,7 +125,6 @@ MacCarbonIdleDetector::MacCarbonIdleDetector( QObject* parent )
         IONotificationPortGetRunLoopSource( d->notifyPortRef ),
         kCFRunLoopCommonModes );
 
-#if DARWIN_VERSION > 8
     // register handler for session events:
     EventTypeSpec switchEventTypes[2];
     switchEventTypes[0].eventClass = kEventClassSystem;
@@ -139,7 +136,6 @@ MacCarbonIdleDetector::MacCarbonIdleDetector( QObject* parent )
     if ( err != 0 ) {
         qDebug() << "Warning: cannot install session events handler:" << err;
     }
-#endif
 }
 
 MacCarbonIdleDetector::~MacCarbonIdleDetector()

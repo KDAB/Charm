@@ -1,4 +1,4 @@
-INCLUDE_DIRECTORIES( ${Charm_SOURCE_DIR} )
+INCLUDE_DIRECTORIES( ${Charm_SOURCE_DIR} ${Charm_BINARY_DIR} )
 
 SET(
         CharmApplication_SRCS
@@ -50,33 +50,40 @@ SET(
         Commands/CommandMakeAndActivateEvent.cpp
         Idle/IdleDetector.cpp
         Idle/IdleCorrectionDialog.cpp
-        Idle/X11IdleDetector.cpp
 )
+
+IF( CHARM_IDLE_DETECTION )
+    IF( APPLE )
+            IF( QT_MAC_USE_COCOA )
+                    LIST( APPEND CharmApplication_SRCS Idle/MacCocoaIdleDetector.mm )
+            ELSE()
+                    LIST( APPEND CharmApplication_SRCS Idle/MacCarbonIdleDetector.cpp )
+            ENDIF()
+    ELSEIF( WIN32 )
+            LIST( APPEND CharmApplication_SRCS Idle/WindowsIdleDetector.cpp )
+    ELSEIF( UNIX )
+            FIND_PACKAGE( X11 )
+            IF( X11_FOUND AND X11_Xscreensaver_LIB )
+                    MESSAGE( "X11 idle detection enabled." )
+                    INCLUDE_DIRECTORIES( ${X11_INCLUDE_DIR} )
+                    LIST( APPEND CharmApplication_SRCS Idle/X11IdleDetector.cpp )
+                    TARGET_LINK_LIBRARIES( CharmApplication ${X11_X11_LIB} ${X11_Xscreensaver_LIB} )
+            ELSE()
+                    MESSAGE( WARNING "Install libXss-dev for X11 idle detection." )
+            ENDIF()
+    ENDIF()
+ENDIF()
 
 IF( APPLE )
         LIST( APPEND CharmApplication_SRCS MacApplication.cpp )
-        EXEC_PROGRAM( sw_vers ARGS -buildVersion OUTPUT_VARIABLE DARWIN_BUILDVERSION )
-        STRING( REGEX MATCH "^[0-9]+" DARWIN_VERSION ${DARWIN_BUILDVERSION} )
-        ADD_DEFINITIONS( -DDARWIN_VERSION=${DARWIN_VERSION} )
         IF( QT_MAC_USE_COCOA )
-                LIST(
-                        APPEND CharmApplication_SRCS
-                        Idle/MacCocoaIdleDetector.mm MacCocoaApplication.mm
-                )
-        SET( CMAKE_EXE_LINKER_FLAGS "-framework Foundation -framework AppKit" )
+                LIST( APPEND CharmApplication_SRCS MacCocoaApplication.mm )
+                SET( CMAKE_EXE_LINKER_FLAGS "-framework AppKit" )
         ELSE()
-                LIST(
-                        APPEND CharmApplication_SRCS
-                        Idle/MacCarbonIdleDetector.cpp MacCarbonApplication.cpp
-                )
+                LIST( APPEND CharmApplication_SRCS MacCarbonApplication.cpp )
+                SET( CMAKE_EXE_LINKER_FLAGS "-framework IOKit" )
         ENDIF()
 ENDIF()
-
-IF ( WIN32 )
-        LIST( APPEND CharmApplication_SRCS Idle/WindowsIdleDetector.cpp )
-ENDIF()
-
-CONFIGURE_FILE( config-charm.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-charm.h )
 
 QT4_AUTOMOC( ${CharmApplication_SRCS} )
 
@@ -110,7 +117,6 @@ SET( Charm_SRCS Charm.cpp )
 QT4_AUTOMOC( ${Charm_SRCS} )
 
 IF( APPLE )
-        TARGET_LINK_LIBRARIES( CharmApplication IOKit )
         SET( MACOSX_BUNDLE_INFO_STRING "Charm ${Charm_VERSION}" )
         SET( MACOSX_BUNDLE_BUNDLE_VERSION "Charm ${Charm_VERSION}" )
         SET( MACOSX_BUNDLE_LONG_VERSION_STRING "Charm ${Charm_VERSION}" )
@@ -131,32 +137,12 @@ IF( APPLE )
 
 ENDIF()
 
-IF( UNIX AND NOT APPLE )
-        FIND_PACKAGE( X11 )
-        IF( X11_FOUND )
-                INCLUDE_DIRECTORIES( ${X11_INCLUDE_DIR} )
-                IF( X11_Xscreensaver_LIB )
-                        MESSAGE( "X11 idle detection enabled." )
-                        TARGET_LINK_LIBRARIES( CharmApplication ${X11_X11_LIB} ${X11_Xscreensaver_LIB} )
-                ELSE()
-                        MESSAGE( WARNING "Install libXss-dev for X11 idle detection." )
-                ENDIF()
-        ENDIF()
+IF( MSVC )
+        SET( Resources_SRCS ${Resources_SRCS} Charm.rc )
 ENDIF()
 
-IF( WIN32 )
-        IF( MSVC )
-                SET( Resources_SRCS ${Resources_SRCS} Charm.rc )
-        ENDIF()
-        TARGET_LINK_LIBRARIES( CharmApplication ${QT_QTMAIN_LIBRARY} )
-        ADD_EXECUTABLE( Charm WIN32 ${Charm_SRCS} ${Resources_SRCS} )
-ELSE()
-        ADD_EXECUTABLE( Charm MACOSX_BUNDLE ${Charm_SRCS} ${Resources_SRCS} )
-ENDIF()
-
-TARGET_LINK_LIBRARIES( Charm CharmApplication )
-TARGET_LINK_LIBRARIES( Charm CharmCore )
-TARGET_LINK_LIBRARIES( Charm ${QT_LIBRARIES} )
+ADD_EXECUTABLE( Charm WIN32 MACOSX_BUNDLE ${Charm_SRCS} ${Resources_SRCS} )
+TARGET_LINK_LIBRARIES( Charm CharmApplication CharmCore ${QT_LIBRARIES} )
 MESSAGE( STATUS "Charm will be installed to ${CMAKE_INSTALL_PREFIX}" )
 
 IF( UNIX AND NOT APPLE )

@@ -2,21 +2,16 @@
 #include <QTimer>
 #include "config-charm.h"
 
-#if defined(Q_WS_X11) && defined(X11_Xscreensaver_LIB)
- #include <QX11Info>
- #include <X11/Xlib.h>
- #include <X11/Xutil.h>
- #include <X11/extensions/scrnsaver.h>
-#endif
-
+#include <QX11Info>
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#include <X11/extensions/scrnsaver.h>
 
 bool X11IdleDetector::idleCheckPossible()
 {
-#if defined(Q_WS_X11) && defined(X11_Xscreensaver_LIB)
     int event_base, error_base;
     if(XScreenSaverQueryExtension(QX11Info::display(), &event_base, &error_base))
         return true;
-#endif
     return false;
 }
 
@@ -36,7 +31,6 @@ void X11IdleDetector::idlenessDurationChanged()
 
 void X11IdleDetector::checkIdleness()
 {
-#if defined(Q_WS_X11) && defined(X11_Xscreensaver_LIB)
     XScreenSaverInfo* _mit_info = XScreenSaverAllocInfo();
     if (!_mit_info)
         return;
@@ -47,7 +41,6 @@ void X11IdleDetector::checkIdleness()
     if (idleSecs >= idlenessDuration())
         maybeIdle( IdlePeriod(QDateTime::currentDateTime().addSecs( -idleSecs ),
                               QDateTime::currentDateTime() ) );
-#endif
 
     if ( m_heartbeat.secsTo( QDateTime::currentDateTime() ) > idlenessDuration() )
         maybeIdle( IdlePeriod( m_heartbeat, QDateTime::currentDateTime() ) );

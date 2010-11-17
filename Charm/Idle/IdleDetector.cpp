@@ -1,12 +1,12 @@
 #include <QtAlgorithms>
 
 #include "Core/Configuration.h"
+#include "Core/CharmCMake.h"
 
 #include "IdleDetector.h"
-#include "X11IdleDetector.h"
 
-// FIXME verify inclusion guard is needed (Q_OBJECT?)
-#if defined Q_WS_MAC
+#ifdef CHARM_IDLE_DETECTION
+#ifdef Q_WS_MAC
 #ifdef QT_MAC_USE_COCOA
 #include "MacCocoaIdleDetector.h"
 #else
@@ -14,8 +14,13 @@
 #endif
 #endif
 
-#ifdef Q_OS_WIN
-# include "WindowsIdleDetector.h"
+#ifdef Q_WS_WIN
+#include "WindowsIdleDetector.h"
+#endif
+
+#ifdef Q_WS_X11
+#include "X11IdleDetector.h"
+#endif
 #endif
 
 IdleDetector::IdleDetector( QObject* parent )
@@ -26,23 +31,26 @@ IdleDetector::IdleDetector( QObject* parent )
 
 IdleDetector* IdleDetector::createIdleDetector( QObject* parent )
 {
-#if defined Q_WS_MAC
-#if defined QT_MAC_USE_COCOA
+#ifdef CHARM_IDLE_DETECTION
+#ifdef Q_WS_MAC
+#ifdef QT_MAC_USE_COCOA
     return new MacCocoaIdleDetector( parent );
 #else
     return new MacCarbonIdleDetector( parent );
 #endif
-#elif defined Q_WS_WIN
-    return new WindowsIdleDetector( parent );
-#elif defined Q_WS_X11
-    if ( X11IdleDetector::idleCheckPossible() ) {
-        return new X11IdleDetector( parent );
-    } else {
-        return 0;
-    }
-#else
-    return 0;
 #endif
+
+#ifdef Q_WS_WIN
+    return new WindowsIdleDetector( parent );
+#endif
+
+#ifdef Q_WS_X11
+    if ( X11IdleDetector::idleCheckPossible() )
+        return new X11IdleDetector( parent );
+#endif
+#endif
+
+    return 0;
 }
 
 IdleDetector::IdlePeriods IdleDetector::idlePeriods() const
