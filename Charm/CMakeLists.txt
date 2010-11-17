@@ -151,11 +151,14 @@ MESSAGE( STATUS "Charm will be installed to ${CMAKE_INSTALL_PREFIX}" )
 
 IF( UNIX AND NOT APPLE )
         SET( XDG_APPS_INSTALL_DIR share/applications )
-        SET( ICON_INSTALL_DIR share/icons/hicolor/128x128/apps )
         INSTALL( FILES Charm.desktop DESTINATION ${XDG_APPS_INSTALL_DIR} )
-        INSTALL( FILES Icons/Charm-128x128.png DESTINATION ${ICON_INSTALL_DIR} )
-        INSTALL( FILES Icons/charmtray16.png DESTINATION ${ICON_INSTALL_DIR} )
-        INSTALL( FILES Icons/charmtray24.png DESTINATION ${ICON_INSTALL_DIR} )
+        INSTALL( FILES Icons/Charm-128x128.png DESTINATION share/icons/hicolor/128x128/apps )
+        INSTALL( FILES Icons/charmtray16.png DESTINATION share/icons/hicolor/16x16/apps )
+        INSTALL( FILES Icons/charmtray24.png DESTINATION share/icons/hicolor/24x24/apps )
+        INSTALL( FILES Icons/01.png Icons/02.png Icons/03.png Icons/04.png
+	               Icons/05.png Icons/06.png Icons/07.png Icons/08.png
+                       Icons/09.png Icons/10.png Icons/11.png Icons/12.png
+                 DESTINATION  share/icons/hicolor/24x24/apps )
 ENDIF()
 
 INSTALL( TARGETS Charm DESTINATION ${BIN_INSTALL_DIR} )

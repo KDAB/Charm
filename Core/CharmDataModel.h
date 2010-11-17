@@ -98,7 +98,7 @@ signals:
     // be able to track time:
     void makeAndActivateEvent( const Task& );
     void requestEventModification( const Event& );
-    void sysTrayUpdate( const QString&, bool );
+    void sysTrayUpdate( const QString&, bool, int );
 
 public slots:
     void setAllTasks( const TaskList& tasks );
@@ -120,8 +120,9 @@ private:
     Task& findTask( TaskId id );
     Event& findEvent( EventId id );
 
+    int totalDuration() const;
     QString eventsString() const;
-    QString durationsString() const;
+    QString totalDurationString() const;
     void updateToolTip();
 
     TaskTreeItem::Map m_tasks;

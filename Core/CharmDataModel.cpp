@@ -503,7 +503,7 @@ QString CharmDataModel::eventsString() const
     return eStrList.join( "\n" );
 }
 
-QString CharmDataModel::durationsString() const
+int CharmDataModel::totalDuration() const
 {
     int totalDuration = 0;
     Q_FOREACH ( EventId eventId, activeEvents() ) {
@@ -512,7 +512,12 @@ QString CharmDataModel::durationsString() const
             totalDuration += event.duration();
         }
     }
-    return hoursAndMinutes( totalDuration );
+    return totalDuration;
+}
+
+QString CharmDataModel::totalDurationString() const
+{
+    return hoursAndMinutes( totalDuration() );
 }
 
 void CharmDataModel::updateToolTip()
@@ -528,11 +533,11 @@ void CharmDataModel::updateToolTip()
         break;
     default:
         toolTip = tr( "<qt>%1 for %2 active events:<hr>%3</qt>" )
-                  .arg( durationsString() ).arg( numEvents ).arg( eventsString() );
+                  .arg( totalDurationString() ).arg( numEvents ).arg( eventsString() );
         break;
     }
 
-    emit sysTrayUpdate( toolTip, numEvents != 0 );
+    emit sysTrayUpdate( toolTip, numEvents != 0, totalDuration() );
 }
 
 const EventMap& CharmDataModel::eventMap() const

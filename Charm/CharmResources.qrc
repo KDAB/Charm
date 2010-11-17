@@ -16,5 +16,18 @@
         <file alias="go.png">Icons/media-playback-start.png</file>
         <file alias="stop.png">Icons/media-playback-stop.png</file>
         <file alias="charmabout.png">Icons/Charm-64x64.png</file>
+
+	<file alias="01.png">Icons/01.png</file>
+	<file alias="02.png">Icons/02.png</file>
+	<file alias="03.png">Icons/03.png</file>
+	<file alias="04.png">Icons/04.png</file>
+	<file alias="05.png">Icons/05.png</file>
+	<file alias="06.png">Icons/06.png</file>
+	<file alias="07.png">Icons/07.png</file>
+	<file alias="08.png">Icons/08.png</file>
+	<file alias="09.png">Icons/09.png</file>
+	<file alias="10.png">Icons/10.png</file>
+	<file alias="11.png">Icons/11.png</file>
+	<file alias="12.png">Icons/12.png</file>
     </qresource>
 </RCC>

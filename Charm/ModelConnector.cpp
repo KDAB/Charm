@@ -15,8 +15,8 @@ ModelConnector::ModelConnector()
              SLOT( slotMakeAndActivateEvent( const Task& ) ) );
     connect( &m_dataModel, SIGNAL( requestEventModification( const Event& ) ),
              SLOT( slotRequestEventModification( const Event& ) ) );
-    connect( &m_dataModel, SIGNAL( sysTrayUpdate( const QString&, bool ) ),
-             SLOT( slotSysTrayUpdate( const QString&, bool ) ) );
+    connect( &m_dataModel, SIGNAL( sysTrayUpdate( const QString&, bool, int ) ),
+             SLOT( slotSysTrayUpdate( const QString&, bool, int ) ) );
 }
 
 CharmDataModel* ModelConnector::charmDataModel()
@@ -58,10 +58,22 @@ void ModelConnector::slotRequestEventModification( const Event& event )
     VIEW.sendCommand( command );
 }
 
-void ModelConnector::slotSysTrayUpdate( const QString& tooltip, bool active )
+void ModelConnector::slotSysTrayUpdate( const QString& tooltip, bool active, int duration )
 {
     TRAY.setToolTip( tooltip );
-    active ? TRAY.setIcon( Data::charmTrayActiveIcon() ) : TRAY.setIcon( Data::charmTrayIcon() );
+
+#if !defined Q_WS_MAC
+//TODO: port the nth minute icons to mac
+    if ( active ) {
+        //duration is in seconds
+        const int mins = duration / 60;
+        const int nth = ( mins % 60 ) / 5 + 1;
+        QString nthFile = QString( ":/Charm/%1.png" ).arg( nth, 2, 10, QChar( '0' ) );
+        TRAY.setIcon( QIcon( QPixmap( nthFile ) ) );
+    } else {
+        TRAY.setIcon( Data::charmTrayIcon() );
+    }
+#endif
 }
 
 #include "ModelConnector.moc"

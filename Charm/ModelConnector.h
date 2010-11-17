@@ -26,7 +26,7 @@ public:
 public slots:
     void slotMakeAndActivateEvent( const Task& );
     void slotRequestEventModification( const Event& );
-    void slotSysTrayUpdate( const QString&, bool );
+    void slotSysTrayUpdate( const QString&, bool, int );
 
 private:
     CharmDataModel m_dataModel;
