@@ -1,6 +1,6 @@
 #include "X11IdleDetector.h"
 #include <QTimer>
-#include "config-charm.h"
+#include "Core/CharmCMake.h"
 
 #include <QX11Info>
 #include <X11/Xlib.h>
