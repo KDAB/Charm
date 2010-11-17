@@ -52,6 +52,7 @@ SET(
         Idle/IdleCorrectionDialog.cpp
 )
 
+SET(IDLEDETECTION_LIBS)
 IF( CHARM_IDLE_DETECTION )
     IF( APPLE )
             IF( QT_MAC_USE_COCOA )
@@ -67,7 +68,7 @@ IF( CHARM_IDLE_DETECTION )
                     MESSAGE( "X11 idle detection enabled." )
                     INCLUDE_DIRECTORIES( ${X11_INCLUDE_DIR} )
                     LIST( APPEND CharmApplication_SRCS Idle/X11IdleDetector.cpp )
-                    TARGET_LINK_LIBRARIES( CharmApplication ${X11_X11_LIB} ${X11_Xscreensaver_LIB} )
+                    SET(IDLEDETECTION_LIBS ${X11_X11_LIB} ${X11_Xscreensaver_LIB})
             ELSE()
                     MESSAGE( WARNING "Install libXss-dev for X11 idle detection." )
             ENDIF()
@@ -112,6 +113,9 @@ ADD_LIBRARY(
         CharmApplication STATIC
         ${CharmApplication_SRCS} ${UiGenerated_SRCS}
 )
+IF( IDLEDETECTION_LIBS )
+  TARGET_LINK_LIBRARIES(CharmApplication ${IDLEDETECTION_LIBS})
+ENDIF( IDLEDETECTION_LIBS )
 
 SET( Charm_SRCS Charm.cpp )
 QT4_AUTOMOC( ${Charm_SRCS} )
