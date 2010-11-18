@@ -32,7 +32,7 @@ sharedRelease = Environments( [ 'Qt-4.[67].?-Shared-Release' ], 'Qt 4 Shared Rel
 release = Configuration( 'Release', sharedRelease )
 release.addPlugin( CMakeBuilder() )
 release.addPlugin( CTest() )
-release.addPlugin( CPack() )
+release.addPlugin( CPack( licenseFile="License.txt" ) )
 
 # publish doxygen documentation:
 prep = Preprocessor( project, inputFilename = PathResolver( project.getSourceDir, 'doxygen.cfg.in' ),
