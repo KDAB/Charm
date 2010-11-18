@@ -11,6 +11,7 @@ extern "C"
 
 #include "Exceptions.h"
 #include "Options.h"
+#include "Core/CharmCMake.h"
 
 using namespace TimesheetGenerator;
 

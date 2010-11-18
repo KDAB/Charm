@@ -1,4 +1,4 @@
-INCLUDE_DIRECTORIES( ${Charm_SOURCE_DIR} )
+INCLUDE_DIRECTORIES( ${Charm_SOURCE_DIR} ${Charm_BINARY_DIR} )
 
 SET(
 	TimesheetProcessor_SRCS

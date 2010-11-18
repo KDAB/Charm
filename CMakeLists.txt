@@ -44,6 +44,7 @@ IF( CMAKE_COMPILER_IS_GNUCXX )
         ADD_DEFINITIONS( -fvisibility=hidden )
 ENDIF()
 
+
 IF( UNIX AND NOT APPLE )
         SET( BIN_INSTALL_DIR bin )
         SET( DOC_INSTALL_DIR share/doc/charm/ )

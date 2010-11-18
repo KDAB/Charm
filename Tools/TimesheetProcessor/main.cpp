@@ -8,6 +8,7 @@
 #include "CommandLine.h"
 #include "Exceptions.h"
 #include "Operations.h"
+#include "Core/CharmCMake.h"
 
 int main(int argc, char** argv)
 {
