@@ -27,7 +27,7 @@ public:
 public slots:
     void slotMakeAndActivateEvent( const Task& );
     void slotRequestEventModification( const Event& );
-    void slotSysTrayUpdate( const QString&, bool, int );
+    void slotSysTrayUpdate( const QString&, bool );
     void slotSysTrayIconUpdate();
 
 private:

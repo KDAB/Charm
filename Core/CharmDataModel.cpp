@@ -537,7 +537,7 @@ void CharmDataModel::updateToolTip()
         break;
     }
 
-    emit sysTrayUpdate( toolTip, numEvents != 0, totalDuration() );
+    emit sysTrayUpdate( toolTip, numEvents != 0 );
 }
 
 const EventMap& CharmDataModel::eventMap() const

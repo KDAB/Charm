@@ -16,8 +16,8 @@ ModelConnector::ModelConnector()
              SLOT( slotMakeAndActivateEvent( const Task& ) ) );
     connect( &m_dataModel, SIGNAL( requestEventModification( const Event& ) ),
              SLOT( slotRequestEventModification( const Event& ) ) );
-    connect( &m_dataModel, SIGNAL( sysTrayUpdate( const QString&, bool, int ) ),
-             SLOT( slotSysTrayUpdate( const QString&, bool, int ) ) );
+    connect( &m_dataModel, SIGNAL( sysTrayUpdate( const QString&, bool ) ),
+             SLOT( slotSysTrayUpdate( const QString&, bool ) ) );
     connect( &m_iconTimer, SIGNAL( timeout() ),
              SLOT( slotSysTrayIconUpdate() ) );
 
@@ -66,10 +66,9 @@ void ModelConnector::slotRequestEventModification( const Event& event )
     VIEW.sendCommand( command );
 }
 
-void ModelConnector::slotSysTrayUpdate( const QString& tooltip, bool active, int duration )
+void ModelConnector::slotSysTrayUpdate( const QString& tooltip, bool active )
 {
     TRAY.setToolTip( tooltip );
-    // TODO: remove duration
 
     if (active && !m_iconTimer.isActive()) {
         slotSysTrayIconUpdate();

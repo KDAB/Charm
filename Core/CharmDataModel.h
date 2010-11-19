@@ -98,7 +98,7 @@ signals:
     // be able to track time:
     void makeAndActivateEvent( const Task& );
     void requestEventModification( const Event& );
-    void sysTrayUpdate( const QString&, bool, int );
+    void sysTrayUpdate( const QString&, bool );
 
 public slots:
     void setAllTasks( const TaskList& tasks );
