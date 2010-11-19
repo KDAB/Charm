@@ -73,7 +73,7 @@ void ModelConnector::slotSysTrayUpdate( const QString& tooltip, bool active, int
 
     if (active && !m_iconTimer.isActive()) {
         slotSysTrayIconUpdate();
-        m_iconTimer.start( 3 * 1000 );
+        m_iconTimer.start( 1000 ); // every second, as Nuno designed it
     } else if (!active) {
         slotSysTrayIconUpdate();
         m_iconTimer.stop();
