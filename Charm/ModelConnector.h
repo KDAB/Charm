@@ -1,6 +1,7 @@
 #ifndef MODELCONNECTOR_H
 #define MODELCONNECTOR_H
 
+#include <QPixmap>
 #include "ViewFilter.h"
 #include "Core/CharmDataModel.h"
 #include "EventModelFilter.h"
@@ -27,6 +28,7 @@ public slots:
     void slotMakeAndActivateEvent( const Task& );
     void slotRequestEventModification( const Event& );
     void slotSysTrayUpdate( const QString&, bool, int );
+    void slotSysTrayIconUpdate();
 
 private:
     CharmDataModel m_dataModel;
@@ -34,6 +36,11 @@ private:
     ViewFilter m_viewFilter; // this is the filtered task model adapter
 
     EventModelFilter m_eventModelFilter; // owns the event model adapter
+
+    QTimer m_iconTimer;
+    enum { NPixmaps = 12 };
+    QPixmap m_pixmaps[NPixmaps];
+    int m_iconNumber;
 };
 
 #endif

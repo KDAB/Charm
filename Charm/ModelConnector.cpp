@@ -10,6 +10,7 @@ ModelConnector::ModelConnector()
     , m_dataModel()
     , m_viewFilter( &m_dataModel )
     , m_eventModelFilter( &m_dataModel )
+    , m_iconNumber( 0 )
 {
     connect( &m_dataModel, SIGNAL( makeAndActivateEvent( const Task& ) ),
              SLOT( slotMakeAndActivateEvent( const Task& ) ) );
@@ -17,6 +18,13 @@ ModelConnector::ModelConnector()
              SLOT( slotRequestEventModification( const Event& ) ) );
     connect( &m_dataModel, SIGNAL( sysTrayUpdate( const QString&, bool, int ) ),
              SLOT( slotSysTrayUpdate( const QString&, bool, int ) ) );
+    connect( &m_iconTimer, SIGNAL( timeout() ),
+             SLOT( slotSysTrayIconUpdate() ) );
+
+    for (int i = 0; i < NPixmaps; ++i) {
+        const QString nthFile = QString( ":/Charm/%1.png" ).arg( i + 1, 2, 10, QChar( '0' ) );
+        m_pixmaps[i] = QPixmap( nthFile );
+    }
 }
 
 CharmDataModel* ModelConnector::charmDataModel()
@@ -61,15 +69,25 @@ void ModelConnector::slotRequestEventModification( const Event& event )
 void ModelConnector::slotSysTrayUpdate( const QString& tooltip, bool active, int duration )
 {
     TRAY.setToolTip( tooltip );
+    // TODO: remove duration
 
+    if (active && !m_iconTimer.isActive()) {
+        slotSysTrayIconUpdate();
+        m_iconTimer.start( 3 * 1000 );
+    } else if (!active) {
+        slotSysTrayIconUpdate();
+        m_iconTimer.stop();
+    }
+}
+
+void ModelConnector::slotSysTrayIconUpdate()
+{
 #if !defined Q_WS_MAC
 //TODO: port the nth minute icons to mac
-    if ( active ) {
-        //duration is in seconds
-        const int mins = duration / 60;
-        const int nth = ( mins % 60 ) / 5 + 1;
-        QString nthFile = QString( ":/Charm/%1.png" ).arg( nth, 2, 10, QChar( '0' ) );
-        TRAY.setIcon( QIcon( QPixmap( nthFile ) ) );
+    if ( m_dataModel.activeEventCount() ) {
+        m_iconNumber = ( m_iconNumber + 1 ) % NPixmaps;
+        //qDebug() << "systray icon update" << m_iconNumber;
+        TRAY.setIcon( QIcon( m_pixmaps[ m_iconNumber ] ) );
     } else {
         TRAY.setIcon( Data::charmTrayIcon() );
     }
