@@ -4,7 +4,7 @@
 # -*- coding: utf-8 -*-
 # 
 # Copyright (C) 2010 Klaralvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
-# Author: Mirko Boehm <mirko@kdab.com>
+# Author: Mirko Boehm <mirko.boehm@kdab.com>
 
 from core.helpers.BoilerPlate import getBuildProject
 from core.Configuration import Configuration
@@ -32,7 +32,7 @@ sharedRelease = Environments( [ 'Qt-4.[67].?-Shared-Release' ], 'Qt 4 Shared Rel
 release = Configuration( 'Release', sharedRelease )
 release.addPlugin( CMakeBuilder() )
 release.addPlugin( CTest() )
-release.addPlugin( CPack( licenseFile="License.txt" ) )
+release.addPlugin( CPack( licenseFile = "License.txt" ) )
 
 # publish doxygen documentation:
 prep = Preprocessor( project, inputFilename = PathResolver( project.getSourceDir, 'doxygen.cfg.in' ),
@@ -45,6 +45,7 @@ project.addPlugin( footer )
 gen = DoxygenGenerator()
 gen.setOptional( True )
 gen.setDoxygenFile( prep.getOutputFilename() )
+
 project.addPlugin( gen )
 project.addPlugin( RSyncPublisher( localDir = PathResolver( project.getDocsDir ),
 	uploadLocation = 'docs.kdab.com:/home/klaralv-web/docs.kdab.net/charm' ) )
