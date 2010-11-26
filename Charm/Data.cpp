@@ -15,10 +15,13 @@ const QIcon& Data::charmIcon()
 const QIcon& Data::charmTrayIcon()
 {
 #ifdef Q_WS_MAC
+	// Mac and Windows use 16x16. TODO: different icons though: white background on Windows
 	Q_ASSERT_X(!QPixmap(":/Charm/charmtrayicon.png").isNull(), "Data::charmTrayIcon",
                         "Required resource not available");
 	static QIcon icon(QPixmap(":/Charm/charmtrayicon.png"));
 #else
+	// Unix: pure-Qt apps get 22x22 from QSystemTrayIcon.
+	// KDE apps seem to get 24x24 in KSystemTrayIcon via KIconLoader, which is actually better.
 	Q_ASSERT_X(!QPixmap(":/Charm/charmtray24.png").isNull(), "Data::charmTrayIcon",
                         "Required resource not available");
 	static QIcon icon(QPixmap(":/Charm/charmtray24.png"));
