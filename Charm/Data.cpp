@@ -24,9 +24,9 @@ const QIcon& Data::charmTrayIcon()
                         "Required resource not available");
 	static QIcon icon(QPixmap(":/Charm/charmtrayicon.png"));
 #else
-	Q_ASSERT_X(!QPixmap(":/Charm/charmtray24.png").isNull(), "Data::charmTrayIcon",
+	Q_ASSERT_X(!QPixmap(":/Charm/charmtray22.png").isNull(), "Data::charmTrayIcon",
                         "Required resource not available");
-	static QIcon icon(QPixmap(":/Charm/charmtray24.png"));
+	static QIcon icon(QPixmap(":/Charm/charmtray22.png"));
 #endif
 	return icon;
 }
