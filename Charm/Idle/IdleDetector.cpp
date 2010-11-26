@@ -23,9 +23,15 @@
 #endif
 #endif
 
+#ifdef NDEBUG
+    #define IDLE_TIME 10
+#else
+    #define IDLE_TIME 3 * 60
+#endif
+
 IdleDetector::IdleDetector( QObject* parent )
     : QObject( parent )
-    , m_idlenessDuration( 3 * 60 )
+    , m_idlenessDuration( IDLE_TIME )
 {
 }
 
