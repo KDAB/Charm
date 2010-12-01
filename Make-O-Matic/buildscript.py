@@ -6,7 +6,7 @@
 # Copyright (C) 2010 Klaralvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
 # Author: Mirko Boehm <mirko.boehm@kdab.com>
 
-from core.helpers.BoilerPlate import getBuildProject
+from core.helpers.BoilerPlate import BuildProject
 from core.Configuration import Configuration
 from core.plugins.Preprocessor import Preprocessor
 from core.helpers.PathResolver import PathResolver
@@ -18,8 +18,8 @@ from core.environments.Environments import Environments
 from core.plugins.DoxygenGenerator import DoxygenGenerator
 import socket
 
-build, project = getBuildProject( buildName = 'Charm Build', projectName = 'Charm',
-								projectVersionNumber = '1.4.0', scmUrl = 'git://github.com/KDAB/Charm.git' )
+build, project = BuildProject( build = 'Charm Build', name = 'Charm',
+	version = '1.4.0', url = 'git://github.com/KDAB/Charm.git' )
 
 sharedDebug = Environments( [ 'Qt-4.[67].?-Shared-Debug' ], 'Qt 4 Shared Debug', project )
 debug = Configuration( 'Debug', sharedDebug, )
