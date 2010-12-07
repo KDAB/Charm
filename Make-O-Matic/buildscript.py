@@ -20,14 +20,14 @@ import socket
 
 build, project = BuildProject( name = 'Charm', version = '1.4.0', url = 'git://github.com/KDAB/Charm.git' )
 
-sharedDebug = Environments( [ 'Qt-4.[67].?-Shared-Debug' ], 'Qt 4 Shared Debug', project )
+sharedDebug = Environments( [ 'Qt-4.[7].?-Shared-Debug' ], 'Qt 4 Shared Debug', project )
 debug = Configuration( 'Debug', sharedDebug, )
 cmakeDebug = CMakeBuilder()
 cmakeDebug.addCMakeVariable( CMakeVariable( 'CHARM_TIMESHEET_TOOLS', 'TRUE', 'BOOL' ) )
 debug.addPlugin( CTest() )
 debug.addPlugin( cmakeDebug )
 
-sharedRelease = Environments( [ 'Qt-4.[67].?-Shared-Release' ], 'Qt 4 Shared Release', project )
+sharedRelease = Environments( [ 'Qt-4.[7].?-Shared-Release' ], 'Qt 4 Shared Release', project )
 release = Configuration( 'Release', sharedRelease )
 release.addPlugin( CMakeBuilder() )
 release.addPlugin( CTest() )
@@ -44,18 +44,5 @@ project.addPlugin( footer )
 gen = DoxygenGenerator()
 gen.setOptional( True )
 gen.setDoxygenFile( prep.getOutputFilename() )
-
-project.addPlugin( gen )
-project.addPlugin( RSyncPublisher( localDir = PathResolver( project.getDocsDir ),
-	uploadLocation = 'docs.kdab.com:/home/klaralv-web/docs.kdab.net/charm' ) )
-
-# publish packages:
-project.addPlugin( RSyncPublisher( localDir = PathResolver( project.getPackagesDir ),
-	uploadLocation = 'docs.kdab.com:/home/klaralv-web/docs.kdab.net/charm' ) )
-
-build.getSettings().setBuildStepEnabled( 'conf-package', 'c', True )
-# this is not extremely elegant, and will be merged into the main configuration later:
-if socket.gethostname() == 'bigmac.office-berlin.kdab.com':
-	build.getSettings().setBuildStepEnabled( 'project-upload-packages', 'c', True )
 
 build.build()
