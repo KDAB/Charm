@@ -18,8 +18,7 @@ from core.environments.Environments import Environments
 from core.plugins.DoxygenGenerator import DoxygenGenerator
 import socket
 
-build, project = BuildProject( build = 'Charm Build', name = 'Charm',
-	version = '1.4.0', url = 'git://github.com/KDAB/Charm.git' )
+build, project = BuildProject( name = 'Charm', version = '1.4.0', url = 'git://github.com/KDAB/Charm.git' )
 
 sharedDebug = Environments( [ 'Qt-4.[67].?-Shared-Debug' ], 'Qt 4 Shared Debug', project )
 debug = Configuration( 'Debug', sharedDebug, )
