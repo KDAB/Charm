@@ -85,11 +85,12 @@ TasksView::TasksView( QWidget* parent )
              SLOT( actionEditTask() ) );
 
     m_actionDeleteTask.setText( tr( "Delete Task" ) );
+    QList<QKeySequence> deleteShortcuts;
+    deleteShortcuts << QKeySequence::Delete;
 #ifdef Q_WS_MAC
-    m_actionDeleteTask.setShortcut( Qt::Key_Backspace );
-#else
-    m_actionDeleteTask.setShortcut( QKeySequence::Delete );
+    deleteShortcuts << Qt::Key_Backspace;
 #endif
+    m_actionDeleteTask.setShortcuts(deleteShortcuts);
     m_actionDeleteTask.setIcon( Data::deleteTaskIcon() );
     connect( &m_actionDeleteTask, SIGNAL( triggered( bool ) ),
              SLOT( actionDeleteTask() ) );

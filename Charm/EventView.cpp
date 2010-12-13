@@ -66,7 +66,12 @@ EventView::EventView( QWidget* parent )
     m_ui->toolButtonEditEvent->setDefaultAction( &m_actionEditEvent );
 
     m_actionDeleteEvent.setText( tr( "Delete Event..." ) );
-    m_actionDeleteEvent.setShortcut( QKeySequence::Delete );
+    QList<QKeySequence> deleteShortcuts;
+    deleteShortcuts << QKeySequence::Delete;
+#ifdef Q_WS_MAC
+    deleteShortcuts << Qt::Key_Backspace;
+#endif
+    m_actionDeleteEvent.setShortcuts(deleteShortcuts);
     m_actionDeleteEvent.setIcon( Data::deleteTaskIcon() );
     m_ui->toolButtonDeleteEvent->setDefaultAction( &m_actionDeleteEvent );
 
