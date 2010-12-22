@@ -97,9 +97,7 @@ QT4_WRAP_UI(
         Reports/ActivityReportConfigurationPage.ui
         Reports/WeeklyTimeSheetConfigurationPage.ui
         Reports/ReportPreviewWindow.ui
-        TasksView.ui
         TaskEditor.ui
-        EventView.ui
         EventEditor.ui
         SelectTaskDialog.ui
         CharmAboutDialog.ui

@@ -19,10 +19,7 @@ class EventModelFilter;
 class QToolBar;
 class QComboBox;
 class QLabel;
-
-namespace Ui {
-    class EventView;
-}
+class QListView;
 
 class EventView : public QWidget,
                   public ViewModeInterface,
@@ -81,14 +78,14 @@ private:
     void setCurrentEvent( const Event& );
 
     QList<NamedTimeSpan> m_timeSpans;
-    Ui::EventView* m_ui;
     Event m_event;
     EventModelFilter* m_model;
     QAction m_actionNewEvent;
     QAction m_actionEditEvent;
     QAction m_actionDeleteEvent;
-    QComboBox *m_comboBox;
-    QLabel *m_labelTotal;
+    QComboBox* m_comboBox;
+    QLabel* m_labelTotal;
+    QListView* m_listView;
 };
 
 #endif

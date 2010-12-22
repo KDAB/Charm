@@ -12,6 +12,7 @@
 #include <QToolBar>
 #include <QToolButton>
 #include <QCheckBox>
+#include <QTreeView>
 
 #include "Data.h"
 #include "Core/Task.h"
@@ -33,12 +34,9 @@
 #include "Commands/CommandModifyTask.h"
 #include "Commands/CommandDeleteTask.h"
 
-#include "ui_TasksView.h"
-
 TasksView::TasksView( QToolBar* toolBar, QWidget* parent )
     : QWidget( parent )
     // , ViewInterface()
-    , m_ui( new Ui::TasksView )
     , m_delegate( new TasksViewDelegate( this ) )
     , m_actionStartEvent( this )
     , m_actionEndEvent( this )
@@ -49,9 +47,13 @@ TasksView::TasksView( QToolBar* toolBar, QWidget* parent )
     , m_buttonClearFilter( new QToolButton( this ) )
     , m_showCurrentOnly( new QCheckBox( this ) )
     , m_showSubscribedOnly( new QCheckBox( this ) )
+    , m_treeView( new QTreeView( this ) )
 {
-    m_ui->setupUi( this );
-    m_ui->treeView->setItemDelegate( m_delegate );
+    QVBoxLayout* layout = new QVBoxLayout( this );
+    layout->setContentsMargins( 0, 0, 0, 0 );
+    layout->addWidget( m_treeView );
+
+    m_treeView->setItemDelegate( m_delegate );
     connect( m_delegate, SIGNAL( editingStateChanged() ),
              SLOT( configureUi() ) );
 
@@ -126,17 +128,18 @@ TasksView::TasksView( QToolBar* toolBar, QWidget* parent )
     toolBar->addWidget( m_buttonClearFilter );
     toolBar->addWidget( filterLineEdit );
 
-    m_ui->treeView->setContextMenuPolicy( Qt::CustomContextMenu );
-    connect( m_ui->treeView, SIGNAL( customContextMenuRequested( const QPoint& ) ),
+    m_treeView->setAlternatingRowColors( true );
+    m_treeView->setRootIsDecorated( true );
+    m_treeView->setContextMenuPolicy( Qt::CustomContextMenu );
+    connect( m_treeView, SIGNAL( customContextMenuRequested( const QPoint& ) ),
              SLOT( slotContextMenuRequested( const QPoint& ) ) );
 
-    connect( m_ui->treeView, SIGNAL( doubleClicked( const QModelIndex& ) ),
+    connect( m_treeView, SIGNAL( doubleClicked( const QModelIndex& ) ),
              SLOT( slotItemDoubleClicked( const QModelIndex& ) ) );
 }
 
 TasksView::~TasksView()
 {
-    delete m_ui; m_ui = 0;
 }
 
 void TasksView::populateEditMenu( QMenu* editMenu )
@@ -243,14 +246,14 @@ void TasksView::addTaskHelper( const Task& parent )
         emit emitCommand( cmd );
         if ( parent.isValid() ) {
             const QModelIndex parentIdx = filter->indexForTaskId( parent.id() );
-            m_ui->treeView->setExpanded( parentIdx, true );
+            m_treeView->setExpanded( parentIdx, true );
         }
     }
 }
 
 void TasksView::configureUi()
 {
-    const QItemSelectionModel* smodel = m_ui->treeView->selectionModel();
+    const QItemSelectionModel* smodel = m_treeView->selectionModel();
     const QModelIndex current = smodel ? smodel->currentIndex() : QModelIndex();
     const ViewFilter* filter = Application::instance().model().taskModel();
     const bool editing = m_delegate->isEditing();
@@ -276,8 +279,8 @@ void TasksView::configureUi()
      {
          // set model on view:
          ViewFilter* filter = Application::instance().model().taskModel();
-         m_ui->treeView->setModel( filter );
-         const QItemSelectionModel* smodel =  m_ui->treeView->selectionModel();
+         m_treeView->setModel( filter );
+         const QItemSelectionModel* smodel =  m_treeView->selectionModel();
          connect( smodel, SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ), SLOT( configureUi() ) );
          connect( smodel, SIGNAL( selectionChanged( const QItemSelection&, const QItemSelection& ) ), SLOT( configureUi() ) );
          connect( filter, SIGNAL( eventActivationNotice( EventId ) ),
@@ -302,7 +305,7 @@ void TasksView::configureUi()
 
  void TasksView::saveGuiState()
  {
-     Q_ASSERT( m_ui->treeView );
+     Q_ASSERT( m_treeView );
      ViewFilter* filter = Application::instance().model().taskModel();
      Q_ASSERT( filter );
      QSettings settings;
@@ -317,7 +320,7 @@ void TasksView::configureUi()
          TaskIdList expandedTasks;
          Q_FOREACH( const Task& task, tasks ) {
              QModelIndex index( filter->indexForTaskId( task.id() ) );
-             if ( m_ui->treeView->isExpanded( index ) ) {
+             if ( m_treeView->isExpanded( index ) ) {
                  expandedTasks << task.id();
              }
          }
@@ -328,7 +331,7 @@ void TasksView::configureUi()
 
  void TasksView::restoreGuiState()
  {
-     Q_ASSERT( m_ui->treeView );
+     Q_ASSERT( m_treeView );
      ViewFilter* filter = Application::instance().model().taskModel();
      Q_ASSERT( filter );
      QSettings settings;
@@ -339,13 +342,13 @@ void TasksView::configureUi()
          state.loadFrom( settings );
          QModelIndex index( filter->indexForTaskId( state.selectedTask() ) );
          if ( index.isValid() ) {
-             m_ui->treeView->setCurrentIndex(index);
+             m_treeView->setCurrentIndex(index);
          }
 
          Q_FOREACH( const TaskId& id, state.expandedTasks() ) {
              QModelIndex index( filter->indexForTaskId( id ) );
              if ( index.isValid() ) {
-                 m_ui->treeView->expand( index );
+                 m_treeView->expand( index );
              }
          }
      }
@@ -379,15 +382,14 @@ void TasksView::configureUi()
      m_showSubscribedOnly->setChecked( showSubscribedOnly );
      m_showCurrentOnly->setChecked( showCurrentOnly );
 
-     m_ui->treeView->setFont( configuredFont() );
-     m_ui->treeView->header()->hide();
+     m_treeView->setFont( configuredFont() );
+     m_treeView->header()->hide();
      configureUi();
  }
 
  void TasksView::setModel( ModelConnector* connector )
  {
-     Q_ASSERT( m_ui );
-     m_ui->treeView->setModel( connector->taskModel() );
+     m_treeView->setModel( connector->taskModel() );
      restoreGuiState();
  }
 
@@ -428,7 +430,7 @@ void TasksView::configureUi()
  void TasksView::slotContextMenuRequested( const QPoint& point )
  {
      // prepare the menu:
-     QMenu menu( m_ui->treeView );
+     QMenu menu( m_treeView );
      menu.addAction( &m_actionStartEvent );
      menu.addAction( &m_actionEndEvent );
 
@@ -440,7 +442,7 @@ void TasksView::configureUi()
 
      configureUi();
 
-     menu.exec( m_ui->treeView->mapToGlobal( point ) );
+     menu.exec( m_treeView->mapToGlobal( point ) );
  }
 
  void TasksView::slotItemDoubleClicked( const QModelIndex& index )
@@ -484,11 +486,11 @@ void TasksView::configureUi()
 
  Task TasksView::selectedTask()
  {
-     Q_ASSERT( m_ui->treeView );
+     Q_ASSERT( m_treeView );
      ViewFilter* filter = Application::instance().model().taskModel();
      Q_ASSERT( filter );
      // find current selection
-     QModelIndexList selection = m_ui->treeView->selectionModel()->selectedIndexes();
+     QModelIndexList selection = m_treeView->selectionModel()->selectedIndexes();
      // match it to a task:
      if ( selection.size() > 0 ) {
          return filter->taskForIndex( selection.first() );

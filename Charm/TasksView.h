@@ -18,10 +18,7 @@ class StatusBarWidget;
 class QToolBar;
 class QToolButton;
 class QCheckBox;
-
-namespace Ui {
-    class TasksView;
-}
+class QTreeView;
 
 class TasksView : public QWidget,
              public ViewModeInterface,
@@ -77,7 +74,6 @@ private:
     Task selectedTask();
     void addTaskHelper( const Task& parent );
 
-    Ui::TasksView* m_ui;
     TasksViewDelegate* m_delegate;
     QAction m_actionStartEvent;
     QAction m_actionEndEvent;
@@ -89,6 +85,7 @@ private:
     QToolButton* m_buttonClearFilter;
     QCheckBox* m_showCurrentOnly;
     QCheckBox* m_showSubscribedOnly;
+    QTreeView* m_treeView;
 };
 
 #endif

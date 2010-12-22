@@ -7,6 +7,7 @@
 #include <QToolBar>
 #include <QComboBox>
 #include <QLabel>
+#include <QVBoxLayout>
 
 #include "TasksView.h"
 #include "ViewHelpers.h"
@@ -26,27 +27,26 @@
 #include "Commands/CommandModifyEvent.h"
 #include "Commands/CommandDeleteEvent.h"
 
-#include "ui_EventView.h"
-
 EventView::EventView( QToolBar* toolBar, QWidget* parent )
     : QWidget( parent )
-    , m_ui( new Ui::EventView )
     , m_model( 0 )
     , m_actionNewEvent( this )
     , m_actionEditEvent( this )
     , m_actionDeleteEvent( this )
     , m_comboBox( new QComboBox( this ) )
     , m_labelTotal( new QLabel( this ) )
+    , m_listView( new QListView( this ) )
 {
-    m_ui->setupUi( this );
-    QHBoxLayout* layout = new QHBoxLayout();
+    QVBoxLayout* layout = new QVBoxLayout( this );
     layout->setContentsMargins( 0, 0, 0, 0 );
+    layout->addWidget( m_listView );
 
-    m_ui->listView->setContextMenuPolicy( Qt::CustomContextMenu );
-    connect( m_ui->listView,
+    m_listView->setAlternatingRowColors( true );
+    m_listView->setContextMenuPolicy( Qt::CustomContextMenu );
+    connect( m_listView,
              SIGNAL( customContextMenuRequested( const QPoint& ) ),
              SLOT( slotContextMenuRequested( const QPoint& ) ) );
-    connect( m_ui->listView,
+    connect( m_listView,
              SIGNAL( doubleClicked( const QModelIndex& ) ),
              SLOT( slotEventDoubleClicked( const QModelIndex& ) ) );
     connect( &m_actionNewEvent, SIGNAL( triggered() ),
@@ -105,7 +105,6 @@ EventView::EventView( QToolBar* toolBar, QWidget* parent )
 
 EventView::~EventView()
 {
-    delete m_ui; m_ui = 0;
 }
 
 void EventView::delayedInitialization()
@@ -230,7 +229,7 @@ void EventView::slotPreviousEvent()
     const QModelIndex& index = m_model->indexForEvent( m_event );
     Q_ASSERT( index.isValid() && index.row() > 0 && index.row() < m_model->rowCount() );
     const QModelIndex& previousIndex = m_model->index( index.row() - 1, 0, QModelIndex() );
-    m_ui->listView->selectionModel()->setCurrentIndex
+    m_listView->selectionModel()->setCurrentIndex
         ( previousIndex, QItemSelectionModel::ClearAndSelect );
 }
 
@@ -239,20 +238,20 @@ void EventView::slotNextEvent()
     const QModelIndex& index = m_model->indexForEvent( m_event );
     Q_ASSERT( index.isValid() && index.row() >= 0 && index.row() < m_model->rowCount() - 1 );
     const QModelIndex& nextIndex = m_model->index( index.row() + 1, 0, QModelIndex() );
-    m_ui->listView->selectionModel()->setCurrentIndex
+    m_listView->selectionModel()->setCurrentIndex
         ( nextIndex, QItemSelectionModel::ClearAndSelect );
 }
 
 void EventView::slotContextMenuRequested( const QPoint& point )
 {
     // prepare the menu:
-    QMenu menu( m_ui->listView );
+    QMenu menu( m_listView );
     menu.addAction( &m_actionNewEvent );
     menu.addAction( &m_actionEditEvent );
     menu.addAction( &m_actionDeleteEvent );
 
     // all actions are handled in their own slots:
-    menu.exec( m_ui->listView->mapToGlobal( point ) );
+    menu.exec( m_listView->mapToGlobal( point ) );
 }
 
 // FIXME obsolete
@@ -282,7 +281,7 @@ void EventView::makeVisibleAndCurrent( const Event& event )
     // get an index for the event, and make it the current index:
     const QModelIndex& index = m_model->indexForEvent( event );
     Q_ASSERT( index.isValid() );
-    m_ui->listView->selectionModel()->setCurrentIndex
+    m_listView->selectionModel()->setCurrentIndex
         ( index, QItemSelectionModel::ClearAndSelect );
 }
 
@@ -361,13 +360,12 @@ void EventView::configurationChanged()
 
 void EventView::setModel( ModelConnector* connector )
 {
-    Q_ASSERT( m_ui );
     EventModelFilter* model = connector->eventModel();
-    m_ui->listView->setModel( model );
-    m_ui->listView->setSelectionBehavior( QAbstractItemView::SelectRows );
-    m_ui->listView->setSelectionMode( QAbstractItemView::SingleSelection );
+    m_listView->setModel( model );
+    m_listView->setSelectionBehavior( QAbstractItemView::SelectRows );
+    m_listView->setSelectionMode( QAbstractItemView::SingleSelection );
 
-    connect( m_ui->listView->selectionModel(),
+    connect( m_listView->selectionModel(),
              SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ),
              SLOT( slotCurrentItemChanged( const QModelIndex&, const QModelIndex& ) ) );
 
@@ -394,8 +392,8 @@ void EventView::setModel( ModelConnector* connector )
     m_model = model;
     // normally, the model is set only once, so this should be no problem:
     EventEditorDelegate* delegate =
-        new EventEditorDelegate( model, m_ui->listView );
-    m_ui->listView->setItemDelegate( delegate );
+        new EventEditorDelegate( model, m_listView );
+    m_listView->setItemDelegate( delegate );
     timeSpansChanged();
 }
 
