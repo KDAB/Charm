@@ -111,7 +111,17 @@
          </item>
          <item>
           <property name="text">
-           <string>Icons and Text</string>
+           <string>Text under icon</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Text beside icon</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>System default</string>
           </property>
          </item>
         </widget>

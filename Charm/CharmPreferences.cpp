@@ -51,6 +51,12 @@ CharmPreferences::CharmPreferences( const Configuration& config,
     case Qt::ToolButtonTextUnderIcon:
         m_ui.cbToolButtonStyle->setCurrentIndex( 2 );
         break;
+    case Qt::ToolButtonTextBesideIcon:
+        m_ui.cbToolButtonStyle->setCurrentIndex( 3 );
+        break;
+    case Qt::ToolButtonFollowStyle:
+        m_ui.cbToolButtonStyle->setCurrentIndex( 4 );
+        break;
     default:
         Q_ASSERT( false ); // somebody added an option
     };
@@ -124,6 +130,12 @@ Qt::ToolButtonStyle CharmPreferences::toolButtonStyle() const
         break;
     case 2:
         return Qt::ToolButtonTextUnderIcon;
+        break;
+    case 3:
+        return Qt::ToolButtonTextBesideIcon;
+        break;
+    case 4:
+        return Qt::ToolButtonFollowStyle;
         break;
     default:
         Q_ASSERT( false ); // somebody added an item
