@@ -24,6 +24,8 @@ public:
     const QString& windowIdentfier() const;
     int windowNumber() const;
 
+    virtual QToolBar* toolBar() const;
+
 protected:
     /** The window name is the human readable name the application uses to reference the window.
      */
@@ -66,6 +68,7 @@ private:
     int m_windowNumber; // Mac numerical window number, used for shortcut etc
     QString m_windowIdentifier;
     QShortcut* m_shortcut;
+    QToolBar* m_toolBar;
 };
 
 #endif

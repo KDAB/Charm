@@ -4,6 +4,7 @@
 #include <QCloseEvent>
 #include <QtAlgorithms>
 #include <QKeyEvent>
+#include <QToolBar>
 
 #include "Core/TimeSpans.h"
 
@@ -18,6 +19,7 @@ TimeTrackingView::TimeTrackingView( QWidget* parent )
     : CharmWindow( tr( "Time Tracker" ), parent )
     , m_ui( new Ui::TimeTrackingView )
 {
+    toolBar()->hide();
     setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
     setWindowNumber( 3 );
     setWindowIdentifier( QLatin1String( "window_tracking" ) );

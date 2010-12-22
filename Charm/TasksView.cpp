@@ -9,6 +9,9 @@
 #include <QMessageBox>
 #include <QHeaderView>
 #include <QItemSelectionModel>
+#include <QToolBar>
+#include <QToolButton>
+#include <QCheckBox>
 
 #include "Data.h"
 #include "Core/Task.h"
@@ -32,7 +35,7 @@
 
 #include "ui_TasksView.h"
 
-TasksView::TasksView( QWidget* parent )
+TasksView::TasksView( QToolBar* toolBar, QWidget* parent )
     : QWidget( parent )
     // , ViewInterface()
     , m_ui( new Ui::TasksView )
@@ -43,26 +46,31 @@ TasksView::TasksView( QWidget* parent )
     , m_actionNewSubTask( this )
     , m_actionEditTask( this )
     , m_actionDeleteTask( this )
+    , m_buttonClearFilter( new QToolButton( this ) )
+    , m_showCurrentOnly( new QCheckBox( this ) )
+    , m_showSubscribedOnly( new QCheckBox( this ) )
 {
     m_ui->setupUi( this );
     m_ui->treeView->setItemDelegate( m_delegate );
     connect( m_delegate, SIGNAL( editingStateChanged() ),
              SLOT( configureUi() ) );
-    m_ui->buttonClearFilter->setEnabled( false );
-    m_ui->buttonClearFilter->setText( tr( "Clear Filter" ) );
-    m_ui->buttonClearFilter->setIcon( Data::clearFilterIcon() );
+
+    m_buttonClearFilter->setEnabled( false );
+    m_buttonClearFilter->setText( tr( "Clear Filter" ) );
+    m_buttonClearFilter->setIcon( Data::clearFilterIcon() );
+
     // set up actions
     // (no menu icons, please) m_actionAboutDialog.setIcon( Data::charmIcon() );
     m_actionStartEvent.setIcon( Data::goIcon() );
     m_actionStartEvent.setText( tr( "Start Task" ) );
     m_actionStartEvent.setShortcut( Qt::CTRL + Qt::Key_Return );
-    m_ui->goButton->setDefaultAction( &m_actionStartEvent );
+    toolBar->addAction( &m_actionStartEvent );
     connect( &m_actionStartEvent, SIGNAL( triggered( bool ) ),
              SLOT( actionStartEvent() ) );
 
     m_actionEndEvent.setIcon( Data::stopIcon() );
     m_actionEndEvent.setText( tr( "Stop Task" ) );
-    m_ui->stopButton->setDefaultAction( &m_actionEndEvent );
+    toolBar->addAction( &m_actionEndEvent );
     connect( &m_actionEndEvent, SIGNAL( triggered( bool ) ),
              SLOT( actionEndEvent() ) );
 
@@ -96,12 +104,28 @@ TasksView::TasksView( QWidget* parent )
              SLOT( actionDeleteTask() ) );
 
     // filter setup
-    connect( m_ui->filterLineEdit, SIGNAL( textChanged( const QString& ) ),
+    QLineEdit* filterLineEdit = new QLineEdit( this );
+    connect( filterLineEdit, SIGNAL( textChanged( const QString& ) ),
              SLOT( slotFiltertextChanged( const QString& ) ) );
-    connect( m_ui->showCurrentOnly, SIGNAL( clicked( bool ) ),
+
+    connect( m_buttonClearFilter, SIGNAL( clicked() ),
+             filterLineEdit, SLOT( clear() ) );
+
+    m_showCurrentOnly->setText( tr( "Current" ) );
+    m_showCurrentOnly->setCheckable( true );
+    toolBar->addWidget( m_showCurrentOnly );
+    connect( m_showCurrentOnly, SIGNAL( clicked( bool ) ),
              SLOT( taskPrefilteringChanged() ) );
-    connect( m_ui->showSubscribedOnly, SIGNAL( clicked( bool ) ),
+
+    m_showSubscribedOnly->setText( tr( "My Tasks" ) );
+    m_showSubscribedOnly->setCheckable( true );
+    toolBar->addWidget( m_showSubscribedOnly );
+    connect( m_showSubscribedOnly, SIGNAL( clicked( bool ) ),
              SLOT( taskPrefilteringChanged() ) );
+
+    toolBar->addWidget( m_buttonClearFilter );
+    toolBar->addWidget( filterLineEdit );
+
     m_ui->treeView->setContextMenuPolicy( Qt::CustomContextMenu );
     connect( m_ui->treeView, SIGNAL( customContextMenuRequested( const QPoint& ) ),
              SLOT( slotContextMenuRequested( const QPoint& ) ) );
@@ -352,8 +376,8 @@ void TasksView::configureUi()
      const Configuration::TaskPrefilteringMode mode = CONFIGURATION.taskPrefilteringMode;
      const bool showSubscribedOnly = mode == Configuration::TaskPrefilter_SubscribedOnly || mode == Configuration::TaskPrefilter_SubscribedAndCurrentOnly;
      const bool showCurrentOnly = mode == Configuration::TaskPrefilter_CurrentOnly || mode == Configuration::TaskPrefilter_SubscribedAndCurrentOnly;
-     m_ui->showSubscribedOnly->setChecked( showSubscribedOnly );
-     m_ui->showCurrentOnly->setChecked( showCurrentOnly );
+     m_showSubscribedOnly->setChecked( showSubscribedOnly );
+     m_showCurrentOnly->setChecked( showCurrentOnly );
 
      m_ui->treeView->setFont( configuredFont() );
      m_ui->treeView->header()->hide();
@@ -375,7 +399,7 @@ void TasksView::configureUi()
 
      saveGuiState();
      filter->setFilterWildcard( filtertext );
-     m_ui->buttonClearFilter->setEnabled( ! filtertextRaw.isEmpty() );
+     m_buttonClearFilter->setEnabled( ! filtertextRaw.isEmpty() );
      restoreGuiState();
  }
 
@@ -383,8 +407,8 @@ void TasksView::configureUi()
  {
      // find out about the selected mode:
      Configuration::TaskPrefilteringMode mode;
-     const bool showCurrentOnly = m_ui->showCurrentOnly->isChecked();
-     const bool showSubscribedOnly = m_ui->showSubscribedOnly->isChecked();
+     const bool showCurrentOnly = m_showCurrentOnly->isChecked();
+     const bool showSubscribedOnly = m_showSubscribedOnly->isChecked();
      if (  showCurrentOnly && showSubscribedOnly ) {
          mode = Configuration::TaskPrefilter_SubscribedAndCurrentOnly;
      } else if ( showCurrentOnly && ! showSubscribedOnly ) {

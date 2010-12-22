@@ -28,12 +28,13 @@
 
 TasksWindow::TasksWindow( QWidget* parent )
     : CharmWindow( tr( "Tasks" ), parent )
-    , m_tasksView( new TasksView( this ) )
+    , m_tasksView( new TasksView( toolBar(), this ) )
     , m_reportDialog( this )
 {
     setWindowNumber( 1 );
     setWindowIdentifier( QLatin1String( "window_tasks" ) );
     setCentralWidget( m_tasksView );
+    setUnifiedTitleAndToolBarOnMac( true );
     connect( m_tasksView, SIGNAL( emitCommand( CharmCommand* ) ),
              SIGNAL( emitCommand( CharmCommand* ) ) );
     connect( m_tasksView, SIGNAL( saveConfiguration() ),

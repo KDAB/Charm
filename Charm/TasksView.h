@@ -15,6 +15,9 @@ class QItemSelection;
 class QModelIndex;
 class TasksViewDelegate;
 class StatusBarWidget;
+class QToolBar;
+class QToolButton;
+class QCheckBox;
 
 namespace Ui {
     class TasksView;
@@ -27,7 +30,7 @@ class TasksView : public QWidget,
     Q_OBJECT
 
 public:
-    explicit TasksView ( QWidget* parent = 0 );
+    explicit TasksView ( QToolBar* toolBar, QWidget* parent = 0 );
     ~TasksView();
 
     // implement ViewModeInterface:
@@ -83,6 +86,9 @@ private:
     QAction m_actionEditTask;
     QAction m_actionDeleteTask;
     StatusBarWidget* m_statusBarWidget;
+    QToolButton* m_buttonClearFilter;
+    QCheckBox* m_showCurrentOnly;
+    QCheckBox* m_showSubscribedOnly;
 };
 
 #endif

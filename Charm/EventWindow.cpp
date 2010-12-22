@@ -4,13 +4,17 @@
 #include "EventWindow.h"
 #include "EventView.h"
 
+#include <QToolBar>
+#include <QLabel>
+
 EventWindow::EventWindow( QWidget* parent )
     : CharmWindow( tr( "Events" ), parent )
-    , m_eventView( new EventView( this ) )
+    , m_eventView( new EventView( toolBar(), this ) )
 {
     setWindowNumber( 2 );
     setWindowIdentifier( QLatin1String( "window_events" ) );
     setCentralWidget( m_eventView );
+    setUnifiedTitleAndToolBarOnMac( true );
     connect( m_eventView, SIGNAL( emitCommand( CharmCommand* ) ),
              SIGNAL( emitCommand( CharmCommand* ) ) );
 }

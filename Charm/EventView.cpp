@@ -4,6 +4,9 @@
 #include <QCloseEvent>
 #include <QMessageBox>
 #include <QDateTimeEdit>
+#include <QToolBar>
+#include <QComboBox>
+#include <QLabel>
 
 #include "TasksView.h"
 #include "ViewHelpers.h"
@@ -25,13 +28,15 @@
 
 #include "ui_EventView.h"
 
-EventView::EventView( QWidget* parent )
+EventView::EventView( QToolBar* toolBar, QWidget* parent )
     : QWidget( parent )
     , m_ui( new Ui::EventView )
     , m_model( 0 )
     , m_actionNewEvent( this )
     , m_actionEditEvent( this )
     , m_actionDeleteEvent( this )
+    , m_comboBox( new QComboBox( this ) )
+    , m_labelTotal( new QLabel( this ) )
 {
     m_ui->setupUi( this );
     QHBoxLayout* layout = new QHBoxLayout();
@@ -58,12 +63,12 @@ EventView::EventView( QWidget* parent )
     m_actionNewEvent.setText( tr( "Create New Event..." ) );
     m_actionNewEvent.setIcon( Data::newTaskIcon() );
     m_actionNewEvent.setShortcut( QKeySequence::New );
-    m_ui->toolButtonNewEvent->setDefaultAction( &m_actionNewEvent );
+    toolBar->addAction( &m_actionNewEvent );
 
     m_actionEditEvent.setText( tr( "Edit Event...") );
     m_actionEditEvent.setShortcut( Qt::CTRL + Qt::Key_E );
     m_actionEditEvent.setIcon( Data::editEventIcon() );
-    m_ui->toolButtonEditEvent->setDefaultAction( &m_actionEditEvent );
+    toolBar->addAction( &m_actionEditEvent );
 
     m_actionDeleteEvent.setText( tr( "Delete Event..." ) );
     QList<QKeySequence> deleteShortcuts;
@@ -73,7 +78,7 @@ EventView::EventView( QWidget* parent )
 #endif
     m_actionDeleteEvent.setShortcuts(deleteShortcuts);
     m_actionDeleteEvent.setIcon( Data::deleteTaskIcon() );
-    m_ui->toolButtonDeleteEvent->setDefaultAction( &m_actionDeleteEvent );
+    toolBar->addAction( &m_actionDeleteEvent );
 
     // disable all actions, action state will be set when the current
     // item changes:
@@ -81,8 +86,19 @@ EventView::EventView( QWidget* parent )
     m_actionEditEvent.setEnabled( false );
     m_actionDeleteEvent.setEnabled( false );
 
-    connect( m_ui->comboBox, SIGNAL( currentIndexChanged( int ) ),
+    toolBar->addWidget( new QLabel( tr( "See events from:" ) , this ) );
+
+    toolBar->addWidget( m_comboBox );
+    connect( m_comboBox, SIGNAL( currentIndexChanged( int ) ),
              SLOT( timeFrameChanged( int ) ) );
+
+    QWidget *spacer = new QWidget( this );
+    QSizePolicy spacerSizePolicy = spacer->sizePolicy();
+    spacerSizePolicy.setHorizontalPolicy( QSizePolicy::Expanding );
+    spacer->setSizePolicy( spacerSizePolicy );
+    toolBar->addWidget( spacer );
+
+    toolBar->addWidget( m_labelTotal );
 
     QTimer::singleShot( 0, this, SLOT( delayedInitialization() ) );
 }
@@ -119,16 +135,16 @@ void EventView::timeSpansChanged()
     };
     m_timeSpans << allEvents;
 
-    const int currentIndex = m_ui->comboBox->currentIndex();
-    m_ui->comboBox->clear();
+    const int currentIndex = m_comboBox->currentIndex();
+    m_comboBox->clear();
     for ( int i = 0; i < m_timeSpans.size(); ++i )
     {
-        m_ui->comboBox->addItem( m_timeSpans[i].name );
+        m_comboBox->addItem( m_timeSpans[i].name );
     }
     if ( currentIndex >= 0 &&  currentIndex <= m_timeSpans.size() ) {
-        m_ui->comboBox->setCurrentIndex( currentIndex );
+        m_comboBox->setCurrentIndex( currentIndex );
     } else {
-        m_ui->comboBox->setCurrentIndex( 0 );
+        m_comboBox->setCurrentIndex( 0 );
     }
 }
 
@@ -252,13 +268,13 @@ void EventView::makeVisibleAndCurrent( const Event& event )
     // time (otherwise it is not visible):
     // (how?: if the event is not in the timespan, expand the timespan
     // as much as needed)
-    const int CurrentTimeSpan = m_ui->comboBox->currentIndex();
+    const int CurrentTimeSpan = m_comboBox->currentIndex();
 
     if ( ! m_timeSpans[CurrentTimeSpan].contains( event.startDateTime().date() ) ) {
         for ( int i = 0; i < m_timeSpans.size(); ++i )
         {   // at least "ever"  should contain it
             if ( m_timeSpans[i].contains( event.startDateTime().date() ) ) {
-                m_ui->comboBox->setCurrentIndex( i );
+                m_comboBox->setCurrentIndex( i );
                 break;
             }
         }
@@ -273,7 +289,7 @@ void EventView::makeVisibleAndCurrent( const Event& event )
 void EventView::timeFrameChanged( int index )
 {
     // wait for the next update, in this case:
-    if ( m_ui->comboBox->count() == 0 ) return;
+    if ( m_comboBox->count() == 0 ) return;
     if ( !m_model ) return;
     if ( index >= 0 && index < m_timeSpans.size() ) {
         m_model->setFilterStartDate( m_timeSpans[index].timespan.first );
@@ -324,12 +340,12 @@ void EventView::slotUpdateTotal()
 {   // what matching signal does the proxy emit?
     int seconds = m_model->totalDuration();
     if ( seconds == 0 ) {
-        m_ui->labelTotal->clear();
+        m_labelTotal->clear();
     } else {
         QString total;
         QTextStream stream( &total );
         stream << "(" << hoursAndMinutes( seconds ) << " total)";
-        m_ui->labelTotal->setText( total );
+        m_labelTotal->setText( total );
     }
 }
 

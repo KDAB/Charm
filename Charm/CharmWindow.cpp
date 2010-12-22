@@ -27,6 +27,7 @@ CharmWindow::CharmWindow( const QString& name, QWidget* parent )
     setWindowIcon( Data::charmIcon() );
     handleShowHide( false );
     connect( m_showHideAction, SIGNAL( triggered( bool ) ), SLOT( showHideView() ) );
+    m_toolBar = addToolBar( "toolbar" );
 }
 
 void CharmWindow::stateChanged( State )
@@ -91,6 +92,11 @@ void CharmWindow::setWindowNumber( int number )
 int CharmWindow::windowNumber() const
 {
     return m_windowNumber;
+}
+
+QToolBar* CharmWindow::toolBar() const
+{
+    return m_toolBar;
 }
 
 QAction* CharmWindow::showHideAction()

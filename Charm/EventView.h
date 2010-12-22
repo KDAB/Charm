@@ -16,6 +16,9 @@ class EventDisplay;
 class CharmCommand;
 class QAbstractItemModel;
 class EventModelFilter;
+class QToolBar;
+class QComboBox;
+class QLabel;
 
 namespace Ui {
     class EventView;
@@ -28,7 +31,7 @@ class EventView : public QWidget,
     Q_OBJECT
 
 public:
-    explicit EventView( QWidget* parent );
+    explicit EventView( QToolBar* toolBar, QWidget* parent );
     ~EventView();
 
     void closeEvent( QCloseEvent* );
@@ -84,6 +87,8 @@ private:
     QAction m_actionNewEvent;
     QAction m_actionEditEvent;
     QAction m_actionDeleteEvent;
+    QComboBox *m_comboBox;
+    QLabel *m_labelTotal;
 };
 
 #endif
