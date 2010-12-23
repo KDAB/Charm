@@ -36,7 +36,7 @@
 #include "CharmWindow.h"
 #include "TasksWindow.h"
 #include "EventWindow.h"
-#include "TimeTrackingView/TimeTrackingView.h"
+#include "TimeTrackingView/TimeTrackingWindow.h"
 #include "ModelConnector.h"
 
 // FIXME read configuration name from command line
@@ -146,7 +146,7 @@ private:
     QAction m_actionReporting;
     TasksWindow m_tasksWindow;
     EventWindow m_eventWindow;
-    TimeTrackingView m_timeTracker;
+    TimeTrackingWindow m_timeTracker;
     IdleDetector* m_idleDetector;
     CharmWindow* m_closedWindow;
     const QList<CharmWindow*> m_windows;

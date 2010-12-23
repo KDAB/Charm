@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>TimeTrackingView</class>
- <widget class="QWidget" name="TimeTrackingView">
+ <class>TimeTrackingWindow</class>
+ <widget class="QWidget" name="TimeTrackingWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -27,15 +27,15 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="TimeTrackingSummaryWidget" name="summaryWidget" native="true"/>
+    <widget class="TimeTrackingView" name="summaryWidget" native="true"/>
    </item>
   </layout>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>TimeTrackingSummaryWidget</class>
+   <class>TimeTrackingView</class>
    <extends>QWidget</extends>
-   <header>TimeTrackingView/TimeTrackingSummaryWidget.h</header>
+   <header>TimeTrackingView/TimeTrackingView.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

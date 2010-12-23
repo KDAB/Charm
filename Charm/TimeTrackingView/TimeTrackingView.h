@@ -1,64 +1,102 @@
-#ifndef TIMETRACKINGVIEW_H
-#define TIMETRACKINGVIEW_H
+#ifndef TimeTrackingView_H
+#define TimeTrackingView_H
 
-#include "Core/ViewInterface.h"
-#include "Core/CharmDataModelAdapterInterface.h"
+#include <QWidget>
+#include <QVector>
+#include <QPen>
+#include <QMenu>
+#include <QToolButton>
+#include <QTimeLine>
 
-#include "CharmWindow.h"
-#include "TimeTrackingView/WeeklySummary.h"
+#include "Core/Task.h"
+#include "TimeTrackingTaskSelector.h"
 
-class CharmCommand;
-class TimeTrackingSummaryWidget;
+class QPalette;
 
-namespace Ui {
-    class TimeTrackingView;
-}
-
-class TimeTrackingView : public CharmWindow,
-                         public CharmDataModelAdapterInterface
+class TimeTrackingView : public QWidget
 {
     Q_OBJECT
+private:
+    struct DataField {
+        DataField() : hasHighlight( false ), storeAsActive( false ) {}
+        QString text;
+        QBrush background;
+        bool hasHighlight; // QBrush does not have isValid()
+        bool storeAsActive;
+        QBrush highlight;
+        QFont font;
+    };
+
+    /** A struct to store the attributes used during painting.
+      The initialize function has and this class have been factored out for performance reasonsduring profiling. */
+    struct PaintAttributes {
+        QBrush headerBrush;
+        QBrush taskBrushEven;
+        QBrush taskBrushOdd;
+        QBrush totalsRowBrush;
+        QBrush totalsRowEvenDayBrush;
+        QBrush headerEvenDayBrush;
+        QBrush halfHighlight;
+        QColor pulseColor;
+        float dim;
+        void initialize( const QPalette& palette );
+    };
+
 public:
     explicit TimeTrackingView( QWidget* parent = 0 );
-    ~TimeTrackingView();
+    void paintEvent( QPaintEvent* );
+    void resizeEvent( QResizeEvent* );
+    void mousePressEvent( QMouseEvent* event );
+    void mouseDoubleClickEvent( QMouseEvent * event );
 
-    // application:
-    void stateChanged( State previous );
-    void sendCommand( CharmCommand* );
-    void commitCommand( CharmCommand* );
-    void restore();
-    void quit();
+    void setSummaries( QVector<WeeklySummary> );
+    QSize sizeHint() const;
+    QSize minimumSizeHint() const;
 
-    void showEvent( QShowEvent* );
-    // model adapter:
-    void resetTasks();
-    void taskAboutToBeAdded( TaskId parent, int pos );
-    void taskAdded( TaskId id );
-    void taskModified( TaskId id );
-    void taskParentChanged( TaskId task, TaskId oldParent, TaskId newParent );
-    void taskAboutToBeDeleted( TaskId );
-    void taskDeleted( TaskId id );
-    void resetEvents();
-    void eventAboutToBeAdded( EventId id );
-    void eventAdded( EventId id );
-    void eventModified( EventId id, Event discardedEvent );
-    void eventAboutToBeDeleted( EventId id );
-    void eventDeleted( EventId id );
-    void eventActivated( EventId id );
-    void eventDeactivated( EventId id );
+    void handleActiveEvents();
 
-private slots:
-    void slotStartEvent( TaskId );
-    void slotStopEvent();
-    void slotSelectTasksToShow();
+    bool isTracking() const;
+
+protected:
+    void showEvent( QShowEvent* event );
+    void hideEvent( QHideEvent* event );
 
 signals:
-    void emitCommand( CharmCommand* );
+    void maybeShrink();
+    void startEvent( TaskId );
+    void stopEvents();
+
+private slots:
+    void slotPulseValueChanged( qreal );
+    void slotUpdateSummaries();
 
 private:
-    TimeTrackingSummaryWidget* summaryWidget();
-    Ui::TimeTrackingView* m_ui;
+    void data( DataField& out, int column, int row );
+    int columnCount() const { return 9; }
+    int rowCount() const { return qMax( 6, m_summaries.count() ) + 3; }
+    int getSummaryAt( const QPoint& position );
+
+    int taskColumnWidth() const;
+
     QVector<WeeklySummary> m_summaries;
+    mutable QSize m_cachedSizeHint;
+    mutable QSize m_cachedMinimumSizeHint;
+    mutable QRect m_cachedTotalsFieldRect;
+    mutable QRect m_cachedDayFieldRect;
+    mutable QFont m_fixedFont;
+    mutable QFont m_narrowFont;
+    TimeTrackingTaskSelector* m_taskSelector;
+    QList<QRect> m_activeFieldRects;
+    QTimeLine m_pulse;
+    PaintAttributes m_paintAttributes;
+    DataField m_defaultField;
+    /** Stored for performance reasons, QDate::currentDate() is expensive. */
+    int m_dayOfWeek;
+    /** Stored for performance reasons, QDate::shortDayName() is slow on Mac. */
+    QString m_shortDayNames[7];
+    /** Stored for performance reasons, QFontMetrics::elidedText is slow if called many times. */
+    QMap<QString, QString> m_elidedTexts;
+    QString elidedText( const QString& text, const QFont& font, int width );
 };
 
 #endif

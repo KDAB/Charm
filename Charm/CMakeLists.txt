@@ -27,7 +27,7 @@ SET(
         TasksViewDelegate.cpp
         CharmAboutDialog.cpp
         TimeTrackingView/TimeTrackingView.cpp
-        TimeTrackingView/TimeTrackingSummaryWidget.cpp
+        TimeTrackingView/TimeTrackingWindow.cpp
         TimeTrackingView/WeeklySummary.cpp
         TimeTrackingView/TimeTrackingTaskSelector.cpp
         IdleWidget.cpp
@@ -101,7 +101,7 @@ QT4_WRAP_UI(
         EventEditor.ui
         SelectTaskDialog.ui
         CharmAboutDialog.ui
-        TimeTrackingView/TimeTrackingView.ui
+        TimeTrackingView/TimeTrackingWindow.ui
         Idle/IdleCorrectionDialog.ui
 )
 
