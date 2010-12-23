@@ -11,6 +11,7 @@
 #include <QTextEdit>
 #include <QDialogButtonBox>
 #include <QMessageBox>
+#include <QToolBar>
 
 #include "Core/Task.h"
 #include "Core/Event.h"
@@ -71,6 +72,7 @@ TimeTrackingTaskSelector::TimeTrackingTaskSelector(QToolBar* toolBar, QWidget *p
     , m_manuallySelectedTask( 0 )
     , m_taskManuallySelected( false )
 {
+    toolBar->hide();
     connect( m_menu, SIGNAL( triggered( QAction* ) ),
              SLOT( slotActionSelected( QAction* ) ) );
     m_menu->setSeparatorsCollapsible( true );
