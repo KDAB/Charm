@@ -321,7 +321,7 @@ void EventView::slotConfigureUi()
     bool active = MODEL.charmDataModel()->isEventActive( m_event.id() );
 
     m_actionNewEvent.setEnabled( true ); // always on
-    m_actionEditEvent.setEnabled( m_event.isValid() && ! active );
+    m_actionEditEvent.setEnabled( m_event.isValid() );
     m_actionDeleteEvent.setEnabled( m_event.isValid() && ! active );
     // m_ui->frame->setEnabled( ! active );
 }
@@ -411,9 +411,6 @@ void EventView::slotEditEvent()
 
 void EventView::slotEditEvent( const Event& event )
 {
-    bool active = MODEL.charmDataModel()->isEventActive( event.id() );
-    if( active ) return;
-
     EventEditor editor( event, this );
     if( editor.exec() ) {
         Event newEvent = editor.event();

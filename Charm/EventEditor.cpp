@@ -182,8 +182,24 @@ void EventEditor::updateValues( bool all )
 
     m_ui->dateEditStart->setDate( m_event.startDateTime().date() );
     m_ui->timeEditStart->setTime( m_event.startDateTime().time() );
-    m_ui->dateEditEnd->setDate( m_event.endDateTime().date() );
-    m_ui->timeEditEnd->setTime( m_event.endDateTime().time() );
+
+    bool active = MODEL.charmDataModel()->isEventActive( m_event.id() );
+    m_ui->dateEditEnd->setEnabled( !active );
+    m_ui->timeEditEnd->setEnabled( !active );
+    m_ui->textEditComment->setEnabled( !active );
+    m_ui->spinBoxHours->setEnabled( !active );
+    m_ui->spinBoxMinutes->setEnabled( !active );
+    m_ui->pushButtonSelectTask->setEnabled( !active );
+    m_ui->startToNowButton->setEnabled( !active );
+    m_ui->endToNowButton->setEnabled( !active );
+
+    if ( !active ) {
+        m_ui->dateEditEnd->setDate( m_event.endDateTime().date() );
+        m_ui->timeEditEnd->setTime( m_event.endDateTime().time() );
+    } else {
+        m_ui->dateEditEnd->setDate( QDate::currentDate() );
+        m_ui->timeEditEnd->setTime( QTime::currentTime() );
+    }
     if( all ) {
         m_ui->textEditComment->setText( m_event.comment() );
     }
