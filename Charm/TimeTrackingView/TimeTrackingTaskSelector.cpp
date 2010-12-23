@@ -76,7 +76,8 @@ TimeTrackingTaskSelector::TimeTrackingTaskSelector(QToolBar* toolBar, QWidget *p
     connect( m_menu, SIGNAL( triggered( QAction* ) ),
              SLOT( slotActionSelected( QAction* ) ) );
     m_menu->setSeparatorsCollapsible( true );
-    m_stopGoAction = new QAction( this );
+
+    m_stopGoAction->setIcon( Data::goIcon() );
     m_stopGoAction->setShortcut( QKeySequence( Qt::Key_Space ) );
     m_stopGoAction->setCheckable( true );
     connect( m_stopGoAction, SIGNAL(triggered(bool)), SLOT(slotGoStopToggled(bool)) );
