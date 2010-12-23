@@ -11,6 +11,7 @@ EventWindow::EventWindow( QWidget* parent )
     : CharmWindow( tr( "Events" ), parent )
     , m_eventView( new EventView( toolBar(), this ) )
 {
+    setSizePolicy( QSizePolicy::Expanding, QSizePolicy::MinimumExpanding );
     setWindowNumber( 2 );
     setWindowIdentifier( QLatin1String( "window_events" ) );
     setCentralWidget( m_eventView );
