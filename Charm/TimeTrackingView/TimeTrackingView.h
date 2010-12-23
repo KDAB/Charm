@@ -12,6 +12,7 @@
 #include "TimeTrackingTaskSelector.h"
 
 class QPalette;
+class QToolBar;
 
 class TimeTrackingView : public QWidget
 {
@@ -43,7 +44,7 @@ private:
     };
 
 public:
-    explicit TimeTrackingView( QWidget* parent = 0 );
+    explicit TimeTrackingView( QToolBar* toolBar, QWidget* parent = 0 );
     void paintEvent( QPaintEvent* );
     void resizeEvent( QResizeEvent* );
     void mousePressEvent( QMouseEvent* event );

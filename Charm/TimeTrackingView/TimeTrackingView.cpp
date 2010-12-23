@@ -16,9 +16,9 @@
 
 const int Margin = 2;
 
-TimeTrackingView::TimeTrackingView( QWidget* parent )
+TimeTrackingView::TimeTrackingView( QToolBar* toolBar, QWidget* parent )
     : QWidget( parent )
-    , m_taskSelector( new TimeTrackingTaskSelector( this ) )
+    , m_taskSelector( new TimeTrackingTaskSelector( toolBar, this ) )
     , m_dayOfWeek( 0 )
 {
 #ifdef Q_WS_MAC

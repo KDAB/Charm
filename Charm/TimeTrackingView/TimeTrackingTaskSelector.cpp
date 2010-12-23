@@ -59,7 +59,7 @@ void CommentEditorPopup::accept() {
     QDialog::accept();
 }
 
-TimeTrackingTaskSelector::TimeTrackingTaskSelector(QWidget *parent)
+TimeTrackingTaskSelector::TimeTrackingTaskSelector(QToolBar* toolBar, QWidget *parent)
     : QWidget(parent)
     , m_stopGoButton( new QToolButton( this ) )
     , m_stopGoAction( new QAction( this ) )

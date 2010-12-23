@@ -10,10 +10,6 @@
 class CharmCommand;
 class TimeTrackingView;
 
-namespace Ui {
-    class TimeTrackingWindow;
-}
-
 class TimeTrackingWindow : public CharmWindow,
                          public CharmDataModelAdapterInterface
 {
@@ -56,8 +52,7 @@ signals:
     void emitCommand( CharmCommand* );
 
 private:
-    TimeTrackingView* summaryWidget();
-    Ui::TimeTrackingWindow* m_ui;
+    TimeTrackingView* m_summaryWidget;
     QVector<WeeklySummary> m_summaries;
 };
 

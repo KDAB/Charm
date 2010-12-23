@@ -10,25 +10,22 @@
 
 #include "Application.h"
 #include "ViewHelpers.h"
+#include "TimeTrackingView.h"
 
 #include "TimeTrackingWindow.h"
 
-#include "ui_TimeTrackingWindow.h"
-
 TimeTrackingWindow::TimeTrackingWindow( QWidget* parent )
     : CharmWindow( tr( "Time Tracker" ), parent )
-    , m_ui( new Ui::TimeTrackingWindow )
+    , m_summaryWidget( new TimeTrackingView( toolBar(), this ) )
 {
     toolBar()->hide();
     setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
     setWindowNumber( 3 );
     setWindowIdentifier( QLatin1String( "window_tracking" ) );
-    QWidget* widget = new QWidget( this );
-    m_ui->setupUi( widget );
-    setCentralWidget( widget );
-    connect( m_ui->summaryWidget, SIGNAL( startEvent( TaskId ) ),
+    setCentralWidget( m_summaryWidget );
+    connect( m_summaryWidget, SIGNAL( startEvent( TaskId ) ),
              SLOT( slotStartEvent( TaskId ) ) );
-    connect( m_ui->summaryWidget, SIGNAL( stopEvents() ),
+    connect( m_summaryWidget, SIGNAL( stopEvents() ),
              SLOT( slotStopEvent() ) );
 }
 
@@ -41,14 +38,6 @@ void TimeTrackingWindow::showEvent( QShowEvent* e )
 TimeTrackingWindow::~TimeTrackingWindow()
 {
     DATAMODEL->unregisterAdapter( this );
-    delete m_ui;
-    m_ui = 0;
-}
-
-TimeTrackingView* TimeTrackingWindow::summaryWidget()
-{
-    Q_ASSERT( m_ui );
-    return m_ui->summaryWidget;
 }
 
 void TimeTrackingWindow::stateChanged( State previous )
@@ -59,8 +48,8 @@ void TimeTrackingWindow::stateChanged( State previous )
         connect( &Application::instance().timeSpans(), SIGNAL( timeSpansChanged() ),
                  SLOT( slotSelectTasksToShow() ) );
         DATAMODEL->registerAdapter( this );
-        summaryWidget()->setSummaries( QVector<WeeklySummary>() );
-        summaryWidget()->handleActiveEvents();
+        m_summaryWidget->setSummaries( QVector<WeeklySummary>() );
+        m_summaryWidget->handleActiveEvents();
         break;
     }
     case Disconnecting:
@@ -152,12 +141,12 @@ void TimeTrackingWindow::eventDeleted( EventId id )
 
 void TimeTrackingWindow::eventActivated( EventId id )
 {
-    summaryWidget()->handleActiveEvents();
+    m_summaryWidget->handleActiveEvents();
 }
 
 void TimeTrackingWindow::eventDeactivated( EventId id )
 {
-    summaryWidget()->handleActiveEvents();
+    m_summaryWidget->handleActiveEvents();
 }
 
 void TimeTrackingWindow::slotSelectTasksToShow()
@@ -200,7 +189,7 @@ void TimeTrackingWindow::slotSelectTasksToShow()
     }
     // and update the widget:
     m_summaries = summaries;
-    summaryWidget()->setSummaries( m_summaries );
+    m_summaryWidget->setSummaries( m_summaries );
 }
 
 void TimeTrackingWindow::slotStartEvent( TaskId id )

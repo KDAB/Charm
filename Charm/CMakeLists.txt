@@ -101,7 +101,6 @@ QT4_WRAP_UI(
         EventEditor.ui
         SelectTaskDialog.ui
         CharmAboutDialog.ui
-        TimeTrackingView/TimeTrackingWindow.ui
         Idle/IdleCorrectionDialog.ui
 )
 
