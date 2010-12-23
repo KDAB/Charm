@@ -67,7 +67,7 @@ TimeTrackingTaskSelector::TimeTrackingTaskSelector(QToolBar* toolBar, QWidget *p
     , m_editCommentButton( new QToolButton( this ) )
     , m_editCommentAction( new QAction( this ) )
     , m_taskSelectorButton( new QToolButton( this ) )
-    , m_menu( new QMenu( m_taskSelectorButton ) )
+    , m_menu( new QMenu( tr( "Select Task" ), m_taskSelectorButton ) )
     , m_selectedTask( 0 )
     , m_manuallySelectedTask( 0 )
     , m_taskManuallySelected( false )
@@ -75,7 +75,6 @@ TimeTrackingTaskSelector::TimeTrackingTaskSelector(QToolBar* toolBar, QWidget *p
     toolBar->hide();
     connect( m_menu, SIGNAL( triggered( QAction* ) ),
              SLOT( slotActionSelected( QAction* ) ) );
-    m_menu->setSeparatorsCollapsible( true );
 
     m_stopGoAction->setIcon( Data::goIcon() );
     m_stopGoAction->setShortcut( QKeySequence( Qt::Key_Space ) );
@@ -93,7 +92,7 @@ TimeTrackingTaskSelector::TimeTrackingTaskSelector(QToolBar* toolBar, QWidget *p
     m_taskSelectorButton->setEnabled( false );
     m_taskSelectorButton->setPopupMode( QToolButton::InstantPopup );
     m_taskSelectorButton->setMenu( m_menu );
-    m_taskSelectorButton->setText( tr( "Select Task" ) );
+    m_taskSelectorButton->setText( m_menu->title() );
 }
 
 QSize TimeTrackingTaskSelector::sizeHint() const
@@ -111,6 +110,11 @@ void TimeTrackingTaskSelector::resizeEvent( QResizeEvent* )
     const QSize space( width() - m_stopGoButton->width() - m_editCommentButton->width(), height() );
     m_taskSelectorButton->resize( space );
     m_taskSelectorButton->move( m_stopGoButton->width() + m_editCommentButton->width(), 0 );
+}
+
+QMenu* TimeTrackingTaskSelector::menu() const
+{
+    return m_menu;
 }
 
 /** A helper function that takes an entry from the fromList if it is not empty, checks if it is
@@ -137,15 +141,20 @@ void TimeTrackingTaskSelector::populate( const QVector<WeeklySummary>& summaries
 {
     m_menu->clear();
     QMap<TaskId, QAction*> visitedTasks;
+    bool addedAction = false;
     Q_FOREACH( const WeeklySummary& s, summaries ) {
         QAction* action = new QAction( s.taskname, m_menu );
         visitedTasks.insert( s.task, action );
         action->setProperty( CUSTOM_TASK_PROPERTY_NAME, QVariant::fromValue( s.task ) );
         Q_ASSERT( action->property( CUSTOM_TASK_PROPERTY_NAME ).value<TaskId>() == s.task );
         m_menu->addAction( action );
+        addedAction = true;
     }
     // insert the manually selected task, if one is set:
-    m_menu->addSeparator();
+    if ( addedAction ) {
+        m_menu->addSeparator();
+        addedAction = false;
+    }
     if( m_manuallySelectedTask > 0 && ! visitedTasks.contains( m_manuallySelectedTask )) {
         const Task& task = DATAMODEL->getTask( m_manuallySelectedTask );
         QAction* action = new QAction( DATAMODEL->fullTaskName( task ), m_menu );
@@ -162,12 +171,16 @@ void TimeTrackingTaskSelector::populate( const QVector<WeeklySummary>& summaries
     TaskIdList mfu = DATAMODEL->mostFrequentlyUsedTasks();
     // ... merge the two lists into one interesting one:
     // add to menu
-    m_menu->addSeparator();
+    if ( addedAction ) {
+        m_menu->addSeparator();
+        addedAction = false;
+    }
     TaskIdList merged;
     while( merged.count() < 15 ) { // arbitrary hardcoded number warning
         insertHelper( m_menu, merged, visitedTasks, mru );
         insertHelper( m_menu, merged, visitedTasks, mru );
         insertHelper( m_menu, merged, visitedTasks, mfu );
+        addedAction = true;
         if( mru.isEmpty() && mfu.isEmpty() ) break;
     }
     // finally, select the task that the user has just selected

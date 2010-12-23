@@ -110,6 +110,11 @@ QSize TimeTrackingView::minimumSizeHint() const
     return m_cachedMinimumSizeHint;
 }
 
+QMenu* TimeTrackingView::menu() const
+{
+    return m_taskSelector->menu();
+}
+
 void TimeTrackingView::paintEvent( QPaintEvent* e )
 {
     m_activeFieldRects.clear();

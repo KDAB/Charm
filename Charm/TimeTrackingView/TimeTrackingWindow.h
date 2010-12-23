@@ -26,6 +26,7 @@ public:
     void quit();
 
     void showEvent( QShowEvent* );
+    QMenu* menu() const;
     // model adapter:
     void resetTasks();
     void taskAboutToBeAdded( TaskId parent, int pos );

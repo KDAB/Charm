@@ -53,6 +53,7 @@ public:
     void setSummaries( QVector<WeeklySummary> );
     QSize sizeHint() const;
     QSize minimumSizeHint() const;
+    QMenu* menu() const;
 
     void handleActiveEvents();
 

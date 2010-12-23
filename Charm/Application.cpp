@@ -118,20 +118,25 @@ Application::Application(int& argc, char** argv)
     m_trayIcon.setIcon( Data::charmTrayIcon() );
     m_trayIcon.show();
 
-#if defined Q_WS_MAC
+#ifdef Q_WS_MAC
     m_dockMenu.addAction( &m_actionStopAllTasks );
-    qt_mac_set_dock_menu( &m_dockMenu);
-    QCoreApplication::setAttribute( Qt::AA_DontShowIconsInMenus );
 #endif
 
     Q_FOREACH( CharmWindow* window, m_windows ) {
         m_systrayContextMenu.addAction( window->showHideAction() );
-#if defined Q_WS_MAC
+#ifdef Q_WS_MAC
         m_dockMenu.addAction( window->showHideAction() );
 #endif
     }
 
-#ifndef Q_WS_MAC
+    m_systrayContextMenu.addSeparator();
+    m_systrayContextMenu.addMenu( m_timeTracker.menu() );
+
+#ifdef Q_WS_MAC
+    m_dockMenu.addMenu( m_timeTracker.menu() );
+    qt_mac_set_dock_menu( &m_dockMenu);
+    QCoreApplication::setAttribute( Qt::AA_DontShowIconsInMenus );
+#else
     m_systrayContextMenu.addSeparator();
     m_systrayContextMenu.addAction( &m_actionQuit );
 #endif

@@ -41,6 +41,7 @@ public:
 
     void resizeEvent( QResizeEvent* );
     QSize sizeHint() const;
+    QMenu* menu() const;
 
 signals:
     void startEvent( TaskId );

@@ -32,6 +32,10 @@ void TimeTrackingWindow::showEvent( QShowEvent* e )
     CharmWindow::showEvent( e );
 }
 
+QMenu* TimeTrackingWindow::menu() const
+{
+    return m_summaryWidget->menu();
+}
 
 TimeTrackingWindow::~TimeTrackingWindow()
 {
