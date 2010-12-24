@@ -120,6 +120,7 @@ Application::Application(int& argc, char** argv)
 
 #ifdef Q_WS_MAC
     m_dockMenu.addAction( &m_actionStopAllTasks );
+    m_dockMenu.addSeparator();
 #endif
 
     Q_FOREACH( CharmWindow* window, m_windows ) {
@@ -133,6 +134,7 @@ Application::Application(int& argc, char** argv)
     m_systrayContextMenu.addMenu( m_timeTracker.menu() );
 
 #ifdef Q_WS_MAC
+    m_dockMenu.addSeparator();
     m_dockMenu.addMenu( m_timeTracker.menu() );
     qt_mac_set_dock_menu( &m_dockMenu);
     QCoreApplication::setAttribute( Qt::AA_DontShowIconsInMenus );
