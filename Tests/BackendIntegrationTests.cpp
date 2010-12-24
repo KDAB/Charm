@@ -13,7 +13,7 @@
 #include "BackendIntegrationTests.h"
 
 BackendIntegrationTests::BackendIntegrationTests()
-    : TestApplication()
+    : TestApplication("./BackendIntegrationTestDatabase.db")
 {
 }
 

@@ -12,7 +12,7 @@
 #include "ImportExportTests.h"
 
 ImportExportTests::ImportExportTests()
-    : TestApplication()
+    : TestApplication("./ImportExportTestDatabase.db")
 {
 }
 

@@ -14,12 +14,12 @@
 const int UserId = 1;
 const int InstallationId = 1;
 
-TestApplication::TestApplication(QObject *parent)
+TestApplication::TestApplication(const QString &databasePath, QObject *parent)
     : QObject(parent)
     , m_controller( 0 )
     , m_model( 0 )
     , m_configuration( &Configuration::instance() )
-    , m_localPath( "./BackendIntegrationTestDatabase.db" )
+    , m_localPath( databasePath )
 {
 }
 
