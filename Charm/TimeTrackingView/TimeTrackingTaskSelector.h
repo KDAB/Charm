@@ -56,6 +56,7 @@ private slots:
 
 private:
     void taskSelected( const QString& taskname, TaskId id );
+    bool eventFilter( QObject* object, QEvent* event );
     QToolButton* m_stopGoButton;
     QAction* m_stopGoAction;
     QToolButton* m_editCommentButton;
@@ -70,6 +71,7 @@ private:
     /** Temporarily store that a task has been manually selected, so that it can be
       activated in the menu once after selection. */
     bool m_taskManuallySelected;
+    bool m_startSelectedTask;
 };
 
 #endif // TIMETRACKINGTASKSELECTOR_H
