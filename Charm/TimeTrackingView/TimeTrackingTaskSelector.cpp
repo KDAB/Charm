@@ -206,11 +206,6 @@ void TimeTrackingTaskSelector::slotEditCommentClicked() {
 
 void TimeTrackingTaskSelector::handleActiveEvents()
 {
-    Task task;
-    if( m_selectedTask != 0 ) {
-        task = DATAMODEL->getTask( m_selectedTask );
-    }
-
     const int activeEventCount = DATAMODEL->activeEventCount();
     if ( activeEventCount > 1 ) {
         m_stopGoAction->setIcon( Data::goIcon() );
@@ -232,23 +227,14 @@ void TimeTrackingTaskSelector::handleActiveEvents()
         m_stopGoAction->setText( tr( "Start" ) );
         m_taskSelectorButton->setDisabled( m_menu->actions().isEmpty() );
         m_menu->setEnabled( true );
-        m_stopGoAction->setEnabled( task.isCurrentlyValid() );
+        if( m_selectedTask != 0 ) {
+            const Task& task = DATAMODEL->getTask( m_selectedTask );
+            m_stopGoAction->setEnabled( task.isCurrentlyValid() );
+        } else {
+            m_stopGoAction->setEnabled( false );
+        }
         m_stopGoAction->setChecked( false );
         m_editCommentAction->setEnabled( false );
-    }
-
-    static Task previousTask;
-    if ( task.isCurrentlyValid() && task != previousTask
-            && !DATAMODEL->isTaskActive( task.id() )
-            && m_startSelectedTask ) {
-        if ( CONFIGURATION.oneEventAtATime )
-            emit stopEvents();
-        previousTask = task;
-        emit startEvent( task.id() );
-        m_stopGoAction->setEnabled( true );
-    } else {
-        previousTask = task;
-        m_startSelectedTask = true;
     }
 }
 
@@ -258,6 +244,19 @@ void TimeTrackingTaskSelector::slotActionSelected( QAction* action )
     if( taskId > 0 ) {
         taskSelected( action->text(), taskId );
         handleActiveEvents();
+
+        static TaskId previousTaskId;
+        if ( taskId != previousTaskId
+                && !DATAMODEL->isTaskActive( taskId )
+                && m_startSelectedTask ) {
+            if ( CONFIGURATION.oneEventAtATime )
+                emit stopEvents();
+            previousTaskId = taskId;
+            emit startEvent( taskId );
+        } else {
+            previousTaskId = taskId;
+            m_startSelectedTask = true;
+        }
     }
 }
 
