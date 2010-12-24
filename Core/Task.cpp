@@ -113,7 +113,8 @@ void Task::setValidUntil(const QDateTime& stamp)
 
 bool Task::isCurrentlyValid() const
 {
-	return ( ! validFrom().isValid() || validFrom() < QDateTime::currentDateTime() )
+	return isValid()
+		&& ( ! validFrom().isValid() || validFrom() < QDateTime::currentDateTime() )
 		&& ( ! validUntil().isValid() || validUntil() > QDateTime::currentDateTime() );
 }
 
