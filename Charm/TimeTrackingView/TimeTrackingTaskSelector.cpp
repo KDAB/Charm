@@ -72,6 +72,7 @@ TimeTrackingTaskSelector::TimeTrackingTaskSelector(QToolBar* toolBar, QWidget *p
     , m_manuallySelectedTask( 0 )
     , m_taskManuallySelected( false )
     , m_startSelectedTask( true )
+    , m_previousTask( 0 )
 {
     toolBar->hide();
     connect( m_menu, SIGNAL( triggered( QAction* ) ),
@@ -245,16 +246,15 @@ void TimeTrackingTaskSelector::slotActionSelected( QAction* action )
         taskSelected( action->text(), taskId );
         handleActiveEvents();
 
-        static TaskId previousTaskId;
-        if ( taskId != previousTaskId
+        if ( taskId != m_previousTask
                 && !DATAMODEL->isTaskActive( taskId )
                 && m_startSelectedTask ) {
             if ( CONFIGURATION.oneEventAtATime )
                 emit stopEvents();
-            previousTaskId = taskId;
+            m_previousTask = taskId;
             emit startEvent( taskId );
         } else {
-            previousTaskId = taskId;
+            m_previousTask = taskId;
             m_startSelectedTask = true;
         }
     }

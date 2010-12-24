@@ -71,7 +71,10 @@ private:
     /** Temporarily store that a task has been manually selected, so that it can be
       activated in the menu once after selection. */
     bool m_taskManuallySelected;
+    /** Set whether the next task should be started after selection */
     bool m_startSelectedTask;
+    /** The previous task change that we saw */
+    TaskId m_previousTask;
 };
 
 #endif // TIMETRACKINGTASKSELECTOR_H
