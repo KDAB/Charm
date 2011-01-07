@@ -128,6 +128,7 @@ TasksView::TasksView( QToolBar* toolBar, QWidget* parent )
     toolBar->addWidget( m_buttonClearFilter );
     toolBar->addWidget( filterLineEdit );
 
+    m_treeView->setUniformRowHeights( true );
     m_treeView->setAlternatingRowColors( true );
     m_treeView->setRootIsDecorated( true );
     m_treeView->setContextMenuPolicy( Qt::CustomContextMenu );
@@ -136,6 +137,9 @@ TasksView::TasksView( QToolBar* toolBar, QWidget* parent )
 
     connect( m_treeView, SIGNAL( doubleClicked( const QModelIndex& ) ),
              SLOT( slotItemDoubleClicked( const QModelIndex& ) ) );
+
+    // I hate doing this but the stupid default view sizeHints suck badly.
+    setMinimumHeight( 200 );
 }
 
 TasksView::~TasksView()

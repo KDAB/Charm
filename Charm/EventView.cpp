@@ -101,6 +101,9 @@ EventView::EventView( QToolBar* toolBar, QWidget* parent )
     toolBar->addWidget( m_labelTotal );
 
     QTimer::singleShot( 0, this, SLOT( delayedInitialization() ) );
+
+    // I hate doing this but the stupid default view sizeHints suck badly.
+    setMinimumHeight( 200 );
 }
 
 EventView::~EventView()

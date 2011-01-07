@@ -31,11 +31,11 @@ TasksWindow::TasksWindow( QWidget* parent )
     , m_tasksView( new TasksView( toolBar(), this ) )
     , m_reportDialog( this )
 {
-    setSizePolicy( QSizePolicy::Expanding, QSizePolicy::MinimumExpanding );
     setWindowNumber( 1 );
     setWindowIdentifier( QLatin1String( "window_tasks" ) );
     setCentralWidget( m_tasksView );
     setUnifiedTitleAndToolBarOnMac( true );
+    setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Expanding );
     connect( m_tasksView, SIGNAL( emitCommand( CharmCommand* ) ),
              SIGNAL( emitCommand( CharmCommand* ) ) );
     connect( m_tasksView, SIGNAL( saveConfiguration() ),
