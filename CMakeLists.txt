@@ -69,6 +69,8 @@ ENDIF()
 
 ADD_SUBDIRECTORY( Tests )
 
+CONFIGURE_FILE( CharmCMake.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/CharmCMake.h )
+
 INSTALL( FILES ReadMe.txt License.txt DESTINATION ${DOC_INSTALL_DIR} )
 
 # Only support packaging on newer versions of CMake.

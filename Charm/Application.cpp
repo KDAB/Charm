@@ -19,7 +19,7 @@
 
 #include <Core/CharmConstants.h>
 #include <Core/SqLiteStorage.h>
-#include <Core/CharmCMake.h>
+#include <CharmCMake.h>
 
 
 #include "ViewHelpers.h"

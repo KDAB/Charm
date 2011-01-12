@@ -1,7 +1,7 @@
 #include <QtAlgorithms>
 
 #include "Core/Configuration.h"
-#include "Core/CharmCMake.h"
+#include "CharmCMake.h"
 
 #include "IdleDetector.h"
 
@@ -18,7 +18,7 @@
 #include "WindowsIdleDetector.h"
 #endif
 
-#ifdef Q_WS_X11
+#if defined Q_WS_X11 && defined CHARM_IDLE_DETECTION_AVAILABLE_X11
 #include "X11IdleDetector.h"
 #endif
 #endif
@@ -50,7 +50,7 @@ IdleDetector* IdleDetector::createIdleDetector( QObject* parent )
     return new WindowsIdleDetector( parent );
 #endif
 
-#ifdef Q_WS_X11
+#if defined Q_WS_X11 && defined CHARM_IDLE_DETECTION_AVAILABLE_X11
     if ( X11IdleDetector::idleCheckPossible() )
         return new X11IdleDetector( parent );
 #endif

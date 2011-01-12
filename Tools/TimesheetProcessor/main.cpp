@@ -8,7 +8,7 @@
 #include "CommandLine.h"
 #include "Exceptions.h"
 #include "Operations.h"
-#include "Core/CharmCMake.h"
+#include "CharmCMake.h"
 
 int main(int argc, char** argv)
 {
@@ -40,8 +40,8 @@ int main(int argc, char** argv)
             break;
         case CommandLine::Mode_DescribeUsage:
         default:
-        	CommandLine::usage();
-        	return 0;
+                CommandLine::usage();
+                return 0;
         }
     } catch (UsageException& e) {
         cerr << e.what() << endl;

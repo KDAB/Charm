@@ -69,6 +69,7 @@ IF( CHARM_IDLE_DETECTION )
                     INCLUDE_DIRECTORIES( ${X11_INCLUDE_DIR} )
                     LIST( APPEND CharmApplication_SRCS Idle/X11IdleDetector.cpp )
                     SET(IDLEDETECTION_LIBS ${X11_X11_LIB} ${X11_Xscreensaver_LIB})
+                    SET( CHARM_IDLE_DETECTION_AVAILABLE_X11 "1" CACHE INTERNAL "" )
             ELSE()
                     MESSAGE( WARNING "Install X11/XScreenSaver headers and library for X11 idle detection." )
             ENDIF()
@@ -153,7 +154,7 @@ IF( UNIX AND NOT APPLE )
         INSTALL( FILES Icons/charmtray16.png DESTINATION share/icons/hicolor/16x16/apps )
         INSTALL( FILES Icons/charmtray24.png DESTINATION share/icons/hicolor/24x24/apps )
         INSTALL( FILES Icons/01.png Icons/02.png Icons/03.png Icons/04.png
-	               Icons/05.png Icons/06.png Icons/07.png Icons/08.png
+                       Icons/05.png Icons/06.png Icons/07.png Icons/08.png
                        Icons/09.png Icons/10.png Icons/11.png Icons/12.png
                  DESTINATION  share/icons/hicolor/24x24/apps )
 ENDIF()
