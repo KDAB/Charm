@@ -71,7 +71,6 @@ TimeTrackingTaskSelector::TimeTrackingTaskSelector(QToolBar* toolBar, QWidget *p
     , m_selectedTask( 0 )
     , m_manuallySelectedTask( 0 )
     , m_taskManuallySelected( false )
-    , m_startSelectedTask( true )
     , m_previousTask( 0 )
 {
     toolBar->hide();
@@ -91,7 +90,6 @@ TimeTrackingTaskSelector::TimeTrackingTaskSelector(QToolBar* toolBar, QWidget *p
              SLOT( slotEditCommentClicked() ) );
     m_editCommentButton->setDefaultAction( m_editCommentAction );
 
-    m_taskSelectorButton->setEnabled( false );
     m_taskSelectorButton->setPopupMode( QToolButton::InstantPopup );
     m_taskSelectorButton->setMenu( m_menu );
     m_taskSelectorButton->setText( tr( "Select Task" ) );
@@ -211,7 +209,6 @@ void TimeTrackingTaskSelector::handleActiveEvents()
     if ( activeEventCount > 1 ) {
         m_stopGoAction->setIcon( Data::goIcon() );
         m_stopGoAction->setText( tr( "Start" ) );
-        m_taskSelectorButton->setEnabled( false );
         m_stopGoAction->setEnabled( false );
         m_stopGoAction->setChecked( true );
         m_editCommentAction->setEnabled( false );
@@ -219,14 +216,11 @@ void TimeTrackingTaskSelector::handleActiveEvents()
         m_stopGoAction->setIcon( Data::stopIcon() );
         m_stopGoAction->setText( tr( "Stop" ) );
         m_stopGoAction->setEnabled( true );
-        m_taskSelectorButton->setEnabled( false );
-        m_menu->setEnabled( true );
         m_stopGoAction->setChecked( true );
         m_editCommentAction->setEnabled( true );
     } else {
         m_stopGoAction->setIcon( Data::goIcon() );
         m_stopGoAction->setText( tr( "Start" ) );
-        m_taskSelectorButton->setDisabled( m_menu->actions().isEmpty() );
         m_menu->setEnabled( true );
         if( m_selectedTask != 0 ) {
             const Task& task = DATAMODEL->getTask( m_selectedTask );
@@ -248,14 +242,13 @@ void TimeTrackingTaskSelector::slotActionSelected( QAction* action )
 
         if ( taskId != m_previousTask
                 && !DATAMODEL->isTaskActive( taskId )
-                && m_startSelectedTask ) {
+                && !DATAMODEL->activeEvents().isEmpty() ) {
             if ( CONFIGURATION.oneEventAtATime )
                 emit stopEvents();
             m_previousTask = taskId;
             emit startEvent( taskId );
         } else {
             m_previousTask = taskId;
-            m_startSelectedTask = true;
         }
     }
 }
@@ -293,16 +286,6 @@ void TimeTrackingTaskSelector::slotManuallySelectTask()
     m_taskManuallySelected = true;
     handleActiveEvents();
     emit updateSummariesPlease();
-}
-
-bool TimeTrackingTaskSelector::eventFilter( QObject* object, QEvent* event )
-{
-    // Don't start tasks we select in the time tracking view.
-    if ( object == m_taskSelectorButton
-            && event->type() == QEvent::MouseButtonPress )
-        m_startSelectedTask = false;
-
-    return QWidget::eventFilter(object, event);
 }
 
 
