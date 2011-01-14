@@ -167,7 +167,7 @@ void TimeTrackingTaskSelector::populate( const QVector<WeeklySummary>& summaries
         m_menu->addAction( action );
     }
     // ... add action to select a task:
-    QAction* selectTaskAction = new QAction( tr( "Select other task..." ), m_menu );
+    QAction* selectTaskAction = new QAction( tr( "Select Other Task..." ), m_menu );
     connect( selectTaskAction, SIGNAL( triggered() ), SLOT( slotManuallySelectTask() ) );
     m_menu->addAction( selectTaskAction );
     // build a list of "interesting" tasks
