@@ -56,7 +56,6 @@ private slots:
 
 private:
     void taskSelected( const QString& taskname, TaskId id );
-    bool eventFilter( QObject* object, QEvent* event );
     QToolButton* m_stopGoButton;
     QAction* m_stopGoAction;
     QToolButton* m_editCommentButton;
