@@ -22,7 +22,11 @@ ModelConnector::ModelConnector()
              SLOT( slotSysTrayIconUpdate() ) );
 
     for (int i = 0; i < NPixmaps; ++i) {
-        const QString nthFile = QString( ":/Charm/%1.png" ).arg( i + 1, 2, 10, QChar( '0' ) );
+        QString trayFile( ":/Charm/%1.png" );
+#ifdef Q_WS_MAC
+        trayFile.replace( "%1", "mac%1" );
+#endif
+        const QString nthFile = trayFile.arg( i + 1, 2, 10, QChar( '0' ) );
         m_pixmaps[i] = QPixmap( nthFile );
     }
 }
@@ -81,8 +85,6 @@ void ModelConnector::slotSysTrayUpdate( const QString& tooltip, bool active )
 
 void ModelConnector::slotSysTrayIconUpdate()
 {
-#if !defined Q_WS_MAC
-//TODO: port the nth minute icons to mac
     if ( m_dataModel.activeEventCount() ) {
         m_iconNumber = ( m_iconNumber + 1 ) % NPixmaps;
         //qDebug() << "systray icon update" << m_iconNumber;
@@ -90,7 +92,6 @@ void ModelConnector::slotSysTrayIconUpdate()
     } else {
         TRAY.setIcon( Data::charmTrayIcon() );
     }
-#endif
 }
 
 #include "ModelConnector.moc"

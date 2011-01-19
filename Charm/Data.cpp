@@ -20,28 +20,13 @@ const QIcon& Data::charmTrayIcon()
 	// KDE apps seem to get 24x24 in KSystemTrayIcon via KIconLoader, which is actually better.
 
 #ifdef Q_WS_MAC
-	Q_ASSERT_X(!QPixmap(":/Charm/charmtrayicon.png").isNull(), "Data::charmTrayIcon",
-                        "Required resource not available");
-	static QIcon icon(QPixmap(":/Charm/charmtrayicon.png"));
+	Q_ASSERT_X(!QPixmap(":/Charm/charmtraymac.png").isNull(), "Data::charmTrayIcon",
+	                    "Required resource not available");
+	static QIcon icon(QPixmap(":/Charm/charmtraymac.png"));
 #else
 	Q_ASSERT_X(!QPixmap(":/Charm/charmtray22.png").isNull(), "Data::charmTrayIcon",
-                        "Required resource not available");
+	                    "Required resource not available");
 	static QIcon icon(QPixmap(":/Charm/charmtray22.png"));
-#endif
-	return icon;
-}
-
-const QIcon& Data::charmTrayActiveIcon()
-{
-    // TODO: New Nuno icons
-#ifdef Q_WS_MAC
-	Q_ASSERT_X(!QPixmap(":/Charm/active.png").isNull(), "Data::charmTrayActiveIcon",
-                        "Required resource not available");
-	static QIcon icon(QPixmap(":/Charm/active.png"));
-#else
-	Q_ASSERT_X(!QPixmap(":/Charm/active.png").isNull(), "Data::charmTrayActiveIcon",
-                        "Required resource not available");
-	static QIcon icon(QPixmap(":/Charm/active.png"));
 #endif
 	return icon;
 }
