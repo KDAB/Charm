@@ -59,7 +59,7 @@ OPTION( CHARM_TIMESHEET_TOOLS "Build the Charm timesheet tools" OFF )
 ADD_SUBDIRECTORY( Core )
 ADD_SUBDIRECTORY( Charm )
 
-IF( CHARM_TIMESHEET_TOOLS )
+IF( CHARM_TIMESHEET_TOOLS AND UNIX )
         # Only build the tools if they are explicitly requested to avoid
         # the Qt MySQL driver dependency.
         ADD_SUBDIRECTORY( Tools/TimesheetProcessor )
