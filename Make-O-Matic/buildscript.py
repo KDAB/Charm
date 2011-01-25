@@ -16,18 +16,18 @@ from core.plugins.packagers.CPack import CPack
 from core.plugins.testers.CTest import CTest
 from core.environments.Environments import Environments
 from core.plugins.DoxygenGenerator import DoxygenGenerator
-import socket
 
 build, project = BuildProject( name = 'Charm', version = '1.4.0', url = 'git://github.com/KDAB/Charm.git' )
 
-sharedDebug = Environments( [ 'Qt-4.[7].?-Shared-Debug' ], 'Qt 4 Shared Debug', project )
+sharedDebug = Environments( [ 'Qt-4.[67].?-Shared-Debug' ], 'Qt 4 Shared Debug', project )
+sharedDebug.setOptional( True )
 debug = Configuration( 'Debug', sharedDebug, )
 cmakeDebug = CMakeBuilder()
 cmakeDebug.addCMakeVariable( CMakeVariable( 'CHARM_TIMESHEET_TOOLS', 'TRUE', 'BOOL' ) )
 debug.addPlugin( CTest() )
 debug.addPlugin( cmakeDebug )
 
-sharedRelease = Environments( [ 'Qt-4.[7].?-Shared-Release' ], 'Qt 4 Shared Release', project )
+sharedRelease = Environments( [ 'Qt-4.[67].?' ], 'Qt 4 Shared Release', project )
 release = Configuration( 'Release', sharedRelease )
 release.addPlugin( CMakeBuilder() )
 release.addPlugin( CTest() )
