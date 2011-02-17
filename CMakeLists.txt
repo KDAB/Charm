@@ -95,6 +95,10 @@ IF( NOT "${CMAKE_VERSION}" VERSION_LESS "2.8.4" )
                 SET( CPACK_NSIS_MUI_ICON "${ICONS_DIR}/Charm.ico" )
                 SET( CPACK_NSIS_URL_INFO_ABOUT "http://www.kdab.com/" )
                 SET( CPACK_NSIS_INSTALLED_ICON_NAME "Charm.exe" )
+                SET( CPACK_NSIS_MENU_LINKS
+                    "License.txt" "License"
+                    "ReadMe.txt" "Readme"
+                )
                 SET( CPACK_NSIS_MUI_FINISHPAGE_RUN "Charm.exe" )
         ENDIF()
         IF( APPLE )
