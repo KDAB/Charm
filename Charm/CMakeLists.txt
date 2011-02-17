@@ -196,8 +196,10 @@ IF( NOT "${CMAKE_VERSION}" VERSION_LESS "2.8.4" )
         INSTALL(
                 CODE "
                         IF( \${CMAKE_INSTALL_PREFIX} MATCHES .*/_CPack_Packages/.* OR WIN32 )
-                                FILE( INSTALL DESTINATION \"\${CMAKE_INSTALL_PREFIX}/${PLUGINS_DIR}/sqldrivers\" TYPE FILES \${QT_SQL_PLUGINS} )
-                                FILE( GLOB QT_SQL_PLUGINS \"\${CMAKE_INSTALL_PREFIX}/${PLUGINS_DIR}/sqldrivers/*\" )
+                                IF( APPLE OR WIN32 )
+                                    FILE( INSTALL DESTINATION \"\${CMAKE_INSTALL_PREFIX}/${PLUGINS_DIR}/sqldrivers\" TYPE FILES \${QT_SQL_PLUGINS} )
+                                    FILE( GLOB QT_SQL_PLUGINS \"\${CMAKE_INSTALL_PREFIX}/${PLUGINS_DIR}/sqldrivers/*\" )
+                                ENDIF
                                 IF( APPLE )
                                         FILE( WRITE \"\${CMAKE_INSTALL_PREFIX}/Charm.app/Contents/Resources/qt.conf\" \"[Paths]\nPlugins = ${PLUGINS_DIR_ONLY}\" )
                                 ENDIF()
