@@ -93,6 +93,7 @@ IF( NOT "${CMAKE_VERSION}" VERSION_LESS "2.8.4" )
                 SET( CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/License.txt" )
                 SET( CPACK_NSIS_EXECUTABLES_DIRECTORY "${BIN_INSTALL_DIR}" )
                 SET( CPACK_NSIS_MUI_ICON "${ICONS_DIR}/Charm.ico" )
+                SET( CPACK_PACKAGE_ICON "${ICONS_DIR}\\CharmNSISHeader.bmp" )
                 SET( CPACK_NSIS_URL_INFO_ABOUT "http://www.kdab.com/" )
                 SET( CPACK_NSIS_INSTALLED_ICON_NAME "Charm.exe" )
                 SET( CPACK_NSIS_MENU_LINKS
