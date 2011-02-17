@@ -1,0 +1,26 @@
+IF( APPLE OR WIN32 )
+    FILE(
+        INSTALL DESTINATION
+        "${CMAKE_INSTALL_PREFIX}/@PLUGINS_DIR@/sqldrivers"
+        TYPE FILES "@QT_SQL_PLUGINS@"
+    )
+    FILE(
+        GLOB QT_SQL_PLUGINS_ALL
+        "${CMAKE_INSTALL_PREFIX}/@PLUGINS_DIR@/sqldrivers/*"
+    )
+ENDIF()
+IF( APPLE )
+    FILE(
+        WRITE
+        "${CMAKE_INSTALL_PREFIX}/@EXECUTABLE@/Contents/Resources/qt.conf"
+        "[Paths]\nPlugins = @PLUGINS_DIR_ONLY@"
+    )
+ENDIF()
+
+INCLUDE( "${CMAKE_ROOT}/Modules/BundleUtilities.cmake" )
+SET( BU_CHMOD_BUNDLE_ITEMS TRUE )
+FIXUP_BUNDLE(
+    "${CMAKE_INSTALL_PREFIX}/@EXECUTABLE@"
+    "${QT_SQL_PLUGINS_ALL}"
+    "@QT_LIBRARY_DIR@"
+)

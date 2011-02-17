@@ -166,6 +166,9 @@ INSTALL( TARGETS Charm DESTINATION ${BIN_INSTALL_DIR} )
 IF( NOT "${CMAKE_VERSION}" VERSION_LESS "2.8.4" )
         IF( CMAKE_BUILD_TYPE MATCHES "^([Dd][Ee][Bb][Uu][Gg])$" )
             SET( CMAKE_INSTALL_DEBUG_LIBRARIES_ONLY TRUE)
+            SET( QT_SQL_PLUGINS ${QT_QSQLITE_PLUGIN_DEBUG} )
+        ELSE()
+            SET( QT_SQL_PLUGINS ${QT_QSQLITE_PLUGIN_RELEASE} )
         ENDIF()
         SET( CMAKE_INSTALL_SYSTEM_RUNTIME_DESTINATION "${BIN_INSTALL_DIR}" )
         INCLUDE( InstallRequiredSystemLibraries )
@@ -183,26 +186,12 @@ IF( NOT "${CMAKE_VERSION}" VERSION_LESS "2.8.4" )
                 SET( EXECUTABLE ${BIN_INSTALL_DIR}/${EXECUTABLE} )
         ENDIF()
 
+        CONFIGURE_FILE(
+            "CMakeInstallDependencies.cmake.in"
+            "${CMAKE_CURRENT_BINARY_DIR}/CMakeInstallDependencies.cmake"
+            @ONLY
+        )
         INSTALL(
-                CODE "
-                        IF( \${CMAKE_INSTALL_PREFIX} MATCHES .*/_CPack_Packages/.* OR WIN32 )
-                                IF( APPLE OR WIN32 )
-                                    IF( \"\${CMAKE_INSTALL_CONFIG_NAME}\" MATCHES \"^([Dd][Ee][Bb][Uu][Gg])$\" )
-                                            SET( QT_SQL_PLUGINS ${QT_QSQLITE_PLUGIN_DEBUG} )
-                                    ELSE()
-                                            SET( QT_SQL_PLUGINS ${QT_QSQLITE_PLUGIN_RELEASE} )
-                                    ENDIF()
-                                    FILE( INSTALL DESTINATION \"\${CMAKE_INSTALL_PREFIX}/${PLUGINS_DIR}/sqldrivers\" TYPE FILES \${QT_SQL_PLUGINS} )
-                                    FILE( GLOB QT_SQL_PLUGINS \"\${CMAKE_INSTALL_PREFIX}/${PLUGINS_DIR}/sqldrivers/*\" )
-                                ENDIF()
-                                IF( APPLE )
-                                        FILE( WRITE \"\${CMAKE_INSTALL_PREFIX}/Charm.app/Contents/Resources/qt.conf\" \"[Paths]\nPlugins = ${PLUGINS_DIR_ONLY}\" )
-                                ENDIF()
-
-                                INCLUDE( \"${CMAKE_ROOT}/Modules/BundleUtilities.cmake\" )
-                                SET( BU_CHMOD_BUNDLE_ITEMS TRUE )
-                                FIXUP_BUNDLE( \"\${CMAKE_INSTALL_PREFIX}/${EXECUTABLE}\" \"\${QT_SQL_PLUGINS}\" \"${QT_LIBRARY_DIR}\" )
-                        ENDIF()
-                "
+            SCRIPT "${CMAKE_CURRENT_BINARY_DIR}/CMakeInstallDependencies.cmake"
         )
 ENDIF()
