@@ -164,14 +164,12 @@ INSTALL( TARGETS Charm DESTINATION ${BIN_INSTALL_DIR} )
 
 # Only support packaging on newer versions of CMake.
 IF( NOT "${CMAKE_VERSION}" VERSION_LESS "2.8.4" )
-        INCLUDE( SelectLibraryConfigurations )
-        SELECT_LIBRARY_CONFIGURATIONS( QT_SQLITE_PLUGIN )
         INSTALL(
                 CODE "
                         IF( \"\${CMAKE_INSTALL_CONFIG_NAME}\" MATCHES \"^([Dd][Ee][Bb][Uu][Gg])$\" )
-                                SET( QT_SQL_PLUGINS ${QT_SQLITE_PLUGIN_LIBRARY_DEBUG} )
+                                SET( QT_SQL_PLUGINS ${QT_QSQLITE_PLUGIN_DEBUG} )
                         ELSE()
-                                SET( QT_SQL_PLUGINS ${QT_SQLITE_PLUGIN_LIBRARY_RELEASE} )
+                                SET( QT_SQL_PLUGINS ${QT_QSQLITE_PLUGIN_RELEASE} )
                         ENDIF()
                 "
         )
