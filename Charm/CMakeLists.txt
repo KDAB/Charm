@@ -129,7 +129,7 @@ IF( APPLE )
         SET( MACOSX_BUNDLE_BUNDLE_NAME "Charm" )
 
         SET( RESOURCES "${Charm_BINARY_DIR}/Charm/Charm.app/Contents/Resources"	)
-        SET( ICON "${Charm_SOURCE_DIR}/Charm/Icons/${MACOSX_BUNDLE_ICON_FILE}" )
+        SET( ICON "${ICONS_DIR}/${MACOSX_BUNDLE_ICON_FILE}" )
         EXECUTE_PROCESS(
                 COMMAND	${CMAKE_COMMAND} -E make_directory ${RESOURCES}
         )
@@ -163,35 +163,9 @@ ENDIF()
 INSTALL( TARGETS Charm DESTINATION ${BIN_INSTALL_DIR} )
 
 # Only support packaging on newer versions of CMake.
-IF( NOT "${CMAKE_VERSION}" VERSION_LESS "2.8.3" )
-        SET( QT_SQLDRIVERS_PLUGINS_DIR ${QT_PLUGINS_DIR}/sqldrivers )
-        IF( WIN32 )
-                FIND_FILE(
-                        QT_SQLITE_PLUGIN_LIBRARY_RELEASE
-                        NAMES qsqlite.dll qsqlite4.dll
-                        PATHS ${QT_SQLDRIVERS_PLUGINS_DIR}
-                )
-                FIND_FILE(
-                        QT_SQLITE_PLUGIN_LIBRARY_DEBUG
-                        NAMES qsqlite_debug.dll qsqlited.dll qsqlited4.dll
-                        PATHS ${QT_SQLDRIVERS_PLUGINS_DIR}
-                )
-        ELSE()
-                FIND_LIBRARY(
-                        QT_SQLITE_PLUGIN_LIBRARY_RELEASE
-                        NAMES qsqlite qsqlite4
-                        PATHS ${QT_SQLDRIVERS_PLUGINS_DIR}
-                )
-                FIND_LIBRARY(
-                        QT_SQLITE_PLUGIN_LIBRARY_DEBUG
-                        NAMES qsqlite_debug qsqlited qsqlited4
-                        PATHS ${QT_SQLDRIVERS_PLUGINS_DIR}
-                )
-        ENDIF()
+IF( NOT "${CMAKE_VERSION}" VERSION_LESS "2.8.4" )
         INCLUDE( SelectLibraryConfigurations )
         SELECT_LIBRARY_CONFIGURATIONS( QT_SQLITE_PLUGIN )
-
-        IF( QT_SQLITE_PLUGIN_LIBRARY_RELEASE OR QT_SQLITE_PLUGIN_LIBRARY_DEBUG )
         INSTALL(
                 CODE "
                         IF( \"\${CMAKE_INSTALL_CONFIG_NAME}\" MATCHES \"^([Dd][Ee][Bb][Uu][Gg])$\" )
@@ -201,14 +175,12 @@ IF( NOT "${CMAKE_VERSION}" VERSION_LESS "2.8.3" )
                         ENDIF()
                 "
         )
-        ENDIF()
 
-        SET( CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_SKIP TRUE )
+        IF( CMAKE_BUILD_TYPE MATCHES "^([Dd][Ee][Bb][Uu][Gg])$" )
+            SET( CMAKE_INSTALL_DEBUG_LIBRARIES_ONLY TRUE)
+        ENDIF()
+        SET( CMAKE_INSTALL_SYSTEM_RUNTIME_DESTINATION "${BIN_INSTALL_DIR}" )
         INCLUDE( InstallRequiredSystemLibraries )
-        SET( CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_RELEASE ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS} )
-        SET( CMAKE_INSTALL_DEBUG_LIBRARIES TRUE )
-        INCLUDE( InstallRequiredSystemLibraries )
-        SET( CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_DEBUG ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS} )
 
         IF( APPLE )
                 SET( EXECUTABLE Charm.app )
@@ -226,13 +198,6 @@ IF( NOT "${CMAKE_VERSION}" VERSION_LESS "2.8.3" )
         INSTALL(
                 CODE "
                         IF( \${CMAKE_INSTALL_PREFIX} MATCHES .*/_CPack_Packages/.* OR WIN32 )
-                                IF( \"\${CMAKE_INSTALL_CONFIG_NAME}\" MATCHES \"^([Dd][Ee][Bb][Uu][Gg])$\" )
-                                        SET( CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS \"${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_DEBUG}\" )
-                                ELSE()
-                                        SET( CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS \"${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_RELEASE}\" )
-                                ENDIF()
-                                FILE( INSTALL DESTINATION \"\${CMAKE_INSTALL_PREFIX}/\" TYPE FILES \${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS} )
-
                                 FILE( INSTALL DESTINATION \"\${CMAKE_INSTALL_PREFIX}/${PLUGINS_DIR}/sqldrivers\" TYPE FILES \${QT_SQL_PLUGINS} )
                                 FILE( GLOB QT_SQL_PLUGINS \"\${CMAKE_INSTALL_PREFIX}/${PLUGINS_DIR}/sqldrivers/*\" )
                                 IF( APPLE )

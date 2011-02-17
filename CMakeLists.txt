@@ -52,6 +52,7 @@ ELSE()
         SET( BIN_INSTALL_DIR . )
         SET( DOC_INSTALL_DIR . )
 ENDIF()
+SET( ICONS_DIR "${CMAKE_SOURCE_DIR}/Charm/Icons" )
 
 OPTION( CHARM_IDLE_DETECTION "Build the Charm idle detector" ON )
 OPTION( CHARM_TIMESHEET_TOOLS "Build the Charm timesheet tools" OFF )
@@ -71,10 +72,12 @@ ADD_SUBDIRECTORY( Tests )
 
 CONFIGURE_FILE( CharmCMake.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/CharmCMake.h )
 
-INSTALL( FILES ReadMe.txt License.txt DESTINATION ${DOC_INSTALL_DIR} )
+IF( NOT APPLE )
+    INSTALL( FILES ReadMe.txt License.txt DESTINATION ${DOC_INSTALL_DIR} )
+ENDIF()
 
 # Only support packaging on newer versions of CMake.
-IF( NOT "${CMAKE_VERSION}" VERSION_LESS "2.8.3" )
+IF( NOT "${CMAKE_VERSION}" VERSION_LESS "2.8.4" )
         SET( CPACK_GENERATOR "TBZ2" )
         SET( CPACK_PACKAGE_VERSION_MAJOR "${Charm_VERSION_MAJOR}" )
         SET( CPACK_PACKAGE_VERSION_MINOR "${Charm_VERSION_MINOR}" )
@@ -88,21 +91,11 @@ IF( NOT "${CMAKE_VERSION}" VERSION_LESS "2.8.3" )
                 SET( CPACK_PACKAGE_INSTALL_DIRECTORY "Charm" )
                 SET( CPACK_PACKAGE_FILE_NAME "Charm ${Charm_VERSION}" )
                 SET( CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/License.txt" )
-                SET(
-                        CPACK_NSIS_MUI_ICON
-                        "${CMAKE_SOURCE_DIR}/Charm/Icons/Charm.ico"
-                )
-                SET(
-                        CPACK_NSIS_MUI_UNIICON
-                        "${CMAKE_SOURCE_DIR}/Charm/Icons/NSIS-Uninstall.ico"
-                )
+                SET( CPACK_NSIS_EXECUTABLES_DIRECTORY "${BIN_INSTALL_DIR}" )
+                SET( CPACK_NSIS_MUI_ICON "${ICONS_DIR}/Charm.ico" )
                 SET( CPACK_NSIS_URL_INFO_ABOUT "http://www.kdab.com/" )
                 SET( CPACK_NSIS_INSTALLED_ICON_NAME "Charm.exe" )
-                SET( CPACK_NSIS_MENU_LINKS "Charm.exe" "Charm" )
-                SET(
-                        CPACK_NSIS_DEFINES
-                        "!define MUI_FINISHPAGE_RUN \\\"$INSTDIR\\\\Charm.exe\\\" "
-                )
+                SET( CPACK_NSIS_MUI_FINISHPAGE_RUN "Charm.exe" )
         ENDIF()
         IF( APPLE )
                 SET( CPACK_GENERATOR "DragNDrop" )
@@ -110,10 +103,9 @@ IF( NOT "${CMAKE_VERSION}" VERSION_LESS "2.8.3" )
                 SET( CPACK_DMG_VOLUME_NAME "Charm" )
                 SET( CPACK_SYSTEM_NAME "OSX" )
                 SET( CPACK_PACKAGE_FILE_NAME "Charm-${Charm_VERSION}" )
-                SET(
-                        CPACK_PACKAGE_ICON
-                        "${CMAKE_SOURCE_DIR}/Charm/Icons/CharmDMG.icns"
-                )
+                SET( CPACK_PACKAGE_ICON "${ICONS_DIR}/CharmDMG.icns" )
+                SET( CPACK_DMG_DS_STORE "${ICONS_DIR}/CharmDSStore" )
+                SET( CPACK_DMG_BACKGROUND_IMAGE "${ICONS_DIR}/CharmDMGBackground.png" )
         ENDIF()
 
         INCLUDE( CPack )
