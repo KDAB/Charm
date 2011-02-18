@@ -72,11 +72,13 @@ ADD_SUBDIRECTORY( Tests )
 
 CONFIGURE_FILE( CharmCMake.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/CharmCMake.h )
 
+set(LICENSE_FILE "License.txt")
+set(README_FILE "ReadMe.txt")
 IF( NOT APPLE )
-    INSTALL( FILES ReadMe.txt License.txt DESTINATION ${DOC_INSTALL_DIR} )
+    INSTALL( FILES "${LICENSE_FILE}" "${README_FILE}" DESTINATION ${DOC_INSTALL_DIR} )
 ENDIF()
 
-# Only support packaging on newer versions of CMake.
+# Only support CPack packaging on newer versions of CMake.
 IF( NOT "${CMAKE_VERSION}" VERSION_LESS "2.8.4" )
         SET( CPACK_GENERATOR "TBZ2" )
         SET( CPACK_PACKAGE_VERSION_MAJOR "${Charm_VERSION_MAJOR}" )
@@ -84,23 +86,23 @@ IF( NOT "${CMAKE_VERSION}" VERSION_LESS "2.8.4" )
         SET( CPACK_PACKAGE_VERSION_PATCH "${Charm_VERSION_PATCH}" )
         SET( CPACK_PACKAGE_VERSION "${Charm_VERSION}" )
         SET( CPACK_PACKAGE_VENDOR "KDAB" )
-        SET( CPACK_RESOURCE_FILE_README "${CMAKE_SOURCE_DIR}/ReadMe.txt" )
+        SET( CPACK_RESOURCE_FILE_README "${CMAKE_SOURCE_DIR}/${README_FILE}" )
         IF( WIN32 )
                 SET( CPACK_GENERATOR "NSIS" "ZIP" )
                 SET( CPACK_PACKAGE_EXECUTABLES "Charm" "Charm" )
                 SET( CPACK_PACKAGE_INSTALL_DIRECTORY "Charm" )
                 SET( CPACK_PACKAGE_FILE_NAME "Charm ${Charm_VERSION}" )
-                SET( CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/License.txt" )
+                SET( CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/${LICENSE_FILE}" )
                 SET( CPACK_NSIS_EXECUTABLES_DIRECTORY "${BIN_INSTALL_DIR}" )
                 SET( CPACK_NSIS_MUI_ICON "${ICONS_DIR}/Charm.ico" )
                 SET( CPACK_PACKAGE_ICON "${ICONS_DIR}\\\\CharmNSISHeader.bmp" )
                 SET( CPACK_NSIS_URL_INFO_ABOUT "http://www.kdab.com/" )
-                SET( CPACK_NSIS_INSTALLED_ICON_NAME "Charm.exe" )
+                SET( CPACK_NSIS_INSTALLED_ICON_NAME "Charm${CMAKE_EXECUTABLE_SUFFIX}" )
                 SET( CPACK_NSIS_MENU_LINKS
-                    "License.txt" "License"
-                    "ReadMe.txt" "Readme"
+                    "${LICENSE_FILE}" "License"
+                    "${README_FILE}" "Readme"
                 )
-                SET( CPACK_NSIS_MUI_FINISHPAGE_RUN "Charm.exe" )
+                SET( CPACK_NSIS_MUI_FINISHPAGE_RUN "${CPACK_NSIS_INSTALLED_ICON_NAME}" )
         ENDIF()
         IF( APPLE )
                 SET( CMAKE_INSTALL_PREFIX "/Applications" )

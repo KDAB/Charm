@@ -123,12 +123,12 @@ IF( APPLE )
         SET( MACOSX_BUNDLE_BUNDLE_VERSION "Charm ${Charm_VERSION}" )
         SET( MACOSX_BUNDLE_LONG_VERSION_STRING "Charm ${Charm_VERSION}" )
         SET( MACOSX_BUNDLE_SHORT_VERSION_STRING "${Charm_VERSION}" )
-        SET( MACOSX_BUNDLE_COPYRIGHT "2006-2010 KDAB" )
+        SET( MACOSX_BUNDLE_COPYRIGHT "2006-2011 KDAB" )
         SET( MACOSX_BUNDLE_ICON_FILE "Charm.icns" )
         SET( MACOSX_BUNDLE_GUI_IDENTIFIER "com.kdab" )
         SET( MACOSX_BUNDLE_BUNDLE_NAME "Charm" )
 
-        SET( RESOURCES "${Charm_BINARY_DIR}/Charm/Charm.app/Contents/Resources"	)
+        SET( RESOURCES "${CMAKE_CURRENT_BINARY_DIR}/Charm.app/Contents/Resources"	)
         SET( ICON "${ICONS_DIR}/${MACOSX_BUNDLE_ICON_FILE}" )
         EXECUTE_PROCESS(
                 COMMAND	${CMAKE_COMMAND} -E make_directory ${RESOURCES}
@@ -162,9 +162,9 @@ ENDIF()
 
 INSTALL( TARGETS Charm DESTINATION ${BIN_INSTALL_DIR} )
 
-# Only support packaging on newer versions of CMake.
+# Only support CPack packaging on newer versions of CMake.
 IF( NOT "${CMAKE_VERSION}" VERSION_LESS "2.8.4" )
-        IF( CMAKE_BUILD_TYPE MATCHES "^([Dd][Ee][Bb][Uu][Gg])$" )
+        IF( CMAKE_BUILD_TYPE MATCHES "^([Dd][Ee][Bb][Uu][Gg])" )
             SET( CMAKE_INSTALL_DEBUG_LIBRARIES_ONLY TRUE)
             SET( QT_SQL_PLUGINS ${QT_QSQLITE_PLUGIN_DEBUG} )
         ELSE()
