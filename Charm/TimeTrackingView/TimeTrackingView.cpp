@@ -48,6 +48,9 @@ TimeTrackingView::TimeTrackingView( QToolBar* toolBar, QWidget* parent )
              SIGNAL( stopEvents() ) );
     connect( m_taskSelector, SIGNAL( updateSummariesPlease() ),
              SLOT( slotUpdateSummaries() ) );
+
+    setFocusProxy( m_taskSelector );
+    setFocusPolicy( Qt::StrongFocus );
 }
 
 void TimeTrackingView::PaintAttributes::initialize( const QPalette& palette ) {
