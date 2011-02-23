@@ -53,6 +53,11 @@ TimeTrackingView::TimeTrackingView( QToolBar* toolBar, QWidget* parent )
     setFocusPolicy( Qt::StrongFocus );
 }
 
+void TimeTrackingView::populateEditMenu( QMenu* menu )
+{
+    m_taskSelector->populateEditMenu( menu );
+}
+
 void TimeTrackingView::PaintAttributes::initialize( const QPalette& palette ) {
     headerBrush = palette.mid();
     taskBrushEven = palette.light();

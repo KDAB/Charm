@@ -77,15 +77,17 @@ TimeTrackingTaskSelector::TimeTrackingTaskSelector(QToolBar* toolBar, QWidget *p
     connect( m_menu, SIGNAL( triggered( QAction* ) ),
              SLOT( slotActionSelected( QAction* ) ) );
 
+    m_stopGoAction->setText( tr("Start Task") );
     m_stopGoAction->setIcon( Data::goIcon() );
     m_stopGoAction->setShortcut( QKeySequence( Qt::Key_Space ) );
     m_stopGoAction->setCheckable( true );
     connect( m_stopGoAction, SIGNAL(triggered(bool)), SLOT(slotGoStopToggled(bool)) );
     m_stopGoButton->setDefaultAction( m_stopGoAction );
 
+    m_editCommentAction->setText( tr("Edit Started Task Comment") );
     m_editCommentAction->setIcon( Data::editEventIcon() );
-    m_editCommentAction->setShortcut( QKeySequence( Qt::Key_Return ) );
-    m_editCommentAction->setToolTip( tr( "Comment on the running task" ) );
+    m_editCommentAction->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_E ) );
+    m_editCommentAction->setToolTip( tr("Edit Started Task Comment") );
     connect( m_editCommentAction, SIGNAL( triggered(bool) ),
              SLOT( slotEditCommentClicked() ) );
     m_editCommentButton->setDefaultAction( m_editCommentAction );
@@ -95,6 +97,12 @@ TimeTrackingTaskSelector::TimeTrackingTaskSelector(QToolBar* toolBar, QWidget *p
     m_taskSelectorButton->setText( tr( "Select Task" ) );
     m_taskSelectorButton->installEventFilter( this );
     m_menu->installEventFilter( this );
+}
+
+void TimeTrackingTaskSelector::populateEditMenu( QMenu* menu )
+{
+    menu->addAction( m_stopGoAction );
+    menu->addAction( m_editCommentAction );
 }
 
 QSize TimeTrackingTaskSelector::sizeHint() const

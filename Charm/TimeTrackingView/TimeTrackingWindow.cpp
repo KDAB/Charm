@@ -4,6 +4,7 @@
 #include <QCloseEvent>
 #include <QtAlgorithms>
 #include <QKeyEvent>
+#include <QMenuBar>
 
 #include "Core/TimeSpans.h"
 
@@ -192,6 +193,12 @@ void TimeTrackingWindow::slotSelectTasksToShow()
     // and update the widget:
     m_summaries = summaries;
     m_summaryWidget->setSummaries( m_summaries );
+}
+
+void TimeTrackingWindow::insertEditMenu()
+{
+    QMenu* editMenu = menuBar()->addMenu( tr( "Edit" ) );
+    m_summaryWidget->populateEditMenu( editMenu );
 }
 
 void TimeTrackingWindow::slotStartEvent( TaskId id )

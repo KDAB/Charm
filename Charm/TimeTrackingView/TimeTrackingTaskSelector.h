@@ -43,6 +43,8 @@ public:
     QSize sizeHint() const;
     QMenu* menu() const;
 
+    void populateEditMenu( QMenu* );
+
 signals:
     void startEvent( TaskId );
     void stopEvents();

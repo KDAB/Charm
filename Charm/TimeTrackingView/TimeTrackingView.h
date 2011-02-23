@@ -55,6 +55,8 @@ public:
     QSize minimumSizeHint() const;
     QMenu* menu() const;
 
+    void populateEditMenu( QMenu* );
+
     void handleActiveEvents();
 
     bool isTracking() const;

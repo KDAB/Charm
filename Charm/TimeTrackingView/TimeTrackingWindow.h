@@ -44,6 +44,9 @@ public:
     void eventActivated( EventId id );
     void eventDeactivated( EventId id );
 
+protected:
+    /* reimpl */ void insertEditMenu();
+
 private slots:
     void slotStartEvent( TaskId );
     void slotStopEvent();
