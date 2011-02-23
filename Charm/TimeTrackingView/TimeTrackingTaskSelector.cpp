@@ -12,6 +12,7 @@
 #include <QDialogButtonBox>
 #include <QMessageBox>
 #include <QToolBar>
+#include <QPushButton>
 
 #include "Core/Task.h"
 #include "Core/Event.h"
@@ -27,18 +28,19 @@ CommentEditorPopup::CommentEditorPopup( QWidget* parent )
     : QDialog( parent )
     , m_edit( new QTextEdit )
 {
+    setWindowModality( Qt::WindowModal );
     setWindowTitle( tr("Comment Event") );
     const EventIdList events = DATAMODEL->activeEvents();
     Q_ASSERT( events.size() == 1 );
     m_id = events.first();
     QVBoxLayout* layout = new QVBoxLayout( this );
     layout->setMargin( 0 );
-    m_edit = new QTextEdit;
     m_edit->setTabChangesFocus( true );
     m_edit->setPlainText( DATAMODEL->eventForId( m_id ).comment() );
     layout->addWidget( m_edit );
     QDialogButtonBox* box = new QDialogButtonBox;
     box->setStandardButtons( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
+    box->button( QDialogButtonBox::Ok )->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_Return ) );
     connect( box, SIGNAL(accepted()), this, SLOT(accept()) );
     connect( box, SIGNAL(rejected()), this, SLOT(reject()) );
     layout->addWidget( box );
