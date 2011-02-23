@@ -204,22 +204,8 @@ TasksViewDelegate::Layout TasksViewDelegate::doLayout( const QStyleOptionViewIte
     const QVariant decorationVariant = index.data(Qt::DecorationRole);
     if (!decorationVariant.isNull()) {
         const QPixmap decorationPixmap = decoration(option, decorationVariant);
-
-        const QString comment = index.data(TasksViewRole_Comment).toString();
-#if 0
-        // For editing or rendering a comment we need the whole font height,
-        // while for just "00:05" we only need the ascent.
-        // Update: changed my mind: looks too narrow.
-        if ( m_editing || !comment.isEmpty() ) {
-#endif
-            layout.secondLineTextHeight = option.fontMetrics.lineSpacing() + 2 +
-                                          qApp->style()->pixelMetric(QStyle::PM_DefaultFrameWidth, &option, 0);
-#if 0
-        } else {
-            layout.secondLineTextHeight = option.fontMetrics.ascent();
-        }
-#endif
-
+        layout.secondLineTextHeight = option.fontMetrics.lineSpacing() + 2 +
+                                      qApp->style()->pixelMetric(QStyle::PM_DefaultFrameWidth, &option, 0);
         layout.secondLineHeight = qMax(layout.secondLineTextHeight, decorationPixmap.height());
     }
 
