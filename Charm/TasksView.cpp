@@ -128,6 +128,8 @@ TasksView::TasksView( QToolBar* toolBar, QWidget* parent )
     toolBar->addWidget( m_buttonClearFilter );
     toolBar->addWidget( filterLineEdit );
 
+    m_treeView->setEditTriggers(QAbstractItemView::EditKeyPressed);
+    m_treeView->setExpandsOnDoubleClick(false);
     m_treeView->setUniformRowHeights( true );
     m_treeView->setAlternatingRowColors( true );
     m_treeView->setRootIsDecorated( true );
