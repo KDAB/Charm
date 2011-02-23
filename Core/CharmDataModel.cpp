@@ -503,6 +503,13 @@ QString CharmDataModel::eventsString() const
     return eStrList.join( "\n" );
 }
 
+QString CharmDataModel::taskIdAndNameString(TaskId id) const
+{
+    return QString("%1 %2")
+            .arg( id, CONFIGURATION.taskPaddingLength, 10, QChar( '0' ) )
+            .arg( fullTaskName( getTask( id ) ) );
+}
+
 int CharmDataModel::totalDuration() const
 {
     int totalDuration = 0;

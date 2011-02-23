@@ -129,8 +129,7 @@ void insertHelper( QMenu* menu, TaskIdList& targetList, QMap<TaskId, QAction*>& 
     if( ! fromList.isEmpty() ) {
         TaskId id = fromList.takeFirst();
         if( ! visitedTasks.contains( id ) ) {
-            const Task& task = DATAMODEL->getTask( id );
-            QAction* action = new QAction( DATAMODEL->fullTaskName( task ), menu );
+            QAction* action = new QAction( DATAMODEL->taskIdAndNameString( id ), menu );
             action->setProperty( CUSTOM_TASK_PROPERTY_NAME, QVariant::fromValue( id ) );
             menu->addAction( action );
             visitedTasks.insert( id, action );
@@ -145,7 +144,7 @@ void TimeTrackingTaskSelector::populate( const QVector<WeeklySummary>& summaries
     QMap<TaskId, QAction*> visitedTasks;
     bool addedAction = false;
     Q_FOREACH( const WeeklySummary& s, summaries ) {
-        QAction* action = new QAction( s.taskname, m_menu );
+        QAction* action = new QAction( DATAMODEL->taskIdAndNameString( s.task ), m_menu );
         visitedTasks.insert( s.task, action );
         action->setProperty( CUSTOM_TASK_PROPERTY_NAME, QVariant::fromValue( s.task ) );
         Q_ASSERT( action->property( CUSTOM_TASK_PROPERTY_NAME ).value<TaskId>() == s.task );
@@ -159,7 +158,7 @@ void TimeTrackingTaskSelector::populate( const QVector<WeeklySummary>& summaries
     }
     if( m_manuallySelectedTask > 0 && ! visitedTasks.contains( m_manuallySelectedTask )) {
         const Task& task = DATAMODEL->getTask( m_manuallySelectedTask );
-        QAction* action = new QAction( DATAMODEL->fullTaskName( task ), m_menu );
+        QAction* action = new QAction( DATAMODEL->taskIdAndNameString( task.id() ), m_menu );
         visitedTasks.insert( m_manuallySelectedTask, action );
         action->setProperty( CUSTOM_TASK_PROPERTY_NAME, QVariant::fromValue( m_manuallySelectedTask ) );
         m_menu->addAction( action );

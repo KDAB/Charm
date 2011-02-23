@@ -294,7 +294,7 @@ void TimeTrackingView::data( DataField& field, int column, int row )
             }
             int day = column - 1;
             if ( column == TaskColumn ) {
-                field.text = m_summaries[index].taskname;
+                field.text = DATAMODEL->taskIdAndNameString(m_summaries[index].task);
                 field.font = m_narrowFont;
             } else if ( column == TotalsColumn ) {
                 const QVector<int>& durations = m_summaries[index].durations;

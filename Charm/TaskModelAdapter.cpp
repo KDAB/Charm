@@ -74,12 +74,7 @@ QVariant TaskModelAdapter::data( const QModelIndex& index, int role ) const
     {
         // Return ID + name -- this is used for painting but also
         // for filtering in select task dialog.
-        return QString("%1" ).arg
-              ( item->task().id(),
-                CONFIGURATION.taskPaddingLength,
-                10, QChar( '0' ) )
-            + ' ' + item->task().name();
-
+        return DATAMODEL->taskIdAndNameString( item->task().id() );
     }
         break;
     case Qt::DecorationRole:

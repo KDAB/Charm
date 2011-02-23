@@ -90,6 +90,8 @@ public:
 
     /** Create a full task name from the specified TaskId. */
     QString fullTaskName( const Task& ) const;
+    /** Get the task id and name as a single string. */
+    QString taskIdAndNameString(TaskId id) const;
 
     bool operator==( const CharmDataModel& other ) const;
 
