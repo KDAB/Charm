@@ -130,7 +130,6 @@ TasksView::TasksView( QToolBar* toolBar, QWidget* parent )
 
     m_treeView->setEditTriggers(QAbstractItemView::EditKeyPressed);
     m_treeView->setExpandsOnDoubleClick(false);
-    m_treeView->setUniformRowHeights( true );
     m_treeView->setAlternatingRowColors( true );
     m_treeView->setRootIsDecorated( true );
     m_treeView->setContextMenuPolicy( Qt::CustomContextMenu );
