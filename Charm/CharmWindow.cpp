@@ -24,7 +24,6 @@ CharmWindow::CharmWindow( const QString& name, QWidget* parent )
     , m_shortcut( 0 )
 {
     setWindowName( name );
-    setWindowIcon( Data::charmIcon() );
     handleShowHide( false );
     connect( m_showHideAction, SIGNAL( triggered( bool ) ), SLOT( showHideView() ) );
     m_toolBar = addToolBar( "toolbar" );

@@ -118,6 +118,10 @@ Application::Application(int& argc, char** argv)
     m_trayIcon.setIcon( Data::charmTrayIcon() );
     m_trayIcon.show();
 
+#ifndef Q_WS_MAC
+    setWindowIcon( Data::charmIcon() );
+#endif
+
 #ifdef Q_WS_MAC
     m_dockMenu.addAction( &m_actionStopAllTasks );
     m_dockMenu.addSeparator();
