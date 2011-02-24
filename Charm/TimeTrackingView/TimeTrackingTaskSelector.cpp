@@ -105,6 +105,8 @@ void TimeTrackingTaskSelector::populateEditMenu( QMenu* menu )
 {
     menu->addAction( m_stopGoAction );
     menu->addAction( m_editCommentAction );
+    menu->addSeparator();
+    menu->addMenu( m_menu );
 }
 
 QSize TimeTrackingTaskSelector::sizeHint() const
