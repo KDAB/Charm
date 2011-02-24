@@ -6,7 +6,7 @@
 // the "well known" report types (as opposed to possible plugin based
 // report types:
 #include "ActivityReport.h"
-#include "WeeklyTimeSheet3.h"
+#include "WeeklyTimeSheet.h"
 
 ReportDialog::ReportDialog( QWidget* parent )
     : QDialog( parent )

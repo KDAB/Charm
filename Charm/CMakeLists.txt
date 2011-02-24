@@ -35,7 +35,7 @@ SET(
         Reports/ReportConfigurationPage.cpp
         Reports/CharmReport.cpp
         Reports/ActivityReport.cpp
-        Reports/WeeklyTimeSheet3.cpp
+        Reports/WeeklyTimeSheet.cpp
         Reports/ReportPreviewWindow.cpp
         Commands/CommandRelayCommand.cpp
         Commands/CommandModifyEvent.cpp

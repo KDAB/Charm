@@ -14,7 +14,7 @@
 
 #include "ViewHelpers.h"
 #include "SelectTaskDialog.h"
-#include "WeeklyTimeSheet3.h"
+#include "WeeklyTimeSheet.h"
 #include "CharmReport.h"
 #include "DateEntrySyncer.h"
 
@@ -719,4 +719,4 @@ void WeeklyTimeSheetReport::slotSaveToText()
     stream << "Week total: " << hoursAndMinutes( totalsLine.total() ) << '\n';
 }
 
-#include "WeeklyTimeSheet3.moc"
+#include "WeeklyTimeSheet.moc"
