@@ -68,7 +68,7 @@ private:
         NumberOfColumns
     };
 
-    QString getFileName();
+    QString getFileName( const QString& filter );
 
     // reimpl
     void slotUpdate();

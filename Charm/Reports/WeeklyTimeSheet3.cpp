@@ -525,14 +525,9 @@ void  WeeklyTimeSheetReport::slotSaveToXml()
 {
     qDebug() << "WeeklyTimeSheet::slotSaveToXml: creating XML time sheet";
     // first, ask for a file name:
-    QString filename = getFileName();
+    QString filename = getFileName( "Charm reports (*.charmreport)" );
     if (filename.isEmpty())
         return;
-
-    QFileInfo fileinfo( filename );
-    if ( fileinfo.suffix().isEmpty() ) {
-        filename += ".charmreport";
-    }
 
     try {
         // now create the report:
@@ -656,7 +651,7 @@ void  WeeklyTimeSheetReport::slotSaveToXml()
     }
 }
 
-QString WeeklyTimeSheetReport::getFileName()
+QString WeeklyTimeSheetReport::getFileName( const QString& filter )
 {
     QSettings settings;
     QString path;
@@ -671,7 +666,7 @@ QString WeeklyTimeSheetReport::getFileName()
                                 .arg( m_weekNumber, 2, 10, QChar('0') );
     path += QDir::separator() + suggestedFilename;
     // ask:
-    QString filename = QFileDialog::getSaveFileName( this, tr( "Enter File Name" ), path );
+    QString filename = QFileDialog::getSaveFileName( this, tr( "Enter File Name" ), path, filter );
     if ( filename.isEmpty() )
         return QString();
     QFileInfo fileinfo( filename );
@@ -686,7 +681,7 @@ void WeeklyTimeSheetReport::slotSaveToText()
 {
     qDebug() << "WeeklyTimeSheet::slotSaveToText: creating text file with totals";
     // first, ask for a file name:
-    const QString filename = getFileName();
+    const QString filename = getFileName( "Text files (*.txt)" );
     if (filename.isEmpty())
         return;
 
