@@ -391,7 +391,7 @@ QString TimeTrackingView::elidedText( const QString& text, const QFont& font, in
 {
     if( ! m_elidedTexts.contains( text ) ) {
         QFontMetrics metrics( font );
-        const QString elided = metrics.elidedText( text, Qt::ElideLeft, width );
+        const QString elided = metrics.elidedText( text, Qt::ElideMiddle, width );
         m_elidedTexts.insert( text, elided );
     }
     Q_ASSERT( m_elidedTexts.contains( text ) );
