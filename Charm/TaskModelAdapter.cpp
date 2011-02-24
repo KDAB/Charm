@@ -138,42 +138,6 @@ QModelIndex TaskModelAdapter::parent( const QModelIndex & index ) const
     return indexForTaskTreeItem( parent, 0 );
 }
 
-// QVariant TaskModelAdapter::headerData( int section, Qt::Orientation orientation, int role ) const
-// {
-//     if ( orientation != Qt::Horizontal ) return QVariant();
-
-//     switch( section ) {
-//     case Column_TaskId:
-//         if ( role == Qt::DisplayRole ) {
-//             return tr( "Task Id" );
-//         }
-//         break;
-//     case Column_TaskName:
-//         if ( role == Qt::DisplayRole ) {
-//             return tr( "Task" );
-//         }
-//         break;
-//     case Column_TaskComment:
-//         if ( role == Qt::DisplayRole ) {
-//             return tr( "Comment" );
-//         }
-//         break;
-//     case Column_TaskSessionTime:
-//         if ( role == Qt::DisplayRole ) {
-//             return tr( "Running Time" );
-//         }
-//         break;
-//     case Column_TaskSubscriptions:
-//         switch( role ) {
-//         case Qt::DecorationRole:
-//             return Data::checkIcon();
-//             break;
-//         }
-//     }
-
-//     return QVariant();
-// }
-
 Qt::ItemFlags TaskModelAdapter::flags( const QModelIndex & index ) const
 {
     Qt::ItemFlags flags = 0;

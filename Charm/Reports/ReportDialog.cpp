@@ -36,24 +36,6 @@ ReportDialog::~ReportDialog()
     delete m_ui; m_ui = 0;
 }
 
-// void ReportDialog::showEvent( QShowEvent* )
-// {
-//     m_ui->stackedWidget->setCurrentWidget( m_ui->startPage );
-//     emit visible( true );
-// }
-
-// void ReportDialog::closeEvent( QCloseEvent* event )
-// {
-//     event->setAccepted( false );
-//     reject();
-// }
-
-// void ReportDialog::reject()
-// {
-//     emit visible( false );
-//     QDialog::reject();
-// }
-
 void ReportDialog::on_comboReportSelector_currentIndexChanged( int index )
 {
     m_ui->labelDescription->setText( m_reports[index]->description() );
@@ -68,14 +50,6 @@ void ReportDialog::back()
 {
     m_ui->stackedWidget->setCurrentWidget( m_ui->startPage );
 }
-
-// CharmReport* ReportDialog::selectedReport()
-// {
-//     Q_ASSERT( m_ui->comboReportSelector->currentIndex() != -1 );
-//     Q_ASSERT( m_ui->comboReportSelector->currentIndex() >= 0 );
-//     Q_ASSERT( m_ui->comboReportSelector->currentIndex() < m_reports.size() );
-//     return m_reports[m_ui->comboReportSelector->currentIndex()];
-// }
 
 ReportConfigurationPage* ReportDialog::selectedPage()
 {

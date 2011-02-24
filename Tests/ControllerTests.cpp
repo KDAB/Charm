@@ -246,56 +246,6 @@ void ControllerTests::toAndFromXmlTest()
     // QVERIFY( document == document2 ); unfortunately, this seems to always fail
 }
 
-// void ControllerTests::startModifyEndEventTest()
-// {
-//     // preparations
-//     m_eventListReceived = false;
-//     m_taskListReceived = false;
-//     m_configuration.oneEventAtATime = false;
-//     QVERIFY( m_definedTasks.size() >= 2 ); // rely on previous test results
-//     QVERIFY( m_currentEvents.size() == 0 );
-//     // make first event
-//     m_controller->startEvent( m_definedTasks[0] );
-//     QVERIFY( m_currentEvents.size() == 1 );
-//     Event event1 = m_currentEvents[0];
-//     event1.setTask( m_definedTasks[0] );
-//     event1.setComment( "Event-1-Comment" );
-//     event1.setStartDateTime();
-//     m_controller->modifyEvent( event1 );
-//     QVERIFY( m_currentEvents.size() == 1 );
-//     QVERIFY( m_currentEvents[0] == event1 );
-//     // make second event
-//     m_controller->startEvent( m_definedTasks[1] );
-//     QVERIFY( m_currentEvents.size() ==2 );
-//     int event1Position, event2Position;
-//     if ( m_currentEvents[0].id() == event1.id() ) {
-//         event1Position = 0;
-//         event2Position = 1;
-//     } else {
-//         event1Position = 1;
-//         event2Position = 2;
-//     }
-//     QVERIFY( m_currentEvents[event1Position] == event1 );
-//     Event event2 = m_currentEvents[event2Position];
-//     event2.setTask( m_definedTasks[1] );
-//     event2.setComment( "Event-2-Comment" );
-//     event2.setStartDateTime();
-//     m_controller->modifyEvent( event2 );
-//     QVERIFY( m_currentEvents[event1Position] == event1 );
-//     QVERIFY( m_currentEvents[event2Position] == event2 );
-//     // end both events
-//     m_controller->endEvent( event1.task() );
-//     QVERIFY( m_currentEvents.size() == 1 && m_currentEvents[0] == event2 );
-//     // change to "one event at a time mode"
-//     m_configuration.oneEventAtATime = true;
-//     // start another event similar to event 1:
-//     m_controller->startEvent( event1.task() );
-//     QVERIFY( m_currentEvents.size() == 1 );
-//     // end all events
-//     m_controller->endEvent( event1.task() );
-//     QVERIFY( m_currentEvents.size() == 0 );
-// }
-
 void ControllerTests::disconnectFromBackendTest()
 {
     QVERIFY( m_controller->disconnectFromBackend() );

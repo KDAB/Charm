@@ -21,11 +21,6 @@ public:
 
     ReportConfigurationPage* selectedPage();
 
-// CharmReport* selectedReport();
-//     void showEvent( QShowEvent* );
-//     void closeEvent( QCloseEvent* );
-//     void reject();
-
 public slots:
     void on_comboReportSelector_currentIndexChanged( int );
     void on_pushButtonNext_clicked();
