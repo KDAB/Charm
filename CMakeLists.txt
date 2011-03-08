@@ -14,6 +14,10 @@ IF( NOT CMAKE_BUILD_TYPE )
         SET( CMAKE_BUILD_TYPE "Release" CACHE STRING "" FORCE )
 ENDIF()
 
+IF( APPLE AND CMAKE_INSTALL_PREFIX MATCHES "/usr/local" )
+        SET( CMAKE_INSTALL_PREFIX "/Applications" )
+ENDIF()
+
 MESSAGE( STATUS "Building Charm ${Charm_VERSION} in ${CMAKE_BUILD_TYPE} mode" )
 
 CMAKE_MINIMUM_REQUIRED( VERSION 2.6.0 )
@@ -105,7 +109,6 @@ IF( NOT "${CMAKE_VERSION}" VERSION_LESS "2.8.4" )
                 SET( CPACK_NSIS_MUI_FINISHPAGE_RUN "${CPACK_NSIS_INSTALLED_ICON_NAME}" )
         ENDIF()
         IF( APPLE )
-                SET( CMAKE_INSTALL_PREFIX "/Applications" )
                 SET( CPACK_GENERATOR "DragNDrop" )
                 SET( CPACK_DMG_FORMAT "UDBZ" )
                 SET( CPACK_DMG_VOLUME_NAME "Charm" )
