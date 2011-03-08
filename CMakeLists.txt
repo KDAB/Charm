@@ -76,10 +76,10 @@ ADD_SUBDIRECTORY( Tests )
 
 CONFIGURE_FILE( CharmCMake.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/CharmCMake.h )
 
-set(LICENSE_FILE "License.txt")
-set(README_FILE "ReadMe.txt")
+SET( LICENSE_FILE "License.txt" )
+SET( README_FILE "ReadMe.txt" )
 IF( NOT APPLE )
-    INSTALL( FILES "${LICENSE_FILE}" "${README_FILE}" DESTINATION ${DOC_INSTALL_DIR} )
+        INSTALL( FILES "${LICENSE_FILE}" "${README_FILE}" DESTINATION ${DOC_INSTALL_DIR} )
 ENDIF()
 
 # Only support CPack packaging on newer versions of CMake.
