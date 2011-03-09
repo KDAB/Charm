@@ -10,7 +10,6 @@
  *
  */
 
-#include <QSystemTrayIcon>
 #include <QMenu>
 #include <QAction>
 
@@ -38,6 +37,7 @@
 #include "EventWindow.h"
 #include "TimeTrackingView/TimeTrackingWindow.h"
 #include "ModelConnector.h"
+#include "TrayIcon.h"
 
 // FIXME read configuration name from command line
 
@@ -88,24 +88,25 @@ public:
      * It is an internal concept, not a notion for the end user. */
     CharmWindow& mainView();
 
-    QSystemTrayIcon& trayIcon();
+    TrayIcon& trayIcon();
 
     /*! \reimp */ void saveState( QSessionManager & manager );
     /*! \reimp */ void commitData( QSessionManager & manager );
 
 public slots:
     void setState( State state );
+    void slotStopAllTasks();
     void slotQuitApplication();
     void slotControllerReadyToQuit();
     void slotSaveConfiguration();
     void slotGoToConnectedState();
 
+    void toggleShowHide();
+
 private slots:
-    void slotTrayIconActivated( QSystemTrayIcon::ActivationReason );
 //     void slotMainWindowVisibilityChanged( bool );
 //     void slotTimeTrackerVisibilityChanged( bool );
     void slotCurrentBackendStatusChanged( const QString& text );
-    void slotStopAllTasks();
     void slotMaybeIdle();
 
     void slotOpenLastClosedWindow();
@@ -128,12 +129,11 @@ private:
     void leaveDisconnectingState();
     void enterShuttingDownState();
     void leaveShuttingDownState();
-    void toggleShowHide();
 
     State m_state;
     ModelConnector m_model;
     Controller m_controller;
-    QSystemTrayIcon m_trayIcon;
+    TrayIcon m_trayIcon;
     QMenu m_systrayContextMenu;
     QMenu m_dockMenu;
     QAction m_actionStopAllTasks;

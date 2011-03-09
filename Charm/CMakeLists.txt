@@ -12,6 +12,7 @@ SET(
         TasksView.cpp
         TasksWindow.cpp
         TaskEditor.cpp
+        TrayIcon.cpp
         GUIState.cpp
         DateEntrySyncer.cpp
         EventView.cpp

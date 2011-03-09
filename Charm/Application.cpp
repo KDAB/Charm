@@ -14,7 +14,6 @@
 #include <QMetaType>
 #include <QMessageBox>
 #include <QSessionManager>
-#include <QSystemTrayIcon>
 #include <QDesktopServices>
 
 #include <Core/CharmConstants.h>
@@ -108,8 +107,7 @@ Application::Application(int& argc, char** argv)
     m_timeTracker.addAction(&m_actionStopAllTasks); // for the shortcut to work
     connect( &m_actionStopAllTasks, SIGNAL( triggered() ),
              SLOT( slotStopAllTasks() ) );
-    connect( &m_trayIcon, SIGNAL( activated( QSystemTrayIcon::ActivationReason ) ),
-             SLOT( slotTrayIconActivated( QSystemTrayIcon::ActivationReason ) ) );
+
     m_systrayContextMenu.addAction( &m_actionStopAllTasks );
     m_systrayContextMenu.addSeparator();
 
@@ -565,28 +563,6 @@ void Application::toggleShowHide()
     }
 }
 
-void Application::slotTrayIconActivated( QSystemTrayIcon::ActivationReason reason )
-{
-    switch( reason ) {
-    case QSystemTrayIcon::Context:
-        // show context menu
-        // m_systrayContextMenu.show();
-        break;
-    case QSystemTrayIcon::Trigger: //(single click)
-    case QSystemTrayIcon::DoubleClick:
-#ifndef Q_WS_MAC
-        toggleShowHide();
-#endif
-        break;
-    case QSystemTrayIcon::MiddleClick:
-        // ...
-        break;
-    case QSystemTrayIcon::Unknown:
-    default:
-        break;
-    }
-}
-
 QString Application::titleString( const QString& text ) const
 {
     QString dbInfo;
@@ -688,7 +664,7 @@ CharmWindow& Application::mainView()
     return m_tasksWindow;
 }
 
-QSystemTrayIcon& Application::trayIcon()
+TrayIcon& Application::trayIcon()
 {
     return m_trayIcon;
 }
