@@ -171,6 +171,11 @@ IF( NOT "${CMAKE_VERSION}" VERSION_LESS "2.8.4" )
         ELSE()
             SET( QT_SQL_PLUGINS ${QT_QSQLITE_PLUGIN_RELEASE} )
         ENDIF()
+
+        IF( NOT QT_SQL_PLUGINS)
+                MESSAGE( FATAL_ERROR "Cannot find Qt SQLite plugin!" )
+        ENDIF()
+
         SET( CMAKE_INSTALL_SYSTEM_RUNTIME_DESTINATION "${BIN_INSTALL_DIR}" )
         INCLUDE( InstallRequiredSystemLibraries )
 
