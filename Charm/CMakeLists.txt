@@ -166,10 +166,10 @@ INSTALL( TARGETS Charm DESTINATION ${BIN_INSTALL_DIR} )
 # Only support CPack packaging on newer versions of CMake.
 IF( NOT "${CMAKE_VERSION}" VERSION_LESS "2.8.4" )
         IF( CMAKE_BUILD_TYPE MATCHES "^([Dd][Ee][Bb][Uu][Gg])" )
-            SET( CMAKE_INSTALL_DEBUG_LIBRARIES_ONLY TRUE)
-            SET( QT_SQL_PLUGINS ${QT_QSQLITE_PLUGIN_DEBUG} )
+                SET( CMAKE_INSTALL_DEBUG_LIBRARIES_ONLY TRUE )
+                SET( QT_SQL_PLUGINS ${QT_QSQLITE_PLUGIN_DEBUG} )
         ELSE()
-            SET( QT_SQL_PLUGINS ${QT_QSQLITE_PLUGIN_RELEASE} )
+                SET( QT_SQL_PLUGINS ${QT_QSQLITE_PLUGIN_RELEASE} )
         ENDIF()
 
         IF( NOT QT_SQL_PLUGINS)
@@ -193,11 +193,11 @@ IF( NOT "${CMAKE_VERSION}" VERSION_LESS "2.8.4" )
         ENDIF()
 
         CONFIGURE_FILE(
-            "CMakeInstallDependencies.cmake.in"
-            "${CMAKE_CURRENT_BINARY_DIR}/CMakeInstallDependencies.cmake"
-            @ONLY
+                "CMakeInstallDependencies.cmake.in"
+                "${CMAKE_CURRENT_BINARY_DIR}/CMakeInstallDependencies.cmake"
+                @ONLY
         )
         INSTALL(
-            SCRIPT "${CMAKE_CURRENT_BINARY_DIR}/CMakeInstallDependencies.cmake"
+                SCRIPT "${CMAKE_CURRENT_BINARY_DIR}/CMakeInstallDependencies.cmake"
         )
 ENDIF()
