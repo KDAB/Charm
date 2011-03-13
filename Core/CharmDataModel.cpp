@@ -26,8 +26,8 @@ void CharmDataModel::stateChanged( State previous, State next )
 {
     if ( previous == Connected && next == Disconnecting ) {
         Q_FOREACH( EventId id, m_activeEventIds ) {
-            Event& event = findEvent( id );
-            Task& task = findTask( event.taskId() );
+            const Event& event = findEvent( id );
+            const Task& task = findTask( event.taskId() );
             Q_ASSERT( task.isValid() );
             endEventRequested( task );
         }
@@ -65,7 +65,7 @@ void CharmDataModel::setAllTasks( const TaskList& tasks )
     // fill the tasks into the map to TaskTreeItems
     for ( int i = 0; i < tasks.size(); ++i )
     {
-        TaskTreeItem item( tasks[i], &m_rootItem );
+        const TaskTreeItem item( tasks[i], &m_rootItem );
         Q_ASSERT( ! taskExists( tasks[i].id() ) ); // the tasks form a tree and have unique task ids
         m_tasks[ tasks[i].id() ] = item;
     }
@@ -98,12 +98,12 @@ void CharmDataModel::addTask( const Task& task )
             adapter->taskAboutToBeAdded( parent.task().id(),
                                          parent.childCount() );
 
-        TaskTreeItem item ( task );
+        const TaskTreeItem item ( task );
         m_tasks[ task.id() ] = item;
 
         // the item in the map has a different address, let's find it:
         Q_ASSERT( taskExists( task.id() ) ); // we just put it in
-        TaskTreeItem::Map::iterator it = m_tasks.find( task.id() );
+        const TaskTreeItem::Map::iterator it = m_tasks.find( task.id() );
         it->second.makeChildOf( parentItem( task ) );
 
         determineTaskPaddingLength();
@@ -123,8 +123,8 @@ void CharmDataModel::modifyTask( const Task& task )
               "Task to modify has to exist" );
 
     if ( it != m_tasks.end() ) {
-        TaskId oldParentId = it->second.task().parent();
-        bool parentChanged = task.parent() != oldParentId;
+        const TaskId oldParentId = it->second.task().parent();
+        const bool parentChanged = task.parent() != oldParentId;
 
         if ( parentChanged ) {
             Q_FOREACH( CharmDataModelAdapterInterface* adapter, m_adapters )
@@ -155,7 +155,7 @@ void CharmDataModel::deleteTask( const Task& task )
     Q_FOREACH( CharmDataModelAdapterInterface* adapter, m_adapters )
         adapter->taskAboutToBeDeleted( task.id() );
 
-    TaskTreeItem::Map::iterator it = m_tasks.find( task.id() );
+    const TaskTreeItem::Map::iterator it = m_tasks.find( task.id() );
     if ( it != m_tasks.end() ) {
         TaskTreeItem tmpParent;
         it->second.makeChildOf( tmpParent );
@@ -212,7 +212,7 @@ void CharmDataModel::modifyEvent( const Event& newEvent )
     Q_ASSERT_X( eventExists( newEvent.id() ), "CharmDataModel::modifyEvent",
                 "Event to modify has to exist" );
 
-    Event oldEvent = eventForId( newEvent.id() );
+    const Event oldEvent = eventForId( newEvent.id() );
 
     m_events[ newEvent.id() ] = newEvent;
 
@@ -230,7 +230,7 @@ void CharmDataModel::deleteEvent( const Event& event )
     Q_FOREACH( CharmDataModelAdapterInterface* adapter, m_adapters )
         adapter->eventAboutToBeDeleted( event.id() );
 
-    EventMap::iterator it = m_events.find( event.id() );
+    const EventMap::iterator it = m_events.find( event.id() );
     if ( it != m_events.end() )
         m_events.erase( it );
 
@@ -271,14 +271,14 @@ TaskList CharmDataModel::getAllTasks() const
 
 Task& CharmDataModel::findTask( TaskId id )
 {   // in this (private) method, the task has to exist
-    TaskTreeItem::Map::iterator it = m_tasks.find( id );
+    const TaskTreeItem::Map::iterator it = m_tasks.find( id );
     Q_ASSERT( it != m_tasks.end() );
     return it->second.task();
 }
 
 const Event& CharmDataModel::eventForId( EventId id ) const
 {
-    static Event InvalidEvent;
+    static const Event InvalidEvent;
     EventMap::const_iterator it = m_events.find( id );
     if ( it != m_events.end() ) {
         return it->second;
@@ -290,7 +290,7 @@ const Event& CharmDataModel::eventForId( EventId id ) const
 Event& CharmDataModel::findEvent( int id )
 {
     // in this method, the event has to exist
-    EventMap::iterator it = m_events.find( id );
+    const EventMap::iterator it = m_events.find( id );
     Q_ASSERT( it != m_events.end() );
     return it->second;
 }
