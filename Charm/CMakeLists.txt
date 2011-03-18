@@ -203,7 +203,9 @@ IF( NOT "${CMAKE_VERSION}" VERSION_LESS "2.8.4" )
                 "${CMAKE_CURRENT_BINARY_DIR}/CMakeInstallDependencies.cmake"
                 @ONLY
         )
-        INSTALL(
-                SCRIPT "${CMAKE_CURRENT_BINARY_DIR}/CMakeInstallDependencies.cmake"
-        )
+        IF (APPLE OR WIN32)
+                INSTALL(
+                        SCRIPT "${CMAKE_CURRENT_BINARY_DIR}/CMakeInstallDependencies.cmake"
+                )
+        ENDIF()
 ENDIF()
