@@ -12,6 +12,7 @@
 #include <QAction>
 #include <QSettings>
 #include <QMetaType>
+#include <QMenuBar>
 #include <QMessageBox>
 #include <QSessionManager>
 #include <QDesktopServices>
@@ -138,7 +139,7 @@ Application::Application(int& argc, char** argv)
 #ifdef Q_WS_MAC
     m_dockMenu.addSeparator();
     m_dockMenu.addMenu( m_timeTracker.menu() );
-    qt_mac_set_dock_menu( &m_dockMenu);
+    qt_mac_set_dock_menu( &m_dockMenu );
     QCoreApplication::setAttribute( Qt::AA_DontShowIconsInMenus );
 #else
     m_systrayContextMenu.addSeparator();
@@ -204,9 +205,9 @@ Application::~Application()
 {
 }
 
-QMenu* Application::createWindowMenu()
+void Application::createWindowMenu( QMenuBar *menuBar )
 {
-    QMenu* menu = new QMenu();
+    QMenu* menu = new QMenu( menuBar );
     menu->setTitle( tr( "Window" ) );
     Q_FOREACH( CharmWindow* window, m_windows ) {
         menu->addAction( window->showHideAction() );
@@ -214,13 +215,12 @@ QMenu* Application::createWindowMenu()
     menu->addSeparator();
     menu->addAction( &m_actionReporting );
     menu->addAction( &m_actionPreferences );
-
-    return menu;
+    menuBar->addMenu( menu );
 }
 
-QMenu* Application::createFileMenu()
+void Application::createFileMenu( QMenuBar *menuBar )
 {
-    QMenu* menu = new QMenu();
+    QMenu* menu = new QMenu( menuBar );
     menu->setTitle ( tr( "File" ) );
     menu->addAction( &m_actionExportToXml );
     menu->addAction( &m_actionImportFromXml );
@@ -228,15 +228,15 @@ QMenu* Application::createFileMenu()
     menu->addAction( &m_actionImportTasks );
     menu->addSeparator();
     menu->addAction( &m_actionQuit );
-    return menu;
+    menuBar->addMenu( menu );
 }
 
-QMenu* Application::createHelpMenu()
+void Application::createHelpMenu( QMenuBar *menuBar )
 {
-    QMenu* menu = new QMenu();
+    QMenu* menu = new QMenu( menuBar );
     menu->setTitle( tr( "Help" ) );
     menu->addAction( &m_actionAboutDialog );
-    return menu;
+    menuBar->addMenu( menu );
 }
 
 void Application::setState(State state)

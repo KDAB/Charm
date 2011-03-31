@@ -39,7 +39,7 @@ WTSConfigurationPage::WTSConfigurationPage( ReportDialog* parent )
     m_ui->comboBoxWeek->setCurrentIndex( 1 );
     slotCheckboxSubtasksOnlyChecked( m_ui->checkBoxSubTasksOnly->isChecked() );
 
-    new DateEntrySyncer( m_ui->spinBoxWeek, m_ui->spinBoxYear, m_ui->dateEditDay );
+    new DateEntrySyncer( m_ui->spinBoxWeek, m_ui->spinBoxYear, m_ui->dateEditDay, 1, this );
 
     QTimer::singleShot( 0, this, SLOT( slotDelayedInitialization() ) );
 }

@@ -51,6 +51,11 @@ ActivityReportConfigurationPage::ActivityReportConfigurationPage( ReportDialog* 
     QTimer::singleShot( 0, this, SLOT( slotDelayedInitialization() ) );
 }
 
+ActivityReportConfigurationPage::~ActivityReportConfigurationPage()
+{
+    delete m_ui; m_ui = 0;
+}
+
 QString ActivityReportConfigurationPage::name()
 {
     return QObject::tr( "Activity Report" );

@@ -15,7 +15,7 @@ class ReportPreviewWindow : public QDialog
 
 public:
     explicit ReportPreviewWindow( QWidget* parent = 0 );
-    ~ReportPreviewWindow();
+    virtual ~ReportPreviewWindow();
 
 protected:
     void setDocument( const QTextDocument* document );

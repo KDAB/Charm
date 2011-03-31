@@ -80,9 +80,9 @@ public:
 
     State state() const;
 
-    QMenu* createWindowMenu();
-    QMenu* createFileMenu();
-    QMenu* createHelpMenu();
+    void createWindowMenu( QMenuBar *menuBar );
+    void createFileMenu( QMenuBar *menuBar );
+    void createHelpMenu( QMenuBar *menuBar );
 
     /** The main view is the window responsible for managing state during command execution.
      * It is an internal concept, not a notion for the end user. */

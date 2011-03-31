@@ -17,6 +17,7 @@ class ActivityReportConfigurationPage : public ReportConfigurationPage
 
 public:
     explicit ActivityReportConfigurationPage( ReportDialog* parent );
+    ~ActivityReportConfigurationPage();
 
     QDialog* makeReportPreviewDialog( QWidget* parent );
     QString name();
