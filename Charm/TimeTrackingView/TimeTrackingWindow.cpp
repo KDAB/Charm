@@ -158,8 +158,13 @@ void TimeTrackingWindow::slotSelectTasksToShow()
     // first, we select tasks that most recently where active
     //
     // find this weeks time span, and retrieve the events matching:
-    const NamedTimeSpan thisWeek = Application::instance().timeSpans().thisWeek();
-    const EventIdList eventIds = DATAMODEL->eventsThatStartInTimeFrame( thisWeek.timespan );
+    NamedTimeSpan week = Application::instance().timeSpans().thisWeek();
+    EventIdList eventIds = DATAMODEL->eventsThatStartInTimeFrame( week.timespan );
+    if (eventIds.isEmpty()) {
+        // If we don't have any events for this week, let's look at last week
+        week = Application::instance().timeSpans().lastWeek();
+        eventIds = DATAMODEL->eventsThatStartInTimeFrame( week.timespan );
+    }
     // prepare a list of unique task ids used within the time span:
     TaskIdList taskIds, uniqueTaskIds; // the list of tasks to show
     EventList events;
