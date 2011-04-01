@@ -131,13 +131,8 @@ IF( APPLE )
 
         SET( RESOURCES "${CMAKE_CURRENT_BINARY_DIR}/Charm.app/Contents/Resources"	)
         SET( ICON "${ICONS_DIR}/${MACOSX_BUNDLE_ICON_FILE}" )
-        EXECUTE_PROCESS(
-                COMMAND	${CMAKE_COMMAND} -E make_directory ${RESOURCES}
-        )
-        EXECUTE_PROCESS(
-                COMMAND	${CMAKE_COMMAND} -E copy_if_different ${ICON} ${RESOURCES}
-        )
-
+        FILE( MAKE_DIRECTORY ${RESOURCES} )
+        FILE( COPY ${ICON} DESTINATION ${RESOURCES} )
 ENDIF()
 
 IF( MSVC )
@@ -162,6 +157,15 @@ IF( UNIX AND NOT APPLE )
 ENDIF()
 
 INSTALL( TARGETS Charm DESTINATION ${BIN_INSTALL_DIR} )
+IF( APPLE )
+        SET( EXECUTABLE Charm.app )
+ELSE()
+        SET( EXECUTABLE Charm${CMAKE_EXECUTABLE_SUFFIX} )
+ENDIF()
+
+EXECUTE_PROCESS(
+        COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_CURRENT_BINARY_DIR}/${EXECUTABLE} ${Charm_BINARY_DIR}/${EXECUTABLE}
+)
 
 # Only support CPack packaging on newer versions of CMake.
 IF( NOT "${CMAKE_VERSION}" VERSION_LESS "2.8.4" )
@@ -186,11 +190,9 @@ IF( NOT "${CMAKE_VERSION}" VERSION_LESS "2.8.4" )
         INCLUDE( InstallRequiredSystemLibraries )
 
         IF( APPLE )
-                SET( EXECUTABLE Charm.app )
                 SET( PLUGINS_DIR_ONLY PlugIns )
                 SET( PLUGINS_DIR ${EXECUTABLE}/Contents/${PLUGINS_DIR_ONLY} )
         ELSE()
-                SET( EXECUTABLE Charm${CMAKE_EXECUTABLE_SUFFIX} )
                 SET( PLUGINS_DIR plugins )
         ENDIF()
 
