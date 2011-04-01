@@ -5,7 +5,6 @@
 #include <QShortcut>
 #include <QKeySequence>
 #include <QToolButton>
-#include <QToolBar>
 
 #include <Core/CharmCommand.h>
 #include <Core/CharmConstants.h>
@@ -179,18 +178,9 @@ void CharmWindow::showHideView()
 
 void CharmWindow::configurationChanged()
 {
-    bool onMac = false;
-#ifdef Q_WS_MAC
-    onMac = true;
-#endif
-    foreach(QToolButton *button, findChildren<QToolButton *>())
-        if ( onMac && unifiedTitleAndToolBarOnMac() && toolBar()
-             && CONFIGURATION.toolButtonStyle == Qt::ToolButtonFollowStyle
-             && toolBar() == qobject_cast<QToolBar*>( button->parent() ) )
-            button->setToolButtonStyle( Qt::ToolButtonTextUnderIcon );
-        else
-            button->setToolButtonStyle( CONFIGURATION.toolButtonStyle );
-
+    const QList<QToolButton*> buttons = findChildren<QToolButton *>();
+    std::for_each( buttons.begin(), buttons.end(),
+                   std::bind2nd( std::mem_fun( &QToolButton::setToolButtonStyle ), CONFIGURATION.toolButtonStyle ) );
 }
 
 void CharmWindow::saveGuiState()
