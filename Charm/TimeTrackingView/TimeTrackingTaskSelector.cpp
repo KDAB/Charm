@@ -69,7 +69,7 @@ TimeTrackingTaskSelector::TimeTrackingTaskSelector(QToolBar* toolBar, QWidget *p
     , m_editCommentButton( new QToolButton( this ) )
     , m_editCommentAction( new QAction( this ) )
     , m_taskSelectorButton( new QToolButton( this ) )
-    , m_menu( new QMenu( tr( "Start Task" ), m_taskSelectorButton ) )
+    , m_menu( new QMenu( tr( "Start Task" ), this ) )
     , m_selectedTask( 0 )
     , m_manuallySelectedTask( 0 )
     , m_taskManuallySelected( false )
@@ -96,15 +96,13 @@ TimeTrackingTaskSelector::TimeTrackingTaskSelector(QToolBar* toolBar, QWidget *p
 
     m_taskSelectorButton->setPopupMode( QToolButton::InstantPopup );
     m_taskSelectorButton->setMenu( m_menu );
-    m_taskSelectorButton->setText( tr( "Select Task" ) );
+    m_taskSelectorButton->setText( m_menu->title() );
 }
 
 void TimeTrackingTaskSelector::populateEditMenu( QMenu* menu )
 {
     menu->addAction( m_stopGoAction );
     menu->addAction( m_editCommentAction );
-    menu->addSeparator();
-    menu->addMenu( m_menu );
 }
 
 QSize TimeTrackingTaskSelector::sizeHint() const
@@ -174,7 +172,7 @@ void TimeTrackingTaskSelector::populate( const QVector<WeeklySummary>& summaries
         m_menu->addAction( action );
     }
     // ... add action to select a task:
-    QAction* selectTaskAction = new QAction( tr( "Select Other Task..." ), m_menu );
+    QAction* selectTaskAction = new QAction( tr( "Start Other Task..." ), m_menu );
     connect( selectTaskAction, SIGNAL( triggered() ), SLOT( slotManuallySelectTask() ) );
     m_menu->addAction( selectTaskAction );
     // build a list of "interesting" tasks
@@ -230,7 +228,6 @@ void TimeTrackingTaskSelector::handleActiveEvents()
     } else {
         m_stopGoAction->setIcon( Data::goIcon() );
         m_stopGoAction->setText( tr( "Start" ) );
-        m_menu->setEnabled( true );
         if( m_selectedTask != 0 ) {
             const Task& task = DATAMODEL->getTask( m_selectedTask );
             m_stopGoAction->setEnabled( task.isCurrentlyValid() );
@@ -250,8 +247,7 @@ void TimeTrackingTaskSelector::slotActionSelected( QAction* action )
         handleActiveEvents();
 
         if ( taskId != m_previousTask
-                && !DATAMODEL->isTaskActive( taskId )
-                && !DATAMODEL->activeEvents().isEmpty() ) {
+                && !DATAMODEL->isTaskActive( taskId ) ) {
             if ( CONFIGURATION.oneEventAtATime )
                 emit stopEvents();
             m_previousTask = taskId;
