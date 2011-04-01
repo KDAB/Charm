@@ -5,7 +5,8 @@
         <file alias="clearfilter.png">Icons/edit-clear-locationbar-ltr.png</file>
         <file alias="active.png">Icons/arrow-right.png</file>
         <file alias="editor_locked.png">Icons/document-encrypt.png</file>
-        <file alias="new.png">Icons/document-new.png</file>
+        <file alias="newtask.png">Icons/document-new.png</file>
+        <file alias="newsubtask.png">Icons/document-properties.png</file>
         <file alias="quitcharm.png">Icons/application-exit.png</file>
         <file alias="editor_dirty.png">Icons/favorites.png</file>
         <file alias="charmicon.png">Icons/Charm-256x256.png</file>

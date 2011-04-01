@@ -13,6 +13,7 @@ public:
     static const QIcon& goIcon();
     static const QIcon& stopIcon();
     static const QIcon& newTaskIcon();
+    static const QIcon& newSubtaskIcon();
     static const QIcon& editTaskIcon();
     static const QIcon& deleteTaskIcon();
     static const QIcon& editEventIcon();

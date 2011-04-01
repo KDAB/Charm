@@ -41,17 +41,12 @@ public:
 public Q_SLOTS:
     /* reimpl */ void commitCommand( CharmCommand* );
 
-private Q_SLOTS:
-    void slotItemDoubleClicked( const QModelIndex& index );
-
 signals:
     // FIXME connect to MainWindow
     void saveConfiguration();
     void emitCommand( CharmCommand* );
 
 private slots:
-    void actionStartEvent();
-    void actionEndEvent();
     void actionNewTask();
     void actionNewSubTask();
     void actionEditTask();
@@ -75,8 +70,6 @@ private:
     void addTaskHelper( const Task& parent );
 
     TasksViewDelegate* m_delegate;
-    QAction m_actionStartEvent;
-    QAction m_actionEndEvent;
     QAction m_actionNewTask;
     QAction m_actionNewSubTask;
     QAction m_actionEditTask;

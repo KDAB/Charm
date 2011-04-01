@@ -38,8 +38,6 @@ TasksView::TasksView( QToolBar* toolBar, QWidget* parent )
     : QWidget( parent )
     // , ViewInterface()
     , m_delegate( new TasksViewDelegate( this ) )
-    , m_actionStartEvent( this )
-    , m_actionEndEvent( this )
     , m_actionNewTask( this )
     , m_actionNewSubTask( this )
     , m_actionEditTask( this )
@@ -62,35 +60,24 @@ TasksView::TasksView( QToolBar* toolBar, QWidget* parent )
     m_buttonClearFilter->setIcon( Data::clearFilterIcon() );
 
     // set up actions
-    // (no menu icons, please) m_actionAboutDialog.setIcon( Data::charmIcon() );
-    m_actionStartEvent.setIcon( Data::goIcon() );
-    m_actionStartEvent.setText( tr( "Start Task" ) );
-    m_actionStartEvent.setShortcut( Qt::CTRL + Qt::Key_Return );
-    toolBar->addAction( &m_actionStartEvent );
-    connect( &m_actionStartEvent, SIGNAL( triggered( bool ) ),
-             SLOT( actionStartEvent() ) );
-
-    m_actionEndEvent.setIcon( Data::stopIcon() );
-    m_actionEndEvent.setText( tr( "Stop Task" ) );
-    toolBar->addAction( &m_actionEndEvent );
-    connect( &m_actionEndEvent, SIGNAL( triggered( bool ) ),
-             SLOT( actionEndEvent() ) );
-
     m_actionNewTask.setText( tr( "New &Task" ) );
     m_actionNewTask.setShortcut( QKeySequence::New );
     m_actionNewTask.setIcon( Data::newTaskIcon() );
+    toolBar->addAction( &m_actionNewTask );
     connect( &m_actionNewTask, SIGNAL( triggered( bool ) ),
              SLOT( actionNewTask() ) );
 
     m_actionNewSubTask.setText( tr( "New &Subtask" ) );
     m_actionNewSubTask.setShortcut( Qt::META + Qt::Key_N );
-    m_actionNewSubTask.setIcon( Data::newTaskIcon() );
+    m_actionNewSubTask.setIcon( Data::newSubtaskIcon() );
+    toolBar->addAction( &m_actionNewSubTask );
     connect( &m_actionNewSubTask, SIGNAL( triggered( bool ) ),
              SLOT( actionNewSubTask() ) );
 
     m_actionEditTask.setText( tr( "Edit Task" ) );
     m_actionEditTask.setShortcut( Qt::CTRL + Qt::Key_E );
     m_actionEditTask.setIcon( Data::editTaskIcon() );
+    toolBar->addAction( &m_actionEditTask );
     connect( &m_actionEditTask, SIGNAL( triggered( bool ) ),
              SLOT( actionEditTask() ) );
 
@@ -102,6 +89,7 @@ TasksView::TasksView( QToolBar* toolBar, QWidget* parent )
 #endif
     m_actionDeleteTask.setShortcuts(deleteShortcuts);
     m_actionDeleteTask.setIcon( Data::deleteTaskIcon() );
+    toolBar->addAction( &m_actionDeleteTask );
     connect( &m_actionDeleteTask, SIGNAL( triggered( bool ) ),
              SLOT( actionDeleteTask() ) );
 
@@ -136,9 +124,6 @@ TasksView::TasksView( QToolBar* toolBar, QWidget* parent )
     connect( m_treeView, SIGNAL( customContextMenuRequested( const QPoint& ) ),
              SLOT( slotContextMenuRequested( const QPoint& ) ) );
 
-    connect( m_treeView, SIGNAL( doubleClicked( const QModelIndex& ) ),
-             SLOT( slotItemDoubleClicked( const QModelIndex& ) ) );
-
     // I hate doing this but the stupid default view sizeHints suck badly.
     setMinimumHeight( 200 );
 }
@@ -149,40 +134,10 @@ TasksView::~TasksView()
 
 void TasksView::populateEditMenu( QMenu* editMenu )
 {
-    editMenu->addAction( &m_actionStartEvent );
-    editMenu->addAction( &m_actionEndEvent );
-    editMenu->addSeparator();
     editMenu->addAction( &m_actionNewTask );
     editMenu->addAction( &m_actionNewSubTask );
     editMenu->addAction( &m_actionEditTask );
     editMenu->addAction( &m_actionDeleteTask );
-}
-
-void TasksView::actionStartEvent()
-{
-    ViewFilter* filter = Application::instance().model().taskModel();
-    Task task = selectedTask();
-    // respect configuration:
-    if ( CONFIGURATION.eventsInLeafsOnly && filter->taskHasChildren( task ) )
-        return;
-
-    // emit signal:
-    if ( task.isValid() )
-    {
-        CharmDataModel* model = MODEL.charmDataModel();
-        model->startEventRequested( task );
-    }
-}
-
-void TasksView::actionEndEvent()
-{
-    Task task = selectedTask();
-    // emit signal:
-    if ( task.isValid() )
-    {
-        CharmDataModel* model = MODEL.charmDataModel();
-        model->endEventRequested( task );
-    }
 }
 
 void TasksView::actionNewTask()
@@ -261,20 +216,13 @@ void TasksView::configureUi()
     const QItemSelectionModel* smodel = m_treeView->selectionModel();
     const QModelIndex current = smodel ? smodel->currentIndex() : QModelIndex();
     const ViewFilter* filter = Application::instance().model().taskModel();
-    const bool editing = m_delegate->isEditing();
     const bool selected = current.isValid();
     const Task task = selected ? filter->taskForIndex( current ) : Task();
-    const bool active = filter->taskIsActive( task );
-    const bool isCurrent = task.isCurrentlyValid();
     const bool hasChildren = filter->taskHasChildren( task );
-    const bool cannotStart = hasChildren && CONFIGURATION.eventsInLeafsOnly;
-    const bool cannotStop = m_delegate->isEditing();
 
     m_actionDeleteTask.setEnabled( selected && ! hasChildren );
     m_actionEditTask.setEnabled( selected );
     m_actionNewSubTask.setEnabled( selected );
-    m_actionStartEvent.setEnabled( selected && ! cannotStart && ! active && isCurrent && ! editing );
-    m_actionEndEvent.setEnabled( selected && active && ! cannotStop );
 }
 
  void TasksView::stateChanged( State previous )
@@ -436,10 +384,6 @@ void TasksView::configureUi()
  {
      // prepare the menu:
      QMenu menu( m_treeView );
-     menu.addAction( &m_actionStartEvent );
-     menu.addAction( &m_actionEndEvent );
-
-     menu.addSeparator();
      menu.addAction( &m_actionNewTask );
      menu.addAction( &m_actionNewSubTask );
      menu.addAction( &m_actionEditTask );
@@ -448,29 +392,6 @@ void TasksView::configureUi()
      configureUi();
 
      menu.exec( m_treeView->mapToGlobal( point ) );
- }
-
- void TasksView::slotItemDoubleClicked( const QModelIndex& index )
- {
-     ViewFilter* filter = Application::instance().model().taskModel();
-
-     if ( !index.isValid() ) return;
-     if ( index.column() == Column_TaskId ) {
-         Task task = filter->taskForIndex( index );
-         if ( CONFIGURATION.eventsInLeafsOnly && filter->taskHasChildren( task ) ) {
-             return;
-         }
-
-         CharmDataModel* model = MODEL.charmDataModel();
-         if ( filter->taskIsActive( task ) ) {
-             model->endEventRequested( task );
-         } else {
-             if( task.isCurrentlyValid() ) {
-                 model->startEventRequested( task );
-             }
-         }
-     }
-     configureUi();
  }
 
  void TasksView::commitCommand( CharmCommand* command )

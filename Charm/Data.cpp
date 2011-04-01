@@ -49,9 +49,17 @@ const QIcon& Data::stopIcon()
 
 const QIcon& Data::newTaskIcon()
 {
-	Q_ASSERT_X(!QPixmap(":/Charm/new.png").isNull(), "Data::newTaskIcon",
+	Q_ASSERT_X(!QPixmap(":/Charm/newtask.png").isNull(), "Data::newTaskIcon",
 			"Required resource not available");
-	static QIcon icon(QPixmap(":/Charm/new.png"));
+	static QIcon icon(QPixmap(":/Charm/newtask.png"));
+	return icon;
+}
+
+const QIcon& Data::newSubtaskIcon()
+{
+	Q_ASSERT_X(!QPixmap(":/Charm/newsubtask.png").isNull(), "Data::newSubtaskIcon",
+			"Required resource not available");
+	static QIcon icon(QPixmap(":/Charm/newsubtask.png"));
 	return icon;
 }
 
