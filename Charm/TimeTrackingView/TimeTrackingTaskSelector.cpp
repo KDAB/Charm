@@ -97,8 +97,6 @@ TimeTrackingTaskSelector::TimeTrackingTaskSelector(QToolBar* toolBar, QWidget *p
     m_taskSelectorButton->setPopupMode( QToolButton::InstantPopup );
     m_taskSelectorButton->setMenu( m_menu );
     m_taskSelectorButton->setText( tr( "Select Task" ) );
-    m_taskSelectorButton->installEventFilter( this );
-    m_menu->installEventFilter( this );
 }
 
 void TimeTrackingTaskSelector::populateEditMenu( QMenu* menu )
