@@ -1,22 +1,33 @@
-#ifndef MACAPPLICATION_H
-#define MACAPPLICATION_H
+#ifndef MACCOCOAAPPLICATION_H
+#define MACCOCOAAPPLICATION_H
 
-#include <QApplication>
+#include "Application.h"
 
-#include <QShortcut>
+class NSEvent;
+class objc_object;
 
-class MacApplication : public QApplication
+class MacApplication : public Application
 {
-Q_OBJECT
+    Q_OBJECT
 public:
-    explicit MacApplication( int& argc, char* argv[] );
+    MacApplication( int& argc, char* argv[] );
+    ~MacApplication();
+    // This method to be public due to lack of friend classes in Objective-C and
+    // the lack inheritance of Objective-C classes from C++ ones.
+    void dockIconClickEvent();
 
-protected:
+private slots:
+    void handleStateChange( State state ) const;
+
+private:
     static QList< QShortcut* > shortcuts( QWidget* parent );
     static QList< QShortcut* > activeShortcuts( const QKeySequence& seq, bool autorep, QWidget* parent = 0);
+    NSEvent* cocoaEventFilter( NSEvent* incomingEvent );
+    void setupCocoaEventHandler() const;
 
-signals:
-    void dockIconClicked();
+    objc_object* m_pool;
+    objc_object* m_eventMonitor;
+    objc_object* m_dockIconClickEventHandler;
 };
 
-#endif // MACAPPLICATION_H
+#endif

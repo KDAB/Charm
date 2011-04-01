@@ -4,6 +4,7 @@ SET(
         CharmApplication_SRCS
         CharmWindow.cpp
         Application.cpp
+        ApplicationFactory.cpp
         ViewHelpers.cpp
         TaskIdDialog.cpp
         Data.cpp
@@ -56,11 +57,7 @@ SET(
 SET(IDLEDETECTION_LIBS)
 IF( CHARM_IDLE_DETECTION )
     IF( APPLE )
-            IF( QT_MAC_USE_COCOA )
-                    LIST( APPEND CharmApplication_SRCS Idle/MacCocoaIdleDetector.mm )
-            ELSE()
-                    LIST( APPEND CharmApplication_SRCS Idle/MacCarbonIdleDetector.cpp )
-            ENDIF()
+            LIST( APPEND CharmApplication_SRCS Idle/MacIdleDetector.mm )
     ELSEIF( WIN32 )
             LIST( APPEND CharmApplication_SRCS Idle/WindowsIdleDetector.cpp )
     ELSEIF( UNIX )
@@ -78,14 +75,8 @@ IF( CHARM_IDLE_DETECTION )
 ENDIF()
 
 IF( APPLE )
-        LIST( APPEND CharmApplication_SRCS MacApplication.cpp )
-        IF( QT_MAC_USE_COCOA )
-                LIST( APPEND CharmApplication_SRCS MacCocoaApplication.mm )
-                SET( CMAKE_EXE_LINKER_FLAGS "-framework AppKit" )
-        ELSE()
-                LIST( APPEND CharmApplication_SRCS MacCarbonApplication.cpp )
-                SET( CMAKE_EXE_LINKER_FLAGS "-framework IOKit" )
-        ENDIF()
+        LIST( APPEND CharmApplication_SRCS MacApplication.mm )
+        SET( CMAKE_EXE_LINKER_FLAGS "-framework AppKit" )
 ENDIF()
 
 QT4_AUTOMOC( ${CharmApplication_SRCS} )

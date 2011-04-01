@@ -21,7 +21,6 @@
 #include <Core/SqLiteStorage.h>
 #include <CharmCMake.h>
 
-
 #include "ViewHelpers.h"
 #include "Data.h"
 #include "Application.h"
@@ -38,7 +37,8 @@ extern void qt_mac_set_dock_menu(QMenu *);
 #endif
 
 Application::Application(int& argc, char** argv)
-    : ApplicationBase( argc, argv )
+    : QApplication( argc, argv )
+    , m_closedWindow( 0 )
     , m_state(Constructed)
     , m_actionStopAllTasks( this )
     , m_actionQuit( this )
@@ -49,7 +49,6 @@ Application::Application(int& argc, char** argv)
     , m_actionImportTasks( this )
     , m_actionReporting( this )
     , m_idleDetector( 0 )
-    , m_closedWindow( 0 )
     , m_windows( QList<CharmWindow*> () << &m_tasksWindow << &m_eventWindow << &m_timeTracker )
     , m_timeTrackerHiddenFromSystrayToggle( false )
     , m_tasksWindowHiddenFromSystrayToggle( false )
@@ -117,10 +116,6 @@ Application::Application(int& argc, char** argv)
     m_trayIcon.setIcon( Data::charmTrayIcon() );
     m_trayIcon.show();
 
-#ifndef Q_WS_MAC
-    setWindowIcon( Data::charmIcon() );
-#endif
-
 #ifdef Q_WS_MAC
     m_dockMenu.addAction( &m_actionStopAllTasks );
     m_dockMenu.addSeparator();
@@ -176,10 +171,6 @@ Application::Application(int& argc, char** argv)
     m_actionReporting.setShortcut( Qt::CTRL + Qt::Key_R );
     connect( &m_actionReporting, SIGNAL( triggered() ),
              &m_tasksWindow, SLOT( slotReportDialog() ) );
-
-#ifdef Q_WS_MAC
-    connect( QApplication::instance(), SIGNAL( dockIconClicked() ), this, SLOT( slotOpenLastClosedWindow() ) );
-#endif
 
     // set up idle detection
     m_idleDetector = IdleDetector::createIdleDetector( this );
@@ -353,12 +344,6 @@ Application& Application::instance()
 
 void Application::enterStartingUpState()
 {
-#ifdef QT_MAC_USE_COCOA
-    // Need to setup the Cocoa event handler after the default Apple ones
-    // so can't be done in the MacCocoaApplication constructor.
-    setupCocoaEventHandler();
-#endif
-
     emit goToState( Configuring );
 }
 
@@ -667,14 +652,6 @@ CharmWindow& Application::mainView()
 TrayIcon& Application::trayIcon()
 {
     return m_trayIcon;
-}
-
-void Application::slotOpenLastClosedWindow()
-{
-    if( m_closedWindow == 0 )
-        return;
-    m_closedWindow->show();
-    m_closedWindow = 0;
 }
 
 void Application::slotCharmWindowVisibilityChanged( bool visible )

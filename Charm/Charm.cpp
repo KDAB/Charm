@@ -1,12 +1,13 @@
 #include <iostream>
 
+#include <QApplication>
 #include <QFile>
 #include <QMessageBox>
 #include <QtPlugin>
 #include <QSettings>
 #include <QString>
 
-#include "Application.h"
+#include "ApplicationFactory.h"
 #include "Core/CharmExceptions.h"
 #include "CharmCMake.h"
 
@@ -35,10 +36,10 @@ int main ( int argc, char** argv )
         QSettings::setPath( QSettings::IniFormat, QSettings::SystemScope, sys );
     }
 
-    Application app ( argc,  argv );
+    QApplication *app = ApplicationFactory::localApplication( argc, argv );
 
     try {
-        return app.exec();
+        return app->exec();
     } catch( CharmException& e ) {
         const QString msg( QObject::tr( "An application exception has occurred. Charm will be terminated. The error message was:\n"
                                        "%1\n"

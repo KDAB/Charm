@@ -12,16 +12,7 @@
 
 #include <QMenu>
 #include <QAction>
-
-#ifdef Q_WS_MAC
-#ifdef QT_MAC_USE_COCOA
-#include "MacCocoaApplication.h"
-#else
-#include "MacCarbonApplication.h"
-#endif
-#else
 #include <QApplication>
-#endif
 
 // this is an application, not a library:
 // no pimpling, and data members instead of forward declarations
@@ -43,17 +34,7 @@
 
 class IdleDetector;
 
-#ifdef Q_WS_MAC
-#ifdef QT_MAC_USE_COCOA
-typedef MacCocoaApplication ApplicationBase;
-#else
-typedef MacCarbonApplication ApplicationBase;
-#endif
-#else
-typedef QApplication ApplicationBase;
-#endif
-
-class Application : public ApplicationBase
+class Application : public QApplication
 {
     Q_OBJECT
 
@@ -108,12 +89,13 @@ private slots:
 //     void slotTimeTrackerVisibilityChanged( bool );
     void slotCurrentBackendStatusChanged( const QString& text );
     void slotMaybeIdle();
-
-    void slotOpenLastClosedWindow();
     void slotCharmWindowVisibilityChanged( bool visibility );
 
 signals:
     void goToState( State state );
+
+protected:
+    CharmWindow* m_closedWindow;
 
 private:
     QString titleString( const QString& text ) const;
@@ -148,7 +130,6 @@ private:
     EventWindow m_eventWindow;
     TimeTrackingWindow m_timeTracker;
     IdleDetector* m_idleDetector;
-    CharmWindow* m_closedWindow;
     const QList<CharmWindow*> m_windows;
     bool m_timeTrackerHiddenFromSystrayToggle;
     bool m_tasksWindowHiddenFromSystrayToggle;

@@ -4,24 +4,9 @@
 #include "CharmCMake.h"
 
 #include "IdleDetector.h"
-
-#ifdef CHARM_IDLE_DETECTION
-#ifdef Q_WS_MAC
-#ifdef QT_MAC_USE_COCOA
-#include "MacCocoaIdleDetector.h"
-#else
-#include "MacCarbonIdleDetector.h"
-#endif
-#endif
-
-#ifdef Q_WS_WIN
+#include "MacIdleDetector.h"
 #include "WindowsIdleDetector.h"
-#endif
-
-#if defined Q_WS_X11 && defined CHARM_IDLE_DETECTION_AVAILABLE_X11
 #include "X11IdleDetector.h"
-#endif
-#endif
 
 #ifdef NDEBUG
     #define IDLE_TIME 10
@@ -39,11 +24,7 @@ IdleDetector* IdleDetector::createIdleDetector( QObject* parent )
 {
 #ifdef CHARM_IDLE_DETECTION
 #ifdef Q_WS_MAC
-#ifdef QT_MAC_USE_COCOA
-    return new MacCocoaIdleDetector( parent );
-#else
-    return new MacCarbonIdleDetector( parent );
-#endif
+    return new MacIdleDetector( parent );
 #endif
 
 #ifdef Q_WS_WIN

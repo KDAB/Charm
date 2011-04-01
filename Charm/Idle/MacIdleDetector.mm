@@ -1,20 +1,20 @@
 #include <Cocoa/Cocoa.h>
 
-#include "MacCocoaIdleDetector.h"
+#include "MacIdleDetector.h"
 
 #include <QDateTime>
 
-@interface MacCocoaIdleObserver : NSObject
+@interface MacIdleObserver : NSObject
 {
 @public
-    MacCocoaIdleDetector* cocoaIdleDetector;
+    MacIdleDetector* idleDetector;
     QDateTime idleStartTime;
 }
 - (id)init;
 - (void)dealloc;
 @end
 
-@implementation MacCocoaIdleObserver
+@implementation MacIdleObserver
 - (id)init {
     if ((self = [super init])) {
         NSNotificationCenter* notificationCenter = [[NSWorkspace sharedWorkspace] notificationCenter];
@@ -52,24 +52,24 @@
 }
 
 - (void)receiveWakeNotification:(NSNotification*)notification {
-    if (cocoaIdleDetector)
-        cocoaIdleDetector->idle();
+    if (idleDetector)
+        idleDetector->idle();
 }
 @end
 
-MacCocoaIdleDetector::MacCocoaIdleDetector( QObject* parent )
+MacIdleDetector::MacIdleDetector( QObject* parent )
     : IdleDetector( parent )
-    , m_observer( [[MacCocoaIdleObserver alloc] init] )
+    , m_observer( [[MacIdleObserver alloc] init] )
 {
-    MacCocoaIdleObserver* observer =
-            static_cast<MacCocoaIdleObserver*>(m_observer);
-    observer->cocoaIdleDetector = this;
+    MacIdleObserver* observer =
+            static_cast<MacIdleObserver*>(m_observer);
+    observer->idleDetector = this;
 }
 
-void MacCocoaIdleDetector::idle()
+void MacIdleDetector::idle()
 {
-    MacCocoaIdleObserver* observer = static_cast<MacCocoaIdleObserver*>(m_observer);
+    MacIdleObserver* observer = static_cast<MacIdleObserver*>(m_observer);
     emit maybeIdle( IdlePeriod( observer->idleStartTime, QDateTime::currentDateTime() ) );
 }
 
-#include "MacCocoaIdleDetector.moc"
+#include "MacIdleDetector.moc"

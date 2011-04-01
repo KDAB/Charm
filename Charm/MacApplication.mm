@@ -1,30 +1,29 @@
 #include <Cocoa/Cocoa.h>
 
-#include "MacCocoaApplication.h"
+#include "MacApplication.h"
 
+#include <QShortcut>
 #include <QShortcutEvent>
 
 @interface DockIconClickEventHandler : NSObject
 {
 @public
-    MacCocoaApplication* macCocoaApplication;
+    MacApplication* macApplication;
 }
 - (void)handleDockClickEvent:(NSAppleEventDescriptor*)event withReplyEvent:(NSAppleEventDescriptor*)replyEvent;
 @end
 
 @implementation DockIconClickEventHandler
 - (void)handleDockClickEvent:(NSAppleEventDescriptor*)event withReplyEvent:(NSAppleEventDescriptor*)replyEvent {
-    if (macCocoaApplication)
-        macCocoaApplication->dockIconClickEvent();
+    if (macApplication)
+        macApplication->dockIconClickEvent();
 }
 @end
 
-MacCocoaApplication::MacCocoaApplication( int& argc, char* argv[] )
-    : MacApplication( argc, argv ),
+MacApplication::MacApplication( int& argc, char* argv[] )
+    : Application( argc, argv ), m_pool([[NSAutoreleasePool alloc] init]),
     m_dockIconClickEventHandler([[DockIconClickEventHandler alloc] init])
 {
-    [[NSAutoreleasePool alloc] init];
-
     m_eventMonitor = [NSEvent
                       addLocalMonitorForEventsMatchingMask:NSKeyDownMask
                       handler:^(NSEvent *incomingEvent) {
@@ -33,15 +32,26 @@ MacCocoaApplication::MacCocoaApplication( int& argc, char* argv[] )
 
     DockIconClickEventHandler* dockIconClickEventHandler =
             static_cast<DockIconClickEventHandler*>(m_dockIconClickEventHandler);
-    dockIconClickEventHandler->macCocoaApplication = this;
+    dockIconClickEventHandler->macApplication = this;
+
+    setWindowIcon( QIcon() );
+    connect(this, SIGNAL(goToState(State)),
+            this, SLOT(handleStateChange(State)));
 }
 
-MacCocoaApplication::~MacCocoaApplication()
+MacApplication::~MacApplication()
 {
     [NSEvent removeMonitor:m_eventMonitor];
+    [m_pool drain];
 }
 
-void MacCocoaApplication::setupCocoaEventHandler() const
+void MacApplication::handleStateChange(State state) const
+{
+    if (state == Configuring)
+        setupCocoaEventHandler();
+}
+
+void MacApplication::setupCocoaEventHandler() const
 {
     // TODO: This apparently uses a legacy API and we should be using the
     // applicationShouldHandleReopen:hasVisibleWindows: method on
@@ -54,12 +64,15 @@ void MacCocoaApplication::setupCocoaEventHandler() const
      andEventID:kAEReopenApplication];
 }
 
-void MacCocoaApplication::dockIconClickEvent()
+void MacApplication::dockIconClickEvent()
 {
-    emit dockIconClicked();
+    if( m_closedWindow == 0 )
+        return;
+    m_closedWindow->show();
+    m_closedWindow = 0;
 }
 
-NSEvent* MacCocoaApplication::cocoaEventFilter( NSEvent* incomingEvent )
+NSEvent* MacApplication::cocoaEventFilter( NSEvent* incomingEvent )
 {
     NSUInteger modifierFlags = [incomingEvent modifierFlags];
 
@@ -91,4 +104,37 @@ NSEvent* MacCocoaApplication::cocoaEventFilter( NSEvent* incomingEvent )
     return incomingEvent;
 }
 
-#include "MacCocoaApplication.moc"
+QList< QShortcut* > MacApplication::shortcuts( QWidget* parent )
+{
+    QList< QShortcut* > result;
+    if( parent == 0 )
+    {
+        const QWidgetList widgets = QApplication::topLevelWidgets();
+        for( QWidgetList::const_iterator it = widgets.begin(); it != widgets.end(); ++it )
+            result += shortcuts( *it );
+    }
+    else
+    {
+        const QList< QShortcut* > cuts = parent->findChildren< QShortcut* >();
+        for( QList< QShortcut* >::const_iterator it = cuts.begin(); it != cuts.end(); ++it )
+            if( (*it)->context() == Qt::ApplicationShortcut )
+                result.push_back( *it );
+
+        const QList< QWidget* > children = parent->findChildren< QWidget* >();
+        for( QList< QWidget* >::const_iterator it = children.begin(); it != children.end(); ++it )
+            result += shortcuts( *it );
+    }
+    return result;
+}
+
+QList< QShortcut* > MacApplication::activeShortcuts( const QKeySequence& seq, bool autorep, QWidget* parent )
+{
+    const QList< QShortcut* > cuts = shortcuts( parent );
+    QList< QShortcut* > result;
+    for( QList< QShortcut* >::const_iterator it = cuts.begin(); it != cuts.end(); ++it )
+        if( (*it)->context() == Qt::ApplicationShortcut && ((*it)->autoRepeat() == autorep || !autorep ) && (*it)->isEnabled() && (*it)->key().matches( seq ) )
+            result.push_back( *it );
+    return result;
+}
+
+#include "MacApplication.moc"
