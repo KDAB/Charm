@@ -127,33 +127,18 @@ QMenu* TimeTrackingTaskSelector::menu() const
     return m_menu;
 }
 
-/** A helper function that takes an entry from the fromList if it is not empty, checks if it is
- * already contained in the list of visited tasks, and if not, prepends it into the targetList,
- * and creates a menu action.
- * All parameters may be modified.
- */
-void insertHelper( QMenu* menu, TaskIdList& targetList, QMap<TaskId, QAction*>& visitedTasks, TaskIdList& fromList )
-{
-    if( ! fromList.isEmpty() ) {
-        TaskId id = fromList.takeFirst();
-        if( ! visitedTasks.contains( id ) ) {
-            QAction* action = new QAction( DATAMODEL->taskIdAndNameString( id ), menu );
-            action->setProperty( CUSTOM_TASK_PROPERTY_NAME, QVariant::fromValue( id ) );
-            menu->addAction( action );
-            visitedTasks.insert( id, action );
-            targetList.append( id );
-        }
-    }
-}
-
 void TimeTrackingTaskSelector::populate( const QVector<WeeklySummary>& summaries )
 {
+    // Don't repopulate while the menu is displayed; very ugly and it can wait.
+    if (m_menu->isActiveWindow())
+        return;
+
     m_menu->clear();
-    QMap<TaskId, QAction*> visitedTasks;
+    QMap<TaskId, QAction*> addedTasks;
     bool addedAction = false;
     Q_FOREACH( const WeeklySummary& s, summaries ) {
         QAction* action = new QAction( DATAMODEL->taskIdAndNameString( s.task ), m_menu );
-        visitedTasks.insert( s.task, action );
+        addedTasks.insert( s.task, action );
         action->setProperty( CUSTOM_TASK_PROPERTY_NAME, QVariant::fromValue( s.task ) );
         Q_ASSERT( action->property( CUSTOM_TASK_PROPERTY_NAME ).value<TaskId>() == s.task );
         m_menu->addAction( action );
@@ -164,10 +149,10 @@ void TimeTrackingTaskSelector::populate( const QVector<WeeklySummary>& summaries
         m_menu->addSeparator();
         addedAction = false;
     }
-    if( m_manuallySelectedTask > 0 && ! visitedTasks.contains( m_manuallySelectedTask )) {
+    if( m_manuallySelectedTask > 0 && ! addedTasks.contains( m_manuallySelectedTask )) {
         const Task& task = DATAMODEL->getTask( m_manuallySelectedTask );
         QAction* action = new QAction( DATAMODEL->taskIdAndNameString( task.id() ), m_menu );
-        visitedTasks.insert( m_manuallySelectedTask, action );
+        addedTasks.insert( m_manuallySelectedTask, action );
         action->setProperty( CUSTOM_TASK_PROPERTY_NAME, QVariant::fromValue( m_manuallySelectedTask ) );
         m_menu->addAction( action );
     }
@@ -175,26 +160,33 @@ void TimeTrackingTaskSelector::populate( const QVector<WeeklySummary>& summaries
     QAction* selectTaskAction = new QAction( tr( "Start Other Task..." ), m_menu );
     connect( selectTaskAction, SIGNAL( triggered() ), SLOT( slotManuallySelectTask() ) );
     m_menu->addAction( selectTaskAction );
-    // build a list of "interesting" tasks
-    TaskIdList mru = DATAMODEL->mostRecentlyUsedTasks();
-    TaskIdList mfu = DATAMODEL->mostFrequentlyUsedTasks();
-    // ... merge the two lists into one interesting one:
-    // add to menu
-    if ( addedAction ) {
-        m_menu->addSeparator();
-        addedAction = false;
+    m_menu->addSeparator();
+
+    TaskIdList interestingTasks;
+    interestingTasks += DATAMODEL->mostRecentlyUsedTasks();
+    interestingTasks += DATAMODEL->mostFrequentlyUsedTasks();
+
+    TaskIdList interestingTasksToAdd;
+    while( interestingTasksToAdd.count() < 10 ) { // arbitrary hardcoded number warning
+        if( interestingTasks.isEmpty() )
+            break;
+
+        TaskId id = interestingTasks.takeFirst();
+        if( !addedTasks.contains( id ) )
+            interestingTasksToAdd.append( id );
     }
-    TaskIdList merged;
-    while( merged.count() < 15 ) { // arbitrary hardcoded number warning
-        insertHelper( m_menu, merged, visitedTasks, mru );
-        insertHelper( m_menu, merged, visitedTasks, mru );
-        insertHelper( m_menu, merged, visitedTasks, mfu );
-        addedAction = true;
-        if( mru.isEmpty() && mfu.isEmpty() ) break;
+
+    qSort( interestingTasksToAdd.begin(), interestingTasksToAdd.end() );
+    foreach( TaskId id, interestingTasksToAdd ) {
+        QAction* action = new QAction( DATAMODEL->taskIdAndNameString( id ), m_menu );
+        action->setProperty( CUSTOM_TASK_PROPERTY_NAME, QVariant::fromValue( id ) );
+        m_menu->addAction( action );
+        addedTasks.insert( id, action );
     }
+
     // finally, select the task that the user has just selected
     if( m_taskManuallySelected ) {
-        QAction* action = visitedTasks.value( m_manuallySelectedTask );
+        QAction* action = addedTasks.value( m_manuallySelectedTask );
         Q_ASSERT_X( action != 0, Q_FUNC_INFO, "the manually selected task should always be in the menu" );
         // this sets the correct text on the button
         slotActionSelected( action );
