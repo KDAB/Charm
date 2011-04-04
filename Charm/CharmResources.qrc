@@ -42,5 +42,6 @@
         <file alias="charmtraymac.png">Icons/tray/charmtraymac.png</file>
         <file alias="charmtray16.png">Icons/tray/charmtray16.png</file>
         <file alias="charmtray22.png">Icons/tray/charmtray22.png</file>
+        <file alias="createreport.png">Icons/document-export.png</file>
     </qresource>
 </RCC>

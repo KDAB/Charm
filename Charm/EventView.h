@@ -72,6 +72,7 @@ private slots:
     void slotEventDeactivated( EventId );
     void slotUpdateTotal();
     void slotUpdateCurrent();
+    void slotCreateTimeSheet();
 
 private:
     Event newSettings();
@@ -83,6 +84,7 @@ private:
     QAction m_actionNewEvent;
     QAction m_actionEditEvent;
     QAction m_actionDeleteEvent;
+    QAction m_actionCreateTimeSheet;
     QComboBox* m_comboBox;
     QLabel* m_labelTotal;
     QListView* m_listView;

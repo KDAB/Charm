@@ -26,6 +26,7 @@
 #include "Commands/CommandMakeEvent.h"
 #include "Commands/CommandModifyEvent.h"
 #include "Commands/CommandDeleteEvent.h"
+#include "Reports/WeeklyTimeSheet.h"
 
 EventView::EventView( QToolBar* toolBar, QWidget* parent )
     : QWidget( parent )
@@ -33,6 +34,7 @@ EventView::EventView( QToolBar* toolBar, QWidget* parent )
     , m_actionNewEvent( this )
     , m_actionEditEvent( this )
     , m_actionDeleteEvent( this )
+    , m_actionCreateTimeSheet( this )
     , m_comboBox( new QComboBox( this ) )
     , m_labelTotal( new QLabel( this ) )
     , m_listView( new QListView( this ) )
@@ -55,6 +57,8 @@ EventView::EventView( QToolBar* toolBar, QWidget* parent )
              SLOT( slotEditEvent() ) );
     connect( &m_actionDeleteEvent, SIGNAL( triggered() ),
              SLOT( slotDeleteEvent() ) );
+    connect( &m_actionCreateTimeSheet, SIGNAL( triggered() ),
+             SLOT( slotCreateTimeSheet() ) );
 //     connect( &m_commitTimer, SIGNAL( timeout() ),
 //              SLOT( slotCommitTimeout() ) );
 //     m_commitTimer.setSingleShot( true );
@@ -79,6 +83,10 @@ EventView::EventView( QToolBar* toolBar, QWidget* parent )
     m_actionDeleteEvent.setShortcuts(deleteShortcuts);
     m_actionDeleteEvent.setIcon( Data::deleteTaskIcon() );
     toolBar->addAction( &m_actionDeleteEvent );
+
+    m_actionCreateTimeSheet.setText( tr( "Create Time Sheet..." ) );
+    m_actionCreateTimeSheet.setIcon( Data::createReportIcon() );
+    toolBar->addAction( &m_actionCreateTimeSheet );
 
     // disable all actions, action state will be set when the current
     // item changes:
@@ -336,6 +344,16 @@ void EventView::slotUpdateCurrent()
         setCurrentEvent( event );
     }
     slotUpdateTotal();
+}
+
+void EventView::slotCreateTimeSheet()
+{
+    const int index = m_comboBox->currentIndex();
+    const TimeSpan span = m_timeSpans[index].timespan;
+    WeeklyTimeSheetReport *timeSheet = new WeeklyTimeSheetReport( this );
+    timeSheet->setReportProperties( span.first, span.second, 0, true );
+    timeSheet->exec();
+    // Deletes itself on close.
 }
 
 void EventView::slotUpdateTotal()

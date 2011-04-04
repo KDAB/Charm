@@ -87,6 +87,14 @@ const QIcon& Data::editEventIcon()
 	return icon;
 }
 
+const QIcon& Data::createReportIcon()
+{
+	Q_ASSERT_X(!QPixmap(":/Charm/createreport.png").isNull(), "Data::createReportIcon",
+			"Required resource not available");
+	static QIcon icon(QPixmap(":/Charm/createreport.png"));
+	return icon;
+}
+
 const QPixmap& Data::activePixmap()
 {
 	static QPixmap pixmap(":/Charm/active.png");

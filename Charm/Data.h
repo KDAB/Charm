@@ -19,6 +19,7 @@ public:
     static const QIcon& editEventIcon();
     static const QIcon& previousEventIcon();
     static const QIcon& nextEventIcon();
+    static const QIcon& createReportIcon();
     static const QPixmap& checkIcon();
     static const QPixmap& activePixmap();
     static const QIcon& quitCharmIcon();
