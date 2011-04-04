@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>593</width>
+    <height>258</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -49,14 +49,14 @@
      <item>
       <widget class="QPushButton" name="pushButtonSave">
        <property name="text">
-        <string>Save as &amp;XML...</string>
+        <string>Save As &amp;XML...</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="pushButtonSaveTotals">
        <property name="text">
-        <string>Save &amp;totals...</string>
+        <string>Save &amp;Totals...</string>
        </property>
       </widget>
      </item>
