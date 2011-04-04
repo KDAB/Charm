@@ -178,6 +178,8 @@ void TimeTrackingTaskSelector::populate( const QVector<WeeklySummary>& summaries
 
     qSort( interestingTasksToAdd.begin(), interestingTasksToAdd.end() );
     foreach( TaskId id, interestingTasksToAdd ) {
+        if( addedTasks.contains( id ) )
+            continue;
         QAction* action = new QAction( DATAMODEL->taskIdAndNameString( id ), m_menu );
         action->setProperty( CUSTOM_TASK_PROPERTY_NAME, QVariant::fromValue( id ) );
         m_menu->addAction( action );
