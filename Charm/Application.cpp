@@ -517,15 +517,17 @@ bool Application::configure()
         // FIXME maybe move to Configuration::loadDefaults
 
         const QString storageDatabaseDirectory = charmDataDir();
-        const QString storageDatabaseFile = "Charm.db";
+        const QString storageDatabaseFileRelease = "Charm.db";
         const QString storageDatabaseFileDebug = "Charm_debug.db";
-        const QString storageDatabase = storageDatabaseDirectory + storageDatabaseFile;
+        const QString storageDatabaseRelease = storageDatabaseDirectory + storageDatabaseFileRelease;
         const QString storageDatabaseDebug = storageDatabaseDirectory + storageDatabaseFileDebug;
+        QString storageDatabase;
 #ifdef NDEBUG
-        CONFIGURATION.localStorageDatabase = QDir::toNativeSeparators(storageDatabase);
+        storageDatabase = storageDatabaseRelease;
 #else
-        CONFIGURATION.localStorageDatabase = QDir::toNativeSeparators(storageDatabaseDebug);
+        storageDatabase = storageDatabaseDebug;
 #endif
+        CONFIGURATION.localStorageDatabase = QDir::toNativeSeparators(storageDatabase);
         ConfigurationDialog dialog(CONFIGURATION, &m_tasksWindow);
         if (dialog.exec())
         {
