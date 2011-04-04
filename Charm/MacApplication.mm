@@ -84,6 +84,11 @@ void MacApplication::dockIconClickEvent()
 {
     if( m_closedWindow == 0 )
         return;
+
+    foreach( CharmWindow* window, m_windows )
+        if (window->isVisible())
+            return;
+
     m_closedWindow->show();
     m_closedWindow = 0;
 }
