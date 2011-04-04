@@ -9,6 +9,8 @@ namespace Ui {
     class ReportPreviewWindow;
 }
 
+class QPushButton;
+
 class ReportPreviewWindow : public QDialog
 {
     Q_OBJECT
@@ -20,6 +22,8 @@ public:
 protected:
     void setDocument( const QTextDocument* document );
     QDomDocument createReportTemplate();
+    QPushButton* saveToXmlButton();
+    QPushButton* saveToTextButton();
 
 private slots:
     virtual void slotSaveToXml();

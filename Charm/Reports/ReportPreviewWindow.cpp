@@ -65,6 +65,16 @@ QDomDocument ReportPreviewWindow::createReportTemplate()
     return doc;
 }
 
+QPushButton* ReportPreviewWindow::saveToXmlButton()
+{
+    return m_ui->pushButtonSave;
+}
+
+QPushButton* ReportPreviewWindow::saveToTextButton()
+{
+    return m_ui->pushButtonSaveTotals;
+}
+
 void ReportPreviewWindow::slotSaveToXml()
 {
 }

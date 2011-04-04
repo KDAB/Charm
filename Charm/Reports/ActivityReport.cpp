@@ -190,6 +190,8 @@ QDialog* ActivityReportConfigurationPage::makeReportPreviewDialog( QWidget* pare
 ActivityReport::ActivityReport( QWidget* parent )
     : ReportPreviewWindow( parent )
 {
+    saveToXmlButton()->hide();
+    saveToTextButton()->hide();
 }
 
 ActivityReport::~ActivityReport()
