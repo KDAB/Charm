@@ -69,7 +69,7 @@ MacIdleDetector::MacIdleDetector( QObject* parent )
 void MacIdleDetector::idle()
 {
     MacIdleObserver* observer = static_cast<MacIdleObserver*>(m_observer);
-    emit maybeIdle( IdlePeriod( observer->idleStartTime, QDateTime::currentDateTime() ) );
+    maybeIdle( IdlePeriod( observer->idleStartTime, QDateTime::currentDateTime() ) );
 }
 
 #include "MacIdleDetector.moc"

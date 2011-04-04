@@ -1,4 +1,5 @@
 #include <QtAlgorithms>
+#include <QDebug>
 
 #include "Core/Configuration.h"
 #include "CharmCMake.h"
@@ -11,7 +12,7 @@
 #ifdef NDEBUG
     #define IDLE_TIME 10
 #else
-    #define IDLE_TIME 3 * 60
+    #define IDLE_TIME 1
 #endif
 
 IdleDetector::IdleDetector( QObject* parent )
@@ -62,6 +63,8 @@ void IdleDetector::maybeIdle( IdlePeriod period )
         return;
     }
 
+    qDebug() << "IdleDetector::maybeIdle: Checking for idleness";
+
     // merge overlapping idle periods
     IdlePeriods periods ( idlePeriods() );
     periods << period;
@@ -94,6 +97,7 @@ void IdleDetector::maybeIdle( IdlePeriod period )
     }
     // notify application
     if ( ! idlePeriods().isEmpty() ) {
+        qDebug() << "IdleDetector::maybeIdle: Found idleness";
         emit maybeIdle();
     }
 }
