@@ -3,7 +3,7 @@
 # This file is part of Charm.
 # -*- coding: utf-8 -*-
 # 
-# Copyright (C) 2010 Klaralvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+# Copyright (C) 2011 Klaralvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
 # Author: Mirko Boehm <mirko.boehm@kdab.com>
 
 from core.helpers.BoilerPlate import BuildProject
