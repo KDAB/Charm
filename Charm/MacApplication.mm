@@ -5,6 +5,8 @@
 #include <QShortcut>
 #include <QShortcutEvent>
 
+extern void qt_mac_set_dock_menu(QMenu*);
+
 @interface DockIconClickEventHandler : NSObject
 {
 @public
@@ -34,9 +36,23 @@ MacApplication::MacApplication( int& argc, char* argv[] )
             static_cast<DockIconClickEventHandler*>(m_dockIconClickEventHandler);
     dockIconClickEventHandler->macApplication = this;
 
-    setWindowIcon( QIcon() );
     connect(this, SIGNAL(goToState(State)),
             this, SLOT(handleStateChange(State)));
+
+    m_dockMenu.addAction( &m_actionStopAllTasks );
+    m_dockMenu.addSeparator();
+
+    Q_FOREACH( CharmWindow* window, m_windows )
+        m_dockMenu.addAction( window->showHideAction() );
+
+    m_dockMenu.addSeparator();
+    m_dockMenu.addMenu( m_timeTracker.menu() );
+    qt_mac_set_dock_menu( &m_dockMenu );
+
+    // OSX doesn't use icons in menus
+    setWindowIcon( QIcon() );
+    m_actionQuit.setIcon( QIcon() );
+    QCoreApplication::setAttribute( Qt::AA_DontShowIconsInMenus );
 }
 
 MacApplication::~MacApplication()

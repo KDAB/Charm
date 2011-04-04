@@ -96,6 +96,10 @@ signals:
 
 protected:
     CharmWindow* m_closedWindow;
+    QAction m_actionStopAllTasks;
+    const QList<CharmWindow*> m_windows;
+    TimeTrackingWindow m_timeTracker;
+    QAction m_actionQuit;
 
 private:
     QString titleString( const QString& text ) const;
@@ -117,9 +121,6 @@ private:
     Controller m_controller;
     TrayIcon m_trayIcon;
     QMenu m_systrayContextMenu;
-    QMenu m_dockMenu;
-    QAction m_actionStopAllTasks;
-    QAction m_actionQuit;
     QAction m_actionAboutDialog;
     QAction m_actionPreferences;
     QAction m_actionExportToXml;
@@ -128,9 +129,7 @@ private:
     QAction m_actionReporting;
     TasksWindow m_tasksWindow;
     EventWindow m_eventWindow;
-    TimeTrackingWindow m_timeTracker;
     IdleDetector* m_idleDetector;
-    const QList<CharmWindow*> m_windows;
     bool m_timeTrackerHiddenFromSystrayToggle;
     bool m_tasksWindowHiddenFromSystrayToggle;
     bool m_eventWindowHiddenFromSystrayToggle;

@@ -32,16 +32,13 @@
 
 Application* Application::m_instance = 0;
 
-#if defined Q_WS_MAC
-extern void qt_mac_set_dock_menu(QMenu *);
-#endif
-
 Application::Application(int& argc, char** argv)
     : QApplication( argc, argv )
     , m_closedWindow( 0 )
-    , m_state(Constructed)
     , m_actionStopAllTasks( this )
+    , m_windows( QList<CharmWindow*> () << &m_tasksWindow << &m_eventWindow << &m_timeTracker )
     , m_actionQuit( this )
+    , m_state(Constructed)
     , m_actionAboutDialog( this )
     , m_actionPreferences( this )
     , m_actionExportToXml( this )
@@ -49,7 +46,6 @@ Application::Application(int& argc, char** argv)
     , m_actionImportTasks( this )
     , m_actionReporting( this )
     , m_idleDetector( 0 )
-    , m_windows( QList<CharmWindow*> () << &m_tasksWindow << &m_eventWindow << &m_timeTracker )
     , m_timeTrackerHiddenFromSystrayToggle( false )
     , m_tasksWindowHiddenFromSystrayToggle( false )
     , m_eventWindowHiddenFromSystrayToggle( false )
@@ -116,30 +112,14 @@ Application::Application(int& argc, char** argv)
     m_trayIcon.setIcon( Data::charmTrayIcon() );
     m_trayIcon.show();
 
-#ifdef Q_WS_MAC
-    m_dockMenu.addAction( &m_actionStopAllTasks );
-    m_dockMenu.addSeparator();
-#endif
-
-    Q_FOREACH( CharmWindow* window, m_windows ) {
+    Q_FOREACH( CharmWindow* window, m_windows )
         m_systrayContextMenu.addAction( window->showHideAction() );
-#ifdef Q_WS_MAC
-        m_dockMenu.addAction( window->showHideAction() );
-#endif
-    }
 
     m_systrayContextMenu.addSeparator();
     m_systrayContextMenu.addMenu( m_timeTracker.menu() );
 
-#ifdef Q_WS_MAC
-    m_dockMenu.addSeparator();
-    m_dockMenu.addMenu( m_timeTracker.menu() );
-    qt_mac_set_dock_menu( &m_dockMenu );
-    QCoreApplication::setAttribute( Qt::AA_DontShowIconsInMenus );
-#else
     m_systrayContextMenu.addSeparator();
     m_systrayContextMenu.addAction( &m_actionQuit );
-#endif
 
     // set up actions:
     m_actionQuit.setShortcut( Qt::CTRL + Qt::Key_Q );

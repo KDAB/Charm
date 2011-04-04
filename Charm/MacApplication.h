@@ -25,6 +25,8 @@ private:
     NSEvent* cocoaEventFilter( NSEvent* incomingEvent );
     void setupCocoaEventHandler() const;
 
+    QMenu m_dockMenu;
+
     objc_object* m_pool;
     objc_object* m_eventMonitor;
     objc_object* m_dockIconClickEventHandler;
