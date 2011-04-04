@@ -6,7 +6,9 @@
 #include <QtPlugin>
 #include <QSettings>
 #include <QString>
+#include <QLocalSocket>
 
+#include "Application.h"
 #include "ApplicationFactory.h"
 #include "Core/CharmExceptions.h"
 #include "CharmCMake.h"
@@ -23,6 +25,17 @@ int main ( int argc, char** argv )
         using namespace std;
         cout << "Charm version " << CHARM_VERSION << endl;
         return 0;
+    }
+
+    QLocalSocket uniqueApplicationSocket;
+    const QString serverName(Application::uniqueApplicationServerName());
+    uniqueApplicationSocket.connectToServer(serverName, QIODevice::ReadOnly);
+    if (uniqueApplicationSocket.waitForConnected(1000)) {
+        if (uniqueApplicationSocket.waitForReadyRead(1000)) {
+            using namespace std;
+            cout << "Charm already running, exiting..." << endl;
+            return 0;
+        }
     }
 
     const QByteArray charmHomeEnv = qgetenv("CHARM_HOME");

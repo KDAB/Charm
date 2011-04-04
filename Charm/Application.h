@@ -13,6 +13,7 @@
 #include <QMenu>
 #include <QAction>
 #include <QApplication>
+#include <QLocalServer>
 
 // this is an application, not a library:
 // no pimpling, and data members instead of forward declarations
@@ -43,6 +44,7 @@ public:
     ~Application();
 
     static Application& instance();
+    static QString uniqueApplicationServerName();
 
     // FIXME broken by design?
     /** Configure the application.
@@ -90,11 +92,14 @@ private slots:
     void slotCurrentBackendStatusChanged( const QString& text );
     void slotMaybeIdle();
     void slotCharmWindowVisibilityChanged( bool visibility );
+    void slotHandleUniqueApplicationConnection();
 
 signals:
     void goToState( State state );
 
 protected:
+    void openAWindow( bool raise = false );
+
     CharmWindow* m_closedWindow;
     QAction m_actionStopAllTasks;
     const QList<CharmWindow*> m_windows;
@@ -133,6 +138,7 @@ private:
     bool m_timeTrackerHiddenFromSystrayToggle;
     bool m_tasksWindowHiddenFromSystrayToggle;
     bool m_eventWindowHiddenFromSystrayToggle;
+    QLocalServer m_uniqueApplicationServer;
 
     // All statics are created as members of Application. This is
     // supposed to help on Windows, where constructors for statics

@@ -16,6 +16,8 @@
 #include <QMessageBox>
 #include <QSessionManager>
 #include <QDesktopServices>
+#include <QLocalSocket>
+#include <QFile>
 
 #include <Core/CharmConstants.h>
 #include <Core/SqLiteStorage.h>
@@ -59,6 +61,15 @@ Application::Application(int& argc, char** argv)
     QCoreApplication::setApplicationName("Charm");
     QCoreApplication::setApplicationVersion(CHARM_VERSION);
 
+    connect(&m_uniqueApplicationServer, SIGNAL(newConnection()),
+            this, SLOT(slotHandleUniqueApplicationConnection()));
+
+    const QString serverName(uniqueApplicationServerName());
+    QFile::remove(QDir::tempPath() + '/' + serverName);
+    bool listening = m_uniqueApplicationServer.listen(serverName);
+    if (!listening)
+        qDebug() << "Failed to create QLocalServer for unique application support:"
+                 << m_uniqueApplicationServer.errorString();
 
     Q_INIT_RESOURCE(CharmResources);
     Q_ASSERT_X(m_instance == 0, "Application ctor",
@@ -174,6 +185,45 @@ Application::Application(int& argc, char** argv)
 
 Application::~Application()
 {
+}
+
+QString Application::uniqueApplicationServerName()
+{
+    QString serverName( "com.kdab.charm" );
+#ifndef NDEBUG
+    serverName.append( "_debug" );
+#endif
+    return serverName;
+}
+
+void Application::slotHandleUniqueApplicationConnection()
+{
+    QLocalSocket* socket = m_uniqueApplicationServer.nextPendingConnection();
+    // Charm can only communicate in LOLcat.
+    socket->write( "kthxbai" );
+    socket->flush();
+    delete socket;
+    openAWindow( true );
+}
+
+void Application::openAWindow( bool raise ) {
+    CharmWindow* windowToOpen = 0;
+    foreach( CharmWindow* window, m_windows )
+        if ( !window->isHidden() )
+            windowToOpen = window;
+
+    if ( !windowToOpen && m_closedWindow )
+        windowToOpen = m_closedWindow;
+
+    if ( !windowToOpen )
+        windowToOpen = &m_timeTracker;
+
+    windowToOpen->show();
+    if ( raise )
+        windowToOpen->raise();
+
+    if( windowToOpen == m_closedWindow )
+        m_closedWindow = 0;
 }
 
 void Application::createWindowMenu( QMenuBar *menuBar )
