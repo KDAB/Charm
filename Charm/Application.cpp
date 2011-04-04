@@ -481,6 +481,7 @@ bool Application::configure()
         {
             CONFIGURATION = dialog.configuration();
             CONFIGURATION.writeTo(settings);
+            m_timeTracker.show();
         }
         else
         {
