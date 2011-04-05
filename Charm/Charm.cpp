@@ -27,17 +27,6 @@ int main ( int argc, char** argv )
         return 0;
     }
 
-    QLocalSocket uniqueApplicationSocket;
-    const QString serverName(Application::uniqueApplicationServerName());
-    uniqueApplicationSocket.connectToServer(serverName, QIODevice::ReadOnly);
-    if (uniqueApplicationSocket.waitForConnected(1000)) {
-        if (uniqueApplicationSocket.waitForReadyRead(1000)) {
-            using namespace std;
-            cout << "Charm already running, exiting..." << endl;
-            return 0;
-        }
-    }
-
     const QByteArray charmHomeEnv = qgetenv("CHARM_HOME");
     if ( !charmHomeEnv.isEmpty() ) {
         const QString charmHome = QFile::decodeName( charmHomeEnv );
@@ -50,6 +39,17 @@ int main ( int argc, char** argv )
     }
 
     QApplication *app = ApplicationFactory::localApplication( argc, argv );
+
+    QLocalSocket uniqueApplicationSocket;
+    const QString serverName(Application::uniqueApplicationServerName());
+    uniqueApplicationSocket.connectToServer(serverName, QIODevice::ReadOnly);
+    if (uniqueApplicationSocket.waitForConnected(1000)) {
+        if (uniqueApplicationSocket.waitForReadyRead(1000)) {
+            using namespace std;
+            cout << "Charm already running, exiting..." << endl;
+			return 0;
+        }
+    }
 
     try {
         return app->exec();
