@@ -20,6 +20,7 @@
 #include <QFile>
 
 #include <Core/CharmConstants.h>
+#include <Core/CharmExceptions.h>
 #include <Core/SqLiteStorage.h>
 #include <CharmCMake.h>
 
@@ -61,10 +62,18 @@ Application::Application(int& argc, char** argv)
     QCoreApplication::setApplicationName("Charm");
     QCoreApplication::setApplicationVersion(CHARM_VERSION);
 
+    QLocalSocket uniqueApplicationSocket;
+    QString serverName( "com.kdab.charm" );
+#ifndef NDEBUG
+    serverName.append( "_debug" );
+#endif
+    uniqueApplicationSocket.connectToServer(serverName, QIODevice::ReadOnly);
+    if (uniqueApplicationSocket.waitForConnected(1000))
+        throw AlreadyRunningException();
+
     connect(&m_uniqueApplicationServer, SIGNAL(newConnection()),
             this, SLOT(slotHandleUniqueApplicationConnection()));
 
-    const QString serverName(uniqueApplicationServerName());
     QFile::remove(QDir::tempPath() + '/' + serverName);
     bool listening = m_uniqueApplicationServer.listen(serverName);
     if (!listening)
@@ -189,21 +198,9 @@ Application::~Application()
 {
 }
 
-QString Application::uniqueApplicationServerName()
-{
-    QString serverName( "com.kdab.charm" );
-#ifndef NDEBUG
-    serverName.append( "_debug" );
-#endif
-    return serverName;
-}
-
 void Application::slotHandleUniqueApplicationConnection()
 {
     QLocalSocket* socket = m_uniqueApplicationServer.nextPendingConnection();
-    // Charm can only communicate in LOLcat.
-    socket->write( "kthxbai" );
-    socket->flush();
     delete socket;
     openAWindow( true );
 }
@@ -372,6 +369,11 @@ Application& Application::instance()
     Q_ASSERT_X(m_instance, "Application::instance",
                "Singleton not constructed yet");
     return *m_instance;
+}
+
+bool Application::hasInstance()
+{
+    return m_instance != 0;
 }
 
 void Application::enterStartingUpState()

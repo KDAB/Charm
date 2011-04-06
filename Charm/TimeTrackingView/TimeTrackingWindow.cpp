@@ -58,7 +58,8 @@ QMenu* TimeTrackingWindow::menu() const
 
 TimeTrackingWindow::~TimeTrackingWindow()
 {
-    DATAMODEL->unregisterAdapter( this );
+    if ( Application::hasInstance() )
+        DATAMODEL->unregisterAdapter( this );
 }
 
 void TimeTrackingWindow::stateChanged( State previous )
