@@ -39,14 +39,10 @@ private slots:
     void slotCloseEditor( QWidget* editor, QAbstractItemDelegate::EndEditHint );
 
 private:
-    int secondLineTextHeight( const QStyleOptionViewItem& option,
-                              const QModelIndex& index ) const;
     QRect checkBoxRect( const QStyleOptionViewItem &option,
                         const QVariant &variant ) const;
     struct Layout {
-        int firstLineHeight;
-        int secondLineHeight;
-        int secondLineTextHeight;
+        int height;
         QRect cbRect;
     };
     Layout doLayout( const QStyleOptionViewItem& option,

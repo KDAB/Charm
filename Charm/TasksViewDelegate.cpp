@@ -56,7 +56,7 @@ void TasksViewDelegate::paint( QPainter *painter,
     const QRect textRect(option.rect.left(),
                          option.rect.top(),
                          option.rect.width() - layout.cbRect.width(),
-                         layout.firstLineHeight);
+                         layout.height);
 
     // Prepare QStyleOptionViewItem with the wanted alignments
     QStyleOptionViewItem modifiedOption = option;
@@ -68,39 +68,7 @@ void TasksViewDelegate::paint( QPainter *painter,
     drawDisplay(painter, modifiedOption, textRect, taskName);
 
     // Draw checkbox
-    painter->save(); // preserve text colors, for displaying the running time similarly
     drawCheck(painter, option, layout.cbRect, checkState);
-    painter->restore();
-
-    const QVariant decorationVariant = index.data(Qt::DecorationRole);
-    if (!decorationVariant.isNull()) {
-        // This task is active. Draw decoration, running time, comment field.
-        const QPixmap decorationPixmap = decoration(option, decorationVariant);
-        const QRect pixmapRect(option.rect.left(),
-                               option.rect.top() + textRect.height(),
-                               decorationPixmap.width(),
-                               option.rect.height() - textRect.height() - 1);
-        drawDecoration(painter, modifiedOption, pixmapRect, decorationPixmap);
-
-        const QString runningTime = index.data(TasksViewRole_RunningTime).toString();
-        QRect textRect(pixmapRect.right() + 5, pixmapRect.top(),
-                       option.rect.width(), layout.secondLineTextHeight);
-
-        QColor dimHighlight( option.palette.highlight().color() );
-        const float dim = 0.25;
-        dimHighlight.setAlphaF( dim * dimHighlight.alphaF() );
-        const QBrush halfHighlight( dimHighlight );
-        painter->setBackground( halfHighlight ); // running time on blue background
-        painter->setBackgroundMode( Qt::OpaqueMode );
-        painter->drawText(textRect, Qt::AlignLeft | Qt::AlignVCenter, runningTime, &textRect);
-        painter->setBackgroundMode( Qt::TransparentMode );
-
-        const QString comment = index.data(TasksViewRole_Comment).toString();
-        textRect.moveLeft(textRect.right() + 5);
-        textRect.setRight(layout.cbRect.left());
-        painter->drawText(textRect, Qt::AlignLeft | Qt::AlignVCenter, comment);
-    }
-
     painter->restore();
 }
 
@@ -108,7 +76,7 @@ QSize TasksViewDelegate::sizeHint( const QStyleOptionViewItem &option,
                                    const QModelIndex &index) const
 {
     Layout layout = doLayout( option, index );
-    return QSize(option.rect.width(), layout.firstLineHeight + layout.secondLineHeight);
+    return QSize(option.rect.width(), layout.height);
 }
 
 bool TasksViewDelegate::editorEvent(QEvent *event, QAbstractItemModel *model,
@@ -198,16 +166,7 @@ TasksViewDelegate::Layout TasksViewDelegate::doLayout( const QStyleOptionViewIte
     // Find size of checkbox
     const QVariant checkStateVariant = index.data(Qt::CheckStateRole);
     layout.cbRect = checkBoxRect(option, checkStateVariant);
-    layout.firstLineHeight = qMax(layout.cbRect.height(), option.fontMetrics.height());
-    layout.secondLineHeight = 0;
-    layout.secondLineTextHeight = 0;
-    const QVariant decorationVariant = index.data(Qt::DecorationRole);
-    if (!decorationVariant.isNull()) {
-        const QPixmap decorationPixmap = decoration(option, decorationVariant);
-        layout.secondLineTextHeight = option.fontMetrics.lineSpacing() + 2 +
-                                      qApp->style()->pixelMetric(QStyle::PM_DefaultFrameWidth, &option, 0);
-        layout.secondLineHeight = qMax(layout.secondLineTextHeight, decorationPixmap.height());
-    }
+    layout.height = qMax(layout.cbRect.height(), option.fontMetrics.height());
 
     return layout;
 }
