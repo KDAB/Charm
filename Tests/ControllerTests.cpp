@@ -61,7 +61,7 @@ void ControllerTests:: persistProvideMetaDataTest()
         Configuration( true, false, User( "blub", 0 ), Configuration::TaskPrefilter_CurrentOnly, Configuration::TaskTrackerFont_Regular,
                        true, Configuration::Minutes, false, Qt::ToolButtonTextOnly, false, false ),
         Configuration( false, true, User(), Configuration::TaskPrefilter_SubscribedAndCurrentOnly, Configuration::TaskTrackerFont_Large,
-                       false, Configuration::Minutes, true, Qt::ToolButtonTextBesideIcon, true, false ),
+                       false, Configuration::Minutes, true, Qt::ToolButtonTextBesideIcon, true, true ),
     };
     const int NumberOfConfigurations = sizeof configs / sizeof configs[0];
 

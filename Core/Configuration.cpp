@@ -40,7 +40,7 @@ Configuration::Configuration( bool _eventsInLeafsOnly, bool _oneEventAtATime, Us
                               TaskTrackerFontSize _taskTrackerFontSize,
                               bool _always24hEditing, DurationFormat _durationFormat, bool _detectIdling,
                               Qt::ToolButtonStyle _buttonstyle,
-                              bool _showStatusBar, bool  _animatedTrayIcon )
+                              bool _showStatusBar, bool _animatedTrayIcon )
     : eventsInLeafsOnly( _eventsInLeafsOnly )
     , oneEventAtATime( _oneEventAtATime )
     , taskPrefilteringMode( _taskPrefilteringMode )

@@ -203,6 +203,8 @@ void Controller::persistMetaData( Configuration& configuration )
           QString::number( configuration.durationFormat ) },
         { MetaKey_Key_IdleDetection,
           stringForBool( configuration.detectIdling ) },
+        { MetaKey_Key_AnimatedTrayIcon,
+          stringForBool( configuration.animatedTrayIcon ) },
         { MetaKey_Key_ToolButtonStyle,
           QString().setNum( configuration.toolButtonStyle ) },
         { MetaKey_Key_ShowStatusBar,
@@ -281,6 +283,8 @@ void Controller::provideMetaData( Configuration& configuration)
         m_storage->getMetaData( MetaKey_Key_24hEditing ) );
     configuration.detectIdling = boolForString(
         m_storage->getMetaData( MetaKey_Key_IdleDetection ) );
+    configuration.animatedTrayIcon = boolForString(
+        m_storage->getMetaData( MetaKey_Key_AnimatedTrayIcon ) );
 
     int buttonStyleValue = m_storage->getMetaData( MetaKey_Key_ToolButtonStyle ).toInt( &ok );
     if( ok ) {
