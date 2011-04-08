@@ -6,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>499</width>
-    <height>205</height>
+    <width>501</width>
+    <height>191</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Charm Configuration</string>
   </property>
-  <layout class="QVBoxLayout">
+  <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
@@ -23,39 +23,34 @@
       <attribute name="title">
        <string>Database Options</string>
       </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout">
+      <layout class="QVBoxLayout" name="verticalLayout_3">
        <item>
-        <widget class="QCheckBox" name="cbEventsInLeavesOnly">
-         <property name="text">
-          <string>Only record events for tasks that do not have children</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QCheckBox" name="cbOneEventAtATime">
-         <property name="text">
-          <string>Only allow one event at a time</string>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout"/>
-       </item>
-       <item>
-        <spacer>
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
+        <layout class="QFormLayout" name="formLayoutDatabase">
+         <item row="0" column="0">
+          <widget class="QLabel" name="lbEventsInLeavesOnly">
+           <property name="text">
+            <string>Only record events for tasks that do not have children</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QCheckBox" name="cbEventsInLeavesOnly"/>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="lbOneEventAtATime">
+           <property name="text">
+            <string>Only allow one event at a time</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QCheckBox" name="cbOneEventAtATime">
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
       </layout>
      </widget>
@@ -63,132 +58,131 @@
       <attribute name="title">
        <string>Appearance</string>
       </attribute>
-      <layout class="QFormLayout" name="formLayout">
-       <item row="0" column="0">
-        <widget class="QLabel" name="label">
-         <property name="text">
-          <string>Tasks window font size:</string>
+      <layout class="QVBoxLayout" name="verticalLayout_4">
+       <item>
+        <layout class="QFormLayout" name="formLayoutAppearance">
+         <property name="fieldGrowthPolicy">
+          <enum>QFormLayout::FieldsStayAtSizeHint</enum>
          </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QComboBox" name="cbTaskTrackerFontSize">
-         <item>
-          <property name="text">
-           <string>Small</string>
-          </property>
+         <item row="0" column="0">
+          <widget class="QLabel" name="lbTaskTrackerFontSize">
+           <property name="text">
+            <string>Tasks window font size</string>
+           </property>
+          </widget>
          </item>
-         <item>
-          <property name="text">
-           <string>Regular (Application Font)</string>
-          </property>
+         <item row="0" column="1">
+          <widget class="QComboBox" name="cbTaskTrackerFontSize">
+           <item>
+            <property name="text">
+             <string>Small</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Regular (Application Font)</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Large</string>
+            </property>
+           </item>
+          </widget>
          </item>
-         <item>
-          <property name="text">
-           <string>Large</string>
-          </property>
+         <item row="1" column="0">
+          <widget class="QLabel" name="lbToolButtonStyle">
+           <property name="text">
+            <string>Buttons show</string>
+           </property>
+          </widget>
          </item>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="label_2">
-         <property name="text">
-          <string>Buttons show:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QComboBox" name="cbToolButtonStyle">
-         <item>
-          <property name="text">
-           <string>Icons</string>
-          </property>
+         <item row="1" column="1">
+          <widget class="QComboBox" name="cbToolButtonStyle">
+           <item>
+            <property name="text">
+             <string>Icons</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Text</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Text under icon</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Text beside icon</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>System default</string>
+            </property>
+           </item>
+          </widget>
          </item>
-         <item>
-          <property name="text">
-           <string>Text</string>
-          </property>
+         <item row="2" column="0">
+          <widget class="QLabel" name="lbDurationFormat">
+           <property name="text">
+            <string>Duration format (requires restart)</string>
+           </property>
+          </widget>
          </item>
-         <item>
-          <property name="text">
-           <string>Text under icon</string>
-          </property>
+         <item row="2" column="1">
+          <widget class="QComboBox" name="cbDurationFormat">
+           <item>
+            <property name="text">
+             <string>Minutes (hh:mm)</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Decimal (h.xx)</string>
+            </property>
+           </item>
+          </widget>
          </item>
-         <item>
-          <property name="text">
-           <string>Text beside icon</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>System default</string>
-          </property>
-         </item>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="label_3">
-         <property name="text">
-          <string>Duration format (requires restart)</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="1">
-        <widget class="QComboBox" name="cbDurationFormat">
-         <item>
-          <property name="text">
-           <string>Minutes (hh:mm)</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Decimal (h.xx)</string>
-          </property>
-         </item>
-        </widget>
+        </layout>
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab">
+     <widget class="QWidget" name="tabEsoteric">
       <attribute name="title">
        <string>Esoteric Options</string>
       </attribute>
-      <layout class="QVBoxLayout">
+      <layout class="QVBoxLayout" name="verticalLayout">
        <item>
-        <widget class="QCheckBox" name="cb24hEditing">
-         <property name="toolTip">
-          <string>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Lucida Grande'; font-size:13pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;use 24h time values for editing, independently of the global locale setup&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="text">
-          <string>Always use 24h time format when editing</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QCheckBox" name="cbIdleDetection">
-         <property name="text">
-          <string>Enable idle detection</string>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <spacer>
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
+        <layout class="QFormLayout" name="formLayoutEsoteric">
+         <item row="0" column="0">
+          <widget class="QLabel" name="lb24hEditing">
+           <property name="text">
+            <string>Always use 24h time format when editing</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QCheckBox" name="cb24hEditing"/>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="lbIdleDetection">
+           <property name="text">
+            <string>Enable idle detection</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QCheckBox" name="cbIdleDetection">
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
       </layout>
      </widget>
@@ -205,8 +199,6 @@ p, li { white-space: pre-wrap; }
     </widget>
    </item>
   </layout>
-  <zorder>buttonBox</zorder>
-  <zorder>tabWidget</zorder>
  </widget>
  <resources/>
  <connections>
