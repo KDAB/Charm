@@ -5,7 +5,7 @@
 #include "TasksView.h"
 
 TasksWindow::TasksWindow( QWidget* parent )
-    : CharmWindow( tr( "Tasks" ), parent )
+    : CharmWindow( tr( "Tasks Editor" ), parent )
     , m_tasksView( new TasksView( toolBar(), this ) )
 {
     setWindowNumber( 1 );

@@ -8,7 +8,7 @@
 #include <QLabel>
 
 EventWindow::EventWindow( QWidget* parent )
-    : CharmWindow( tr( "Events" ), parent )
+    : CharmWindow( tr( "Events Editor" ), parent )
     , m_eventView( new EventView( toolBar(), this ) )
 {
     setWindowNumber( 2 );
