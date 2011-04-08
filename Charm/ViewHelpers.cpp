@@ -40,3 +40,19 @@ EventIdList filteredBySubtree( EventIdList ids, TaskId parent, bool exclude )
     return result;
 }
 
+QString elidedTaskName( const QString& text, const QFont& font, int width )
+{
+    QFontMetrics metrics( font );
+    const QString& projectCode =
+            text.section( ' ', 0, 0, QString::SectionIncludeTrailingSep );
+    const int projectCodeWidth = metrics.width( projectCode );
+    if ( width > projectCodeWidth ) {
+        const QString& taskName = text.section( ' ', 1 );
+        const int taskNameWidth = width - projectCodeWidth;
+        const QString& taskNameElided =
+                metrics.elidedText( taskName, Qt::ElideLeft, taskNameWidth );
+        return projectCode + taskNameElided;
+    }
+
+    return metrics.elidedText( text, Qt::ElideMiddle, width );
+}

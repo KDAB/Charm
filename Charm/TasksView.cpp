@@ -119,6 +119,8 @@ TasksView::TasksView( QToolBar* toolBar, QWidget* parent )
     m_treeView->setEditTriggers(QAbstractItemView::EditKeyPressed);
     m_treeView->setExpandsOnDoubleClick(false);
     m_treeView->setAlternatingRowColors( true );
+    // The delegate does its own eliding.
+    m_treeView->setTextElideMode( Qt::ElideNone );
     m_treeView->setRootIsDecorated( true );
     m_treeView->setContextMenuPolicy( Qt::CustomContextMenu );
     connect( m_treeView, SIGNAL( customContextMenuRequested( const QPoint& ) ),

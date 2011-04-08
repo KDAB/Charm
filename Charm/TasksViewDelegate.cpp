@@ -7,6 +7,7 @@
 #include <QApplication>
 #include <QMouseEvent>
 #include "TaskModelAdapter.h"
+#include "ViewHelpers.h"
 
 TasksViewDelegate::TasksViewDelegate( QObject* parent )
     : QItemDelegate( parent )
@@ -63,9 +64,11 @@ void TasksViewDelegate::paint( QPainter *painter,
     modifiedOption.displayAlignment = Qt::AlignLeft | Qt::AlignVCenter;
     modifiedOption.decorationAlignment = Qt::AlignLeft | Qt::AlignVCenter;
 
-    // Draw first line of text (task id+name)
+    // Draw text (task id+name)
     const QString taskName = index.data(Qt::DisplayRole).toString();
-    drawDisplay(painter, modifiedOption, textRect, taskName);
+    QString elidedTask = elidedTaskName( taskName, painter->font(),
+                                         textRect.width() );
+    drawDisplay(painter, modifiedOption, textRect, elidedTask);
 
     // Draw checkbox
     drawCheck(painter, option, layout.cbRect, checkState);

@@ -68,9 +68,9 @@ void EventEditorDelegate::paint( QPainter* painter,
         QString taskName;
         QTextStream taskStream( &taskName );
         // print leading zeroes for the TaskId
-        const int taskIdLength = qMax( 2, CONFIGURATION.taskPaddingLength );
-        taskStream << "[" << QString( "%1" ).arg( item.task().id(), taskIdLength, 10, QChar( '0' ) ) << "] "
-                   << DATAMODEL->fullTaskName( item.task() );
+        const int taskIdLength = CONFIGURATION.taskPaddingLength;
+        taskStream << QString( "%1" ).arg( item.task().id(), taskIdLength, 10, QChar( '0' ) )
+                   << " " << DATAMODEL->fullTaskName( item.task() );
 
         paint( painter, option,
                taskName,
@@ -137,11 +137,9 @@ QRect EventEditorDelegate::paint( QPainter* painter,
                              option.rect.top() );
 
     QRect boundingRect;
-    QFontMetrics metrics( mainFont );
-    QString elidedTaskName = metrics.elidedText( taskName, Qt::ElideLeft,
-                                                 taskRect.width() );
-    painter->drawText( taskRect, Qt::AlignLeft | Qt::AlignTop,
-                       elidedTaskName, &boundingRect );
+    QString elidedTask = elidedTaskName( taskName, mainFont, taskRect.width() );
+    painter->drawText( taskRect, Qt::AlignLeft | Qt::AlignTop, elidedTask,
+                       &boundingRect );
     taskRect.setSize( boundingRect.size() );
     taskRect.setHeight( qMax( taskRect.height(), decoration.height() ) );
     // now taskRect tells us where to start line 2
