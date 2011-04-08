@@ -80,7 +80,7 @@ TimeTrackingTaskSelector::TimeTrackingTaskSelector(QToolBar* toolBar, QWidget *p
     connect( m_menu, SIGNAL( triggered( QAction* ) ),
              SLOT( slotActionSelected( QAction* ) ) );
 
-    m_stopGoAction->setText( tr("Start Task") );
+    m_stopGoAction->setText( tr("Start Selected Task") );
     m_stopGoAction->setIcon( Data::goIcon() );
     m_stopGoAction->setShortcut( QKeySequence( Qt::Key_Space ) );
     m_stopGoAction->setCheckable( true );
@@ -213,19 +213,19 @@ void TimeTrackingTaskSelector::handleActiveEvents()
     const int activeEventCount = DATAMODEL->activeEventCount();
     if ( activeEventCount > 1 ) {
         m_stopGoAction->setIcon( Data::goIcon() );
-        m_stopGoAction->setText( tr( "Start Task" ) );
+        m_stopGoAction->setText( tr( "Start Selected Task" ) );
         m_stopGoAction->setEnabled( false );
         m_stopGoAction->setChecked( true );
         m_editCommentAction->setEnabled( false );
     } else if ( activeEventCount == 1 ) {
         m_stopGoAction->setIcon( Data::stopIcon() );
-        m_stopGoAction->setText( tr( "Stop Task" ) );
+        m_stopGoAction->setText( tr( "Stop Selected Task" ) );
         m_stopGoAction->setEnabled( true );
         m_stopGoAction->setChecked( true );
         m_editCommentAction->setEnabled( true );
     } else {
         m_stopGoAction->setIcon( Data::goIcon() );
-        m_stopGoAction->setText( tr( "Start Task" ) );
+        m_stopGoAction->setText( tr( "Start Selected Task" ) );
         if( m_selectedTask != 0 ) {
             const Task& task = DATAMODEL->getTask( m_selectedTask );
             m_stopGoAction->setEnabled( task.isCurrentlyValid() );
