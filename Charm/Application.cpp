@@ -123,6 +123,8 @@ Application::Application(int& argc, char** argv)
     m_trayIcon.setIcon( Data::charmTrayIcon() );
     m_trayIcon.show();
 
+    setWindowIcon( Data::charmIcon() );
+
     Q_FOREACH( CharmWindow* window, m_windows )
         m_systrayContextMenu.addAction( window->showHideAction() );
 

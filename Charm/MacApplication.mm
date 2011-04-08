@@ -51,6 +51,8 @@ MacApplication::MacApplication( int& argc, char* argv[] )
 
     // OSX doesn't use icons in menus
     setWindowIcon( QIcon() );
+    Q_FOREACH( CharmWindow* window, m_windows )
+        window->setWindowIcon( QIcon() );
     m_actionQuit.setIcon( QIcon() );
     QCoreApplication::setAttribute( Qt::AA_DontShowIconsInMenus );
 }
