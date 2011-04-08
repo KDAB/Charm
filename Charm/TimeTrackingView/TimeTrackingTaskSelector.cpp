@@ -89,7 +89,7 @@ TimeTrackingTaskSelector::TimeTrackingTaskSelector(QToolBar* toolBar, QWidget *p
 
     m_editCommentAction->setText( tr("Edit Started Task Comment") );
     m_editCommentAction->setIcon( Data::editEventIcon() );
-    m_editCommentAction->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_E ) );
+    m_editCommentAction->setShortcut( Qt::Key_E );
     m_editCommentAction->setToolTip( tr("Edit Started Task Comment") );
     connect( m_editCommentAction, SIGNAL( triggered(bool) ),
              SLOT( slotEditCommentClicked() ) );
