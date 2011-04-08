@@ -492,9 +492,9 @@ QString CharmDataModel::eventsString() const
         Event event = eventForId( eventId );
         if ( event.isValid() ) {
             const Task& task = getTask( event.taskId() );
-            const int taskIdLength = qMax( 2, CONFIGURATION.taskPaddingLength );
+            const int taskIdLength = CONFIGURATION.taskPaddingLength;
             eStrList <<
-                tr( "%1 - [%2] %3" )
+                tr( "%1 - %2 %3" )
                 .arg( hoursAndMinutes( event.duration() ) )
                 .arg( task.id(), taskIdLength, 10, QChar( '0' ) )
                 .arg( fullTaskName( task ) );
