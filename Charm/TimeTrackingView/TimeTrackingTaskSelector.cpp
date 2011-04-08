@@ -74,7 +74,6 @@ TimeTrackingTaskSelector::TimeTrackingTaskSelector(QToolBar* toolBar, QWidget *p
     , m_selectedTask( 0 )
     , m_manuallySelectedTask( 0 )
     , m_taskManuallySelected( false )
-    , m_previousTask( 0 )
 {
     toolBar->hide();
     connect( m_menu, SIGNAL( triggered( QAction* ) ),
@@ -195,11 +194,11 @@ void TimeTrackingTaskSelector::populate( const QVector<WeeklySummary>& summaries
 
     // finally, select the task that the user has just selected
     if( m_taskManuallySelected ) {
+        m_taskManuallySelected = false;
         QAction* action = addedTasks.value( m_manuallySelectedTask );
         Q_ASSERT_X( action != 0, Q_FUNC_INFO, "the manually selected task should always be in the menu" );
         // this sets the correct text on the button
         slotActionSelected( action );
-        m_taskManuallySelected = false;
     }
     // enable the selector button if the menu is not empty
     m_taskSelectorButton->setDisabled( m_menu->actions().isEmpty() );
@@ -247,14 +246,11 @@ void TimeTrackingTaskSelector::slotActionSelected( QAction* action )
         taskSelected( action->text(), taskId );
         handleActiveEvents();
 
-        if ( taskId != m_previousTask
-                && !DATAMODEL->isTaskActive( taskId ) ) {
-            if ( CONFIGURATION.oneEventAtATime )
+        if ( !DATAMODEL->isTaskActive( taskId ) ) {
+            if ( CONFIGURATION.oneEventAtATime
+                 && !DATAMODEL->activeEvents().isEmpty() )
                 emit stopEvents();
-            m_previousTask = taskId;
             emit startEvent( taskId );
-        } else {
-            m_previousTask = taskId;
         }
     }
 }
