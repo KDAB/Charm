@@ -79,24 +79,24 @@ TimeTrackingTaskSelector::TimeTrackingTaskSelector(QToolBar* toolBar, QWidget *p
     connect( m_menu, SIGNAL( triggered( QAction* ) ),
              SLOT( slotActionSelected( QAction* ) ) );
 
-    m_stopGoAction->setText( tr("Start Selected Task") );
+    m_stopGoAction->setText( tr("Start Task") );
     m_stopGoAction->setIcon( Data::goIcon() );
     m_stopGoAction->setShortcut( QKeySequence( Qt::Key_Space ) );
     m_stopGoAction->setCheckable( true );
     connect( m_stopGoAction, SIGNAL(triggered(bool)), SLOT(slotGoStopToggled(bool)) );
     m_stopGoButton->setDefaultAction( m_stopGoAction );
 
-    m_editCommentAction->setText( tr("Edit Started Task Comment") );
+    m_editCommentAction->setText( tr("Edit Comment") );
     m_editCommentAction->setIcon( Data::editEventIcon() );
     m_editCommentAction->setShortcut( Qt::Key_E );
-    m_editCommentAction->setToolTip( tr("Edit Started Task Comment") );
+    m_editCommentAction->setToolTip( m_editCommentAction->text() );
     connect( m_editCommentAction, SIGNAL( triggered(bool) ),
              SLOT( slotEditCommentClicked() ) );
     m_editCommentButton->setDefaultAction( m_editCommentAction );
 
     m_taskSelectorButton->setPopupMode( QToolButton::InstantPopup );
     m_taskSelectorButton->setMenu( m_menu );
-    m_taskSelectorButton->setText( m_menu->title() );
+    m_taskSelectorButton->setText( tr( "Select Task" ) );
 
     m_startOtherTaskAction->setShortcut( Qt::Key_T );
     connect( m_startOtherTaskAction, SIGNAL( triggered() ),
@@ -215,19 +215,19 @@ void TimeTrackingTaskSelector::handleActiveEvents()
     const int activeEventCount = DATAMODEL->activeEventCount();
     if ( activeEventCount > 1 ) {
         m_stopGoAction->setIcon( Data::goIcon() );
-        m_stopGoAction->setText( tr( "Start Selected Task" ) );
+        m_stopGoAction->setText( tr( "Start Task" ) );
         m_stopGoAction->setEnabled( false );
         m_stopGoAction->setChecked( true );
         m_editCommentAction->setEnabled( false );
     } else if ( activeEventCount == 1 ) {
         m_stopGoAction->setIcon( Data::stopIcon() );
-        m_stopGoAction->setText( tr( "Stop Selected Task" ) );
+        m_stopGoAction->setText( tr( "Stop Task" ) );
         m_stopGoAction->setEnabled( true );
         m_stopGoAction->setChecked( true );
         m_editCommentAction->setEnabled( true );
     } else {
         m_stopGoAction->setIcon( Data::goIcon() );
-        m_stopGoAction->setText( tr( "Start Selected Task" ) );
+        m_stopGoAction->setText( tr( "Start Task" ) );
         if( m_selectedTask != 0 ) {
             const Task& task = DATAMODEL->getTask( m_selectedTask );
             m_stopGoAction->setEnabled( task.isCurrentlyValid() );
