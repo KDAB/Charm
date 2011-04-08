@@ -141,27 +141,27 @@ Application::Application(int& argc, char** argv)
 
     m_actionAboutDialog.setText( tr( "About Charm" ) );
     connect( &m_actionAboutDialog, SIGNAL( triggered() ),
-             &m_tasksWindow,  SLOT( slotAboutDialog() ) );
+             &m_timeTracker,  SLOT( slotAboutDialog() ) );
 
     m_actionPreferences.setText( tr( "Preferences" ) );
     m_actionPreferences.setIcon( Data::configureIcon() );
     connect( &m_actionPreferences, SIGNAL( triggered( bool ) ),
-             &m_tasksWindow,  SLOT( slotEditPreferences( bool ) ) );
+             &m_timeTracker,  SLOT( slotEditPreferences( bool ) ) );
     m_actionPreferences.setEnabled( true );
 
     m_actionImportFromXml.setText( tr( "Import from Previous Export..." ) );
     connect( &m_actionImportFromXml, SIGNAL( triggered() ),
-             &m_tasksWindow,  SLOT( slotImportFromXml() ) );
+             &m_timeTracker,  SLOT( slotImportFromXml() ) );
     m_actionExportToXml.setText( tr( "Export..." ) );
     connect( &m_actionExportToXml, SIGNAL( triggered() ),
-             &m_tasksWindow,  SLOT( slotExportToXml() ) );
+             &m_timeTracker,  SLOT( slotExportToXml() ) );
     m_actionImportTasks.setText( tr( "Import Task Definitions..." ) );
     connect( &m_actionImportTasks, SIGNAL( triggered() ),
-             &m_tasksWindow,  SLOT( slotImportTasks() ) );
+             &m_timeTracker,  SLOT( slotImportTasks() ) );
     m_actionReporting.setText( tr( "Reports..." ) );
     m_actionReporting.setShortcut( Qt::CTRL + Qt::Key_R );
     connect( &m_actionReporting, SIGNAL( triggered() ),
-             &m_tasksWindow, SLOT( slotReportDialog() ) );
+             &m_timeTracker, SLOT( slotReportDialog() ) );
 
     // set up idle detection
     m_idleDetector = IdleDetector::createIdleDetector( this );
@@ -660,7 +660,7 @@ void Application::slotMaybeIdle()
 
     if ( DATAMODEL->activeEventCount() > 0 ) {
         if ( idleDetector()->idlePeriods().count() == 1 ) {
-            m_tasksWindow.maybeIdle();
+            m_timeTracker.maybeIdle();
         } // otherwise, the dialog will be showing already
     }
     // there are four parameters to the idle property:
