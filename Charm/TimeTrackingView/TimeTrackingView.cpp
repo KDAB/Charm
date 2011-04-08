@@ -221,6 +221,9 @@ void TimeTrackingView::mouseDoubleClickEvent( QMouseEvent* event )
         emit stopEvents();
         emit startEvent( id );
     }
+    else {
+        emit stopEvents();
+    }
 }
 
 int TimeTrackingView::getSummaryAt( const QPoint& position )
