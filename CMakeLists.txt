@@ -118,6 +118,11 @@ IF( NOT "${CMAKE_VERSION}" VERSION_LESS "2.8.4" )
                 SET( CPACK_DMG_DS_STORE "${ICONS_DIR}/CharmDSStore" )
                 SET( CPACK_DMG_BACKGROUND_IMAGE "${ICONS_DIR}/CharmDMGBackground.png" )
         ENDIF()
+        IF( UNIX AND NOT APPLE )
+                SET( CPACK_SYSTEM_NAME
+                    "${CMAKE_SYSTEM_NAME}-${CMAKE_SYSTEM_PROCESSOR}"
+                )
+        ENDIF()
 
         INCLUDE( CPack )
 ENDIF()
