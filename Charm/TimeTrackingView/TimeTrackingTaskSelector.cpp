@@ -164,7 +164,6 @@ void TimeTrackingTaskSelector::populate( const QVector<WeeklySummary>& summaries
     }
     // ... add action to select a task:
     m_menu->addAction( m_startOtherTaskAction );
-    m_menu->addSeparator();
 
     TaskIdList interestingTasks;
     interestingTasks += DATAMODEL->mostRecentlyUsedTasks();
@@ -184,6 +183,10 @@ void TimeTrackingTaskSelector::populate( const QVector<WeeklySummary>& summaries
     foreach( TaskId id, interestingTasksToAdd ) {
         if( addedTasks.contains( id ) )
             continue;
+        if( !addedAction ) {
+            m_menu->addSeparator();
+            addedAction = true;
+        }
         QAction* action = new QAction( DATAMODEL->taskIdAndNameString( id ), m_menu );
         action->setProperty( CUSTOM_TASK_PROPERTY_NAME, QVariant::fromValue( id ) );
         m_menu->addAction( action );
