@@ -26,6 +26,7 @@ Configuration::Configuration()
     , toolButtonStyle( Qt::ToolButtonFollowStyle )
     , showStatusBar( true )
     , detectIdling( true )
+    , animatedTrayIcon( true )
     , configurationName( DEFAULT_CONFIG_GROUP )
     , installationId( 0 )
     , newDatabase( false )
@@ -39,7 +40,7 @@ Configuration::Configuration( bool _eventsInLeafsOnly, bool _oneEventAtATime, Us
                               TaskTrackerFontSize _taskTrackerFontSize,
                               bool _always24hEditing, DurationFormat _durationFormat, bool _detectIdling,
                               Qt::ToolButtonStyle _buttonstyle,
-                              bool _showStatusBar )
+                              bool _showStatusBar, bool  _animatedTrayIcon )
     : eventsInLeafsOnly( _eventsInLeafsOnly )
     , oneEventAtATime( _oneEventAtATime )
     , taskPrefilteringMode( _taskPrefilteringMode )
@@ -49,6 +50,7 @@ Configuration::Configuration( bool _eventsInLeafsOnly, bool _oneEventAtATime, Us
     , toolButtonStyle( _buttonstyle )
     , showStatusBar( _showStatusBar )
     , detectIdling ( _detectIdling )
+    , animatedTrayIcon( _animatedTrayIcon )
     , configurationName( DEFAULT_CONFIG_GROUP )
     , installationId( 0 )
     , newDatabase( false )
@@ -68,6 +70,7 @@ bool Configuration::operator==( const Configuration& other ) const
         always24hEditing == other.always24hEditing &&
         durationFormat == other.durationFormat &&
         detectIdling == other.detectIdling &&
+        animatedTrayIcon == other.animatedTrayIcon &&
         toolButtonStyle == other.toolButtonStyle &&
         showStatusBar == other.showStatusBar &&
         configurationName == other.configurationName &&
@@ -131,6 +134,7 @@ void Configuration::dump( const QString& why )
              << "--> duration format:        " << durationFormat << endl
              << "--> Idle Detection:         " << detectIdling << endl
              << "--> toolButtonStyle:        " << toolButtonStyle << endl
-             << "--> showStatusBar:          " << showStatusBar;
+             << "--> showStatusBar:          " << showStatusBar << endl
+             << "--> animatedTrayIcon:       " << animatedTrayIcon;
 }
 

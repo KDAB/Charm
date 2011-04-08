@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>501</width>
-    <height>191</height>
+    <height>217</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -145,6 +145,20 @@
              <string>Decimal (h.xx)</string>
             </property>
            </item>
+          </widget>
+         </item>
+         <item row="3" column="0">
+          <widget class="QLabel" name="lbAnimatedTrayIcon">
+           <property name="text">
+            <string>Animated tray icon</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1">
+          <widget class="QCheckBox" name="cbAnimatedTrayIcon">
+           <property name="checked">
+            <bool>true</bool>
+           </property>
           </widget>
          </item>
         </layout>

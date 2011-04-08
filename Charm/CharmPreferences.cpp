@@ -14,6 +14,7 @@ CharmPreferences::CharmPreferences( const Configuration& config,
     m_ui.cb24hEditing->setChecked( config.always24hEditing );
     m_ui.cbIdleDetection->setEnabled( Application::instance().idleDetector() != 0 );
     m_ui.cbIdleDetection->setChecked( config.detectIdling );
+    m_ui.cbAnimatedTrayIcon->setChecked( config.animatedTrayIcon );
 
     // this would not need a switch, but i hate casting enums to int:
     switch( config.taskTrackerFontSize ) {
@@ -85,6 +86,11 @@ bool CharmPreferences::always24hEditing() const
 bool CharmPreferences::detectIdling() const
 {
     return m_ui.cbIdleDetection->isChecked();
+}
+
+bool CharmPreferences::animatedTrayIcon() const
+{
+    return m_ui.cbAnimatedTrayIcon->isChecked();
 }
 
 Configuration::DurationFormat CharmPreferences::durationFormat() const

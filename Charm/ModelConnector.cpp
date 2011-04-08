@@ -74,7 +74,7 @@ void ModelConnector::slotSysTrayUpdate( const QString& tooltip, bool active )
 {
     TRAY.setToolTip( tooltip );
 
-    if (active && !m_iconTimer.isActive()) {
+    if ( active && CONFIGURATION.animatedTrayIcon && !m_iconTimer.isActive() ) {
         slotSysTrayIconUpdate();
         m_iconTimer.start( 1000 ); // every second, as Nuno designed it
     } else if (!active) {
@@ -85,9 +85,8 @@ void ModelConnector::slotSysTrayUpdate( const QString& tooltip, bool active )
 
 void ModelConnector::slotSysTrayIconUpdate()
 {
-    if ( m_dataModel.activeEventCount() ) {
+    if ( CONFIGURATION.animatedTrayIcon && m_dataModel.activeEventCount() ) {
         m_iconNumber = ( m_iconNumber + 1 ) % NPixmaps;
-        //qDebug() << "systray icon update" << m_iconNumber;
         TRAY.setIcon( QIcon( m_pixmaps[ m_iconNumber ] ) );
     } else {
         TRAY.setIcon( Data::charmTrayIcon() );

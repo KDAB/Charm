@@ -55,6 +55,7 @@ public:
     Qt::ToolButtonStyle toolButtonStyle;
     bool showStatusBar;
     bool detectIdling;
+    bool animatedTrayIcon;
 
     // these are stored in QSettings, since we need this information to locate and open the database:
     QString configurationName;
@@ -77,7 +78,7 @@ private:
     Configuration( bool eventsInLeafsOnly, bool oneEventAtATime, User user,
                    TaskPrefilteringMode taskPrefilteringMode, TaskTrackerFontSize,
                    bool always24hEditing, DurationFormat durationFormat, bool detectIdling,
-                   Qt::ToolButtonStyle buttonstyle, bool showStatusBar );
+                   Qt::ToolButtonStyle buttonstyle, bool showStatusBar, bool animatedTrayIcon );
     Configuration();
 };
 
