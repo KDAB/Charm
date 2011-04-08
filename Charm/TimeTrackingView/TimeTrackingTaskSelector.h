@@ -63,6 +63,7 @@ private:
     QToolButton* m_editCommentButton;
     QAction* m_editCommentAction;
     QToolButton* m_taskSelectorButton;
+    QAction* m_startOtherTaskAction;
     QMenu *m_menu;
     /** The task that has been selected from the menu. */
     TaskId m_selectedTask;

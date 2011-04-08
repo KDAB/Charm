@@ -69,6 +69,7 @@ TimeTrackingTaskSelector::TimeTrackingTaskSelector(QToolBar* toolBar, QWidget *p
     , m_editCommentButton( new QToolButton( this ) )
     , m_editCommentAction( new QAction( this ) )
     , m_taskSelectorButton( new QToolButton( this ) )
+    , m_startOtherTaskAction( new QAction( tr( "Start Other Task..." ), this ) )
     , m_menu( new QMenu( tr( "Start Task" ), this ) )
     , m_selectedTask( 0 )
     , m_manuallySelectedTask( 0 )
@@ -97,12 +98,17 @@ TimeTrackingTaskSelector::TimeTrackingTaskSelector(QToolBar* toolBar, QWidget *p
     m_taskSelectorButton->setPopupMode( QToolButton::InstantPopup );
     m_taskSelectorButton->setMenu( m_menu );
     m_taskSelectorButton->setText( m_menu->title() );
+
+    m_startOtherTaskAction->setShortcut( Qt::Key_T );
+    connect( m_startOtherTaskAction, SIGNAL( triggered() ),
+             SLOT( slotManuallySelectTask() ) );
 }
 
 void TimeTrackingTaskSelector::populateEditMenu( QMenu* menu )
 {
     menu->addAction( m_stopGoAction );
     menu->addAction( m_editCommentAction );
+    menu->addAction( m_startOtherTaskAction );
 }
 
 QSize TimeTrackingTaskSelector::sizeHint() const
@@ -157,9 +163,7 @@ void TimeTrackingTaskSelector::populate( const QVector<WeeklySummary>& summaries
         m_menu->addAction( action );
     }
     // ... add action to select a task:
-    QAction* selectTaskAction = new QAction( tr( "Start Other Task..." ), m_menu );
-    connect( selectTaskAction, SIGNAL( triggered() ), SLOT( slotManuallySelectTask() ) );
-    m_menu->addAction( selectTaskAction );
+    m_menu->addAction( m_startOtherTaskAction );
     m_menu->addSeparator();
 
     TaskIdList interestingTasks;
