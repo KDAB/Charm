@@ -64,7 +64,8 @@ EventView::EventView( QToolBar* toolBar, QWidget* parent )
 //     m_commitTimer.setSingleShot( true );
 
 
-    m_actionNewEvent.setText( tr( "Create New Event..." ) );
+    m_actionNewEvent.setText( tr( "New Event..." ) );
+    m_actionNewEvent.setToolTip( tr( "Create a new Event" ) );
     m_actionNewEvent.setIcon( Data::newTaskIcon() );
     m_actionNewEvent.setShortcut( QKeySequence::New );
     toolBar->addAction( &m_actionNewEvent );
@@ -84,7 +85,8 @@ EventView::EventView( QToolBar* toolBar, QWidget* parent )
     m_actionDeleteEvent.setIcon( Data::deleteTaskIcon() );
     toolBar->addAction( &m_actionDeleteEvent );
 
-    m_actionCreateTimeSheet.setText( tr( "Create Time Sheet..." ) );
+    m_actionCreateTimeSheet.setText( tr( "Time Sheet..." ) );
+    m_actionCreateTimeSheet.setToolTip( tr( "Create a Time Sheet for this time period " ) );
     m_actionCreateTimeSheet.setIcon( Data::createReportIcon() );
     toolBar->addAction( &m_actionCreateTimeSheet );
 
