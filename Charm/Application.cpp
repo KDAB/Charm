@@ -89,9 +89,9 @@ Application::Application(int& argc, char** argv)
                 slotControllerReadyToQuit()));
 
     connectControllerAndModel(&m_controller, m_model.charmDataModel());
-    connectControllerAndView(&m_controller, &m_tasksWindow);
+    connectControllerAndView(&m_controller, &mainView());
     Q_FOREACH( CharmWindow* window, m_windows ) {
-        if ( window != &m_tasksWindow ) { // tasks view acts as the main relay
+        if ( window != &mainView() ) { // main view acts as the main relay
             connect( window, SIGNAL( emitCommand( CharmCommand* ) ),
                      &mainView(), SLOT( sendCommand( CharmCommand* ) ) );
         }
@@ -143,27 +143,27 @@ Application::Application(int& argc, char** argv)
 
     m_actionAboutDialog.setText( tr( "About Charm" ) );
     connect( &m_actionAboutDialog, SIGNAL( triggered() ),
-             &m_timeTracker,  SLOT( slotAboutDialog() ) );
+             &mainView(),  SLOT( slotAboutDialog() ) );
 
     m_actionPreferences.setText( tr( "Preferences" ) );
     m_actionPreferences.setIcon( Data::configureIcon() );
     connect( &m_actionPreferences, SIGNAL( triggered( bool ) ),
-             &m_timeTracker,  SLOT( slotEditPreferences( bool ) ) );
+             &mainView(),  SLOT( slotEditPreferences( bool ) ) );
     m_actionPreferences.setEnabled( true );
 
     m_actionImportFromXml.setText( tr( "Import from Previous Export..." ) );
     connect( &m_actionImportFromXml, SIGNAL( triggered() ),
-             &m_timeTracker,  SLOT( slotImportFromXml() ) );
+             &mainView(),  SLOT( slotImportFromXml() ) );
     m_actionExportToXml.setText( tr( "Export..." ) );
     connect( &m_actionExportToXml, SIGNAL( triggered() ),
-             &m_timeTracker,  SLOT( slotExportToXml() ) );
+             &mainView(),  SLOT( slotExportToXml() ) );
     m_actionImportTasks.setText( tr( "Import Task Definitions..." ) );
     connect( &m_actionImportTasks, SIGNAL( triggered() ),
-             &m_timeTracker,  SLOT( slotImportTasks() ) );
+             &mainView(),  SLOT( slotImportTasks() ) );
     m_actionReporting.setText( tr( "Reports..." ) );
     m_actionReporting.setShortcut( Qt::CTRL + Qt::Key_R );
     connect( &m_actionReporting, SIGNAL( triggered() ),
-             &m_timeTracker, SLOT( slotReportDialog() ) );
+             &mainView(), SLOT( slotReportDialog() ) );
 
     // set up idle detection
     m_idleDetector = IdleDetector::createIdleDetector( this );
@@ -218,7 +218,7 @@ void Application::openAWindow( bool raise ) {
         windowToOpen = m_closedWindow;
 
     if ( !windowToOpen )
-        windowToOpen = &m_timeTracker;
+        windowToOpen = &mainView();
 
     windowToOpen->show();
     if ( raise )
@@ -356,7 +356,7 @@ void Application::setState(State state)
                    "Unknown new application state");
     };
     } catch( CharmException& e ) {
-        QMessageBox::critical( &m_tasksWindow, tr( "Critical Charm Problem" ),
+        QMessageBox::critical( &mainView(), tr( "Critical Charm Problem" ),
                                e.what() );
         quit();
     }
@@ -405,7 +405,7 @@ void Application::enterConnectingState()
         if (!m_controller.initializeBackEnd(CHARM_SQLITE_BACKEND_DESCRIPTOR))
             quit();
     } catch ( CharmException& e ) {
-        QMessageBox::critical( & m_tasksWindow, QObject::tr("Database Backend Error"),
+        QMessageBox::critical( &mainView(), QObject::tr("Database Backend Error"),
                               tr( "The backend could not be initialized: %1" )
                               .arg( e.what() ) );
         slotQuitApplication();
@@ -436,7 +436,7 @@ void Application::enterConnectingState()
                                        "~/.Charm folder and restart this version of Charm and select File->Import from "
                                        "previous export and select the file you saved in the previous step.</li>"
                                        "</ul></body></html>");
-        QMessageBox::critical( & m_tasksWindow, QObject::tr("Charm Database Error"),
+        QMessageBox::critical( &mainView(), QObject::tr("Charm Database Error"),
                               message);
         slotQuitApplication();
         return;
@@ -498,7 +498,7 @@ bool Application::configure()
             << "Application::configure: an error was found within the configuration.";
         if (!CONFIGURATION.failureMessage.isEmpty())
         {
-            QMessageBox::information( &m_tasksWindow,
+            QMessageBox::information( &mainView(),
                                      tr("Configuration Problem"), CONFIGURATION.failureMessage,
                                      tr("Ok"));
             CONFIGURATION.failureMessage.clear();
@@ -530,12 +530,12 @@ bool Application::configure()
         storageDatabase = storageDatabaseDebug;
 #endif
         CONFIGURATION.localStorageDatabase = QDir::toNativeSeparators(storageDatabase);
-        ConfigurationDialog dialog(CONFIGURATION, &m_tasksWindow);
+        ConfigurationDialog dialog(CONFIGURATION, &mainView());
         if (dialog.exec())
         {
             CONFIGURATION = dialog.configuration();
             CONFIGURATION.writeTo(settings);
-            m_timeTracker.show();
+            mainView().show();
         }
         else
         {
@@ -680,8 +680,7 @@ void Application::slotMaybeIdle()
 
 CharmWindow& Application::mainView()
 {
-    // FIXME is this any good?
-    return m_tasksWindow;
+    return m_timeTracker;
 }
 
 TrayIcon& Application::trayIcon()
