@@ -81,15 +81,6 @@ void TimeTrackingWindow::stateChanged( State previous )
     }
 }
 
-void TimeTrackingWindow::sendCommand( CharmCommand* )
-{
-    Q_ASSERT( false ); // should not be called
-}
-
-void TimeTrackingWindow::commitCommand( CharmCommand* )
-{
-}
-
 void TimeTrackingWindow::restore()
 {
     show();

@@ -50,4 +50,13 @@ void TasksWindow::insertEditMenu()
     m_tasksView->populateEditMenu( editMenu);
 }
 
+void TasksWindow::sendCommand( CharmCommand* )
+{
+    Q_ASSERT( false ); // should not be called
+}
+
+void TasksWindow::commitCommand( CharmCommand* )
+{
+}
+
 #include "TasksWindow.moc"

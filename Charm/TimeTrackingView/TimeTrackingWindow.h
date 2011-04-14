@@ -21,8 +21,6 @@ public:
 
     // application:
     void stateChanged( State previous );
-    void sendCommand( CharmCommand* );
-    void commitCommand( CharmCommand* );
     void restore();
     void quit();
 

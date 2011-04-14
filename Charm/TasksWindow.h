@@ -14,6 +14,8 @@ public:
     ~TasksWindow();
 
     /* reimpl */ void stateChanged( State previous );
+    /* reimpl */ void sendCommand( CharmCommand* );
+    /* reimpl */ void commitCommand( CharmCommand* );
 
     // restore the view
     /* reimpl */ void restore();
