@@ -1,8 +1,8 @@
 PROJECT( Charm )
 IF( NOT Charm_VERSION )
         SET( Charm_VERSION_MAJOR "1" )
-        SET( Charm_VERSION_MINOR "5" )
-        SET( Charm_VERSION_PATCH "0" )
+        SET( Charm_VERSION_MINOR "6" )
+        SET( Charm_VERSION_PATCH "0-master" )
         SET( Charm_VERSION_COUNT 3 )
         SET(
                 Charm_VERSION
