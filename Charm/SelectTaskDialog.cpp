@@ -36,7 +36,10 @@ bool SelectTaskDialogProxy::filterAcceptsColumn( int column, const QModelIndex& 
 
 Qt::ItemFlags SelectTaskDialogProxy::flags( const QModelIndex & index ) const
 {
-    return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+    if ( index.isValid() )
+        return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+    else
+        return Qt::NoItemFlags;
 }
 
 QVariant SelectTaskDialogProxy::data( const QModelIndex& index, int role ) const
