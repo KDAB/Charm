@@ -28,6 +28,11 @@ ENABLE_TESTING()
 
 IF( CMAKE_BUILD_TYPE MATCHES "^[Rr]elease$" )
         ADD_DEFINITIONS( -DQT_NO_DEBUG_OUTPUT )
+ELSE()
+        MESSAGE( WARNING
+            "Only run Charm in Debug mode if you are doing development!\n"
+            "Things like idle detection behave very differently in Debug mode."
+        )
 ENDIF()
 
 # Always include the source and build directories in the include path
