@@ -33,8 +33,8 @@ get_filename_component(DeployQt4_cmake_dir "${CMAKE_CURRENT_LIST_FILE}" PATH)
 include(BundleUtilities)
 
 function(fixup_qt4_bundle app qtplugins)
-    set(libs ${ARGV3})
-    set(dirs ${ARGV4})
+    set(libs ${ARGV2})
+    set(dirs ${ARGV3})
 
     message(STATUS "fixup_qt4_bundle")
     message(STATUS "  app='${app}'")
@@ -92,8 +92,8 @@ function(fixup_qt4_bundle app qtplugins)
 endfunction(fixup_qt4_bundle)
 
 function(install_qt4_app executable qtplugins)
-    set(libs ${ARGV3})
-    set(dirs ${ARGV4})
+    set(libs ${ARGV2})
+    set(dirs ${ARGV3})
     install(CODE
 " INCLUDE( \"${CMAKE_MODULE_PATH}/DeployQt4.cmake\" )
   SET( BU_CHMOD_BUNDLE_ITEMS TRUE )
