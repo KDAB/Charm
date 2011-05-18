@@ -40,4 +40,9 @@ public:
     explicit TransactionException( const QString& text = QString() );
 };
 
+class AlreadyRunningException : public CharmException {
+public:
+    explicit AlreadyRunningException();
+};
+
 #endif

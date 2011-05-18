@@ -6,9 +6,7 @@
 #include <QtPlugin>
 #include <QSettings>
 #include <QString>
-#include <QLocalSocket>
 
-#include "Application.h"
 #include "ApplicationFactory.h"
 #include "Core/CharmExceptions.h"
 #include "CharmCMake.h"
@@ -38,21 +36,13 @@ int main ( int argc, char** argv )
         QSettings::setPath( QSettings::IniFormat, QSettings::SystemScope, sys );
     }
 
-    QApplication *app = ApplicationFactory::localApplication( argc, argv );
-
-    QLocalSocket uniqueApplicationSocket;
-    const QString serverName(Application::uniqueApplicationServerName());
-    uniqueApplicationSocket.connectToServer(serverName, QIODevice::ReadOnly);
-    if (uniqueApplicationSocket.waitForConnected(1000)) {
-        if (uniqueApplicationSocket.waitForReadyRead(1000)) {
-            using namespace std;
-            cout << "Charm already running, exiting..." << endl;
-			return 0;
-        }
-    }
-
     try {
+        QApplication *app = ApplicationFactory::localApplication( argc, argv );
         return app->exec();
+    } catch( AlreadyRunningException& e ) {
+        using namespace std;
+        cout << "Charm already running, exiting..." << endl;
+        return 0;
     } catch( CharmException& e ) {
         const QString msg( QObject::tr( "An application exception has occurred. Charm will be terminated. The error message was:\n"
                                        "%1\n"

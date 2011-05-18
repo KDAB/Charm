@@ -44,7 +44,7 @@ public:
     ~Application();
 
     static Application& instance();
-    static QString uniqueApplicationServerName();
+    static bool hasInstance();
 
     // FIXME broken by design?
     /** Configure the application.

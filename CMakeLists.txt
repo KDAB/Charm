@@ -1,7 +1,7 @@
 PROJECT( Charm )
 IF( NOT Charm_VERSION )
         SET( Charm_VERSION_MAJOR "1" )
-        SET( Charm_VERSION_MINOR "5" )
+        SET( Charm_VERSION_MINOR "6" )
         SET( Charm_VERSION_PATCH "0-master" )
         SET( Charm_VERSION_COUNT 3 )
         SET(
@@ -21,12 +21,18 @@ ENDIF()
 MESSAGE( STATUS "Building Charm ${Charm_VERSION} in ${CMAKE_BUILD_TYPE} mode" )
 
 CMAKE_MINIMUM_REQUIRED( VERSION 2.6.0 )
+SET( CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMake" )
 FIND_PACKAGE( Qt4 4.6.0 COMPONENTS QtMain QtCore QtGui QtSql QtXml QtNetwork REQUIRED )
 INCLUDE( UseQt4 )
 ENABLE_TESTING()
 
 IF( CMAKE_BUILD_TYPE MATCHES "^[Rr]elease$" )
         ADD_DEFINITIONS( -DQT_NO_DEBUG_OUTPUT )
+ELSE()
+        MESSAGE( WARNING
+            "Only run Charm in Debug mode if you are doing development!\n"
+            "Things like idle detection behave very differently in Debug mode."
+        )
 ENDIF()
 
 # Always include the source and build directories in the include path

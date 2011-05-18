@@ -27,3 +27,7 @@ InvalidTaskListException::InvalidTaskListException( const QString& message )
 TransactionException::TransactionException( const QString& text )
     : CharmException( text )
 {}
+
+AlreadyRunningException::AlreadyRunningException()
+    : CharmException( QString() )
+{}

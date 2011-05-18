@@ -160,45 +160,30 @@ EXECUTE_PROCESS(
 
 # Only support CPack packaging on newer versions of CMake.
 IF( NOT "${CMAKE_VERSION}" VERSION_LESS "2.8.4" )
+        SET( QT_PLUGINS "" )
+        IF( QT_QSQLITE_PLUGIN_RELEASE )
+            LIST( APPEND QT_PLUGINS "${QT_QSQLITE_PLUGIN_RELEASE}" )
+        ENDIF()
         IF( CMAKE_BUILD_TYPE MATCHES "^([Dd][Ee][Bb][Uu][Gg])" )
                 SET( CMAKE_INSTALL_DEBUG_LIBRARIES_ONLY TRUE )
-                SET( QT_QSQLITE_PLUGIN_PREFERRED ${QT_QSQLITE_PLUGIN_DEBUG} )
-                SET( QT_QSQLITE_PLUGIN_FALLBACK ${QT_QSQLITE_PLUGIN_RELEASE} )
-        ELSE()
-                SET( QT_QSQLITE_PLUGIN_PREFERRED ${QT_QSQLITE_PLUGIN_RELEASE} )
-                SET( QT_QSQLITE_PLUGIN_FALLBACK ${QT_QSQLITE_PLUGIN_DEBUG} )
+                IF( QT_QSQLITE_PLUGIN_DEBUG )
+                    LIST( APPEND QT_PLUGINS "${QT_QSQLITE_PLUGIN_DEBUG}" )
+                ENDIF()
         ENDIF()
 
-        IF( QT_QSQLITE_PLUGIN_PREFERRED )
-                SET( QT_SQL_PLUGINS ${QT_QSQLITE_PLUGIN_PREFERRED} )
-        ELSEIF( QT_QSQLITE_PLUGIN_FALLBACK )
-                SET( QT_SQL_PLUGINS ${QT_QSQLITE_PLUGIN_FALLBACK} )
-        ELSE()
-                MESSAGE( FATAL_ERROR "Cannot find Qt SQLite plugin!" )
+        IF( NOT QT_PLUGINS )
+                MESSAGE( FATAL_ERROR "Cannot find Qt plugins!" )
         ENDIF()
 
         SET( CMAKE_INSTALL_SYSTEM_RUNTIME_DESTINATION "${BIN_INSTALL_DIR}" )
         INCLUDE( InstallRequiredSystemLibraries )
 
-        IF( APPLE )
-                SET( PLUGINS_DIR_ONLY PlugIns )
-                SET( PLUGINS_DIR ${EXECUTABLE}/Contents/${PLUGINS_DIR_ONLY} )
-        ELSE()
-                SET( PLUGINS_DIR plugins )
-        ENDIF()
-
         IF( NOT BIN_INSTALL_DIR STREQUAL "." )
                 SET( EXECUTABLE ${BIN_INSTALL_DIR}/${EXECUTABLE} )
         ENDIF()
 
-        CONFIGURE_FILE(
-                "CMakeInstallDependencies.cmake.in"
-                "${CMAKE_CURRENT_BINARY_DIR}/CMakeInstallDependencies.cmake"
-                @ONLY
-        )
-        IF (APPLE OR WIN32)
-                INSTALL(
-                        SCRIPT "${CMAKE_CURRENT_BINARY_DIR}/CMakeInstallDependencies.cmake"
-                )
+        IF( APPLE OR WIN32 )
+                INCLUDE( DeployQt4 )
+                INSTALL_QT4_APP( "${EXECUTABLE}" "${QT_PLUGINS}" )
         ENDIF()
 ENDIF()
