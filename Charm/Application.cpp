@@ -527,8 +527,10 @@ bool Application::configure()
         const QString storageDatabaseDebug = storageDatabaseDirectory + storageDatabaseFileDebug;
         QString storageDatabase;
 #ifdef NDEBUG
+        Q_UNUSED( storageDatabaseDebug );
         storageDatabase = storageDatabaseRelease;
 #else
+        Q_UNUSED( storageDatabaseRelease );
         storageDatabase = storageDatabaseDebug;
 #endif
         CONFIGURATION.localStorageDatabase = QDir::toNativeSeparators(storageDatabase);

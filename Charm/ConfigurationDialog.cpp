@@ -10,21 +10,10 @@ ConfigurationDialog::ConfigurationDialog( const Configuration& config,
     , m_config( config )
 {
     m_ui.setupUi( this );
-
     m_ui.nameLineEdit->setText( config.user.name() );
-    m_ui.stackedWidget->setCurrentWidget( m_ui.databaseTypePage );
-    QStringList backendTypes;
-    backendTypes << "Local Database"
-        // << "Network Database" // not implemented
-        ;
-    m_ui.comboDbType->addItems( backendTypes );
-    m_ui.sqliteLocation->setText( config.localStorageDatabase );
-    m_ui.nameLineEdit->setText( config.user.name() );
-    // resize( minimumSize() );
-}
-
-ConfigurationDialog::~ConfigurationDialog()
-{
+    m_ui.databaseLocation->setText( config.localStorageDatabase );
+    connect( m_ui.buttonBox, SIGNAL( rejected() ), SLOT( reject() ) );
+    connect( m_ui.buttonBox, SIGNAL( accepted() ), SLOT( done() ) );
 }
 
 Configuration ConfigurationDialog::configuration() const
@@ -32,52 +21,41 @@ Configuration ConfigurationDialog::configuration() const
     return m_config;
 }
 
-void ConfigurationDialog::on_comboDbType_currentIndexChanged( int )
+void ConfigurationDialog::on_databaseLocation_textChanged( const QString& text )
 {
+    checkInput();
 }
 
-void ConfigurationDialog::on_dbTypeNextButton_clicked()
-{
-    if ( m_ui.comboDbType->currentIndex() == 0 ) {
-        m_ui.stackedWidget->setCurrentWidget( m_ui.sqliteDatabasePage );
-    }
-    // else ...
-}
-
-void ConfigurationDialog::on_sqliteBackButton_clicked()
-{
-    m_ui.stackedWidget->setCurrentWidget( m_ui.databaseTypePage );
-}
-
-void ConfigurationDialog::on_sqliteLocation_textChanged( const QString& text )
-{
-    m_ui.sqliteDoneButton->setEnabled( ! text.isEmpty() );
-}
-
-void ConfigurationDialog::on_sqliteDoneButton_clicked()
+void ConfigurationDialog::done()
 {
     m_config.installationId = 1;
     m_config.user.setId( 1 );
     m_config.user.setName( m_ui.nameLineEdit->text() );
     m_config.localStorageType = CHARM_SQLITE_BACKEND_DESCRIPTOR;
-    m_config.localStorageDatabase = m_ui.sqliteLocation->text();
+    m_config.localStorageDatabase = m_ui.databaseLocation->text();
     m_config.newDatabase = true;
     // m_config.failure = false; currently set by application
     accept();
 }
 
-void ConfigurationDialog::on_sqliteLocationButton_clicked()
+void ConfigurationDialog::on_databaseLocationButton_clicked()
 {
     QString filename = QFileDialog::getSaveFileName( this, tr( "Choose Database Location..." ) );
     if ( ! filename.isNull() )
     {
-        m_ui.sqliteLocation->setText( filename );
+        m_ui.databaseLocation->setText( filename );
     }
 }
 
 void ConfigurationDialog::on_nameLineEdit_textChanged( const QString& text )
 {
-    m_ui.nameLineEdit->setEnabled( ! text.isEmpty() );
+    checkInput();
+}
+
+void ConfigurationDialog::checkInput()
+{
+    const bool ok = ! m_ui.databaseLocation->text().isEmpty() && ! m_ui.nameLineEdit->text().isEmpty();
+    m_ui.buttonBox->button( QDialogButtonBox::Ok )->setEnabled( ok );
 }
 
 #include "ConfigurationDialog.moc"

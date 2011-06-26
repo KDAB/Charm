@@ -14,20 +14,17 @@ class ConfigurationDialog : public QDialog
 
 public:
     explicit ConfigurationDialog( const Configuration&, QWidget* parent );
-    ~ConfigurationDialog();
-
     Configuration configuration() const;
 
 private slots:
-    void on_comboDbType_currentIndexChanged( int );
-    void on_dbTypeNextButton_clicked();
-    void on_sqliteBackButton_clicked();
-    void on_sqliteDoneButton_clicked();
-    void on_sqliteLocationButton_clicked();
-    void on_sqliteLocation_textChanged( const QString& text );
+    void on_databaseLocationButton_clicked();
+    void on_databaseLocation_textChanged( const QString& text );
     void on_nameLineEdit_textChanged( const QString& text );
 
+    void done();
+
 private:
+    void checkInput();
     Configuration m_config;
     Ui::ConfigurationDialog m_ui;
 };
