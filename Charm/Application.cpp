@@ -47,6 +47,7 @@ Application::Application(int& argc, char** argv)
     , m_actionExportToXml( this )
     , m_actionImportFromXml( this )
     , m_actionImportTasks( this )
+    , m_actionExportTasks( this )
     , m_actionReporting( this )
     , m_idleDetector( 0 )
     , m_timeTrackerHiddenFromSystrayToggle( false )
@@ -87,12 +88,6 @@ Application::Application(int& argc, char** argv)
     qRegisterMetaType<State> ("State");
     qRegisterMetaType<Event> ("Event");
 
-    // MIRKO_TEMP_REM needed?
-    /*
-    // window title updates
-    connect( &m_controller, SIGNAL( currentBackendStatus( const QString& ) ),
-    SLOT( slotCurrentBackendStatusChanged( const QString& ) ) );
-    */
     // exit process (app will only exit once controller says it is ready)
     connect(&m_controller, SIGNAL(readyToQuit()), SLOT(
                 slotControllerReadyToQuit()));
@@ -120,9 +115,7 @@ Application::Application(int& argc, char** argv)
     m_actionStopAllTasks.setShortcut( Qt::Key_Escape );
     m_actionStopAllTasks.setShortcutContext( Qt::ApplicationShortcut );
     mainView().addAction(&m_actionStopAllTasks); // for the shortcut to work
-    m_timeTracker.addAction(&m_actionStopAllTasks); // for the shortcut to work
-    connect( &m_actionStopAllTasks, SIGNAL( triggered() ),
-             SLOT( slotStopAllTasks() ) );
+    connect( &m_actionStopAllTasks, SIGNAL( triggered() ), SLOT( slotStopAllTasks() ) );
 
     m_systrayContextMenu.addAction( &m_actionStopAllTasks );
     m_systrayContextMenu.addSeparator();
@@ -160,15 +153,18 @@ Application::Application(int& argc, char** argv)
              &mainView(),  SLOT( slotEditPreferences( bool ) ) );
     m_actionPreferences.setEnabled( true );
 
-    m_actionImportFromXml.setText( tr( "Import from Previous Export..." ) );
+    m_actionImportFromXml.setText( tr( "Import Database from Previous Export..." ) );
     connect( &m_actionImportFromXml, SIGNAL( triggered() ),
              &mainView(),  SLOT( slotImportFromXml() ) );
-    m_actionExportToXml.setText( tr( "Export..." ) );
+    m_actionExportToXml.setText( tr( "Export Database..." ) );
     connect( &m_actionExportToXml, SIGNAL( triggered() ),
              &mainView(),  SLOT( slotExportToXml() ) );
-    m_actionImportTasks.setText( tr( "Import Task Definitions..." ) );
+    m_actionImportTasks.setText( tr( "Import and Merge Task Definitions..." ) );
     connect( &m_actionImportTasks, SIGNAL( triggered() ),
              &mainView(),  SLOT( slotImportTasks() ) );
+    m_actionExportTasks.setText( tr( "Export Task Definitions..." ) );
+    connect( &m_actionExportTasks, SIGNAL( triggered() ),
+             &mainView(), SLOT( slotExportTasks() ) );
     m_actionReporting.setText( tr( "Reports..." ) );
     m_actionReporting.setShortcut( Qt::CTRL + Qt::Key_R );
     connect( &m_actionReporting, SIGNAL( triggered() ),
@@ -242,10 +238,11 @@ void Application::createFileMenu( QMenuBar *menuBar )
 {
     QMenu* menu = new QMenu( menuBar );
     menu->setTitle ( tr( "File" ) );
-    menu->addAction( &m_actionExportToXml );
     menu->addAction( &m_actionImportFromXml );
+    menu->addAction( &m_actionExportToXml );
     menu->addSeparator();
     menu->addAction( &m_actionImportTasks );
+    menu->addAction( &m_actionExportTasks );
     menu->addSeparator();
     menu->addAction( &m_actionQuit );
     menuBar->addMenu( menu );

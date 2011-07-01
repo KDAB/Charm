@@ -1,4 +1,3 @@
-// #include "View.h"
 #include "CommandEmitterInterface.h"
 #include "CharmCommand.h"
 
