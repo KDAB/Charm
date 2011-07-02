@@ -51,6 +51,7 @@ public slots:
     void slotExportToXml();
     void slotImportFromXml();
     void slotImportTasks();
+    void slotExportTasks();
     void maybeIdle();
 
 protected:

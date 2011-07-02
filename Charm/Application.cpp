@@ -47,6 +47,7 @@ Application::Application(int& argc, char** argv)
     , m_actionExportToXml( this )
     , m_actionImportFromXml( this )
     , m_actionImportTasks( this )
+    , m_actionExportTasks( this )
     , m_actionReporting( this )
     , m_idleDetector( 0 )
     , m_timeTrackerHiddenFromSystrayToggle( false )
@@ -169,6 +170,9 @@ Application::Application(int& argc, char** argv)
     m_actionImportTasks.setText( tr( "Import Task Definitions..." ) );
     connect( &m_actionImportTasks, SIGNAL( triggered() ),
              &mainView(),  SLOT( slotImportTasks() ) );
+    m_actionExportTasks.setText( tr( "Export Task Definitions..." ) );
+    connect( &m_actionExportTasks, SIGNAL( triggered() ),
+             &mainView(), SLOT( slotExportTasks() ) );
     m_actionReporting.setText( tr( "Reports..." ) );
     m_actionReporting.setShortcut( Qt::CTRL + Qt::Key_R );
     connect( &m_actionReporting, SIGNAL( triggered() ),
@@ -246,6 +250,7 @@ void Application::createFileMenu( QMenuBar *menuBar )
     menu->addAction( &m_actionImportFromXml );
     menu->addSeparator();
     menu->addAction( &m_actionImportTasks );
+    menu->addAction( &m_actionExportTasks );
     menu->addSeparator();
     menu->addAction( &m_actionQuit );
     menuBar->addMenu( menu );
