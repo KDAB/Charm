@@ -328,7 +328,7 @@ void TimeTrackingWindow::slotImportFromXml()
 
 void TimeTrackingWindow::slotImportTasks()
 {
-    MakeTemporarilyVisible m( this ); Q_UNUSED( m );
+    const MakeTemporarilyVisible m( this ); Q_UNUSED( m );
     const QString filename = QFileDialog::getOpenFileName( this, tr( "Please Select File" ), "",
                                                            tr("Task definitions (*.xml);;All Files (*)") );
     if ( filename.isNull() ) return;
