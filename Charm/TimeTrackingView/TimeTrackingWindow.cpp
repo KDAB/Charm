@@ -328,12 +328,12 @@ void TimeTrackingWindow::slotImportFromXml()
 
 void TimeTrackingWindow::slotImportTasks()
 {
-    MakeTemporarilyVisible m( this );
-    QString filename = QFileDialog::getOpenFileName( this, tr( "Please Select File" ), "", tr("Task definitions (*.xml);;All Files (*)") );
-    if ( filename.isEmpty() ) return;
+    const MakeTemporarilyVisible m( this ); Q_UNUSED( m );
+    const QString filename = QFileDialog::getOpenFileName( this, tr( "Please Select File" ), "",
+                                                           tr("Task definitions (*.xml);;All Files (*)") );
+    if ( filename.isNull() ) return;
     QFileInfo fileinfo( filename );
     Q_ASSERT( fileinfo.exists() );
-
 
     TaskExport exporter;
     TaskListMerger merger;
@@ -360,6 +360,25 @@ void TimeTrackingWindow::slotImportTasks()
                                 ?  tr( "The selected task definitions are invalid and cannot be imported." )
                                     : tr( "There was an error importing the task definitions:<br />%1" ).arg( e.what() );
         QMessageBox::critical( this, tr(  "Invalid Task Definitions" ), message);
+        return;
+    }
+}
+
+void TimeTrackingWindow::slotExportTasks()
+{
+    const MakeTemporarilyVisible m( this );
+    const QString filename = QFileDialog::getSaveFileName( this, tr( "Please select export filename" ), "",
+                                                     tr("Task definitions (*.xml);;All Files (*)") );
+    if ( filename.isNull() ) return;
+
+    try {
+        const TaskList tasks = DATAMODEL->getAllTasks();
+        TaskExport::writeTo( filename, tasks );
+    } catch ( XmlSerializationException& e) {
+        const QString message = e.what().isEmpty()
+                ? tr( "Error exporting the task definitions!" )
+                : tr( "There was an error exporting the task definitions:<br />%1" ).arg( e.what() );
+        QMessageBox::critical( this, tr(  "Error during export" ), message);
         return;
     }
 }
