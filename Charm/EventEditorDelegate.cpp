@@ -134,7 +134,7 @@ QRect EventEditorDelegate::paint( QPainter* painter,
     taskRect.setWidth( option.rect.width() - decoration.width() );
     taskRect.setHeight( option.rect.height() );
     QPoint decorationPoint ( option.rect.width() - decoration.width(),
-                             option.rect.top() );
+                             option.rect.top() + ( option.rect.height() - decoration.height() ) / 2 );
 
     QRect boundingRect;
     QString elidedTask = elidedTaskName( taskName, mainFont, taskRect.width() );
