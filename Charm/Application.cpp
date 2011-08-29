@@ -46,6 +46,8 @@ Application::Application(int& argc, char** argv)
     , m_actionPreferences( this )
     , m_actionExportToXml( this )
     , m_actionImportFromXml( this )
+    , m_actionSyncTasks( this )
+    , m_actionHTConfig( this )
     , m_actionImportTasks( this )
     , m_actionExportTasks( this )
     , m_actionReporting( this )
@@ -159,6 +161,12 @@ Application::Application(int& argc, char** argv)
     m_actionExportToXml.setText( tr( "Export Database..." ) );
     connect( &m_actionExportToXml, SIGNAL( triggered() ),
              &mainView(),  SLOT( slotExportToXml() ) );
+    m_actionSyncTasks.setText( tr( "Sync Task Definitions..." ) );
+    connect( &m_actionSyncTasks, SIGNAL( triggered() ),
+             &mainView(),  SLOT( slotSyncTasks() ) );
+    m_actionHTConfig.setText( tr( "Sync and Upload Configuration..." ) );
+    connect( &m_actionHTConfig, SIGNAL( triggered() ),
+             &mainView(),  SLOT( slotHTConfig() ) );
     m_actionImportTasks.setText( tr( "Import and Merge Task Definitions..." ) );
     connect( &m_actionImportTasks, SIGNAL( triggered() ),
              &mainView(),  SLOT( slotImportTasks() ) );
@@ -240,6 +248,9 @@ void Application::createFileMenu( QMenuBar *menuBar )
     menu->setTitle ( tr( "File" ) );
     menu->addAction( &m_actionImportFromXml );
     menu->addAction( &m_actionExportToXml );
+    menu->addSeparator();
+    menu->addAction( &m_actionSyncTasks );
+    menu->addAction( &m_actionHTConfig );
     menu->addSeparator();
     menu->addAction( &m_actionImportTasks );
     menu->addAction( &m_actionExportTasks );

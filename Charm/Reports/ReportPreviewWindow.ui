@@ -47,6 +47,9 @@
       </widget>
      </item>
      <item>
+      <layout class="QHBoxLayout" name="customButtonLayout"/>
+     </item>
+     <item>
       <widget class="QPushButton" name="pushButtonSave">
        <property name="text">
         <string>Save As &amp;XML...</string>

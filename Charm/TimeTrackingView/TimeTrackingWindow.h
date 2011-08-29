@@ -50,11 +50,15 @@ public slots:
     void slotReportDialog();
     void slotExportToXml();
     void slotImportFromXml();
+    void slotSyncTasks();
+    void slotHTConfig();
     void slotImportTasks();
     void slotExportTasks();
     void maybeIdle();
 
 protected:
+    void importTasksFromFile(const QString &filename);
+
     /* reimpl */ void insertEditMenu();
 
 private slots:
