@@ -24,6 +24,7 @@ protected:
     QDomDocument createReportTemplate();
     QPushButton* saveToXmlButton();
     QPushButton* saveToTextButton();
+    QLayout* customButtonLayout();
 
 private slots:
     virtual void slotSaveToXml();

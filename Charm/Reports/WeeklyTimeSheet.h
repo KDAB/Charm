@@ -54,6 +54,10 @@ public:
 
     typedef QMap< TaskId, QVector<int> > SecondsMap;
 
+private slots:
+
+    void slotUploadTimesheet();
+
 private:
         enum TimeSheetTableColumns {
         Column_Task,
@@ -69,6 +73,7 @@ private:
     };
 
     QString getFileName( const QString& filter );
+    QByteArray saveToXml();
 
     // reimpl
     void slotUpdate();
