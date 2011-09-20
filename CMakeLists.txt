@@ -1,14 +1,17 @@
 PROJECT( Charm )
-IF( NOT Charm_VERSION )
-        SET( Charm_VERSION_MAJOR "1" )
-        SET( Charm_VERSION_MINOR "5" )
-        SET( Charm_VERSION_PATCH "1-branch" )
-        SET( Charm_VERSION_COUNT 3 )
-        SET(
-                Charm_VERSION
-                "${Charm_VERSION_MAJOR}.${Charm_VERSION_MINOR}.${Charm_VERSION_PATCH}"
-        )
+EXECUTE_PROCESS( COMMAND git describe --tags --dirty --abbrev=1
+                 RESULT_VARIABLE GIT_RESULT
+                 OUTPUT_VARIABLE GIT_DESCRIBE )
+STRING( STRIP "${GIT_DESCRIBE}" GIT_DESCRIBE )
+IF( NOT GIT_RESULT EQUAL 0 )
+    MESSAGE( FATAL_ERROR "Cannot get 'git describe' version!" )
 ENDIF()
+
+STRING( REGEX MATCH "^([0-9]+)\\.([0-9]+)\\.(.*)$" Charm_VERSION "${GIT_DESCRIBE}")
+SET( Charm_VERSION_MAJOR "${CMAKE_MATCH_1}" )
+SET( Charm_VERSION_MINOR "${CMAKE_MATCH_2}" )
+SET( Charm_VERSION_PATCH "${CMAKE_MATCH_3}" )
+SET( Charm_VERSION_COUNT 3 )
 
 IF( NOT CMAKE_BUILD_TYPE )
         SET( CMAKE_BUILD_TYPE "Release" CACHE STRING "" FORCE )
