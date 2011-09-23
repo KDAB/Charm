@@ -2,6 +2,7 @@
 #define CHARM_XMLSERIALIZATION_H
 
 #include <QDomDocument>
+#include <QHash>
 #include <QString>
 
 #include "Task.h"
@@ -24,12 +25,15 @@ public:
     static void writeTo( const QString& filename, const TaskList& tasks );
     void readFrom( const QString& filename );
     const TaskList& tasks() const;
-    QDateTime exportTime() const;
+    QString metadata( const QString& key ) const;
     static QString reportType();
 
+    QDateTime exportTime() const;
+
 private:
+
     TaskList m_tasks;
-    QString m_userName;
+    QHash<QString,QString> m_metadata;
     QDateTime m_exportTime;
 };
 

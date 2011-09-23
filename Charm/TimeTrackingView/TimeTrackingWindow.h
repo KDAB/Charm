@@ -8,6 +8,7 @@
 #include "TimeTrackingView/WeeklySummary.h"
 #include "Reports/ReportDialog.h"
 
+class HttpJob;
 class CharmCommand;
 class TimeTrackingView;
 
@@ -51,10 +52,10 @@ public slots:
     void slotExportToXml();
     void slotImportFromXml();
     void slotSyncTasks();
-    void slotHTConfig();
     void slotImportTasks();
     void slotExportTasks();
     void maybeIdle();
+    void slotTasksDownloaded( HttpJob* );
 
 protected:
     void importTasksFromFile(const QString &filename);

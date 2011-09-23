@@ -17,8 +17,7 @@
 #include "WeeklyTimeSheet.h"
 #include "CharmReport.h"
 #include "DateEntrySyncer.h"
-#include "HttpClient/HTClientDialog.h"
-#include "HttpClient/HTUploadTimesheet.h"
+#include "HttpClient/UploadTimesheetJob.h"
 
 #include "CharmCMake.h"
 
@@ -195,9 +194,9 @@ WeeklyTimeSheetReport::WeeklyTimeSheetReport( QWidget* parent )
     , m_activeTasksOnly( false )
     , m_report( 0 )
 {
-    QPushButton* m_pbutton = new QPushButton( tr("Upload" ), this );
-    customButtonLayout()->addWidget( m_pbutton );
-    connect( m_pbutton, SIGNAL( released() ), SLOT( slotUploadTimesheet() ) );
+
+    QPushButton* upload = uploadButton();
+    connect(upload, SIGNAL(clicked()), SLOT(slotUploadTimesheet()) );
 }
 
 WeeklyTimeSheetReport::~WeeklyTimeSheetReport()
@@ -743,12 +742,21 @@ void WeeklyTimeSheetReport::slotSaveToText()
 
 void WeeklyTimeSheetReport::slotUploadTimesheet()
 {
-    HTUploadTimesheet client;
-    HTClientDialog dialog( client );
+    UploadTimesheetJob* client = new UploadTimesheetJob( this );
+    connect( client, SIGNAL(finished(HttpJob*)), this, SLOT(slotTimesheetUploaded(HttpJob*)) );
+    client->setParentWidget( this );
+    client->setPayload( saveToXml() );
+    client->start();
+}
 
-    client.setPayload( saveToXml() );
+void WeeklyTimeSheetReport::slotTimesheetUploaded(HttpJob* client) {
 
-    dialog.exec();
+    if ( client->error() == HttpJob::Canceled )
+        return;
+    if ( client->error()  )
+        QMessageBox::critical(this, tr("Error"), tr("Could not upload timesheet: %1").arg( client->errorString() ) );
+    else
+        QMessageBox::information(this, tr("Timesheet Uploaded"), tr("Your timesheet was successfully uploaded."));
 }
 
 #include "WeeklyTimeSheet.moc"
