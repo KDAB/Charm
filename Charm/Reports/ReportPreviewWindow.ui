@@ -47,7 +47,11 @@
       </widget>
      </item>
      <item>
-      <layout class="QHBoxLayout" name="customButtonLayout"/>
+      <widget class="QPushButton" name="pushButtonUpload">
+       <property name="text">
+        <string>Upload</string>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QPushButton" name="pushButtonSave">

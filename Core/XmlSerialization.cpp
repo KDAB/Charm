@@ -6,6 +6,18 @@
 #include "Configuration.h"
 #include "CharmConstants.h"
 
+static QHash<QString,QString> readMetadata( const QDomElement& metadata ) {
+    QHash<QString,QString> l;
+    const QDomNodeList cs = metadata.childNodes();
+    for ( int i = 0; i < cs.count(); ++i ) {
+        QDomElement e = cs.at( i ).toElement();
+        if ( e.isNull() )
+            continue;
+        l.insert( e.tagName(), e.text() );
+    }
+    return l;
+}
+
 namespace XmlSerialization {
 
     QString reportTagName() { 
@@ -135,14 +147,13 @@ void TaskExport::readFrom( const QString& filename )
     QDomElement metadata = XmlSerialization::metadataElement( document );
     QDomElement report = XmlSerialization::reportElement( document );
 
+    m_metadata = readMetadata( metadata );
+
     // from metadata, read the export time stamp:
     m_exportTime = XmlSerialization::creationTime( metadata );
-    m_userName = XmlSerialization::userName( metadata );
     // from report, read tasks:
     QDomElement tasksElement = report.firstChildElement( Task::taskListTagName() );
     m_tasks = Task::readTasksElement( tasksElement, CHARM_DATABASE_VERSION );
-    qDebug() << "XmlSerialization::readFrom: loaded task definitions exported by"
-             << m_userName << "as of" << m_exportTime;
 }
 
 const TaskList& TaskExport::tasks() const
@@ -155,4 +166,7 @@ QDateTime TaskExport::exportTime() const
     return m_exportTime;
 }
 
-
+QString TaskExport::metadata( const QString& key ) const
+{
+    return m_metadata.value( key, QString() );
+}

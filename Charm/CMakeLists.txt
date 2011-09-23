@@ -52,11 +52,9 @@ SET(
         Commands/CommandMakeAndActivateEvent.cpp
         Idle/IdleDetector.cpp
         Idle/IdleCorrectionDialog.cpp
-        HttpClient/HTClient.cpp
-        HttpClient/HTClientDialog.cpp
-        HttpClient/HTConfigDialog.cpp
-        HttpClient/HTGetProjectCodes.cpp
-        HttpClient/HTUploadTimesheet.cpp
+        HttpClient/HttpJob.cpp
+        HttpClient/GetProjectCodesJob.cpp
+        HttpClient/UploadTimesheetJob.cpp
 )
 
 SET(IDLEDETECTION_LIBS)
@@ -100,8 +98,6 @@ QT4_WRAP_UI(
         SelectTaskDialog.ui
         CharmAboutDialog.ui
         Idle/IdleCorrectionDialog.ui
-        HttpClient/HTConfigDialog.ui
-        HttpClient/HTClientDialog.ui
 )
 
 QT4_ADD_RESOURCES( Resources_SRCS CharmResources.qrc )

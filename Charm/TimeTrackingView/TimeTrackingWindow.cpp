@@ -30,9 +30,7 @@
 #include "Commands/CommandImportFromXml.h"
 #include "Idle/IdleDetector.h"
 #include "Idle/IdleCorrectionDialog.h"
-#include "HttpClient/HTClientDialog.h"
-#include "HttpClient/HTConfigDialog.h"
-#include "HttpClient/HTGetProjectCodes.h"
+#include "HttpClient/GetProjectCodesJob.h"
 
 
 TimeTrackingWindow::TimeTrackingWindow( QWidget* parent )
@@ -332,35 +330,41 @@ void TimeTrackingWindow::slotImportFromXml()
 
 void TimeTrackingWindow::slotSyncTasks()
 {
-    HTGetProjectCodes client;
-    HTClientDialog dialog( client );
-
-    if (dialog.exec() == QDialog::Accepted) {
-        QTemporaryFile file;
-        if ( file.open() ) {
-            file.write( client.payload() );
-            importTasksFromFile(file.fileName());
-        }
-    }
+    GetProjectCodesJob* client = new GetProjectCodesJob( this );
+    client->setParentWidget( this );
+    connect(client, SIGNAL(finished(HttpJob*)), this, SLOT(slotTasksDownloaded(HttpJob*)) );
+    client->start();
 }
 
-void TimeTrackingWindow::slotHTConfig()
+void TimeTrackingWindow::slotTasksDownloaded( HttpJob* job_ )
 {
-    HTGetProjectCodes client;
-    HTConfigDialog dialog( client );
+    GetProjectCodesJob* job = qobject_cast<GetProjectCodesJob*>( job_ );
+    Q_ASSERT( job );
+    if ( job->error() == HttpJob::Canceled )
+        return;
 
-    /* read config */
-
-    if (dialog.exec() == QDialog::Accepted) {
-        /* save config */
+    if ( job->error() ) {
+        QMessageBox::critical( this, tr("Error"), tr("Could not download the task list: %1").arg( job->errorString() ) );
+        return;
     }
+    QTemporaryFile file;
+    if ( !file.open() ) {
+        QMessageBox::critical( this, tr("Error"), tr("Could not write timecode data to temporary file: %1").arg( file.errorString() ) );
+        return;
+    }
+
+    file.write( job->payload() );
+    file.close();
+    importTasksFromFile( file.fileName() );
 }
 
 void TimeTrackingWindow::slotImportTasks()
 {
     const QString filename = QFileDialog::getOpenFileName( this, tr( "Please Select File" ), "",
                                                            tr("Task definitions (*.xml);;All Files (*)") );
-    importTasksFromFile(filename);
+    if ( filename.isNull() )
+        return;
+    importTasksFromFile( filename );
 }
 
 void TimeTrackingWindow::slotExportTasks()
@@ -433,11 +437,17 @@ void TimeTrackingWindow::maybeIdle()
     detector->clear();
 }
 
-void TimeTrackingWindow::importTasksFromFile(const QString &filename)
+static void setValueIfNotNull(QSettings* s, const QString& key, const QString& value )
 {
-    const MakeTemporarilyVisible m( this ); Q_UNUSED( m );
+    if ( !value.isNull() )
+        s->setValue( key, value );
+}
 
-    if ( filename.isNull() ) return;
+void TimeTrackingWindow::importTasksFromFile( const QString &filename )
+{
+    const MakeTemporarilyVisible m( this );
+    Q_UNUSED( m );
+
     QFileInfo fileinfo( filename );
     Q_ASSERT( fileinfo.exists() );
 
@@ -461,6 +471,13 @@ void TimeTrackingWindow::importTasksFromFile(const QString &filename)
                 sendCommand( cmd );
             }
         }
+        QSettings settings;
+        settings.beginGroup( "httpconfig" );
+        setValueIfNotNull( &settings, QLatin1String("username"), exporter.metadata( QLatin1String("username") ) );
+        setValueIfNotNull( &settings, QLatin1String("portalUrl"), exporter.metadata( QLatin1String("portal-url") ) );
+        setValueIfNotNull( &settings, QLatin1String("loginUrl"), exporter.metadata( QLatin1String("login-url") ) );
+        setValueIfNotNull( &settings, QLatin1String("timesheetUploadUrl"), exporter.metadata( QLatin1String("timesheet-upload-url") ) );
+        setValueIfNotNull( &settings, QLatin1String("projectCodeDownloadUrl"), exporter.metadata( QLatin1String("project-code-download-url") ) );
     } catch(  CharmException& e ) {
         const QString message = e.what().isEmpty()
                                 ?  tr( "The selected task definitions are invalid and cannot be imported." )

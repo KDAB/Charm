@@ -11,6 +11,8 @@ namespace Ui {
     class WeeklyTimeSheetConfigurationPage;
 }
 
+class HttpJob;
+
 class WTSConfigurationPage : public ReportConfigurationPage
 {
     Q_OBJECT
@@ -57,7 +59,7 @@ public:
 private slots:
 
     void slotUploadTimesheet();
-
+    void slotTimesheetUploaded(HttpJob*);
 private:
         enum TimeSheetTableColumns {
         Column_Task,
