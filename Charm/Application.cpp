@@ -260,10 +260,8 @@ void Application::setState(State state)
 {
     if (m_state == state)
         return;
-#ifndef NDEBUG
     qDebug() << "Application::setState: going from" << StateNames[m_state]
              << "to" << StateNames[state];
-#endif
     State previous = m_state;
 
     try {
