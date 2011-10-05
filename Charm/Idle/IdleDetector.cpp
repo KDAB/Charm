@@ -10,9 +10,9 @@
 #include "X11IdleDetector.h"
 
 #ifdef NDEBUG
-    #define IDLE_TIME 10
+static const int IDLE_TIME = 360;
 #else
-    #define IDLE_TIME 1
+static const int IDLE_TIME = 10;
 #endif
 
 IdleDetector::IdleDetector( QObject* parent )
