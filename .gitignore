@@ -14,5 +14,6 @@ Tests/*Tests
 Thumbs.db
 *.a
 *.moc
+*.moc_parameters
 *.qrc.depends
 qrc_*.cxx
