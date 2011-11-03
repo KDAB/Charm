@@ -1,6 +1,6 @@
 PROJECT( Charm )
 FIND_PACKAGE( Git QUIET REQUIRED )
-EXECUTE_PROCESS( COMMAND ${GIT_EXECUTABLE} describe --tags --dirty --abbrev=1
+EXECUTE_PROCESS( COMMAND ${GIT_EXECUTABLE} describe --tags --abbrev=1
                  RESULT_VARIABLE GIT_RESULT
                  OUTPUT_VARIABLE GIT_DESCRIBE
                  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR} )
