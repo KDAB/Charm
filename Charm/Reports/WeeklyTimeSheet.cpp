@@ -18,6 +18,8 @@
 #include "CharmReport.h"
 #include "DateEntrySyncer.h"
 
+#include "CharmCMake.h"
+
 #include "ui_WeeklyTimeSheetConfigurationPage.h"
 
 WTSConfigurationPage::WTSConfigurationPage( ReportDialog* parent )
@@ -536,6 +538,10 @@ void  WeeklyTimeSheetReport::slotSaveToXml()
         // find metadata and report element:
         QDomElement root = document.documentElement();
         QDomElement metadata = XmlSerialization::metadataElement( document );
+	QDomElement charmVersion = document.createElement( "charmversion" );
+	QDomText charmVersionString = document.createTextNode( CHARM_VERSION );
+	charmVersion.appendChild( charmVersionString );
+	metadata.appendChild( charmVersion );
         QDomElement report = XmlSerialization::reportElement( document );
         Q_ASSERT( !root.isNull() && !metadata.isNull() && !report.isNull() );
 
