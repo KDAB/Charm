@@ -17,6 +17,7 @@
 #include "WeeklyTimeSheet.h"
 #include "CharmReport.h"
 #include "DateEntrySyncer.h"
+#include "HttpClient/UploadTimesheetJob.h"
 
 #include "CharmCMake.h"
 
@@ -193,6 +194,9 @@ WeeklyTimeSheetReport::WeeklyTimeSheetReport( QWidget* parent )
     , m_activeTasksOnly( false )
     , m_report( 0 )
 {
+
+    QPushButton* upload = uploadButton();
+    connect(upload, SIGNAL(clicked()), SLOT(slotUploadTimesheet()) );
 }
 
 WeeklyTimeSheetReport::~WeeklyTimeSheetReport()
@@ -531,6 +535,47 @@ void  WeeklyTimeSheetReport::slotSaveToXml()
     if (filename.isEmpty())
         return;
 
+    QByteArray payload = saveToXml();
+    if (payload.isEmpty())
+        return; // Error should have been already displayed by saveToXml()
+
+    QFile file( filename );
+    if ( file.open( QIODevice::WriteOnly ) ) {
+        file.write( payload );
+    } else {
+        QMessageBox::critical( this, tr( "Error saving report" ),
+                               tr( "Cannot write to selected location." ) );
+    }
+}
+
+QString WeeklyTimeSheetReport::getFileName( const QString& filter )
+{
+    QSettings settings;
+    QString path;
+    if ( settings.contains( MetaKey_ReportsRecentSavePath ) ) {
+        path = settings.value( MetaKey_ReportsRecentSavePath ).toString();
+        QDir dir( path );
+        if ( !dir.exists() ) path = QString();
+    }
+    // suggest file name:
+    QString suggestedFilename = tr( "WeeklyTimeSheet-%1-%2" )
+                                .arg( m_yearOfWeek )
+                                .arg( m_weekNumber, 2, 10, QChar('0') );
+    path += QDir::separator() + suggestedFilename;
+    // ask:
+    QString filename = QFileDialog::getSaveFileName( this, tr( "Enter File Name" ), path, filter );
+    if ( filename.isEmpty() )
+        return QString();
+    QFileInfo fileinfo( filename );
+    path = fileinfo.absolutePath();
+    if ( !path.isEmpty() ) {
+        settings.setValue( MetaKey_ReportsRecentSavePath, path );
+    }
+    return filename;
+}
+
+QByteArray WeeklyTimeSheetReport::saveToXml()
+{
     try {
         // now create the report:
         QDomDocument document = XmlSerialization::createXmlTemplate( "weekly-timesheet" );
@@ -642,45 +687,15 @@ void  WeeklyTimeSheetReport::slotSaveToXml()
             }
         }
 
-        QFile file( filename );
-        if ( file.open( QIODevice::WriteOnly ) ) {
-            QTextStream stream( &file );
-            document.save( stream, 4 );
-        } else {
-            QMessageBox::critical( this, tr( "Error saving report" ),
-                                   tr( "Cannot write to selected location." ) );
-        }
 //     qDebug() << "WeeklyTimeSheetReport::slotSaveToXml: generated XML:" << endl
 //              << document.toString( 4 );
+//
+       return document.toByteArray( 4 );
     } catch ( XmlSerializationException& e ) {
         QMessageBox::critical( this, tr( "Error exporting the report" ), e.what() );
     }
-}
 
-QString WeeklyTimeSheetReport::getFileName( const QString& filter )
-{
-    QSettings settings;
-    QString path;
-    if ( settings.contains( MetaKey_ReportsRecentSavePath ) ) {
-        path = settings.value( MetaKey_ReportsRecentSavePath ).toString();
-        QDir dir( path );
-        if ( !dir.exists() ) path = QString();
-    }
-    // suggest file name:
-    QString suggestedFilename = tr( "WeeklyTimeSheet-%1-%2" )
-                                .arg( m_yearOfWeek )
-                                .arg( m_weekNumber, 2, 10, QChar('0') );
-    path += QDir::separator() + suggestedFilename;
-    // ask:
-    QString filename = QFileDialog::getSaveFileName( this, tr( "Enter File Name" ), path, filter );
-    if ( filename.isEmpty() )
-        return QString();
-    QFileInfo fileinfo( filename );
-    path = fileinfo.absolutePath();
-    if ( !path.isEmpty() ) {
-        settings.setValue( MetaKey_ReportsRecentSavePath, path );
-    }
-    return filename;
+    return QByteArray();
 }
 
 void WeeklyTimeSheetReport::slotSaveToText()
@@ -723,6 +738,25 @@ void WeeklyTimeSheetReport::slotSaveToText()
     }
     stream << '\n';
     stream << "Week total: " << hoursAndMinutes( totalsLine.total() ) << '\n';
+}
+
+void WeeklyTimeSheetReport::slotUploadTimesheet()
+{
+    UploadTimesheetJob* client = new UploadTimesheetJob( this );
+    connect( client, SIGNAL(finished(HttpJob*)), this, SLOT(slotTimesheetUploaded(HttpJob*)) );
+    client->setParentWidget( this );
+    client->setPayload( saveToXml() );
+    client->start();
+}
+
+void WeeklyTimeSheetReport::slotTimesheetUploaded(HttpJob* client) {
+
+    if ( client->error() == HttpJob::Canceled )
+        return;
+    if ( client->error()  )
+        QMessageBox::critical(this, tr("Error"), tr("Could not upload timesheet: %1").arg( client->errorString() ) );
+    else
+        QMessageBox::information(this, tr("Timesheet Uploaded"), tr("Your timesheet was successfully uploaded."));
 }
 
 #include "WeeklyTimeSheet.moc"
