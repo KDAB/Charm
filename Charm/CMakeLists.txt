@@ -77,9 +77,20 @@ IF( CHARM_IDLE_DETECTION )
     ENDIF()
 ENDIF()
 
+LIST( APPEND CharmApplication_SRCS keychain.cpp )
+
+IF (APPLE)
+    LIST( APPEND CharmApplication_SRCS keychain_mac.cpp )
+    SET( CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -framework CoreFoundation -framework Security" )
+ELSEIF ( WIN32 )
+    LIST( APPEND CharmApplication_SRCS keychain_win.cpp)
+ELSEIF ( UNIX )
+    LIST( APPEND CharmApplication_SRCS keychain_unix.cpp)
+ENDIF()
+
 IF( APPLE )
         LIST( APPEND CharmApplication_SRCS MacApplication.mm )
-        SET( CMAKE_EXE_LINKER_FLAGS "-framework AppKit" )
+        SET( CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -framework AppKit" )
 ENDIF()
 
 QT4_AUTOMOC( ${CharmApplication_SRCS} )
