@@ -1,4 +1,5 @@
 #include "HttpJob.h"
+#include "keychain.h"
 
 #include <QDebug>
 #include <QNetworkAccessManager>
@@ -91,21 +92,29 @@ void HttpJob::start()
     QMetaObject::invokeMethod(this, "doStart", Qt::QueuedConnection);
 }
 
+using namespace QKeychain;
+
 void HttpJob::doStart()
 {
     if (m_username.isEmpty() || m_loginUrl.isEmpty() || m_portalUrl.isEmpty()) {
         setErrorAndEmitFinished(NotConfigured, tr("Timesheet upload and task list download not configured. Download and import the task list manually to configure them."));
         return;
     }
-    //PENDING(frank) this is a workaround until we have some secure way to store the password
+    
+    Keychain store(QLatin1String("Charm"));
+    
+    QString pass = store.readPassword(QLatin1String("lotsofcake"));
+    
     bool ok;
     QPointer<QObject> that( this ); //guard against destruction while dialog is open
-    const QString pw = QInputDialog::getText(m_parentWidget, tr("Password"), tr("Please enter your lotsofcake password"), QLineEdit::Password, QString(), &ok);
+    pass = QInputDialog::getText(m_parentWidget, tr("Password"), tr("Please enter your lotsofcake password"), QLineEdit::Password, pass, &ok);
     if (!that || !ok) {
         setErrorAndEmitFinished(Canceled, tr("Canceled"));
         return;
     }
-    m_password = pw;
+
+    store.writePassword(QLatin1String("lotsofcake"), pass);
+    m_password = pass;
 
     m_dialog = new QProgressDialog(m_parentWidget);
     m_dialog->setLabelText(tr("Wait..."));
