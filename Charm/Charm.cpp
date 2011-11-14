@@ -39,7 +39,7 @@ int main ( int argc, char** argv )
     try {
         QApplication *app = ApplicationFactory::localApplication( argc, argv );
         return app->exec();
-    } catch( AlreadyRunningException& e ) {
+    } catch( AlreadyRunningException& ) {
         using namespace std;
         cout << "Charm already running, exiting..." << endl;
         return 0;
