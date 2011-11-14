@@ -9,6 +9,8 @@
 #ifndef KEYCHAIN_H
 #define KEYCHAIN_H
 
+#include "qkeychain_export.h"
+
 #include <QtCore/QString>
 
 namespace QKeychain {
@@ -22,7 +24,7 @@ namespace QKeychain {
  *
  * TODO we don't guarantee anything
  */
-class Keychain {
+class QKEYCHAIN_EXPORT Keychain {
 public:
     /**
      * Creates a Keychain object.
@@ -47,6 +49,7 @@ public:
         AccessDeniedByUser, /**< User denied access to keychain */
         AccessDenied, /**< Access denied for other reasons */
         EntryAlreadyExists, /**< There is already an entry for the given key and overwriting was not enforced */
+        NotImplemented, /**< Not implemented on platform */
         OtherError /**< Something else went wrong (errorString() might provide details) */
     };
 

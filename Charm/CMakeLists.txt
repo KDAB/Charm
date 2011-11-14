@@ -85,7 +85,7 @@ IF (APPLE)
 ELSEIF ( WIN32 )
     LIST( APPEND CharmApplication_SRCS keychain_win.cpp)
 ELSEIF ( UNIX )
-    LIST( APPEND CharmApplication_SRCS keychain_unix.cpp)
+    LIST( APPEND CharmApplication_SRCS keychain_dbus.cpp)
 ENDIF()
 
 IF( APPLE )
