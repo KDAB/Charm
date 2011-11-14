@@ -9,8 +9,6 @@
 #ifndef KEYCHAIN_H
 #define KEYCHAIN_H
 
-#include "qkeychain_export.h"
-
 #include <QtCore/QString>
 
 namespace QKeychain {
@@ -24,7 +22,7 @@ namespace QKeychain {
  *
  * TODO we don't guarantee anything
  */
-class QKEYCHAIN_EXPORT Keychain {
+class Keychain {
 public:
     /**
      * Creates a Keychain object.
