@@ -52,6 +52,9 @@ SET(
         Commands/CommandMakeAndActivateEvent.cpp
         Idle/IdleDetector.cpp
         Idle/IdleCorrectionDialog.cpp
+        HttpClient/HttpJob.cpp
+        HttpClient/GetProjectCodesJob.cpp
+        HttpClient/UploadTimesheetJob.cpp
 )
 
 SET(IDLEDETECTION_LIBS)

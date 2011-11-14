@@ -130,6 +130,7 @@ private:
     QAction m_actionPreferences;
     QAction m_actionExportToXml;
     QAction m_actionImportFromXml;
+    QAction m_actionSyncTasks;
     QAction m_actionImportTasks;
     QAction m_actionExportTasks;
     QAction m_actionReporting;

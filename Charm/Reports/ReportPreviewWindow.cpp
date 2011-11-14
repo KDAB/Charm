@@ -75,6 +75,11 @@ QPushButton* ReportPreviewWindow::saveToTextButton()
     return m_ui->pushButtonSaveTotals;
 }
 
+QPushButton* ReportPreviewWindow::uploadButton()
+{
+    return m_ui->pushButtonUpload;
+}
+
 void ReportPreviewWindow::slotSaveToXml()
 {
 }

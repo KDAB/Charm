@@ -9,6 +9,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QDir>
+#include <QTemporaryFile>
 
 #include "Core/TimeSpans.h"
 #include "Core/TaskListMerger.h"
@@ -29,6 +30,7 @@
 #include "Commands/CommandImportFromXml.h"
 #include "Idle/IdleDetector.h"
 #include "Idle/IdleCorrectionDialog.h"
+#include "HttpClient/GetProjectCodesJob.h"
 
 
 TimeTrackingWindow::TimeTrackingWindow( QWidget* parent )
@@ -326,42 +328,43 @@ void TimeTrackingWindow::slotImportFromXml()
     sendCommand( cmd );
 }
 
-void TimeTrackingWindow::slotImportTasks()
+void TimeTrackingWindow::slotSyncTasks()
 {
-    const MakeTemporarilyVisible m( this ); Q_UNUSED( m );
-    const QString filename = QFileDialog::getOpenFileName( this, tr( "Please Select File" ), "",
-                                                           tr("Task definitions (*.xml);;All Files (*)") );
-    if ( filename.isNull() ) return;
-    QFileInfo fileinfo( filename );
-    Q_ASSERT( fileinfo.exists() );
+    GetProjectCodesJob* client = new GetProjectCodesJob( this );
+    client->setParentWidget( this );
+    connect(client, SIGNAL(finished(HttpJob*)), this, SLOT(slotTasksDownloaded(HttpJob*)) );
+    client->start();
+}
 
-    TaskExport exporter;
-    TaskListMerger merger;
-    try {
-        exporter.readFrom( filename );
-        merger.setOldTasks( DATAMODEL->getAllTasks() );
-        merger.setNewTasks( exporter.tasks() );
-        if ( merger.modifiedTasks().count() == 0 && merger.addedTasks().count() == 0 ) {
-            QMessageBox::information( this, tr( "Tasks Import" ), tr( "The selected task file does not contain any updates." ) );
-        } else {
-            QString detailsText(
-                tr( "Importing this task list will result in %1 modified and %2 added tasks. Do you want to continue?" )
-                .arg( merger.modifiedTasks().count() )
-                .arg( merger.addedTasks().count() ) );
-            if ( QMessageBox::warning( this, tr( "Tasks Import" ), detailsText,
-                                       QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes )
-                 == QMessageBox::Yes ) {
-                CommandSetAllTasks* cmd = new CommandSetAllTasks( merger.mergedTaskList(), this );
-                sendCommand( cmd );
-            }
-        }
-    } catch(  CharmException& e ) {
-        const QString message = e.what().isEmpty()
-                                ?  tr( "The selected task definitions are invalid and cannot be imported." )
-                                    : tr( "There was an error importing the task definitions:<br />%1" ).arg( e.what() );
-        QMessageBox::critical( this, tr(  "Invalid Task Definitions" ), message);
+void TimeTrackingWindow::slotTasksDownloaded( HttpJob* job_ )
+{
+    GetProjectCodesJob* job = qobject_cast<GetProjectCodesJob*>( job_ );
+    Q_ASSERT( job );
+    if ( job->error() == HttpJob::Canceled )
+        return;
+
+    if ( job->error() ) {
+        QMessageBox::critical( this, tr("Error"), tr("Could not download the task list: %1").arg( job->errorString() ) );
         return;
     }
+    QTemporaryFile file;
+    if ( !file.open() ) {
+        QMessageBox::critical( this, tr("Error"), tr("Could not write timecode data to temporary file: %1").arg( file.errorString() ) );
+        return;
+    }
+
+    file.write( job->payload() );
+    file.close();
+    importTasksFromFile( file.fileName() );
+}
+
+void TimeTrackingWindow::slotImportTasks()
+{
+    const QString filename = QFileDialog::getOpenFileName( this, tr( "Please Select File" ), "",
+                                                           tr("Task definitions (*.xml);;All Files (*)") );
+    if ( filename.isNull() )
+        return;
+    importTasksFromFile( filename );
 }
 
 void TimeTrackingWindow::slotExportTasks()
@@ -432,6 +435,56 @@ void TimeTrackingWindow::maybeIdle()
         break; // should not happen
     }
     detector->clear();
+}
+
+static void setValueIfNotNull(QSettings* s, const QString& key, const QString& value )
+{
+    if ( !value.isNull() )
+        s->setValue( key, value );
+}
+
+void TimeTrackingWindow::importTasksFromFile( const QString &filename )
+{
+    const MakeTemporarilyVisible m( this );
+    Q_UNUSED( m );
+
+    QFileInfo fileinfo( filename );
+    Q_ASSERT( fileinfo.exists() );
+
+    TaskExport exporter;
+    TaskListMerger merger;
+    try {
+        exporter.readFrom( filename );
+        merger.setOldTasks( DATAMODEL->getAllTasks() );
+        merger.setNewTasks( exporter.tasks() );
+        if ( merger.modifiedTasks().count() == 0 && merger.addedTasks().count() == 0 ) {
+            QMessageBox::information( this, tr( "Tasks Import" ), tr( "The selected task file does not contain any updates." ) );
+        } else {
+            QString detailsText(
+                tr( "Importing this task list will result in %1 modified and %2 added tasks. Do you want to continue?" )
+                .arg( merger.modifiedTasks().count() )
+                .arg( merger.addedTasks().count() ) );
+            if ( QMessageBox::warning( this, tr( "Tasks Import" ), detailsText,
+                                       QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes )
+                 == QMessageBox::Yes ) {
+                CommandSetAllTasks* cmd = new CommandSetAllTasks( merger.mergedTaskList(), this );
+                sendCommand( cmd );
+            }
+        }
+        QSettings settings;
+        settings.beginGroup( "httpconfig" );
+        setValueIfNotNull( &settings, QLatin1String("username"), exporter.metadata( QLatin1String("username") ) );
+        setValueIfNotNull( &settings, QLatin1String("portalUrl"), exporter.metadata( QLatin1String("portal-url") ) );
+        setValueIfNotNull( &settings, QLatin1String("loginUrl"), exporter.metadata( QLatin1String("login-url") ) );
+        setValueIfNotNull( &settings, QLatin1String("timesheetUploadUrl"), exporter.metadata( QLatin1String("timesheet-upload-url") ) );
+        setValueIfNotNull( &settings, QLatin1String("projectCodeDownloadUrl"), exporter.metadata( QLatin1String("project-code-download-url") ) );
+    } catch(  CharmException& e ) {
+        const QString message = e.what().isEmpty()
+                                ?  tr( "The selected task definitions are invalid and cannot be imported." )
+                                    : tr( "There was an error importing the task definitions:<br />%1" ).arg( e.what() );
+        QMessageBox::critical( this, tr(  "Invalid Task Definitions" ), message);
+        return;
+    }
 }
 
 #include "TimeTrackingWindow.moc"

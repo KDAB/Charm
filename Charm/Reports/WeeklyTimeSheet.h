@@ -11,6 +11,8 @@ namespace Ui {
     class WeeklyTimeSheetConfigurationPage;
 }
 
+class HttpJob;
+
 class WTSConfigurationPage : public ReportConfigurationPage
 {
     Q_OBJECT
@@ -54,6 +56,10 @@ public:
 
     typedef QMap< TaskId, QVector<int> > SecondsMap;
 
+private slots:
+
+    void slotUploadTimesheet();
+    void slotTimesheetUploaded(HttpJob*);
 private:
         enum TimeSheetTableColumns {
         Column_Task,
@@ -69,6 +75,7 @@ private:
     };
 
     QString getFileName( const QString& filter );
+    QByteArray saveToXml();
 
     // reimpl
     void slotUpdate();
