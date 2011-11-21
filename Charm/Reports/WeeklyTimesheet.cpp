@@ -681,7 +681,7 @@ QByteArray WeeklyTimeSheetReport::saveToXml()
                 }
             }
             // create elements:
-            Q_FOREACH( Event event, events ) {
+            Q_FOREACH( const Event & event, events ) {
                 effort.appendChild( event.toXml( document ) );
             }
         }
