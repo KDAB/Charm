@@ -530,6 +530,11 @@ void  WeeklyTimeSheetReport::slotSaveToXml()
     if (filename.isEmpty())
         return;
 
+    QFileInfo fileinfo( filename );
+    if ( fileinfo.suffix().isEmpty() ) {
+        filename += QLatin1String( ".charmreport" );
+    }
+
     QByteArray payload = saveToXml();
     if (payload.isEmpty())
         return; // Error should have been already displayed by saveToXml()
