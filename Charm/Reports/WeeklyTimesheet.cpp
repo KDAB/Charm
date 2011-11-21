@@ -526,7 +526,7 @@ void  WeeklyTimeSheetReport::slotSaveToXml()
 {
     qDebug() << "WeeklyTimeSheet::slotSaveToXml: creating XML time sheet";
     // first, ask for a file name:
-    QString filename = getFileName( "Charm reports (*.charmreport)" );
+    QString filename = getFileName( tr("Charm reports (*.charmreport)") );
     if (filename.isEmpty())
         return;
 
