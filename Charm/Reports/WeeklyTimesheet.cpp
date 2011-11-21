@@ -708,7 +708,8 @@ void WeeklyTimeSheetReport::slotSaveToText()
     QFile file( filename );
     if ( !file.open( QIODevice::WriteOnly ) ) {
         QMessageBox::critical( this, tr( "Error saving report" ),
-                               tr( "Cannot write to selected location." ) );
+                               tr( "Cannot write to selected location:\n%1" )
+                               .arg( file.errorString() ) );
         return;
     }
 
