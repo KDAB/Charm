@@ -350,8 +350,8 @@ bool SqlStorage::modifyEvent(const Event& event, const SqlRaiiTransactor& )
 	query.bindValue(":task", event.taskId());
 	query.bindValue(":report", event.reportId());
 	query.bindValue(":comment", event.comment());
-	query.bindValue(":start", event.startDateTime( Qt::UTC ) );
-	query.bindValue(":end", event.endDateTime( Qt::UTC) );
+	query.bindValue(":start", event.startDateTime());
+	query.bindValue(":end", event.endDateTime() );
 
 	return runQuery( query );
 }
