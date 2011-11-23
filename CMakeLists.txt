@@ -22,6 +22,12 @@ IF( NOT ( Charm_VERSION_MAJOR AND Charm_VERSION_MINOR AND Charm_VERSION_PATCH ) 
              "Please pass a version to CMake e.g. cmake -DCharm_VERSION=1.0.0" )
 ENDIF()
 
+STRING( REGEX MATCH "^([0-9]+)\\.([0-9]+)\\.(.*)$" Charm_VERSION "${GIT_DESCRIBE}")
+SET( Charm_VERSION_MAJOR "${CMAKE_MATCH_1}" )
+SET( Charm_VERSION_MINOR "${CMAKE_MATCH_2}" )
+SET( Charm_VERSION_PATCH "${CMAKE_MATCH_3}" )
+SET( Charm_VERSION_COUNT 3 )
+
 IF( NOT CMAKE_BUILD_TYPE )
         SET( CMAKE_BUILD_TYPE "Release" CACHE STRING "" FORCE )
 ENDIF()

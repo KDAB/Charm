@@ -21,6 +21,8 @@
 
 #include "CharmCMake.h"
 
+#include "CharmCMake.h"
+
 #include "ui_WeeklyTimeSheetConfigurationPage.h"
 
 WTSConfigurationPage::WTSConfigurationPage( ReportDialog* parent )
