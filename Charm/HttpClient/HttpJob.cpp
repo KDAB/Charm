@@ -103,18 +103,19 @@ void HttpJob::doStart()
 
     Keychain store(QLatin1String("Charm"));
 
-    QString pass = store.readPassword(QLatin1String("lotsofcake"));
+    const QString oldpass = store.readPassword(QLatin1String("lotsofcake"));
 
     bool ok;
     QPointer<QObject> that( this ); //guard against destruction while dialog is open
-    pass = QInputDialog::getText(m_parentWidget, tr("Password"), tr("Please enter your lotsofcake password"), QLineEdit::Password, pass, &ok);
+    const QString newpass = QInputDialog::getText(m_parentWidget, tr("Password"), tr("Please enter your lotsofcake password"), QLineEdit::Password, oldpass, &ok);
     if (!that || !ok) {
         setErrorAndEmitFinished(Canceled, tr("Canceled"));
         return;
     }
 
-    store.writePassword(QLatin1String("lotsofcake"), pass);
-    m_password = pass;
+    if (oldpass != newpass)
+        store.writePassword(QLatin1String("lotsofcake"), newpass);
+    m_password = newpass;
 
     m_dialog = new QProgressDialog(m_parentWidget);
     m_dialog->setLabelText(tr("Wait..."));
