@@ -24,6 +24,7 @@ ReportPreviewWindow::ReportPreviewWindow( QWidget* parent )
              SLOT( slotSaveToText() ) );
     connect( m_ui->pushButtonPrint, SIGNAL( clicked() ),
              SLOT( slotPrint() ) );
+    resize(600, 600);
 }
 
 ReportPreviewWindow::~ReportPreviewWindow()
