@@ -1,13 +1,15 @@
 PROJECT( Charm )
-FIND_PACKAGE( Git QUIET )
-IF( EXISTS ${GIT_EXECUTABLE} )
-    EXECUTE_PROCESS( COMMAND ${GIT_EXECUTABLE} describe --tags --abbrev=1
-                     RESULT_VARIABLE GIT_RESULT
-                     OUTPUT_VARIABLE Charm_VERSION
-                     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR} )
-    STRING( STRIP "${Charm_VERSION}" Charm_VERSION )
-    IF( NOT GIT_RESULT EQUAL 0 )
-        MESSAGE( FATAL_ERROR "Cannot get 'git describe' version!" )
+IF( NOT Charm_VERSION )
+    FIND_PACKAGE( Git QUIET )
+    IF( EXISTS ${GIT_EXECUTABLE} )
+        EXECUTE_PROCESS( COMMAND ${GIT_EXECUTABLE} describe --tags --abbrev=1
+                         RESULT_VARIABLE GIT_RESULT
+                         OUTPUT_VARIABLE Charm_VERSION
+                         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR} )
+        STRING( STRIP "${Charm_VERSION}" Charm_VERSION )
+        IF( NOT GIT_RESULT EQUAL 0 )
+            MESSAGE( FATAL_ERROR "Cannot get 'git describe' version!" )
+        ENDIF()
     ENDIF()
 ENDIF()
 
