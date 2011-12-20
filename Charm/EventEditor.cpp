@@ -17,6 +17,7 @@
 #include "ui_EventEditor.h"
 
 #include <QSettings>
+#include <QCalendarWidget>
 
 EventEditor::EventEditor( const Event& event, QWidget* parent )
     : QDialog( parent )
@@ -26,6 +27,11 @@ EventEditor::EventEditor( const Event& event, QWidget* parent )
 {
     m_ui = new Ui::EventEditor();
     m_ui->setupUi( this );
+
+    // Setting Monday as the first day makes it consistent with the rest of Charm
+    m_ui->dateEditStart->calendarWidget()->setFirstDayOfWeek( Qt::Monday );
+    m_ui->dateEditEnd->calendarWidget()->setFirstDayOfWeek( Qt::Monday );
+
     // connect stuff:
     connect( m_ui->spinBoxHours, SIGNAL( valueChanged( int ) ),
              SLOT( durationHoursEdited( int ) ) );
