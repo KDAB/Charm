@@ -6,6 +6,7 @@
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QtAlgorithms>
+#include <QCalendarWidget>
 #include <QDomDocument>
 
 #include <Core/Configuration.h>
@@ -28,6 +29,9 @@ ActivityReportConfigurationPage::ActivityReportConfigurationPage( ReportDialog* 
     , m_rootTask( 0 )
 {
     m_ui->setupUi( this );
+    m_ui->dateEditEnd->calendarWidget()->setFirstDayOfWeek( Qt::Monday );
+    m_ui->dateEditStart->calendarWidget()->setFirstDayOfWeek( Qt::Monday );
+
     connect( m_ui->pushButtonBack, SIGNAL( clicked() ),
              SIGNAL( back() ) );
     connect( m_ui->pushButtonReport, SIGNAL( clicked() ),
