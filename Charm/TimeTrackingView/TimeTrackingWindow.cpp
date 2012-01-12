@@ -16,6 +16,7 @@
 #include "Core/XmlSerialization.h"
 
 #include "Application.h"
+#include "MessageBox.h"
 #include "ViewHelpers.h"
 #include "TimeTrackingView.h"
 #include "TimeTrackingWindow.h"
@@ -317,10 +318,9 @@ void TimeTrackingWindow::slotImportFromXml()
     Q_ASSERT( fileinfo.exists() );
 
     // warn the user about the consequences:
-    if ( QMessageBox::warning( this, tr("Watch out!" ),
-                               tr("During import, all existing tasks and events will be deleted"
-                                  " and replaced with the imported ones. Are you sure?" ),
-                               QMessageBox::Yes | QMessageBox::No ) != QMessageBox::Yes )
+    if ( MessageBox::warning( this, tr( "Watch out!" ),
+                              tr( "During import, all existing tasks and events will be deleted"
+                                  " and replaced with the imported ones. Are you sure?" ), tr( "Delete" ), tr( "Cancel" ) ) != QMessageBox::Yes )
         return;
 
     // ask the controller to import the file:
@@ -464,8 +464,7 @@ void TimeTrackingWindow::importTasksFromFile( const QString &filename )
                 tr( "Importing this task list will result in %1 modified and %2 added tasks. Do you want to continue?" )
                 .arg( merger.modifiedTasks().count() )
                 .arg( merger.addedTasks().count() ) );
-            if ( QMessageBox::warning( this, tr( "Tasks Import" ), detailsText,
-                                       QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes )
+            if ( MessageBox::question( this, tr( "Tasks Import" ), detailsText, tr( "Import" ), tr( "Cancel" ), QMessageBox::Yes )
                  == QMessageBox::Yes ) {
                 CommandSetAllTasks* cmd = new CommandSetAllTasks( merger.mergedTaskList(), this );
                 sendCommand( cmd );
@@ -482,7 +481,7 @@ void TimeTrackingWindow::importTasksFromFile( const QString &filename )
         const QString message = e.what().isEmpty()
                                 ?  tr( "The selected task definitions are invalid and cannot be imported." )
                                     : tr( "There was an error importing the task definitions:<br />%1" ).arg( e.what() );
-        QMessageBox::critical( this, tr(  "Invalid Task Definitions" ), message);
+        QMessageBox::critical( this, tr( "Invalid Task Definitions" ), message );
         return;
     }
 }

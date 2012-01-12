@@ -2,7 +2,6 @@
 #include <QtDebug>
 #include <QListView>
 #include <QCloseEvent>
-#include <QMessageBox>
 #include <QDateTimeEdit>
 #include <QToolBar>
 #include <QComboBox>
@@ -19,6 +18,7 @@
 #include "EventEditor.h"
 #include "Core/Configuration.h"
 #include "EventEditorDelegate.h"
+#include "MessageBox.h"
 #include "Core/TaskTreeItem.h"
 #include "Core/CharmDataModel.h"
 #include "SelectTaskDialog.h"
@@ -225,12 +225,11 @@ void EventView::slotDeleteEvent()
            + ' ' + time.toString( Qt::SystemLocaleDate )
            + ' ' + hoursAndMinutes( m_event.duration() );
     const QString eventDescription = name + ' ' + dateAndDuration;
-    if ( QMessageBox::question(
+    if ( MessageBox::question(
              this, tr( "Delete Event?" ),
              tr( "<html>Do you really want to delete the event <b>%1</b>?" ).arg(eventDescription),
-             QMessageBox::Ok | QMessageBox::Cancel,
-             QMessageBox::Ok )
-         == QMessageBox::Ok ) {
+             tr( "Delete" ), tr("Cancel") )
+         == QMessageBox::Yes ) {
         CommandDeleteEvent* command = new CommandDeleteEvent( m_event, this );
         command->prepare();
         emitCommand( command );
