@@ -9,7 +9,6 @@ CharmPreferences::CharmPreferences( const Configuration& config,
     : QDialog( parent_ )
 {
     m_ui.setupUi( this );
-    m_ui.cbOneEventAtATime->setChecked( config.oneEventAtATime );
     m_ui.cb24hEditing->setChecked( config.always24hEditing );
     m_ui.cbIdleDetection->setEnabled( Application::instance().idleDetector() != 0 );
     m_ui.cbIdleDetection->setChecked( config.detectIdling );
@@ -65,11 +64,6 @@ CharmPreferences::CharmPreferences( const Configuration& config,
 
 CharmPreferences::~CharmPreferences()
 {
-}
-
-bool CharmPreferences::oneEventAtATime() const
-{
-    return m_ui.cbOneEventAtATime->isChecked();
 }
 
 bool CharmPreferences::always24hEditing() const

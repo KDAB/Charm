@@ -44,8 +44,6 @@ public:
     // helper method
     void dump( const QString& why = QString::null );
 
-    // database metainformation
-    bool oneEventAtATime;
     User user;  // this user's id
     TaskPrefilteringMode taskPrefilteringMode;
     TaskTrackerFontSize taskTrackerFontSize;

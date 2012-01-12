@@ -17,36 +17,8 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
-     <widget class="QWidget" name="tabDatabase">
-      <attribute name="title">
-       <string>Database Options</string>
-      </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_3">
-       <item>
-        <layout class="QFormLayout" name="formLayoutDatabase">
-         <property name="fieldGrowthPolicy">
-          <enum>QFormLayout::ExpandingFieldsGrow</enum>
-         </property>
-         <item row="0" column="0">
-          <widget class="QLabel" name="lbOneEventAtATime">
-           <property name="text">
-            <string>Only allow one event at a time</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QCheckBox" name="cbOneEventAtATime">
-           <property name="checked">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-      </layout>
-     </widget>
      <widget class="QWidget" name="tabAppearance">
       <attribute name="title">
        <string>Appearance</string>

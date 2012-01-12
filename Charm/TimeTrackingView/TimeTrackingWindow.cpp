@@ -238,7 +238,6 @@ void TimeTrackingWindow::slotEditPreferences( bool )
     CharmPreferences dialog( CONFIGURATION, this );
 
     if ( dialog.exec() ) {
-        CONFIGURATION.oneEventAtATime = dialog.oneEventAtATime();
         CONFIGURATION.taskTrackerFontSize = dialog.taskTrackerFontSize();
         CONFIGURATION.always24hEditing = dialog.always24hEditing();
         CONFIGURATION.durationFormat = dialog.durationFormat();

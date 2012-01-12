@@ -187,8 +187,6 @@ void Controller::persistMetaData( Configuration& configuration )
     Q_ASSERT_X( m_storage != 0, "Controller::persistMetaData",
                 "No storage interface available" );
     Setting settings[] = {
-        { MetaKey_OneEventAtATime,
-          stringForBool( configuration.oneEventAtATime ) },
         { MetaKey_Key_UserName,
           configuration.user.name() },
         { MetaKey_Key_SubscribedTasksOnly,
@@ -223,8 +221,6 @@ void Controller::provideMetaData( Configuration& configuration)
 {
     Q_ASSERT_X( m_storage != 0, "Controller::provideMetaData",
                 "No storage interface available" );
-    configuration.oneEventAtATime = boolForString(
-        m_storage->getMetaData( MetaKey_OneEventAtATime ) );
     configuration.user.setName( m_storage->getMetaData( MetaKey_Key_UserName ) );
 
     bool ok;

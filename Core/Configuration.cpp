@@ -17,8 +17,7 @@ Configuration& Configuration::instance()
 }
 
 Configuration::Configuration()
-    : oneEventAtATime( true )
-    , taskPrefilteringMode( TaskPrefilter_ShowAll )
+    : taskPrefilteringMode( TaskPrefilter_ShowAll )
     , taskTrackerFontSize( TaskTrackerFont_Regular )
     , always24hEditing( false )
     , durationFormat( Minutes )
@@ -40,8 +39,7 @@ Configuration::Configuration( bool _eventsInLeafsOnly, bool _oneEventAtATime, Us
                               bool _always24hEditing, DurationFormat _durationFormat, bool _detectIdling,
                               Qt::ToolButtonStyle _buttonstyle,
                               bool _showStatusBar, bool _animatedTrayIcon )
-    : oneEventAtATime( _oneEventAtATime )
-    , taskPrefilteringMode( _taskPrefilteringMode )
+    : taskPrefilteringMode( _taskPrefilteringMode )
     , taskTrackerFontSize( _taskTrackerFontSize )
     , always24hEditing( _always24hEditing )
     , durationFormat( _durationFormat )
@@ -59,8 +57,7 @@ Configuration::Configuration( bool _eventsInLeafsOnly, bool _oneEventAtATime, Us
 
 bool Configuration::operator==( const Configuration& other ) const
 {
-    return oneEventAtATime == other.oneEventAtATime &&
-        user == other.user &&
+    return user == other.user &&
         taskPrefilteringMode == other.taskPrefilteringMode &&
         taskTrackerFontSize == other.taskTrackerFontSize &&
         always24hEditing == other.always24hEditing &&
@@ -122,7 +119,6 @@ void Configuration::dump( const QString& why )
              << "--> userid:                 " << user.id() << endl
              << "--> local storage type:     " << localStorageType << endl
              << "--> local storage database: " << localStorageDatabase << endl
-             << "--> one event at a time:       " << oneEventAtATime << endl
              << "--> task prefiltering mode:   " << taskPrefilteringMode << endl
              << "--> task tracker font size: " << taskTrackerFontSize << endl
              << "--> 24h time editing:       " << always24hEditing << endl

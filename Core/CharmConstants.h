@@ -17,7 +17,6 @@
 #define CHARM_MYSQL_BACKEND_DESCRIPTOR "mysql"
 
 // Metadata and QSettings Keys:
-extern const QString MetaKey_OneEventAtATime;
 extern const QString MetaKey_MainWindowGeometry;
 extern const QString MetaKey_MainWindowVisible;
 extern const QString MetaKey_MainWindowGUIStateSelectedTask;
