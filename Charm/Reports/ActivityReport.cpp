@@ -8,10 +8,12 @@
 #include <QtAlgorithms>
 #include <QCalendarWidget>
 #include <QDomDocument>
+#include <QPushButton>
 
 #include <Core/Configuration.h>
 #include <Core/Dates.h>
 
+#include <QDialogButtonBox>
 #include <QTimer>
 
 #include "Application.h"
@@ -21,21 +23,21 @@
 #include "ActivityReport.h"
 #include "DateEntrySyncer.h"
 
-#include "ui_ActivityReportConfigurationPage.h"
+#include "ui_ActivityReportConfigurationDialog.h"
 
-ActivityReportConfigurationPage::ActivityReportConfigurationPage( ReportDialog* parent )
-    : ReportConfigurationPage( parent )
-    , m_ui( new Ui::ActivityReportConfigurationPage )
+ActivityReportConfigurationDialog::ActivityReportConfigurationDialog( QWidget* parent )
+    : ReportConfigurationDialog( parent )
+    , m_ui( new Ui::ActivityReportConfigurationDialog )
     , m_rootTask( 0 )
 {
+    setWindowTitle( tr( "Activity Report" ) );
+
     m_ui->setupUi( this );
     m_ui->dateEditEnd->calendarWidget()->setFirstDayOfWeek( Qt::Monday );
     m_ui->dateEditStart->calendarWidget()->setFirstDayOfWeek( Qt::Monday );
 
-    connect( m_ui->pushButtonBack, SIGNAL( clicked() ),
-             SIGNAL( back() ) );
-    connect( m_ui->pushButtonReport, SIGNAL( clicked() ),
-             SLOT( slotOkClicked() ) );
+    connect( m_ui->buttonBox, SIGNAL(accepted()), this, SLOT(accept()) );
+    connect( m_ui->buttonBox, SIGNAL(rejected()), this, SLOT(reject()) );
     connect( m_ui->comboBox, SIGNAL( currentIndexChanged( int ) ),
              SLOT( slotTimeSpanSelected( int ) ) );
     connect( m_ui->checkBoxSubTasksOnly, SIGNAL( toggled( bool ) ),
@@ -55,24 +57,12 @@ ActivityReportConfigurationPage::ActivityReportConfigurationPage( ReportDialog* 
     QTimer::singleShot( 0, this, SLOT( slotDelayedInitialization() ) );
 }
 
-ActivityReportConfigurationPage::~ActivityReportConfigurationPage()
+ActivityReportConfigurationDialog::~ActivityReportConfigurationDialog()
 {
     delete m_ui; m_ui = 0;
 }
 
-QString ActivityReportConfigurationPage::name()
-{
-    return QObject::tr( "Activity Report" );
-}
-
-QString ActivityReportConfigurationPage::description()
-{
-    return QObject::tr( "Create a printable report on all your activity within "
-                        "a certain time frame. The time frame could be a day, a "
-                        "week or any other period." );
-}
-
-void ActivityReportConfigurationPage::slotDelayedInitialization()
+void ActivityReportConfigurationDialog::slotDelayedInitialization()
 {
     slotStandardTimeSpansChanged();
     connect( &Application::instance().timeSpans(),
@@ -81,7 +71,7 @@ void ActivityReportConfigurationPage::slotDelayedInitialization()
     // FIXME load settings
 }
 
-void ActivityReportConfigurationPage::slotStandardTimeSpansChanged()
+void ActivityReportConfigurationDialog::slotStandardTimeSpansChanged()
 {
     m_timespans = Application::instance().timeSpans().standardTimeSpans();
     NamedTimeSpan customRange = {
@@ -96,7 +86,7 @@ void ActivityReportConfigurationPage::slotStandardTimeSpansChanged()
     }
 }
 
-void ActivityReportConfigurationPage::slotTimeSpanSelected( int index )
+void ActivityReportConfigurationDialog::slotTimeSpanSelected( int index )
 {
     if ( m_ui->comboBox->count() == 0 || index == -1 ) return;
     Q_ASSERT( m_ui->comboBox->count() > index );
@@ -113,7 +103,7 @@ void ActivityReportConfigurationPage::slotTimeSpanSelected( int index )
     }
 }
 
-void ActivityReportConfigurationPage::slotCheckboxSubtasksOnlyChecked( bool checked )
+void ActivityReportConfigurationDialog::slotCheckboxSubtasksOnlyChecked( bool checked )
 {
     if ( checked && m_rootTask == 0 ) {
         slotSelectTask();
@@ -125,7 +115,7 @@ void ActivityReportConfigurationPage::slotCheckboxSubtasksOnlyChecked( bool chec
     }
 }
 
-void ActivityReportConfigurationPage::slotCheckBoxExcludeTasksChecked( bool checked )
+void ActivityReportConfigurationDialog::slotCheckBoxExcludeTasksChecked( bool checked )
 {
     if ( checked && m_rootExcludeTask == 0 ) {
         slotExcludeTask();
@@ -137,7 +127,7 @@ void ActivityReportConfigurationPage::slotCheckBoxExcludeTasksChecked( bool chec
     }
 }
 
-void ActivityReportConfigurationPage::slotSelectTask()
+void ActivityReportConfigurationDialog::slotSelectTask()
 {
     if ( selectTask( m_rootTask ) ) {
         const TaskTreeItem& item = DATAMODEL->taskTreeItem( m_rootTask );
@@ -148,7 +138,7 @@ void ActivityReportConfigurationPage::slotSelectTask()
     }
 }
 
-void ActivityReportConfigurationPage::slotExcludeTask()
+void ActivityReportConfigurationDialog::slotExcludeTask()
 {
     if ( selectTask( m_rootExcludeTask ) ) {
         const TaskTreeItem& item = DATAMODEL->taskTreeItem( m_rootExcludeTask );
@@ -159,7 +149,7 @@ void ActivityReportConfigurationPage::slotExcludeTask()
     }
 }
 
-bool ActivityReportConfigurationPage::selectTask(TaskId& task)
+bool ActivityReportConfigurationDialog::selectTask(TaskId& task)
 {
     SelectTaskDialog dialog( this );
     const bool taskSelected = dialog.exec();
@@ -168,13 +158,13 @@ bool ActivityReportConfigurationPage::selectTask(TaskId& task)
     return taskSelected;
 }
 
-void ActivityReportConfigurationPage::slotOkClicked()
+void ActivityReportConfigurationDialog::accept()
 {
     // FIXME save settings
-    emit accept();
+    QDialog::accept();
 }
 
-QDialog* ActivityReportConfigurationPage::makeReportPreviewDialog( QWidget* parent )
+QDialog* ActivityReportConfigurationDialog::makeReportPreviewDialog( QWidget* parent )
 {
     QDate start, end;
     const int index = m_ui->comboBox->currentIndex();

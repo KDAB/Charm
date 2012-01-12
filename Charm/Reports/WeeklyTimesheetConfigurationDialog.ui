@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>WeeklyTimeSheetConfigurationPage</class>
- <widget class="QWidget" name="WeeklyTimeSheetConfigurationPage">
+ <class>WeeklyTimesheetConfigurationDialog</class>
+ <widget class="QWidget" name="WeeklyTimesheetConfigurationDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -235,29 +235,9 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
-      <widget class="QPushButton" name="pushButtonBack">
-       <property name="text">
-        <string>&amp;Back...</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer_2">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pushButtonReport">
-       <property name="text">
-        <string>&amp;Create...</string>
+      <widget class="QDialogButtonBox" name="buttonBox">
+       <property name="standardButtons">
+        <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
        </property>
       </widget>
      </item>

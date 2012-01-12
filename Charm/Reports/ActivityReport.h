@@ -4,28 +4,28 @@
 #include <Core/Task.h>
 #include <Core/TimeSpans.h>
 
-#include "ReportConfigurationPage.h"
+#include "ReportConfigurationDialog.h"
 #include "ReportPreviewWindow.h"
 
 namespace Ui {
-    class ActivityReportConfigurationPage;
+    class ActivityReportConfigurationDialog;
 }
 
-class ActivityReportConfigurationPage : public ReportConfigurationPage
+class ActivityReportConfigurationDialog : public ReportConfigurationDialog
 {
     Q_OBJECT
 
 public:
-    explicit ActivityReportConfigurationPage( ReportDialog* parent );
-    ~ActivityReportConfigurationPage();
+    explicit ActivityReportConfigurationDialog( QWidget* parent );
+    ~ActivityReportConfigurationDialog();
 
     QDialog* makeReportPreviewDialog( QWidget* parent );
-    QString name();
-    QString description();
+
+public Q_SLOTS:
+    void accept();
 
 private slots:
     void slotDelayedInitialization();
-    void slotOkClicked();
     void slotStandardTimeSpansChanged();
     void slotTimeSpanSelected( int );
     void slotCheckboxSubtasksOnlyChecked( bool );
@@ -36,7 +36,7 @@ private slots:
 private:
     bool selectTask(TaskId& task);
 
-    Ui::ActivityReportConfigurationPage* m_ui;
+    Ui::ActivityReportConfigurationDialog* m_ui;
     QList<NamedTimeSpan> m_timespans;
     TaskId m_rootTask;
     TaskId m_rootExcludeTask;

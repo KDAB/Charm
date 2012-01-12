@@ -49,7 +49,8 @@ Application::Application(int& argc, char** argv)
     , m_actionSyncTasks( this )
     , m_actionImportTasks( this )
     , m_actionExportTasks( this )
-    , m_actionReporting( this )
+    , m_actionActivityReport( this )
+    , m_actionWeeklyTimesheetReport( this )
     , m_idleDetector( 0 )
     , m_timeTrackerHiddenFromSystrayToggle( false )
     , m_tasksWindowHiddenFromSystrayToggle( false )
@@ -169,10 +170,14 @@ Application::Application(int& argc, char** argv)
     m_actionExportTasks.setText( tr( "Export Task Definitions..." ) );
     connect( &m_actionExportTasks, SIGNAL( triggered() ),
              &mainView(), SLOT( slotExportTasks() ) );
-    m_actionReporting.setText( tr( "Reports..." ) );
-    m_actionReporting.setShortcut( Qt::CTRL + Qt::Key_R );
-    connect( &m_actionReporting, SIGNAL( triggered() ),
-             &mainView(), SLOT( slotReportDialog() ) );
+    m_actionActivityReport.setText( tr( "Activity Report..." ) );
+    m_actionActivityReport.setShortcut( Qt::CTRL + Qt::Key_A );
+    connect( &m_actionActivityReport, SIGNAL( triggered() ),
+             &mainView(), SLOT( slotActivityReport() ) );
+    m_actionWeeklyTimesheetReport.setText( tr( "Weekly Timesheet...") );
+    m_actionWeeklyTimesheetReport.setShortcut( Qt::CTRL + Qt::Key_R );
+    connect( &m_actionWeeklyTimesheetReport, SIGNAL( triggered() ),
+             &mainView(), SLOT( slotWeeklyTimesheetReport() ) );
 
     // set up idle detection
     m_idleDetector = IdleDetector::createIdleDetector( this );
@@ -233,7 +238,9 @@ void Application::createWindowMenu( QMenuBar *menuBar )
         menu->addAction( window->showHideAction() );
     }
     menu->addSeparator();
-    menu->addAction( &m_actionReporting );
+    menu->addAction( &m_actionActivityReport );
+    menu->addAction( &m_actionWeeklyTimesheetReport );
+    menu->addSeparator();
     menu->addAction( &m_actionPreferences );
     menuBar->addMenu( menu );
 }

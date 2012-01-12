@@ -6,7 +6,6 @@
 
 #include "CharmWindow.h"
 #include "TimeTrackingView/WeeklySummary.h"
-#include "Reports/ReportDialog.h"
 
 class HttpJob;
 class CharmCommand;
@@ -48,7 +47,8 @@ public slots:
     // slots migrated from the old main window:
     void slotEditPreferences( bool ); // show prefs dialog
     void slotAboutDialog();
-    void slotReportDialog();
+    void slotActivityReport();
+    void slotWeeklyTimesheetReport();
     void slotExportToXml();
     void slotImportFromXml();
     void slotSyncTasks();
@@ -73,10 +73,6 @@ signals:
 private:
     TimeTrackingView* m_summaryWidget;
     QVector<WeeklySummary> m_summaries;
-
-    // the time tracking window is also the "default view" that is made
-    // visible when dialogs are shown:
-    ReportDialog m_reportDialog;
 };
 
 #endif
