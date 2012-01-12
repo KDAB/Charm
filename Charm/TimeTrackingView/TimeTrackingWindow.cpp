@@ -239,7 +239,6 @@ void TimeTrackingWindow::slotEditPreferences( bool )
 
     if ( dialog.exec() ) {
         CONFIGURATION.taskTrackerFontSize = dialog.taskTrackerFontSize();
-        CONFIGURATION.always24hEditing = dialog.always24hEditing();
         CONFIGURATION.durationFormat = dialog.durationFormat();
         CONFIGURATION.toolButtonStyle = dialog.toolButtonStyle();
         CONFIGURATION.detectIdling = dialog.detectIdling();

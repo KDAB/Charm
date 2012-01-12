@@ -193,8 +193,6 @@ void Controller::persistMetaData( Configuration& configuration )
           QString().setNum( configuration.taskPrefilteringMode ) },
         { MetaKey_Key_TaskTrackerFontSize,
           QString().setNum( configuration.taskTrackerFontSize ) },
-        { MetaKey_Key_24hEditing,
-          stringForBool( configuration.always24hEditing ) },
         { MetaKey_Key_DurationFormat,
           QString::number( configuration.durationFormat ) },
         { MetaKey_Key_IdleDetection,
@@ -271,8 +269,6 @@ void Controller::provideMetaData( Configuration& configuration)
         }
     }
 
-    configuration.always24hEditing = boolForString(
-        m_storage->getMetaData( MetaKey_Key_24hEditing ) );
     configuration.detectIdling = boolForString(
         m_storage->getMetaData( MetaKey_Key_IdleDetection ) );
     configuration.animatedTrayIcon = boolForString(

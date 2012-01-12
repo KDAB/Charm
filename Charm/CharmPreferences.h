@@ -15,7 +15,6 @@ public:
                                QWidget* parent = 0 );
     ~CharmPreferences();
 
-    bool always24hEditing() const;
     Configuration::DurationFormat durationFormat() const;
     bool detectIdling() const;
     bool animatedTrayIcon() const;
