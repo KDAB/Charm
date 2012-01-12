@@ -8,6 +8,7 @@
 #include <QFileDialog>
 #include <QtAlgorithms>
 #include <QDomDocument>
+#include <QPushButton>
 
 #include <Core/CharmExceptions.h>
 #include <Core/Dates.h>
@@ -15,7 +16,7 @@
 
 #include "ViewHelpers.h"
 #include "SelectTaskDialog.h"
-#include "WeeklyTimeSheet.h"
+#include "WeeklyTimesheet.h"
 #include "CharmReport.h"
 #include "DateEntrySyncer.h"
 #include "HttpClient/UploadTimesheetJob.h"
@@ -24,18 +25,19 @@
 
 #include "CharmCMake.h"
 
-#include "ui_WeeklyTimeSheetConfigurationPage.h"
+#include "ui_WeeklyTimesheetConfigurationDialog.h"
 
-WTSConfigurationPage::WTSConfigurationPage( ReportDialog* parent )
-    : ReportConfigurationPage( parent )
-    , m_ui( new Ui::WeeklyTimeSheetConfigurationPage )
+WeeklyTimesheetConfigurationDialog::WeeklyTimesheetConfigurationDialog( QWidget* parent )
+    : ReportConfigurationDialog( parent )
+    , m_ui( new Ui::WeeklyTimesheetConfigurationDialog )
 {
+    setWindowTitle( tr( "Weekly Timesheet" ) );
+
     m_ui->setupUi( this );
     m_ui->dateEditDay->calendarWidget()->setFirstDayOfWeek( Qt::Monday );
-    connect( m_ui->pushButtonBack, SIGNAL( clicked() ),
-             SIGNAL( back() ) );
-    connect( m_ui->pushButtonReport, SIGNAL( clicked() ),
-             SLOT( slotOkClicked() ) );
+    connect( m_ui->buttonBox, SIGNAL(accepted()), this, SLOT(accept()) );
+    connect( m_ui->buttonBox, SIGNAL(rejected()), this, SLOT(reject()) );
+
     connect( m_ui->comboBoxWeek, SIGNAL( currentIndexChanged( int ) ),
              SLOT( slotWeekComboItemSelected( int ) ) );
     connect( m_ui->toolButtonSelectTask, SIGNAL( clicked() ),
@@ -49,12 +51,12 @@ WTSConfigurationPage::WTSConfigurationPage( ReportDialog* parent )
     QTimer::singleShot( 0, this, SLOT( slotDelayedInitialization() ) );
 }
 
-WTSConfigurationPage::~WTSConfigurationPage()
+WeeklyTimesheetConfigurationDialog::~WeeklyTimesheetConfigurationDialog()
 {
     delete m_ui; m_ui = 0;
 }
 
-void WTSConfigurationPage::slotDelayedInitialization()
+void WeeklyTimesheetConfigurationDialog::slotDelayedInitialization()
 {
     slotStandardTimeSpansChanged();
     connect( &Application::instance().timeSpans(),
@@ -70,7 +72,7 @@ void WTSConfigurationPage::slotDelayedInitialization()
     }
 }
 
-void WTSConfigurationPage::slotOkClicked()
+void WeeklyTimesheetConfigurationDialog::accept()
 {
     // save settings:
     QSettings settings;
@@ -79,10 +81,10 @@ void WTSConfigurationPage::slotOkClicked()
     settings.setValue( MetaKey_TimesheetRootTask,
                        m_rootTask );
 
-    emit accept();
+    QDialog::accept();
 }
 
-QDialog* WTSConfigurationPage::makeReportPreviewDialog( QWidget* parent )
+QDialog* WeeklyTimesheetConfigurationDialog::makeReportPreviewDialog( QWidget* parent )
 {
     QDate start, end;
     int index = m_ui->comboBoxWeek->currentIndex();
@@ -101,12 +103,8 @@ QDialog* WTSConfigurationPage::makeReportPreviewDialog( QWidget* parent )
     return report;
 }
 
-QString WTSConfigurationPage::name()
-{
-    return tr( "Weekly Time Sheet" );
-}
 
-void WTSConfigurationPage::showEvent( QShowEvent* )
+void WeeklyTimesheetConfigurationDialog::showEvent( QShowEvent* )
 {
     QSettings settings;
 
@@ -123,14 +121,7 @@ void WTSConfigurationPage::showEvent( QShowEvent* )
     }
 }
 
-QString WTSConfigurationPage::description()
-{
-    return tr (
-        "Creates a tabular report on all activity within a week. "
-        "The report is summarized by task and by day." );
-}
-
-void WTSConfigurationPage::slotCheckboxSubtasksOnlyChecked( bool checked )
+void WeeklyTimesheetConfigurationDialog::slotCheckboxSubtasksOnlyChecked( bool checked )
 {
     if ( checked && m_rootTask == 0 ) {
         slotSelectTask();
@@ -142,7 +133,7 @@ void WTSConfigurationPage::slotCheckboxSubtasksOnlyChecked( bool checked )
     }
 }
 
-void WTSConfigurationPage::slotStandardTimeSpansChanged()
+void WeeklyTimesheetConfigurationDialog::slotStandardTimeSpansChanged()
 {
     m_weekInfo = Application::instance().timeSpans().last4Weeks();
     NamedTimeSpan custom = {
@@ -159,7 +150,7 @@ void WTSConfigurationPage::slotStandardTimeSpansChanged()
     m_ui->comboBoxWeek->setCurrentIndex( 1 );
 }
 
-void WTSConfigurationPage::slotWeekComboItemSelected( int index )
+void WeeklyTimesheetConfigurationDialog::slotWeekComboItemSelected( int index )
 {
     // wait for the next update, in this case:
     if ( m_ui->comboBoxWeek->count() == 0 || index == -1 ) return;
@@ -173,7 +164,7 @@ void WTSConfigurationPage::slotWeekComboItemSelected( int index )
     }
 }
 
-void WTSConfigurationPage::slotSelectTask()
+void WeeklyTimesheetConfigurationDialog::slotSelectTask()
 {
     SelectTaskDialog dialog( this );
     if ( dialog.exec() ) {
@@ -761,4 +752,4 @@ void WeeklyTimeSheetReport::slotTimesheetUploaded(HttpJob* client) {
         QMessageBox::information(this, tr("Timesheet Uploaded"), tr("Your timesheet was successfully uploaded."));
 }
 
-#include "WeeklyTimeSheet.moc"
+#include "WeeklyTimesheet.moc"

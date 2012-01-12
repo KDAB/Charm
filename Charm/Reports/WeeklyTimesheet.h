@@ -5,38 +5,38 @@
 #include <Core/TimeSpans.h>
 
 #include "ReportPreviewWindow.h"
-#include "ReportConfigurationPage.h"
+#include "ReportConfigurationDialog.h"
 
 namespace Ui {
-    class WeeklyTimeSheetConfigurationPage;
+    class WeeklyTimesheetConfigurationDialog;
 }
 
 class HttpJob;
 
-class WTSConfigurationPage : public ReportConfigurationPage
+class WeeklyTimesheetConfigurationDialog : public ReportConfigurationDialog
 {
     Q_OBJECT
 
 public:
-    explicit WTSConfigurationPage( ReportDialog* parent );
-    ~WTSConfigurationPage();
+    explicit WeeklyTimesheetConfigurationDialog( QWidget* parent );
+    ~WeeklyTimesheetConfigurationDialog();
 
     QDialog* makeReportPreviewDialog( QWidget* parent );
-    QString name();
-    QString description();
 
     void showEvent( QShowEvent* );
 
+public Q_SLOTS:
+    void accept();
+
 private slots:
     void slotDelayedInitialization();
-    void slotOkClicked();
     void slotCheckboxSubtasksOnlyChecked( bool );
     void slotStandardTimeSpansChanged();
     void slotWeekComboItemSelected( int );
     void slotSelectTask();
 
 private:
-    Ui::WeeklyTimeSheetConfigurationPage* m_ui;
+    Ui::WeeklyTimesheetConfigurationDialog* m_ui;
     QList<NamedTimeSpan> m_weekInfo;
     TaskId m_rootTask;
 };
