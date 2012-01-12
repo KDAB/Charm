@@ -217,7 +217,7 @@ void TimeTrackingWindow::insertEditMenu()
 void TimeTrackingWindow::slotStartEvent( TaskId id )
 {
     const TaskTreeItem& item = DATAMODEL->taskTreeItem( id );
-    if ( CONFIGURATION.eventsInLeafsOnly && item.childCount() > 0 ) {
+    if ( item.childCount() > 0 ) {
         qDebug() << "FIXME this should be prevented by disabling the menu items";
         return;
     }
@@ -238,7 +238,6 @@ void TimeTrackingWindow::slotEditPreferences( bool )
     CharmPreferences dialog( CONFIGURATION, this );
 
     if ( dialog.exec() ) {
-        CONFIGURATION.eventsInLeafsOnly = dialog.eventsInLeafsOnly();
         CONFIGURATION.oneEventAtATime = dialog.oneEventAtATime();
         CONFIGURATION.taskTrackerFontSize = dialog.taskTrackerFontSize();
         CONFIGURATION.always24hEditing = dialog.always24hEditing();

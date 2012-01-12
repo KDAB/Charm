@@ -45,7 +45,6 @@ public:
     void dump( const QString& why = QString::null );
 
     // database metainformation
-    bool eventsInLeafsOnly;
     bool oneEventAtATime;
     User user;  // this user's id
     TaskPrefilteringMode taskPrefilteringMode;
