@@ -1,6 +1,7 @@
 #include <QFile>
 #include <QTimer>
 #include <QSettings>
+#include <QCalendarWidget>
 #include <QDomElement>
 #include <QTextStream>
 #include <QMessageBox>
@@ -30,7 +31,7 @@ WTSConfigurationPage::WTSConfigurationPage( ReportDialog* parent )
     , m_ui( new Ui::WeeklyTimeSheetConfigurationPage )
 {
     m_ui->setupUi( this );
-
+    m_ui->dateEditDay->calendarWidget()->setFirstDayOfWeek( Qt::Monday );
     connect( m_ui->pushButtonBack, SIGNAL( clicked() ),
              SIGNAL( back() ) );
     connect( m_ui->pushButtonReport, SIGNAL( clicked() ),
@@ -43,7 +44,6 @@ WTSConfigurationPage::WTSConfigurationPage( ReportDialog* parent )
              SLOT( slotCheckboxSubtasksOnlyChecked( bool ) ) );
     m_ui->comboBoxWeek->setCurrentIndex( 1 );
     slotCheckboxSubtasksOnlyChecked( m_ui->checkBoxSubTasksOnly->isChecked() );
-
     new DateEntrySyncer( m_ui->spinBoxWeek, m_ui->spinBoxYear, m_ui->dateEditDay, 1, this );
 
     QTimer::singleShot( 0, this, SLOT( slotDelayedInitialization() ) );
