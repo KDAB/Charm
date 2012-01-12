@@ -4,6 +4,7 @@
  *  Created on: Jul 4, 2008
  *      Author: mirko
  */
+#include <QCalendarWidget>
 #include <QCheckBox>
 #include <QPushButton>
 #include <QMessageBox>
@@ -22,6 +23,8 @@ TaskEditor::TaskEditor( QWidget* parent )
 	, m_ui( new Ui::TaskEditor() )
 {
 	m_ui->setupUi( this );
+    m_ui->dateEditFrom->calendarWidget()->setFirstDayOfWeek( Qt::Monday );
+    m_ui->dateEditTo->calendarWidget()->setFirstDayOfWeek( Qt::Monday );
 	connect( m_ui->pushButtonParent, SIGNAL( clicked() ),
 			 SLOT( slotSelectParent() ) );
 	connect( m_ui->dateEditFrom, SIGNAL( dateChanged( QDate ) ),
