@@ -52,10 +52,10 @@ public:
     const EventMap& eventMap() const;
     /**
      * Get all events that start in a given time frame (e.g. a given day, a given week etc.)
-     * More precisely, all events that start at or after @p start, and start before @p end
+     * More precisely, all events that start at or after @p start, and start before @p end (@p end excluded!)
      */
-    EventIdList eventsThatStartInTimeFrame( const QDateTime& start,
-                                            const QDateTime& end ) const;
+    EventIdList eventsThatStartInTimeFrame( const QDate& start,
+                                            const QDate& end ) const;
     // convenience overload
     EventIdList eventsThatStartInTimeFrame( const TimeSpan& timeSpan ) const;
     const Event& activeEventFor ( TaskId id ) const;

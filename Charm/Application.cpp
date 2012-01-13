@@ -55,6 +55,7 @@ Application::Application(int& argc, char** argv)
     , m_timeTrackerHiddenFromSystrayToggle( false )
     , m_tasksWindowHiddenFromSystrayToggle( false )
     , m_eventWindowHiddenFromSystrayToggle( false )
+    , m_dateChangeWatcher( new DateChangeWatcher( this ) )
 {
     // QApplication setup
     setQuitOnLastWindowClosed(false);
@@ -657,9 +658,9 @@ ModelConnector& Application::model()
     return m_model;
 }
 
-TimeSpans& Application::timeSpans()
+DateChangeWatcher* Application::dateChangeWatcher() const
 {
-    return m_timeSpans;
+    return m_dateChangeWatcher;
 }
 
 IdleDetector* Application::idleDetector()

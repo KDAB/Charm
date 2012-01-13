@@ -65,18 +65,19 @@ ActivityReportConfigurationDialog::~ActivityReportConfigurationDialog()
 void ActivityReportConfigurationDialog::slotDelayedInitialization()
 {
     slotStandardTimeSpansChanged();
-    connect( &Application::instance().timeSpans(),
-             SIGNAL( timeSpansChanged() ),
+    connect( Application::instance().dateChangeWatcher(),
+             SIGNAL( dateChanged() ),
              SLOT( slotStandardTimeSpansChanged() ) );
     // FIXME load settings
 }
 
 void ActivityReportConfigurationDialog::slotStandardTimeSpansChanged()
 {
-    m_timespans = Application::instance().timeSpans().standardTimeSpans();
+    const TimeSpans timeSpans;
+    m_timespans = timeSpans.standardTimeSpans();
     NamedTimeSpan customRange = {
         tr( "Select Range" ),
-        Application::instance().timeSpans().thisWeek().timespan
+        timeSpans.thisWeek().timespan
     };
     m_timespans << customRange;
     m_ui->comboBox->clear();
@@ -170,7 +171,7 @@ QDialog* ActivityReportConfigurationDialog::makeReportPreviewDialog( QWidget* pa
     const int index = m_ui->comboBox->currentIndex();
     if ( index == m_timespans.size() - 1 ) { //Range
         start = m_ui->dateEditStart->date();
-        end = m_ui->dateEditEnd->date();
+        end = m_ui->dateEditEnd->date().addDays( 1 );
     } else {
         start = m_timespans[index].timespan.first;
         end = m_timespans[index].timespan.second;
@@ -209,8 +210,7 @@ void ActivityReport::slotUpdate()
     const QString DateTimeFormat( "yyyy/MM/dd HH:mm" );
 
     // retrieve matching events:
-    EventIdList matchingEvents = DATAMODEL->eventsThatStartInTimeFrame(
-        QDateTime( m_start ), QDateTime( m_end ) );
+    EventIdList matchingEvents = DATAMODEL->eventsThatStartInTimeFrame( m_start, m_end );
     matchingEvents = eventIdsSortedByStartTime( matchingEvents );
     if ( m_rootTask != 0 ) {
         matchingEvents = filteredBySubtree( matchingEvents, m_rootTask );

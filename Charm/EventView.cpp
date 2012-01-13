@@ -123,8 +123,8 @@ EventView::~EventView()
 void EventView::delayedInitialization()
 {
     timeSpansChanged();
-    connect( &Application::instance().timeSpans(),
-             SIGNAL( timeSpansChanged() ),
+    connect( Application::instance().dateChangeWatcher(),
+             SIGNAL( dateChanged() ),
              SLOT( timeSpansChanged() ) );
 
 }
@@ -138,7 +138,7 @@ void EventView::populateEditMenu( QMenu* menu )
 
 void EventView::timeSpansChanged()
 {
-    m_timeSpans = Application::instance().timeSpans().standardTimeSpans();
+    m_timeSpans = TimeSpans( QDate::currentDate() ).standardTimeSpans();
     // close enough to "ever" for our purposes:
     NamedTimeSpan allEvents = {
         tr( "Ever" ),
