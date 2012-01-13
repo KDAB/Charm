@@ -162,7 +162,7 @@ Application::Application(int& argc, char** argv)
     m_actionExportToXml.setText( tr( "Export Database..." ) );
     connect( &m_actionExportToXml, SIGNAL( triggered() ),
              &mainView(),  SLOT( slotExportToXml() ) );
-    m_actionSyncTasks.setText( tr( "Sync Task Definitions..." ) );
+    m_actionSyncTasks.setText( tr( "Download Task Definitions..." ) );
     connect( &m_actionSyncTasks, SIGNAL( triggered() ),
              &mainView(),  SLOT( slotSyncTasks() ) );
     m_actionImportTasks.setText( tr( "Import and Merge Task Definitions..." ) );
