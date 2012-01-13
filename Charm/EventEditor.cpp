@@ -58,17 +58,12 @@ EventEditor::EventEditor( const Event& event, QWidget* parent )
     QTimeEdit edit( this ); // this bugger is gone after the constructor
     QString originalDateTimeFormat = edit.displayFormat();
 
-    if ( CONFIGURATION.always24hEditing ) {
-        QString format = m_ui->timeEditStart->displayFormat()
-                         .replace( "ap",  "" )
-                         .replace( "AP",  "" )
-                         .simplified();
-        m_ui->timeEditStart->setDisplayFormat( format );
-        m_ui->timeEditEnd->setDisplayFormat( format );
-    } else {
-        m_ui->timeEditStart->setDisplayFormat( originalDateTimeFormat );
-        m_ui->timeEditEnd->setDisplayFormat( originalDateTimeFormat );
-    }
+    QString format = m_ui->timeEditStart->displayFormat()
+                     .replace( "ap",  "" )
+                     .replace( "AP",  "" )
+                     .simplified();
+    m_ui->timeEditStart->setDisplayFormat( format );
+    m_ui->timeEditEnd->setDisplayFormat( format );
 
     // initialize to some sensible values, unless we got something valid passed in
     if ( !m_event.isValid() ) {
@@ -214,14 +209,12 @@ void EventEditor::updateValues( bool all )
     QString name = MODEL.charmDataModel()->fullTaskName( taskTreeItem.task() );
     m_ui->labelTaskName->setText( name );
 
-    if ( CONFIGURATION.always24hEditing ) {
-        QString format = m_ui->dateEditStart->displayFormat()
-                         .replace( "ap",  "" )
-                         .replace( "AP",  "" )
-                         .simplified();
-        m_ui->dateEditStart->setDisplayFormat( format );
-        m_ui->dateEditEnd->setDisplayFormat( format );
-    }
+    QString format = m_ui->dateEditStart->displayFormat()
+                     .replace( "ap",  "" )
+                     .replace( "AP",  "" )
+                     .simplified();
+    m_ui->dateEditStart->setDisplayFormat( format );
+    m_ui->dateEditEnd->setDisplayFormat( format );
 
     m_updating = false;
 }

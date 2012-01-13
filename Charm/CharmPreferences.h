@@ -15,9 +15,6 @@ public:
                                QWidget* parent = 0 );
     ~CharmPreferences();
 
-    bool oneEventAtATime() const;
-    bool eventsInLeafsOnly() const;
-    bool always24hEditing() const;
     Configuration::DurationFormat durationFormat() const;
     bool detectIdling() const;
     bool animatedTrayIcon() const;

@@ -15,192 +15,125 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
-    <widget class="QTabWidget" name="tabWidget">
-     <property name="currentIndex">
-      <number>1</number>
+    <layout class="QFormLayout" name="formLayoutAppearance">
+     <property name="fieldGrowthPolicy">
+      <enum>QFormLayout::FieldsStayAtSizeHint</enum>
      </property>
-     <widget class="QWidget" name="tabDatabase">
-      <attribute name="title">
-       <string>Database Options</string>
-      </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_3">
+     <item row="0" column="0">
+      <widget class="QLabel" name="lbTaskTrackerFontSize">
+       <property name="text">
+        <string>Tasks window font size</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QComboBox" name="cbTaskTrackerFontSize">
        <item>
-        <layout class="QFormLayout" name="formLayoutDatabase">
-         <item row="0" column="0">
-          <widget class="QLabel" name="lbEventsInLeavesOnly">
-           <property name="text">
-            <string>Only record events for tasks that do not have children</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QCheckBox" name="cbEventsInLeavesOnly"/>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="lbOneEventAtATime">
-           <property name="text">
-            <string>Only allow one event at a time</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QCheckBox" name="cbOneEventAtATime">
-           <property name="checked">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-        </layout>
+        <property name="text">
+         <string>Small</string>
+        </property>
        </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="tabAppearance">
-      <attribute name="title">
-       <string>Appearance</string>
-      </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_4">
        <item>
-        <layout class="QFormLayout" name="formLayoutAppearance">
-         <property name="fieldGrowthPolicy">
-          <enum>QFormLayout::FieldsStayAtSizeHint</enum>
-         </property>
-         <item row="0" column="0">
-          <widget class="QLabel" name="lbTaskTrackerFontSize">
-           <property name="text">
-            <string>Tasks window font size</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QComboBox" name="cbTaskTrackerFontSize">
-           <item>
-            <property name="text">
-             <string>Small</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Regular (Application Font)</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Large</string>
-            </property>
-           </item>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="lbToolButtonStyle">
-           <property name="text">
-            <string>Buttons show</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QComboBox" name="cbToolButtonStyle">
-           <item>
-            <property name="text">
-             <string>Icons</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Text</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Text under icon</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Text beside icon</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>System default</string>
-            </property>
-           </item>
-          </widget>
-         </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="lbDurationFormat">
-           <property name="text">
-            <string>Duration format (requires restart)</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1">
-          <widget class="QComboBox" name="cbDurationFormat">
-           <item>
-            <property name="text">
-             <string>Minutes (hh:mm)</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Decimal (h.xx)</string>
-            </property>
-           </item>
-          </widget>
-         </item>
-         <item row="3" column="0">
-          <widget class="QLabel" name="lbAnimatedTrayIcon">
-           <property name="text">
-            <string>Animated tray icon</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="1">
-          <widget class="QCheckBox" name="cbAnimatedTrayIcon">
-           <property name="checked">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-        </layout>
+        <property name="text">
+         <string>Regular (Application Font)</string>
+        </property>
        </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="tabEsoteric">
-      <attribute name="title">
-       <string>Esoteric Options</string>
-      </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout">
        <item>
-        <layout class="QFormLayout" name="formLayoutEsoteric">
-         <item row="0" column="0">
-          <widget class="QLabel" name="lb24hEditing">
-           <property name="text">
-            <string>Always use 24h time format when editing</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QCheckBox" name="cb24hEditing"/>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="lbIdleDetection">
-           <property name="text">
-            <string>Enable idle detection</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QCheckBox" name="cbIdleDetection">
-           <property name="checked">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-        </layout>
+        <property name="text">
+         <string>Large</string>
+        </property>
        </item>
-      </layout>
-     </widget>
-    </widget>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="lbToolButtonStyle">
+       <property name="text">
+        <string>Buttons show</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QComboBox" name="cbToolButtonStyle">
+       <item>
+        <property name="text">
+         <string>Icons</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Text</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Text under icon</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Text beside icon</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>System default</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="lbDurationFormat">
+       <property name="text">
+        <string>Duration format (requires restart)</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QComboBox" name="cbDurationFormat">
+       <item>
+        <property name="text">
+         <string>Minutes (hh:mm)</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Decimal (h.xx)</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="lbAnimatedTrayIcon">
+       <property name="text">
+        <string>Animated tray icon</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QCheckBox" name="cbAnimatedTrayIcon">
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QCheckBox" name="cbIdleDetection">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Enable idle detection</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">

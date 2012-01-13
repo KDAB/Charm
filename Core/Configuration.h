@@ -44,13 +44,9 @@ public:
     // helper method
     void dump( const QString& why = QString::null );
 
-    // database metainformation
-    bool eventsInLeafsOnly;
-    bool oneEventAtATime;
     User user;  // this user's id
     TaskPrefilteringMode taskPrefilteringMode;
     TaskTrackerFontSize taskTrackerFontSize;
-    bool always24hEditing;
     DurationFormat durationFormat;
     Qt::ToolButtonStyle toolButtonStyle;
     bool showStatusBar;
@@ -77,7 +73,7 @@ private:
     // these are all the persisted metadata settings, and the constructor is only used during test runs:
     Configuration( bool eventsInLeafsOnly, bool oneEventAtATime, User user,
                    TaskPrefilteringMode taskPrefilteringMode, TaskTrackerFontSize,
-                   bool always24hEditing, DurationFormat durationFormat, bool detectIdling,
+                   DurationFormat durationFormat, bool detectIdling,
                    Qt::ToolButtonStyle buttonstyle, bool showStatusBar, bool animatedTrayIcon );
     Configuration();
 };

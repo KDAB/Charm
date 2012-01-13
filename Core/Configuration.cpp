@@ -17,11 +17,8 @@ Configuration& Configuration::instance()
 }
 
 Configuration::Configuration()
-    : eventsInLeafsOnly( true )
-    , oneEventAtATime( true )
-    , taskPrefilteringMode( TaskPrefilter_ShowAll )
+    : taskPrefilteringMode( TaskPrefilter_ShowAll )
     , taskTrackerFontSize( TaskTrackerFont_Regular )
-    , always24hEditing( false )
     , durationFormat( Minutes )
     , toolButtonStyle( Qt::ToolButtonFollowStyle )
     , showStatusBar( true )
@@ -38,14 +35,11 @@ Configuration::Configuration()
 Configuration::Configuration( bool _eventsInLeafsOnly, bool _oneEventAtATime, User _user,
                               TaskPrefilteringMode _taskPrefilteringMode,
                               TaskTrackerFontSize _taskTrackerFontSize,
-                              bool _always24hEditing, DurationFormat _durationFormat, bool _detectIdling,
+                              DurationFormat _durationFormat, bool _detectIdling,
                               Qt::ToolButtonStyle _buttonstyle,
                               bool _showStatusBar, bool _animatedTrayIcon )
-    : eventsInLeafsOnly( _eventsInLeafsOnly )
-    , oneEventAtATime( _oneEventAtATime )
-    , taskPrefilteringMode( _taskPrefilteringMode )
+    : taskPrefilteringMode( _taskPrefilteringMode )
     , taskTrackerFontSize( _taskTrackerFontSize )
-    , always24hEditing( _always24hEditing )
     , durationFormat( _durationFormat )
     , toolButtonStyle( _buttonstyle )
     , showStatusBar( _showStatusBar )
@@ -61,13 +55,9 @@ Configuration::Configuration( bool _eventsInLeafsOnly, bool _oneEventAtATime, Us
 
 bool Configuration::operator==( const Configuration& other ) const
 {
-    return
-        eventsInLeafsOnly == other.eventsInLeafsOnly &&
-        oneEventAtATime == other.oneEventAtATime &&
-        user == other.user &&
+    return user == other.user &&
         taskPrefilteringMode == other.taskPrefilteringMode &&
         taskTrackerFontSize == other.taskTrackerFontSize &&
-        always24hEditing == other.always24hEditing &&
         durationFormat == other.durationFormat &&
         detectIdling == other.detectIdling &&
         animatedTrayIcon == other.animatedTrayIcon &&
@@ -126,11 +116,8 @@ void Configuration::dump( const QString& why )
              << "--> userid:                 " << user.id() << endl
              << "--> local storage type:     " << localStorageType << endl
              << "--> local storage database: " << localStorageDatabase << endl
-             << "--> events in leaf nodes only: " << eventsInLeafsOnly << endl
-             << "--> one event at a time:       " << oneEventAtATime << endl
              << "--> task prefiltering mode:   " << taskPrefilteringMode << endl
              << "--> task tracker font size: " << taskTrackerFontSize << endl
-             << "--> 24h time editing:       " << always24hEditing << endl
              << "--> duration format:        " << durationFormat << endl
              << "--> Idle Detection:         " << detectIdling << endl
              << "--> toolButtonStyle:        " << toolButtonStyle << endl
