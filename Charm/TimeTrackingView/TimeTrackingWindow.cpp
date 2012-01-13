@@ -70,7 +70,7 @@ void TimeTrackingWindow::stateChanged( State previous )
     CharmWindow::stateChanged( previous );
     switch( Application::instance().state() ) {
     case Connecting: {
-        connect( &Application::instance().timeSpans(), SIGNAL( timeSpansChanged() ),
+        connect( Application::instance().dateChangeWatcher(), SIGNAL( dateChanged() ),
                  SLOT( slotSelectTasksToShow() ) );
         DATAMODEL->registerAdapter( this );
         m_summaryWidget->setSummaries( QVector<WeeklySummary>() );
@@ -171,7 +171,7 @@ void TimeTrackingWindow::slotSelectTasksToShow()
     // first, we select tasks that most recently where active
     //
     // find this weeks time span, and retrieve the events matching:
-    const NamedTimeSpan thisWeek = Application::instance().timeSpans().thisWeek();
+    const NamedTimeSpan thisWeek = TimeSpans().thisWeek();
     const EventIdList eventIds = DATAMODEL->eventsThatStartInTimeFrame( thisWeek.timespan );
     // prepare a list of unique task ids used within the time span:
     TaskIdList taskIds, uniqueTaskIds; // the list of tasks to show

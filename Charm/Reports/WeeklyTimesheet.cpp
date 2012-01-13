@@ -59,8 +59,8 @@ WeeklyTimesheetConfigurationDialog::~WeeklyTimesheetConfigurationDialog()
 void WeeklyTimesheetConfigurationDialog::slotDelayedInitialization()
 {
     slotStandardTimeSpansChanged();
-    connect( &Application::instance().timeSpans(),
-             SIGNAL( timeSpansChanged() ),
+    connect( Application::instance().dateChangeWatcher(),
+             SIGNAL( dateChanged() ),
              SLOT( slotStandardTimeSpansChanged() ) );
 
     // load settings:
@@ -135,10 +135,11 @@ void WeeklyTimesheetConfigurationDialog::slotCheckboxSubtasksOnlyChecked( bool c
 
 void WeeklyTimesheetConfigurationDialog::slotStandardTimeSpansChanged()
 {
-    m_weekInfo = Application::instance().timeSpans().last4Weeks();
+    const TimeSpans timeSpans;
+    m_weekInfo = timeSpans.last4Weeks();
     NamedTimeSpan custom = {
         tr( "Manual Selection" ),
-        Application::instance().timeSpans().thisWeek().timespan
+        timeSpans.thisWeek().timespan
     };
     m_weekInfo << custom;
     m_ui->comboBoxWeek->clear();
@@ -330,8 +331,7 @@ void WeeklyTimeSheetReport::slotUpdate()
     delete m_report; m_report = 0;
 
     // retrieve matching events:
-    EventIdList matchingEvents = DATAMODEL->eventsThatStartInTimeFrame(
-        QDateTime( m_start ), QDateTime( m_end ) );
+    const EventIdList matchingEvents = DATAMODEL->eventsThatStartInTimeFrame( m_start, m_end );
 
     const int DaysInWeek = 7;
     m_secondsMap.clear();
@@ -627,8 +627,7 @@ QByteArray WeeklyTimeSheetReport::saveToXml()
             report.appendChild( effort );
 
             // retrieve it:
-            EventIdList matchingEvents = DATAMODEL->eventsThatStartInTimeFrame(
-                QDateTime( m_start ), QDateTime( m_end ) );
+            EventIdList matchingEvents = DATAMODEL->eventsThatStartInTimeFrame( m_start, m_end );
             // aggregate (group by task and day):
             typedef QPair<TaskId, QDate> Key;
             QMap< Key, Event> events;

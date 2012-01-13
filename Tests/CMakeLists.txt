@@ -52,6 +52,11 @@ ADD_EXECUTABLE(
 TARGET_LINK_LIBRARIES( TaskStructureTests ${TEST_LIBRARIES} )
 ADD_TEST( NAME TaskStructureTests COMMAND TaskStructureTests )
 
+SET( TimeSpanTests_SRCS TimeSpanTests.cpp )
+QT4_AUTOMOC( ${TimeSpanTests_SRCS} )
+ADD_EXECUTABLE( TimeSpanTests ${TimeSpanTests_SRCS} )
+TARGET_LINK_LIBRARIES( TimeSpanTests ${TEST_LIBRARIES} )
+
 SET( XmlSerializationTests_SRCS XmlSerializationTests.cpp )
 QT4_AUTOMOC( ${XmlSerializationTests_SRCS} )
 ADD_EXECUTABLE(
