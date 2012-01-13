@@ -210,8 +210,7 @@ void ActivityReport::slotUpdate()
     const QString DateTimeFormat( "yyyy/MM/dd HH:mm" );
 
     // retrieve matching events:
-    EventIdList matchingEvents = DATAMODEL->eventsThatStartInTimeFrame(
-        QDateTime( m_start ), QDateTime( m_end ) );
+    EventIdList matchingEvents = DATAMODEL->eventsThatStartInTimeFrame( m_start, m_end );
     matchingEvents = eventIdsSortedByStartTime( matchingEvents );
     if ( m_rootTask != 0 ) {
         matchingEvents = filteredBySubtree( matchingEvents, m_rootTask );

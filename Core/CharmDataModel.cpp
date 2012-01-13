@@ -562,15 +562,15 @@ int CharmDataModel::activeEventCount() const
     return m_activeEventIds.count();
 }
 
-EventIdList CharmDataModel::eventsThatStartInTimeFrame( const QDateTime& start,
-                                                        const QDateTime& end ) const
+EventIdList CharmDataModel::eventsThatStartInTimeFrame( const QDate& start,
+                                                        const QDate& end ) const
 {
     EventIdList events;
     EventMap::const_iterator it;
     for ( it = m_events.begin();
           it != m_events.end(); ++it ) {
         const Event& event( it->second );
-        if ( event.startDateTime() >= start && event.startDateTime() < end ) {
+        if ( event.startDateTime().date() >= start && event.startDateTime().date() < end ) {
             events << event.id();
         }
     }
@@ -580,9 +580,7 @@ EventIdList CharmDataModel::eventsThatStartInTimeFrame( const QDateTime& start,
 
 EventIdList CharmDataModel::eventsThatStartInTimeFrame( const TimeSpan& timeSpan ) const
 {
-    return eventsThatStartInTimeFrame(
-        QDateTime( timeSpan.first ),
-        QDateTime( timeSpan.second ) );
+    return eventsThatStartInTimeFrame( timeSpan.first, timeSpan.second );
 }
 
 bool CharmDataModel::isParentOf( TaskId parent, TaskId id ) const
