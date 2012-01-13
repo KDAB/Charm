@@ -187,6 +187,7 @@ ActivityReport::ActivityReport( QWidget* parent )
 {
     saveToXmlButton()->hide();
     saveToTextButton()->hide();
+    uploadButton()->hide();
 }
 
 ActivityReport::~ActivityReport()

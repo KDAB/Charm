@@ -8,6 +8,29 @@
 #include <QSettings>
 #include <QSslError>
 
+static void setLastAuthenticationFailed(bool failed)
+{
+    QSettings settings;
+    settings.beginGroup("httpconfig");
+    settings.setValue(QLatin1String("lastAuthenticationFailed"), failed);
+}
+
+static bool lastAuthenticationFailed()
+{
+    QSettings settings;
+    settings.beginGroup("httpconfig");
+    return settings.value(QLatin1String("lastAuthenticationFailed"), false).toBool();
+}
+
+bool HttpJob::credentialsAvailable()
+{
+    QSettings settings;
+    settings.beginGroup("httpconfig");
+    return !settings.value(QLatin1String("username")).toString().isEmpty()
+        && settings.value(QLatin1String("portalUrl")).toUrl().isValid()
+        && settings.value(QLatin1String("loginUrl")).toUrl().isValid();
+}
+
 HttpJob::HttpJob(QObject* parent)
     : QObject(parent)
     , m_networkManager(new QNetworkAccessManager(this))
@@ -16,6 +39,7 @@ HttpJob::HttpJob(QObject* parent)
     , m_currentState(Ready)
     , m_errorCode(NoError)
     , m_dialog()
+    , m_lastAuthenticationFailed(true)
 {
     connect(m_networkManager, SIGNAL(finished(QNetworkReply *)), SLOT(handle(QNetworkReply *)));
     QSettings settings;
@@ -23,6 +47,7 @@ HttpJob::HttpJob(QObject* parent)
     setUsername(settings.value(QLatin1String("username")).toString());
     setPortalUrl(settings.value(QLatin1String("portalUrl")).toUrl());
     setLoginUrl(settings.value(QLatin1String("loginUrl")).toUrl());
+    m_lastAuthenticationFailed = settings.value("lastAuthenticationFailed", false).toBool();
 }
 
 HttpJob::~HttpJob()
@@ -103,16 +128,23 @@ void HttpJob::doStart()
 
     Keychain store(QLatin1String("Charm"));
 
+    const bool authenticationFailed = lastAuthenticationFailed();
     const QString oldpass = store.readPassword(QLatin1String("lotsofcake"));
 
-    bool ok;
-    QPointer<QObject> that( this ); //guard against destruction while dialog is open
-    const QString newpass = QInputDialog::getText(m_parentWidget, tr("Password"), tr("Please enter your lotsofcake password"), QLineEdit::Password, oldpass, &ok);
-    if (!that || !ok) {
-        setErrorAndEmitFinished(Canceled, tr("Canceled"));
-        return;
-    }
 
+    QString newpass;
+
+    if (!oldpass.isEmpty() && !authenticationFailed) {
+        newpass = oldpass;
+    } else {
+        bool ok;
+        QPointer<QObject> that( this ); //guard against destruction while dialog is open
+        newpass = QInputDialog::getText(m_parentWidget, tr("Password"), tr("Please enter your lotsofcake password"), QLineEdit::Password, oldpass, &ok);
+        if (!that || !ok) {
+            setErrorAndEmitFinished(Canceled, tr("Canceled"));
+            return;
+        }
+    }
     if (oldpass != newpass)
         store.writePassword(QLatin1String("lotsofcake"), newpass);
     m_password = newpass;
@@ -204,7 +236,7 @@ bool HttpJob::handle(QNetworkReply *reply)
     case Login:
     {
         if (reply->header(QNetworkRequest::LocationHeader).isNull()) {
-            setErrorAndEmitFinished(SomethingWentWrong, tr("Login failed. Wrong username or password."));
+            setErrorAndEmitFinished(AuthenticationFailed, tr("Login failed. Wrong username or password."));
         } else {
             delayedNext();
         }
@@ -219,6 +251,10 @@ bool HttpJob::handle(QNetworkReply *reply)
 
 void HttpJob::emitFinished()
 {
+    if (m_errorCode == AuthenticationFailed)
+        setLastAuthenticationFailed(true);
+    else if (m_errorCode == NoError)
+        setLastAuthenticationFailed(false);
     m_networkManager->disconnect(this);
     delete m_dialog;
     m_dialog = 0;
