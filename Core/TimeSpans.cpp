@@ -121,7 +121,7 @@ DateChangeWatcher::DateChangeWatcher( QObject* parent )
     slotTimeout();
 }
 
-void DateChangeWatcher::DateChangeWatcher::slotTimeout()
+void DateChangeWatcher::slotTimeout()
 {
     const QDate today = QDate::currentDate();
     if ( m_today == today )
