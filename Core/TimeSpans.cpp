@@ -4,85 +4,8 @@
 
 #include "TimeSpans.h"
 
-bool NamedTimeSpan::contains( const QDate& date )
+TimeSpans::TimeSpans(const QDate &today)
 {
-    return date >= timespan.first && date < timespan.second;
-}
-
-TimeSpans::TimeSpans( QObject* parent )
-    : QObject( parent )
-{
-    slotUpdateTimeSpans();
-
-    connect( &m_timer, SIGNAL( timeout() ), SLOT( slotUpdateTimeSpans() ) );
-    m_timer.start( 1000 * 60 );
-}
-
-const NamedTimeSpan& TimeSpans::today() const
-{
-    return m_today;
-}
-
-const NamedTimeSpan& TimeSpans::yesterday() const
-{
-    return m_yesterday;
-}
-
-const NamedTimeSpan& TimeSpans::dayBeforeYesterday() const
-{
-    return m_dayBeforeYesterday;
-}
-
-const NamedTimeSpan& TimeSpans::thisWeek() const
-{
-    return m_thisWeek;
-}
-
-const NamedTimeSpan& TimeSpans::lastWeek() const
-{
-    return m_lastWeek;
-}
-
-const NamedTimeSpan& TimeSpans::theWeekBeforeLast() const
-{
-    return m_theWeekBeforeLast;
-}
-
-const NamedTimeSpan& TimeSpans::thisMonth() const
-{
-    return m_thisMonth;
-}
-
-const NamedTimeSpan& TimeSpans::lastMonth() const
-{
-    return m_lastMonth;
-}
-
-QList<NamedTimeSpan> TimeSpans::standardTimeSpans()
-{
-    QList<NamedTimeSpan> spans;
-    spans << m_today << m_yesterday << m_dayBeforeYesterday
-          << m_thisWeek << m_lastWeek << m_theWeekBeforeLast
-          << m_thisMonth << m_lastMonth;
-    return spans;
-}
-
-QList<NamedTimeSpan> TimeSpans::last4Weeks()
-{
-    QList<NamedTimeSpan> spans;
-    spans << m_thisWeek << m_lastWeek << m_theWeekBeforeLast << m_3WeeksAgo;
-    return spans;
-}
-
-void TimeSpans::slotUpdateTimeSpans()
-{   // if today is unchanged, return
-    if ( m_today.timespan.first == QDate::currentDate() )
-        return;
-
-    QTime now = QTime::currentTime();
-
-    QDate today = QDate::currentDate();
-
     m_today.name = tr( "Today" );
     m_today.timespan =
         TimeSpan( today,
@@ -127,8 +50,85 @@ void TimeSpans::slotUpdateTimeSpans()
     m_lastMonth.timespan =
         TimeSpan( m_thisMonth.timespan.first.addMonths( -1 ),
                   m_thisMonth.timespan.second.addMonths( -1 ) );
+}
 
-    emit timeSpansChanged();
+QList<NamedTimeSpan> TimeSpans::standardTimeSpans() const
+{
+    QList<NamedTimeSpan> spans;
+    spans << m_today << m_yesterday << m_dayBeforeYesterday
+          << m_thisWeek << m_lastWeek << m_theWeekBeforeLast
+          << m_thisMonth << m_lastMonth;
+    return spans;
+}
+
+QList<NamedTimeSpan> TimeSpans::last4Weeks() const
+{
+    QList<NamedTimeSpan> spans;
+    spans << m_thisWeek << m_lastWeek << m_theWeekBeforeLast << m_3WeeksAgo;
+    return spans;
+}
+
+NamedTimeSpan TimeSpans::today() const
+{
+    return m_today;
+}
+
+NamedTimeSpan TimeSpans::yesterday() const
+{
+    return m_yesterday;
+}
+
+NamedTimeSpan TimeSpans::dayBeforeYesterday() const
+{
+    return m_dayBeforeYesterday;
+}
+
+NamedTimeSpan TimeSpans::thisWeek() const
+{
+    return m_thisWeek;
+}
+
+NamedTimeSpan TimeSpans::lastWeek() const
+{
+    return m_lastWeek;
+}
+
+NamedTimeSpan TimeSpans::theWeekBeforeLast() const
+{
+    return m_theWeekBeforeLast;
+}
+
+NamedTimeSpan TimeSpans::thisMonth() const
+{
+    return m_thisMonth;
+}
+
+NamedTimeSpan TimeSpans::lastMonth() const
+{
+    return m_lastMonth;
+}
+
+bool NamedTimeSpan::contains( const QDate& date )
+{
+    return date >= timespan.first && date < timespan.second;
+}
+
+DateChangeWatcher::DateChangeWatcher( QObject* parent )
+    : QObject( parent )
+{
+    connect( &m_timer, SIGNAL( timeout() ), SLOT( slotTimeout() ) );
+    m_timer.start( 1000 * 60 );
+    slotTimeout();
+}
+
+void DateChangeWatcher::DateChangeWatcher::slotTimeout()
+{
+    const QDate today = QDate::currentDate();
+    if ( m_today == today )
+        return;
+
+    m_today = today;
+    emit dateChanged();
 }
 
 #include "TimeSpans.moc"

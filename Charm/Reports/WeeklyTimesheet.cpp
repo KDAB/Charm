@@ -59,8 +59,8 @@ WeeklyTimesheetConfigurationDialog::~WeeklyTimesheetConfigurationDialog()
 void WeeklyTimesheetConfigurationDialog::slotDelayedInitialization()
 {
     slotStandardTimeSpansChanged();
-    connect( &Application::instance().timeSpans(),
-             SIGNAL( timeSpansChanged() ),
+    connect( Application::instance().dateChangeWatcher(),
+             SIGNAL( dateChanged() ),
              SLOT( slotStandardTimeSpansChanged() ) );
 
     // load settings:
@@ -135,10 +135,11 @@ void WeeklyTimesheetConfigurationDialog::slotCheckboxSubtasksOnlyChecked( bool c
 
 void WeeklyTimesheetConfigurationDialog::slotStandardTimeSpansChanged()
 {
-    m_weekInfo = Application::instance().timeSpans().last4Weeks();
+    const TimeSpans timeSpans;
+    m_weekInfo = timeSpans.last4Weeks();
     NamedTimeSpan custom = {
         tr( "Manual Selection" ),
-        Application::instance().timeSpans().thisWeek().timespan
+        timeSpans.thisWeek().timespan
     };
     m_weekInfo << custom;
     m_ui->comboBoxWeek->clear();

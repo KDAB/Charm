@@ -1,6 +1,7 @@
 #ifndef TIMESPANS_H
 #define TIMESPANS_H
 
+#include <QCoreApplication>
 #include <QDate>
 #include <QPair>
 #include <QTimer>
@@ -15,7 +16,7 @@ struct NamedTimeSpan {
     bool contains( const QDate& date );
 };
 
-/** TimeSpans provides up-to-date spans of time.
+/** Provides commonly used time spans for a given date.
     The spans are measured from a start time to *before* an end time.
     today() looks like this: today, 0:00 - tomorrow, 0:00
     To see of a date (or datetime) is within the span, test for
@@ -23,31 +24,28 @@ struct NamedTimeSpan {
     TimeSpan only deals with days, not with anything of finer
     granularity.
 */
-class TimeSpans : public QObject
-{
-    Q_OBJECT
-
+class TimeSpans {
+    Q_DECLARE_TR_FUNCTIONS(TimeSpans)
 public:
-    explicit TimeSpans( QObject* parent = 0 );
 
-    QList<NamedTimeSpan> standardTimeSpans();
-    QList<NamedTimeSpan> last4Weeks();
+    /**
+     * Creates a collection of timespans with @p referenceDate as reference date.
+     *
+     * @param referenceDate the reference date ("today") to calculate time spans for
+     */
+    explicit TimeSpans( const QDate& referenceDate=QDate::currentDate() );
 
-    const NamedTimeSpan& today() const;
-    const NamedTimeSpan& yesterday() const;
-    const NamedTimeSpan& dayBeforeYesterday() const;
-    const NamedTimeSpan& thisWeek() const;
-    const NamedTimeSpan& lastWeek() const;
-    const NamedTimeSpan& theWeekBeforeLast() const;
-    const NamedTimeSpan& thisMonth() const;
-    const NamedTimeSpan& lastMonth() const;
+    QList<NamedTimeSpan> standardTimeSpans() const;
+    QList<NamedTimeSpan> last4Weeks() const;
 
-signals:
-    void timeSpansChanged();
-
-private slots:
-    // timer triggered:
-    void slotUpdateTimeSpans();
+    NamedTimeSpan today() const;
+    NamedTimeSpan yesterday() const;
+    NamedTimeSpan dayBeforeYesterday() const;
+    NamedTimeSpan thisWeek() const;
+    NamedTimeSpan lastWeek() const;
+    NamedTimeSpan theWeekBeforeLast() const;
+    NamedTimeSpan thisMonth() const;
+    NamedTimeSpan lastMonth() const;
 
 private:
     NamedTimeSpan m_today;
@@ -59,7 +57,24 @@ private:
     NamedTimeSpan m_3WeeksAgo;
     NamedTimeSpan m_thisMonth;
     NamedTimeSpan m_lastMonth;
+};
+
+class DateChangeWatcher : public QObject
+{
+    Q_OBJECT
+
+public:
+    explicit DateChangeWatcher( QObject* parent = 0 );
+
+signals:
+    void dateChanged();
+
+private slots:
+    void slotTimeout();
+
+private:
     QTimer m_timer;
+    QDate m_today;
 };
 
 #endif

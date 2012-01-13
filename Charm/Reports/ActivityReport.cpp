@@ -65,18 +65,19 @@ ActivityReportConfigurationDialog::~ActivityReportConfigurationDialog()
 void ActivityReportConfigurationDialog::slotDelayedInitialization()
 {
     slotStandardTimeSpansChanged();
-    connect( &Application::instance().timeSpans(),
-             SIGNAL( timeSpansChanged() ),
+    connect( Application::instance().dateChangeWatcher(),
+             SIGNAL( dateChanged() ),
              SLOT( slotStandardTimeSpansChanged() ) );
     // FIXME load settings
 }
 
 void ActivityReportConfigurationDialog::slotStandardTimeSpansChanged()
 {
-    m_timespans = Application::instance().timeSpans().standardTimeSpans();
+    const TimeSpans timeSpans;
+    m_timespans = timeSpans.standardTimeSpans();
     NamedTimeSpan customRange = {
         tr( "Select Range" ),
-        Application::instance().timeSpans().thisWeek().timespan
+        timeSpans.thisWeek().timespan
     };
     m_timespans << customRange;
     m_ui->comboBox->clear();

@@ -57,7 +57,7 @@ public:
     ModelConnector& model();
 
     /** Access to the time spans object. */
-    TimeSpans& timeSpans();
+    DateChangeWatcher* dateChangeWatcher() const;
 
     IdleDetector* idleDetector();
 
@@ -146,7 +146,7 @@ private:
     // All statics are created as members of Application. This is
     // supposed to help on Windows, where constructors for statics
     // do not seem to called correctly.
-    TimeSpans m_timeSpans;
+    DateChangeWatcher* m_dateChangeWatcher;
     static Application* m_instance;
 };
 
