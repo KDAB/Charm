@@ -18,3 +18,7 @@ QDate Charm::dateByWeekNumberAndWeekDay( int year, int week, int day ) {
     const QDate date = start.addDays( 7 * ( week - 1 ) );
     return date;
 }
+
+QDate Charm::weekDayInWeekOf( Qt::DayOfWeek dayOfWeek, const QDate& date ) {
+    return date.addDays( dayOfWeek - date.dayOfWeek() );
+}

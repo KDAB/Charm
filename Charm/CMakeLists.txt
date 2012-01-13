@@ -16,6 +16,7 @@ SET(
     TrayIcon.cpp
     GUIState.cpp
     DateEntrySyncer.cpp
+    EnterVacationDialog.cpp
     EventView.cpp
     EventWindow.cpp
     EventEditor.cpp
@@ -99,6 +100,7 @@ QT4_WRAP_UI(
     Reports/WeeklyTimesheetConfigurationDialog.ui
     Reports/ReportPreviewWindow.ui
     TaskEditor.ui
+    EnterVacationDialog.ui
     EventEditor.ui
     SelectTaskDialog.ui
     CharmAboutDialog.ui

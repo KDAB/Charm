@@ -47,6 +47,7 @@ public slots:
     // slots migrated from the old main window:
     void slotEditPreferences( bool ); // show prefs dialog
     void slotAboutDialog();
+    void slotEnterVacation();
     void slotActivityReport();
     void slotWeeklyTimesheetReport();
     void slotExportToXml();
