@@ -23,7 +23,6 @@
 #include "MakeTemporarilyVisible.h"
 #include "CharmPreferences.h"
 #include "CharmAboutDialog.h"
-#include "Reports/ReportConfigurationPage.h"
 #include "Commands/CommandExportToXml.h"
 #include "Commands/CommandSetAllTasks.h"
 #include "Commands/CommandModifyEvent.h"
@@ -31,12 +30,13 @@
 #include "Idle/IdleDetector.h"
 #include "Idle/IdleCorrectionDialog.h"
 #include "HttpClient/GetProjectCodesJob.h"
+#include "Reports/ActivityReport.h"
+#include "Reports/WeeklyTimesheet.h"
 
 
 TimeTrackingWindow::TimeTrackingWindow( QWidget* parent )
     : CharmWindow( tr( "Time Tracker" ), parent )
     , m_summaryWidget( new TimeTrackingView( toolBar(), this ) )
-    , m_reportDialog( this )
 {
     setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
     setWindowNumber( 3 );
@@ -256,16 +256,26 @@ void TimeTrackingWindow::slotAboutDialog()
     dialog.exec();
 }
 
-void TimeTrackingWindow::slotReportDialog()
+void TimeTrackingWindow::slotActivityReport()
 {
     MakeTemporarilyVisible m( this );
-    m_reportDialog.back();
-    if ( m_reportDialog.exec() ) {
-        ReportConfigurationPage* page = m_reportDialog.selectedPage();
-        QDialog* preview = page->makeReportPreviewDialog( this );
-        // preview is destroy-on-close and non-modal:
-        preview->show();
-    }
+    ActivityReportConfigurationDialog dialog( this );
+    if ( dialog.exec() == QDialog::Rejected )
+        return;
+    QDialog* preview = dialog.makeReportPreviewDialog( this );
+    // preview is destroy-on-close and non-modal:
+    preview->show();
+}
+
+void TimeTrackingWindow::slotWeeklyTimesheetReport()
+{
+    MakeTemporarilyVisible m( this );
+    WeeklyTimesheetConfigurationDialog dialog( this );
+    if ( dialog.exec() == QDialog::Rejected )
+        return;
+    QDialog* preview = dialog.makeReportPreviewDialog( this );
+    // preview is destroy-on-close and non-modal:
+    preview->show();
 }
 
 void TimeTrackingWindow::slotExportToXml()

@@ -26,7 +26,7 @@
 #include "Commands/CommandMakeEvent.h"
 #include "Commands/CommandModifyEvent.h"
 #include "Commands/CommandDeleteEvent.h"
-#include "Reports/WeeklyTimeSheet.h"
+#include "Reports/WeeklyTimesheet.h"
 
 EventView::EventView( QToolBar* toolBar, QWidget* parent )
     : QWidget( parent )

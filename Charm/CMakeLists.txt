@@ -33,11 +33,10 @@ SET(
         TimeTrackingView/WeeklySummary.cpp
         TimeTrackingView/TimeTrackingTaskSelector.cpp
         IdleWidget.cpp
-        Reports/ReportDialog.cpp
-        Reports/ReportConfigurationPage.cpp
+        Reports/ReportConfigurationDialog.cpp
         Reports/CharmReport.cpp
         Reports/ActivityReport.cpp
-        Reports/WeeklyTimeSheet.cpp
+        Reports/WeeklyTimesheet.cpp
         Reports/ReportPreviewWindow.cpp
         Commands/CommandRelayCommand.cpp
         Commands/CommandModifyEvent.cpp
@@ -95,9 +94,8 @@ QT4_WRAP_UI(
         ConfigurationDialog.ui
         CharmPreferences.ui
         TaskIdDialog.ui
-        Reports/ReportDialog.ui
-        Reports/ActivityReportConfigurationPage.ui
-        Reports/WeeklyTimeSheetConfigurationPage.ui
+        Reports/ActivityReportConfigurationDialog.ui
+        Reports/WeeklyTimesheetConfigurationDialog.ui
         Reports/ReportPreviewWindow.ui
         TaskEditor.ui
         EventEditor.ui

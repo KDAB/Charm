@@ -133,7 +133,8 @@ private:
     QAction m_actionSyncTasks;
     QAction m_actionImportTasks;
     QAction m_actionExportTasks;
-    QAction m_actionReporting;
+    QAction m_actionActivityReport;
+    QAction m_actionWeeklyTimesheetReport;
     TasksWindow m_tasksWindow;
     EventWindow m_eventWindow;
     IdleDetector* m_idleDetector;
