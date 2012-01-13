@@ -22,6 +22,7 @@ public:
         NoError=0,
         Canceled,
         NotConfigured,
+        AuthenticationFailed,
         SomethingWentWrong
     };
 
@@ -89,6 +90,7 @@ private:
     QPointer<QProgressDialog> m_dialog;
     QUrl m_loginUrl;
     QUrl m_portalUrl;
+    bool m_lastAuthenticationFailed;
 };
 
 #endif
