@@ -484,6 +484,7 @@ void TimeTrackingWindow::importTasksFromFile( const QString &filename )
         setValueIfNotNull( &settings, QLatin1String("loginUrl"), exporter.metadata( QLatin1String("login-url") ) );
         setValueIfNotNull( &settings, QLatin1String("timesheetUploadUrl"), exporter.metadata( QLatin1String("timesheet-upload-url") ) );
         setValueIfNotNull( &settings, QLatin1String("projectCodeDownloadUrl"), exporter.metadata( QLatin1String("project-code-download-url") ) );
+        Application::instance().setHttpActionsVisible( true );
     } catch(  CharmException& e ) {
         const QString message = e.what().isEmpty()
                                 ?  tr( "The selected task definitions are invalid and cannot be imported." )

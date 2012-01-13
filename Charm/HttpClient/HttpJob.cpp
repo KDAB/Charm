@@ -8,6 +8,15 @@
 #include <QSettings>
 #include <QSslError>
 
+bool HttpJob::credentialsAvailable()
+{
+    QSettings settings;
+    settings.beginGroup("httpconfig");
+    return !settings.value(QLatin1String("username")).toString().isEmpty()
+        && settings.value(QLatin1String("portalUrl")).toUrl().isValid()
+        && settings.value(QLatin1String("loginUrl")).toUrl().isValid();
+}
+
 HttpJob::HttpJob(QObject* parent)
     : QObject(parent)
     , m_networkManager(new QNetworkAccessManager(this))

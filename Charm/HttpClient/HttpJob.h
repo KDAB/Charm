@@ -16,6 +16,8 @@ class HttpJob : public QObject
     Q_OBJECT
 public:
 
+    static bool credentialsAvailable();
+
     enum Error {
         NoError=0,
         Canceled,
