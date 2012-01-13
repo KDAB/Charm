@@ -30,6 +30,7 @@
 #include "ConfigurationDialog.h"
 #include "Idle/IdleDetector.h"
 #include "Uniquifier.h"
+#include "HttpClient/HttpJob.h"
 
 #include <algorithm> //for_each()
 
@@ -162,7 +163,7 @@ Application::Application(int& argc, char** argv)
     m_actionExportToXml.setText( tr( "Export Database..." ) );
     connect( &m_actionExportToXml, SIGNAL( triggered() ),
              &mainView(),  SLOT( slotExportToXml() ) );
-    m_actionSyncTasks.setText( tr( "Sync Task Definitions..." ) );
+    m_actionSyncTasks.setText( tr( "Download Task Definitions..." ) );
     connect( &m_actionSyncTasks, SIGNAL( triggered() ),
              &mainView(),  SLOT( slotSyncTasks() ) );
     m_actionImportTasks.setText( tr( "Import and Merge Task Definitions..." ) );
@@ -189,6 +190,7 @@ Application::Application(int& argc, char** argv)
         connect( m_idleDetector, SIGNAL( maybeIdle() ), SLOT( slotMaybeIdle() ) );
     }
 
+    setHttpActionsVisible(HttpJob::credentialsAvailable());
     // add default plugin path for deployment
     addLibraryPath( applicationDirPath() + "/plugins" );
 
@@ -666,6 +668,11 @@ DateChangeWatcher* Application::dateChangeWatcher() const
 IdleDetector* Application::idleDetector()
 {
     return m_idleDetector;
+}
+
+void Application::setHttpActionsVisible( bool visible )
+{
+    m_actionSyncTasks.setVisible( visible );
 }
 
 void Application::slotMaybeIdle()

@@ -83,8 +83,8 @@ public slots:
     void slotControllerReadyToQuit();
     void slotSaveConfiguration();
     void slotGoToConnectedState();
-
     void toggleShowHide();
+    void setHttpActionsVisible( bool visible );
 
 private slots:
 //     void slotMainWindowVisibilityChanged( bool );
