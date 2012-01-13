@@ -392,7 +392,7 @@ const Event& CharmDataModel::activeEventFor ( TaskId id ) const
 void CharmDataModel::startEventRequested( const Task& task )
 {
     // respect configuration:
-    if ( CONFIGURATION.oneEventAtATime && !m_activeEventIds.isEmpty() ) {
+    if ( !m_activeEventIds.isEmpty() ) {
         endAllEventsRequested();
     }
 

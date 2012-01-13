@@ -17,8 +17,6 @@
 #define CHARM_MYSQL_BACKEND_DESCRIPTOR "mysql"
 
 // Metadata and QSettings Keys:
-extern const QString MetaKey_EventsInLeafsOnly;
-extern const QString MetaKey_OneEventAtATime;
 extern const QString MetaKey_MainWindowGeometry;
 extern const QString MetaKey_MainWindowVisible;
 extern const QString MetaKey_MainWindowGUIStateSelectedTask;
@@ -38,8 +36,6 @@ extern const QString MetaKey_Key_LocalStorageDatabase;
 extern const QString MetaKey_Key_LocalStorageType;
 extern const QString MetaKey_Key_SubscribedTasksOnly;
 extern const QString MetaKey_Key_TaskTrackerFontSize;
-extern const QString MetaKey_Key_24hEditing;
-extern const QString MetaKey_Key_DurationFormat;
 extern const QString MetaKey_Key_DurationFormat;
 extern const QString MetaKey_Key_IdleDetection;
 extern const QString MetaKey_Key_AnimatedTrayIcon;

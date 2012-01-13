@@ -247,8 +247,7 @@ void TimeTrackingTaskSelector::slotActionSelected( QAction* action )
         handleActiveEvents();
 
         if ( !DATAMODEL->isTaskActive( taskId ) ) {
-            if ( CONFIGURATION.oneEventAtATime
-                 && !DATAMODEL->activeEvents().isEmpty() )
+            if ( !DATAMODEL->activeEvents().isEmpty() )
                 emit stopEvents();
             emit startEvent( taskId );
         }

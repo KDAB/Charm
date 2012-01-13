@@ -187,18 +187,12 @@ void Controller::persistMetaData( Configuration& configuration )
     Q_ASSERT_X( m_storage != 0, "Controller::persistMetaData",
                 "No storage interface available" );
     Setting settings[] = {
-        { MetaKey_EventsInLeafsOnly,
-          stringForBool( configuration.eventsInLeafsOnly ) },
-        { MetaKey_OneEventAtATime,
-          stringForBool( configuration.oneEventAtATime ) },
         { MetaKey_Key_UserName,
           configuration.user.name() },
         { MetaKey_Key_SubscribedTasksOnly,
           QString().setNum( configuration.taskPrefilteringMode ) },
         { MetaKey_Key_TaskTrackerFontSize,
           QString().setNum( configuration.taskTrackerFontSize ) },
-        { MetaKey_Key_24hEditing,
-          stringForBool( configuration.always24hEditing ) },
         { MetaKey_Key_DurationFormat,
           QString::number( configuration.durationFormat ) },
         { MetaKey_Key_IdleDetection,
@@ -225,10 +219,6 @@ void Controller::provideMetaData( Configuration& configuration)
 {
     Q_ASSERT_X( m_storage != 0, "Controller::provideMetaData",
                 "No storage interface available" );
-    configuration.oneEventAtATime = boolForString(
-        m_storage->getMetaData( MetaKey_OneEventAtATime ) );
-    configuration.eventsInLeafsOnly = boolForString(
-        m_storage->getMetaData( MetaKey_EventsInLeafsOnly ) );
     configuration.user.setName( m_storage->getMetaData( MetaKey_Key_UserName ) );
 
     bool ok;
@@ -279,8 +269,6 @@ void Controller::provideMetaData( Configuration& configuration)
         }
     }
 
-    configuration.always24hEditing = boolForString(
-        m_storage->getMetaData( MetaKey_Key_24hEditing ) );
     configuration.detectIdling = boolForString(
         m_storage->getMetaData( MetaKey_Key_IdleDetection ) );
     configuration.animatedTrayIcon = boolForString(

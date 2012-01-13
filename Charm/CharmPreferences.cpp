@@ -9,9 +9,6 @@ CharmPreferences::CharmPreferences( const Configuration& config,
     : QDialog( parent_ )
 {
     m_ui.setupUi( this );
-    m_ui.cbOneEventAtATime->setChecked( config.oneEventAtATime );
-    m_ui.cbEventsInLeavesOnly->setChecked( config.eventsInLeafsOnly );
-    m_ui.cb24hEditing->setChecked( config.always24hEditing );
     m_ui.cbIdleDetection->setEnabled( Application::instance().idleDetector() != 0 );
     m_ui.cbIdleDetection->setChecked( config.detectIdling );
     m_ui.cbAnimatedTrayIcon->setChecked( config.animatedTrayIcon );
@@ -66,21 +63,6 @@ CharmPreferences::CharmPreferences( const Configuration& config,
 
 CharmPreferences::~CharmPreferences()
 {
-}
-
-bool CharmPreferences::oneEventAtATime() const
-{
-    return m_ui.cbOneEventAtATime->isChecked();
-}
-
-bool CharmPreferences::eventsInLeafsOnly() const
-{
-    return m_ui.cbEventsInLeavesOnly->isChecked();
-}
-
-bool CharmPreferences::always24hEditing() const
-{
-    return m_ui.cb24hEditing->isChecked();
 }
 
 bool CharmPreferences::detectIdling() const
