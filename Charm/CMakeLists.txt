@@ -21,6 +21,7 @@ SET(
         EventEditor.cpp
         EventEditorDelegate.cpp
         SelectTaskDialog.cpp
+        MessageBox.cpp
         ModelConnector.cpp
         ViewFilter.cpp
         TaskModelAdapter.cpp

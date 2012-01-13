@@ -6,7 +6,6 @@
 #include <QSettings>
 #include <QTreeView>
 #include <QCloseEvent>
-#include <QMessageBox>
 #include <QHeaderView>
 #include <QItemSelectionModel>
 #include <QToolBar>
@@ -17,6 +16,7 @@
 #include "Data.h"
 #include "Core/Task.h"
 #include "Core/CharmConstants.h"
+#include "MessageBox.h"
 #include "TasksView.h"
 #include "TaskEditor.h"
 #include <QInputDialog>
@@ -173,13 +173,12 @@ void TasksView::actionEditTask()
 void TasksView::actionDeleteTask()
 {
     Task task = selectedTask();
-    if ( QMessageBox::question( this, tr( "Delete Task?" ),
-                                tr( "Do you really want to delete this task?\n"
-                                    "Warning: All events for this task will be deleted as well!\n"
-                                    "This operation cannot be undone." ),
-                                QMessageBox::Ok | QMessageBox::Cancel,
-                                QMessageBox::Ok )
-         == QMessageBox::Ok ) {
+    if ( MessageBox::warning( this, tr( "Delete Task?" ),
+                               tr( "Do you really want to delete this task?\n"
+                                   "Warning: All events for this task will be deleted as well!\n"
+                                   "This operation cannot be undone." ),
+                               tr( "Delete" ), tr( "Cancel" ) )
+         == QMessageBox::Yes ) {
         CommandDeleteTask* cmd = new CommandDeleteTask( task, this );
         emit emitCommand( cmd );
     }
