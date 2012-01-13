@@ -171,7 +171,7 @@ QDialog* ActivityReportConfigurationDialog::makeReportPreviewDialog( QWidget* pa
     const int index = m_ui->comboBox->currentIndex();
     if ( index == m_timespans.size() - 1 ) { //Range
         start = m_ui->dateEditStart->date();
-        end = m_ui->dateEditEnd->date();
+        end = m_ui->dateEditEnd->date().addDays( 1 );
     } else {
         start = m_timespans[index].timespan.first;
         end = m_timespans[index].timespan.second;
