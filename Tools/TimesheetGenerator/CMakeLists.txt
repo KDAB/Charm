@@ -1,9 +1,9 @@
 INCLUDE_DIRECTORIES( ${Charm_SOURCE_DIR} ${Charm_BINARY_DIR} )
 
 SET(
-	TimesheetGenerator_SRCS
-	main.cpp
-	Options.cpp
+    TimesheetGenerator_SRCS
+    main.cpp
+    Options.cpp
 )
 
 QT4_AUTOMOC( ${TimesheetGenerator_SRCS} )

@@ -5,8 +5,8 @@ SET( TEST_LIBRARIES CharmCore ${QT_QTTEST_LIBRARY} ${QT_LIBRARIES} )
 QT4_ADD_RESOURCES( TestDataResources_SRCS TestData.qrc )
 
 IF( APPLE )
-	FIND_LIBRARY( SECURITY_FRAMEWORK FRAMEWORK required NAMES Security )
-	LIST( APPEND TEST_LIBRARIES ${SECURITY_FRAMEWORK} )
+    FIND_LIBRARY( SECURITY_FRAMEWORK FRAMEWORK required NAMES Security )
+    LIST( APPEND TEST_LIBRARIES ${SECURITY_FRAMEWORK} )
 ENDIF()
 
 SET( SqLiteStorageTests_SRCS SqLiteStorageTests.cpp )
@@ -33,9 +33,9 @@ TARGET_LINK_LIBRARIES( CharmDataModelTests ${TEST_LIBRARIES} )
 ADD_TEST( NAME CharmDataModelTests COMMAND CharmDataModelTests )
 
 SET(
-	BackendIntegrationTests_SRCS
-	BackendIntegrationTests.cpp
-	${TestApplication_SRCS}
+    BackendIntegrationTests_SRCS
+    BackendIntegrationTests.cpp
+    ${TestApplication_SRCS}
 )
 QT4_AUTOMOC( ${BackendIntegrationTests_SRCS} )
 ADD_EXECUTABLE( BackendIntegrationTests ${BackendIntegrationTests_SRCS} )
@@ -45,9 +45,9 @@ ADD_TEST( NAME BackendIntegrationTests COMMAND BackendIntegrationTests )
 SET( TaskStructureTests_SRCS TaskStructureTests.cpp )
 QT4_AUTOMOC( ${TaskStructureTests_SRCS} )
 ADD_EXECUTABLE(
-	TaskStructureTests
-	${TaskStructureTests_SRCS}
-	${TestDataResources_SRCS}
+    TaskStructureTests
+    ${TaskStructureTests_SRCS}
+    ${TestDataResources_SRCS}
 )
 TARGET_LINK_LIBRARIES( TaskStructureTests ${TEST_LIBRARIES} )
 ADD_TEST( NAME TaskStructureTests COMMAND TaskStructureTests )
@@ -60,9 +60,9 @@ TARGET_LINK_LIBRARIES( TimeSpanTests ${TEST_LIBRARIES} )
 SET( XmlSerializationTests_SRCS XmlSerializationTests.cpp )
 QT4_AUTOMOC( ${XmlSerializationTests_SRCS} )
 ADD_EXECUTABLE(
-	XmlSerializationTests
-	${XmlSerializationTests_SRCS}
-	${TestDataResources_SRCS}
+    XmlSerializationTests
+    ${XmlSerializationTests_SRCS}
+    ${TestDataResources_SRCS}
 )
 TARGET_LINK_LIBRARIES( XmlSerializationTests ${TEST_LIBRARIES} )
 ADD_TEST( NAME XmlSerializationTests COMMAND XmlSerializationTests )
@@ -70,9 +70,9 @@ ADD_TEST( NAME XmlSerializationTests COMMAND XmlSerializationTests )
 SET( ImportExportTests_SRCS ImportExportTests.cpp ${TestApplication_SRCS} )
 QT4_AUTOMOC( ${ImportExportTests_SRCS} )
 ADD_EXECUTABLE(
-	ImportExportTests
-	${ImportExportTests_SRCS}
-	${TestDataResources_SRCS}
+    ImportExportTests
+    ${ImportExportTests_SRCS}
+    ${TestDataResources_SRCS}
 )
 TARGET_LINK_LIBRARIES( ImportExportTests ${TEST_LIBRARIES} )
 ADD_TEST( NAME ImportExportTests COMMAND ImportExportTests )
@@ -82,10 +82,10 @@ QT4_AUTOMOC( ${SqlTransactionTests_SRCS} )
 ADD_EXECUTABLE( SqlTransactionTests ${SqlTransactionTests_SRCS} )
 TARGET_LINK_LIBRARIES( SqlTransactionTests ${TEST_LIBRARIES} )
 IF( CHARM_DATABASE_CONFIGURATION )
-	ADD_TEST( NAME SqlTransactionTests COMMAND SqlTransactionTests )
-	SET_PROPERTY(
-		TEST SqlTransactionTests
-		PROPERTY ENVIRONMENT
-		"CHARM_DATABASE_CONFIGURATION=${CHARM_DATABASE_CONFIGURATION}"
-	)
+    ADD_TEST( NAME SqlTransactionTests COMMAND SqlTransactionTests )
+    SET_PROPERTY(
+        TEST SqlTransactionTests
+        PROPERTY ENVIRONMENT
+        "CHARM_DATABASE_CONFIGURATION=${CHARM_DATABASE_CONFIGURATION}"
+    )
 ENDIF()
