@@ -5,8 +5,8 @@ IF( NOT Charm_VERSION )
         EXECUTE_PROCESS( COMMAND ${GIT_EXECUTABLE} describe --tags --abbrev=1
                          RESULT_VARIABLE GIT_RESULT
                          OUTPUT_VARIABLE Charm_VERSION
-                         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR} )
-        STRING( STRIP "${Charm_VERSION}" Charm_VERSION )
+                         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+                         OUTPUT_STRIP_TRAILING_WHITESPACE )
         IF( NOT GIT_RESULT EQUAL 0 )
             MESSAGE( FATAL_ERROR "Cannot get 'git describe' version!" )
         ENDIF()
