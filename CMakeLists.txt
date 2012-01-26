@@ -70,9 +70,11 @@ ENDIF()
 
 
 IF( UNIX AND NOT APPLE )
+        set( Charm_EXECUTABLE charmtimetracker )
         SET( BIN_INSTALL_DIR bin )
-        SET( DOC_INSTALL_DIR share/doc/charm/ )
+        SET( DOC_INSTALL_DIR share/doc/${Charm_EXECUTABLE} )
 ELSE()
+        set( Charm_EXECUTABLE Charm )
         SET( BIN_INSTALL_DIR . )
         SET( DOC_INSTALL_DIR . )
 ENDIF()
