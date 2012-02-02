@@ -1,4 +1,4 @@
-PROJECT( Charm )
+PROJECT( Charm CXX )
 IF( NOT Charm_VERSION )
     FIND_PACKAGE( Git QUIET )
     IF( EXISTS ${GIT_EXECUTABLE} )
