@@ -526,9 +526,14 @@ void  WeeklyTimeSheetReport::slotSaveToXml()
 {
     qDebug() << "WeeklyTimeSheet::slotSaveToXml: creating XML time sheet";
     // first, ask for a file name:
-    QString filename = getFileName( "Charm reports (*.charmreport)" );
+    QString filename = getFileName( tr("Charm reports (*.charmreport)") );
     if (filename.isEmpty())
         return;
+
+    QFileInfo fileinfo( filename );
+    if ( fileinfo.suffix().isEmpty() ) {
+        filename += QLatin1String( ".charmreport" );
+    }
 
     QByteArray payload = saveToXml();
     if (payload.isEmpty())
@@ -676,7 +681,7 @@ QByteArray WeeklyTimeSheetReport::saveToXml()
                 }
             }
             // create elements:
-            Q_FOREACH( Event event, events ) {
+            Q_FOREACH( const Event & event, events ) {
                 effort.appendChild( event.toXml( document ) );
             }
         }
@@ -703,7 +708,8 @@ void WeeklyTimeSheetReport::slotSaveToText()
     QFile file( filename );
     if ( !file.open( QIODevice::WriteOnly ) ) {
         QMessageBox::critical( this, tr( "Error saving report" ),
-                               tr( "Cannot write to selected location." ) );
+                               tr( "Cannot write to selected location:\n%1" )
+                               .arg( file.errorString() ) );
         return;
     }
 
