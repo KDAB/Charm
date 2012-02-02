@@ -6,8 +6,6 @@
 
 #include "IdleDetector.h"
 
-class objc_object;
-
 class MacIdleDetector : public IdleDetector
 {
     Q_OBJECT
@@ -19,7 +17,8 @@ public:
     void idle();
 
 private:
-    objc_object* m_observer;
+    class Private;
+    Private* m_private;
 };
 
 #endif
