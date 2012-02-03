@@ -14,7 +14,7 @@
         <file alias="edit.png">Icons/document-edit.png</file>
         <file alias="go.png">Icons/media-playback-start.png</file>
         <file alias="stop.png">Icons/media-playback-stop.png</file>
-        <file alias="charmabout.png">Icons/Charm-64x64.png</file>
+        <file alias="charmabout.png">Icons/Charm-128x128.png</file>
         <file alias="01.png">Icons/tray/01.png</file>
         <file alias="02.png">Icons/tray/02.png</file>
         <file alias="03.png">Icons/tray/03.png</file>
