@@ -57,19 +57,36 @@
 }
 @end
 
+class MacIdleDetector::Private {
+public:
+    Private();
+    ~Private();
+    NSAutoreleasePool* pool;
+    MacIdleObserver* observer;
+};
+
+MacIdleDetector::Private::Private()
+    : pool( 0 ), observer( 0 )
+{
+    pool = [[NSAutoreleasePool alloc] init];
+    observer = [[MacIdleObserver alloc] init];
+}
+
+MacIdleDetector::Private::~Private()
+{
+    [pool drain];
+}
+
 MacIdleDetector::MacIdleDetector( QObject* parent )
     : IdleDetector( parent )
-    , m_observer( [[MacIdleObserver alloc] init] )
+    , m_private( new MacIdleDetector::Private() )
 {
-    MacIdleObserver* observer =
-            static_cast<MacIdleObserver*>(m_observer);
-    observer->idleDetector = this;
+    m_private->observer->idleDetector = this;
 }
 
 void MacIdleDetector::idle()
 {
-    MacIdleObserver* observer = static_cast<MacIdleObserver*>(m_observer);
-    maybeIdle( IdlePeriod( observer->idleStartTime, QDateTime::currentDateTime() ) );
+    maybeIdle( IdlePeriod( m_private->observer->idleStartTime, QDateTime::currentDateTime() ) );
 }
 
 #include "MacIdleDetector.moc"

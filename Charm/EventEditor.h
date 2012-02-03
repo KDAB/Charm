@@ -24,8 +24,8 @@ public:
 	EventEditor( const Event& event, QWidget* parent = 0 );
 	virtual ~EventEditor();
 
-	// return the result after the dialgo has been accepted
-	Event event() const;
+	// return the result after the dialog has been accepted
+    Event eventResult() const;
 
 protected Q_SLOTS:
         void accept();
