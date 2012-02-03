@@ -40,6 +40,12 @@ FIND_PACKAGE( Qt4 4.6.0 COMPONENTS QtMain QtCore QtGui QtSql QtXml QtNetwork REQ
 INCLUDE( UseQt4 )
 ENABLE_TESTING()
 
+IF( APPLE AND "${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}.${QT_VERSION_PATCH}" VERSION_EQUAL "4.8.0" )
+    MESSAGE( WARNING "Qt 4.8.0 is rather broken on OSX.\n"
+                     "Known bugs in Charm include global keyboard shortcuts.\n"
+                     "Qt 4.7.4 is the current recommended version on OSX." )
+ENDIF()
+
 IF( CMAKE_BUILD_TYPE MATCHES "^[Rr]elease$" )
     ADD_DEFINITIONS( -DQT_NO_DEBUG_OUTPUT )
 ELSE()
