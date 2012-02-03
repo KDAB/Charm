@@ -66,6 +66,9 @@ IF( CMAKE_COMPILER_IS_GNUCXX )
         -Wmissing-format-attribute -Wold-style-cast
     )
     ADD_DEFINITIONS( -fvisibility=hidden )
+ELSEIF( CMAKE_CXX_COMPILER MATCHES "clang" )
+    ADD_DEFINITIONS( -Wall -Wextra -Wno-unused-parameter )
+    ADD_DEFINITIONS( -fvisibility=hidden )
 ENDIF()
 
 

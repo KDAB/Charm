@@ -13,7 +13,7 @@ ConfigurationDialog::ConfigurationDialog( const Configuration& config,
     m_ui.nameLineEdit->setText( config.user.name() );
     m_ui.databaseLocation->setText( config.localStorageDatabase );
     connect( m_ui.buttonBox, SIGNAL( rejected() ), SLOT( reject() ) );
-    connect( m_ui.buttonBox, SIGNAL( accepted() ), SLOT( done() ) );
+    connect( m_ui.buttonBox, SIGNAL( accepted() ), SLOT( accept() ) );
 }
 
 Configuration ConfigurationDialog::configuration() const
@@ -26,7 +26,7 @@ void ConfigurationDialog::on_databaseLocation_textChanged( const QString& text )
     checkInput();
 }
 
-void ConfigurationDialog::done()
+void ConfigurationDialog::accept()
 {
     m_config.installationId = 1;
     m_config.user.setId( 1 );
@@ -35,7 +35,7 @@ void ConfigurationDialog::done()
     m_config.localStorageDatabase = m_ui.databaseLocation->text();
     m_config.newDatabase = true;
     // m_config.failure = false; currently set by application
-    accept();
+    QDialog::accept();
 }
 
 void ConfigurationDialog::on_databaseLocationButton_clicked()

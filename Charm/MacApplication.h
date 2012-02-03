@@ -3,9 +3,6 @@
 
 #include "Application.h"
 
-class NSEvent;
-class objc_object;
-
 class MacApplication : public Application
 {
     Q_OBJECT
@@ -22,14 +19,11 @@ private slots:
 private:
     static QList< QShortcut* > shortcuts( QWidget* parent );
     static QList< QShortcut* > activeShortcuts( const QKeySequence& seq, bool autorep, QWidget* parent = 0);
-    NSEvent* cocoaEventFilter( NSEvent* incomingEvent );
-    void setupCocoaEventHandler() const;
 
     QMenu m_dockMenu;
 
-    objc_object* m_pool;
-    objc_object* m_eventMonitor;
-    objc_object* m_dockIconClickEventHandler;
+    class Private;
+    Private* m_private;
 };
 
 #endif

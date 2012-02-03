@@ -89,7 +89,7 @@ void EventEditor::accept()
     QDialog::accept();
 }
 
-Event EventEditor::event() const
+Event EventEditor::eventResult() const
 {
     return m_event;
 }

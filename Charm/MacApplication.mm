@@ -22,72 +22,37 @@ extern void qt_mac_set_dock_menu(QMenu*);
 }
 @end
 
-MacApplication::MacApplication( int& argc, char* argv[] )
-    : Application( argc, argv ), m_pool([[NSAutoreleasePool alloc] init]),
-    m_dockIconClickEventHandler([[DockIconClickEventHandler alloc] init])
+class MacApplication::Private {
+public:
+    Private();
+    ~Private();
+    NSEvent* cocoaEventFilter( NSEvent* incomingEvent );
+    void setupCocoaEventHandler() const;
+
+    NSAutoreleasePool* pool;
+    NSEvent* eventMonitor;
+    DockIconClickEventHandler* dockIconClickEventHandler;
+};
+
+MacApplication::Private::Private()
+    : pool( 0 ), eventMonitor( 0 ), dockIconClickEventHandler( 0 )
 {
-    m_eventMonitor = [NSEvent
-                      addLocalMonitorForEventsMatchingMask:NSKeyDownMask
-                      handler:^(NSEvent *incomingEvent) {
-        return cocoaEventFilter(incomingEvent);
+    pool = [[NSAutoreleasePool alloc] init];
+    dockIconClickEventHandler = [[DockIconClickEventHandler alloc] init];
+    eventMonitor = [NSEvent
+        addLocalMonitorForEventsMatchingMask:NSKeyDownMask
+        handler:^(NSEvent *incomingEvent) {
+            return cocoaEventFilter(incomingEvent);
     }];
-
-    DockIconClickEventHandler* dockIconClickEventHandler =
-            static_cast<DockIconClickEventHandler*>(m_dockIconClickEventHandler);
-    dockIconClickEventHandler->macApplication = this;
-
-    connect(this, SIGNAL(goToState(State)),
-            this, SLOT(handleStateChange(State)));
-
-    m_dockMenu.addAction( &m_actionStopAllTasks );
-    m_dockMenu.addSeparator();
-
-    Q_FOREACH( CharmWindow* window, m_windows )
-        m_dockMenu.addAction( window->showHideAction() );
-
-    m_dockMenu.addSeparator();
-    m_dockMenu.addMenu( m_timeTracker.menu() );
-    qt_mac_set_dock_menu( &m_dockMenu );
-
-    // OSX doesn't use icons in menus
-    setWindowIcon( QIcon() );
-    Q_FOREACH( CharmWindow* window, m_windows )
-        window->setWindowIcon( QIcon() );
-    m_actionQuit.setIcon( QIcon() );
-    QCoreApplication::setAttribute( Qt::AA_DontShowIconsInMenus );
 }
 
-MacApplication::~MacApplication()
+MacApplication::Private::~Private()
 {
-    [NSEvent removeMonitor:m_eventMonitor];
-    [m_pool drain];
+    [NSEvent removeMonitor:eventMonitor];
+    [pool drain];
 }
 
-void MacApplication::handleStateChange(State state) const
-{
-    if (state == Configuring)
-        setupCocoaEventHandler();
-}
-
-void MacApplication::setupCocoaEventHandler() const
-{
-    // TODO: This apparently uses a legacy API and we should be using the
-    // applicationShouldHandleReopen:hasVisibleWindows: method on
-    // NSApplicationDelegate but this isn't possible without nasty runtime
-    // reflection hacks until Qt is fixed. If this breaks, shout at them :)
-    [[NSAppleEventManager sharedAppleEventManager]
-     setEventHandler:m_dockIconClickEventHandler
-     andSelector:@selector(handleDockClickEvent:withReplyEvent:)
-     forEventClass:kCoreEventClass
-     andEventID:kAEReopenApplication];
-}
-
-void MacApplication::dockIconClickEvent()
-{
-    openAWindow();
-}
-
-NSEvent* MacApplication::cocoaEventFilter( NSEvent* incomingEvent )
+NSEvent* MacApplication::Private::cocoaEventFilter( NSEvent* incomingEvent )
 {
     NSUInteger modifierFlags = [incomingEvent modifierFlags];
 
@@ -117,6 +82,62 @@ NSEvent* MacApplication::cocoaEventFilter( NSEvent* incomingEvent )
         return nil;
 
     return incomingEvent;
+}
+
+void MacApplication::Private::setupCocoaEventHandler() const
+{
+    // TODO: This apparently uses a legacy API and we should be using the
+    // applicationShouldHandleReopen:hasVisibleWindows: method on
+    // NSApplicationDelegate but this isn't possible without nasty runtime
+    // reflection hacks until Qt is fixed. If this breaks, shout at them :)
+    [[NSAppleEventManager sharedAppleEventManager]
+     setEventHandler:dockIconClickEventHandler
+     andSelector:@selector(handleDockClickEvent:withReplyEvent:)
+     forEventClass:kCoreEventClass
+     andEventID:kAEReopenApplication];
+}
+
+MacApplication::MacApplication( int& argc, char* argv[] )
+    : Application( argc, argv )
+    , m_private( new MacApplication::Private() )
+{
+    m_private->dockIconClickEventHandler->macApplication = this;
+
+    connect(this, SIGNAL(goToState(State)),
+            this, SLOT(handleStateChange(State)));
+
+    m_dockMenu.addAction( &m_actionStopAllTasks );
+    m_dockMenu.addSeparator();
+
+    Q_FOREACH( CharmWindow* window, m_windows )
+        m_dockMenu.addAction( window->showHideAction() );
+
+    m_dockMenu.addSeparator();
+    m_dockMenu.addMenu( m_timeTracker.menu() );
+    qt_mac_set_dock_menu( &m_dockMenu );
+
+    // OSX doesn't use icons in menus
+    setWindowIcon( QIcon() );
+    Q_FOREACH( CharmWindow* window, m_windows )
+        window->setWindowIcon( QIcon() );
+    m_actionQuit.setIcon( QIcon() );
+    QCoreApplication::setAttribute( Qt::AA_DontShowIconsInMenus );
+}
+
+MacApplication::~MacApplication()
+{
+    delete m_private;
+}
+
+void MacApplication::handleStateChange(State state) const
+{
+    if (state == Configuring)
+        m_private->setupCocoaEventHandler();
+}
+
+void MacApplication::dockIconClickEvent()
+{
+    openAWindow();
 }
 
 QList< QShortcut* > MacApplication::shortcuts( QWidget* parent )
