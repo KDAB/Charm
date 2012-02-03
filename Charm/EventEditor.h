@@ -25,7 +25,7 @@ public:
 	virtual ~EventEditor();
 
 	// return the result after the dialog has been accepted
-    Event eventResult() const;
+	Event eventResult() const;
 
 protected Q_SLOTS:
         void accept();
