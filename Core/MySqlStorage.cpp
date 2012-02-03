@@ -181,8 +181,8 @@ MySqlStorage::Parameters MySqlStorage::parseParameterEnvironmentVariable()
             p.password = elements.at( 3 );
             bool ok;
             if( ! elements.at( 1 ).isEmpty() ) {
-                p.port = elements.at( 1 ).toInt( &ok );
-                if ( ok != true || p.port < 0 ) {
+                p.port = elements.at( 1 ).toUInt( &ok );
+                if ( ok != true ) {
                     throw ParseError( QObject::tr(
                             "The port must be a non-negative integer number in the database configuration string format" ) );
                 }

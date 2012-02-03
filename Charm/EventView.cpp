@@ -435,7 +435,7 @@ void EventView::slotEditEvent( const Event& event )
 {
     EventEditor editor( event, this );
     if( editor.exec() ) {
-        Event newEvent = editor.event();
+        Event newEvent = editor.eventResult();
         if ( !newEvent.isValid() ) {
             CommandMakeEvent* command =
                 new CommandMakeEvent( newEvent, this );

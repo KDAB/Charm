@@ -21,7 +21,7 @@ private slots:
     void on_databaseLocation_textChanged( const QString& text );
     void on_nameLineEdit_textChanged( const QString& text );
 
-    void done();
+    virtual void accept();
 
 private:
     void checkInput();
