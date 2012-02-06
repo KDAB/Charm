@@ -520,6 +520,7 @@ void WeeklyTimeSheetReport::slotUpdate()
 
     m_report->setHtml( doc.toString() );
     setDocument( m_report );
+    uploadButton()->setEnabled(true);
 }
 
 void  WeeklyTimeSheetReport::slotSaveToXml()
@@ -747,14 +748,19 @@ void WeeklyTimeSheetReport::slotUploadTimesheet()
     client->setParentWidget( this );
     client->setPayload( saveToXml() );
     client->start();
+    uploadButton()->setEnabled(false);
 }
 
 void WeeklyTimeSheetReport::slotTimesheetUploaded(HttpJob* client) {
 
-    if ( client->error() == HttpJob::Canceled )
+    if ( client->error() == HttpJob::Canceled ) {
+        uploadButton()->setEnabled(true);
         return;
-    if ( client->error()  )
+    }
+    if ( client->error()  ) {
+        uploadButton()->setEnabled(true);
         QMessageBox::critical(this, tr("Error"), tr("Could not upload timesheet: %1").arg( client->errorString() ) );
+    }
     else
         QMessageBox::information(this, tr("Timesheet Uploaded"), tr("Your timesheet was successfully uploaded."));
 }
