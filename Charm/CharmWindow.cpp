@@ -167,6 +167,7 @@ bool CharmWindow::showHideView( QWidget* w )
     } else {
         w->show();
         w->raise();
+        w->activateWindow();
         return true;
     }
 }
