@@ -38,7 +38,6 @@ bool CommandMakeEvent::execute( ControllerInterface* controller )
          return false;
 
     QDateTime start( QDateTime::currentDateTime() );
-    event.setComment( tr( "(created from defaults)" ) );
     event.setStartDateTime( start );
     event.setEndDateTime( start );
 
