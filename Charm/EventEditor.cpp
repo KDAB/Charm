@@ -67,7 +67,6 @@ EventEditor::EventEditor( const Event& event, QWidget* parent )
 
     // initialize to some sensible values, unless we got something valid passed in
     if ( !m_event.isValid() ) {
-        m_event.setComment( tr( "(event created in event editor)" ) );
         QSettings settings;
         QDateTime start = settings.value( MetaKey_LastEventEditorDateTime, QDateTime::currentDateTime() ).toDateTime();
         m_event.setStartDateTime( start );
