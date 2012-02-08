@@ -180,7 +180,6 @@ void TimeTrackingView::paintEvent( QPaintEvent* e )
     const int top = ( rowCount() - 1 ) * FieldHeight;
     const QRect fieldRect( 0, top, width(), height() - top );
     if ( e->rect().contains( fieldRect ) ) {
-        const QRect textRect = fieldRect.adjusted( left + Margin, Margin, -Margin, -Margin );
         DataField field = m_defaultField;
         data( field, 0, rowCount() - 1 );
         painter.setBrush( field.background );
