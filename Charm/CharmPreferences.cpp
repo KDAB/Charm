@@ -24,8 +24,6 @@ CharmPreferences::CharmPreferences( const Configuration& config,
     case Configuration::TaskTrackerFont_Large:
         m_ui.cbTaskTrackerFontSize->setCurrentIndex( 2 );
         break;
-    default:
-        Q_ASSERT( false ); // somebody added an option
     };
 
     switch ( config.durationFormat ) {
@@ -35,8 +33,6 @@ CharmPreferences::CharmPreferences( const Configuration& config,
     case Configuration::Decimal:
         m_ui.cbDurationFormat->setCurrentIndex( 1 );
         break;
-    default:
-        Q_ASSERT( !"unhandled DurationFormat enum value" );
     }
 
     switch( config.toolButtonStyle ) {
@@ -55,8 +51,6 @@ CharmPreferences::CharmPreferences( const Configuration& config,
     case Qt::ToolButtonFollowStyle:
         m_ui.cbToolButtonStyle->setCurrentIndex( 4 );
         break;
-    default:
-        Q_ASSERT( false ); // somebody added an option
     };
     // resize( minimumSize() );
 }

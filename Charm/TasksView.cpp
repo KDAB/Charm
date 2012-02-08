@@ -322,8 +322,6 @@ void TasksView::configureUi()
      case Configuration::TaskTrackerFont_Large:
          font.setPointSizeF( 1.2 * font.pointSize() );
          break;
-     default:
-         break;
      };
      return font;
  }
