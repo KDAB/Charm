@@ -5,7 +5,7 @@ projects or a student who wants to plan their studies: knowing how your
 time is spent is a good idea.
 
 Charm is a program for OS X, Linux and Windows that helps to keep
-track of time. It is built around two major ideas - tasks, and
+track of time. It is built around two major ideas - tasks and
 events. Tasks are the things time is spend on, repeatedly. For
 example, ironing laundry is a task. The laundry done for two hours on
 last Tuesday is an event in that task. When doing laundry multiple
@@ -50,40 +50,9 @@ was worked on during that time.
 Time Sheets are created per week, and group event time to tasks and
 week days. Time Sheets are great to report to the boss, you see.
 
-### Charm Preferences
-Although Charm has been developed under a philosophy to "Simply get it
-right.", everything is not for everybody. Some behaviour of Charm can
-thus be customised.
-
-###  Database Options
-Sometimes, it makes no sense to book time to parent tasks. Instead,
-the parent tasks collate the time of the leaf tasks. Check "only
-record events for tasks that do not have children" to configure that
-behaviour. By default, events can be recorded for all events.
-
-Then, most of the times it makes sense to only record events for one
-task at a time. Check "only allow one event at a time" for that.
-
-###  Appearance
-The font size of the task tracker can be configured in this tab.
-
-###  Esoteric Options
-Some friends of us are strange folk. That is expected, for they are
-geeks and artists and coders. Since those are known to be very
-professional, efficient people, the options in this tab offer
-enhancements in usability that are quite useful, but not as obvious as
-the other ones. So far, one feature has made it into this category:
-
-To enter a great deal of events, switching AM/PM is cumbersome. People
-from the US and other countries usually prefer AM/PM time
-formats. Some still prefer to enter 24 hour times, since it is much
-faster. Check "always use 24h time format when editing" to configure
-this. By default it is off.
-
 ###  Authors and License
 Charm has been developed by Mirko Boehm (mirko@kde.org), as a work of
-fun and experimentation. Other contributors are Pradeepto Bhattacharya
-and Till Adam.
+fun and experimentation. The current maintainers are Mike McQuaid and Frank Osterfeld.
 
 Charm is Free Software, developed under the terms
 of the GPL. While we hope it is of good use, there is no guaranty of
