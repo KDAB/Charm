@@ -2,7 +2,6 @@
     <qresource prefix="/Charm">
         <file alias="configure.png">Icons/configure.png</file>
         <file alias="report_stylesheet.sty">Reports/report_stylesheet.sty</file>
-        <file alias="clearfilter.png">Icons/edit-clear-locationbar-ltr.png</file>
         <file alias="active.png">Icons/arrow-right.png</file>
         <file alias="editor_locked.png">Icons/document-encrypt.png</file>
         <file alias="newtask.png">Icons/document-new.png</file>

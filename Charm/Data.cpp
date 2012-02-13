@@ -112,14 +112,6 @@ const QIcon& Data::quitCharmIcon()
 	return icon;
 }
 
-const QIcon& Data::clearFilterIcon()
-{
-	Q_ASSERT_X(!QPixmap(":/Charm/clearfilter.png").isNull(),
-			"Data::quitCharmIcon", "Required resource not available");
-	static QIcon icon(QPixmap(":/Charm/clearfilter.png"));
-	return icon;
-}
-
 const QIcon& Data::configureIcon()
 {
 	Q_ASSERT_X(!QPixmap(":/Charm/configure.png").isNull(),

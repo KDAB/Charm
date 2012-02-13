@@ -68,12 +68,11 @@ SelectTaskDialog::SelectTaskDialog( QWidget* parent )
              SIGNAL( doubleClicked( const QModelIndex& ) ),
              SLOT( slotDoubleClicked( const QModelIndex& ) ) );
 
-    connect( m_ui->lineEditFilter, SIGNAL( textChanged( QString ) ),
+    connect( m_ui->filter, SIGNAL( textChanged( QString ) ),
              SLOT( slotFilterTextChanged( QString ) ) );
     connect( this, SIGNAL( accepted() ),
     		 SLOT( slotAccepted() ) );
 
-    m_ui->buttonClearFilter->setIcon( Data::clearFilterIcon() );
     QSettings settings;
     settings.beginGroup( staticMetaObject.className() );
     if ( settings.contains( MetaKey_MainWindowGeometry ) ) {
@@ -145,7 +144,6 @@ void SelectTaskDialog::slotFilterTextChanged( const QString& text )
 
     Charm::saveExpandStates( m_ui->treeView, &m_expansionStates );
     m_proxy.setFilterWildcard( filtertext );
-    m_ui->buttonClearFilter->setEnabled( ! text.isEmpty() );
     Charm::restoreExpandStates( m_ui->treeView, &m_expansionStates );
 }
 
