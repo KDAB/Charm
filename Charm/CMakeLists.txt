@@ -88,6 +88,14 @@ ELSEIF ( UNIX )
     LIST( APPEND CharmApplication_SRCS keychain_dbus.cpp )
 ENDIF()
 
+QT4_WRAP_CPP( MOC_QOCOA_SRCS Qocoa/qbutton.h Qocoa/qsearchfield.h )
+LIST( APPEND CharmApplication_SRCS ${MOC_QOCOA_SRCS} )
+IF (APPLE)
+    LIST( APPEND CharmApplication_SRCS Qocoa/qbutton_mac.mm Qocoa/qsearchfield_mac.mm )
+ELSE()
+    LIST( APPEND CharmApplication_SRCS Qocoa/qbutton_nonmac.cpp Qocoa/qsearchfield_nonmac.cpp )
+ENDIF()
+
 QT4_AUTOMOC( ${CharmApplication_SRCS} )
 
 QT4_WRAP_UI(

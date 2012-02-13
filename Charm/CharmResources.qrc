@@ -44,4 +44,7 @@
         <file alias="charmtray22.png">Icons/tray/charmtray22.png</file>
         <file alias="createreport.png">Icons/document-export.png</file>
     </qresource>
+    <qresource prefix="/Qocoa">
+        <file alias="qsearchfield_nonmac.png">Qocoa/qsearchfield_nonmac.png</file>
+    </qresource>
 </RCC>
