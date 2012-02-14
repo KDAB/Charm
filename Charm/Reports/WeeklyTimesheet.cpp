@@ -450,6 +450,8 @@ void WeeklyTimeSheetReport::slotUpdate()
         for ( int i = 0; i < timeSheetInfo.size(); ++i )
         {
             QDomElement row = doc.createElement( "tr" );
+            if (i % 2)
+                row.setAttribute( "class", "alternate_row" );
             table.appendChild( row );
 
             QString texts[NumberOfColumns];
