@@ -78,12 +78,14 @@ const QString& CharmWindow::windowIdentfier() const
 }
 
 void CharmWindow::setWindowNumber( int number )
-{   // FIXME restrict to Mac?
+{
     m_windowNumber = number;
     delete m_shortcut;
     m_shortcut = new QShortcut( this );
     QKeySequence sequence( tr( "Ctrl+%1" ).arg( number ) );
+#ifdef Q_WS_MAC
     m_shortcut->setKey( sequence );
+#endif
     m_shortcut->setContext( Qt::ApplicationShortcut );
     m_showHideAction->setShortcut( sequence );
     connect( m_shortcut, SIGNAL( activated() ), SLOT( showHideView() ) );
