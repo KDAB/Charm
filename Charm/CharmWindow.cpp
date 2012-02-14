@@ -5,6 +5,7 @@
 #include <QShortcut>
 #include <QKeySequence>
 #include <QToolButton>
+#include <QToolBar>
 
 #include <Core/CharmCommand.h>
 #include <Core/CharmConstants.h>
@@ -26,7 +27,8 @@ CharmWindow::CharmWindow( const QString& name, QWidget* parent )
     setWindowName( name );
     handleShowHide( false );
     connect( m_showHideAction, SIGNAL( triggered( bool ) ), SLOT( showHideView() ) );
-    m_toolBar = addToolBar( "toolbar" );
+    m_toolBar = addToolBar( "Toolbar" );
+    m_toolBar->setMovable( false );
 }
 
 void CharmWindow::stateChanged( State )
