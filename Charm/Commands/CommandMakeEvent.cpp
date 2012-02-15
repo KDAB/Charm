@@ -62,8 +62,8 @@ bool CommandMakeEvent::finalize()
 {
     if ( m_event.isValid() ) {
         EventView* view = dynamic_cast<EventView*>( owner() );
-        Q_ASSERT( view ); // this command is "owned" by the event view
-        view->makeVisibleAndCurrent( m_event );
+        if ( view )
+            view->makeVisibleAndCurrent( m_event );
         emit finishedOk( m_event );
         return true;
     } else {
