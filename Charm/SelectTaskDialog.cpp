@@ -51,6 +51,14 @@ QVariant SelectTaskDialogProxy::data( const QModelIndex& index, int role ) const
     }
 }
 
+bool SelectTaskDialogProxy::indexIsValidAndHasNoChildren( const QModelIndex& index ) const
+{
+    if ( !index.isValid() || hasChildren( index ) )
+        return false;
+
+    return taskForIndex( index ).isValid();
+}
+
 SelectTaskDialog::SelectTaskDialog( QWidget* parent )
     : QDialog( parent )
     , m_ui( new Ui::SelectTaskDialog() )
@@ -71,7 +79,7 @@ SelectTaskDialog::SelectTaskDialog( QWidget* parent )
     connect( m_ui->lineEditFilter, SIGNAL( textChanged( QString ) ),
              SLOT( slotFilterTextChanged( QString ) ) );
     connect( this, SIGNAL( accepted() ),
-    		 SLOT( slotAccepted() ) );
+             SLOT( slotAccepted() ) );
 
     m_ui->buttonClearFilter->setIcon( Data::clearFilterIcon() );
     QSettings settings;
@@ -123,17 +131,17 @@ TaskId SelectTaskDialog::selectedTask() const
 void SelectTaskDialog::slotCurrentItemChanged( const QModelIndex& first,
                                                const QModelIndex& )
 {
-    Task task = m_proxy.taskForIndex( first );
-    if ( task.isValid() ) {
-        m_selectedTask = task.id();
-    }
+    if ( m_proxy.indexIsValidAndHasNoChildren( first ) )
+        m_selectedTask = m_proxy.taskForIndex( first ).id();
+    else
+        m_selectedTask = 0;
     m_ui->buttonBox->button( QDialogButtonBox::Ok )->setEnabled( m_selectedTask != 0 );
 }
 
 
 void SelectTaskDialog::slotDoubleClicked ( const QModelIndex & index )
 {
-    if ( index.isValid() && m_proxy.taskForIndex( index ).isValid() ) {
+    if ( m_proxy.indexIsValidAndHasNoChildren( index ) ) {
         accept();
     }
 }
