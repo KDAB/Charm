@@ -55,7 +55,7 @@ EventEditor::EventEditor( const Event& event, QWidget* parent )
     // a simple function to toggle 12h and 24h mode:
     // yeah, I know, this will survive changes in the user prefs, but
     // only for this instance of the edit dialog
-    const QString originalDateTimeFormat = m_ui->timeEditStart->displayFormat();
+    QString originalDateTimeFormat = m_ui->timeEditStart->displayFormat();
 
     QString format = originalDateTimeFormat
                      .replace( "ap", "" )
