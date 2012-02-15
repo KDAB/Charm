@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>414</width>
-    <height>184</height>
+    <width>474</width>
+    <height>171</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,7 +19,7 @@
      <item>
       <widget class="QLabel" name="label_3">
        <property name="text">
-        <string>Enter vacation from</string>
+        <string>Start date:</string>
        </property>
       </widget>
      </item>
@@ -33,7 +33,7 @@
      <item>
       <widget class="QLabel" name="label_4">
        <property name="text">
-        <string>until</string>
+        <string>End date:</string>
        </property>
       </widget>
      </item>
@@ -44,19 +44,6 @@
        </property>
       </widget>
      </item>
-     <item>
-      <spacer name="horizontalSpacer_3">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
     </layout>
    </item>
    <item>
@@ -64,7 +51,7 @@
      <item>
       <widget class="QLabel" name="label_6">
        <property name="text">
-        <string>Use task</string>
+        <string>Task:</string>
        </property>
       </widget>
      </item>
@@ -102,7 +89,7 @@
      <item>
       <widget class="QLabel" name="label_5">
        <property name="text">
-        <string>I work</string>
+        <string>Day:</string>
        </property>
       </widget>
      </item>
@@ -116,7 +103,7 @@
      <item>
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>hours and</string>
+        <string>hours</string>
        </property>
       </widget>
      </item>
@@ -133,7 +120,7 @@
      <item>
       <widget class="QLabel" name="label_2">
        <property name="text">
-        <string>minutes per work day.</string>
+        <string>minutes</string>
        </property>
       </widget>
      </item>
@@ -151,19 +138,6 @@
       </spacer>
      </item>
     </layout>
-   </item>
-   <item>
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>79</height>
-      </size>
-     </property>
-    </spacer>
    </item>
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">

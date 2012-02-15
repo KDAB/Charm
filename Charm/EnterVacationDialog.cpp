@@ -102,37 +102,37 @@ void EnterVacationDialog::createEvents()
     QDialog confirmationDialog( this );
     QVBoxLayout* layout = new QVBoxLayout( &confirmationDialog );
 
-    QLabel* label = new QLabel( tr( "The following events will be created for your vacation. Please review them for correctness!" ) );
+    QLabel* label = new QLabel( tr( "The following vacation events will be created." ) );
     label->setWordWrap( true );
     layout->addWidget( label );
     QTextBrowser* textBrowser = new QTextBrowser;
     layout->addWidget( textBrowser );
     QDialogButtonBox* box = new QDialogButtonBox;
     box->setStandardButtons( QDialogButtonBox::Ok|QDialogButtonBox::Cancel );
+    box->button(QDialogButtonBox::Ok)->setText(tr("Create"));
     connect( box, SIGNAL(accepted()), &confirmationDialog, SLOT(accept()) );
     connect( box, SIGNAL(rejected()), &confirmationDialog, SLOT(reject()) );
     layout->addWidget( box );
 
 
-    const QString startDate = m_ui->startDate->date().toString( Qt::DefaultLocaleLongDate );
-    const QString endDate = m_ui->endDate->date().toString( Qt::DefaultLocaleLongDate );
+    const QString startDate = m_ui->startDate->date().toString( Qt::TextDate );
+    const QString endDate = m_ui->endDate->date().toString( Qt::TextDate );
     const Task task = DATAMODEL->getTask( m_selectedTaskId );
 
     QString html = "<html><body>";
-    html += QString::fromLatin1("<h1>%1</h1>").arg( tr("Vacation from %1 to %2").arg( Qt::escape( startDate ), Qt::escape( endDate ) ) );
-    html += QString::fromLatin1("<h2><strong>%1</strong></h2>").arg( tr("Task used: %1").arg( Qt::escape( task.name() ) ) );
-    html += QString::fromLatin1("<h2>%1</h2>").arg( tr( "Events created:" ) );
+    html += QString::fromLatin1("<h1>%1</h1>").arg( tr("Vacation"));
+    html += QString::fromLatin1("<h3>%1</h3>").arg( tr("From %1 to %2").arg( Qt::escape( startDate ), Qt::escape( endDate ) ) );
+    html += QString::fromLatin1("<h4>%1</h4>").arg( tr("Task used: %1").arg( Qt::escape( task.name() ) ) );
     html += "<p>";
     Q_FOREACH ( const Event& event, events ) {
 
         const QDate eventStart = event.startDateTime().date();
         const QDate eventEnd = event.endDateTime().date();
         Q_ASSERT( eventStart == eventEnd );
-        const QString weekDay = eventStart.toString( QLatin1String("dddd") );
         const QString shortDate = eventStart.toString( Qt::DefaultLocaleShortDate );
         const QString duration = formatDuration( event.startDateTime(), event.endDateTime() );
-        html += QString::fromLatin1("<strong>%1</strong>").arg( tr( "%1, %2: %3", "weekday, short date, duration" ).arg( Qt::escape( weekDay ), Qt::escape( shortDate ), Qt::escape( duration ) ) );
-        html += "<br/>";
+        html += QString::fromLatin1("%1").arg( tr( "%1: %3", "short date, duration" ).arg( Qt::escape( shortDate ), Qt::escape( duration ) ) );
+        html += "</p><p>";
     }
     html += "</p>";
     html += "</body></html>";
