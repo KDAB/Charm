@@ -495,7 +495,11 @@
     </widget>
    </item>
    <item row="2" column="4">
-    <widget class="QTimeEdit" name="timeEditStart"/>
+    <widget class="QTimeEdit" name="timeEditStart">
+     <property name="displayFormat">
+      <string>h:mm AP</string>
+     </property>
+    </widget>
    </item>
    <item row="2" column="5">
     <widget class="QPushButton" name="startToNowButton">
@@ -528,7 +532,11 @@
     </widget>
    </item>
    <item row="3" column="4">
-    <widget class="QTimeEdit" name="timeEditEnd"/>
+    <widget class="QTimeEdit" name="timeEditEnd">
+     <property name="displayFormat">
+      <string>h:mm AP</string>
+     </property>
+    </widget>
    </item>
    <item row="3" column="5">
     <widget class="QPushButton" name="endToNowButton">
