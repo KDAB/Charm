@@ -50,6 +50,7 @@ Application::Application(int& argc, char** argv)
     , m_actionSyncTasks( this )
     , m_actionImportTasks( this )
     , m_actionExportTasks( this )
+    , m_actionEnterVacation( this )
     , m_actionActivityReport( this )
     , m_actionWeeklyTimesheetReport( this )
     , m_idleDetector( 0 )
@@ -172,6 +173,9 @@ Application::Application(int& argc, char** argv)
     m_actionExportTasks.setText( tr( "Export Task Definitions..." ) );
     connect( &m_actionExportTasks, SIGNAL( triggered() ),
              &mainView(), SLOT( slotExportTasks() ) );
+    m_actionEnterVacation.setText( tr( "Enter Vacation...") );
+    connect( &m_actionEnterVacation, SIGNAL(triggered()),
+             &mainView(), SLOT(slotEnterVacation()) );
     m_actionActivityReport.setText( tr( "Activity Report..." ) );
     m_actionActivityReport.setShortcut( Qt::CTRL + Qt::Key_A );
     connect( &m_actionActivityReport, SIGNAL( triggered() ),
@@ -240,6 +244,8 @@ void Application::createWindowMenu( QMenuBar *menuBar )
     Q_FOREACH( CharmWindow* window, m_windows ) {
         menu->addAction( window->showHideAction() );
     }
+    menu->addSeparator();
+    menu->addAction( &m_actionEnterVacation );
     menu->addSeparator();
     menu->addAction( &m_actionActivityReport );
     menu->addAction( &m_actionWeeklyTimesheetReport );

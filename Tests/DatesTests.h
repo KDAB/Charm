@@ -8,8 +8,8 @@ class DatesTests : public QObject
     Q_OBJECT
 
 private slots:
-    void testDates();
-
+    void testDateByWeekNumberAndWorkDay();
+    void testWeekDayInWeekOf();
 };
 
 #endif

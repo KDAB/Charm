@@ -17,6 +17,7 @@
 
 #include "Application.h"
 #include "MessageBox.h"
+#include "EnterVacationDialog.h"
 #include "ViewHelpers.h"
 #include "TimeTrackingView.h"
 #include "TimeTrackingWindow.h"
@@ -26,6 +27,7 @@
 #include "CharmAboutDialog.h"
 #include "Commands/CommandExportToXml.h"
 #include "Commands/CommandSetAllTasks.h"
+#include "Commands/CommandMakeEvent.h"
 #include "Commands/CommandModifyEvent.h"
 #include "Commands/CommandImportFromXml.h"
 #include "Idle/IdleDetector.h"
@@ -252,6 +254,19 @@ void TimeTrackingWindow::slotAboutDialog()
     MakeTemporarilyVisible m( this );
     CharmAboutDialog dialog( this );
     dialog.exec();
+}
+
+void TimeTrackingWindow::slotEnterVacation()
+{
+    MakeTemporarilyVisible m( this );
+    EnterVacationDialog dialog( this );
+    if ( dialog.exec() != QDialog::Accepted )
+        return;
+    const EventList events = dialog.events();
+    Q_FOREACH ( const Event& event, events ) {
+        CommandMakeEvent* command = new CommandMakeEvent( event, this );
+        sendCommand( command );
+    }
 }
 
 void TimeTrackingWindow::slotActivityReport()

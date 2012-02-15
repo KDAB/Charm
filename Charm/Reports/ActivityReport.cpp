@@ -252,7 +252,7 @@ void ActivityReport::slotUpdate()
         headline.appendChild( text );
         body.appendChild( headline );
         {
-            QDomElement paragraph = doc.createElement( "p" );
+            QDomElement paragraph = doc.createElement( "h4" );
             QString totalsText = tr( "Total: %1" ).arg( hoursAndMinutes( totalSeconds ) );
             QDomText totalsElement = doc.createTextNode( totalsText );
             paragraph.appendChild( totalsElement );
