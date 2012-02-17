@@ -10,6 +10,9 @@
 class HttpJob;
 class CharmCommand;
 class TimeTrackingView;
+class ReportConfigurationDialog;
+class WeeklyTimesheetConfigurationDialog;
+class ActivityReportConfigurationDialog;
 
 class TimeTrackingWindow : public CharmWindow,
                          public CharmDataModelAdapterInterface
@@ -67,11 +70,17 @@ private slots:
     void slotStartEvent( TaskId );
     void slotStopEvent();
     void slotSelectTasksToShow();
+    void slotWeeklyTimesheetPreview( int result );
+    void slotActivityReportPreview( int result );
 
 signals:
     void emitCommand( CharmCommand* );
 
 private:
+    void showPreview( ReportConfigurationDialog*, int result );
+
+    WeeklyTimesheetConfigurationDialog* m_weeklyTimesheetDialog;
+    ActivityReportConfigurationDialog *m_activityReportDialog;
     TimeTrackingView* m_summaryWidget;
     QVector<WeeklySummary> m_summaries;
 };
