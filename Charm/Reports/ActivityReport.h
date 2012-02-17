@@ -19,7 +19,7 @@ public:
     explicit ActivityReportConfigurationDialog( QWidget* parent );
     ~ActivityReportConfigurationDialog();
 
-    QDialog* makeReportPreviewDialog( QWidget* parent );
+    void showReportPreviewDialog( QWidget* parent );
 
 public Q_SLOTS:
     void accept();

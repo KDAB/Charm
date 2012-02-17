@@ -39,6 +39,8 @@
 
 TimeTrackingWindow::TimeTrackingWindow( QWidget* parent )
     : CharmWindow( tr( "Time Tracker" ), parent )
+    , m_weeklyTimesheetDialog( 0 )
+    , m_activityReportDialog( 0 )
     , m_summaryWidget( new TimeTrackingView( toolBar(), this ) )
 {
     setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
@@ -272,24 +274,40 @@ void TimeTrackingWindow::slotEnterVacation()
 
 void TimeTrackingWindow::slotActivityReport()
 {
-    MakeTemporarilyVisible m( this );
-    ActivityReportConfigurationDialog dialog( this );
-    if ( dialog.exec() == QDialog::Rejected )
-        return;
-    QDialog* preview = dialog.makeReportPreviewDialog( this );
-    // preview is destroy-on-close and non-modal:
-    preview->show();
+    delete m_activityReportDialog;
+    m_activityReportDialog = new ActivityReportConfigurationDialog( this );
+    m_activityReportDialog->setAttribute( Qt::WA_DeleteOnClose );
+    connect( m_activityReportDialog, SIGNAL( finished( int ) ),
+             this, SLOT( slotActivityReportPreview( int ) ) );
+    m_activityReportDialog->show();
 }
 
 void TimeTrackingWindow::slotWeeklyTimesheetReport()
 {
-    MakeTemporarilyVisible m( this );
-    WeeklyTimesheetConfigurationDialog dialog( this );
-    if ( dialog.exec() == QDialog::Rejected )
-        return;
-    QDialog* preview = dialog.makeReportPreviewDialog( this );
-    // preview is destroy-on-close and non-modal:
-    preview->show();
+    delete m_weeklyTimesheetDialog;
+    m_weeklyTimesheetDialog = new WeeklyTimesheetConfigurationDialog( this );
+    m_weeklyTimesheetDialog->setAttribute( Qt::WA_DeleteOnClose );
+    connect( m_weeklyTimesheetDialog, SIGNAL( finished( int ) ),
+             this, SLOT( slotWeeklyTimesheetPreview( int ) ) );
+    m_weeklyTimesheetDialog->show();
+}
+
+void TimeTrackingWindow::slotWeeklyTimesheetPreview( int result )
+{
+    showPreview( m_weeklyTimesheetDialog, result );
+    m_weeklyTimesheetDialog = 0;
+}
+
+void TimeTrackingWindow::slotActivityReportPreview( int result )
+{
+    showPreview( m_activityReportDialog, result );
+    m_activityReportDialog = 0;
+}
+
+void TimeTrackingWindow::showPreview( ReportConfigurationDialog* dialog, int result )
+{
+    if ( result == QDialog::Accepted )
+        dialog->showReportPreviewDialog( this );
 }
 
 void TimeTrackingWindow::slotExportToXml()

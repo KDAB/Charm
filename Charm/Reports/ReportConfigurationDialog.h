@@ -16,7 +16,7 @@ public:
 
         @param parent parent widget for the preview dialog
      */
-    virtual QDialog* makeReportPreviewDialog( QWidget* parent ) = 0;
+    virtual void showReportPreviewDialog( QWidget* parent ) = 0;
 };
 
 #endif

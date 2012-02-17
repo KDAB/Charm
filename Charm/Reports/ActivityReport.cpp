@@ -165,7 +165,7 @@ void ActivityReportConfigurationDialog::accept()
     QDialog::accept();
 }
 
-QDialog* ActivityReportConfigurationDialog::makeReportPreviewDialog( QWidget* parent )
+void ActivityReportConfigurationDialog::showReportPreviewDialog( QWidget* parent )
 {
     QDate start, end;
     const int index = m_ui->comboBox->currentIndex();
@@ -179,7 +179,7 @@ QDialog* ActivityReportConfigurationDialog::makeReportPreviewDialog( QWidget* pa
 
     ActivityReport* report = new ActivityReport( parent );
     report->setReportProperties( start, end, m_rootTask, m_rootExcludeTask );
-    return report;
+    report->show();
 }
 
 ActivityReport::ActivityReport( QWidget* parent )
