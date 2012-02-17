@@ -21,7 +21,7 @@ public:
     explicit WeeklyTimesheetConfigurationDialog( QWidget* parent );
     ~WeeklyTimesheetConfigurationDialog();
 
-    QDialog* makeReportPreviewDialog( QWidget* parent );
+    void showReportPreviewDialog( QWidget* parent );
 
     void showEvent( QShowEvent* );
 

@@ -84,7 +84,7 @@ void WeeklyTimesheetConfigurationDialog::accept()
     QDialog::accept();
 }
 
-QDialog* WeeklyTimesheetConfigurationDialog::makeReportPreviewDialog( QWidget* parent )
+void WeeklyTimesheetConfigurationDialog::showReportPreviewDialog( QWidget* parent )
 {
     QDate start, end;
     int index = m_ui->comboBoxWeek->currentIndex();
@@ -100,7 +100,7 @@ QDialog* WeeklyTimesheetConfigurationDialog::makeReportPreviewDialog( QWidget* p
     bool activeOnly = m_ui->checkBoxActiveOnly->isChecked();
     WeeklyTimeSheetReport* report = new WeeklyTimeSheetReport( parent );
     report->setReportProperties( start, end, m_rootTask, activeOnly );
-    return report;
+    report->show();
 }
 
 
