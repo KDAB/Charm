@@ -84,13 +84,6 @@ QVariant TaskModelAdapter::data( const QModelIndex& index, int role ) const
             return QVariant();
         }
         break;
-    case Qt::CheckStateRole:
-        if ( item->task().subscribed() ) {
-            return Qt::Checked;
-        } else {
-            return Qt::Unchecked;
-        }
-        break;
     case TasksViewRole_Name: // now unused
         return item->task().name();
     case TasksViewRole_RunningTime:
@@ -176,11 +169,6 @@ bool TaskModelAdapter::setData( const QModelIndex & index, const QVariant & valu
         Event event( old );
         event.setComment( comment );
         CommandModifyEvent* command = new CommandModifyEvent( event, this );
-        VIEW.sendCommand( command );
-        return true;
-    } else if ( role == Qt::CheckStateRole ) {
-        task.setSubscribed( ! task.subscribed() );
-        CommandModifyTask* command = new CommandModifyTask( task, this );
         VIEW.sendCommand( command );
         return true;
     }

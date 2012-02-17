@@ -69,12 +69,6 @@ public:
 	virtual bool deleteAllEvents() = 0;
         virtual bool deleteAllEvents( const SqlRaiiTransactor& ) = 0;
 
-	// subscription management functions
-	// (subscriptions cannot be modified, they are just boolean flags)
-	// (subscription status is retrieved with the tasks)
-	virtual bool addSubscription(User, Task) = 0;
-	virtual bool deleteSubscription(User, Task) = 0;
-
 	// database metadata management functions
 	virtual bool setMetaData(const QString& key, const QString& value) = 0;
 	virtual QString getMetaData(const QString& key) = 0;

@@ -69,7 +69,6 @@ private:
     Task selectedTask();
     void addTaskHelper( const Task& parent );
 
-    TasksViewDelegate* m_delegate;
     QAction m_actionNewTask;
     QAction m_actionNewSubTask;
     QAction m_actionEditTask;
@@ -78,7 +77,6 @@ private:
     QAction m_actionCollapseTree;
     StatusBarWidget* m_statusBarWidget;
     QButton* m_showCurrentOnly;
-    QButton* m_showSubscribedOnly;
     QTreeView* m_treeView;
 };
 

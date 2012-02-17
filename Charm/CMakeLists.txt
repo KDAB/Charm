@@ -28,7 +28,6 @@ SET(
     TaskModelAdapter.cpp
     EventModelAdapter.cpp
     EventModelFilter.cpp
-    TasksViewDelegate.cpp
     CharmAboutDialog.cpp
     TimeTrackingView/TimeTrackingView.cpp
     TimeTrackingView/TimeTrackingWindow.cpp

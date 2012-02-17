@@ -205,33 +205,6 @@ void SqLiteStorageTests::makeModifyDeleteEventsTest()
     QVERIFY( m_storage->getEvent( event2.id() ).isValid() );
 }
 
-void SqLiteStorageTests::addDeleteSubscriptionsTest()
-{
-    // this is a new database, so there should be no subscriptions
-    // Task 1 is expected to be there (from the earlier test)
-    TaskList tasks = m_storage->getAllTasks();
-    QVERIFY( tasks.size() == 2 ); // make sure the other test leaves the two tasks in
-    QVERIFY( tasks[0].subscribed() == false );
-    QVERIFY( tasks[1].subscribed() == false );
-
-    // add a subscription
-    QVERIFY( m_storage->addSubscription( m_configuration.user, tasks[0] ) );
-    Task task0 = m_storage->getTask( tasks[0].id() );
-    // is the task subscribed now?
-    QVERIFY( task0.subscribed() );
-    Task task1 = m_storage->getTask( tasks[1].id() );
-    // is the other one still not subscribed?
-    QVERIFY( ! task1.subscribed() );
-    // delete the subscription
-    QVERIFY( m_storage->deleteSubscription( m_configuration.user, tasks[0] ) );
-    // is it now unsubscribed?
-    task0 = m_storage->getTask( tasks[0].id() );
-    QVERIFY( ! task0.subscribed() );
-    // is the other task still unchanged?
-    task1 = m_storage->getTask( tasks[1].id() );
-    QVERIFY( ! task1.subscribed() );
-}
-
 void SqLiteStorageTests::deleteTaskWithEventsTest()
 {
     // make a task

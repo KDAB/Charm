@@ -130,12 +130,6 @@ bool ViewFilter::filterAcceptsRow( int source_row, const QModelIndex& parent ) c
     case Configuration::TaskPrefilter_CurrentOnly:
         accepted &= task.isCurrentlyValid();
         break;
-    case Configuration::TaskPrefilter_SubscribedOnly:
-        accepted &= task.subscribed();
-        break;
-    case Configuration::TaskPrefilter_SubscribedAndCurrentOnly:
-        accepted &= ( task.subscribed() && task.isCurrentlyValid() );
-        break;
     default:
         break;
     }
