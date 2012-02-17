@@ -72,7 +72,6 @@ private slots:
     void slotEventDeactivated( EventId );
     void slotUpdateTotal();
     void slotUpdateCurrent();
-    void slotCreateTimeSheet();
 
 private:
     Event newSettings();

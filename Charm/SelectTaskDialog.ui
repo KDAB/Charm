@@ -17,30 +17,7 @@
    <property name="margin">
     <number>6</number>
    </property>
-   <item row="0" column="0">
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>Filter:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="1">
-    <widget class="QToolButton" name="buttonClearFilter">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-     <property name="text">
-      <string>...</string>
-     </property>
-     <property name="autoRaise">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="2">
-    <widget class="QLineEdit" name="lineEditFilter"/>
-   </item>
-   <item row="1" column="0" colspan="3">
+   <item row="1" column="0" colspan="2">
     <widget class="QTreeView" name="treeView">
      <property name="alternatingRowColors">
       <bool>true</bool>
@@ -50,7 +27,7 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="0" colspan="3">
+   <item row="2" column="0" colspan="2">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -60,13 +37,29 @@
      </property>
     </widget>
    </item>
+   <item row="0" column="1">
+    <widget class="QSearchField" name="filter" native="true">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QSearchField</class>
+   <extends>QWidget</extends>
+   <header>Qocoa/qsearchfield.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <tabstops>
-  <tabstop>lineEditFilter</tabstop>
   <tabstop>buttonBox</tabstop>
   <tabstop>treeView</tabstop>
-  <tabstop>buttonClearFilter</tabstop>
  </tabstops>
  <resources/>
  <connections>
@@ -99,22 +92,6 @@
     <hint type="destinationlabel">
      <x>318</x>
      <y>-2</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>buttonClearFilter</sender>
-   <signal>clicked()</signal>
-   <receiver>lineEditFilter</receiver>
-   <slot>clear()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>24</x>
-     <y>23</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>80</x>
-     <y>18</y>
     </hint>
    </hints>
   </connection>

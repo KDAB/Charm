@@ -33,6 +33,8 @@
 #include "Commands/CommandAddTask.h"
 #include "Commands/CommandModifyTask.h"
 #include "Commands/CommandDeleteTask.h"
+#include "Qocoa/qbutton.h"
+#include "Qocoa/qsearchfield.h"
 
 TasksView::TasksView( QToolBar* toolBar, QWidget* parent )
     : QWidget( parent )
@@ -42,9 +44,10 @@ TasksView::TasksView( QToolBar* toolBar, QWidget* parent )
     , m_actionNewSubTask( this )
     , m_actionEditTask( this )
     , m_actionDeleteTask( this )
-    , m_buttonClearFilter( new QToolButton( this ) )
-    , m_showCurrentOnly( new QCheckBox( this ) )
-    , m_showSubscribedOnly( new QCheckBox( this ) )
+    , m_actionExpandTree( this )
+    , m_actionCollapseTree( this )
+    , m_showCurrentOnly( new QButton( toolBar, QButton::Recessed ) )
+    , m_showSubscribedOnly( new QButton( toolBar, QButton::Recessed ) )
     , m_treeView( new QTreeView( this ) )
 {
     QVBoxLayout* layout = new QVBoxLayout( this );
@@ -54,10 +57,6 @@ TasksView::TasksView( QToolBar* toolBar, QWidget* parent )
     m_treeView->setItemDelegate( m_delegate );
     connect( m_delegate, SIGNAL( editingStateChanged() ),
              SLOT( configureUi() ) );
-
-    m_buttonClearFilter->setEnabled( false );
-    m_buttonClearFilter->setText( tr( "Clear Filter" ) );
-    m_buttonClearFilter->setIcon( Data::clearFilterIcon() );
 
     // set up actions
     m_actionNewTask.setText( tr( "New &Task" ) );
@@ -93,28 +92,41 @@ TasksView::TasksView( QToolBar* toolBar, QWidget* parent )
     connect( &m_actionDeleteTask, SIGNAL( triggered( bool ) ),
              SLOT( actionDeleteTask() ) );
 
+    m_actionExpandTree.setText( tr( "Expand All" ) );
+    connect( &m_actionExpandTree, SIGNAL( triggered ( bool ) ),
+             m_treeView, SLOT( expandAll() ) );
+
+    m_actionCollapseTree.setText( tr( "Collapse All" ) );
+    connect( &m_actionCollapseTree, SIGNAL( triggered ( bool ) ),
+             m_treeView, SLOT( collapseAll() ) );
+
     // filter setup
-    QLineEdit* filterLineEdit = new QLineEdit( this );
-    connect( filterLineEdit, SIGNAL( textChanged( const QString& ) ),
-             SLOT( slotFiltertextChanged( const QString& ) ) );
-
-    connect( m_buttonClearFilter, SIGNAL( clicked() ),
-             filterLineEdit, SLOT( clear() ) );
-
     m_showCurrentOnly->setText( tr( "Current" ) );
     m_showCurrentOnly->setCheckable( true );
+#ifdef Q_WS_MAC
+    m_showCurrentOnly->setMinimumWidth( 60 );
+#endif
     toolBar->addWidget( m_showCurrentOnly );
     connect( m_showCurrentOnly, SIGNAL( clicked( bool ) ),
              SLOT( taskPrefilteringChanged() ) );
 
-    m_showSubscribedOnly->setText( tr( "My Tasks" ) );
+    m_showSubscribedOnly->setText( tr( "Selected" ) );
     m_showSubscribedOnly->setCheckable( true );
+#ifdef Q_WS_MAC
+    m_showSubscribedOnly->setMinimumWidth( 70 );
+#endif
     toolBar->addWidget( m_showSubscribedOnly );
     connect( m_showSubscribedOnly, SIGNAL( clicked( bool ) ),
              SLOT( taskPrefilteringChanged() ) );
 
-    toolBar->addWidget( m_buttonClearFilter );
-    toolBar->addWidget( filterLineEdit );
+    QWidget *stretch = new QWidget( this );
+    stretch->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
+    toolBar->addWidget( stretch );
+
+    QSearchField* searchField = new QSearchField( this );
+    connect( searchField, SIGNAL( textChanged( const QString& ) ),
+             SLOT( slotFiltertextChanged( const QString& ) ) );
+    toolBar->addWidget( searchField );
 
     m_treeView->setEditTriggers(QAbstractItemView::EditKeyPressed);
     m_treeView->setExpandsOnDoubleClick(false);
@@ -128,6 +140,9 @@ TasksView::TasksView( QToolBar* toolBar, QWidget* parent )
 
     // I hate doing this but the stupid default view sizeHints suck badly.
     setMinimumHeight( 200 );
+
+    // A reasonable default depth.
+    m_treeView->expandToDepth( 0 );
 }
 
 TasksView::~TasksView()
@@ -140,6 +155,9 @@ void TasksView::populateEditMenu( QMenu* editMenu )
     editMenu->addAction( &m_actionNewSubTask );
     editMenu->addAction( &m_actionEditTask );
     editMenu->addAction( &m_actionDeleteTask );
+    editMenu->addSeparator();
+    editMenu->addAction( &m_actionExpandTree );
+    editMenu->addAction( &m_actionCollapseTree );
 }
 
 void TasksView::actionNewTask()
@@ -353,7 +371,10 @@ void TasksView::configureUi()
 
      saveGuiState();
      filter->setFilterWildcard( filtertext );
-     m_buttonClearFilter->setEnabled( ! filtertextRaw.isEmpty() );
+     if (!filtertextRaw.isEmpty())
+        m_treeView->expandAll();
+     else
+         m_treeView->expandToDepth( 0 );
      restoreGuiState();
  }
 
@@ -387,6 +408,9 @@ void TasksView::configureUi()
      menu.addAction( &m_actionNewSubTask );
      menu.addAction( &m_actionEditTask );
      menu.addAction( &m_actionDeleteTask );
+     menu.addSeparator();
+     menu.addAction( &m_actionExpandTree );
+     menu.addAction( &m_actionCollapseTree );
 
      configureUi();
 
