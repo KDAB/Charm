@@ -290,8 +290,8 @@ static TimeSheetInfoList taskWithSubTasks( TaskId id,
     // sort by task id
     qSort( childIds );
     // recursively add those to myself:
-    Q_FOREACH( TaskId id, childIds ) {
-        children << taskWithSubTasks( id, m_secondsMap, &myInformation );
+    Q_FOREACH( const TaskId i, childIds ) {
+        children << taskWithSubTasks( i, m_secondsMap, &myInformation );
     }
 
     // add to parent:
