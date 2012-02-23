@@ -157,7 +157,7 @@ MESSAGE( STATUS "Charm will be installed to ${CMAKE_INSTALL_PREFIX}" )
 
 IF( UNIX AND NOT APPLE )
     SET( XDG_APPS_INSTALL_DIR share/applications )
-    INSTALL( FILES Charm.desktop DESTINATION ${XDG_APPS_INSTALL_DIR} )
+    INSTALL( FILES charmtimetracker.desktop DESTINATION ${XDG_APPS_INSTALL_DIR} )
     INSTALL( FILES Icons/Charm-128x128.png DESTINATION share/icons/hicolor/128x128/apps )
     INSTALL( FILES Icons/tray/charmtray16.png DESTINATION share/icons/hicolor/16x16/apps )
     INSTALL( FILES Icons/tray/charmtray24.png DESTINATION share/icons/hicolor/24x24/apps )

@@ -38,7 +38,9 @@ static EventList createEventList( const QDate& start, const QDate& end, int minu
     EventList events;
 
     const int days = start.daysTo( end );
+#if QT_VERSION >= 0x040700
     events.reserve( days );
+#endif
     for ( int i = 0; i < days; ++i ) {
         const QDate date = start.addDays( i );
         //for each work day, create an event starting at 8 am
