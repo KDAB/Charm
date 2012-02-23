@@ -19,7 +19,7 @@ SET( Charm_VERSION_MINOR "${CMAKE_MATCH_2}" )
 SET( Charm_VERSION_PATCH "${CMAKE_MATCH_3}" )
 SET( Charm_VERSION_COUNT 3 )
 
-IF( NOT ( Charm_VERSION_MAJOR AND Charm_VERSION_MINOR AND Charm_VERSION_PATCH ) )
+IF( NOT ( Charm_VERSION_MAJOR AND DEFINED Charm_VERSION_MINOR AND DEFINED Charm_VERSION_PATCH ) )
     MESSAGE( FATAL_ERROR "No Git executable or valid Charm version argument found.\n"
     "Please pass a version to CMake e.g. cmake -DCharm_VERSION=1.0.0" )
 ENDIF()
