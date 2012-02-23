@@ -138,6 +138,11 @@ public:
         emit qButton->clicked(qButton->isChecked());
     }
 
+    ~QButtonPrivate() {
+        [[nsButton target] release];
+        [nsButton setTarget:nil];
+    }
+
     QButton *qButton;
     NSButton *nsButton;
 };
