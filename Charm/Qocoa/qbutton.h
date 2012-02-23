@@ -2,6 +2,7 @@
 #define QBUTTON_H
 
 #include <QWidget>
+#include <QPointer>
 
 class QButtonPrivate;
 class QButton : public QWidget
@@ -43,6 +44,6 @@ signals:
 
 private:
     friend class QButtonPrivate;
-    QButtonPrivate *pimpl;
+    QPointer<QButtonPrivate> pimpl;
 };
 #endif // QBUTTON_H

@@ -28,30 +28,32 @@ THE SOFTWARE.
 #import "Foundation/NSNotification.h"
 #import "AppKit/NSSearchField.h"
 
-class QSearchFieldPrivate
+class QSearchFieldPrivate : public QObject
 {
 public:
     QSearchFieldPrivate(QSearchField *qSearchField, NSSearchField *nsSearchField)
-        : qSearchField(qSearchField), nsSearchField(nsSearchField) {}
+        : QObject(qSearchField), qSearchField(qSearchField), nsSearchField(nsSearchField) {}
 
     void textDidChange(const QString &text)
     {
-        emit qSearchField->textChanged(text);
+        if (qSearchField)
+            emit qSearchField->textChanged(text);
     }
 
     void textDidEndEditing()
     {
-        emit qSearchField->editingFinished();
+        if (qSearchField)
+            emit qSearchField->editingFinished();
     }
 
-    QSearchField *qSearchField;
+    QPointer<QSearchField> qSearchField;
     NSSearchField *nsSearchField;
 };
 
 @interface QSearchFieldDelegate : NSObject<NSTextFieldDelegate>
 {
 @public
-    QSearchFieldPrivate* pimpl;
+    QPointer<QSearchFieldPrivate> pimpl;
 }
 -(void)controlTextDidChange:(NSNotification*)notification;
 -(void)controlTextDidEndEditing:(NSNotification*)notification;
@@ -59,12 +61,16 @@ public:
 
 @implementation QSearchFieldDelegate
 -(void)controlTextDidChange:(NSNotification*)notification {
-    pimpl->textDidChange(toQString([[notification object] stringValue]));
+    Q_ASSERT(pimpl);
+    if (pimpl)
+        pimpl->textDidChange(toQString([[notification object] stringValue]));
 }
 
 -(void)controlTextDidEndEditing:(NSNotification*)notification {
     Q_UNUSED(notification);
-    pimpl->textDidEndEditing();
+    // No Q_ASSERT here as it is called on destruction.
+    if (pimpl)
+        pimpl->textDidEndEditing();
 }
 @end
 
@@ -73,10 +79,9 @@ QSearchField::QSearchField(QWidget *parent) : QWidget(parent)
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 
     NSSearchField *search = [[NSSearchField alloc] init];
-    pimpl = new QSearchFieldPrivate(this, search);
 
     QSearchFieldDelegate *delegate = [[QSearchFieldDelegate alloc] init];
-    delegate->pimpl = pimpl;
+    delegate->pimpl = new QSearchFieldPrivate(this, search);
     [search setDelegate:delegate];
 
     setupLayout(search, this);
@@ -91,6 +96,10 @@ QSearchField::QSearchField(QWidget *parent) : QWidget(parent)
 
 void QSearchField::setText(const QString &text)
 {
+    Q_ASSERT(pimpl);
+    if (!pimpl)
+        return;
+
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     [pimpl->nsSearchField setStringValue:fromQString(text)];
     [pool drain];
@@ -98,6 +107,10 @@ void QSearchField::setText(const QString &text)
 
 void QSearchField::setPlaceholderText(const QString &text)
 {
+    Q_ASSERT(pimpl);
+    if (!pimpl)
+        return;
+
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     [[pimpl->nsSearchField cell] setPlaceholderString:fromQString(text)];
     [pool drain];
@@ -105,12 +118,20 @@ void QSearchField::setPlaceholderText(const QString &text)
 
 void QSearchField::clear()
 {
+    Q_ASSERT(pimpl);
+    if (!pimpl)
+        return;
+
     [pimpl->nsSearchField setStringValue:@""];
     emit textChanged(QString());
 }
 
 QString QSearchField::text() const
 {
+    Q_ASSERT(pimpl);
+    if (!pimpl)
+        return QString();
+
     return toQString([pimpl->nsSearchField stringValue]);
 }
 

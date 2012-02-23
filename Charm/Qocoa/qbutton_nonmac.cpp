@@ -27,13 +27,12 @@ THE SOFTWARE.
 #include <QPushButton>
 #include <QVBoxLayout>
 
-#include <QDebug>
-
-class QButtonPrivate
+class QButtonPrivate : public QObject
 {
 public:
-    QButtonPrivate(QAbstractButton *button) : button(button) {}
-    QAbstractButton *button;
+    QButtonPrivate(QButton *button, QAbstractButton *abstractButton)
+        : QObject(button), abstractButton(abstractButton) {}
+    QPointer<QAbstractButton> abstractButton;
 };
 
 QButton::QButton(QWidget *parent, BezelStyle) : QWidget(parent)
@@ -45,7 +44,7 @@ QButton::QButton(QWidget *parent, BezelStyle) : QWidget(parent)
         button = new QPushButton(this);
     connect(button, SIGNAL(clicked()),
             this, SIGNAL(clicked()));
-    pimpl = new QButtonPrivate(button);
+    pimpl = new QButtonPrivate(this, button);
 
     QVBoxLayout *layout = new QVBoxLayout(this);
     layout->setMargin(0);
@@ -54,25 +53,37 @@ QButton::QButton(QWidget *parent, BezelStyle) : QWidget(parent)
 
 void QButton::setText(const QString &text)
 {
-    pimpl->button->setText(text);
+    Q_ASSERT(pimpl);
+    if (pimpl)
+        pimpl->abstractButton->setText(text);
 }
 
 void QButton::setImage(const QPixmap &image)
 {
-    pimpl->button->setIcon(image);
+    Q_ASSERT(pimpl);
+    if (pimpl)
+        pimpl->abstractButton->setIcon(image);
 }
 
 void QButton::setChecked(bool checked)
 {
-    pimpl->button->setChecked(checked);
+    Q_ASSERT(pimpl);
+    if (pimpl)
+        pimpl->abstractButton->setChecked(checked);
 }
 
 void QButton::setCheckable(bool checkable)
 {
-    pimpl->button->setCheckable(checkable);
+    Q_ASSERT(pimpl);
+    if (pimpl)
+        pimpl->abstractButton->setCheckable(checkable);
 }
 
 bool QButton::isChecked()
 {
-    return pimpl->button->isChecked();
+    Q_ASSERT(pimpl);
+    if (!pimpl)
+        return false;
+
+    return pimpl->abstractButton->isChecked();
 }
