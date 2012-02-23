@@ -2,6 +2,7 @@
 #define QSEARCHFIELD_H
 
 #include <QWidget>
+#include <QPointer>
 
 class QSearchFieldPrivate;
 class QSearchField : public QWidget
@@ -26,7 +27,7 @@ protected:
 
 private:
     friend class QSearchFieldPrivate;
-    QSearchFieldPrivate *pimpl;
+    QPointer <QSearchFieldPrivate> pimpl;
 };
 
 #endif // QSEARCHFIELD_H

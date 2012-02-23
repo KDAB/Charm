@@ -28,11 +28,11 @@ THE SOFTWARE.
 #import "AppKit/NSButton.h"
 #import "AppKit/NSFont.h"
 
-class QButtonPrivate
+class QButtonPrivate : public QObject
 {
 public:
     QButtonPrivate(QButton *qButton, NSButton *nsButton, QButton::BezelStyle bezelStyle)
-        : qButton(qButton), nsButton(nsButton)
+        : QObject(qButton), qButton(qButton), nsButton(nsButton)
     {
         switch(bezelStyle) {
             case QButton::Disclosure:
@@ -145,14 +145,16 @@ public:
 @interface QButtonTarget : NSObject
 {
 @public
-    QButtonPrivate* pimpl;
+    QPointer<QButtonPrivate> pimpl;
 }
 -(void)clicked;
 @end
 
 @implementation QButtonTarget
 -(void)clicked {
-    pimpl->clicked();
+    Q_ASSERT(pimpl);
+    if (pimpl)
+        pimpl->clicked();
 }
 @end
 
@@ -166,6 +168,7 @@ QButton::QButton(QWidget *parent, BezelStyle bezelStyle) : QWidget(parent)
     QButtonTarget *target = [[QButtonTarget alloc] init];
     target->pimpl = pimpl;
     [button setTarget:target];
+
     [button setAction:@selector(clicked)];
 
     setupLayout(button, this);
@@ -177,6 +180,10 @@ QButton::QButton(QWidget *parent, BezelStyle bezelStyle) : QWidget(parent)
 
 void QButton::setText(const QString &text)
 {
+    Q_ASSERT(pimpl);
+    if (!pimpl)
+        return;
+
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     [pimpl->nsButton setTitle:fromQString(text)];
     [pool drain];
@@ -184,21 +191,32 @@ void QButton::setText(const QString &text)
 
 void QButton::setImage(const QPixmap &image)
 {
-    [pimpl->nsButton setImage:fromQPixmap(image)];
+    Q_ASSERT(pimpl);
+    if (pimpl)
+        [pimpl->nsButton setImage:fromQPixmap(image)];
 }
 
 void QButton::setChecked(bool checked)
 {
-    [pimpl->nsButton setState:checked];
+    Q_ASSERT(pimpl);
+    if (pimpl)
+        [pimpl->nsButton setState:checked];
 }
 
 void QButton::setCheckable(bool checkable)
 {
     const NSInteger cellMask = checkable ? NSChangeBackgroundCellMask : NSNoCellMask;
-    [[pimpl->nsButton cell] setShowsStateBy:cellMask];
+
+    Q_ASSERT(pimpl);
+    if (pimpl)
+        [[pimpl->nsButton cell] setShowsStateBy:cellMask];
 }
 
 bool QButton::isChecked()
 {
+    Q_ASSERT(pimpl);
+    if (!pimpl)
+        return false;
+
     return [pimpl->nsButton state];
 }
