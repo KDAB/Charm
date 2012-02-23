@@ -27,7 +27,8 @@ THE SOFTWARE.
 
 static inline NSString* fromQString(const QString &string)
 {
-    char* cString = string.toUtf8().data();
+    const QByteArray utf8 = string.toUtf8();
+    const char* cString = utf8.constData();
     return [[NSString alloc] initWithUTF8String:cString];
 }
 
