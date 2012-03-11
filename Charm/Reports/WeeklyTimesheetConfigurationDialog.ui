@@ -40,7 +40,14 @@
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="comboBoxWeek"/>
+      <widget class="QComboBox" name="comboBoxWeek">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
      </item>
      <item>
       <spacer>
