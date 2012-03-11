@@ -60,8 +60,8 @@ void EventEditorDelegate::paint( QPainter* painter,
         QTime time = event.startDateTime().time();
         QTime endTime = event.endDateTime().time();
         dateStream << date.toString( Qt::SystemLocaleDate )
-               << " " << time.toString( Qt::SystemLocaleDate )
-               << " - " << endTime.toString( Qt::SystemLocaleDate )
+               << " " << time.toString( "h:mm" )
+               << " - " << endTime.toString( "h:mm" )
                << " (" << hoursAndMinutes( event.duration() ) << ") Week "
                << date.weekNumber();
 
