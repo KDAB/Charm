@@ -551,6 +551,11 @@ void  WeeklyTimeSheetReport::slotSaveToXml()
     }
 }
 
+QString WeeklyTimeSheetReport::suggestedFileName() const
+{
+    return tr( "WeeklyTimeSheet-%1-%2" ).arg( m_yearOfWeek ).arg( m_weekNumber, 2, 10, QChar('0') );
+}
+
 QString WeeklyTimeSheetReport::getFileName( const QString& filter )
 {
     QSettings settings;
@@ -561,10 +566,7 @@ QString WeeklyTimeSheetReport::getFileName( const QString& filter )
         if ( !dir.exists() ) path = QString();
     }
     // suggest file name:
-    QString suggestedFilename = tr( "WeeklyTimeSheet-%1-%2" )
-                                .arg( m_yearOfWeek )
-                                .arg( m_weekNumber, 2, 10, QChar('0') );
-    path += QDir::separator() + suggestedFilename;
+    path += QDir::separator() + suggestedFileName();
     // ask:
     QString filename = QFileDialog::getSaveFileName( this, tr( "Enter File Name" ), path, filter );
     if ( filename.isEmpty() )
@@ -748,6 +750,7 @@ void WeeklyTimeSheetReport::slotUploadTimesheet()
     UploadTimesheetJob* client = new UploadTimesheetJob( this );
     connect( client, SIGNAL(finished(HttpJob*)), this, SLOT(slotTimesheetUploaded(HttpJob*)) );
     client->setParentWidget( this );
+    client->setFileName( suggestedFileName() );
     client->setPayload( saveToXml() );
     client->start();
     uploadButton()->setEnabled(false);

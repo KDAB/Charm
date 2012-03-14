@@ -74,6 +74,7 @@ private:
         NumberOfColumns
     };
 
+    QString suggestedFileName() const;
     QString getFileName( const QString& filter );
     QByteArray saveToXml();
 
