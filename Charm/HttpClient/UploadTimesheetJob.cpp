@@ -7,7 +7,7 @@
 #include <QTimer>
 
 UploadTimesheetJob::UploadTimesheetJob(QObject* parent)
-    : HttpJob(parent)
+    : HttpJob(parent), m_fileName("payload")
 {
     QSettings s;
     s.beginGroup(QLatin1String("httpconfig"));
@@ -26,6 +26,16 @@ QByteArray UploadTimesheetJob::payload() const
 void UploadTimesheetJob::setPayload(const QByteArray &_payload)
 {
     m_payload = _payload;
+}
+
+QString UploadTimesheetJob::fileName() const
+{
+    return m_fileName;
+}
+
+void UploadTimesheetJob::setFileName(const QString &_fileName)
+{
+    m_fileName = _fileName;
 }
 
 QUrl UploadTimesheetJob::uploadUrl() const
@@ -53,7 +63,7 @@ bool UploadTimesheetJob::execute(int state, QNetworkAccessManager *manager)
 
     /* payload */
     data += "--KDAB\r\n"
-            "Content-Disposition: form-data; name=\"filename\"; filename=\"payload\"\r\n"
+            "Content-Disposition: form-data; name=\"" + m_fileName + "\"; filename=\"payload\"\r\n"
             "Content-Type: application/octet-stream\r\n\r\n";
     data += m_payload;
     data += "\r\n";
