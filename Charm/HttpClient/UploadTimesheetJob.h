@@ -15,6 +15,8 @@ public:
 
     QByteArray payload() const;
     void setPayload(const QByteArray &payload);
+    QString fileName() const;
+    void setFileName(const QString &fileName);
     QUrl uploadUrl() const;
     void setUploadUrl(const QUrl& url);
 
@@ -30,6 +32,7 @@ protected:
     };
 
     QByteArray m_payload;
+    QString m_fileName;
     QUrl m_uploadUrl;
 };
 
