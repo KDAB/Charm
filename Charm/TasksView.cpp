@@ -318,9 +318,9 @@ void TasksView::configureUi()
          }
 
          Q_FOREACH( const TaskId& id, state.expandedTasks() ) {
-             QModelIndex index( filter->indexForTaskId( id ) );
-             if ( index.isValid() ) {
-                 m_treeView->expand( index );
+             QModelIndex indexForId( filter->indexForTaskId( id ) );
+             if ( indexForId.isValid() ) {
+                 m_treeView->expand( indexForId );
              }
          }
      }

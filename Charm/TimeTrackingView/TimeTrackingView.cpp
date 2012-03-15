@@ -176,7 +176,6 @@ void TimeTrackingView::paintEvent( QPaintEvent* e )
         }
     }
     // paint the tracking row
-    const int left = m_taskSelector->geometry().right() + Margin;
     const int top = ( rowCount() - 1 ) * FieldHeight;
     const QRect fieldRect( 0, top, width(), height() - top );
     if ( e->rect().contains( fieldRect ) ) {

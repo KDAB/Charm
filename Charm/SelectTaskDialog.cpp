@@ -104,10 +104,10 @@ void SelectTaskDialog::showEvent ( QShowEvent * event )
         m_ui->treeView->setCurrentIndex(index);
     }
 
-    Q_FOREACH( TaskId id, state.expandedTasks() ) {
-        QModelIndex index( m_proxy.indexForTaskId( id ) );
-        if ( index.isValid() ) {
-            m_ui->treeView->expand( index );
+    Q_FOREACH( const TaskId id, state.expandedTasks() ) {
+        QModelIndex indexForId( m_proxy.indexForTaskId( id ) );
+        if ( indexForId.isValid() ) {
+            m_ui->treeView->expand( indexForId );
         }
     }
 

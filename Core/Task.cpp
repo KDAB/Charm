@@ -281,8 +281,8 @@ bool collectTaskIds( std::set<TaskId>& visitedIds, TaskId id, const TaskList& ta
         return false;
     }
 
-    Q_FOREACH( TaskId id, children ) {
-        collectTaskIds( visitedIds, id, tasks );
+    Q_FOREACH( const TaskId i, children ) {
+        collectTaskIds( visitedIds, i, tasks );
     }
 
     return true;
