@@ -17,6 +17,7 @@ SET(
     TaskTreeItem.cpp
     TimeSpans.cpp
     CharmCommand.cpp
+    SmartNameCache.cpp
     XmlSerialization.cpp
 )
 QT4_AUTOMOC( ${CharmCore_SRCS} )

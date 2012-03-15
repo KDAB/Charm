@@ -10,6 +10,7 @@
 #include "TimeSpans.h"
 #include "TaskTreeItem.h"
 #include "CharmDataModelAdapterInterface.h"
+#include "SmartNameCache.h"
 
 class QAbstractItemModel;
 
@@ -90,8 +91,18 @@ public:
 
     /** Create a full task name from the specified TaskId. */
     QString fullTaskName( const Task& ) const;
+
+    /** Create a "smart" task name (name and shortest path that makes the name unique) from the specified TaskId. */
+    QString smartTaskName( const Task& ) const;
+
+    /** Get the task id and full name as a single string. */
+    QString taskIdAndFullNameString(TaskId id) const;
+
     /** Get the task id and name as a single string. */
     QString taskIdAndNameString(TaskId id) const;
+
+    /** Get the task id and smart name as a single string. */
+    QString taskIdAndSmartNameString(TaskId id) const;
 
     bool operator==( const CharmDataModel& other ) const;
 
@@ -137,6 +148,7 @@ private:
 
     // event update timer:
     QTimer m_timer;
+    SmartNameCache m_nameCache;
 
 private slots:
     void eventUpdateTimerEvent();

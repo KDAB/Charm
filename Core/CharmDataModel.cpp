@@ -81,6 +81,8 @@ void CharmDataModel::setAllTasks( const TaskList& tasks )
     // store task id length:
     determineTaskPaddingLength();
 
+    m_nameCache.setAllTasks( tasks );
+
     // notify adapters of changes
     for_each( m_adapters.begin(), m_adapters.end(),
               std::mem_fun( &CharmDataModelAdapterInterface::resetTasks ) );
@@ -100,6 +102,7 @@ void CharmDataModel::addTask( const Task& task )
 
         const TaskTreeItem item ( task );
         m_tasks[ task.id() ] = item;
+        m_nameCache.addTask( task );
 
         // the item in the map has a different address, let's find it:
         Q_ASSERT( taskExists( task.id() ) ); // we just put it in
@@ -107,6 +110,7 @@ void CharmDataModel::addTask( const Task& task )
         it->second.makeChildOf( parentItem( task ) );
 
         determineTaskPaddingLength();
+//        regenerateSmartNames();
 
         Q_FOREACH( CharmDataModelAdapterInterface* adapter, m_adapters )
             adapter->taskAdded( task.id() );
@@ -133,6 +137,7 @@ void CharmDataModel::modifyTask( const Task& task )
         }
 
         m_tasks[ task.id() ].task() = task;
+        m_nameCache.modifyTask( task );
 
         if( parentChanged ) {
             Q_FOREACH( CharmDataModelAdapterInterface* adapter, m_adapters )
@@ -162,6 +167,8 @@ void CharmDataModel::deleteTask( const Task& task )
         m_tasks.erase( it );
     }
 
+    m_nameCache.deleteTask( task );
+
     Q_FOREACH( CharmDataModelAdapterInterface* adapter, m_adapters )
         adapter->taskDeleted( task.id() );
 }
@@ -169,6 +176,7 @@ void CharmDataModel::deleteTask( const Task& task )
 void CharmDataModel::clearTasks()
 {
     m_tasks.clear();
+    m_nameCache.clearTasks();
     m_rootItem = TaskTreeItem();
 
     Q_FOREACH( CharmDataModelAdapterInterface* adapter, m_adapters )
@@ -485,6 +493,11 @@ QString CharmDataModel::fullTaskName( const Task& task ) const
     }
 }
 
+QString CharmDataModel::smartTaskName( const Task & task ) const
+{
+    return m_nameCache.smartName( task.id() );
+}
+
 QString CharmDataModel::eventsString() const
 {
     QStringList eStrList;
@@ -503,11 +516,26 @@ QString CharmDataModel::eventsString() const
     return eStrList.join( "\n" );
 }
 
-QString CharmDataModel::taskIdAndNameString(TaskId id) const
+QString CharmDataModel::taskIdAndFullNameString(TaskId id) const
 {
     return QString("%1 %2")
             .arg( id, CONFIGURATION.taskPaddingLength, 10, QChar( '0' ) )
             .arg( fullTaskName( getTask( id ) ) );
+}
+
+QString CharmDataModel::taskIdAndSmartNameString(TaskId id) const
+{
+    return QString("%1 %2")
+            .arg( id, CONFIGURATION.taskPaddingLength, 10, QChar( '0' ) )
+            .arg( smartTaskName( getTask( id ) ) );
+}
+
+
+QString CharmDataModel::taskIdAndNameString(TaskId id) const
+{
+    return QString("%1 %2")
+            .arg( id, CONFIGURATION.taskPaddingLength, 10, QChar( '0' ) )
+            .arg( getTask( id ).name() );
 }
 
 int CharmDataModel::totalDuration() const
