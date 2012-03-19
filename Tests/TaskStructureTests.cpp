@@ -47,7 +47,7 @@ void TaskStructureTests::checkForTreenessTest_data()
     QTest::addColumn<TaskList>( "tasks" );
     QTest::addColumn<bool>( "directed" );
 
-    Q_FOREACH( QDomElement testcase,
+    Q_FOREACH( const QDomElement& testcase,
                TestHelpers::retrieveTestCases( ":/checkForTreenessTest/Data", "checkForTreenessTest" ) ) {
         QString name = testcase.attribute( "name" );
         bool expectedResult = TestHelpers::attribute( "expectedResult", testcase );
@@ -74,7 +74,7 @@ void TaskStructureTests::mergeTaskListsTest_data()
     QTest::addColumn<TaskList>( "newTasks" );
     QTest::addColumn<TaskList>( "merged" );
 
-    Q_FOREACH( QDomElement testcase,
+    Q_FOREACH( const QDomElement& testcase,
                TestHelpers::retrieveTestCases( ":/mergeTaskListsTest/Data", "mergeTaskListsTest" ) ) {
         QString name = testcase.attribute( "name" );
 
@@ -84,7 +84,7 @@ void TaskStructureTests::mergeTaskListsTest_data()
         elements << ( elements.at( 1 ) ).nextSiblingElement( Task::taskListTagName() );
         bool oldFound = false, newFound = false, mergedFound = false;
         TaskList old, newTasks, merged;
-        Q_FOREACH( QDomElement element, elements ) {
+        Q_FOREACH( const QDomElement& element, elements ) {
             QString arg = element.attribute( "arg" );
             TaskList tasks = Task::readTasksElement( element, CHARM_DATABASE_VERSION );
             if ( arg == "old" ) {

@@ -113,9 +113,9 @@ bool Controller::setAllTasks( const TaskList& tasks )
 {
     qDebug() << "Controller::setAllTasks: replacing all tasks";
     if ( m_storage->setAllTasks( CONFIGURATION.user, tasks ) ) {
-        TaskList tasks = m_storage->getAllTasks();
+        const TaskList newTasks = m_storage->getAllTasks();
         // tell the view about the existing tasks;
-        emit definedTasks( tasks );
+        emit definedTasks( newTasks );
         return true;
     } else {
         return false;

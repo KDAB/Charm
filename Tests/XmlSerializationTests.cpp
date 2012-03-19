@@ -39,15 +39,15 @@ void XmlSerializationTests::testEventSerialization()
 {
     // set up test candidates:
     EventList eventsToTest;
-    Event event;
-    event.setComment( "A comment" );
-    event.setStartDateTime( QDateTime::currentDateTime() );
-    event.setEndDateTime( QDateTime::currentDateTime().addDays( 1 ) );
+    Event testEvent;
+    testEvent.setComment( "A comment" );
+    testEvent.setStartDateTime( QDateTime::currentDateTime() );
+    testEvent.setEndDateTime( QDateTime::currentDateTime().addDays( 1 ) );
     // add one default-constructed one, plus the other candidates:
-    eventsToTest << Event() << event;
+    eventsToTest << Event() << testEvent;
 
     QDomDocument document( "testdocument" );
-    Q_FOREACH( Event event, eventsToTest ) {
+    Q_FOREACH( const Event& event, eventsToTest ) {
         QDomElement element = event.toXml( document );
 //         // temp:
 //         document.appendChild( element );
