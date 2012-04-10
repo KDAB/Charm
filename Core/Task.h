@@ -26,7 +26,7 @@ class Task {
 public:
     Task();
     /** Convenience constructor. */
-    Task( TaskId id, const QString& name, TaskId parent = 0, bool subscribed = false );
+    Task( TaskId id, const QString& name, TaskId parent = 0);
 
     bool isValid() const;
 
@@ -44,10 +44,6 @@ public:
     TaskId parent() const;
 
     void setParent( TaskId parent );
-
-    bool subscribed() const;
-
-    void setSubscribed( bool value );
 
     const QDateTime& validFrom() const;
 
@@ -82,7 +78,6 @@ private:
     int m_id;
     int m_parent;
     QString m_name;
-    bool m_subscribed;
     /** The timestamp from which the task is valid. */
     QDateTime m_validFrom;
     /** The timestamp after which the task becomes invalid. */

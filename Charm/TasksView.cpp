@@ -26,7 +26,6 @@
 #include "ViewFilter.h"
 #include "Application.h"
 #include "TaskIdDialog.h"
-#include "TasksViewDelegate.h"
 
 #include "Core/CharmCommand.h"
 #include "Commands/CommandRelayCommand.h"
@@ -39,7 +38,6 @@
 TasksView::TasksView( QToolBar* toolBar, QWidget* parent )
     : QWidget( parent )
     // , ViewInterface()
-    , m_delegate( new TasksViewDelegate( this ) )
     , m_actionNewTask( this )
     , m_actionNewSubTask( this )
     , m_actionEditTask( this )
@@ -47,16 +45,11 @@ TasksView::TasksView( QToolBar* toolBar, QWidget* parent )
     , m_actionExpandTree( this )
     , m_actionCollapseTree( this )
     , m_showCurrentOnly( new QButton( toolBar, QButton::Recessed ) )
-    , m_showSubscribedOnly( new QButton( toolBar, QButton::Recessed ) )
     , m_treeView( new QTreeView( this ) )
 {
     QVBoxLayout* layout = new QVBoxLayout( this );
     layout->setContentsMargins( 0, 0, 0, 0 );
     layout->addWidget( m_treeView );
-
-    m_treeView->setItemDelegate( m_delegate );
-    connect( m_delegate, SIGNAL( editingStateChanged() ),
-             SLOT( configureUi() ) );
 
     // set up actions
     m_actionNewTask.setText( tr( "New &Task" ) );
@@ -110,15 +103,6 @@ TasksView::TasksView( QToolBar* toolBar, QWidget* parent )
     connect( m_showCurrentOnly, SIGNAL( clicked( bool ) ),
              SLOT( taskPrefilteringChanged() ) );
 
-    m_showSubscribedOnly->setText( tr( "Selected" ) );
-    m_showSubscribedOnly->setCheckable( true );
-#ifdef Q_WS_MAC
-    m_showSubscribedOnly->setMinimumWidth( 70 );
-#endif
-    toolBar->addWidget( m_showSubscribedOnly );
-    connect( m_showSubscribedOnly, SIGNAL( clicked( bool ) ),
-             SLOT( taskPrefilteringChanged() ) );
-
     QWidget *stretch = new QWidget( this );
     stretch->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
     toolBar->addWidget( stretch );
@@ -128,7 +112,7 @@ TasksView::TasksView( QToolBar* toolBar, QWidget* parent )
              SLOT( slotFiltertextChanged( const QString& ) ) );
     toolBar->addWidget( searchField );
 
-    m_treeView->setEditTriggers(QAbstractItemView::EditKeyPressed);
+    m_treeView->setEditTriggers(QAbstractItemView::EditKeyPressed|QAbstractItemView::DoubleClicked);
     m_treeView->setExpandsOnDoubleClick(false);
     m_treeView->setAlternatingRowColors( true );
     // The delegate does its own eliding.
@@ -137,6 +121,8 @@ TasksView::TasksView( QToolBar* toolBar, QWidget* parent )
     m_treeView->setContextMenuPolicy( Qt::CustomContextMenu );
     connect( m_treeView, SIGNAL( customContextMenuRequested( const QPoint& ) ),
              SLOT( slotContextMenuRequested( const QPoint& ) ) );
+    connect( m_treeView, SIGNAL( doubleClicked(QModelIndex) ),
+             SLOT( actionEditTask() ) );
 
     // I hate doing this but the stupid default view sizeHints suck badly.
     setMinimumHeight( 200 );
@@ -209,10 +195,6 @@ void TasksView::addTaskHelper( const Task& parent )
     int suggestedId = parent.isValid() ? parent.id() : 1;
     if ( parent.isValid() ) {
         task.setParent( parent.id() );
-        // subscribe if the parent is subscribed:
-        task.setSubscribed( parent.subscribed()
-                            || CONFIGURATION.taskPrefilteringMode == Configuration::TaskPrefilter_SubscribedOnly
-                            || CONFIGURATION.taskPrefilteringMode == Configuration::TaskPrefilter_SubscribedAndCurrentOnly );
     }
     // yeah, daredevil!
     while ( filter->taskIdExists( suggestedId ) ) ++suggestedId;
@@ -347,9 +329,7 @@ void TasksView::configureUi()
  void TasksView::configurationChanged()
  {
      const Configuration::TaskPrefilteringMode mode = CONFIGURATION.taskPrefilteringMode;
-     const bool showSubscribedOnly = mode == Configuration::TaskPrefilter_SubscribedOnly || mode == Configuration::TaskPrefilter_SubscribedAndCurrentOnly;
-     const bool showCurrentOnly = mode == Configuration::TaskPrefilter_CurrentOnly || mode == Configuration::TaskPrefilter_SubscribedAndCurrentOnly;
-     m_showSubscribedOnly->setChecked( showSubscribedOnly );
+     const bool showCurrentOnly = mode == Configuration::TaskPrefilter_CurrentOnly;
      m_showCurrentOnly->setChecked( showCurrentOnly );
 
      m_treeView->setFont( configuredFont() );
@@ -383,13 +363,8 @@ void TasksView::configureUi()
      // find out about the selected mode:
      Configuration::TaskPrefilteringMode mode;
      const bool showCurrentOnly = m_showCurrentOnly->isChecked();
-     const bool showSubscribedOnly = m_showSubscribedOnly->isChecked();
-     if (  showCurrentOnly && showSubscribedOnly ) {
-         mode = Configuration::TaskPrefilter_SubscribedAndCurrentOnly;
-     } else if ( showCurrentOnly && ! showSubscribedOnly ) {
+     if ( showCurrentOnly ) {
          mode = Configuration::TaskPrefilter_CurrentOnly;
-     } else if ( ! showCurrentOnly && showSubscribedOnly ) {
-         mode = Configuration::TaskPrefilter_SubscribedOnly;
      } else {
          mode = Configuration::TaskPrefilter_ShowAll;
      }

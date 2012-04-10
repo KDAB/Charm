@@ -61,7 +61,6 @@ signals:
     void commandCompleted( CharmCommand* );
 
 private:
-    void updateSubscriptionForTask( const Task& );
     StorageInterface* m_storage;
 };
 

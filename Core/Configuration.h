@@ -20,8 +20,6 @@ public:
     enum TaskPrefilteringMode {
         TaskPrefilter_ShowAll,
         TaskPrefilter_CurrentOnly,
-        TaskPrefilter_SubscribedOnly,
-        TaskPrefilter_SubscribedAndCurrentOnly,
         TaskPrefilter_NumberOfModes
     };
 

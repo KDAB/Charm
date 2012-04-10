@@ -62,9 +62,7 @@ bool Controller::addTask( const Task& task )
     qDebug() << "Controller::addTask: adding task" << task.id()
              << "to parent" << task.parent();
     if ( m_storage->addTask( task ) ) {
-        updateSubscriptionForTask( task );
         emit taskAdded( task );
-
         return true;
     } else {
         Q_ASSERT( false ); // impossible
@@ -85,14 +83,6 @@ bool Controller::modifyTask( const Task& task )
         return result;
     }
 
-    updateSubscriptionForTask( task );
-
-    if ( result ) {
-        emit( taskUpdated( task ) );
-    } else {
-        qDebug() << "Controller::modifyTask: storing  subscription state failed.";
-    }
-
     return result;
 }
 
@@ -100,7 +90,6 @@ bool Controller::deleteTask( const Task& task )
 {
     qDebug() << "Controller::deleteTask: deleting task" << task.id();
     if ( m_storage->deleteTask( task ) ) {
-        m_storage->deleteSubscription( CONFIGURATION.user, task );
         emit taskDeleted( task );
         return true;
     } else {
@@ -119,17 +108,6 @@ bool Controller::setAllTasks( const TaskList& tasks )
         return true;
     } else {
         return false;
-    }
-}
-
-void Controller::updateSubscriptionForTask( const Task& task )
-{
-    if ( task.subscribed() ) {
-        bool result = m_storage->addSubscription( CONFIGURATION.user, task );
-        Q_ASSERT( result ); Q_UNUSED( result );
-    } else {
-        bool result = m_storage->deleteSubscription( CONFIGURATION.user, task );
-        Q_ASSERT( result ); Q_UNUSED( result );
     }
 }
 
@@ -189,8 +167,6 @@ void Controller::persistMetaData( Configuration& configuration )
     Setting settings[] = {
         { MetaKey_Key_UserName,
           configuration.user.name() },
-        { MetaKey_Key_SubscribedTasksOnly,
-          QString().setNum( configuration.taskPrefilteringMode ) },
         { MetaKey_Key_TaskTrackerFontSize,
           QString().setNum( configuration.taskTrackerFontSize ) },
         { MetaKey_Key_DurationFormat,
@@ -251,7 +227,7 @@ void Controller::provideMetaData( Configuration& configuration)
         }
     }
 
-    const int taskPrefilteringModeValue = m_storage->getMetaData( MetaKey_Key_SubscribedTasksOnly ).toInt( &ok );
+    const int taskPrefilteringModeValue = m_storage->getMetaData( MetaKey_TimesheetActiveOnly ).toInt( &ok );
     if ( ok ) {
         switch( taskPrefilteringModeValue ) {
         case Configuration::TaskPrefilter_ShowAll:
@@ -259,12 +235,6 @@ void Controller::provideMetaData( Configuration& configuration)
             break;
         case Configuration::TaskPrefilter_CurrentOnly:
             configuration.taskPrefilteringMode = Configuration::TaskPrefilter_CurrentOnly;
-            break;
-        case Configuration::TaskPrefilter_SubscribedOnly:
-            configuration.taskPrefilteringMode = Configuration::TaskPrefilter_SubscribedOnly;
-            break;
-        case Configuration::TaskPrefilter_SubscribedAndCurrentOnly:
-            configuration.taskPrefilteringMode = Configuration::TaskPrefilter_SubscribedAndCurrentOnly;
             break;
         }
     }

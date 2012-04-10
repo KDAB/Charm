@@ -30,8 +30,6 @@ private slots:
 
     void makeModifyDeleteEventsTest();
 
-    void addDeleteSubscriptionsTest();
-
     void setGetMetaDataTest();
 
     void deleteTaskWithEventsTest();

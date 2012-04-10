@@ -60,8 +60,6 @@ void ControllerTests:: persistProvideMetaDataTest()
                        Configuration::Minutes, true, Qt::ToolButtonIconOnly, true, true ),
         Configuration( true, false, User( "blub", 0 ), Configuration::TaskPrefilter_CurrentOnly, Configuration::TaskTrackerFont_Regular,
                        Configuration::Minutes, false, Qt::ToolButtonTextOnly, false, false ),
-        Configuration( false, true, User(), Configuration::TaskPrefilter_SubscribedAndCurrentOnly, Configuration::TaskTrackerFont_Large,
-                       Configuration::Minutes, true, Qt::ToolButtonTextBesideIcon, true, true ),
     };
     const int NumberOfConfigurations = sizeof configs / sizeof configs[0];
 
@@ -148,7 +146,6 @@ void ControllerTests::addModifyDeleteTaskTest()
     Task task1;
     task1.setId( Task1Id );
     task1.setName( Task1Name );
-    task1.setSubscribed( true );
     task1.setValidFrom( QDateTime::currentDateTime() );
     const int Task2Id = 2000;
     const QString Task2Name( "Task-2-Name" );
@@ -177,14 +174,12 @@ void ControllerTests::addModifyDeleteTaskTest()
     // modify one of the tasks:
     const QString Task1_1Name ( "Task-1-1-Name" );
     task1.setName( Task1_1Name );
-    task1.setSubscribed( false );
     m_controller->modifyTask( task1 );
     QVERIFY( m_definedTasks.size() == 2 );
     QVERIFY( m_definedTasks[task1Position] == task1 );
     QVERIFY( m_definedTasks[task2Position] == task2 );
     const QString Task2_1Name( "Task-2-1-Name" );
     task2.setName( Task2_1Name );
-    task2.setSubscribed( true );
     m_controller->modifyTask( task2 );
     QVERIFY( m_definedTasks[task1Position] == task1 );
     QVERIFY( m_definedTasks[task2Position] == task2 );
