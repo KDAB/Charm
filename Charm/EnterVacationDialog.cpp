@@ -28,7 +28,7 @@ static QString formatDuration( const QDateTime& start, const QDateTime& end )
     if ( minutes == 0 )
         return QObject::tr("%1 hours", "hours", hours ).arg( hours );
     else
-        return QObject::tr("%1 hours %2 minutes").arg( hours, minutes );
+        return QObject::tr("%1 hours %2 minutes").arg( QString::number( hours ), QString::number( minutes ) );
 }
 
 static EventList createEventList( const QDate& start, const QDate& end, int minutes, const TaskId& taskId )
