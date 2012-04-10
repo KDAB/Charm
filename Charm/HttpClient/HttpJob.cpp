@@ -150,6 +150,7 @@ void HttpJob::doStart()
     m_password = newpass;
 
     m_dialog = new QProgressDialog(m_parentWidget);
+    m_dialog->setWindowTitle(tr("Uploading"));
     m_dialog->setLabelText(tr("Wait..."));
     m_dialog->show();
 
