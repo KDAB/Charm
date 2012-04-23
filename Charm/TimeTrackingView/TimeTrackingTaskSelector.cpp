@@ -174,10 +174,6 @@ void TimeTrackingTaskSelector::populate( const QVector<WeeklySummary>& summaries
             break;
 
         TaskId id = interestingTasks.takeFirst();
-
-        if( DATAMODEL->taskTreeItem( id ).childCount() > 0 )
-            continue;
-
         if( !addedTasks.contains( id ) )
             interestingTasksToAdd.append( id );
     }
