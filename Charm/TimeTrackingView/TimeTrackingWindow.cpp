@@ -221,10 +221,6 @@ void TimeTrackingWindow::insertEditMenu()
 void TimeTrackingWindow::slotStartEvent( TaskId id )
 {
     const TaskTreeItem& item = DATAMODEL->taskTreeItem( id );
-    if ( item.childCount() > 0 ) {
-        qDebug() << "FIXME this should be prevented by disabling the menu items";
-        return;
-    }
 
     if( item.task().isCurrentlyValid() ) {
         DATAMODEL->startEventRequested( item.task() );
