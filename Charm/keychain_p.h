@@ -10,29 +10,96 @@
 #define KEYCHAIN_P_H
 
 #include <QCoreApplication>
+#include <QObject>
+#include <QPointer>
+#include <QSettings>
+
+#if defined (Q_OS_UNIX) && (!defined(Q_WS_DARWIN))
+
+#include <QDBusPendingCallWatcher>
+
+#include "kwallet_interface.h"
+#endif
 
 #include "keychain.h"
 
 namespace QKeychain {
-class Keychain::Private {
-    Q_DECLARE_TR_FUNCTIONS(Keychain::Private)
-public:
-    explicit Private( const QString& s ) : service( s ), error( NoError ) {}
 
-    Keychain::Error writeEntryImpl( const QString& account,
-                                    const QByteArray& data,
-                                    QString* errorString );
-    Keychain::Error deleteEntryImpl( const QString& account,
-                                     QString* errorString );
-    Keychain::Error readEntryImpl( QByteArray* password,
-                                   const QString& account,
-                                   QString* errorString );
-    Keychain::Error entryExistsImpl( bool* exists,
-                                     const QString& key,
-                                     QString* errorString );
-    const QString service;
-    Keychain::Error error;
+class Job::Private : public QObject {
+    Q_OBJECT
+public:
+    Private( const QString& service_ )
+        : error( NoError )
+        , service( service_ )
+        , autoDelete( true ) {}
+
+    QKeychain::Error error;
     QString errorString;
+    QString service;
+    bool autoDelete;
+    QPointer<QSettings> settings;
+};
+
+class ReadPasswordJob::Private : public QObject {
+    Q_OBJECT
+public:
+    explicit Private( ReadPasswordJob* qq ) : q( qq ), walletHandle( 0 ), dataType( Text ) {}
+    void doStart();
+    ReadPasswordJob* const q;
+    QByteArray data;
+    QString key;
+    int walletHandle;
+    enum DataType {
+        Binary,
+        Text
+    };
+    DataType dataType;
+
+#if defined (Q_OS_UNIX) && (!defined(Q_WS_DARWIN))
+    org::kde::KWallet* iface;
+
+private Q_SLOTS:
+    void kwalletOpenFinished( QDBusPendingCallWatcher* watcher );
+    void kwalletEntryTypeFinished( QDBusPendingCallWatcher* watcher );
+    void kwalletReadFinished( QDBusPendingCallWatcher* watcher );
+#endif
+
+};
+
+class WritePasswordJob::Private : public QObject {
+    Q_OBJECT
+public:
+    explicit Private( WritePasswordJob* qq ) : q( qq ), mode( Delete ) {}
+    void doStart();
+    enum Mode {
+        Delete,
+        Text,
+        Binary
+    };
+    WritePasswordJob* const q;
+    Mode mode;
+    QString key;
+    QByteArray binaryData;
+    QString textData;
+
+#if defined (Q_OS_UNIX) && (!defined(Q_WS_DARWIN))
+    org::kde::KWallet* iface;
+
+private Q_SLOTS:
+    void kwalletOpenFinished( QDBusPendingCallWatcher* watcher );
+    void kwalletWriteFinished( QDBusPendingCallWatcher* watcher );
+#endif
+};
+
+class DeletePasswordJob::Private : public QObject {
+    Q_OBJECT
+public:
+    explicit Private( DeletePasswordJob* qq ) : q( qq ) {}
+    void doStart();
+    DeletePasswordJob* const q;
+    QString key;
+private Q_SLOTS:
+    void jobFinished( QKeychain::Job* );
 };
 
 }

@@ -6,6 +6,10 @@
 #include <QUrl>
 #include <QWidget>
 
+namespace QKeychain {
+    class Job;
+}
+
 class QNetworkAccessManager;
 class QNetworkReply;
 class QProgressDialog;
@@ -78,6 +82,8 @@ private Q_SLOTS:
     void doStart();
     void doCancel();
     void next();
+    void passwordRead(QKeychain::Job*);
+    void passwordWritten();
 
 private:
     QNetworkAccessManager *m_networkManager;
