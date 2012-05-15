@@ -122,20 +122,31 @@ TaskId SelectTaskDialog::selectedTask() const
 void SelectTaskDialog::slotCurrentItemChanged( const QModelIndex& first,
                                                const QModelIndex& )
 {
-    Task task = m_proxy.taskForIndex( first );
-    if ( task.isValid() ) {
+    if ( isValidAndTrackable( first ) ) {
+        const Task task = m_proxy.taskForIndex( first );
         m_selectedTask = task.id();
+    } else {
+        m_selectedTask = 0;
     }
     m_ui->buttonBox->button( QDialogButtonBox::Ok )->setEnabled( m_selectedTask != 0 );
 }
 
 
+bool SelectTaskDialog::isValidAndTrackable( const QModelIndex& index ) const
+{
+    if ( !index.isValid() )
+        return false;
+    const Task task = m_proxy.taskForIndex( index );
+    return task.isValid() && task.trackable();
+}
+
 void SelectTaskDialog::slotDoubleClicked ( const QModelIndex & index )
 {
-    if ( index.isValid() && m_proxy.taskForIndex( index ).isValid() ) {
+    if ( isValidAndTrackable( index ) ) {
         accept();
     }
 }
+
 
 void SelectTaskDialog::slotFilterTextChanged( const QString& text )
 {

@@ -61,12 +61,18 @@ public:
 
     // implement metadata management functions:
     bool setMetaData( const QString&,  const QString& );
+    bool setMetaData( const QString&,  const QString&, const SqlRaiiTransactor& );
+
     QString getMetaData( const QString& );
 
     // implement import functions:
     QString setAllTasksAndEvents( const User&, const TaskList&, const EventList& );
 
+    /**
+     * @throws UnsupportedDatabaseVersionException
+     */
     bool verifyDatabase();
+
     virtual bool createDatabaseTables() = 0;
 
     // run the query and process possible errors

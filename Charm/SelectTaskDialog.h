@@ -48,6 +48,9 @@ private slots:
     void slotAccepted();
 
 private:
+    bool isValidAndTrackable( const QModelIndex& index ) const;
+
+private:
     Ui::SelectTaskDialog* m_ui;
     TaskId m_selectedTask;
     SelectTaskDialogProxy m_proxy;

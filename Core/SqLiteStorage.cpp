@@ -46,6 +46,7 @@ static const Fields Tasks_Fields[] =
 { "parent", "INTEGER" },
 { "validfrom", "timestamp" },
 { "validuntil", "timestamp" },
+{ "trackable", "INTEGER" },
 { "name", "varchar(256)" }, LastField };
 
 static const Fields Event_Fields[] =

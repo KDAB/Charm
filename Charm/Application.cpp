@@ -443,7 +443,8 @@ void Application::enterConnectingState()
             // go back to StartingUp state and reconfigure
             emit goToState(StartingUp);
         }
-    } catch (UnsupportedDatabaseVersionException&) {
+    } catch (UnsupportedDatabaseVersionException& e) {
+        qDebug() << e.what();
         QString message = QObject::tr( "<html><body>"
                                        "<p>Your current Charm database is too old to use with this version. You have two "
                                        "options here:</p><ul>"
