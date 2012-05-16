@@ -43,10 +43,28 @@ bool SqlStorage::verifyDatabase()
 			version = value;
 		}
 	}
-	if( version != REQUIRED_CHARM_DATABASE_VERSION )
-	{
-            throw UnsupportedDatabaseVersionException( QObject::tr( "Database version is not supported." ) );
-	}
+
+        if ( version == CHARM_DATABASE_VERSION )
+            return true;
+
+        if( version > CHARM_DATABASE_VERSION )
+            throw UnsupportedDatabaseVersionException( QObject::tr( "Database version is too new." ) );
+
+        if ( version == CHARM_DATABASE_VERSION_BEFORE_TRACKABLE ) {
+            SqlRaiiTransactor transactor( database() );
+            QSqlQuery query( database() );
+            query.prepare( QLatin1String("ALTER TABLE Tasks ADD trackable INTEGER") );
+            if ( !runQuery( query ) )
+                throw UnsupportedDatabaseVersionException( QObject::tr("Could not upgrade database from version %1 to version %2: %3").arg( QString::number( CHARM_DATABASE_VERSION_BEFORE_TRACKABLE ),
+                                                                                                                                            QString::number( CHARM_DATABASE_VERSION ),
+                                                                                                                                            query.lastError().text() ) );
+            version = CHARM_DATABASE_VERSION;
+            setMetaData( CHARM_DATABASE_VERSION_DESCRIPTOR, QString::number ( version ), transactor );
+            transactor.commit();
+            return true;
+        }
+
+        throw UnsupportedDatabaseVersionException( QObject::tr( "Database version is not supported." ) );
 	return true;
 }
 
@@ -109,13 +127,14 @@ bool SqlStorage::addTask(const Task& task)
 bool SqlStorage::addTask(const Task& task, const SqlRaiiTransactor& )
 {
     QSqlQuery query(database());
-    query.prepare("INSERT into Tasks (task_id, name, parent, validfrom, validuntil) "
-                  "values ( :task_id, :name, :parent, :validfrom, :validuntil);");
+    query.prepare("INSERT into Tasks (task_id, name, parent, validfrom, validuntil, trackable) "
+                  "values ( :task_id, :name, :parent, :validfrom, :validuntil, :trackable);");
     query.bindValue(":task_id", task.id());
     query.bindValue(":name", task.name());
     query.bindValue(":parent", task.parent());
     query.bindValue(":validfrom", task.validFrom() );
     query.bindValue(":validuntil", task.validUntil() );
+    query.bindValue(":trackable", task.trackable() ? 1 : 0 );
     return runQuery(query);
 }
 
@@ -141,13 +160,14 @@ bool SqlStorage::modifyTask(const Task& task)
 {
 	QSqlQuery query(database());
 	query.prepare("UPDATE Tasks set name = :name, parent = :parent, "
-		"validfrom = :validfrom, validuntil = :validuntil "
+		"validfrom = :validfrom, validuntil = :validuntil, trackable = :trackable "
 		"where task_id = :task_id;");
 	query.bindValue(":task_id", task.id());
 	query.bindValue(":name", task.name());
 	query.bindValue(":parent", task.parent());
 	query.bindValue(":validfrom", task.validFrom() );
 	query.bindValue(":validuntil", task.validUntil() );
+	query.bindValue(":trackable", task.trackable() ? 1 : 0 );
 	return runQuery(query);
 }
 
@@ -675,6 +695,14 @@ bool SqlStorage::deleteInstallation(const Installation& installation)
 bool SqlStorage::setMetaData(const QString& key, const QString& value)
 {
 	SqlRaiiTransactor transactor(database());
+	if (!setMetaData(key, value, transactor))
+		return false;
+	else
+		return transactor.commit();
+}
+
+bool SqlStorage::setMetaData(const QString& key, const QString& value, const SqlRaiiTransactor &)
+{
 	// find out if the key is in the database:
 	bool result;
 	{
@@ -702,11 +730,7 @@ bool SqlStorage::setMetaData(const QString& key, const QString& value)
 		query.bindValue(":value", value);
 		query.bindValue(":key", key);
 
-		if (runQuery(query))
-		{
-			transactor.commit();
-			return true;
-		}
+		return runQuery(query);
 	}
 	else
 	{
@@ -718,18 +742,10 @@ bool SqlStorage::setMetaData(const QString& key, const QString& value)
 		query.bindValue(":key", key);
 		query.bindValue(":value", value);
 
-		if (runQuery(query))
-		{
-			transactor.commit();
-			return true;
-		}
-		else
-		{
-			return false;
-		}
+		return runQuery(query);
 	}
 
-	return result;
+	return false; // never reached
 }
 
 QString SqlStorage::getMetaData(const QString& key)
@@ -759,6 +775,7 @@ Task SqlStorage::makeTaskFromRecord( const QSqlRecord& record )
 	int useridField = record.indexOf("user_id");
 	int validfromField = record.indexOf("validfrom");
 	int validuntilField = record.indexOf("validuntil");
+	int trackableField = record.indexOf("trackable");
 
 	task.setId(record.field(idField).value().toInt());
 	task.setName(record.field(nameField).value().toString());
@@ -775,6 +792,10 @@ Task SqlStorage::makeTaskFromRecord( const QSqlRecord& record )
 	{
 		task.setValidUntil
 		( record.field( validuntilField ).value().value<QDateTime>() );
+	}
+	const QVariant trackableValue = record.field( trackableField ).value();
+	if ( !trackableValue.isNull() && trackableValue.isValid() ) {
+		task.setTrackable( trackableValue.toInt() == 1 );
 	}
 	return task;
 }

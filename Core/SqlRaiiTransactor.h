@@ -5,7 +5,7 @@ class QSqlDatabase;
 
 class SqlRaiiTransactor {
 public:
-    SqlRaiiTransactor( QSqlDatabase& database );
+    explicit SqlRaiiTransactor( QSqlDatabase& database );
     ~SqlRaiiTransactor();
 
     bool isActive() const;

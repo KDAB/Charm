@@ -47,9 +47,10 @@ void TaskEditor::setTask( const Task& task )
 	Q_ASSERT( m_ui );
 	m_task = task;
 	const TaskTreeItem& taskTreeItem =
-        MODEL.charmDataModel()->taskTreeItem( task.id() );
+	MODEL.charmDataModel()->taskTreeItem( task.id() );
 	m_ui->labelTaskName->setText( MODEL.charmDataModel()->fullTaskName( taskTreeItem.task() ) );
 	m_ui->lineEditName->setText( task.name() );
+	m_ui->checkBoxTrackable->setChecked( task.trackable() );
 	if(  task.parent() != 0 ) {
 		const TaskTreeItem& parentItem =
 				MODEL.charmDataModel()->taskTreeItem( task.parent() );
@@ -85,6 +86,7 @@ void TaskEditor::setTask( const Task& task )
 Task TaskEditor::getTask() const
 {
 	m_task.setName( m_ui->lineEditName->text() );
+	m_task.setTrackable( m_ui->checkBoxTrackable->isChecked() );
 	if( m_ui->checkBoxTopLevel->isChecked() ) {
 		m_task.setParent( 0 );
 	}

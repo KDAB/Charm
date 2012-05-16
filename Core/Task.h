@@ -59,6 +59,9 @@ public:
 
     bool isCurrentlyValid() const;
 
+    void setTrackable( bool trackable );
+    bool trackable() const;
+
     void dump() const;
 
     static QString tagName();
@@ -83,6 +86,7 @@ private:
     int m_parent;
     QString m_name;
     bool m_subscribed;
+    bool m_trackable;
     /** The timestamp from which the task is valid. */
     QDateTime m_validFrom;
     /** The timestamp after which the task becomes invalid. */

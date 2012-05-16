@@ -510,6 +510,20 @@
          </property>
         </widget>
        </item>
+       <item row="2" column="1">
+        <widget class="QDateEdit" name="dateEditFrom">
+         <property name="maximumTime">
+          <time>
+           <hour>18</hour>
+           <minute>59</minute>
+           <second>59</second>
+          </time>
+         </property>
+         <property name="calendarPopup">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
        <item row="2" column="0">
         <widget class="QLabel" name="label_4">
          <property name="text">
@@ -520,8 +534,8 @@
          </property>
         </widget>
        </item>
-       <item row="2" column="1">
-        <widget class="QDateEdit" name="dateEditFrom">
+       <item row="3" column="1">
+        <widget class="QDateEdit" name="dateEditTo">
          <property name="maximumTime">
           <time>
            <hour>18</hour>
@@ -551,20 +565,6 @@
          </property>
         </widget>
        </item>
-       <item row="3" column="1">
-        <widget class="QDateEdit" name="dateEditTo">
-         <property name="maximumTime">
-          <time>
-           <hour>18</hour>
-           <minute>59</minute>
-           <second>59</second>
-          </time>
-         </property>
-         <property name="calendarPopup">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
        <item row="3" column="2">
         <widget class="QCheckBox" name="checkBoxUntil">
          <property name="text">
@@ -573,6 +573,13 @@
         </widget>
        </item>
       </layout>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="checkBoxTrackable">
+       <property name="text">
+        <string>Time can be tracked to this task</string>
+       </property>
+      </widget>
      </item>
      <item>
       <spacer name="verticalSpacer">
