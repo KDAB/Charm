@@ -22,7 +22,6 @@ public:
 
     Qt::ItemFlags flags( const QModelIndex & index ) const;
     QVariant data( const QModelIndex& index, int role = Qt::DisplayRole ) const;
-    bool indexIsValidAndHasNoChildren( const QModelIndex& index ) const;
 
 protected:
     /*! \reimp */ bool filterAcceptsColumn( int column, const QModelIndex& parent ) const;
@@ -47,6 +46,9 @@ private slots:
     void slotDoubleClicked ( const QModelIndex & );
     void slotFilterTextChanged( const QString& );
     void slotAccepted();
+
+private:
+    bool isValidAndTrackable( const QModelIndex& index ) const;
 
 private:
     Ui::SelectTaskDialog* m_ui;

@@ -14,15 +14,13 @@ SqlRaiiTransactor::SqlRaiiTransactor( QSqlDatabase& database )
     }
     m_active = m_database.transaction();
     if ( ! m_active ) {
-        qWarning() << "Failed to begin transaction: " << m_database.lastError().text();
-        throw TransactionException( QObject::tr( "Starting a transaction failed." ) );
+        throw TransactionException( QObject::tr( "Starting a transaction failed: %1" ).arg( m_database.lastError().text() ) );
     }
 }
 
 SqlRaiiTransactor::~SqlRaiiTransactor() {
     if ( m_active ) {
         if ( ! m_database.rollback() ) {
-            throw TransactionException( QObject::tr( "Database error, transaction rollback failed." ) );
             qWarning() << "Failed to rollback transaction: " << m_database.lastError().text();
         }
     }

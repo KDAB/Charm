@@ -8,12 +8,12 @@
 #include "CharmExceptions.h"
 
 Task::Task() :
-	m_id(0), m_parent(0), m_subscribed(false)
+        m_id(0), m_parent(0), m_subscribed(false), m_trackable(true)
 {
 }
 
 Task::Task(TaskId id, const QString& name, TaskId parent, bool subscribed) :
-	m_id(id), m_parent(parent), m_name(name), m_subscribed(subscribed)
+        m_id(id), m_parent(parent), m_name(name), m_subscribed(subscribed), m_trackable(true)
 {
 }
 
@@ -41,6 +41,7 @@ bool Task::operator == ( const Task& other ) const
             && other.parent() == parent()
             && other.name() == name()
             && other.subscribed() == subscribed()
+            && other.m_trackable == m_trackable
             && other.validFrom() == validFrom()
             && other.validUntil() == validUntil();
 }
@@ -85,6 +86,16 @@ void Task::setSubscribed(bool value)
 	m_subscribed = value;
 }
 
+bool Task::trackable() const
+{
+        return m_trackable;
+}
+
+void Task::setTrackable(bool trackable)
+{
+        m_trackable = trackable;
+}
+
 const QDateTime& Task::validFrom() const
 {
 	return m_validFrom;
@@ -123,7 +134,7 @@ void Task::dump() const
 	qDebug() << "[Task " << this << "] task id:" << id() << "- name:" << name()
 			<< " - parent:" << parent() << " - subscribed:" << subscribed()
 			<< " - valid from:" << validFrom() << " - valid until:"
-			<< validUntil();
+                        << validUntil() << " - trackable:" << trackable();
 }
 
 void dumpTaskList(const TaskList& tasks)
@@ -139,6 +150,7 @@ void dumpTaskList(const TaskList& tasks)
 const QString TaskIdElement("taskid");
 const QString TaskParentId("parentid");
 const QString TaskSubscribed("subscribed");
+const QString TaskTrackable("trackable");
 const QString TaskValidFrom("validfrom");
 const QString TaskValidUntil("validuntil");
 
@@ -148,7 +160,8 @@ QDomElement Task::toXml(QDomDocument document) const
 	element.setAttribute(TaskIdElement, id());
 	element.setAttribute(TaskParentId, parent());
 	element.setAttribute(TaskSubscribed, (subscribed() ? 1 : 0));
-	if (!name().isEmpty())
+        element.setAttribute(TaskTrackable, (trackable() ? 1 : 0));
+        if (!name().isEmpty())
 	{
 		QDomText taskName = document.createTextNode(name());
 		element.appendChild(taskName);
@@ -195,6 +208,11 @@ Task Task::fromXml(const QDomElement& element, int databaseSchemaVersion)
             if ( !end.isValid() ) throw XmlSerializationException( QObject::tr( "Task::fromXml: invalid valid-until date" ) );
             task.setValidUntil( end );
         }
+    }
+    if ( databaseSchemaVersion > CHARM_DATABASE_VERSION_BEFORE_TRACKABLE ) {
+        task.setTrackable(element.attribute(TaskTrackable, QLatin1String("1")).toInt(&ok) == 1);
+        if (!ok)
+            throw XmlSerializationException( QObject::tr( "Task::fromXml: invalid trackable settings") );
     }
     return task;
 }
