@@ -22,6 +22,7 @@ public:
 
     bool prepare();
     bool execute( ControllerInterface* );
+    bool rollback( ControllerInterface* );
     bool finalize();
 
 private:

@@ -15,6 +15,7 @@ public:
 
     /* reimpl */ void stateChanged( State previous );
     /* reimpl */ void sendCommand( CharmCommand* );
+    /* reimpl */ void sendCommandRollback( CharmCommand* );
     /* reimpl */ void commitCommand( CharmCommand* );
 
     // restore the view
@@ -28,6 +29,7 @@ protected:
 
 signals:
     /* reimpl */ void emitCommand( CharmCommand* );
+    /* reimpl */ void emitCommandRollback( CharmCommand* );
     /* reimpl */ void quit();
 
 private:

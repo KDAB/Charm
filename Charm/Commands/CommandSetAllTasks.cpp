@@ -7,7 +7,7 @@
 #include "CommandSetAllTasks.h"
 
 CommandSetAllTasks::CommandSetAllTasks( const TaskList& tasks, QObject* parent )
-    : CharmCommand( parent )
+    : CharmCommand( tr("Import Tasks"), parent )
     , m_tasks( tasks )
     , m_success( false )
 {

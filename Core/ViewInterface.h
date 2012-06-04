@@ -19,7 +19,9 @@ public:
     virtual void saveConfiguration() = 0;
 
     virtual void emitCommand( CharmCommand* ) = 0;
+    virtual void emitCommandRollback( CharmCommand* ) = 0;
     virtual void sendCommand( CharmCommand* ) = 0;
+    virtual void sendCommandRollback( CharmCommand* ) = 0;
     virtual void commitCommand( CharmCommand* ) = 0;
 
     // restore the view

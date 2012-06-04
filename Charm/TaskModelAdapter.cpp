@@ -175,7 +175,7 @@ bool TaskModelAdapter::setData( const QModelIndex & index, const QVariant & valu
         QString comment = value.toString();
         Event event( old );
         event.setComment( comment );
-        CommandModifyEvent* command = new CommandModifyEvent( event, this );
+        CommandModifyEvent* command = new CommandModifyEvent( event, old, this );
         VIEW.sendCommand( command );
         return true;
     } else if ( role == Qt::CheckStateRole ) {
@@ -349,7 +349,6 @@ void TaskModelAdapter::commitCommand( CharmCommand* command )
 {
     Q_ASSERT( command->owner() == this );
     command->finalize();
-    delete command;
 }
 
 #include "TaskModelAdapter.moc"
