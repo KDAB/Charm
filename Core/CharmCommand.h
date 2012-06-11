@@ -38,19 +38,37 @@ class CharmCommand : public QObject
     Q_OBJECT
 
 public:
-    explicit CharmCommand( QObject* parent = 0 );
+    explicit CharmCommand( const QString& description, QObject* parent = 0 );
     virtual ~CharmCommand();
+
+    QString description() const;
 
     virtual bool prepare() = 0;
     virtual bool execute( ControllerInterface* controller ) = 0;
+    virtual bool rollback( ControllerInterface* controller ) { return false; }
     virtual bool finalize() = 0;
 
     CommandEmitterInterface* owner() const;
+
+    //used by UndoCharmCommandWrapper to forward signal firing
+    //forwards to emitExecute/emitRollback/emitRequestSlotEventIdChanged
+    void requestExecute();
+    void requestRollback();
+    void requestSlotEventIdChanged(int oldId, int newId);
+
+    //notify CharmCommands in a QUndoStack that an event ID has changed
+    virtual void eventIdChanged(int,int){}
+
+signals:
+    void emitExecute(CharmCommand*);
+    void emitRollback(CharmCommand*);
+    void emitSlotEventIdChanged(int,int);
 
 private:
     CharmCommand( const CharmCommand& ); // disallow copying
 
     CommandEmitterInterface* m_owner;
+    const QString m_description;
 };
 
 #endif

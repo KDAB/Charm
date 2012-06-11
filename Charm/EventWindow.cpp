@@ -18,6 +18,8 @@ EventWindow::EventWindow( QWidget* parent )
     setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Expanding );
     connect( m_eventView, SIGNAL( emitCommand( CharmCommand* ) ),
              SIGNAL( emitCommand( CharmCommand* ) ) );
+    connect( m_eventView, SIGNAL( emitCommandRollback( CharmCommand* ) ),
+             SIGNAL( emitCommandRollback( CharmCommand* ) ) );
 }
 
 EventWindow::~EventWindow()

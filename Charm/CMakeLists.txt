@@ -40,6 +40,7 @@ SET(
     Reports/ActivityReport.cpp
     Reports/WeeklyTimesheet.cpp
     Reports/ReportPreviewWindow.cpp
+    UndoCharmCommandWrapper.cpp
     Commands/CommandRelayCommand.cpp
     Commands/CommandModifyEvent.cpp
     Commands/CommandDeleteEvent.cpp

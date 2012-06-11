@@ -134,6 +134,14 @@ void CharmWindow::sendCommand( CharmCommand* cmd )
     emit emitCommand( relay );
 }
 
+void CharmWindow::sendCommandRollback(CharmCommand *cmd)
+{
+    cmd->prepare();
+    CommandRelayCommand* relay = new CommandRelayCommand( this );
+    relay->setCommand( cmd );
+    emit emitCommandRollback ( relay );
+}
+
 void CharmWindow::handleShowHide( bool visible )
 {
     const QString text = visible ?  tr( "Hide %1 Window" ).arg( m_windowName )
@@ -145,7 +153,6 @@ void CharmWindow::handleShowHide( bool visible )
 void CharmWindow::commitCommand( CharmCommand* command )
 {
     command->finalize();
-    delete command;
 }
 
 void CharmWindow::keyPressEvent( QKeyEvent* event )

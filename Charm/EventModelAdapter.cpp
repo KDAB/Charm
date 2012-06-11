@@ -105,7 +105,6 @@ void EventModelAdapter::eventDeactivated( EventId id )
 void EventModelAdapter::commitCommand( CharmCommand* command )
 {
     command->finalize();
-    delete command;
 }
 
 const Event& EventModelAdapter::eventForIndex( const QModelIndex& index ) const

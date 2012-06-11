@@ -420,7 +420,6 @@ void TasksView::configureUi()
  void TasksView::commitCommand( CharmCommand* command )
  {
      command->finalize();
-     delete command;
  }
 
  void TasksView::slotEventActivated( EventId )

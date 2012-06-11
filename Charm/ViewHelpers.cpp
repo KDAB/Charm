@@ -8,6 +8,8 @@ void connectControllerAndView( Controller* controller, CharmWindow* view )
     // make controller process commands send by the view:
     QObject::connect( view, SIGNAL( emitCommand( CharmCommand* ) ),
                       controller, SLOT( executeCommand( CharmCommand* ) ) );
+    QObject::connect( view, SIGNAL( emitCommandRollback( CharmCommand* ) ),
+                      controller, SLOT( rollbackCommand( CharmCommand* ) ) );
     // make view receive done commands from the controller:
     QObject::connect( controller, SIGNAL( commandCompleted( CharmCommand* ) ),
                       view, SLOT( commitCommand( CharmCommand* ) ) );

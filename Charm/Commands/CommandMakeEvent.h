@@ -18,12 +18,17 @@ public:
 
     bool prepare();
     bool execute( ControllerInterface* );
+    bool rollback( ControllerInterface* );
     bool finalize();
+
+public slots:
+    virtual void eventIdChanged(int,int);
 
 Q_SIGNALS:
     void finishedOk( const Event& );
 
 private:
+    bool m_rollback; //don't show the event in finalize
     Task m_task; // the task the new event should be assigned to
     Event m_event; // the result, only valid after the event has been created
 };

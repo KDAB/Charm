@@ -7,7 +7,7 @@
 #include "CommandAddTask.h"
 
 CommandAddTask::CommandAddTask( const Task& task, QObject* parent )
-    : CharmCommand( parent )
+    : CharmCommand( tr("Add Task"), parent )
     , m_task( task )
     , m_success( false )
 {

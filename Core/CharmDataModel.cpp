@@ -424,9 +424,10 @@ void CharmDataModel::endEventRequested( const Task& task )
 
     Q_ASSERT( eventId != 0 );
     Event& event = findEvent( eventId );
+    Event old = event;
     event.setEndDateTime( QDateTime::currentDateTime() );
 
-    emit requestEventModification( event );
+    emit requestEventModification( event, old );
 
     if ( m_activeEventIds.isEmpty() ) m_timer.stop();
     updateToolTip();
@@ -444,9 +445,10 @@ void CharmDataModel::endAllEventsRequested()
 
         Q_ASSERT( eventId != 0 );
         Event& event = findEvent( eventId );
+        Event old = event;
         event.setEndDateTime( currentDateTime );
 
-        emit requestEventModification( event );
+        emit requestEventModification( event, old );
     }
 
     m_timer.stop();
@@ -459,9 +461,10 @@ void CharmDataModel::eventUpdateTimerEvent()
         // Not a ref (Event &), since we want to diff "old event"
         // and "new event" in *Adapter::eventModified
         Event event = findEvent( id );
+        Event old = event;
         event.setEndDateTime( QDateTime::currentDateTime() );
 
-        emit requestEventModification( event );
+        emit requestEventModification( event, old );
     }
     updateToolTip();
 }

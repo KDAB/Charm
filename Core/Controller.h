@@ -30,6 +30,7 @@ public:
 
     // FIXME add the add/modify/delete functions will not be slots anymore
     Event makeEvent( const Task& );
+    Event cloneEvent( const Event& );
     bool modifyEvent( const Event& );
     bool deleteEvent( const Event& );
 
@@ -45,6 +46,7 @@ public:
 public slots:
 
     void executeCommand( CharmCommand* );
+    void rollbackCommand ( CharmCommand* );
 
 signals:
     void eventAdded( const Event& event );

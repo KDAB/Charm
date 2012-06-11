@@ -458,10 +458,11 @@ void TimeTrackingWindow::maybeIdle()
         Q_FOREACH ( EventId eventId, activeEvents ) {
             Event event = DATAMODEL->eventForId( eventId );
             if ( event.isValid() ) {
+                Event old = event;
                 QDateTime start  = period.first; // initializes a valid QDateTime
                 event.setEndDateTime( qMax( event.startDateTime(), start ) );
                 Q_ASSERT( event.isValid() );
-                CommandModifyEvent* cmd = new CommandModifyEvent( event, this );
+                CommandModifyEvent* cmd = new CommandModifyEvent( event, old, this );
                 emit emitCommand( cmd );
             }
         }

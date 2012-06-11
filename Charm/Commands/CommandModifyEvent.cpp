@@ -3,9 +3,10 @@
 
 #include "CommandModifyEvent.h"
 
-CommandModifyEvent::CommandModifyEvent( const Event& event, QObject* parent )
-    : CharmCommand( parent )
+CommandModifyEvent::CommandModifyEvent( const Event& event, const Event& oldEvent, QObject* parent )
+    : CharmCommand( tr("Modify Event"), parent )
     , m_event( event )
+    , m_oldEvent( oldEvent )
 {
 }
 
@@ -25,9 +26,23 @@ bool CommandModifyEvent::execute( ControllerInterface* controller )
     return controller->modifyEvent( m_event );
 }
 
+bool CommandModifyEvent::rollback(ControllerInterface *controller)
+{
+    return controller->modifyEvent( m_oldEvent );
+}
+
 bool CommandModifyEvent::finalize()
 {
     return true;
+}
+
+void CommandModifyEvent::eventIdChanged(int oid, int nid)
+{
+    if(m_event.id() == oid)
+    {
+        m_event.setId(nid);
+        m_oldEvent.setId(nid);
+    }
 }
 
 #include "CommandModifyEvent.moc"

@@ -9,15 +9,20 @@ class CommandModifyEvent : public CharmCommand
     Q_OBJECT
 
 public:
-    explicit CommandModifyEvent( const Event&, QObject* parent = 0 );
+    explicit CommandModifyEvent( const Event&, const Event&, QObject* parent = 0 );
     ~CommandModifyEvent();
 
     bool prepare();
     bool execute( ControllerInterface* );
+    bool rollback( ControllerInterface* );
     bool finalize();
+
+public slots:
+    virtual void eventIdChanged(int,int);
 
 private:
     Event m_event;
+    Event m_oldEvent;
 };
 
 #endif
