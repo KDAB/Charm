@@ -3,12 +3,14 @@
 
 #include <QWidget>
 #include <QAction>
+#include <QUndoStack>
 
 #include "Core/Event.h"
 #include "Core/TimeSpans.h"
 #include "Core/CommandEmitterInterface.h"
 
 #include "ViewModeInterface.h"
+#include "UndoCharmCommandWrapper.h"
 
 class QModelIndex;
 
@@ -49,6 +51,7 @@ public:
 signals:
     void visible( bool );
     void emitCommand( CharmCommand* );
+    void emitCommandRollback( CharmCommand* );
 
 public slots:
     void commitCommand( CharmCommand* );
@@ -61,7 +64,7 @@ private slots:
     void slotEventDoubleClicked( const QModelIndex& );
     void slotEditEvent();
     void slotEditEvent( const Event& );
-    void slotEditEventCompleted( const Event& );
+    void slotEditNewEventCompleted( const Event& );
     void slotCurrentItemChanged( const QModelIndex&, const QModelIndex& );
     void slotContextMenuRequested( const QPoint& );
     void slotNextEvent();
@@ -72,14 +75,21 @@ private slots:
     void slotEventDeactivated( EventId );
     void slotUpdateTotal();
     void slotUpdateCurrent();
+    void slotUndoTextChanged(const QString&);
+    void slotRedoTextChanged(const QString&);
+    void slotEventIdChanged(int oldId, int newId);
 
 private:
     Event newSettings();
     void setCurrentEvent( const Event& );
+    void stageCommand( CharmCommand* );
 
+    QUndoStack* m_undoStack;
     QList<NamedTimeSpan> m_timeSpans;
     Event m_event;
     EventModelFilter* m_model;
+    QAction m_actionUndo;
+    QAction m_actionRedo;
     QAction m_actionNewEvent;
     QAction m_actionEditEvent;
     QAction m_actionDeleteEvent;

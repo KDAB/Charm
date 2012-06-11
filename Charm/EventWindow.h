@@ -25,6 +25,7 @@ protected:
 
 signals:
     /* reimpl */ void emitCommand( CharmCommand* );
+    /* reimpl */ void emitCommandRollback( CharmCommand* );
     /* reimpl */ void quit();
 
 private:

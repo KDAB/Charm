@@ -99,7 +99,7 @@ signals:
     // these need to be implemented in the respective application to
     // be able to track time:
     void makeAndActivateEvent( const Task& );
-    void requestEventModification( const Event& );
+    void requestEventModification( const Event&, const Event& );
     void sysTrayUpdate( const QString&, bool );
 
 public slots:

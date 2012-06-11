@@ -9,7 +9,7 @@
 #include "CommandImportFromXml.h"
 
 CommandImportFromXml::CommandImportFromXml( QString filename, QObject* parent )
-    : CharmCommand( parent )
+    : CharmCommand( tr("Import from XML"), parent )
     , m_filename( filename )
 {
 }

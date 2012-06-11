@@ -55,6 +55,7 @@ signals:
     /* reimpl */ void saveConfiguration();
 
 public slots:
+    /* reimpl */ void sendCommandRollback( CharmCommand* );
     /* reimpl */ void sendCommand( CharmCommand* );
     /* reimpl */ void commitCommand( CharmCommand* );
     void restore();

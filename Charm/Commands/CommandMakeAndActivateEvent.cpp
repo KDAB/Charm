@@ -9,7 +9,7 @@
 
 CommandMakeAndActivateEvent::CommandMakeAndActivateEvent( const Task& task,
                                                           QObject* parent )
-    : CharmCommand( parent )
+    : CharmCommand( tr("Create Event"), parent )
     , m_task( task )
 {
 }

@@ -103,6 +103,8 @@ Application::Application(int& argc, char** argv)
         if ( window != &mainView() ) { // main view acts as the main relay
             connect( window, SIGNAL( emitCommand( CharmCommand* ) ),
                      &mainView(), SLOT( sendCommand( CharmCommand* ) ) );
+            connect( window, SIGNAL( emitCommandRollback( CharmCommand* ) ),
+                     &mainView(), SLOT( sendCommandRollback( CharmCommand* ) ) );
         }
         // save the configuration (configuration is managed by the application)
         connect( window, SIGNAL(saveConfiguration() ),

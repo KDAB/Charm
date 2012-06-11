@@ -15,6 +15,8 @@ TasksWindow::TasksWindow( QWidget* parent )
     setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Expanding );
     connect( m_tasksView, SIGNAL( emitCommand( CharmCommand* ) ),
              SIGNAL( emitCommand( CharmCommand* ) ) );
+    connect( m_tasksView, SIGNAL( emitCommandRollback( CharmCommand* ) ),
+             SIGNAL( emitCommandRollback( CharmCommand* ) ) );
     connect( m_tasksView, SIGNAL( saveConfiguration() ),
              SIGNAL( saveConfiguration() ) );
 }
@@ -51,6 +53,11 @@ void TasksWindow::insertEditMenu()
 }
 
 void TasksWindow::sendCommand( CharmCommand* )
+{
+    Q_ASSERT( false ); // should not be called
+}
+
+void TasksWindow::sendCommandRollback( CharmCommand* )
 {
     Q_ASSERT( false ); // should not be called
 }

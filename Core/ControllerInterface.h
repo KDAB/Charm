@@ -28,6 +28,8 @@ public:
     /** Add an event.
         Return a valid event if successfull. */
     virtual Event makeEvent( const Task& ) = 0;
+    /** Add an event, copying data from another event. */
+    virtual Event cloneEvent( const Event& ) = 0;
     /** Modify an event. */
     virtual bool modifyEvent( const Event& ) = 0;
     /** Delete an event. */
@@ -42,6 +44,8 @@ public:
     virtual bool setAllTasks( const TaskList& tasks ) = 0;
     /** Receive a command from the view. */
     virtual void executeCommand( CharmCommand* ) = 0;
+    /** Receive an undo command from the view. */
+    virtual void rollbackCommand( CharmCommand* ) = 0;
     /** Export the database contents into a XML document. */
     virtual QDomDocument exportDatabasetoXml() const = 0 ;
     /** Import the content of the Xml document into the currently open database.

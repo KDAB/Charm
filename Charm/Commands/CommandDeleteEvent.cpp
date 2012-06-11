@@ -3,7 +3,7 @@
 #include "CommandDeleteEvent.h"
 
 CommandDeleteEvent::CommandDeleteEvent( const Event& event, QObject* parent )
-    : CharmCommand( parent )
+    : CharmCommand( tr("Delete Event"), parent )
     , m_event( event )
 {
 }
@@ -24,9 +24,25 @@ bool CommandDeleteEvent::execute( ControllerInterface* controller )
     return controller->deleteEvent( m_event );
 }
 
+bool CommandDeleteEvent::rollback(ControllerInterface *controller)
+{
+    int oldId = m_event.id();
+    m_event = controller->cloneEvent(m_event);
+    int newId = m_event.id();
+    if(oldId != newId)
+        emit emitSlotEventIdChanged(oldId, newId);
+    return m_event.isValid();
+}
+
 bool CommandDeleteEvent::finalize()
 {
     return true;
+}
+
+void CommandDeleteEvent::eventIdChanged(int oid, int nid)
+{
+    if(m_event.id() == oid)
+        m_event.setId(nid);
 }
 
 #include "CommandDeleteEvent.moc"

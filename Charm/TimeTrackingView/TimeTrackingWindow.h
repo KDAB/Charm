@@ -75,6 +75,7 @@ private slots:
 
 signals:
     void emitCommand( CharmCommand* );
+    void emitCommandRollback( CharmCommand* );
 
 private:
     void showPreview( ReportConfigurationDialog*, int result );

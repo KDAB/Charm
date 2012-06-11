@@ -36,6 +36,22 @@ Event Controller::makeEvent( const Task& task )
     return event;
 }
 
+Event Controller::cloneEvent(const Event &e)
+{
+    Event event = m_storage->makeEvent();
+    Q_ASSERT( event.isValid() );
+
+    int id = event.id();
+    event = e;
+    event.setId(id);
+    if ( m_storage->modifyEvent( event ) ) {
+        emit eventAdded( event );
+    } else {
+        event = Event();
+    }
+    return event;
+}
+
 bool Controller::modifyEvent( const Event& e )
 {
     if ( m_storage->modifyEvent( e ) )
@@ -328,6 +344,14 @@ void Controller::executeCommand( CharmCommand* command )
     // send it back to the view:
     emit commandCompleted( command );
 }
+
+void Controller::rollbackCommand( CharmCommand* command )
+{
+    command->rollback( this );
+    // send it back to the view:
+    emit commandCompleted( command );
+}
+
 
 StorageInterface* Controller::storage()
 {

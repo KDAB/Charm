@@ -45,6 +45,7 @@ signals:
     // FIXME connect to MainWindow
     void saveConfiguration();
     void emitCommand( CharmCommand* );
+    void emitCommandRollback( CharmCommand* );
 
 private slots:
     void actionNewTask();
