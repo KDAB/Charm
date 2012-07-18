@@ -55,6 +55,8 @@ QSearchField::QSearchField(QWidget *parent) : QWidget(parent)
             this, SIGNAL(textChanged(QString)));
     connect(lineEdit, SIGNAL(editingFinished()),
             this, SIGNAL(editingFinished()));
+    connect(lineEdit, SIGNAL(returnPressed()),
+            this, SIGNAL(returnPressed()));
     connect(lineEdit, SIGNAL(textChanged(QString)),
             this, SLOT(setText(QString)));
 
@@ -111,6 +113,15 @@ void QSearchField::clear()
     pimpl->lineEdit->clear();
 }
 
+void QSearchField::selectAll()
+{
+    Q_ASSERT(pimpl && pimpl->lineEdit);
+    if (!(pimpl && pimpl->lineEdit))
+        return;
+
+    pimpl->lineEdit->selectAll();
+}
+
 QString QSearchField::text() const
 {
     Q_ASSERT(pimpl && pimpl->lineEdit);
@@ -118,6 +129,30 @@ QString QSearchField::text() const
         return QString();
 
     return pimpl->lineEdit->text();
+}
+
+QString QSearchField::placeholderText() const {
+    Q_ASSERT(pimpl && pimpl->lineEdit);
+    if (!(pimpl && pimpl->lineEdit))
+        return QString();
+
+#if QT_VERSION >= 0x040700
+    return pimpl->lineEdit->placeholderText();
+#else
+    return QString();
+#endif
+}
+
+void QSearchField::setFocus(Qt::FocusReason reason)
+{
+    Q_ASSERT(pimpl && pimpl->lineEdit);
+    if (pimpl && pimpl->lineEdit)
+        pimpl->lineEdit->setFocus(reason);
+}
+
+void QSearchField::setFocus()
+{
+    setFocus(Qt::OtherFocusReason);
 }
 
 void QSearchField::resizeEvent(QResizeEvent *resizeEvent)

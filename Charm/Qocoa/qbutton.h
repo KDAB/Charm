@@ -23,7 +23,7 @@ public:
        RoundRect         = 12,
        Recessed          = 13,
        RoundedDisclosure = 14,
-#ifdef MAC_OS_X_VERSION_10_7
+#ifdef __MAC_10_7
        Inline            = 15
 #endif
     };
