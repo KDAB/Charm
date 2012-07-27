@@ -166,6 +166,21 @@ void EventEditor::commentChanged()
     updateValues();
 }
 
+struct SignalBlocker {
+    explicit SignalBlocker( QObject* o )
+        : m_object( o )
+        , m_previous( o->signalsBlocked() ) {
+        o->blockSignals( true );
+    }
+
+    ~SignalBlocker() {
+        m_object->blockSignals( m_previous );
+    }
+
+    QObject* m_object;
+    bool m_previous;
+};
+
 void EventEditor::updateValues( bool all )
 {
     if( m_updating ) return;
@@ -202,8 +217,14 @@ void EventEditor::updateValues( bool all )
     }
     int durationHours = qMax( m_event.duration() / 3600, 0);
     int durationMinutes = qMax( ( m_event.duration() % 3600 ) / 60, 0 );
-    m_ui->spinBoxHours->setValue( durationHours );
-    m_ui->spinBoxMinutes->setValue( durationMinutes );
+
+    { // block signals to prevent updates of the start/end edits
+        const SignalBlocker blocker1( m_ui->spinBoxHours );
+        const SignalBlocker blocker2( m_ui->spinBoxMinutes );
+        m_ui->spinBoxHours->setValue( durationHours );
+        m_ui->spinBoxMinutes->setValue( durationMinutes );
+    }
+
     QString name = MODEL.charmDataModel()->fullTaskName( taskTreeItem.task() );
     m_ui->labelTaskName->setText( name );
 
