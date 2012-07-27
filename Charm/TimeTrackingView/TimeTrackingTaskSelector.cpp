@@ -142,7 +142,7 @@ void TimeTrackingTaskSelector::populate( const QVector<WeeklySummary>& summaries
     QMap<TaskId, QAction*> addedTasks;
     bool addedAction = false;
     Q_FOREACH( const WeeklySummary& s, summaries ) {
-        QAction* action = new QAction( DATAMODEL->taskIdAndNameString( s.task ), m_menu );
+        QAction* action = new QAction( DATAMODEL->taskIdAndSmartNameString( s.task ), m_menu );
         addedTasks.insert( s.task, action );
         action->setProperty( CUSTOM_TASK_PROPERTY_NAME, QVariant::fromValue( s.task ) );
         Q_ASSERT( action->property( CUSTOM_TASK_PROPERTY_NAME ).value<TaskId>() == s.task );
@@ -156,7 +156,7 @@ void TimeTrackingTaskSelector::populate( const QVector<WeeklySummary>& summaries
     }
     if( m_manuallySelectedTask > 0 && ! addedTasks.contains( m_manuallySelectedTask )) {
         const Task& task = DATAMODEL->getTask( m_manuallySelectedTask );
-        QAction* action = new QAction( DATAMODEL->taskIdAndNameString( task.id() ), m_menu );
+        QAction* action = new QAction( DATAMODEL->taskIdAndSmartNameString( task.id() ), m_menu );
         addedTasks.insert( m_manuallySelectedTask, action );
         action->setProperty( CUSTOM_TASK_PROPERTY_NAME, QVariant::fromValue( m_manuallySelectedTask ) );
         m_menu->addAction( action );
@@ -186,7 +186,7 @@ void TimeTrackingTaskSelector::populate( const QVector<WeeklySummary>& summaries
             m_menu->addSeparator();
             addedAction = true;
         }
-        QAction* action = new QAction( DATAMODEL->taskIdAndNameString( id ), m_menu );
+        QAction* action = new QAction( DATAMODEL->taskIdAndSmartNameString( id ), m_menu );
         action->setProperty( CUSTOM_TASK_PROPERTY_NAME, QVariant::fromValue( id ) );
         m_menu->addAction( action );
         addedTasks.insert( id, action );

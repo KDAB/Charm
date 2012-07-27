@@ -25,7 +25,7 @@ SelectTaskDialogProxy::SelectTaskDialogProxy( CharmDataModel* model, QObject* pa
     // we filter for the task name column
     setFilterKeyColumn( Column_TaskId );
     setFilterCaseSensitivity( Qt::CaseInsensitive );
-
+    setFilterRole( TasksViewRole_Filter );
     prefilteringModeChanged();
 }
 
