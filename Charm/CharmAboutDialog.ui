@@ -2,6 +2,14 @@
 <ui version="4.0">
  <class>CharmAboutDialog</class>
  <widget class="QDialog" name="CharmAboutDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>294</width>
+    <height>418</height>
+   </rect>
+  </property>
   <property name="sizePolicy">
    <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
     <horstretch>0</horstretch>
@@ -82,8 +90,8 @@ Licensed under the terms of the GPL.</string>
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Lucida Grande'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Charm is supported and maintained by &lt;a href=&quot;http://www.kdab.com&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;KDAB&lt;/span&gt;&lt;/a&gt;.&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://www.kdab.com&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;KDAB&lt;/span&gt;&lt;/a&gt; also runs &lt;a href=&quot;http://www.kdab.com/training&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Qt training courses&lt;/span&gt;&lt;/a&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Charm is supported and maintained by &lt;a href=&quot;http://www.kdab.com&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;KDAB&lt;/span&gt;&lt;/a&gt;,&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;the Qt experts. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -104,19 +112,21 @@ p, li { white-space: pre-wrap; }
       <string>Original Author:
 Mirko Boehm
 
-Current Maintainers:
-Mike McQuaid, Frank Osterfeld
+Current Maintainer:
+Frank Osterfeld
 
-Other Contributions:
-Till Adam
-David Faure
-Nuno Pinheiro
-Pradeepto Batthacharya
-Katrina Niolet
-Jesper K. Pedersen</string>
+Contributors:
+Mike McQuaid (former maintainer),
+Till Adam, David Faure, Nuno Pinheiro,
+Pradeepto Batthacharya, Katrina Niolet,
+Nicholas Van Sickle, Jesper K. Pedersen,
+Guillermo Amaral</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
      </property>
     </widget>
    </item>
