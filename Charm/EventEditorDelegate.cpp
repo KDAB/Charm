@@ -70,7 +70,7 @@ void EventEditorDelegate::paint( QPainter* painter,
         // print leading zeroes for the TaskId
         const int taskIdLength = CONFIGURATION.taskPaddingLength;
         taskStream << QString( "%1" ).arg( item.task().id(), taskIdLength, 10, QChar( '0' ) )
-                   << " " << DATAMODEL->fullTaskName( item.task() );
+                   << " " << DATAMODEL->smartTaskName( item.task() );
 
         paint( painter, option,
                taskName,

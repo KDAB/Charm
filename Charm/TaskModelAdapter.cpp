@@ -71,12 +71,7 @@ QVariant TaskModelAdapter::data( const QModelIndex& index, int role ) const
     	}
         break;
     case Qt::DisplayRole:
-    {
-        // Return ID + name -- this is used for painting but also
-        // for filtering in select task dialog.
         return DATAMODEL->taskIdAndNameString( item->task().id() );
-    }
-        break;
     case Qt::DecorationRole:
         if ( isActive ) {
             return Data::activePixmap();
@@ -100,6 +95,8 @@ QVariant TaskModelAdapter::data( const QModelIndex& index, int role ) const
     case Qt::EditRole: // we edit the comment
     case TasksViewRole_Comment:
         return activeEvent.comment();
+    case TasksViewRole_Filter:
+        return DATAMODEL->taskIdAndFullNameString( item->task().id() );
     default:
         return QVariant();
     }
