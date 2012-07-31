@@ -59,7 +59,8 @@ SET(
     HttpClient/UploadTimesheetJob.cpp
 )
 
-SET(IDLEDETECTION_LIBS)
+SET(CharmApplication_LIBS)
+
 IF( CHARM_IDLE_DETECTION )
     IF( APPLE )
         LIST( APPEND CharmApplication_SRCS Idle/MacIdleDetector.mm )
@@ -71,7 +72,7 @@ IF( CHARM_IDLE_DETECTION )
             MESSAGE( "X11 idle detection enabled." )
             INCLUDE_DIRECTORIES( ${X11_INCLUDE_DIR} )
             LIST( APPEND CharmApplication_SRCS Idle/X11IdleDetector.cpp )
-            SET( IDLEDETECTION_LIBS ${X11_X11_LIB} ${X11_Xscreensaver_LIB} )
+            LIST( APPEND CharmApplication_LIBS ${X11_X11_LIB} ${X11_Xscreensaver_LIB} )
             SET( CHARM_IDLE_DETECTION_AVAILABLE_X11 "1" CACHE INTERNAL "" )
         ELSE()
             MESSAGE( "Install X11/XScreenSaver headers and library for X11 idle detection." )
@@ -83,11 +84,21 @@ LIST( APPEND CharmApplication_SRCS keychain.cpp )
 
 IF (APPLE)
     LIST( APPEND CharmApplication_SRCS keychain_mac.cpp MacApplication.mm )
-    SET( CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -framework CoreFoundation -framework Security -framework AppKit" )
+
+    FIND_LIBRARY( COREFOUNDATION_LIBRARY CoreFoundation )
+    LIST( APPEND CharmApplication_LIBS ${COREFOUNDATION_LIBRARY} )
+
+    FIND_LIBRARY( SECURITY_LIBRARY Security )
+    LIST( APPEND CharmApplication_LIBS ${SECURITY_LIBRARY} )
+
+    FIND_LIBRARY( APPKIT_LIBRARY AppKit )
+    LIST( APPEND CharmApplication_LIBS ${APPKIT_LIBRARY} )
 ELSEIF ( WIN32 )
     LIST( APPEND CharmApplication_SRCS keychain_win.cpp )
 ELSEIF ( UNIX )
     LIST( APPEND CharmApplication_SRCS keychain_dbus.cpp )
+    QT4_ADD_DBUS_INTERFACE( CharmApplication_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/org.kde.KWallet.xml kwallet_interface KWalletInterface )
+    LIST( APPEND CharmApplication_LIBS ${QT_QTDBUS_LIBRARY} )
 ENDIF()
 
 QT4_WRAP_CPP( MOC_QOCOA_SRCS Qocoa/qbutton.h Qocoa/qsearchfield.h )
@@ -122,9 +133,7 @@ ADD_LIBRARY(
     CharmApplication STATIC
     ${CharmApplication_SRCS} ${UiGenerated_SRCS}
 )
-IF( IDLEDETECTION_LIBS )
-    TARGET_LINK_LIBRARIES(CharmApplication ${IDLEDETECTION_LIBS})
-ENDIF( IDLEDETECTION_LIBS )
+TARGET_LINK_LIBRARIES(CharmApplication ${CharmApplication_LIBS})
 
 SET( Charm_SRCS Charm.cpp )
 QT4_AUTOMOC( ${Charm_SRCS} )
