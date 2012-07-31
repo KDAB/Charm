@@ -126,11 +126,21 @@ void HttpJob::doStart()
         return;
     }
 
-    Keychain store(QLatin1String("Charm"));
+    ReadPasswordJob* readJob = new ReadPasswordJob(QLatin1String("Charm"), this);
+    connect(readJob, SIGNAL(finished(QKeychain::Job*)), this, SLOT(passwordRead(QKeychain::Job*)));
+    readJob->setKey(QLatin1String("lotsofcake"));
+    readJob->start();
+}
+
+void HttpJob::passwordRead(QKeychain::Job* j) {
+    ReadPasswordJob* job = qobject_cast<ReadPasswordJob*>(j);
+    Q_ASSERT(job);
+
+    const bool readError = job->error() != QKeychain::NoError && job->error() != QKeychain::EntryNotFound;
+
+    const QString oldpass = job->error() ? QString() : job->textData();
 
     const bool authenticationFailed = lastAuthenticationFailed();
-    const QString oldpass = store.readPassword(QLatin1String("lotsofcake"));
-
 
     QString newpass;
 
@@ -145,16 +155,30 @@ void HttpJob::doStart()
             return;
         }
     }
-    if (oldpass != newpass)
-        store.writePassword(QLatin1String("lotsofcake"), newpass);
+
     m_password = newpass;
 
+    if (oldpass != newpass && !readError) {
+        WritePasswordJob* writeJob = new WritePasswordJob(QLatin1String("Charm"), this);
+        connect(writeJob, SIGNAL(finished(QKeychain::Job*)), this, SLOT(passwordWritten()));
+        writeJob->setKey(QLatin1String("lotsofcake"));
+        writeJob->setTextData(newpass);
+        writeJob->start();
+    } else
+        passwordWritten();
+
+
+}
+
+void HttpJob::passwordWritten()
+{
     m_dialog = new QProgressDialog(m_parentWidget);
     m_dialog->setWindowTitle(tr("Uploading"));
     m_dialog->setLabelText(tr("Wait..."));
     m_dialog->show();
 
     delayedNext();
+
 }
 
 void HttpJob::cancel()
