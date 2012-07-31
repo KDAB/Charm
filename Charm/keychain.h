@@ -25,9 +25,13 @@ enum Error {
     CouldNotDeleteEntry, /**< Could not delete existing secret data */
     AccessDeniedByUser, /**< User denied access to keychain */
     AccessDenied, /**< Access denied for other reasons */
+    NoBackendAvailable, /**< No platform-specific keychain service available */
     NotImplemented, /**< Not implemented on platform */
     OtherError /**< Something else went wrong (errorString() might provide details) */
 };
+
+class JobExecutor;
+class JobPrivate;
 
 class Job : public QObject {
     Q_OBJECT
@@ -48,6 +52,9 @@ public:
     bool autoDelete() const;
     void setAutoDelete( bool autoDelete );
 
+    bool insecureFallback() const;
+    void setInsecureFallback( bool insecureFallback );
+
 Q_SIGNALS:
     void finished( QKeychain::Job* );
 
@@ -60,9 +67,10 @@ protected:
     void emitFinishedWithError(Error, const QString& errorString);
 
 private:
-    class Private;
-    Private* const d;
+    JobPrivate* const d;
 };
+
+class ReadPasswordJobPrivate;
 
 class ReadPasswordJob : public Job {
     Q_OBJECT
@@ -80,9 +88,12 @@ protected:
     void doStart();
 
 private:
-    class Private;
-    Private* const d;
+    friend class QKeychain::ReadPasswordJobPrivate;
+    friend class QKeychain::JobExecutor;
+    ReadPasswordJobPrivate* const d;
 };
+
+class WritePasswordJobPrivate;
 
 class WritePasswordJob : public Job {
     Q_OBJECT
@@ -100,9 +111,12 @@ protected:
     void doStart();
 
 private:
-    class Private;
-    Private* const d;
+    friend class QKeychain::JobExecutor;
+    friend class QKeychain::WritePasswordJobPrivate;
+    WritePasswordJobPrivate* const d;
 };
+
+class DeletePasswordJobPrivate;
 
 class DeletePasswordJob : public Job {
     Q_OBJECT
@@ -117,8 +131,8 @@ protected:
     void doStart();
 
 private:
-    class Private;
-    Private* const d;
+    friend class QKeychain::DeletePasswordJobPrivate;
+    DeletePasswordJobPrivate* const d;
 };
 
 } // namespace QtKeychain
