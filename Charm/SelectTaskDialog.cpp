@@ -78,6 +78,8 @@ SelectTaskDialog::SelectTaskDialog( QWidget* parent )
     if ( settings.contains( MetaKey_MainWindowGeometry ) ) {
         resize( settings.value( MetaKey_MainWindowGeometry ).toSize() );
     }
+
+    m_ui->filter->setFocus();
 }
 
 SelectTaskDialog::~SelectTaskDialog()
