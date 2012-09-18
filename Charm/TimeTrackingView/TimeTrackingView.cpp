@@ -33,15 +33,10 @@ TimeTrackingView::TimeTrackingView( QToolBar* toolBar, QWidget* parent )
 #endif
     setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
     // plumbing
-    m_pulse.setLoopCount( 0 );
-    m_pulse.setDuration( 2000 );
     m_paintAttributes.initialize( palette() );
-    m_pulse.setCurveShape( QTimeLine::SineCurve );
     for( int i = 0; i < 7; ++i ) {
         m_shortDayNames[i] = QDate::shortDayName( i + 1 );
     }
-    connect( &m_pulse, SIGNAL( valueChanged( qreal ) ),
-             SLOT( slotPulseValueChanged( qreal ) ) );
     connect( m_taskSelector, SIGNAL( startEvent( TaskId ) ),
              SIGNAL( startEvent( TaskId ) ) );
     connect( m_taskSelector, SIGNAL( stopEvents() ),
@@ -317,11 +312,7 @@ void TimeTrackingView::data( DataField& field, int column, int row )
                     field.hasHighlight = true;
                     field.storeAsActive = active;
                     QColor pulseColor = m_paintAttributes.pulseColor;
-                    pulseColor.setAlphaF( m_paintAttributes.dim
-                                          + ( 1.0 - m_paintAttributes.dim )
-                                          * m_pulse.currentValue() );
-                    const QBrush pulseBrush( pulseColor );
-                    field.highlight = active ? pulseBrush : m_paintAttributes.halfHighlight;
+                    field.highlight = active ? QBrush(pulseColor) : m_paintAttributes.halfHighlight;
                 }
             }
         }
@@ -349,43 +340,12 @@ bool TimeTrackingView::isTracking() const
     return DATAMODEL->activeEventCount() > 0;
 }
 
-void TimeTrackingView::showEvent( QShowEvent* event )
-{
-    if ( isTracking() && m_pulse.state() != QTimeLine::Running )
-        m_pulse.start();
-    QWidget::showEvent( event );
-}
-
-void TimeTrackingView::hideEvent( QHideEvent* event )
-{
-    m_pulse.stop();
-    QWidget::hideEvent( event );
-}
-
 void TimeTrackingView::handleActiveEvents()
 {
     m_activeFieldRects.clear();
     Q_ASSERT( DATAMODEL->activeEventCount() >= 0 );
 
     m_taskSelector->handleActiveEvents();
-    if ( isTracking() ) {
-        if ( m_pulse.state() != QTimeLine::Running )
-            m_pulse.start();
-    } else {
-        m_pulse.stop();
-    }
-
-}
-
-void TimeTrackingView::slotPulseValueChanged( qreal value )
-{
-    if ( m_activeFieldRects.isEmpty() ) {
-        update();
-    } else {
-        Q_FOREACH( const QRect& rect, m_activeFieldRects ) {
-            update( rect );
-        }
-    }
 }
 
 QString TimeTrackingView::elidedText( const QString& text, const QFont& font, int width )

@@ -61,17 +61,12 @@ public:
 
     bool isTracking() const;
 
-protected:
-    void showEvent( QShowEvent* event );
-    void hideEvent( QHideEvent* event );
-
 signals:
     void maybeShrink();
     void startEvent( TaskId );
     void stopEvents();
 
 private slots:
-    void slotPulseValueChanged( qreal );
     void slotUpdateSummaries();
 
 private:
@@ -91,7 +86,6 @@ private:
     mutable QFont m_narrowFont;
     TimeTrackingTaskSelector* m_taskSelector;
     QList<QRect> m_activeFieldRects;
-    QTimeLine m_pulse;
     PaintAttributes m_paintAttributes;
     DataField m_defaultField;
     /** Stored for performance reasons, QDate::currentDate() is expensive. */
