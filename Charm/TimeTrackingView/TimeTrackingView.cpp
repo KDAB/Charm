@@ -64,7 +64,7 @@ void TimeTrackingView::PaintAttributes::initialize( const QPalette& palette ) {
     dim = 0.25;
     dimHighlight.setAlphaF( dim * dimHighlight.alphaF() );
     const QBrush halfHighlight( dimHighlight );
-    pulseColor = palette.highlight().color();
+    runningTaskColor = palette.highlight().color();
 }
 
 QSize TimeTrackingView::sizeHint() const
@@ -311,8 +311,7 @@ void TimeTrackingView::data( DataField& field, int column, int row )
                 if ( day == m_dayOfWeek -1 ) {
                     field.hasHighlight = true;
                     field.storeAsActive = active;
-                    QColor pulseColor = m_paintAttributes.pulseColor;
-                    field.highlight = active ? QBrush(pulseColor) : m_paintAttributes.halfHighlight;
+                    field.highlight = active ? QBrush(m_paintAttributes.runningTaskColor) : m_paintAttributes.halfHighlight;
                 }
             }
         }

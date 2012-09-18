@@ -38,7 +38,7 @@ private:
         QBrush totalsRowEvenDayBrush;
         QBrush headerEvenDayBrush;
         QBrush halfHighlight;
-        QColor pulseColor;
+        QColor runningTaskColor;
         float dim;
         void initialize( const QPalette& palette );
     };
