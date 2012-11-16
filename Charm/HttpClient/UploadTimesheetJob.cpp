@@ -54,6 +54,14 @@ bool UploadTimesheetJob::execute(int state, QNetworkAccessManager *manager)
         return HttpJob::execute(state, manager);
 
     QByteArray data;
+    QByteArray uploadName;
+
+    /* validate filename */
+    if (!m_fileName.contains(QRegExp("^WeeklyTimeSheet-\\d\\d\\d\\d-\\d\\d$"))) {
+        qDebug("Invalid filename encountered, using default (\"payload\").");
+        uploadName = "payload";
+    }
+    else uploadName = m_fileName.toUtf8();
 
     /* username */
     data += "--KDAB\r\n"
@@ -63,8 +71,8 @@ bool UploadTimesheetJob::execute(int state, QNetworkAccessManager *manager)
 
     /* payload */
     data += "--KDAB\r\n"
-            "Content-Disposition: form-data; name=\"" + m_fileName + "\"; filename=\"payload\"\r\n"
-            "Content-Type: application/octet-stream\r\n\r\n";
+            "Content-Disposition: form-data; name=\"" + uploadName + "\"; filename=\"" +
+            uploadName + "\"\r\nContent-Type: application/octet-stream\r\n\r\n";
     data += m_payload;
     data += "\r\n";
 
