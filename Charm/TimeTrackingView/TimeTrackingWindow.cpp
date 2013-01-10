@@ -57,7 +57,6 @@ TimeTrackingWindow::TimeTrackingWindow( QWidget* parent )
              SLOT( slotBillGone(int) ) );
     //Check every 60 minutes if there are timesheets due
     m_checkUploadedSheetsTimer.setInterval(60 * 60 * 1000);
-    slotCheckUploadedTimesheets();
     m_checkUploadedSheetsTimer.start();
 }
 

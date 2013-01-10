@@ -34,6 +34,7 @@ void BillDialog::setReport(int year, int week)
 {
     m_year = year;
     m_week = week;
+    m_alreadyDone->setText(QString("Week %1 (%2) is already done").arg(week).arg(year));
 }
 
 int BillDialog::year() const
