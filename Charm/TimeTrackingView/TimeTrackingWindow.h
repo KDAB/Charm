@@ -1,11 +1,14 @@
 #ifndef TimeTrackingWindow_H
 #define TimeTrackingWindow_H
 
+#include <QTimer>
+
 #include "Core/ViewInterface.h"
 #include "Core/CharmDataModelAdapterInterface.h"
 
 #include "CharmWindow.h"
 #include "TimeTrackingView/WeeklySummary.h"
+#include "BillDialog.h"
 
 class HttpJob;
 class CharmCommand;
@@ -72,18 +75,23 @@ private slots:
     void slotSelectTasksToShow();
     void slotWeeklyTimesheetPreview( int result );
     void slotActivityReportPreview( int result );
+    void slotCheckUploadedTimesheets();
+    void slotBillGone( int result );
 
 signals:
     void emitCommand( CharmCommand* );
     void emitCommandRollback( CharmCommand* );
 
 private:
+    void resetWeeklyTimesheetDialog();
     void showPreview( ReportConfigurationDialog*, int result );
 
     WeeklyTimesheetConfigurationDialog* m_weeklyTimesheetDialog;
     ActivityReportConfigurationDialog *m_activityReportDialog;
     TimeTrackingView* m_summaryWidget;
     QVector<WeeklySummary> m_summaries;
+    QTimer m_checkUploadedSheetsTimer;
+    BillDialog *m_billDialog;
 };
 
 #endif

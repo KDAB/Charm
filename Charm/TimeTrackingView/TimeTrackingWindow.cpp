@@ -36,12 +36,12 @@
 #include "Reports/ActivityReport.h"
 #include "Reports/WeeklyTimesheet.h"
 
-
 TimeTrackingWindow::TimeTrackingWindow( QWidget* parent )
     : CharmWindow( tr( "Time Tracker" ), parent )
     , m_weeklyTimesheetDialog( 0 )
     , m_activityReportDialog( 0 )
     , m_summaryWidget( new TimeTrackingView( toolBar(), this ) )
+    , m_billDialog( new BillDialog( this ) )
 {
     setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
     setWindowNumber( 3 );
@@ -51,6 +51,14 @@ TimeTrackingWindow::TimeTrackingWindow( QWidget* parent )
              SLOT( slotStartEvent( TaskId ) ) );
     connect( m_summaryWidget, SIGNAL( stopEvents() ),
              SLOT( slotStopEvent() ) );
+    connect( &m_checkUploadedSheetsTimer, SIGNAL( timeout() ),
+             SLOT( slotCheckUploadedTimesheets() ) );
+    connect( m_billDialog, SIGNAL( finished(int) ),
+             SLOT( slotBillGone(int) ) );
+    //Check every 60 minutes if there are timesheets due
+    m_checkUploadedSheetsTimer.setInterval(60 * 60 * 1000);
+    slotCheckUploadedTimesheets();
+    m_checkUploadedSheetsTimer.start();
 }
 
 void TimeTrackingWindow::showEvent( QShowEvent* e )
@@ -277,13 +285,18 @@ void TimeTrackingWindow::slotActivityReport()
     m_activityReportDialog->show();
 }
 
-void TimeTrackingWindow::slotWeeklyTimesheetReport()
+void TimeTrackingWindow::resetWeeklyTimesheetDialog()
 {
     delete m_weeklyTimesheetDialog;
     m_weeklyTimesheetDialog = new WeeklyTimesheetConfigurationDialog( this );
     m_weeklyTimesheetDialog->setAttribute( Qt::WA_DeleteOnClose );
     connect( m_weeklyTimesheetDialog, SIGNAL( finished( int ) ),
              this, SLOT( slotWeeklyTimesheetPreview( int ) ) );
+}
+
+void TimeTrackingWindow::slotWeeklyTimesheetReport()
+{
+    resetWeeklyTimesheetDialog();
     m_weeklyTimesheetDialog->show();
 }
 
@@ -420,6 +433,37 @@ void TimeTrackingWindow::slotExportTasks()
         QMessageBox::critical( this, tr(  "Error during export" ), message);
         return;
     }
+}
+
+void TimeTrackingWindow::slotCheckUploadedTimesheets()
+{
+    WeeksByYear missing = missingTimeSheets();
+    if (!missing.size())
+        return;
+    m_checkUploadedSheetsTimer.stop();
+    //The usual case is just one missing week, unless we've been giving Bill a hard time
+    //Perhaps in the future Bill can bug us about more than one report at a time
+    Q_ASSERT(missing.begin().value().size());
+    int year = missing.begin().key();
+    int week = missing.begin().value().first();
+    m_billDialog->setReport(year, week);
+    m_billDialog->show();
+}
+
+void TimeTrackingWindow::slotBillGone(int result)
+{
+    switch(result)
+    {
+    case BillDialog::AlreadyDone:
+        addUploadedTimesheet( m_billDialog->year(), m_billDialog->week() );
+        break;
+    case BillDialog::AsYouWish:
+        resetWeeklyTimesheetDialog();
+        m_weeklyTimesheetDialog->setDefaultWeek(m_billDialog->year(), m_billDialog->week());
+        m_weeklyTimesheetDialog->show();
+        break;
+    }
+    m_checkUploadedSheetsTimer.start();
 }
 
 void TimeTrackingWindow::maybeIdle()

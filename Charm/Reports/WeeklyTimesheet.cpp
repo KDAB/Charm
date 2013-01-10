@@ -27,6 +27,61 @@
 
 #include "ui_WeeklyTimesheetConfigurationDialog.h"
 
+const char * SETTING_GRP_TIMESHEETS = "timesheets";
+const char * SETTING_VAL_FIRSTYEAR = "firstYear";
+const char * SETTING_VAL_FIRSTWEEK = "firstWeek";
+const int MAX_WEEK = 53;
+const int MIN_YEAR = 1990;
+
+int weeksInYear(int year)
+{
+    QDate d(year, 1, 1);
+    d = d.addDays(d.daysInYear() - 1);
+    return d.weekNumber() == 1 ? 52 : d.weekNumber();
+}
+
+void addUploadedTimesheet(int year, int week)
+{
+    Q_ASSERT(year >= MIN_YEAR && week > 0 && week <= MAX_WEEK);
+    QSettings settings;
+    settings.beginGroup(SETTING_GRP_TIMESHEETS);
+    QString yearStr = QString::number(year);
+    QString weekStr = QString::number(week);
+    QStringList existingSheets = settings.value(yearStr).toStringList();
+    if (!existingSheets.contains(weekStr))
+        settings.setValue(yearStr, existingSheets << weekStr);
+    if (settings.value(SETTING_VAL_FIRSTYEAR, QString()).toString().isEmpty())
+        settings.setValue(SETTING_VAL_FIRSTYEAR, yearStr);
+    if (settings.value(SETTING_VAL_FIRSTWEEK, QString()).toString().isEmpty())
+        settings.setValue(SETTING_VAL_FIRSTWEEK, weekStr);
+}
+
+WeeksByYear missingTimeSheets()
+{
+    WeeksByYear missing;
+    QSettings settings;
+    settings.beginGroup(SETTING_GRP_TIMESHEETS);
+    int year = QDateTime::currentDateTime().date().year();
+    int week = QDateTime::currentDateTime().date().weekNumber();
+    int firstYear = settings.value(SETTING_VAL_FIRSTYEAR, year).value<int>();
+    int firstWeek = settings.value(SETTING_VAL_FIRSTWEEK, week).value<int>();
+    for(int iYear = firstYear; iYear <= year; ++iYear)
+    {
+        QStringList uploaded = settings.value(QString::number(iYear)).toStringList();
+        int firstWeekOfYear = iYear == firstYear ? firstWeek : 1;
+        int lastWeekOfYear = iYear == year ? week - 1 : weeksInYear(iYear);
+        for(int iWeek = firstWeekOfYear; iWeek <= lastWeekOfYear; ++iWeek)
+        {
+            if (!uploaded.contains(QString::number(iWeek)))
+            {
+                Q_ASSERT(iYear >= MIN_YEAR && iWeek > 0 && iWeek <= MAX_WEEK);
+                missing[iYear].append(iWeek);
+            }
+        }
+    }
+    return missing;
+}
+
 WeeklyTimesheetConfigurationDialog::WeeklyTimesheetConfigurationDialog( QWidget* parent )
     : ReportConfigurationDialog( parent )
     , m_ui( new Ui::WeeklyTimesheetConfigurationDialog )
@@ -48,16 +103,6 @@ WeeklyTimesheetConfigurationDialog::WeeklyTimesheetConfigurationDialog( QWidget*
     slotCheckboxSubtasksOnlyChecked( m_ui->checkBoxSubTasksOnly->isChecked() );
     new DateEntrySyncer( m_ui->spinBoxWeek, m_ui->spinBoxYear, m_ui->dateEditDay, 1, this );
 
-    QTimer::singleShot( 0, this, SLOT( slotDelayedInitialization() ) );
-}
-
-WeeklyTimesheetConfigurationDialog::~WeeklyTimesheetConfigurationDialog()
-{
-    delete m_ui; m_ui = 0;
-}
-
-void WeeklyTimesheetConfigurationDialog::slotDelayedInitialization()
-{
     slotStandardTimeSpansChanged();
     connect( Application::instance().dateChangeWatcher(),
              SIGNAL( dateChanged() ),
@@ -70,6 +115,18 @@ void WeeklyTimesheetConfigurationDialog::slotDelayedInitialization()
     } else {
         m_ui->checkBoxActiveOnly->setChecked( true );
     }
+}
+
+WeeklyTimesheetConfigurationDialog::~WeeklyTimesheetConfigurationDialog()
+{
+    delete m_ui; m_ui = 0;
+}
+
+void WeeklyTimesheetConfigurationDialog::setDefaultWeek(int yearOfWeek, int week)
+{
+    m_ui->spinBoxWeek->setValue(week);
+    m_ui->spinBoxYear->setValue(yearOfWeek);
+    m_ui->comboBoxWeek->setCurrentIndex(4);
 }
 
 void WeeklyTimesheetConfigurationDialog::accept()
@@ -102,7 +159,6 @@ void WeeklyTimesheetConfigurationDialog::showReportPreviewDialog( QWidget* paren
     report->setReportProperties( start, end, m_rootTask, activeOnly );
     report->show();
 }
-
 
 void WeeklyTimesheetConfigurationDialog::showEvent( QShowEvent* )
 {
@@ -767,7 +823,10 @@ void WeeklyTimeSheetReport::slotTimesheetUploaded(HttpJob* client) {
         QMessageBox::critical(this, tr("Error"), tr("Could not upload timesheet: %1").arg( client->errorString() ) );
     }
     else
+    {
+        addUploadedTimesheet(m_yearOfWeek, m_weekNumber);
         QMessageBox::information(this, tr("Timesheet Uploaded"), tr("Your timesheet was successfully uploaded."));
+    }
 }
 
 #include "WeeklyTimesheet.moc"
