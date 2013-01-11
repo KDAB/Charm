@@ -19,20 +19,11 @@ DateEntrySyncer::DateEntrySyncer( QSpinBox* week, QSpinBox* year, QDateEdit* dat
         connect( m_date, SIGNAL(dateChanged(QDate)), this, SLOT(dateSelectionChanged()) );
 }
 
-static int numberOfWeeksInYear( int year ) {
-    QDate tmp( year, 12, 31 );
-    int wy = 0;
-    while (tmp.weekNumber( &wy ) == 1 )
-        tmp = tmp.addDays( -1 );
-    Q_ASSERT( wy == year );
-    return tmp.weekNumber();
-}
-
 // number of weeks per year differs between 52 and 53, so we need to set the maximum value accordingly, and fix the value if the user flips through years
 static void fixWeek( QSpinBox* yearSb, QSpinBox* weekSb ) {
     const int year = yearSb->value();
     const int week = weekSb->value();
-    const int maxWeek = numberOfWeeksInYear( year );
+    const int maxWeek = Charm::numberOfWeeksInYear( year );
     Q_ASSERT( maxWeek >= 52 );
     const int newWeek = qMin( maxWeek, week );
     weekSb->blockSignals( true );

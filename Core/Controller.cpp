@@ -215,6 +215,8 @@ void Controller::persistMetaData( Configuration& configuration )
           stringForBool( configuration.detectIdling ) },
         { MetaKey_Key_AnimatedTrayIcon,
           stringForBool( configuration.animatedTrayIcon ) },
+        { MetaKey_Key_AnimatedTrayIcon,
+          stringForBool( configuration.warnUnuploadedTimesheets ) },
         { MetaKey_Key_ToolButtonStyle,
           QString().setNum( configuration.toolButtonStyle ) },
         { MetaKey_Key_ShowStatusBar,
@@ -288,6 +290,8 @@ void Controller::provideMetaData( Configuration& configuration)
     configuration.detectIdling = boolForString(
         m_storage->getMetaData( MetaKey_Key_IdleDetection ) );
     configuration.animatedTrayIcon = boolForString(
+        m_storage->getMetaData( MetaKey_Key_AnimatedTrayIcon ) );
+    configuration.warnUnuploadedTimesheets = boolForString(
         m_storage->getMetaData( MetaKey_Key_AnimatedTrayIcon ) );
 
     int buttonStyleValue = m_storage->getMetaData( MetaKey_Key_ToolButtonStyle ).toInt( &ok );

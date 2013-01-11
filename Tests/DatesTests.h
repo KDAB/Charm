@@ -10,6 +10,8 @@ class DatesTests : public QObject
 private slots:
     void testDateByWeekNumberAndWorkDay();
     void testWeekDayInWeekOf();
+    void testNumberOfWeeksInYear_data();
+    void testNumberOfWeeksInYear();
 };
 
 #endif

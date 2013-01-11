@@ -24,6 +24,7 @@ Configuration::Configuration()
     , showStatusBar( true )
     , detectIdling( true )
     , animatedTrayIcon( true )
+    , warnUnuploadedTimesheets( true )
     , configurationName( DEFAULT_CONFIG_GROUP )
     , installationId( 0 )
     , newDatabase( false )
@@ -36,8 +37,8 @@ Configuration::Configuration( bool _eventsInLeafsOnly, bool _oneEventAtATime, Us
                               TaskPrefilteringMode _taskPrefilteringMode,
                               TaskTrackerFontSize _taskTrackerFontSize,
                               DurationFormat _durationFormat, bool _detectIdling,
-                              Qt::ToolButtonStyle _buttonstyle,
-                              bool _showStatusBar, bool _animatedTrayIcon )
+                              Qt::ToolButtonStyle _buttonstyle, bool _showStatusBar,
+                              bool _animatedTrayIcon, bool _warnUnuploadedTimesheets )
     : taskPrefilteringMode( _taskPrefilteringMode )
     , taskTrackerFontSize( _taskTrackerFontSize )
     , durationFormat( _durationFormat )
@@ -45,6 +46,7 @@ Configuration::Configuration( bool _eventsInLeafsOnly, bool _oneEventAtATime, Us
     , showStatusBar( _showStatusBar )
     , detectIdling ( _detectIdling )
     , animatedTrayIcon( _animatedTrayIcon )
+    , warnUnuploadedTimesheets( _warnUnuploadedTimesheets )
     , configurationName( DEFAULT_CONFIG_GROUP )
     , installationId( 0 )
     , newDatabase( false )
@@ -61,6 +63,7 @@ bool Configuration::operator==( const Configuration& other ) const
         durationFormat == other.durationFormat &&
         detectIdling == other.detectIdling &&
         animatedTrayIcon == other.animatedTrayIcon &&
+        warnUnuploadedTimesheets == other.warnUnuploadedTimesheets &&
         toolButtonStyle == other.toolButtonStyle &&
         showStatusBar == other.showStatusBar &&
         configurationName == other.configurationName &&
@@ -112,16 +115,17 @@ void Configuration::dump( const QString& why )
     qDebug() << "Configuration: configuration:"
              << ( why.isEmpty() ? QString() : why )
              << endl
-             << "--> installation id:        " << installationId << endl
-             << "--> userid:                 " << user.id() << endl
-             << "--> local storage type:     " << localStorageType << endl
-             << "--> local storage database: " << localStorageDatabase << endl
+             << "--> installation id:          " << installationId << endl
+             << "--> userid:                   " << user.id() << endl
+             << "--> local storage type:       " << localStorageType << endl
+             << "--> local storage database:   " << localStorageDatabase << endl
              << "--> task prefiltering mode:   " << taskPrefilteringMode << endl
-             << "--> task tracker font size: " << taskTrackerFontSize << endl
-             << "--> duration format:        " << durationFormat << endl
-             << "--> Idle Detection:         " << detectIdling << endl
-             << "--> toolButtonStyle:        " << toolButtonStyle << endl
-             << "--> showStatusBar:          " << showStatusBar << endl
-             << "--> animatedTrayIcon:       " << animatedTrayIcon;
+             << "--> task tracker font size:   " << taskTrackerFontSize << endl
+             << "--> duration format:          " << durationFormat << endl
+             << "--> Idle Detection:           " << detectIdling << endl
+             << "--> toolButtonStyle:          " << toolButtonStyle << endl
+             << "--> showStatusBar:            " << showStatusBar << endl
+             << "--> animatedTrayIcon:         " << animatedTrayIcon << endl
+             << "--> warnUnuploadedTimesheets: " << warnUnuploadedTimesheets;
 }
 

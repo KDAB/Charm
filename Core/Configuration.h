@@ -52,6 +52,7 @@ public:
     bool showStatusBar;
     bool detectIdling;
     bool animatedTrayIcon;
+    bool warnUnuploadedTimesheets;
 
     // these are stored in QSettings, since we need this information to locate and open the database:
     QString configurationName;
@@ -73,8 +74,8 @@ private:
     // these are all the persisted metadata settings, and the constructor is only used during test runs:
     Configuration( bool eventsInLeafsOnly, bool oneEventAtATime, User user,
                    TaskPrefilteringMode taskPrefilteringMode, TaskTrackerFontSize,
-                   DurationFormat durationFormat, bool detectIdling,
-                   Qt::ToolButtonStyle buttonstyle, bool showStatusBar, bool animatedTrayIcon );
+                   DurationFormat durationFormat, bool detectIdling, Qt::ToolButtonStyle buttonstyle,
+                   bool showStatusBar, bool animatedTrayIcon, bool warnUnuploadedTimesheets );
     Configuration();
 };
 

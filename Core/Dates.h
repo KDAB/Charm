@@ -9,6 +9,8 @@ namespace Charm {
      * returns the date for a week day @p dayOfWeek, in the week of date @p date.
      */
     QDate weekDayInWeekOf( Qt::DayOfWeek dayOfWeek, const QDate& date );
+
+    int numberOfWeeksInYear( int year );
 }
 
 #endif // CHARM_DATES_H

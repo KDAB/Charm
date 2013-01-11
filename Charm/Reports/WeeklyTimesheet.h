@@ -13,6 +13,12 @@ namespace Ui {
 
 class HttpJob;
 
+typedef QHash<int, QVector<int> > WeeksByYear;
+///Set the timesheet for the @param week of the @param year as having been uploaded
+void addUploadedTimesheet(int year, int week);
+///Get all missing timesheets
+WeeksByYear missingTimeSheets();
+
 class WeeklyTimesheetConfigurationDialog : public ReportConfigurationDialog
 {
     Q_OBJECT
@@ -22,14 +28,13 @@ public:
     ~WeeklyTimesheetConfigurationDialog();
 
     void showReportPreviewDialog( QWidget* parent );
-
     void showEvent( QShowEvent* );
+    void setDefaultWeek( int yearOfWeek, int week );
 
 public Q_SLOTS:
     void accept();
 
 private slots:
-    void slotDelayedInitialization();
     void slotCheckboxSubtasksOnlyChecked( bool );
     void slotStandardTimeSpansChanged();
     void slotWeekComboItemSelected( int );
