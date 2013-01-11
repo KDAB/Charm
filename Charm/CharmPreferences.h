@@ -18,10 +18,13 @@ public:
     Configuration::DurationFormat durationFormat() const;
     bool detectIdling() const;
     bool animatedTrayIcon() const;
+    bool warnUnuploadedTimesheets() const;
 
     Qt::ToolButtonStyle toolButtonStyle() const;
 
     Configuration::TaskTrackerFontSize taskTrackerFontSize() const;
+private slots:
+    void slotWarnUnuploadedChanged(bool);
 
 private:
     Ui::CharmPreferences m_ui;

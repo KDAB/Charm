@@ -1,4 +1,5 @@
 #include <QCheckBox>
+#include <QMessageBox>
 
 #include "Core/Configuration.h"
 #include "Application.h"
@@ -12,6 +13,10 @@ CharmPreferences::CharmPreferences( const Configuration& config,
     m_ui.cbIdleDetection->setEnabled( Application::instance().idleDetector() != 0 );
     m_ui.cbIdleDetection->setChecked( config.detectIdling );
     m_ui.cbAnimatedTrayIcon->setChecked( config.animatedTrayIcon );
+    m_ui.cbWarnUnuploadedTimesheets->setChecked( config.warnUnuploadedTimesheets );
+
+    connect(m_ui.cbWarnUnuploadedTimesheets, SIGNAL(toggled(bool)),
+            SLOT(slotWarnUnuploadedChanged(bool)));
 
     // this would not need a switch, but i hate casting enums to int:
     switch( config.taskTrackerFontSize ) {
@@ -69,6 +74,11 @@ bool CharmPreferences::animatedTrayIcon() const
     return m_ui.cbAnimatedTrayIcon->isChecked();
 }
 
+bool CharmPreferences::warnUnuploadedTimesheets() const
+{
+    return m_ui.cbWarnUnuploadedTimesheets->isChecked();
+}
+
 Configuration::DurationFormat CharmPreferences::durationFormat() const
 {
     switch (m_ui.cbDurationFormat->currentIndex() ) {
@@ -124,6 +134,16 @@ Qt::ToolButtonStyle CharmPreferences::toolButtonStyle() const
     }
     // always return something, to avoid compiler warning:
     return Qt::ToolButtonIconOnly;
+}
+
+void CharmPreferences::slotWarnUnuploadedChanged( bool enabled )
+{
+    if (!enabled)
+    {
+        QMessageBox::StandardButton response = QMessageBox::question(this, "Bill is sad :(.", "Bill has always been misunderstood. All he really wants is your reports, and even when he doesn't get them you only have to evade him once per hour. Do you really want the guy gone?", QMessageBox::Yes | QMessageBox::No);
+        if (response == QMessageBox::No)
+            m_ui.cbWarnUnuploadedTimesheets->setCheckState(Qt::Checked);
+    }
 }
 
 #include "CharmPreferences.moc"

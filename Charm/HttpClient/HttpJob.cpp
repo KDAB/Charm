@@ -225,12 +225,15 @@ bool HttpJob::execute(int state, QNetworkAccessManager *manager)
         QUrl data;
         data.addQueryItem("j_username", m_username);
         data.addQueryItem("j_password", m_password);
+        //Qt5's rewritten QUrl should give us some more options here
+        QByteArray encodedQueryPlusPlus = data.encodedQuery().replace('+', "%2b").replace(' ', "+");
 
         QNetworkRequest request(m_loginUrl);
-        request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
-        request.setHeader(QNetworkRequest::ContentLengthHeader, data.encodedQuery().size());
 
-        QNetworkReply *reply = manager->post(request, data.encodedQuery());
+        request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
+        request.setHeader(QNetworkRequest::ContentLengthHeader, encodedQueryPlusPlus.size());
+
+        QNetworkReply *reply = manager->post(request, encodedQueryPlusPlus);
 
         if (reply->error() != QNetworkReply::NoError)
             setErrorAndEmitFinished(SomethingWentWrong, reply->errorString());
