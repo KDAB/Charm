@@ -27,18 +27,11 @@
 
 #include "ui_WeeklyTimesheetConfigurationDialog.h"
 
-const char * SETTING_GRP_TIMESHEETS = "timesheets";
-const char * SETTING_VAL_FIRSTYEAR = "firstYear";
-const char * SETTING_VAL_FIRSTWEEK = "firstWeek";
-const int MAX_WEEK = 53;
-const int MIN_YEAR = 1990;
-
-int weeksInYear(int year)
-{
-    QDate d(year, 1, 1);
-    d = d.addDays(d.daysInYear() - 1);
-    return d.weekNumber() == 1 ? 52 : d.weekNumber();
-}
+static const char * SETTING_GRP_TIMESHEETS = "timesheets";
+static const char * SETTING_VAL_FIRSTYEAR = "firstYear";
+static const char * SETTING_VAL_FIRSTWEEK = "firstWeek";
+static const int MAX_WEEK = 53;
+static const int MIN_YEAR = 1990;
 
 void addUploadedTimesheet(int year, int week)
 {
@@ -69,7 +62,7 @@ WeeksByYear missingTimeSheets()
     {
         QStringList uploaded = settings.value(QString::number(iYear)).toStringList();
         int firstWeekOfYear = iYear == firstYear ? firstWeek : 1;
-        int lastWeekOfYear = iYear == year ? week - 1 : weeksInYear(iYear);
+        int lastWeekOfYear = iYear == year ? week - 1 : Charm::numberOfWeeksInYear(iYear);
         for(int iWeek = firstWeekOfYear; iWeek <= lastWeekOfYear; ++iWeek)
         {
             if (!uploaded.contains(QString::number(iWeek)))

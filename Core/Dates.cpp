@@ -22,3 +22,12 @@ QDate Charm::dateByWeekNumberAndWeekDay( int year, int week, int day ) {
 QDate Charm::weekDayInWeekOf( Qt::DayOfWeek dayOfWeek, const QDate& date ) {
     return date.addDays( dayOfWeek - date.dayOfWeek() );
 }
+
+int Charm::numberOfWeeksInYear( int year )
+{
+    QDate d(year, 1, 1);
+    d = d.addDays(d.daysInYear() - 1);
+    int weeksInYear = d.weekNumber() == 1 ? 52 : d.weekNumber();
+    Q_ASSERT(weeksInYear == 52 || weeksInYear == 53);
+    return weeksInYear;
+}

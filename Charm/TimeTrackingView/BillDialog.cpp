@@ -2,6 +2,7 @@
 #include <QVBoxLayout>
 #include <QPushButton>
 #include <QLayout>
+#include <QDialogButtonBox>
 
 BillDialog::BillDialog( QWidget* parent, Qt::WindowFlags f )
 : QDialog(parent, f), m_year( 0 ), m_week( 0 )
@@ -17,24 +18,26 @@ BillDialog::BillDialog( QWidget* parent, Qt::WindowFlags f )
     setMaximumSize(billImage.size());
     setWindowTitle("Yeah... about those timesheets...");
 
-    QVBoxLayout *layout = new QVBoxLayout(this);
     m_asYouWish = new QPushButton("As you wish");
     connect(m_asYouWish, SIGNAL(pressed()), SLOT(slotAsYouWish()));
     m_alreadyDone = new QPushButton("Already done");
     connect(m_alreadyDone, SIGNAL(pressed()), SLOT(slotAlreadyDone()));
+    m_later = new QPushButton("Later");
+    connect(m_later, SIGNAL(pressed()), SLOT(slotLater()));
 
-    QHBoxLayout *hlayout = new QHBoxLayout();
-    hlayout->addWidget(m_asYouWish, 0, Qt::AlignLeft);
-    hlayout->addWidget(m_alreadyDone, 0, Qt::AlignRight);
-    hlayout->setAlignment(Qt::AlignBottom);
-    layout->addLayout(hlayout);
+    QVBoxLayout *layout = new QVBoxLayout(this);
+    QDialogButtonBox *buttonBox = new QDialogButtonBox();
+    buttonBox->addButton(m_asYouWish, QDialogButtonBox::YesRole);
+    buttonBox->addButton(m_alreadyDone, QDialogButtonBox::NoRole);
+    buttonBox->addButton(m_later, QDialogButtonBox::RejectRole);
+    layout->addWidget(buttonBox, 0, Qt::AlignBottom);
 }
 
 void BillDialog::setReport(int year, int week)
 {
     m_year = year;
     m_week = week;
-    m_alreadyDone->setText(QString("Week %1 (%2) is already done").arg(week).arg(year));
+    m_alreadyDone->setText(QString("Already sent Week %1 (%2)").arg(week).arg(year));
 }
 
 int BillDialog::year() const
@@ -55,6 +58,11 @@ void BillDialog::slotAsYouWish()
 void BillDialog::slotAlreadyDone()
 {
     done(AlreadyDone);
+}
+
+void BillDialog::slotLater()
+{
+    done(Later);
 }
 
 #include "BillDialog.moc"

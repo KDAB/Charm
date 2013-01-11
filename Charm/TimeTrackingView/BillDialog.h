@@ -20,9 +20,11 @@ public:
 private slots:
     void slotAsYouWish();
     void slotAlreadyDone();
+    void slotLater();
 private:
     QPushButton *m_asYouWish;
     QPushButton *m_alreadyDone;
+    QPushButton *m_later;
     int m_year;
     int m_week;
 };

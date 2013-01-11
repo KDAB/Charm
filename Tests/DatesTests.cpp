@@ -27,6 +27,39 @@ void DatesTests::testWeekDayInWeekOf()
     QCOMPARE( Charm::weekDayInWeekOf( Qt::Sunday, QDate( 2011, 12, 31 ) ), QDate( 2012, 1, 1 ) );
 }
 
+void DatesTests::testNumberOfWeeksInYear_data()
+{
+    QTest::addColumn<int>("year");
+    QTest::addColumn<int>("numWeeks");
+    QTest::newRow("Weeks in 2010") << 2010 << 52;
+    QTest::newRow("Weeks in 2011") << 2011 << 52;
+    QTest::newRow("Weeks in 2012") << 2012 << 52;
+    QTest::newRow("Weeks in 2013") << 2013 << 52;
+    QTest::newRow("Weeks in 2014") << 2014 << 52;
+    QTest::newRow("Weeks in 2015") << 2015 << 53;
+    QTest::newRow("Weeks in 2016") << 2016 << 52;
+    QTest::newRow("Weeks in 2017") << 2017 << 52;
+    QTest::newRow("Weeks in 2018") << 2018 << 52;
+    QTest::newRow("Weeks in 2019") << 2019 << 52;
+    QTest::newRow("Weeks in 2020") << 2020 << 53;
+    QTest::newRow("Weeks in 2021") << 2021 << 52;
+    QTest::newRow("Weeks in 2022") << 2022 << 52;
+    QTest::newRow("Weeks in 2023") << 2023 << 52;
+    QTest::newRow("Weeks in 2024") << 2024 << 52;
+    QTest::newRow("Weeks in 2025") << 2025 << 52;
+    QTest::newRow("Weeks in 2026") << 2026 << 53;
+    QTest::newRow("Weeks in 2027") << 2027 << 52;
+    QTest::newRow("Weeks in 2028") << 2028 << 52;
+    QTest::newRow("Weeks in 2029") << 2029 << 52;
+    QTest::newRow("Weeks in 2030") << 2030 << 52;
+}
+void DatesTests::testNumberOfWeeksInYear()
+{
+    QFETCH(int, year);
+    QFETCH(int, numWeeks);
+    QCOMPARE( Charm::numberOfWeeksInYear(year), numWeeks );
+}
+
 QTEST_MAIN( DatesTests )
 
 #include "DatesTests.moc"

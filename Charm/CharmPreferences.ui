@@ -116,6 +116,13 @@
        </property>
       </widget>
      </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Enable idle detection</string>
+       </property>
+      </widget>
+     </item>
      <item row="4" column="1">
       <widget class="QCheckBox" name="cbIdleDetection">
        <property name="text">
@@ -126,10 +133,20 @@
        </property>
       </widget>
      </item>
-     <item row="4" column="0">
-      <widget class="QLabel" name="label">
+     <item row="5" column="1">
+      <widget class="QCheckBox" name="cbWarnUnuploadedTimesheets">
        <property name="text">
-        <string>Enable idle detection</string>
+        <string/>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="0">
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Enable Bill Lumbergh</string>
        </property>
       </widget>
      </item>

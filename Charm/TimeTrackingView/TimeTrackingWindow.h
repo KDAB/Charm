@@ -78,6 +78,8 @@ private slots:
     void slotCheckUploadedTimesheets();
     void slotBillGone( int result );
 
+    void configurationChanged();
+
 signals:
     void emitCommand( CharmCommand* );
     void emitCommandRollback( CharmCommand* );

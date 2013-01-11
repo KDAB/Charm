@@ -57,7 +57,8 @@ TimeTrackingWindow::TimeTrackingWindow( QWidget* parent )
              SLOT( slotBillGone(int) ) );
     //Check every 60 minutes if there are timesheets due
     m_checkUploadedSheetsTimer.setInterval(60 * 60 * 1000);
-    m_checkUploadedSheetsTimer.start();
+    if (CONFIGURATION.warnUnuploadedTimesheets)
+        m_checkUploadedSheetsTimer.start();
 }
 
 void TimeTrackingWindow::showEvent( QShowEvent* e )
@@ -176,6 +177,15 @@ void TimeTrackingWindow::eventDeactivated( EventId id )
     m_summaryWidget->handleActiveEvents();
 }
 
+void TimeTrackingWindow::configurationChanged()
+{
+    if (CONFIGURATION.warnUnuploadedTimesheets)
+        m_checkUploadedSheetsTimer.start();
+    else
+        m_checkUploadedSheetsTimer.stop();
+    CharmWindow::configurationChanged();
+}
+
 void TimeTrackingWindow::slotSelectTasksToShow()
 {
     // we would like to always show some tasks, if there are any
@@ -250,6 +260,7 @@ void TimeTrackingWindow::slotEditPreferences( bool )
         CONFIGURATION.toolButtonStyle = dialog.toolButtonStyle();
         CONFIGURATION.detectIdling = dialog.detectIdling();
         CONFIGURATION.animatedTrayIcon = dialog.animatedTrayIcon();
+        CONFIGURATION.warnUnuploadedTimesheets = dialog.warnUnuploadedTimesheets();
         emit saveConfiguration();
     }
 }
@@ -437,12 +448,12 @@ void TimeTrackingWindow::slotExportTasks()
 void TimeTrackingWindow::slotCheckUploadedTimesheets()
 {
     WeeksByYear missing = missingTimeSheets();
-    if (!missing.size())
+    if (missing.isEmpty())
         return;
     m_checkUploadedSheetsTimer.stop();
     //The usual case is just one missing week, unless we've been giving Bill a hard time
     //Perhaps in the future Bill can bug us about more than one report at a time
-    Q_ASSERT(missing.begin().value().size());
+    Q_ASSERT(!missing.begin().value().isEmpty());
     int year = missing.begin().key();
     int week = missing.begin().value().first();
     m_billDialog->setReport(year, week);
@@ -461,8 +472,11 @@ void TimeTrackingWindow::slotBillGone(int result)
         m_weeklyTimesheetDialog->setDefaultWeek(m_billDialog->year(), m_billDialog->week());
         m_weeklyTimesheetDialog->show();
         break;
+    case BillDialog::Later:
+        break;
     }
-    m_checkUploadedSheetsTimer.start();
+    if (CONFIGURATION.warnUnuploadedTimesheets)
+        m_checkUploadedSheetsTimer.start();
 }
 
 void TimeTrackingWindow::maybeIdle()
