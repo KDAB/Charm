@@ -458,6 +458,8 @@ void TimeTrackingWindow::slotCheckUploadedTimesheets()
     int week = missing.begin().value().first();
     m_billDialog->setReport(year, week);
     m_billDialog->show();
+    m_billDialog->raise();
+    m_billDialog->activateWindow();
 }
 
 void TimeTrackingWindow::slotBillGone(int result)
