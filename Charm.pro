@@ -45,6 +45,7 @@ HEADERS -= $$files(Charm/keychain_dbus.h)
 HEADERS -= $$files(Charm/keychain_dbus_p.h)
 HEADERS -= $$files(Charm/keychain_mac.h)
 HEADERS -= $$files(Charm/keychain_win.h)
+HEADERS -= $$files(Charm/OpeningScene.h)
 
 FORMS += $$files(Core/*.ui)
 FORMS += $$files(Charm/*.ui)
