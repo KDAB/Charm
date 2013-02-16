@@ -24,6 +24,7 @@ SOURCES -= $$files(Charm/Idle/Windows*.cpp)
 SOURCES -= $$files(Charm/Idle/X11*.cpp)
 SOURCES -= $$files(Charm/keychain_dbus.cpp)
 SOURCES -= $$files(Charm/keychain_mac.cpp)
+SOURCES -= $$files(Charm/keychain_win.cpp)
 
 HEADERS += $$files(Core/*.h)
 HEADERS += $$files(Charm/*.h)
