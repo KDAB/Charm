@@ -167,3 +167,8 @@ new_moc.commands = moc ${QMAKE_FILE_NAME} -o ${QMAKE_FILE_OUT}
 new_moc.depend_command = g++ -E -M ${QMAKE_FILE_NAME} | sed "s,^.*: ,,"
 new_moc.input = HEADERS
 QMAKE_EXTRA_COMPILERS += new_moc
+
+# Create that CharmCMake.h file that is auto-created by cmake ahnd included
+# everywhere. Here we could also hard-code defines or whatever that file
+# includes when cmake creates it.
+system('echo "" > "$${OUT_PWD}/CharmCMake.h"')
