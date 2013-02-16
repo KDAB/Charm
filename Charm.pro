@@ -159,6 +159,11 @@ OTHER_FILES += \
     android/res/values-rs/strings.xml \
     android/AndroidManifest.xml
 
+# Disable some of the noise for now.
+*-g++*|*-clang*|*-llvm* {
+    QMAKE_CXXFLAGS += -Wno-unused-variable -Wno-unused-parameter -Wno-unused-function
+}
+
 # CMake works with include files named "filename.moc" while qmake expects
 # "moc_filename.cpp". Since qmake does not provide any way to change that
 # to the requirement we just call moc a second time and explicit define
