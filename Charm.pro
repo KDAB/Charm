@@ -158,3 +158,12 @@ OTHER_FILES += \
     android/res/values-rs/strings.xml \
     android/AndroidManifest.xml
 
+# CMake works with include files named "filename.moc" while qmake expects
+# "moc_filename.cpp". Since qmake does not provide any way to change that
+# to the requirement we just call moc a second time and explicit define
+# the expected moc filename.
+new_moc.output = ${QMAKE_FILE_BASE}.moc
+new_moc.commands = moc ${QMAKE_FILE_NAME} -o ${QMAKE_FILE_OUT}
+new_moc.depend_command = g++ -E -M ${QMAKE_FILE_NAME} | sed "s,^.*: ,,"
+new_moc.input = HEADERS
+QMAKE_EXTRA_COMPILERS += new_moc
