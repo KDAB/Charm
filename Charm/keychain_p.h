@@ -14,8 +14,11 @@
 #include <QPointer>
 #include <QSettings>
 
-#if defined(Q_OS_UNIX) && !defined(Q_WS_MAC)
+#if defined(QT_NO_DBUS) || !defined(Q_OS_UNIX) || defined(Q_WS_MAC)
+#define NO_KWALLET
+#endif
 
+#ifndef NO_KWALLET
 #include <QDBusPendingCallWatcher>
 
 #include "kwallet_interface.h"
@@ -63,7 +66,7 @@ public:
     };
     DataType dataType;
 
-#if defined(Q_OS_UNIX) && !defined(Q_WS_MAC)
+#ifndef NO_KWALLET
     org::kde::KWallet* iface;
     friend class QKeychain::JobExecutor;
     void scheduledStart();
@@ -97,7 +100,7 @@ public:
     QByteArray binaryData;
     QString textData;
 
-#if defined(Q_OS_UNIX) && !defined(Q_WS_MAC)
+#ifndef NO_KWALLET
     org::kde::KWallet* iface;
     friend class QKeychain::JobExecutor;
     void scheduledStart();

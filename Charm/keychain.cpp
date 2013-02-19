@@ -171,6 +171,3 @@ void DeletePasswordJobPrivate::jobFinished( Job* job ) {
     q->setErrorString( job->errorString() );
     q->emitFinished();
 }
-
-#include "keychain.moc"
-#include "keychain_p.moc"
