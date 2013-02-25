@@ -145,7 +145,7 @@ void EnterVacationDialog::createEvents()
 
 #if QT_VERSION < 0x050000
         QString htmlShortDate = Qt::escape( shortDate );
-        QString htmlDuration = Qt::escape( duration )
+        QString htmlDuration = Qt::escape( duration );
 #else
         QString htmlShortDate = shortDate.toHtmlEscaped();
         QString htmlDuration = duration.toHtmlEscaped();
