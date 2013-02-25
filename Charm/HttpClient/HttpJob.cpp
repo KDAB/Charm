@@ -7,6 +7,12 @@
 #include <QProgressDialog>
 #include <QSettings>
 #include <QSslError>
+#include <QInputDialog>
+#include <QLineEdit>
+
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
+#include <QUrlQuery>
+#endif
 
 static void setLastAuthenticationFailed(bool failed)
 {
@@ -108,9 +114,6 @@ QString HttpJob::errorString() const
 {
     return m_errorString;
 }
-
-#include <QInputDialog>
-#include <QLineEdit>
 
 void HttpJob::start()
 {
@@ -222,11 +225,17 @@ bool HttpJob::execute(int state, QNetworkAccessManager *manager)
 
     case Login:
     {
+#if QT_VERSION < QT_VERSION_CHECK(5,0,0)
         QUrl data;
         data.addQueryItem("j_username", m_username);
         data.addQueryItem("j_password", m_password);
-        //Qt5's rewritten QUrl should give us some more options here
         QByteArray encodedQueryPlusPlus = data.encodedQuery().replace('+', "%2b").replace(' ', "+");
+#else
+        QUrlQuery urlQuery;
+        urlQuery.addQueryItem("j_username", m_username);
+        urlQuery.addQueryItem("j_password", m_password);
+        QByteArray encodedQueryPlusPlus = urlQuery.query(QUrl::FullyEncoded).toUtf8();
+#endif
 
         QNetworkRequest request(m_loginUrl);
 

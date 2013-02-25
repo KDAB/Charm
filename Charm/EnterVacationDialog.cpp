@@ -121,19 +121,37 @@ void EnterVacationDialog::createEvents()
     const QString endDate = m_ui->endDate->date().toString( Qt::TextDate );
     const Task task = DATAMODEL->getTask( m_selectedTaskId );
 
+#if QT_VERSION < 0x050000
+    QString htmlStartDate = Qt::escape( startDate );
+    QString htmlEndDate = Qt::escape( endDate );
+    QString htmlTaskName = Qt::escape( task.name() );
+#else
+    QString htmlStartDate = startDate.toHtmlEscaped();
+    QString htmlEndDate = endDate.toHtmlEscaped();
+    QString htmlTaskName = task.name().toHtmlEscaped();
+#endif
+
     QString html = "<html><body>";
     html += QString::fromLatin1("<h1>%1</h1>").arg( tr("Vacation"));
-    html += QString::fromLatin1("<h3>%1</h3>").arg( tr("From %1 to %2").arg( Qt::escape( startDate ), Qt::escape( endDate ) ) );
-    html += QString::fromLatin1("<h4>%1</h4>").arg( tr("Task used: %1").arg( Qt::escape( task.name() ) ) );
+    html += QString::fromLatin1("<h3>%1</h3>").arg( tr("From %1 to %2").arg( htmlStartDate, htmlEndDate ) );
+    html += QString::fromLatin1("<h4>%1</h4>").arg( tr("Task used: %1").arg( htmlTaskName ) );
     html += "<p>";
     Q_FOREACH ( const Event& event, events ) {
-
         const QDate eventStart = event.startDateTime().date();
         const QDate eventEnd = event.endDateTime().date();
         Q_ASSERT( eventStart == eventEnd );
         const QString shortDate = eventStart.toString( Qt::DefaultLocaleShortDate );
         const QString duration = formatDuration( event.startDateTime(), event.endDateTime() );
-        html += QString::fromLatin1("%1").arg( tr( "%1: %3", "short date, duration" ).arg( Qt::escape( shortDate ), Qt::escape( duration ) ) );
+
+#if QT_VERSION < 0x050000
+        QString htmlShortDate = Qt::escape( shortDate );
+        QString htmlDuration = Qt::escape( duration )
+#else
+        QString htmlShortDate = shortDate.toHtmlEscaped();
+        QString htmlDuration = duration.toHtmlEscaped();
+#endif
+
+        html += QString::fromLatin1("%1").arg( tr( "%1: %3", "short date, duration" ).arg( htmlShortDate, htmlDuration ) );
         html += "</p><p>";
     }
     html += "</p>";

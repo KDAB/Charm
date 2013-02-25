@@ -21,7 +21,7 @@ int main( int argc, char** argv ) {
         Options options( argc, argv );
 
         // create a QDomDocument from the file content:
-        QDomDocument doc( QString::fromAscii( "charm_template" ) );
+        QDomDocument doc( QString::fromLatin1( "charm_template" ) );
         QFile file( options.file() );
         if ( ! file.open( QIODevice::ReadOnly ) ) {
             throw Exception( QObject::tr( "Cannot open specified file for reading." ) );
@@ -35,10 +35,10 @@ int main( int argc, char** argv ) {
 
         // find the time sheet elements, loop to create the time sheets:
         QDomElement docElem = doc.documentElement();
-        if ( docElem.tagName() != QString::fromAscii( "charm_template" ) ) {
+        if ( docElem.tagName() != QString::fromLatin1( "charm_template" ) ) {
             throw Exception( QObject::tr( "Wrong document element found in the specified file." ) );
         }
-        const QString timesheetTagName = QString::fromAscii( "timesheet" );
+        const QString timesheetTagName = QString::fromLatin1( "timesheet" );
         for ( QDomElement child = docElem.firstChildElement( timesheetTagName );
               ! child.isNull();
               child = child.nextSiblingElement( timesheetTagName ) ) {
@@ -52,7 +52,7 @@ int main( int argc, char** argv ) {
             // read event entries:
             EventList events;
             // FIXME readEfforts?
-            const QString eventTagName = QString::fromAscii( "event" );
+            const QString eventTagName = QString::fromLatin1( "event" );
             for ( QDomElement eventElem = child.firstChildElement( eventTagName );
                   ! eventElem.isNull();
                   eventElem = eventElem.nextSiblingElement( eventTagName ) ) {
@@ -106,7 +106,7 @@ int main( int argc, char** argv ) {
 
             // save the file:
             // temp:
-            const QString filename = QString::fromAscii( "WeeklyTimesheet-generated-%1-%2-%3.charmreport" )
+            const QString filename = QString::fromLatin1( "WeeklyTimesheet-generated-%1-%2-%3.charmreport" )
                                      .arg( userId ).arg( year ).arg( week );
             QFile file( filename );
             if ( file.open( QIODevice::WriteOnly ) ) {
