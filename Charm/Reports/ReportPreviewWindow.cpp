@@ -1,6 +1,8 @@
 #include <QtDebug>
+#ifndef QT_NO_PRINTER
 #include <QPrinter>
 #include <QPrintDialog>
+#endif
 #include <QTextBrowser>
 
 #include "ViewHelpers.h"
@@ -22,8 +24,12 @@ ReportPreviewWindow::ReportPreviewWindow( QWidget* parent )
              SLOT( slotSaveToXml() ) );
     connect( m_ui->pushButtonSaveTotals, SIGNAL( clicked() ),
              SLOT( slotSaveToText() ) );
+#ifndef QT_NO_PRINTER
     connect( m_ui->pushButtonPrint, SIGNAL( clicked() ),
              SLOT( slotPrint() ) );
+#else
+    m_ui->pushButtonPrint->setEnabled(false);
+#endif
     resize(600, 600);
 }
 
@@ -91,12 +97,14 @@ void ReportPreviewWindow::slotSaveToText()
 
 void ReportPreviewWindow::slotPrint()
 {
+#ifndef QT_NO_PRINTER
     QPrinter printer;
     QPrintDialog dialog( &printer, this );
 
     if ( dialog.exec() ) {
         m_document->print( &printer );
     }
+#endif
 }
 
 void ReportPreviewWindow::slotUpdate()
