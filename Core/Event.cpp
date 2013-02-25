@@ -174,7 +174,7 @@ QDomElement Event::toXml( QDomDocument document ) const
 
 QString Event::tagName()
 {
-    static const QString tag( QString::fromAscii( "event" ) );
+    static const QString tag( QString::fromLatin1( "event" ) );
     return tag;
 }
 

@@ -2,16 +2,21 @@
 #include <QTimer>
 #include "CharmCMake.h"
 
+//TODO for Qt5 port to XCB...
+#if QT_VERSION < QT_VERSION_CHECK(5,0,0)
 #include <QX11Info>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/extensions/scrnsaver.h>
+#endif
 
 bool X11IdleDetector::idleCheckPossible()
 {
+#if QT_VERSION < QT_VERSION_CHECK(5,0,0)
     int event_base, error_base;
     if(XScreenSaverQueryExtension(QX11Info::display(), &event_base, &error_base))
         return true;
+#endif
     return false;
 }
 
@@ -31,6 +36,7 @@ void X11IdleDetector::idlenessDurationChanged()
 
 void X11IdleDetector::checkIdleness()
 {
+#if QT_VERSION < QT_VERSION_CHECK(5,0,0)
     XScreenSaverInfo* _mit_info = XScreenSaverAllocInfo();
     if (!_mit_info)
         return;
@@ -44,6 +50,7 @@ void X11IdleDetector::checkIdleness()
 
     if ( m_heartbeat.secsTo( QDateTime::currentDateTime() ) > idlenessDuration() )
         maybeIdle( IdlePeriod( m_heartbeat, QDateTime::currentDateTime() ) );
+#endif
     m_heartbeat = QDateTime::currentDateTime();
 }
 

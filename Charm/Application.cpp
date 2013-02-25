@@ -15,9 +15,14 @@
 #include <QMenuBar>
 #include <QMessageBox>
 #include <QSessionManager>
-#include <QDesktopServices>
 #include <QLocalSocket>
 #include <QFile>
+
+#if QT_VERSION < 0x050000
+#include <QDesktopServices>
+#else
+#include <QStandardPaths>
+#endif
 
 #include <Core/CharmConstants.h>
 #include <Core/CharmExceptions.h>
@@ -507,8 +512,11 @@ static QString charmDataDir() {
     const QByteArray charmHome = qgetenv("CHARM_HOME");
     if ( !charmHome.isEmpty() )
         return QFile::decodeName( charmHome ) + QLatin1String("/data/");
-    else
-        return QDesktopServices::storageLocation(QDesktopServices::DataLocation) + QLatin1Char('/');
+#if QT_VERSION < 0x050000
+    return QDesktopServices::storageLocation(QDesktopServices::DataLocation) + QLatin1Char('/');
+#else
+    return QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1Char('/');
+#endif
 }
 
 bool Application::configure()
