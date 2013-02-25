@@ -6,23 +6,29 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>501</width>
-    <height>217</height>
+    <width>381</width>
+    <height>226</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Charm Configuration</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_2">
+  <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <layout class="QFormLayout" name="formLayoutAppearance">
-     <property name="fieldGrowthPolicy">
-      <enum>QFormLayout::FieldsStayAtSizeHint</enum>
-     </property>
-     <item row="0" column="0">
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="0" column="0" alignment="Qt::AlignRight">
       <widget class="QLabel" name="lbTaskTrackerFontSize">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="text">
         <string>Tasks window font size</string>
+       </property>
+       <property name="buddy">
+        <cstring>cbTaskTrackerFontSize</cstring>
        </property>
       </widget>
      </item>
@@ -45,10 +51,19 @@
        </item>
       </widget>
      </item>
-     <item row="1" column="0">
+     <item row="1" column="0" alignment="Qt::AlignRight">
       <widget class="QLabel" name="lbToolButtonStyle">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="text">
         <string>Buttons show</string>
+       </property>
+       <property name="buddy">
+        <cstring>cbToolButtonStyle</cstring>
        </property>
       </widget>
      </item>
@@ -81,10 +96,22 @@
        </item>
       </widget>
      </item>
-     <item row="2" column="0">
+     <item row="2" column="0" alignment="Qt::AlignRight">
       <widget class="QLabel" name="lbDurationFormat">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="text">
         <string>Duration format (requires restart)</string>
+       </property>
+       <property name="wordWrap">
+        <bool>true</bool>
+       </property>
+       <property name="buddy">
+        <cstring>cbDurationFormat</cstring>
        </property>
       </widget>
      </item>
@@ -102,10 +129,19 @@
        </item>
       </widget>
      </item>
-     <item row="3" column="0">
+     <item row="3" column="0" alignment="Qt::AlignRight">
       <widget class="QLabel" name="lbAnimatedTrayIcon">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="text">
         <string>Animated tray icon</string>
+       </property>
+       <property name="buddy">
+        <cstring>cbAnimatedTrayIcon</cstring>
        </property>
       </widget>
      </item>
@@ -116,10 +152,19 @@
        </property>
       </widget>
      </item>
-     <item row="4" column="0">
+     <item row="4" column="0" alignment="Qt::AlignRight">
       <widget class="QLabel" name="label">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="text">
         <string>Enable idle detection</string>
+       </property>
+       <property name="buddy">
+        <cstring>cbIdleDetection</cstring>
        </property>
       </widget>
      </item>
@@ -133,6 +178,22 @@
        </property>
       </widget>
      </item>
+     <item row="5" column="0" alignment="Qt::AlignRight">
+      <widget class="QLabel" name="label_2">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Enable Bill Lumbergh</string>
+       </property>
+       <property name="buddy">
+        <cstring>cbWarnUnuploadedTimesheets</cstring>
+       </property>
+      </widget>
+     </item>
      <item row="5" column="1">
       <widget class="QCheckBox" name="cbWarnUnuploadedTimesheets">
        <property name="text">
@@ -143,14 +204,20 @@
        </property>
       </widget>
      </item>
-     <item row="5" column="0">
-      <widget class="QLabel" name="label_2">
-       <property name="text">
-        <string>Enable Bill Lumbergh</string>
-       </property>
-      </widget>
-     </item>
     </layout>
+   </item>
+   <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>5</height>
+      </size>
+     </property>
+    </spacer>
    </item>
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">
@@ -164,6 +231,15 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>cbTaskTrackerFontSize</tabstop>
+  <tabstop>cbToolButtonStyle</tabstop>
+  <tabstop>cbDurationFormat</tabstop>
+  <tabstop>cbAnimatedTrayIcon</tabstop>
+  <tabstop>cbIdleDetection</tabstop>
+  <tabstop>cbWarnUnuploadedTimesheets</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>
