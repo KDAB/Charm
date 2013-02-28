@@ -127,6 +127,7 @@ bool TasksViewDelegate::editorEvent(QEvent *event, QAbstractItemModel *model,
 QRect TasksViewDelegate::checkBoxRect( const QStyleOptionViewItem &option,
                                        const QVariant &variant ) const
 {
+#if QT_VERSION < 0x050000
     const QRect bounding = option.rect; // TODO adjust if recording
 
     QRect cbRect = check(option, bounding, variant);
@@ -134,6 +135,10 @@ QRect TasksViewDelegate::checkBoxRect( const QStyleOptionViewItem &option,
     // Position checkbox on the right, and vertically aligned
     return QStyle::alignedRect(option.direction, Qt::AlignRight | Qt::AlignVCenter,
                                cbRect.size(), bounding);
+#else
+    //TODO probably more needed for Qt5, needs testing
+    return option.rect;
+#endif
 }
 
 void TasksViewDelegate::updateEditorGeometry( QWidget * editor,

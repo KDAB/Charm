@@ -8,7 +8,6 @@ SET(
     Database.cpp
 )
 
-QT4_AUTOMOC( ${TimesheetProcessor_SRCS} )
 ADD_EXECUTABLE( TimesheetProcessor ${TimesheetProcessor_SRCS} )
 TARGET_LINK_LIBRARIES( TimesheetProcessor CharmCore ${QT_LIBRARIES} )
 INSTALL( TARGETS TimesheetProcessor DESTINATION ${BIN_INSTALL_DIR} )

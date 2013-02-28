@@ -135,3 +135,9 @@ const QPixmap& Data::editorDirtyPixmap()
                         "Required resource not available");
         return pixmap;
 }
+
+const QPixmap& Data::backdropPixmap()
+{
+        static QPixmap pixmap;
+        return pixmap;
+}

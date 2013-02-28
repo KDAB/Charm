@@ -4,7 +4,6 @@
 #include <QSqlDriver>
 #include <QSqlError>
 
-#include "Core/MySqlStorage.h"
 #include "Core/SqlRaiiTransactor.h"
 
 #include "SqlTransactionTests.h"

@@ -24,13 +24,13 @@ bool Task::isValid() const
 
 QString Task::tagName()
 {
-    static const QString tag( QString::fromAscii( "task" ) );
+    static const QString tag( QString::fromLatin1( "task" ) );
     return tag;
 }
 
 QString Task::taskListTagName()
 {
-    static const QString tag( QString::fromAscii( "tasks" ) );
+    static const QString tag( QString::fromLatin1( "tasks" ) );
     return tag;
 }
 

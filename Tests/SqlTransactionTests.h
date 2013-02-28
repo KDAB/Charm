@@ -3,6 +3,8 @@
 
 #include <QObject>
 
+#include "Core/MySqlStorage.h"
+
 class SqlTransactionTests : public QObject
 {
     Q_OBJECT
