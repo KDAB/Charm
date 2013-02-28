@@ -4,7 +4,7 @@
  *  Created on: Apr 23, 2008
  *      Author: mirko
  */
-#include <QSqlDatabase>
+
 #include <QStringList>
 #include <QSqlQuery>
 #include <QProcess>
