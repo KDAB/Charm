@@ -36,12 +36,103 @@ MESSAGE( STATUS "Building Charm ${Charm_VERSION} in ${CMAKE_BUILD_TYPE} mode" )
 
 CMAKE_MINIMUM_REQUIRED( VERSION 2.6.0 )
 SET( CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMake" )
-IF (UNIX AND NOT APPLE)
-    FIND_PACKAGE( Qt4 4.6.0 COMPONENTS QtMain QtCore QtGui QtSql QtXml QtNetwork QtDBus REQUIRED )
+SET( CMAKE_AUTOMOC ON )
+
+# try Qt5 first, and prefer that if found
+find_package(Qt5Core QUIET)
+IF (Qt5Core_FOUND)
+    find_package(Qt5Widgets REQUIRED)
+    find_package(Qt5Xml REQUIRED)
+    find_package(Qt5Network REQUIRED)
+    find_package(Qt5Sql REQUIRED)
+    find_package(Qt5Test REQUIRED)
+
+    find_package(Qt5DBus)
+    IF(Qt5DBus_FOUND)
+        set(HAVE_DBUS ON)
+        include_directories(${Qt5DBus_INCLUDE_DIRS})
+        set(QTDBUS_LIBRARIES ${Qt5DBus_LIBRARIES})
+        macro(qt_add_dbus_interface)
+            qt5_add_dbus_interface(${ARGN})
+        endmacro()
+    ELSE()
+        set(QTDBUS_LIBRARIES "")
+        macro(qt_add_dbus_interface)
+            # do nothing
+        endmacro()
+    ENDIF()
+
+    # TODO qtprintsupport
+add_definitions(-DQT_NO_PRINTER)
+
+    macro(qt_wrap_cpp)
+        qt5_wrap_cpp(${ARGN})
+    endmacro()
+    macro(qt_wrap_ui)
+        qt5_wrap_ui(${ARGN})
+    endmacro()
+    macro(qt_add_resources)
+        qt5_add_resources(${ARGN})
+    endmacro()
+
+    #set(QTCORE_LIBRARIES ${Qt5Core_LIBRARIES})
+    set(QT_QTTEST_LIBRARY ${Qt5Test_LIBRARIES})
+
+    set(QT_LIBRARIES
+        ${Qt5Core_LIBRARIES}
+        ${Qt5Widgets_LIBRARIES}
+        ${Qt5Xml_LIBRARIES}
+        ${Qt5Network_LIBRARIES}
+        ${Qt5Sql_LIBRARIES}
+        ${QTDBUS_LIBRARIES}
+    )
+
+    include_directories(
+        ${Qt5Core_INCLUDE_DIRS}
+        ${Qt5Widgets_INCLUDE_DIRS}
+        ${Qt5Xml_INCLUDE_DIRS}
+        ${Qt5Network_INCLUDE_DIRS}
+        ${Qt5Sql_INCLUDE_DIRS}
+    )
+
+    set(CMAKE_CXX_FLAGS "${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS}")
 ELSE()
-    FIND_PACKAGE( Qt4 4.6.0 COMPONENTS QtMain QtCore QtGui QtSql QtXml QtNetwork REQUIRED )
+    # No Qt5 found, try Qt4
+    find_package(Qt4 COMPONENTS QtMain QtCore QtGui QtSql QtXml QtNetwork REQUIRED)
+    INCLUDE( UseQt4 )
+
+    IF(UNIX AND NOT APPLE)
+        find_package(Qt4 COMPONENTS QtDBus)
+        IF (QT_QTDBUS_FOUND)
+            set(HAVE_DBUS ON)
+            set(QTDBUS_LIBRARIES ${QT_QTDBUS_LIBRARY})
+            macro(qt_add_dbus_interface)
+                qt4_add_dbus_interface(${ARGN})
+            endmacro()
+        ENDIF()
+    ENDIF()
+
+    IF (NOT QT_QTDBUS_FOUND)
+        set(QTDBUS_LIBRARIES "")
+        macro(qt_add_dbus_interface)
+            # do nothing
+        endmacro()
+    ENDIF()
+
+    include_directories(${QT_INCLUDES})
+    #set(QTCORE_LIBRARIES ${QT_QTCORE_LIBRARY})
+
+    macro(qt_wrap_cpp)
+        qt4_wrap_cpp(${ARGN})
+    endmacro()
+    macro(qt_wrap_ui)
+        qt4_wrap_ui(${ARGN})
+    endmacro()
+    macro(qt_add_resources)
+        qt4_add_resources(${ARGN})
+    endmacro()
 ENDIF()
-INCLUDE( UseQt4 )
+
 ENABLE_TESTING()
 
 IF( APPLE AND "${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}.${QT_VERSION_PATCH}" VERSION_EQUAL "4.8.0" )
