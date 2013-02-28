@@ -8,6 +8,7 @@ TEMPLATE = app
 RESOURCES = Charm/CharmResources.qrc
 
 DEFINES += 'CHARM_VERSION=\'\"0.1a\"\''
+DEFINES += QT_NO_DBUS QT_NO_PRINTER
 
 SOURCES += $$files(Core/*.cpp)
 SOURCES += $$files(Charm/*.cpp)
