@@ -47,6 +47,12 @@ IF (Qt5Core_FOUND)
     find_package(Qt5Sql REQUIRED)
     find_package(Qt5Test REQUIRED)
 
+    find_package(Qt5PrintSupport)
+    IF(Qt5PrintSupport_FOUND)
+        include_directories(${Qt5PrintSupport_INCLUDE_DIRS})
+        set(QTPRINT_LIBRARIES ${Qt5PrintSupport_LIBRARIES})
+    ENDIF()
+
     find_package(Qt5DBus)
     IF(Qt5DBus_FOUND)
         set(HAVE_DBUS ON)
@@ -61,9 +67,6 @@ IF (Qt5Core_FOUND)
             # do nothing
         endmacro()
     ENDIF()
-
-    # TODO qtprintsupport
-add_definitions(-DQT_NO_PRINTER)
 
     macro(qt_wrap_cpp)
         qt5_wrap_cpp(${ARGN})
@@ -84,6 +87,7 @@ add_definitions(-DQT_NO_PRINTER)
         ${Qt5Xml_LIBRARIES}
         ${Qt5Network_LIBRARIES}
         ${Qt5Sql_LIBRARIES}
+        ${QTPRINT_LIBRARIES}
         ${QTDBUS_LIBRARIES}
     )
 
