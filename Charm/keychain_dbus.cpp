@@ -268,5 +268,3 @@ void WritePasswordJobPrivate::kwalletWriteFinished( QDBusPendingCallWatcher* wat
 
     q->emitFinished();
 }
-
-#include "keychain_dbus_p.moc"

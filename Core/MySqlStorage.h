@@ -10,6 +10,8 @@
 
 #include "SqlStorage.h"
 
+#include <QSqlDatabase>
+
 class MySqlStorage: public SqlStorage
 {
 public:

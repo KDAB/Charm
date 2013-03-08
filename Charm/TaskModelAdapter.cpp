@@ -186,7 +186,8 @@ bool TaskModelAdapter::setData( const QModelIndex & index, const QVariant & valu
 
 void TaskModelAdapter::resetTasks()
 {
-    reset();
+    beginResetModel();
+    endResetModel();
 }
 
 void TaskModelAdapter::taskAboutToBeAdded( TaskId parentId, int pos )

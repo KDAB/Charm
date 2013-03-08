@@ -97,12 +97,17 @@ IF (APPLE)
 ELSEIF ( WIN32 )
     LIST( APPEND CharmApplication_SRCS keychain_win.cpp )
 ELSEIF ( UNIX )
-    LIST( APPEND CharmApplication_SRCS keychain_dbus.cpp )
-    QT4_ADD_DBUS_INTERFACE( CharmApplication_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/org.kde.KWallet.xml kwallet_interface KWalletInterface )
-    LIST( APPEND CharmApplication_LIBS ${QT_QTDBUS_LIBRARY} )
+    IF (HAVE_DBUS)
+        LIST( APPEND CharmApplication_SRCS keychain_dbus.cpp )
+        QT_ADD_DBUS_INTERFACE( CharmApplication_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/org.kde.KWallet.xml kwallet_interface KWalletInterface )
+        LIST( APPEND CharmApplication_LIBS ${QT_QTDBUS_LIBRARY} )
+    ELSE()
+        LIST( APPEND CharmApplication_SRCS keychain_unsecure.cpp )
+    ENDIF()
 ENDIF()
 
-QT4_WRAP_CPP( MOC_QOCOA_SRCS Qocoa/qbutton.h Qocoa/qsearchfield.h keychain.h keychain_p.h )
+QT_WRAP_CPP( MOC_QOCOA_SRCS Qocoa/qbutton.h Qocoa/qsearchfield.h )
+
 LIST( APPEND CharmApplication_SRCS ${MOC_QOCOA_SRCS} )
 IF (APPLE)
     LIST( APPEND CharmApplication_SRCS Qocoa/qbutton_mac.mm Qocoa/qsearchfield_mac.mm )
@@ -110,9 +115,7 @@ ELSE()
     LIST( APPEND CharmApplication_SRCS Qocoa/qbutton_nonmac.cpp Qocoa/qsearchfield_nonmac.cpp )
 ENDIF()
 
-QT4_AUTOMOC( ${CharmApplication_SRCS} keychain.h keychain_p.h )
-
-QT4_WRAP_UI(
+QT_WRAP_UI(
     UiGenerated_SRCS
     ConfigurationDialog.ui
     CharmPreferences.ui
@@ -128,7 +131,7 @@ QT4_WRAP_UI(
     Idle/IdleCorrectionDialog.ui
 )
 
-QT4_ADD_RESOURCES( Resources_SRCS CharmResources.qrc )
+QT_ADD_RESOURCES( Resources_SRCS CharmResources.qrc )
 
 ADD_LIBRARY(
     CharmApplication STATIC
@@ -137,7 +140,6 @@ ADD_LIBRARY(
 TARGET_LINK_LIBRARIES(CharmApplication ${CharmApplication_LIBS})
 
 SET( Charm_SRCS Charm.cpp )
-QT4_AUTOMOC( ${Charm_SRCS} )
 
 IF( APPLE )
     SET( MACOSX_BUNDLE_INFO_STRING "Charm ${Charm_VERSION}" )

@@ -3,6 +3,8 @@
 
 #include <QObject>
 
+class CharmDataModel;
+
 class CharmDataModelTests : public QObject
 {
     Q_OBJECT

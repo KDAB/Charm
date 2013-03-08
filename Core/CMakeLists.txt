@@ -20,5 +20,7 @@ SET(
     SmartNameCache.cpp
     XmlSerialization.cpp
 )
-QT4_AUTOMOC( ${CharmCore_SRCS} )
+
 ADD_LIBRARY( CharmCore STATIC ${CharmCore_SRCS} )
+
+TARGET_LINK_LIBRARIES( CharmCore ${QT_LIBRARIES} )
