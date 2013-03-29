@@ -58,6 +58,7 @@ Application::Application(int& argc, char** argv)
     , m_actionEnterVacation( this )
     , m_actionActivityReport( this )
     , m_actionWeeklyTimesheetReport( this )
+    , m_actionMonthlyTimesheetReport( this )
     , m_idleDetector( 0 )
     , m_timeTrackerHiddenFromSystrayToggle( false )
     , m_tasksWindowHiddenFromSystrayToggle( false )
@@ -191,6 +192,10 @@ Application::Application(int& argc, char** argv)
     m_actionWeeklyTimesheetReport.setShortcut( Qt::CTRL + Qt::Key_R );
     connect( &m_actionWeeklyTimesheetReport, SIGNAL( triggered() ),
              &mainView(), SLOT( slotWeeklyTimesheetReport() ) );
+    m_actionMonthlyTimesheetReport.setText( tr( "Monthly Timesheet...") );
+    m_actionMonthlyTimesheetReport.setShortcut( Qt::CTRL + Qt::Key_M );
+    connect( &m_actionMonthlyTimesheetReport, SIGNAL( triggered() ),
+             &mainView(), SLOT( slotMonthlyTimesheetReport() ) );
 
     // set up idle detection
     m_idleDetector = IdleDetector::createIdleDetector( this );
@@ -256,6 +261,7 @@ void Application::createWindowMenu( QMenuBar *menuBar )
     menu->addSeparator();
     menu->addAction( &m_actionActivityReport );
     menu->addAction( &m_actionWeeklyTimesheetReport );
+    menu->addAction( &m_actionMonthlyTimesheetReport );
     menu->addSeparator();
     menu->addAction( &m_actionPreferences );
     menuBar->addMenu( menu );
