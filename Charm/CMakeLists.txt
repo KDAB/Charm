@@ -172,13 +172,6 @@ IF( UNIX AND NOT APPLE )
     SET( XDG_APPS_INSTALL_DIR share/applications )
     INSTALL( FILES charmtimetracker.desktop DESTINATION ${XDG_APPS_INSTALL_DIR} )
     INSTALL( FILES Icons/Charm-128x128.png DESTINATION share/icons/hicolor/128x128/apps )
-    INSTALL( FILES Icons/tray/charmtray16.png DESTINATION share/icons/hicolor/16x16/apps )
-    INSTALL( FILES Icons/tray/charmtray24.png DESTINATION share/icons/hicolor/24x24/apps )
-    INSTALL( FILES Icons/tray/01.png Icons/tray/02.png Icons/tray/03.png
-        Icons/tray/04.png Icons/tray/05.png Icons/tray/06.png
-        Icons/tray/07.png Icons/tray/08.png Icons/tray/09.png
-        Icons/tray/10.png Icons/tray/11.png Icons/tray/12.png
-    DESTINATION share/icons/hicolor/24x24/apps )
 ENDIF()
 
 INSTALL( TARGETS ${Charm_EXECUTABLE} DESTINATION ${BIN_INSTALL_DIR} )
