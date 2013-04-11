@@ -4,7 +4,7 @@
 #include <Core/Task.h>
 #include <Core/TimeSpans.h>
 
-#include "ReportPreviewWindow.h"
+#include "Timesheet.h"
 #include "ReportConfigurationDialog.h"
 
 namespace Ui {
@@ -46,14 +46,15 @@ private:
     TaskId m_rootTask;
 };
 
-class WeeklyTimeSheetReport : public ReportPreviewWindow
+class WeeklyTimeSheetReport : public TimeSheetReport
 {
     Q_OBJECT
 
 public:
     explicit WeeklyTimeSheetReport( QWidget* parent = 0 );
-    ~WeeklyTimeSheetReport();
+    virtual ~WeeklyTimeSheetReport();
 
+    // reimpl
     void setReportProperties( const QDate& start,
                               const QDate& end,
                               TaskId rootTask,
@@ -62,43 +63,19 @@ public:
     typedef QMap< TaskId, QVector<int> > SecondsMap;
 
 private slots:
-
     void slotUploadTimesheet();
     void slotTimesheetUploaded(HttpJob*);
-private:
-        enum TimeSheetTableColumns {
-        Column_Task,
-        Column_Monday,
-        Column_Tuesday,
-        Column_Wednesday,
-        Column_Thursday,
-        Column_Friday,
-        Column_Saturday,
-        Column_Sunday,
-        Column_Total,
-        NumberOfColumns
-    };
 
+private: // reimpl
     QString suggestedFileName() const;
-    QString getFileName( const QString& filter );
+    void update();
     QByteArray saveToXml();
+    QByteArray saveToText();
 
-    // reimpl
-    void slotUpdate();
-    // reimpl
-    void slotSaveToXml();
-    // reimpl
-    void slotSaveToText();
-
+private:
     // properties of the report:
-    QDate m_start;
-    QDate m_end;
     int m_weekNumber;
     int m_yearOfWeek;
-    TaskId m_rootTask;
-    bool m_activeTasksOnly;
-    QTextDocument* m_report; // FIXME unnecessary
-    SecondsMap m_secondsMap;
 };
 
 #endif

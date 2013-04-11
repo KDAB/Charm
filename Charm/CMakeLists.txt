@@ -39,6 +39,7 @@ SET(
     Reports/ReportConfigurationDialog.cpp
     Reports/CharmReport.cpp
     Reports/ActivityReport.cpp
+    Reports/Timesheet.cpp
     Reports/WeeklyTimesheet.cpp
     Reports/MonthlyTimesheet.cpp
     Reports/MonthlyTimesheetConfigurationDialog.cpp
