@@ -14,7 +14,7 @@
 #include "CharmCMake.h"
 
 static const int WeeksInMonth = 5;
-static const int SecondsInDay = 60 * 60 * 8 /* eight hour work day */;
+static const float SecondsInDay = 60. * 60. * 8. /* eight hour work day */;
 
 MonthlyTimeSheetReport::MonthlyTimeSheetReport( QWidget* parent )
     : ReportPreviewWindow( parent )
@@ -290,7 +290,7 @@ void MonthlyTimeSheetReport::slotUpdate()
             texts[Column_Week4] = hoursAndMinutes( timeSheetInfo[i].seconds[3] );
             texts[Column_Week5] = hoursAndMinutes( timeSheetInfo[i].seconds[4] );
             texts[Column_Total] = hoursAndMinutes( timeSheetInfo[i].total() );
-            texts[Column_Days] = tr( "%1" ).arg( timeSheetInfo[i].total() / SecondsInDay );
+            texts[Column_Days] = QString::number( timeSheetInfo[i].total() / SecondsInDay, 'f', 1);
 
             for ( int column = 0; column < NumberOfColumns; ++column )
             {
@@ -318,7 +318,7 @@ void MonthlyTimeSheetReport::slotUpdate()
             hoursAndMinutes( totalsLine.seconds[3] ),
             hoursAndMinutes( totalsLine.seconds[4] ),
             hoursAndMinutes( totalsLine.total() ),
-            tr( "%1" ).arg( totalsLine.total() / SecondsInDay )
+            QString::number( totalsLine.total() / SecondsInDay, 'f', 1)
         };
         QDomElement totals = doc.createElement( "tr" );
         totals.setAttribute( "class", "header_row" );
