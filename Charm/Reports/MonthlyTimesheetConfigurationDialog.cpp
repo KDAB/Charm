@@ -84,7 +84,7 @@ void MonthlyTimesheetConfigurationDialog::showReportPreviewDialog( QWidget* pare
     if ( index == m_monthInfo.size() -1 ) {
         // manual selection
         start = QDate(m_ui->spinBoxYear->value(), m_ui->spinBoxMonth->value(), 1);
-        end = start.addMonths(1).addDays(-1);
+        end = start.addMonths(1);
     } else {
         start = m_monthInfo[index].timespan.first;
         end = m_monthInfo[index].timespan.second;
