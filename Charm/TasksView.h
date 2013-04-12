@@ -35,7 +35,6 @@ public:
     void configurationChanged();
     void setModel( ModelConnector* );
 
-    static QFont configuredFont();
     void populateEditMenu( QMenu* );
 
 public Q_SLOTS:

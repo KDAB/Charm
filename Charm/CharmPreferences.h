@@ -22,7 +22,7 @@ public:
 
     Qt::ToolButtonStyle toolButtonStyle() const;
 
-    Configuration::TaskTrackerFontSize taskTrackerFontSize() const;
+    Configuration::TimeTrackerFontSize timeTrackerFontSize() const;
 private slots:
     void slotWarnUnuploadedChanged(bool);
 

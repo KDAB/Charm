@@ -60,7 +60,6 @@ SelectTaskDialog::SelectTaskDialog( QWidget* parent )
     m_ui->treeView->setModel( &m_proxy );
     m_ui->treeView->expandAll();
     m_ui->treeView->header()->hide();
-    m_ui->treeView->setFont( TasksView::configuredFont() );
     connect( m_ui->treeView->selectionModel(),
              SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ),
              SLOT( slotCurrentItemChanged( const QModelIndex&, const QModelIndex& ) ) );

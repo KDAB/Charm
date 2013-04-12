@@ -186,6 +186,7 @@ void TimeTrackingWindow::configurationChanged()
         m_checkUploadedSheetsTimer.start();
     else
         m_checkUploadedSheetsTimer.stop();
+    m_summaryWidget->configurationChanged();
     CharmWindow::configurationChanged();
 }
 
@@ -258,7 +259,7 @@ void TimeTrackingWindow::slotEditPreferences( bool )
     CharmPreferences dialog( CONFIGURATION, this );
 
     if ( dialog.exec() ) {
-        CONFIGURATION.taskTrackerFontSize = dialog.taskTrackerFontSize();
+        CONFIGURATION.timeTrackerFontSize = dialog.timeTrackerFontSize();
         CONFIGURATION.durationFormat = dialog.durationFormat();
         CONFIGURATION.toolButtonStyle = dialog.toolButtonStyle();
         CONFIGURATION.detectIdling = dialog.detectIdling();

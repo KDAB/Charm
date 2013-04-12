@@ -326,24 +326,6 @@ void TasksView::configureUi()
      }
  }
 
- QFont TasksView::configuredFont()
- {
-//    QTreeView treeView; // temp, to get default treeView font
-     QFont font = QTreeView().font();
-
-     switch( CONFIGURATION.taskTrackerFontSize ) {
-     case Configuration::TaskTrackerFont_Small:
-         font.setPointSizeF( 0.9 * font.pointSize() );
-         break;
-     case Configuration::TaskTrackerFont_Regular:
-         break;
-     case Configuration::TaskTrackerFont_Large:
-         font.setPointSizeF( 1.2 * font.pointSize() );
-         break;
-     };
-     return font;
- }
-
  void TasksView::configurationChanged()
  {
      const Configuration::TaskPrefilteringMode mode = CONFIGURATION.taskPrefilteringMode;
@@ -352,7 +334,6 @@ void TasksView::configureUi()
      m_showSubscribedOnly->setChecked( showSubscribedOnly );
      m_showCurrentOnly->setChecked( showCurrentOnly );
 
-     m_treeView->setFont( configuredFont() );
      m_treeView->header()->hide();
      configureUi();
  }
