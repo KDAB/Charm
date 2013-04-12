@@ -37,6 +37,7 @@ public:
 
     QList<NamedTimeSpan> standardTimeSpans() const;
     QList<NamedTimeSpan> last4Weeks() const;
+    QList<NamedTimeSpan> last4Months() const;
 
     NamedTimeSpan today() const;
     NamedTimeSpan yesterday() const;
@@ -46,6 +47,7 @@ public:
     NamedTimeSpan theWeekBeforeLast() const;
     NamedTimeSpan thisMonth() const;
     NamedTimeSpan lastMonth() const;
+    NamedTimeSpan theMonthBeforeLast() const;
 
 private:
     NamedTimeSpan m_today;
@@ -57,6 +59,8 @@ private:
     NamedTimeSpan m_3WeeksAgo;
     NamedTimeSpan m_thisMonth;
     NamedTimeSpan m_lastMonth;
+    NamedTimeSpan m_theMonthBeforeLast;
+    NamedTimeSpan m_3MonthsAgo;
 };
 
 class DateChangeWatcher : public QObject

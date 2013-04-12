@@ -15,6 +15,7 @@ class CharmCommand;
 class TimeTrackingView;
 class ReportConfigurationDialog;
 class WeeklyTimesheetConfigurationDialog;
+class MonthlyTimesheetConfigurationDialog;
 class ActivityReportConfigurationDialog;
 
 class TimeTrackingWindow : public CharmWindow,
@@ -56,6 +57,7 @@ public slots:
     void slotEnterVacation();
     void slotActivityReport();
     void slotWeeklyTimesheetReport();
+    void slotMonthlyTimesheetReport();
     void slotExportToXml();
     void slotImportFromXml();
     void slotSyncTasks();
@@ -74,6 +76,7 @@ private slots:
     void slotStopEvent();
     void slotSelectTasksToShow();
     void slotWeeklyTimesheetPreview( int result );
+    void slotMonthlyTimesheetPreview( int result );
     void slotActivityReportPreview( int result );
     void slotCheckUploadedTimesheets();
     void slotBillGone( int result );
@@ -86,9 +89,11 @@ signals:
 
 private:
     void resetWeeklyTimesheetDialog();
+    void resetMonthlyTimesheetDialog();
     void showPreview( ReportConfigurationDialog*, int result );
 
     WeeklyTimesheetConfigurationDialog* m_weeklyTimesheetDialog;
+    MonthlyTimesheetConfigurationDialog* m_monthlyTimesheetDialog;
     ActivityReportConfigurationDialog *m_activityReportDialog;
     TimeTrackingView* m_summaryWidget;
     QVector<WeeklySummary> m_summaries;
