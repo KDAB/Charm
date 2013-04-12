@@ -136,6 +136,7 @@ private:
     QAction m_actionEnterVacation;
     QAction m_actionActivityReport;
     QAction m_actionWeeklyTimesheetReport;
+    QAction m_actionMonthlyTimesheetReport;
     TasksWindow m_tasksWindow;
     EventWindow m_eventWindow;
     IdleDetector* m_idleDetector;

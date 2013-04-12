@@ -39,7 +39,10 @@ SET(
     Reports/ReportConfigurationDialog.cpp
     Reports/CharmReport.cpp
     Reports/ActivityReport.cpp
+    Reports/Timesheet.cpp
     Reports/WeeklyTimesheet.cpp
+    Reports/MonthlyTimesheet.cpp
+    Reports/MonthlyTimesheetConfigurationDialog.cpp
     Reports/ReportPreviewWindow.cpp
     UndoCharmCommandWrapper.cpp
     Commands/CommandRelayCommand.cpp
@@ -122,6 +125,7 @@ QT_WRAP_UI(
     TaskIdDialog.ui
     Reports/ActivityReportConfigurationDialog.ui
     Reports/WeeklyTimesheetConfigurationDialog.ui
+    Reports/MonthlyTimesheetConfigurationDialog.ui
     Reports/ReportPreviewWindow.ui
     TaskEditor.ui
     EnterVacationDialog.ui

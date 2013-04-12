@@ -50,6 +50,16 @@ TimeSpans::TimeSpans(const QDate &today)
     m_lastMonth.timespan =
         TimeSpan( m_thisMonth.timespan.first.addMonths( -1 ),
                   m_thisMonth.timespan.second.addMonths( -1 ) );
+
+    m_theMonthBeforeLast.name = tr( "The Month Before Last Month" );
+    m_theMonthBeforeLast.timespan =
+        TimeSpan( m_thisMonth.timespan.first.addMonths( -2 ),
+                  m_thisMonth.timespan.second.addMonths( -2 ) );
+
+    m_3MonthsAgo.name = tr( "3 Months Ago" );
+    m_3MonthsAgo.timespan =
+        TimeSpan( m_thisMonth.timespan.first.addMonths( -3 ),
+                  m_thisMonth.timespan.second.addMonths( -3 ) );
 }
 
 QList<NamedTimeSpan> TimeSpans::standardTimeSpans() const
@@ -65,6 +75,13 @@ QList<NamedTimeSpan> TimeSpans::last4Weeks() const
 {
     QList<NamedTimeSpan> spans;
     spans << m_thisWeek << m_lastWeek << m_theWeekBeforeLast << m_3WeeksAgo;
+    return spans;
+}
+
+QList<NamedTimeSpan> TimeSpans::last4Months() const
+{
+    QList<NamedTimeSpan> spans;
+    spans << m_thisMonth << m_lastMonth << m_theMonthBeforeLast << m_3MonthsAgo;
     return spans;
 }
 
@@ -106,6 +123,11 @@ NamedTimeSpan TimeSpans::thisMonth() const
 NamedTimeSpan TimeSpans::lastMonth() const
 {
     return m_lastMonth;
+}
+
+NamedTimeSpan TimeSpans::theMonthBeforeLast() const
+{
+    return m_theMonthBeforeLast;
 }
 
 bool NamedTimeSpan::contains( const QDate& date )

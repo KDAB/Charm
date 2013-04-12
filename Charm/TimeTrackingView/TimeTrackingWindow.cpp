@@ -35,10 +35,13 @@
 #include "HttpClient/GetProjectCodesJob.h"
 #include "Reports/ActivityReport.h"
 #include "Reports/WeeklyTimesheet.h"
+#include "Reports/MonthlyTimesheet.h"
+#include "Reports/MonthlyTimesheetConfigurationDialog.h"
 
 TimeTrackingWindow::TimeTrackingWindow( QWidget* parent )
     : CharmWindow( tr( "Time Tracker" ), parent )
     , m_weeklyTimesheetDialog( 0 )
+    , m_monthlyTimesheetDialog( 0 )
     , m_activityReportDialog( 0 )
     , m_summaryWidget( new TimeTrackingView( toolBar(), this ) )
     , m_billDialog( new BillDialog( this ) )
@@ -310,10 +313,31 @@ void TimeTrackingWindow::slotWeeklyTimesheetReport()
     m_weeklyTimesheetDialog->show();
 }
 
+void TimeTrackingWindow::resetMonthlyTimesheetDialog()
+{
+    delete m_monthlyTimesheetDialog;
+    m_monthlyTimesheetDialog = new MonthlyTimesheetConfigurationDialog( this );
+    m_monthlyTimesheetDialog->setAttribute( Qt::WA_DeleteOnClose );
+    connect( m_monthlyTimesheetDialog, SIGNAL( finished( int ) ),
+             this, SLOT( slotMonthlyTimesheetPreview( int ) ) );
+}
+
+void TimeTrackingWindow::slotMonthlyTimesheetReport()
+{
+    resetMonthlyTimesheetDialog();
+    m_monthlyTimesheetDialog->show();
+}
+
 void TimeTrackingWindow::slotWeeklyTimesheetPreview( int result )
 {
     showPreview( m_weeklyTimesheetDialog, result );
     m_weeklyTimesheetDialog = 0;
+}
+
+void TimeTrackingWindow::slotMonthlyTimesheetPreview( int result )
+{
+    showPreview( m_monthlyTimesheetDialog, result );
+    m_monthlyTimesheetDialog = 0;
 }
 
 void TimeTrackingWindow::slotActivityReportPreview( int result )
@@ -473,6 +497,10 @@ void TimeTrackingWindow::slotBillGone(int result)
         resetWeeklyTimesheetDialog();
         m_weeklyTimesheetDialog->setDefaultWeek(m_billDialog->year(), m_billDialog->week());
         m_weeklyTimesheetDialog->show();
+        resetMonthlyTimesheetDialog();
+        m_monthlyTimesheetDialog->setDefaultMonth( m_billDialog->year(),
+            QDate(m_billDialog->year(), 1, 1).addDays((m_billDialog->week() - 1) * 7).month());
+        m_monthlyTimesheetDialog->show();
         break;
     case BillDialog::Later:
         break;
