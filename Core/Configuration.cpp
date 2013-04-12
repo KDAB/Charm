@@ -18,7 +18,7 @@ Configuration& Configuration::instance()
 
 Configuration::Configuration()
     : taskPrefilteringMode( TaskPrefilter_ShowAll )
-    , taskTrackerFontSize( TaskTrackerFont_Regular )
+    , timeTrackerFontSize( TimeTrackerFont_Regular )
     , durationFormat( Minutes )
     , toolButtonStyle( Qt::ToolButtonFollowStyle )
     , showStatusBar( true )
@@ -35,12 +35,12 @@ Configuration::Configuration()
 
 Configuration::Configuration( bool _eventsInLeafsOnly, bool _oneEventAtATime, User _user,
                               TaskPrefilteringMode _taskPrefilteringMode,
-                              TaskTrackerFontSize _taskTrackerFontSize,
+                              TimeTrackerFontSize _timeTrackerFontSize,
                               DurationFormat _durationFormat, bool _detectIdling,
                               Qt::ToolButtonStyle _buttonstyle, bool _showStatusBar,
                               bool _animatedTrayIcon, bool _warnUnuploadedTimesheets )
     : taskPrefilteringMode( _taskPrefilteringMode )
-    , taskTrackerFontSize( _taskTrackerFontSize )
+    , timeTrackerFontSize( _timeTrackerFontSize )
     , durationFormat( _durationFormat )
     , toolButtonStyle( _buttonstyle )
     , showStatusBar( _showStatusBar )
@@ -59,7 +59,7 @@ bool Configuration::operator==( const Configuration& other ) const
 {
     return user == other.user &&
         taskPrefilteringMode == other.taskPrefilteringMode &&
-        taskTrackerFontSize == other.taskTrackerFontSize &&
+        timeTrackerFontSize == other.timeTrackerFontSize &&
         durationFormat == other.durationFormat &&
         detectIdling == other.detectIdling &&
         animatedTrayIcon == other.animatedTrayIcon &&
@@ -120,7 +120,7 @@ void Configuration::dump( const QString& why )
              << "--> local storage type:       " << localStorageType << endl
              << "--> local storage database:   " << localStorageDatabase << endl
              << "--> task prefiltering mode:   " << taskPrefilteringMode << endl
-             << "--> task tracker font size:   " << taskTrackerFontSize << endl
+             << "--> task tracker font size:   " << timeTrackerFontSize << endl
              << "--> duration format:          " << durationFormat << endl
              << "--> Idle Detection:           " << detectIdling << endl
              << "--> toolButtonStyle:          " << toolButtonStyle << endl

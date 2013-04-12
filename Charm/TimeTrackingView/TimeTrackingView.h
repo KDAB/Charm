@@ -61,6 +61,8 @@ public:
 
     bool isTracking() const;
 
+    void configurationChanged();
+
 signals:
     void maybeShrink();
     void startEvent( TaskId );

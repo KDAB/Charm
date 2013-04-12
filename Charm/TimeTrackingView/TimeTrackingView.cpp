@@ -9,6 +9,7 @@
 #include <QPaintEvent>
 
 #include "Core/CharmConstants.h"
+#include "Core/Configuration.h"
 
 #include "Data.h"
 #include "ViewHelpers.h"
@@ -21,16 +22,6 @@ TimeTrackingView::TimeTrackingView( QToolBar* toolBar, QWidget* parent )
     , m_taskSelector( new TimeTrackingTaskSelector( toolBar, this ) )
     , m_dayOfWeek( 0 )
 {
-#ifdef Q_WS_MAC
-    m_fixedFont.setFamily( "Andale Mono" );
-    m_fixedFont.setPointSize( 11 );
-    m_narrowFont = font(); // stay with the desktop
-    m_narrowFont.setPointSize( 11 );
-#else
-    m_fixedFont = font();
-    m_fixedFont.setPointSizeF( 0.9 * m_fixedFont.pointSizeF() );
-    m_narrowFont = m_fixedFont;
-#endif
     setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
     // plumbing
     m_paintAttributes.initialize( palette() );
@@ -337,6 +328,37 @@ void TimeTrackingView::setSummaries( QVector<WeeklySummary> s )
 bool TimeTrackingView::isTracking() const
 {
     return DATAMODEL->activeEventCount() > 0;
+}
+
+void TimeTrackingView::configurationChanged()
+{
+    m_fixedFont = font();
+#ifdef Q_WS_MAC
+    m_fixedFont.setFamily( "Andale Mono" );
+    m_fixedFont.setPointSize( 11 );
+#endif
+
+    switch( CONFIGURATION.timeTrackerFontSize ) {
+    case Configuration::TimeTrackerFont_Small:
+         m_fixedFont.setPointSizeF( 0.9 * m_fixedFont.pointSize() );
+         break;
+    case Configuration::TimeTrackerFont_Regular:
+         break;
+    case Configuration::TimeTrackerFont_Large:
+         m_fixedFont.setPointSizeF( 1.2 * m_fixedFont.pointSize() );
+         break;
+    };
+
+    m_narrowFont = font(); // stay with the desktop
+    m_narrowFont.setPointSize( m_fixedFont.pointSize() );
+
+    /* invalidate cache and force recalc */
+    m_cachedSizeHint = QSize();
+    m_cachedMinimumSizeHint = QSize();
+    sizeHint();
+
+    /* force repaint */
+    repaint();
 }
 
 void TimeTrackingView::handleActiveEvents()

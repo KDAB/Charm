@@ -19,15 +19,15 @@ CharmPreferences::CharmPreferences( const Configuration& config,
             SLOT(slotWarnUnuploadedChanged(bool)));
 
     // this would not need a switch, but i hate casting enums to int:
-    switch( config.taskTrackerFontSize ) {
-    case Configuration::TaskTrackerFont_Small:
-        m_ui.cbTaskTrackerFontSize->setCurrentIndex( 0 );
+    switch( config.timeTrackerFontSize ) {
+    case Configuration::TimeTrackerFont_Small:
+        m_ui.cbTimeTrackerFontSize->setCurrentIndex( 0 );
         break;
-    case Configuration::TaskTrackerFont_Regular:
-        m_ui.cbTaskTrackerFontSize->setCurrentIndex( 1 );
+    case Configuration::TimeTrackerFont_Regular:
+        m_ui.cbTimeTrackerFontSize->setCurrentIndex( 1 );
         break;
-    case Configuration::TaskTrackerFont_Large:
-        m_ui.cbTaskTrackerFontSize->setCurrentIndex( 2 );
+    case Configuration::TimeTrackerFont_Large:
+        m_ui.cbTimeTrackerFontSize->setCurrentIndex( 2 );
         break;
     };
 
@@ -92,23 +92,23 @@ Configuration::DurationFormat CharmPreferences::durationFormat() const
     return Configuration::Minutes;
 }
 
-Configuration::TaskTrackerFontSize CharmPreferences::taskTrackerFontSize() const
+Configuration::TimeTrackerFontSize CharmPreferences::timeTrackerFontSize() const
 {
-    switch( m_ui.cbTaskTrackerFontSize->currentIndex() ) {
+    switch( m_ui.cbTimeTrackerFontSize->currentIndex() ) {
     case 0:
-        return Configuration::TaskTrackerFont_Small;
+        return Configuration::TimeTrackerFont_Small;
         break;
     case 1:
-        return Configuration::TaskTrackerFont_Regular;
+        return Configuration::TimeTrackerFont_Regular;
         break;
     case 2:
-        return Configuration::TaskTrackerFont_Large;
+        return Configuration::TimeTrackerFont_Large;
         break;
     default:
         Q_ASSERT( false ); // somebody added an item
     }
     // always return something, to avoid compiler warning:
-    return Configuration::TaskTrackerFont_Regular;
+    return Configuration::TimeTrackerFont_Regular;
 }
 
 Qt::ToolButtonStyle CharmPreferences::toolButtonStyle() const
