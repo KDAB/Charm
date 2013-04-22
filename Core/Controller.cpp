@@ -207,8 +207,8 @@ void Controller::persistMetaData( Configuration& configuration )
           configuration.user.name() },
         { MetaKey_Key_SubscribedTasksOnly,
           QString().setNum( configuration.taskPrefilteringMode ) },
-        { MetaKey_Key_TaskTrackerFontSize,
-          QString().setNum( configuration.taskTrackerFontSize ) },
+        { MetaKey_Key_TimeTrackerFontSize,
+          QString().setNum( configuration.timeTrackerFontSize ) },
         { MetaKey_Key_DurationFormat,
           QString::number( configuration.durationFormat ) },
         { MetaKey_Key_IdleDetection,
@@ -240,20 +240,20 @@ void Controller::provideMetaData( Configuration& configuration)
     configuration.user.setName( m_storage->getMetaData( MetaKey_Key_UserName ) );
 
     bool ok;
-    const int fontSize = m_storage->getMetaData( MetaKey_Key_TaskTrackerFontSize ).toInt( &ok );
+    const int fontSize = m_storage->getMetaData( MetaKey_Key_TimeTrackerFontSize ).toInt( &ok );
     if ( !ok ) {
-        configuration.taskTrackerFontSize = Configuration::TaskTrackerFont_Regular;
+        configuration.timeTrackerFontSize = Configuration::TimeTrackerFont_Regular;
     } else {
         switch( fontSize ) {
-        case Configuration::TaskTrackerFont_Small:
-            configuration.taskTrackerFontSize = Configuration::TaskTrackerFont_Small;
+        case Configuration::TimeTrackerFont_Small:
+            configuration.timeTrackerFontSize = Configuration::TimeTrackerFont_Small;
             break;
-        case Configuration::TaskTrackerFont_Large:
-            configuration.taskTrackerFontSize = Configuration::TaskTrackerFont_Large;
+        case Configuration::TimeTrackerFont_Large:
+            configuration.timeTrackerFontSize = Configuration::TimeTrackerFont_Large;
             break;
         default:
-        case Configuration::TaskTrackerFont_Regular:
-            configuration.taskTrackerFontSize = Configuration::TaskTrackerFont_Regular;
+        case Configuration::TimeTrackerFont_Regular:
+            configuration.timeTrackerFontSize = Configuration::TimeTrackerFont_Regular;
         }
     }
 

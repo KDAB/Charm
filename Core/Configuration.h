@@ -11,10 +11,10 @@ class Configuration
 {
 public:
     // only append to that, to no break old configurations:
-    enum TaskTrackerFontSize {
-        TaskTrackerFont_Small,
-        TaskTrackerFont_Regular,
-        TaskTrackerFont_Large
+    enum TimeTrackerFontSize {
+        TimeTrackerFont_Small,
+        TimeTrackerFont_Regular,
+        TimeTrackerFont_Large
     };
 
     enum TaskPrefilteringMode {
@@ -46,7 +46,7 @@ public:
 
     User user;  // this user's id
     TaskPrefilteringMode taskPrefilteringMode;
-    TaskTrackerFontSize taskTrackerFontSize;
+    TimeTrackerFontSize timeTrackerFontSize;
     DurationFormat durationFormat;
     Qt::ToolButtonStyle toolButtonStyle;
     bool showStatusBar;
@@ -73,7 +73,7 @@ private:
     friend class ControllerTests;
     // these are all the persisted metadata settings, and the constructor is only used during test runs:
     Configuration( bool eventsInLeafsOnly, bool oneEventAtATime, User user,
-                   TaskPrefilteringMode taskPrefilteringMode, TaskTrackerFontSize,
+                   TaskPrefilteringMode taskPrefilteringMode, TimeTrackerFontSize,
                    DurationFormat durationFormat, bool detectIdling, Qt::ToolButtonStyle buttonstyle,
                    bool showStatusBar, bool animatedTrayIcon, bool warnUnuploadedTimesheets );
     Configuration();
