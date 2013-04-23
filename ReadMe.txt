@@ -32,7 +32,7 @@ used to group in reports. Other tasks can then be created as children
 or even grandchildren of the top level tasks.
 
 Events
------
+------
 Every time time is recorded for a task, an event is created. What
 events exist can be seen in the event editor (View->Event
 Editor). Also, new events can be created there (without recording
@@ -40,7 +40,7 @@ them), modified or deleted.
 
 
 Reports
-------
+-------
 ### Activity Reports
 Activity Reports group all events that happened in a certain time
 frame, like a day or a week. They are handy to get an overview of what
@@ -51,8 +51,9 @@ Time Sheets are created per week, and group event time to tasks and
 week days. Time Sheets are great to report to the boss, you see.
 
 ###  Authors and License
-Charm has been developed by Mirko Boehm (mirko@kde.org), as a work of
-fun and experimentation. The current maintainers are Mike McQuaid and Frank Osterfeld.
+Charm has been developed by Mirko Boehm (mirko@kde.org), as a work of fun and
+experimentation. The current maintainers are Frank Osterfeld and Guillermo A.
+Amaral B.
 
 Charm is Free Software, developed under the terms
 of the GPL. While we hope it is of good use, there is no guaranty of
