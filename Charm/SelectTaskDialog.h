@@ -11,8 +11,9 @@ class ViewFilter;
 class CharmDataModel;
 
 namespace Ui {
-	class SelectTaskDialog;
+    class SelectTaskDialog;
 }
+
 class SelectTaskDialogProxy : public ViewFilter
 {
     Q_OBJECT

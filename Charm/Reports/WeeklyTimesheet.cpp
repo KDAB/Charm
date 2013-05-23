@@ -497,10 +497,10 @@ QByteArray WeeklyTimeSheetReport::saveToXml()
         // find metadata and report element:
         QDomElement root = document.documentElement();
         QDomElement metadata = XmlSerialization::metadataElement( document );
-	QDomElement charmVersion = document.createElement( "charmversion" );
-	QDomText charmVersionString = document.createTextNode( CHARM_VERSION );
-	charmVersion.appendChild( charmVersionString );
-	metadata.appendChild( charmVersion );
+        QDomElement charmVersion = document.createElement( "charmversion" );
+        QDomText charmVersionString = document.createTextNode( CHARM_VERSION );
+        charmVersion.appendChild( charmVersionString );
+        metadata.appendChild( charmVersion );
         QDomElement report = XmlSerialization::reportElement( document );
         Q_ASSERT( !root.isNull() && !metadata.isNull() && !report.isNull() );
 
@@ -603,7 +603,7 @@ QByteArray WeeklyTimeSheetReport::saveToXml()
 //     qDebug() << "WeeklyTimeSheetReport::slotSaveToXml: generated XML:" << endl
 //              << document.toString( 4 );
 //
-       return document.toByteArray( 4 );
+        return document.toByteArray( 4 );
     } catch ( XmlSerializationException& e ) {
         QMessageBox::critical( this, tr( "Error exporting the report" ), e.what() );
     }

@@ -20,4 +20,3 @@ int warning( QWidget* parent,
               QMessageBox::StandardButton defaultButton=QMessageBox::NoButton );
 }
 #endif
-

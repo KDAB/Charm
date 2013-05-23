@@ -13,31 +13,31 @@
 #include "Core/Task.h"
 
 namespace Ui {
-	class TaskEditor;
+    class TaskEditor;
 }
 
 class TaskEditor: public QDialog
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-        explicit TaskEditor( QWidget* parent = 0 );
-	virtual ~TaskEditor();
+    explicit TaskEditor( QWidget* parent = 0 );
+    virtual ~TaskEditor();
 
-	void setTask( const Task& task );
+    void setTask( const Task& task );
 
-	Task getTask() const;
+    Task getTask() const;
 
 private Q_SLOTS:
-	void slotSelectParent();
-	void slotDateChanged( const QDate & date );
-	void slotCheckBoxChecked( bool );
+    void slotSelectParent();
+    void slotDateChanged( const QDate & date );
+    void slotCheckBoxChecked( bool );
 
 private:
-	void checkInvariants();
+    void checkInvariants();
 
-	Ui::TaskEditor* m_ui;
-	mutable Task m_task;
+    Ui::TaskEditor* m_ui;
+    mutable Task m_task;
 };
 
 #endif /* TASKEDITOR_H_ */

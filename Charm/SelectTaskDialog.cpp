@@ -70,7 +70,7 @@ SelectTaskDialog::SelectTaskDialog( QWidget* parent )
     connect( m_ui->filter, SIGNAL( textChanged( QString ) ),
              SLOT( slotFilterTextChanged( QString ) ) );
     connect( this, SIGNAL( accepted() ),
-    		 SLOT( slotAccepted() ) );
+             SLOT( slotAccepted() ) );
 
     QSettings settings;
     settings.beginGroup( staticMetaObject.className() );
@@ -83,7 +83,7 @@ SelectTaskDialog::SelectTaskDialog( QWidget* parent )
 
 SelectTaskDialog::~SelectTaskDialog()
 {
-	delete m_ui; m_ui = 0;
+    delete m_ui; m_ui = 0;
 }
 
 void SelectTaskDialog::showEvent ( QShowEvent * event )
@@ -165,7 +165,7 @@ void SelectTaskDialog::slotAccepted()
     // FIXME refactor, code duplication with taskview
     // save user settings
     if ( Application::instance().state() == Connected ||
-         Application::instance().state() == Disconnecting ) {
+        Application::instance().state() == Disconnecting ) {
         GUIState state;
         // selected task
         state.setSelectedTask( selectedTask() );
@@ -185,4 +185,3 @@ void SelectTaskDialog::slotAccepted()
 }
 
 #include "SelectTaskDialog.moc"
-

@@ -15,12 +15,12 @@ TaskModelAdapter::TaskModelAdapter( CharmDataModel* parent )
     : QAbstractItemModel()
     , m_dataModel( parent )
 {
-	m_dataModel->registerAdapter( this );
+    m_dataModel->registerAdapter( this );
 }
 
 TaskModelAdapter::~TaskModelAdapter()
 {
-	m_dataModel->unregisterAdapter( this );
+    m_dataModel->unregisterAdapter( this );
 }
 
 // reimplement QAbstractItemModel:
@@ -55,20 +55,20 @@ QVariant TaskModelAdapter::data( const QModelIndex& index, int role ) const
     switch( role ) {
     // problem: foreground role is never queried for
     case Qt::ForegroundRole:
-    	if( item->task().isCurrentlyValid() ) {
+        if( item->task().isCurrentlyValid() ) {
             return application->palette().color( QPalette::Active, QPalette::Text );
-    	} else {
-    		return application->palette().color( QPalette::Disabled, QPalette::Text );
-    	}
+        } else {
+            return application->palette().color( QPalette::Disabled, QPalette::Text );
+        }
         break;
     case Qt::BackgroundRole:
-    	if( item->task().isCurrentlyValid() ) {
+        if( item->task().isCurrentlyValid() ) {
             return QVariant();
-    	} else {
-    		QColor color( "crimson" );
-    		color.setAlphaF( 0.25 );
-    		return color;
-    	}
+        } else {
+            QColor color( "crimson" );
+            color.setAlphaF( 0.25 );
+            return color;
+        }
         break;
     case Qt::DisplayRole:
         return DATAMODEL->taskIdAndNameString( item->task().id() );
@@ -203,19 +203,19 @@ void TaskModelAdapter::taskAdded( TaskId id )
 
 void TaskModelAdapter::taskParentChanged( TaskId task, TaskId oldParent, TaskId newParent )
 {
-	// remove task from old parent:
-	const TaskTreeItem& item = m_dataModel->taskTreeItem( task );
-	const int row = item.row();
-	const TaskTreeItem& oldParentItem = m_dataModel->taskTreeItem( oldParent );
-	beginRemoveRows( indexForTaskTreeItem( oldParentItem, 0 ), row, row );
-	// the actual remove happens in the data model
-	endRemoveRows();
-	// add task to new patent:
-	const TaskTreeItem& newParentItem = m_dataModel->taskTreeItem( newParent );
-	const int pos = newParentItem.childCount();
-	beginInsertRows( indexForTaskTreeItem( newParentItem, 0 ), pos, pos );
-	// the actual insert happens in the data model
-	endInsertRows();
+    // remove task from old parent:
+    const TaskTreeItem& item = m_dataModel->taskTreeItem( task );
+    const int row = item.row();
+    const TaskTreeItem& oldParentItem = m_dataModel->taskTreeItem( oldParent );
+    beginRemoveRows( indexForTaskTreeItem( oldParentItem, 0 ), row, row );
+    // the actual remove happens in the data model
+    endRemoveRows();
+    // add task to new patent:
+    const TaskTreeItem& newParentItem = m_dataModel->taskTreeItem( newParent );
+    const int pos = newParentItem.childCount();
+    beginInsertRows( indexForTaskTreeItem( newParentItem, 0 ), pos, pos );
+    // the actual insert happens in the data model
+    endInsertRows();
 }
 
 
