@@ -76,7 +76,7 @@ void XmlSerializationTests::testTaskSerialization()
         try {
             Task readTask = Task::fromXml( element, CHARM_DATABASE_VERSION );
             if( task != readTask ) {
-            	task.dump();
+                task.dump();
             }
             QVERIFY( task == readTask );
         } catch( CharmException& e ) {

@@ -18,8 +18,8 @@ static const int NumberOfTables = sizeof Tables / sizeof Tables[0];
 
 struct Field
 {
-	QString name;
-	QString type;
+    QString name;
+    QString type;
 };
 
 typedef Field Fields;
@@ -75,7 +75,7 @@ static const Fields Users_Fields[] =
 
 static const Fields* Database_Fields[NumberOfTables] =
 { MetaData_Fields, Installations_Fields, Tasks_Fields, Event_Fields,
-		Subscriptions_Fields, Users_Fields };
+    Subscriptions_Fields, Users_Fields };
 
 
 const char DatabaseName[] = "charm.kdab.com";
@@ -96,7 +96,7 @@ SqLiteStorage::~SqLiteStorage()
 
 QString SqLiteStorage::lastInsertRowFunction() const
 {
-	return QString::fromLocal8Bit("last_insert_rowid");
+    return QString::fromLocal8Bit("last_insert_rowid");
 }
 
 
@@ -107,40 +107,40 @@ QString SqLiteStorage::description() const
 
 bool SqLiteStorage::createDatabaseTables()
 {
-	Q_ASSERT_X(database().open(), "SqlStorage::createDatabase",
-			"Connection to database must be established first");
+    Q_ASSERT_X(database().open(), "SqlStorage::createDatabase",
+            "Connection to database must be established first");
 
-	bool error = false;
-	// create tables:
-	for (int i = 0; i < NumberOfTables; ++i)
-	{
-		if (!database().tables().contains(Tables[i]))
-		{
-			QString statement;
-			QTextStream stream(&statement, QIODevice::WriteOnly);
+    bool error = false;
+    // create tables:
+    for (int i = 0; i < NumberOfTables; ++i)
+    {
+        if (!database().tables().contains(Tables[i]))
+        {
+            QString statement;
+            QTextStream stream(&statement, QIODevice::WriteOnly);
 
-			stream << "CREATE table  `" << Tables[i] << "` (";
-			const Field* field = Database_Fields[i];
-			while (field->name != QString::null )
-			{
-				stream << " `" << field->name << "` "
-				<< field->type;
-				++field;
-				if ( field->name != QString::null ) stream << ", ";
-			}
-			stream << ");";
+            stream << "CREATE table  `" << Tables[i] << "` (";
+            const Field* field = Database_Fields[i];
+            while (field->name != QString::null )
+            {
+                stream << " `" << field->name << "` "
+                << field->type;
+                ++field;
+                if ( field->name != QString::null ) stream << ", ";
+            }
+            stream << ");";
 
-			QSqlQuery query( database() );
-			query.prepare( statement );
-			if ( ! runQuery( query ) )
-			{
-				error = true;
-			}
-		}
-	}
+            QSqlQuery query( database() );
+            query.prepare( statement );
+            if ( ! runQuery( query ) )
+            {
+                error = true;
+            }
+        }
+    }
 
-	error = error || ! setMetaData(CHARM_DATABASE_VERSION_DESCRIPTOR, QString().setNum( CHARM_DATABASE_VERSION) );
-	return ! error;
+    error = error || ! setMetaData(CHARM_DATABASE_VERSION_DESCRIPTOR, QString().setNum( CHARM_DATABASE_VERSION) );
+    return ! error;
 }
 
 bool SqLiteStorage::connect( Configuration& configuration )
