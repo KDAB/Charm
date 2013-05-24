@@ -9,7 +9,7 @@ QString CharmException::what() const throw() {
 }
 
 ParseError::ParseError( const QString& text )
-        : CharmException( text )
+    : CharmException( text )
 {}
 
 XmlSerializationException:: XmlSerializationException( const QString& message )

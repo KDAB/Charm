@@ -62,7 +62,7 @@ void SqLiteStorageTests::makeModifyDeleteInstallationTest()
     Installation installation1_1 = m_storage->getInstallation( installation1.id() );
     QVERIFY( installation1.id() == installation1_1.id() );
     QVERIFY( installation1.userId() == installation1_1.userId() );
-	QVERIFY( installation1_1.name() == newName );
+    QVERIFY( installation1_1.name() == newName );
 
     // delete installation 1
     QVERIFY( m_storage->deleteInstallation( installation1 ) );
@@ -130,8 +130,8 @@ void SqLiteStorageTests::makeModifyDeleteTasksTest()
     Task task1_1 = m_storage->getTask( task1.id() );
     Task task2_1 = m_storage->getTask( task2.id() );
     if( task1 != task1_1 ) {
-    	task1.dump();
-    	task1_1.dump();
+        task1.dump();
+        task1_1.dump();
     }
     QVERIFY( task1 == task1_1 );
     QVERIFY( task2 == task2_1 );
@@ -161,7 +161,7 @@ void SqLiteStorageTests::makeModifyDeleteTasksTest()
 
 void SqLiteStorageTests::makeModifyDeleteEventsTest()
 {
-	// make a user
+    // make a user
     User user = m_storage->makeUser( tr("MakeEventTestUser") );
     // make two events
     Task task = m_storage->getTask( 1 );
@@ -328,4 +328,3 @@ void SqLiteStorageTests::cleanupTestCase ()
 QTEST_MAIN( SqLiteStorageTests )
 
 #include "SqLiteStorageTests.moc"
-
