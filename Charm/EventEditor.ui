@@ -445,6 +445,9 @@
        <property name="text">
         <string>(Task name)</string>
        </property>
+       <property name="textFormat">
+        <enum>Qt::PlainText</enum>
+       </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
        </property>
@@ -455,7 +458,7 @@
         <number>12</number>
        </property>
        <property name="buddy">
-        <cstring>pushButtonSelectTask</cstring>
+        <cstring></cstring>
        </property>
       </widget>
      </item>
