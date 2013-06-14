@@ -263,7 +263,6 @@ void TimeTrackingWindow::slotEditPreferences( bool )
         CONFIGURATION.durationFormat = dialog.durationFormat();
         CONFIGURATION.toolButtonStyle = dialog.toolButtonStyle();
         CONFIGURATION.detectIdling = dialog.detectIdling();
-        CONFIGURATION.animatedTrayIcon = dialog.animatedTrayIcon();
         CONFIGURATION.warnUnuploadedTimesheets = dialog.warnUnuploadedTimesheets();
         emit saveConfiguration();
     }

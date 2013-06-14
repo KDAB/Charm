@@ -39,7 +39,6 @@ extern const QString MetaKey_Key_SubscribedTasksOnly;
 extern const QString MetaKey_Key_TimeTrackerFontSize;
 extern const QString MetaKey_Key_DurationFormat;
 extern const QString MetaKey_Key_IdleDetection;
-extern const QString MetaKey_Key_AnimatedTrayIcon;
 extern const QString MetaKey_Key_WarnUnuploadedTimesheets;
 extern const QString MetaKey_Key_ToolButtonStyle;
 extern const QString MetaKey_Key_ShowStatusBar;
