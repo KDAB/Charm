@@ -17,7 +17,6 @@ public:
 
     Configuration::DurationFormat durationFormat() const;
     bool detectIdling() const;
-    bool animatedTrayIcon() const;
     bool warnUnuploadedTimesheets() const;
 
     Qt::ToolButtonStyle toolButtonStyle() const;

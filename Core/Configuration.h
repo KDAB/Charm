@@ -51,7 +51,6 @@ public:
     Qt::ToolButtonStyle toolButtonStyle;
     bool showStatusBar;
     bool detectIdling;
-    bool animatedTrayIcon;
     bool warnUnuploadedTimesheets;
 
     // these are stored in QSettings, since we need this information to locate and open the database:
@@ -75,7 +74,7 @@ private:
     Configuration( bool eventsInLeafsOnly, bool oneEventAtATime, User user,
                    TaskPrefilteringMode taskPrefilteringMode, TimeTrackerFontSize,
                    DurationFormat durationFormat, bool detectIdling, Qt::ToolButtonStyle buttonstyle,
-                   bool showStatusBar, bool animatedTrayIcon, bool warnUnuploadedTimesheets );
+                   bool showStatusBar, bool warnUnuploadedTimesheets );
     Configuration();
 };
 
