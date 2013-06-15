@@ -23,7 +23,6 @@ Configuration::Configuration()
     , toolButtonStyle( Qt::ToolButtonFollowStyle )
     , showStatusBar( true )
     , detectIdling( true )
-    , animatedTrayIcon( true )
     , warnUnuploadedTimesheets( true )
     , configurationName( DEFAULT_CONFIG_GROUP )
     , installationId( 0 )
@@ -38,14 +37,13 @@ Configuration::Configuration( bool _eventsInLeafsOnly, bool _oneEventAtATime, Us
                               TimeTrackerFontSize _timeTrackerFontSize,
                               DurationFormat _durationFormat, bool _detectIdling,
                               Qt::ToolButtonStyle _buttonstyle, bool _showStatusBar,
-                              bool _animatedTrayIcon, bool _warnUnuploadedTimesheets )
+                              bool _warnUnuploadedTimesheets )
     : taskPrefilteringMode( _taskPrefilteringMode )
     , timeTrackerFontSize( _timeTrackerFontSize )
     , durationFormat( _durationFormat )
     , toolButtonStyle( _buttonstyle )
     , showStatusBar( _showStatusBar )
     , detectIdling ( _detectIdling )
-    , animatedTrayIcon( _animatedTrayIcon )
     , warnUnuploadedTimesheets( _warnUnuploadedTimesheets )
     , configurationName( DEFAULT_CONFIG_GROUP )
     , installationId( 0 )
@@ -62,7 +60,6 @@ bool Configuration::operator==( const Configuration& other ) const
         timeTrackerFontSize == other.timeTrackerFontSize &&
         durationFormat == other.durationFormat &&
         detectIdling == other.detectIdling &&
-        animatedTrayIcon == other.animatedTrayIcon &&
         warnUnuploadedTimesheets == other.warnUnuploadedTimesheets &&
         toolButtonStyle == other.toolButtonStyle &&
         showStatusBar == other.showStatusBar &&
@@ -125,7 +122,6 @@ void Configuration::dump( const QString& why )
              << "--> Idle Detection:           " << detectIdling << endl
              << "--> toolButtonStyle:          " << toolButtonStyle << endl
              << "--> showStatusBar:            " << showStatusBar << endl
-             << "--> animatedTrayIcon:         " << animatedTrayIcon << endl
              << "--> warnUnuploadedTimesheets: " << warnUnuploadedTimesheets;
 }
 

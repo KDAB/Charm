@@ -27,8 +27,7 @@ public:
 public slots:
     void slotMakeAndActivateEvent( const Task& );
     void slotRequestEventModification(const Event&newEvent, const Event& oldEvent);
-    void slotSysTrayUpdate( const QString&, bool );
-    void slotSysTrayIconUpdate();
+    void slotSysTrayUpdate(const QString& toolTip, bool active);
 
 private:
     CharmDataModel m_dataModel;
@@ -36,11 +35,6 @@ private:
     ViewFilter m_viewFilter; // this is the filtered task model adapter
 
     EventModelFilter m_eventModelFilter; // owns the event model adapter
-
-    QTimer m_iconTimer;
-    enum { NPixmaps = 12 };
-    QPixmap m_pixmaps[NPixmaps];
-    int m_iconNumber;
 };
 
 #endif

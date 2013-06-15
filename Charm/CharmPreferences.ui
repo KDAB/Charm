@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>381</width>
-    <height>226</height>
+    <width>449</width>
+    <height>250</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,6 +16,32 @@
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <layout class="QGridLayout" name="gridLayout">
+     <item row="4" column="1">
+      <widget class="QCheckBox" name="cbWarnUnuploadedTimesheets">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0" alignment="Qt::AlignRight">
+      <widget class="QLabel" name="label_2">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Enable Bill Lumbergh</string>
+       </property>
+       <property name="buddy">
+        <cstring>cbWarnUnuploadedTimesheets</cstring>
+       </property>
+      </widget>
+     </item>
      <item row="0" column="0" alignment="Qt::AlignRight">
       <widget class="QLabel" name="lbTimeTrackerFontSize">
        <property name="sizePolicy">
@@ -130,29 +156,6 @@
       </widget>
      </item>
      <item row="3" column="0" alignment="Qt::AlignRight">
-      <widget class="QLabel" name="lbAnimatedTrayIcon">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>Animated tray icon</string>
-       </property>
-       <property name="buddy">
-        <cstring>cbAnimatedTrayIcon</cstring>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="1">
-      <widget class="QCheckBox" name="cbAnimatedTrayIcon">
-       <property name="checked">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="0" alignment="Qt::AlignRight">
       <widget class="QLabel" name="label">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
@@ -168,34 +171,8 @@
        </property>
       </widget>
      </item>
-     <item row="4" column="1">
+     <item row="3" column="1">
       <widget class="QCheckBox" name="cbIdleDetection">
-       <property name="text">
-        <string/>
-       </property>
-       <property name="checked">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="0" alignment="Qt::AlignRight">
-      <widget class="QLabel" name="label_2">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>Enable Bill Lumbergh</string>
-       </property>
-       <property name="buddy">
-        <cstring>cbWarnUnuploadedTimesheets</cstring>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="1">
-      <widget class="QCheckBox" name="cbWarnUnuploadedTimesheets">
        <property name="text">
         <string/>
        </property>
@@ -235,7 +212,6 @@
   <tabstop>cbTimeTrackerFontSize</tabstop>
   <tabstop>cbToolButtonStyle</tabstop>
   <tabstop>cbDurationFormat</tabstop>
-  <tabstop>cbAnimatedTrayIcon</tabstop>
   <tabstop>cbIdleDetection</tabstop>
   <tabstop>cbWarnUnuploadedTimesheets</tabstop>
   <tabstop>buttonBox</tabstop>
