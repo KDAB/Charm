@@ -4,6 +4,7 @@
 #include "Core/Configuration.h"
 #include "Application.h"
 #include "CharmPreferences.h"
+#include "MessageBox.h"
 
 CharmPreferences::CharmPreferences( const Configuration& config,
                                     QWidget* parent_ )
@@ -140,8 +141,13 @@ void CharmPreferences::slotWarnUnuploadedChanged( bool enabled )
 {
     if (!enabled)
     {
-        QMessageBox::StandardButton response = QMessageBox::question(this, "Bill is sad :(.", "Bill has always been misunderstood. All he really wants is your reports, and even when he doesn't get them you only have to evade him once per hour. Do you really want the guy gone?", QMessageBox::Yes | QMessageBox::No);
-        if (response == QMessageBox::No)
+        const int response = MessageBox::question(this,
+                                                  tr("Bill is sad :(."),
+                                                  tr("Bill has always been misunderstood. All he really wants is your reports, and even when he doesn't get them you only have to evade him once per hour. I'm sure you want to keep Bill's gentle reminders?"),
+                                                  tr("Mmmmkay"),
+                                                  tr("No, Stop Bill"),
+                                                  QMessageBox::Yes);
+        if (response == QMessageBox::Yes)
             m_ui.cbWarnUnuploadedTimesheets->setCheckState(Qt::Checked);
     }
 }
