@@ -306,7 +306,7 @@ Event SqlStorage::makeEvent( const SqlRaiiTransactor& )
         // modify the created record to make sure event_id is unique
         // within the installation:
         const char* statement = "UPDATE Events SET event_id = :event_id, "
-                                "installation_id = :installation, report_id = :report_id WHERE id = :id;";
+                                "installation_id = :installation_id, report_id = :report_id WHERE id = :id;";
         QSqlQuery query(database());
         query.prepare(statement);
         query.bindValue(":event_id", event.id());
