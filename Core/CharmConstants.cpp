@@ -36,22 +36,9 @@ const QString MetaKey_Key_ShowStatusBar = "ShowStatusBar";
 const QString TrueString( "true" );
 const QString FalseString( "false" );
 
-const QString& stringForBool ( bool value )
+const QString& stringForBool(bool val)
 {
-    if ( value ) {
-        return TrueString;
-    } else {
-        return FalseString;
-    }
-}
-
-bool boolForString( const QString& text )
-{
-    if ( text.simplified() == TrueString ) {
-        return true;
-    } else {
-        return false;
-    }
+    return val ? TrueString : FalseString;
 }
 
 void connectControllerAndModel( Controller* controller, CharmDataModel* model )
