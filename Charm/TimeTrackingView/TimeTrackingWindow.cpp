@@ -497,10 +497,6 @@ void TimeTrackingWindow::slotBillGone(int result)
         resetWeeklyTimesheetDialog();
         m_weeklyTimesheetDialog->setDefaultWeek(m_billDialog->year(), m_billDialog->week());
         m_weeklyTimesheetDialog->show();
-        resetMonthlyTimesheetDialog();
-        m_monthlyTimesheetDialog->setDefaultMonth( m_billDialog->year(),
-            QDate(m_billDialog->year(), 1, 1).addDays((m_billDialog->week() - 1) * 7).month());
-        m_monthlyTimesheetDialog->show();
         break;
     case BillDialog::Later:
         break;
