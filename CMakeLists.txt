@@ -147,11 +147,6 @@ ENDIF()
 
 IF( CMAKE_BUILD_TYPE MATCHES "^[Rr]elease$" )
     ADD_DEFINITIONS( -DQT_NO_DEBUG_OUTPUT )
-ELSE()
-    MESSAGE( WARNING
-        "Only run Charm in Debug mode if you are doing development!\n"
-        "Things like idle detection behave very differently in Debug mode."
-    )
 ENDIF()
 
 # Always include the source and build directories in the include path
@@ -190,6 +185,7 @@ SET( ICONS_DIR "${CMAKE_SOURCE_DIR}/Charm/Icons" )
 
 OPTION( CHARM_IDLE_DETECTION "Build the Charm idle detector" ON )
 OPTION( CHARM_TIMESHEET_TOOLS "Build the Charm timesheet tools" OFF )
+set( CHARM_IDLE_TIME "360" CACHE STRING "Set the idle timeout (default 360)" )
 
 ADD_SUBDIRECTORY( Core )
 ADD_SUBDIRECTORY( Charm )

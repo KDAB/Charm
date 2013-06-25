@@ -9,15 +9,9 @@
 #include "WindowsIdleDetector.h"
 #include "X11IdleDetector.h"
 
-#ifdef NDEBUG
-static const int IDLE_TIME = 360;
-#else
-static const int IDLE_TIME = 10;
-#endif
-
 IdleDetector::IdleDetector( QObject* parent )
     : QObject( parent )
-    , m_idlenessDuration( IDLE_TIME )
+    , m_idlenessDuration( CHARM_IDLE_TIME ) // from CharmCMake.h
 {
 }
 
