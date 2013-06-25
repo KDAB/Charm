@@ -232,7 +232,7 @@ void Controller::persistMetaData( Configuration& configuration )
 }
 
 template<class T>
-void Controller::loadConfigValue( T& configValue, const QString& key )
+void Controller::loadConfigValue( const QString& key, T& configValue )
 {
     const QString storedValue = m_storage->getMetaData( key );
     if ( storedValue.isNull() )
@@ -246,13 +246,13 @@ void Controller::provideMetaData( Configuration& configuration)
                 "No storage interface available" );
     configuration.user.setName( m_storage->getMetaData( MetaKey_Key_UserName ) );
 
-    loadConfigValue( configuration.timeTrackerFontSize, MetaKey_Key_TimeTrackerFontSize );
-    loadConfigValue( configuration.durationFormat, MetaKey_Key_DurationFormat );
-    loadConfigValue( configuration.taskPrefilteringMode, MetaKey_Key_SubscribedTasksOnly );
-    loadConfigValue( configuration.detectIdling, MetaKey_Key_IdleDetection );
-    loadConfigValue( configuration.warnUnuploadedTimesheets, MetaKey_Key_WarnUnuploadedTimesheets );
-    loadConfigValue( configuration.toolButtonStyle, MetaKey_Key_ToolButtonStyle );
-    loadConfigValue( configuration.showStatusBar, MetaKey_Key_ShowStatusBar );
+    loadConfigValue( MetaKey_Key_TimeTrackerFontSize, configuration.timeTrackerFontSize );
+    loadConfigValue( MetaKey_Key_DurationFormat, configuration.durationFormat );
+    loadConfigValue( MetaKey_Key_SubscribedTasksOnly, configuration.taskPrefilteringMode );
+    loadConfigValue( MetaKey_Key_IdleDetection, configuration.detectIdling );
+    loadConfigValue( MetaKey_Key_WarnUnuploadedTimesheets, configuration.warnUnuploadedTimesheets );
+    loadConfigValue( MetaKey_Key_ToolButtonStyle, configuration.toolButtonStyle );
+    loadConfigValue( MetaKey_Key_ShowStatusBar, configuration.showStatusBar );
 
     CONFIGURATION.dump();
 }
