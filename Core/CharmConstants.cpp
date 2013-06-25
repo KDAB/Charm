@@ -36,7 +36,7 @@ const QString MetaKey_Key_ShowStatusBar = "ShowStatusBar";
 const QString TrueString( "true" );
 const QString FalseString( "false" );
 
-const QString& stringForBool(bool val)
+const QString& stringForBool( bool val )
 {
     return val ? TrueString : FalseString;
 }

@@ -49,27 +49,27 @@ extern const QString FalseString;
 #define CONFIGURATION ( Configuration::instance() )
 
 // helper functions to persist meta data:
-template<class T> T strToT(const QString &str);
-template<> inline int strToT(const QString& str)
+template<class T> T strToT( const QString &str );
+template<> inline int strToT( const QString& str )
 {
     bool ok;
     int ret = str.toInt( &ok );
-    Q_ASSERT(ok); Q_UNUSED(ok);
+    Q_ASSERT( ok ); Q_UNUSED( ok );
     return ret;
 }
-template<> inline bool strToT(const QString& str)
+template<> inline bool strToT( const QString& str )
 {
     return str.simplified() == TrueString;
 }
-#define INT_CONFIG_TYPE(TYPE)\
-template<> inline TYPE strToT(const QString& str)\
-{ return static_cast<TYPE>(strToT<int>(str)); }
-INT_CONFIG_TYPE(Configuration::TimeTrackerFontSize)
-INT_CONFIG_TYPE(Configuration::DurationFormat)
-INT_CONFIG_TYPE(Configuration::TaskPrefilteringMode)
-INT_CONFIG_TYPE(Qt::ToolButtonStyle)
+#define INT_CONFIG_TYPE( TYPE )\
+template<> inline TYPE strToT( const QString& str )\
+{ return static_cast<TYPE>( strToT<int> ( str ) ); }
+INT_CONFIG_TYPE( Configuration::TimeTrackerFontSize )
+INT_CONFIG_TYPE( Configuration::DurationFormat )
+INT_CONFIG_TYPE( Configuration::TaskPrefilteringMode )
+INT_CONFIG_TYPE( Qt::ToolButtonStyle )
 
-const QString &stringForBool(bool val);
+const QString &stringForBool( bool val );
 
 class Controller;
 class CharmDataModel;
