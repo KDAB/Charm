@@ -41,7 +41,7 @@ const QIcon& Data::charmTrayActiveIcon()
 #ifdef Q_WS_MAC
     static const QString iconPath = QLatin1String(":/Charm/charmtrayactive_mac.png");
 #else
-    static const QString iconPath = QLatin1String(":/Charm/charmtray22.png");
+    static const QString iconPath = QLatin1String(":/Charm/charmtrayactive22.png");
 #endif
 
     Q_ASSERT_X(!QPixmap(iconPath).isNull(), "Data::charmTrayActiveIcon",
