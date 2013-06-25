@@ -232,7 +232,7 @@ void Controller::persistMetaData( Configuration& configuration )
 }
 
 template<class T>
-void Controller::loadConfigValue( const QString& key, T& configValue )
+void Controller::loadConfigValue( const QString& key, T& configValue ) const
 {
     const QString storedValue = m_storage->getMetaData( key );
     if ( storedValue.isNull() )

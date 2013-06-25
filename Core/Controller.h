@@ -65,7 +65,7 @@ signals:
 private:
     void updateSubscriptionForTask( const Task& );
 
-    template<class T> void loadConfigValue( const QString &key, T &configValue );
+    template<class T> void loadConfigValue( const QString &key, T &configValue ) const;
     StorageInterface* m_storage;
 };
 
