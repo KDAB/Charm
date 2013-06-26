@@ -231,75 +231,29 @@ void Controller::persistMetaData( Configuration& configuration )
     CONFIGURATION.dump();
 }
 
+template<class T>
+void Controller::loadConfigValue( const QString& key, T& configValue ) const
+{
+    const QString storedValue = m_storage->getMetaData( key );
+    if ( storedValue.isNull() )
+        return;
+    configValue = strToT<T>( storedValue );
+}
+
 void Controller::provideMetaData( Configuration& configuration)
 {
     Q_ASSERT_X( m_storage != 0, "Controller::provideMetaData",
                 "No storage interface available" );
     configuration.user.setName( m_storage->getMetaData( MetaKey_Key_UserName ) );
 
-    bool ok;
-    const int fontSize = m_storage->getMetaData( MetaKey_Key_TimeTrackerFontSize ).toInt( &ok );
-    if ( !ok ) {
-        configuration.timeTrackerFontSize = Configuration::TimeTrackerFont_Regular;
-    } else {
-        switch( fontSize ) {
-        case Configuration::TimeTrackerFont_Small:
-            configuration.timeTrackerFontSize = Configuration::TimeTrackerFont_Small;
-            break;
-        case Configuration::TimeTrackerFont_Large:
-            configuration.timeTrackerFontSize = Configuration::TimeTrackerFont_Large;
-            break;
-        default:
-        case Configuration::TimeTrackerFont_Regular:
-            configuration.timeTrackerFontSize = Configuration::TimeTrackerFont_Regular;
-        }
-    }
+    loadConfigValue( MetaKey_Key_TimeTrackerFontSize, configuration.timeTrackerFontSize );
+    loadConfigValue( MetaKey_Key_DurationFormat, configuration.durationFormat );
+    loadConfigValue( MetaKey_Key_SubscribedTasksOnly, configuration.taskPrefilteringMode );
+    loadConfigValue( MetaKey_Key_IdleDetection, configuration.detectIdling );
+    loadConfigValue( MetaKey_Key_WarnUnuploadedTimesheets, configuration.warnUnuploadedTimesheets );
+    loadConfigValue( MetaKey_Key_ToolButtonStyle, configuration.toolButtonStyle );
+    loadConfigValue( MetaKey_Key_ShowStatusBar, configuration.showStatusBar );
 
-    const int durationFormatValue = m_storage->getMetaData( MetaKey_Key_DurationFormat ).toInt( &ok );
-    if ( ok ) {
-        switch ( durationFormatValue ) {
-        case Configuration::Minutes:
-            configuration.durationFormat = Configuration::Minutes;
-            break;
-        case Configuration::Decimal:
-            configuration.durationFormat = Configuration::Decimal;
-            break;
-        }
-    }
-
-    const int taskPrefilteringModeValue = m_storage->getMetaData( MetaKey_Key_SubscribedTasksOnly ).toInt( &ok );
-    if ( ok ) {
-        switch( taskPrefilteringModeValue ) {
-        case Configuration::TaskPrefilter_ShowAll:
-            configuration.taskPrefilteringMode = Configuration::TaskPrefilter_ShowAll;
-            break;
-        case Configuration::TaskPrefilter_CurrentOnly:
-            configuration.taskPrefilteringMode = Configuration::TaskPrefilter_CurrentOnly;
-            break;
-        case Configuration::TaskPrefilter_SubscribedOnly:
-            configuration.taskPrefilteringMode = Configuration::TaskPrefilter_SubscribedOnly;
-            break;
-        case Configuration::TaskPrefilter_SubscribedAndCurrentOnly:
-            configuration.taskPrefilteringMode = Configuration::TaskPrefilter_SubscribedAndCurrentOnly;
-            break;
-        }
-    }
-
-    configuration.detectIdling = boolForString(
-        m_storage->getMetaData( MetaKey_Key_IdleDetection ) );
-    configuration.warnUnuploadedTimesheets = boolForString(
-        m_storage->getMetaData( MetaKey_Key_WarnUnuploadedTimesheets ) );
-
-    int buttonStyleValue = m_storage->getMetaData( MetaKey_Key_ToolButtonStyle ).toInt( &ok );
-    if( ok ) {
-        Qt::ToolButtonStyle buttonStyle = static_cast<Qt::ToolButtonStyle> ( buttonStyleValue );
-        configuration.toolButtonStyle = buttonStyle;
-    } else {
-        configuration.toolButtonStyle = Qt::ToolButtonIconOnly;
-    }
-
-    configuration.showStatusBar = boolForString(
-            m_storage->getMetaData( MetaKey_Key_ShowStatusBar ) );
     CONFIGURATION.dump();
 }
 
