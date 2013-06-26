@@ -12,7 +12,7 @@ CharmPreferences::CharmPreferences( const Configuration& config,
 {
     m_ui.setupUi( this );
     m_ui.cbIdleDetection->setEnabled( Application::instance().idleDetector() != 0 );
-    m_ui.cbIdleDetection->setChecked( config.detectIdling );
+    m_ui.cbIdleDetection->setChecked( config.detectIdling && m_ui.cbIdleDetection->isEnabled() );
     m_ui.cbWarnUnuploadedTimesheets->setChecked( config.warnUnuploadedTimesheets );
 
     connect(m_ui.cbWarnUnuploadedTimesheets, SIGNAL(toggled(bool)),
