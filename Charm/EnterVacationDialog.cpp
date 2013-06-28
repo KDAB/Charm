@@ -140,6 +140,7 @@ void EnterVacationDialog::createEvents()
         const QDate eventStart = event.startDateTime().date();
         const QDate eventEnd = event.endDateTime().date();
         Q_ASSERT( eventStart == eventEnd );
+        Q_UNUSED( eventEnd ) //release mode
         const QString shortDate = eventStart.toString( Qt::DefaultLocaleShortDate );
         const QString duration = formatDuration( event.startDateTime(), event.endDateTime() );
 
