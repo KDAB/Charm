@@ -234,7 +234,7 @@ bool HttpJob::execute(int state, QNetworkAccessManager *manager)
         QUrlQuery urlQuery;
         urlQuery.addQueryItem("j_username", m_username);
         urlQuery.addQueryItem("j_password", m_password);
-        QByteArray encodedQueryPlusPlus = urlQuery.query(QUrl::FullyEncoded).toUtf8();
+        QByteArray encodedQueryPlusPlus = urlQuery.query(QUrl::FullyEncoded).toUtf8().replace('+', "%2b");
 #endif
 
         QNetworkRequest request(m_loginUrl);
