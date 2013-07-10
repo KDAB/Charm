@@ -113,7 +113,7 @@ void TaskExport::writeTo( const QString& filename, const TaskList& tasks )
         QTextStream stream( &file );
         document.save( stream, 4 );
     } else {
-        throw XmlSerializationException( QObject::tr( "Cannot write to file" ) );
+        throw XmlSerializationException( QObject::tr( "Cannot write to file: %1" ).arg( file.errorString() ) );
     }
 }
 
@@ -128,12 +128,15 @@ void TaskExport::readFrom( const QString& filename )
     // load the XML into a DOM tree:
     if (!file.open(QIODevice::ReadOnly))
     {
-        throw XmlSerializationException( QObject::tr( "Cannot open file for reading." ) );
+        throw XmlSerializationException( QObject::tr( "Cannot open file for reading: %1" ).arg( file.errorString() ) );
     }
     QDomDocument document;
-    if (!document.setContent(&file))
+    QString errorMessage;
+    int errorLine = 0;
+    int errorColumn = 0;
+    if (!document.setContent(&file, &errorMessage, &errorLine, &errorColumn))
     {
-        throw XmlSerializationException( QObject::tr( "Cannot read file" ) );
+        throw XmlSerializationException( QObject::tr( "Invalid XML: [%1:%2] %3" ).arg( QString::number( errorLine ), QString::number( errorColumn ), errorMessage ) );
     }
 
     // now read and check for the correct report type
