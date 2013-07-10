@@ -396,7 +396,7 @@ void MonthlyTimeSheetReport::update()
             qDebug() << "MonthlyTimeSheet::create: default style sheet is empty, too bad";
         }
     } else {
-        qDebug() << "MonthlyTimeSheet::create: cannot load report style sheet";
+        qDebug() << "MonthlyTimeSheet::create: cannot load report style sheet: " << stylesheet.errorString();
     }
 
     report.setHtml( doc.toString() );

@@ -352,7 +352,7 @@ void ActivityReport::slotUpdate()
             qDebug() << "WeeklyTimeSheet::create: default style sheet is empty, too bad";
         }
     } else {
-        qDebug() << "WeeklyTimeSheet::create: cannot load report style sheet";
+        qDebug() << "WeeklyTimeSheet::create: cannot load report style sheet: " << stylesheet.errorString();
     }
 
     report->setHtml( doc.toString() );
