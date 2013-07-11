@@ -57,7 +57,7 @@ void TimeSheetReport::slotSaveToXml()
         file.write( payload );
     } else {
         QMessageBox::critical( this, tr( "Error saving report" ),
-                               tr( "Cannot write to selected location." ) );
+                               tr( "Cannot write to selected location:\n%1" ).arg( file.errorString() ) );
     }
 }
 

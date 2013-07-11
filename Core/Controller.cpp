@@ -410,7 +410,7 @@ QString Controller::importDatabaseFromXml( const QDomDocument& document )
         }
     } catch ( XmlSerializationException& e ) {
         qDebug() << "Controller::importDatabaseFromXml: things fucked up:" << e.what();
-        return tr( "The Export file is invalid." );
+        return tr( "The export file is invalid: %1" ).arg( e.what() );
     }
 
     const QString error = m_storage->setAllTasksAndEvents( CONFIGURATION.user, importedTasks, importedEvents );

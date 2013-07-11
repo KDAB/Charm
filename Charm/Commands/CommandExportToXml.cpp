@@ -35,9 +35,11 @@ bool CommandExportToXml::execute( ControllerInterface* controller )
             stream << document.toString( 4 );
         } else {
             m_error = true;
+            m_errorString = tr( "Could not open %1 for writing: %2" ).arg( m_filename, file.errorString() );
         }
-    }  catch ( XmlSerializationException& ) {
+    }  catch ( const XmlSerializationException& e ) {
         m_error = true;
+        m_errorString = e.what();
     }
     return true;
 }
@@ -49,7 +51,7 @@ bool CommandExportToXml::finalize()
         CharmWindow* view = dynamic_cast<CharmWindow*>( owner() );
         Q_ASSERT( view ); // this command is "owned" by a CharmWindow
         QMessageBox::critical( view, tr( "Error exporting Database to XML" ),
-                               tr("The database could not be exported, sorry." ) );
+                               tr("The database could not be exported:\n%1" ).arg( m_errorString ) );
     }
     return true;
 }

@@ -18,6 +18,7 @@ public:
 
 private:
     bool m_error;
+    QString m_errorString;
     QString m_filename;
 };
 
