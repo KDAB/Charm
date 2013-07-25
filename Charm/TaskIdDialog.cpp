@@ -1,11 +1,16 @@
 #include "TaskIdDialog.h"
 
+#include <QDialogButtonBox>
+#include <QPushButton>
+
 TaskIdDialog::TaskIdDialog( TaskModelInterface* model, TasksView* parent )
     : QDialog( parent )
     , m_model( model )
 {
     m_ui.setupUi( this );
     m_ui.spinBox->setRange( 1, 1000*1000*1000 );
+    connect( m_ui.buttonBox, SIGNAL(accepted()), this, SLOT(accept()) );
+    connect( m_ui.buttonBox, SIGNAL(rejected()), this, SLOT(reject()) );
     // resize( minimumSize() );
 }
 
@@ -21,13 +26,9 @@ void TaskIdDialog::setSuggestedId( int id )
 
 void TaskIdDialog::on_spinBox_valueChanged( int value )
 {
-    if ( m_model->taskIdExists( value ) ) {
-        m_ui.okButton->setEnabled( false );
-        m_ui.labelExists->setText( tr( "(not ok, exists)" ) );
-    } else {
-        m_ui.okButton->setEnabled( true );
-        m_ui.labelExists->setText( tr( "(ok, does not exist)" ) );
-    }
+    const bool taskExists = m_model->taskIdExists( value );
+    m_ui.buttonBox->button( QDialogButtonBox::Ok )->setEnabled( !taskExists );
+    m_ui.labelExists->setText( taskExists ? tr( "(not ok, exists)" ) : tr( "(ok, does not exist)" ) );
 }
 
 int TaskIdDialog::selectedId() const
