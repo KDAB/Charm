@@ -535,7 +535,7 @@ bool Application::configure()
         {
             QMessageBox::information( &mainView(),
                                      tr("Configuration Problem"), CONFIGURATION.failureMessage,
-                                     tr("Ok"));
+                                     tr("OK"));
             CONFIGURATION.failureMessage.clear();
         }
     }
