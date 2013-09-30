@@ -28,7 +28,9 @@ EventEditor::EventEditor( const Event& event, QWidget* parent )
     m_ui = new Ui::EventEditor();
     m_ui->setupUi( this );
     m_ui->dateEditEnd->calendarWidget()->setFirstDayOfWeek( Qt::Monday );
+    m_ui->dateEditEnd->calendarWidget()->setVerticalHeaderFormat( QCalendarWidget::ISOWeekNumbers );
     m_ui->dateEditStart->calendarWidget()->setFirstDayOfWeek( Qt::Monday );
+    m_ui->dateEditStart->calendarWidget()->setVerticalHeaderFormat( QCalendarWidget::ISOWeekNumbers );
 
     // Ctrl+Return for OK
     m_ui->buttonBox->button(QDialogButtonBox::Ok)->setShortcut(Qt::CTRL + Qt::Key_Return);
