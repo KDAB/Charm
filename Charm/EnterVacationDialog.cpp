@@ -67,7 +67,9 @@ EnterVacationDialog::EnterVacationDialog( QWidget* parent )
 
     m_ui->setupUi( this );
     m_ui->startDate->calendarWidget()->setFirstDayOfWeek( Qt::Monday );
+    m_ui->startDate->calendarWidget()->setVerticalHeaderFormat( QCalendarWidget::ISOWeekNumbers );
     m_ui->endDate->calendarWidget()->setFirstDayOfWeek( Qt::Monday );
+    m_ui->endDate->calendarWidget()->setVerticalHeaderFormat( QCalendarWidget::ISOWeekNumbers );
     //set next week as default range
     const QDate referenceDate = QDate::currentDate().addDays( 7 );
     m_ui->startDate->setDate( Charm::weekDayInWeekOf( Qt::Monday, referenceDate ) );
