@@ -34,7 +34,9 @@ ActivityReportConfigurationDialog::ActivityReportConfigurationDialog( QWidget* p
 
     m_ui->setupUi( this );
     m_ui->dateEditEnd->calendarWidget()->setFirstDayOfWeek( Qt::Monday );
+    m_ui->dateEditEnd->calendarWidget()->setVerticalHeaderFormat( QCalendarWidget::ISOWeekNumbers );
     m_ui->dateEditStart->calendarWidget()->setFirstDayOfWeek( Qt::Monday );
+    m_ui->dateEditStart->calendarWidget()->setVerticalHeaderFormat( QCalendarWidget::ISOWeekNumbers );
 
     connect( m_ui->buttonBox, SIGNAL(accepted()), this, SLOT(accept()) );
     connect( m_ui->buttonBox, SIGNAL(rejected()), this, SLOT(reject()) );
