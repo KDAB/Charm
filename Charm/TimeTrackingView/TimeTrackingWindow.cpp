@@ -460,7 +460,7 @@ void TimeTrackingWindow::slotExportTasks()
     try {
         const TaskList tasks = DATAMODEL->getAllTasks();
         TaskExport::writeTo( filename, tasks );
-    } catch ( XmlSerializationException& e) {
+    } catch ( const XmlSerializationException& e) {
         const QString message = e.what().isEmpty()
                 ? tr( "Error exporting the task definitions!" )
                 : tr( "There was an error exporting the task definitions:<br />%1" ).arg( e.what() );
@@ -598,7 +598,7 @@ void TimeTrackingWindow::importTasksFromFile( const QString &filename )
         setValueIfNotNull( &settings, QLatin1String("timesheetUploadUrl"), exporter.metadata( QLatin1String("timesheet-upload-url") ) );
         setValueIfNotNull( &settings, QLatin1String("projectCodeDownloadUrl"), exporter.metadata( QLatin1String("project-code-download-url") ) );
         Application::instance().setHttpActionsVisible( true );
-    } catch(  CharmException& e ) {
+    } catch( const CharmException& e ) {
         const QString message = e.what().isEmpty()
                                 ?  tr( "The selected task definitions are invalid and cannot be imported." )
                                     : tr( "There was an error importing the task definitions:<br />%1" ).arg( e.what() );

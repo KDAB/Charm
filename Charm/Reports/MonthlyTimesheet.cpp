@@ -207,7 +207,7 @@ QByteArray MonthlyTimeSheetReport::saveToXml()
 #endif
 
        return document.toByteArray( 4 );
-    } catch ( XmlSerializationException& e ) {
+    } catch ( const XmlSerializationException& e ) {
         QMessageBox::critical( this, tr( "Error exporting the report" ), e.what() );
     }
 
