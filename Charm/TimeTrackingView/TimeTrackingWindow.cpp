@@ -576,7 +576,7 @@ void TimeTrackingWindow::importTasksFromFile( const QString &filename )
         exporter.readFrom( filename );
         merger.setOldTasks( DATAMODEL->getAllTasks() );
         merger.setNewTasks( exporter.tasks() );
-        if ( merger.modifiedTasks().count() == 0 && merger.addedTasks().count() == 0 ) {
+        if ( merger.modifiedTasks().isEmpty() && merger.addedTasks().isEmpty() ) {
             QMessageBox::information( this, tr( "Tasks Import" ), tr( "The selected task file does not contain any updates." ) );
         } else {
             CommandSetAllTasks* cmd = new CommandSetAllTasks( merger.mergedTaskList(), this );
