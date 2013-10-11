@@ -408,7 +408,7 @@ QString Controller::importDatabaseFromXml( const QDomDocument& document )
                 importedEvents.append( event );
             }
         }
-    } catch ( XmlSerializationException& e ) {
+    } catch ( const XmlSerializationException& e ) {
         qDebug() << "Controller::importDatabaseFromXml: things fucked up:" << e.what();
         return tr( "The export file is invalid: %1" ).arg( e.what() );
     }
