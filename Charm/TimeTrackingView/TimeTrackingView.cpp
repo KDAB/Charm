@@ -309,10 +309,10 @@ void TimeTrackingView::data( DataField& field, int column, int row ) const
     }
 }
 
-void TimeTrackingView::setSummaries( QVector<WeeklySummary> s )
+void TimeTrackingView::setSummaries( const QVector<WeeklySummary>& summaries )
 {
     m_activeFieldRects.clear();
-    m_summaries = s;
+    m_summaries = summaries;
     m_cachedMinimumSizeHint = QSize();
     m_cachedSizeHint = QSize();
     m_dayOfWeek = QDate::currentDate().dayOfWeek();

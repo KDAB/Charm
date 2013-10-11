@@ -50,7 +50,7 @@ public:
     void mousePressEvent( QMouseEvent* event );
     void mouseDoubleClickEvent( QMouseEvent * event );
 
-    void setSummaries( QVector<WeeklySummary> );
+    void setSummaries( const QVector<WeeklySummary>& summaries );
     QSize sizeHint() const;
     QSize minimumSizeHint() const;
     QMenu* menu() const;
