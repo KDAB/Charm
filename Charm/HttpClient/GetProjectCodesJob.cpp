@@ -62,5 +62,9 @@ void GetProjectCodesJob::setDownloadUrl(const QUrl& url)
     m_downloadUrl = url;
 }
 
+QString GetProjectCodesJob::dialogTitle() const
+{
+    return tr("Downloading");
+}
 
 #include "GetProjectCodesJob.moc"
