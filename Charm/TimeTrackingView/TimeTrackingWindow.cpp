@@ -570,9 +570,6 @@ void TimeTrackingWindow::importTasksFromFile( const QString &filename )
     const MakeTemporarilyVisible m( this );
     Q_UNUSED( m );
 
-    QFileInfo fileinfo( filename );
-    Q_ASSERT( fileinfo.exists() );
-
     TaskExport exporter;
     TaskListMerger merger;
     try {
