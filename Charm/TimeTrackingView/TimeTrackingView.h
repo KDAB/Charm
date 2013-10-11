@@ -72,7 +72,7 @@ private slots:
     void slotUpdateSummaries();
 
 private:
-    void data( DataField& out, int column, int row );
+    void data( DataField& out, int column, int row ) const;
     int columnCount() const { return 9; }
     int rowCount() const { return qMax( 6, m_summaries.count() ) + 3; }
     int getSummaryAt( const QPoint& position );
