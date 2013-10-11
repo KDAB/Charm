@@ -67,7 +67,6 @@ public slots:
     void slotTasksDownloaded( HttpJob* );
 
 protected:
-    void importTasksFromFile(const QString &filename);
 
     /* reimpl */ void insertEditMenu();
 
@@ -91,6 +90,8 @@ private:
     void resetWeeklyTimesheetDialog();
     void resetMonthlyTimesheetDialog();
     void showPreview( ReportConfigurationDialog*, int result );
+    //ugly but private:
+    void importTasksFromDeviceOrFile( QIODevice* device, const QString& filename );
 
     WeeklyTimesheetConfigurationDialog* m_weeklyTimesheetDialog;
     MonthlyTimesheetConfigurationDialog* m_monthlyTimesheetDialog;
