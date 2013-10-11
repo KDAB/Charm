@@ -31,6 +31,9 @@ protected:
         UploadTimesheet = HttpJob::Base
     };
 
+    QString dialogTitle() const;
+
+private:
     QByteArray m_payload;
     QString m_fileName;
     QUrl m_uploadUrl;

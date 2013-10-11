@@ -176,7 +176,7 @@ void HttpJob::passwordRead(QKeychain::Job* j) {
 void HttpJob::passwordWritten()
 {
     m_dialog = new QProgressDialog(m_parentWidget);
-    m_dialog->setWindowTitle(tr("Uploading"));
+    m_dialog->setWindowTitle(dialogTitle());
     m_dialog->setLabelText(tr("Wait..."));
     m_dialog->show();
 

@@ -71,6 +71,8 @@ protected:
 
     virtual bool execute(int state, QNetworkAccessManager *manager);
 
+    virtual QString dialogTitle() const = 0;
+
     void emitFinished();
     void setErrorAndEmitFinished(int code, const QString& errorString);
     void delayedNext();
