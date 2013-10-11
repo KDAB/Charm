@@ -1,5 +1,6 @@
 #include <algorithm>
 
+#include <QBuffer>
 #include <QSettings>
 #include <QCloseEvent>
 #include <QtAlgorithms>
@@ -9,7 +10,6 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QDir>
-#include <QTemporaryFile>
 
 #include "Core/TimeSpans.h"
 #include "Core/TaskListMerger.h"
@@ -430,15 +430,11 @@ void TimeTrackingWindow::slotTasksDownloaded( HttpJob* job_ )
         QMessageBox::critical( this, tr("Error"), tr("Could not download the task list: %1").arg( job->errorString() ) );
         return;
     }
-    QTemporaryFile file;
-    if ( !file.open() ) {
-        QMessageBox::critical( this, tr("Error"), tr("Could not write timecode data to temporary file: %1").arg( file.errorString() ) );
-        return;
-    }
 
-    file.write( job->payload() );
-    file.close();
-    importTasksFromFile( file.fileName() );
+    QBuffer buffer;
+    buffer.setData( job->payload() );
+    buffer.open( QIODevice::ReadOnly );
+    importTasksFromDeviceOrFile( &buffer, QString() );
 }
 
 void TimeTrackingWindow::slotImportTasks()
@@ -447,7 +443,7 @@ void TimeTrackingWindow::slotImportTasks()
                                                            tr("Task definitions (*.xml);;All Files (*)") );
     if ( filename.isNull() )
         return;
-    importTasksFromFile( filename );
+    importTasksFromDeviceOrFile( 0, filename );
 }
 
 void TimeTrackingWindow::slotExportTasks()
@@ -565,7 +561,7 @@ static void setValueIfNotNull(QSettings* s, const QString& key, const QString& v
         s->remove( key );
 }
 
-void TimeTrackingWindow::importTasksFromFile( const QString &filename )
+void TimeTrackingWindow::importTasksFromDeviceOrFile( QIODevice* device, const QString& filename )
 {
     const MakeTemporarilyVisible m( this );
     Q_UNUSED( m );
@@ -573,7 +569,10 @@ void TimeTrackingWindow::importTasksFromFile( const QString &filename )
     TaskExport exporter;
     TaskListMerger merger;
     try {
-        exporter.readFrom( filename );
+        if ( device )
+            exporter.readFrom( device );
+        else
+            exporter.readFrom( filename );
         merger.setOldTasks( DATAMODEL->getAllTasks() );
         merger.setNewTasks( exporter.tasks() );
         if ( merger.modifiedTasks().isEmpty() && merger.addedTasks().isEmpty() ) {
