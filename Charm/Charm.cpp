@@ -39,11 +39,11 @@ int main ( int argc, char** argv )
     try {
         QApplication *app = ApplicationFactory::localApplication( argc, argv );
         return app->exec();
-    } catch( AlreadyRunningException& ) {
+    } catch( const AlreadyRunningException& ) {
         using namespace std;
         cout << "Charm already running, exiting..." << endl;
         return 0;
-    } catch( CharmException& e ) {
+    } catch( const CharmException& e ) {
         const QString msg( QObject::tr( "An application exception has occurred. Charm will be terminated. The error message was:\n"
                                        "%1\n"
                                        "Please report this as a bug at https://quality.kdab.com/browse/CHM." ).arg( e.what() ) );
