@@ -158,10 +158,11 @@ bool SqLiteStorage::connect( Configuration& configuration )
 //         qDebug() << "SqLiteStorage::configure: data folder exists at"
 //                  << fileInfo.absolutePath();
     } else {
-        if ( ! QDir().mkpath( fileInfo.absolutePath() ) )
+        if ( ! QDir().mkpath( fileInfo.absolutePath() ) ) {
             Q_ASSERT_X( false, "SqLiteStorage::configure",
                         "Cannot make database directory" );
-        return false;
+            return false;
+        }
 //         qDebug() << "SqLiteStorage::configure: data folder created";
     }
 

@@ -381,7 +381,7 @@ void Application::setState(State state)
         Q_ASSERT_X(false, "Application::setState",
                    "Unknown new application state");
     };
-    } catch( CharmException& e ) {
+    } catch( const CharmException& e ) {
         QMessageBox::critical( &mainView(), tr( "Critical Charm Problem" ),
                                e.what() );
         quit();
@@ -435,7 +435,7 @@ void Application::enterConnectingState()
     try {
         if (!m_controller.initializeBackEnd(CHARM_SQLITE_BACKEND_DESCRIPTOR))
             quit();
-    } catch ( CharmException& e ) {
+    } catch ( const CharmException& e ) {
         QMessageBox::critical( &mainView(), QObject::tr("Database Backend Error"),
                               tr( "The backend could not be initialized: %1" )
                               .arg( e.what() ) );
@@ -456,7 +456,7 @@ void Application::enterConnectingState()
             // go back to StartingUp state and reconfigure
             emit goToState(StartingUp);
         }
-    } catch (UnsupportedDatabaseVersionException& e) {
+    } catch (const UnsupportedDatabaseVersionException& e) {
         qDebug() << e.what();
         QString message = QObject::tr( "<html><body>"
                                        "<p>Your current Charm database is too old to use with this version. You have two "

@@ -130,11 +130,17 @@ void TaskExport::readFrom( const QString& filename )
     {
         throw XmlSerializationException( QObject::tr( "Cannot open file for reading: %1" ).arg( file.errorString() ) );
     }
+
+    return readFrom( &file );
+}
+
+void TaskExport::readFrom( QIODevice* device )
+{
     QDomDocument document;
     QString errorMessage;
     int errorLine = 0;
     int errorColumn = 0;
-    if (!document.setContent(&file, &errorMessage, &errorLine, &errorColumn))
+    if (!document.setContent(device, &errorMessage, &errorLine, &errorColumn))
     {
         throw XmlSerializationException( QObject::tr( "Invalid XML: [%1:%2] %3" ).arg( QString::number( errorLine ), QString::number( errorColumn ), errorMessage ) );
     }

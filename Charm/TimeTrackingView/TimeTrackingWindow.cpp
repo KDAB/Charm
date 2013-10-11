@@ -1,5 +1,6 @@
 #include <algorithm>
 
+#include <QBuffer>
 #include <QSettings>
 #include <QCloseEvent>
 #include <QtAlgorithms>
@@ -9,7 +10,6 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QDir>
-#include <QTemporaryFile>
 
 #include "Core/TimeSpans.h"
 #include "Core/TaskListMerger.h"
@@ -194,42 +194,9 @@ void TimeTrackingWindow::slotSelectTasksToShow()
 {
     // we would like to always show some tasks, if there are any
     // first, we select tasks that most recently where active
-    //
-    // find this weeks time span, and retrieve the events matching:
     const NamedTimeSpan thisWeek = TimeSpans().thisWeek();
-    const EventIdList eventIds = DATAMODEL->eventsThatStartInTimeFrame( thisWeek.timespan );
-    // prepare a list of unique task ids used within the time span:
-    TaskIdList taskIds, uniqueTaskIds; // the list of tasks to show
-    EventList events;
-    Q_FOREACH( EventId id, eventIds ) {
-        Event event = DATAMODEL->eventForId( id );
-        events << event;
-        taskIds << event.taskId();
-    }
-    qSort( taskIds );
-    std::unique_copy( taskIds.begin(), taskIds.end(), std::back_inserter( uniqueTaskIds ) );
-    Q_ASSERT( events.size() == eventIds.size() );
-    // retrieve task information
-    QVector<WeeklySummary> summaries( uniqueTaskIds.size() );
-    for ( int i = 0; i < uniqueTaskIds.size(); ++i ) {
-        summaries[i].task = uniqueTaskIds.at( i );
-        const Task& task = DATAMODEL->getTask( uniqueTaskIds[i] );
-        summaries[i].taskname = DATAMODEL->fullTaskName( task );
-    }
-    // now add the times to the tasks:
-    Q_FOREACH( const Event& event, events ) {
-        // find the index for this event:
-        TaskIdList::iterator it = std::find( uniqueTaskIds.begin(), uniqueTaskIds.end(), event.taskId() );
-        if ( it != uniqueTaskIds.end() ) {
-            const int index = std::distance( uniqueTaskIds.begin(), it );
-            Q_ASSERT( index >= 0 && index < summaries.size() );
-            const int dayOfWeek = event.startDateTime().date().dayOfWeek() - 1;
-            Q_ASSERT( dayOfWeek >= 0 && dayOfWeek < 7 );
-            summaries[index].durations[dayOfWeek] += event.duration();
-        }
-    }
     // and update the widget:
-    m_summaries = summaries;
+    m_summaries = WeeklySummary::summariesForTimespan( DATAMODEL, thisWeek.timespan );
     m_summaryWidget->setSummaries( m_summaries );
 }
 
@@ -430,15 +397,11 @@ void TimeTrackingWindow::slotTasksDownloaded( HttpJob* job_ )
         QMessageBox::critical( this, tr("Error"), tr("Could not download the task list: %1").arg( job->errorString() ) );
         return;
     }
-    QTemporaryFile file;
-    if ( !file.open() ) {
-        QMessageBox::critical( this, tr("Error"), tr("Could not write timecode data to temporary file: %1").arg( file.errorString() ) );
-        return;
-    }
 
-    file.write( job->payload() );
-    file.close();
-    importTasksFromFile( file.fileName() );
+    QBuffer buffer;
+    buffer.setData( job->payload() );
+    buffer.open( QIODevice::ReadOnly );
+    importTasksFromDeviceOrFile( &buffer, QString() );
 }
 
 void TimeTrackingWindow::slotImportTasks()
@@ -447,7 +410,7 @@ void TimeTrackingWindow::slotImportTasks()
                                                            tr("Task definitions (*.xml);;All Files (*)") );
     if ( filename.isNull() )
         return;
-    importTasksFromFile( filename );
+    importTasksFromDeviceOrFile( 0, filename );
 }
 
 void TimeTrackingWindow::slotExportTasks()
@@ -460,7 +423,7 @@ void TimeTrackingWindow::slotExportTasks()
     try {
         const TaskList tasks = DATAMODEL->getAllTasks();
         TaskExport::writeTo( filename, tasks );
-    } catch ( XmlSerializationException& e) {
+    } catch ( const XmlSerializationException& e) {
         const QString message = e.what().isEmpty()
                 ? tr( "Error exporting the task definitions!" )
                 : tr( "There was an error exporting the task definitions:<br />%1" ).arg( e.what() );
@@ -561,34 +524,34 @@ static void setValueIfNotNull(QSettings* s, const QString& key, const QString& v
 {
     if ( !value.isNull() )
         s->setValue( key, value );
+    else
+        s->remove( key );
 }
 
-void TimeTrackingWindow::importTasksFromFile( const QString &filename )
+void TimeTrackingWindow::importTasksFromDeviceOrFile( QIODevice* device, const QString& filename )
 {
     const MakeTemporarilyVisible m( this );
     Q_UNUSED( m );
 
-    QFileInfo fileinfo( filename );
-    Q_ASSERT( fileinfo.exists() );
-
     TaskExport exporter;
     TaskListMerger merger;
     try {
-        exporter.readFrom( filename );
+        if ( device )
+            exporter.readFrom( device );
+        else
+            exporter.readFrom( filename );
         merger.setOldTasks( DATAMODEL->getAllTasks() );
         merger.setNewTasks( exporter.tasks() );
-        if ( merger.modifiedTasks().count() == 0 && merger.addedTasks().count() == 0 ) {
+        if ( merger.modifiedTasks().isEmpty() && merger.addedTasks().isEmpty() ) {
             QMessageBox::information( this, tr( "Tasks Import" ), tr( "The selected task file does not contain any updates." ) );
         } else {
-            QString detailsText(
-                tr( "Importing this task list will result in %1 modified and %2 added tasks. Do you want to continue?" )
-                .arg( merger.modifiedTasks().count() )
-                .arg( merger.addedTasks().count() ) );
-            if ( MessageBox::question( this, tr( "Tasks Import" ), detailsText, tr( "Import" ), tr( "Cancel" ), QMessageBox::Yes )
-                 == QMessageBox::Yes ) {
-                CommandSetAllTasks* cmd = new CommandSetAllTasks( merger.mergedTaskList(), this );
-                sendCommand( cmd );
-            }
+            CommandSetAllTasks* cmd = new CommandSetAllTasks( merger.mergedTaskList(), this );
+            sendCommand( cmd );
+            const QString detailsText =
+                tr( "Task file imported, %1 tasks have been modified and %2 tasks added." )
+                .arg( QString::number( merger.modifiedTasks().count() ),
+                      QString::number( merger.addedTasks().count() ) );
+            QMessageBox::information( this, tr( "Tasks Import" ), detailsText );
         }
         QSettings settings;
         settings.beginGroup( "httpconfig" );
@@ -598,7 +561,7 @@ void TimeTrackingWindow::importTasksFromFile( const QString &filename )
         setValueIfNotNull( &settings, QLatin1String("timesheetUploadUrl"), exporter.metadata( QLatin1String("timesheet-upload-url") ) );
         setValueIfNotNull( &settings, QLatin1String("projectCodeDownloadUrl"), exporter.metadata( QLatin1String("project-code-download-url") ) );
         Application::instance().setHttpActionsVisible( true );
-    } catch(  CharmException& e ) {
+    } catch( const CharmException& e ) {
         const QString message = e.what().isEmpty()
                                 ?  tr( "The selected task definitions are invalid and cannot be imported." )
                                     : tr( "There was an error importing the task definitions:<br />%1" ).arg( e.what() );

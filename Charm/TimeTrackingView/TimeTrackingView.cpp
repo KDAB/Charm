@@ -230,7 +230,7 @@ int TimeTrackingView::taskColumnWidth() const
     return width() - m_cachedTotalsFieldRect.width() - 7 * m_cachedDayFieldRect.width();
 }
 
-void TimeTrackingView::data( DataField& field, int column, int row )
+void TimeTrackingView::data( DataField& field, int column, int row ) const
 {
     const int HeaderRow = 0;
     const int TotalsRow = rowCount() - 2;
@@ -309,10 +309,10 @@ void TimeTrackingView::data( DataField& field, int column, int row )
     }
 }
 
-void TimeTrackingView::setSummaries( QVector<WeeklySummary> s )
+void TimeTrackingView::setSummaries( const QVector<WeeklySummary>& summaries )
 {
     m_activeFieldRects.clear();
-    m_summaries = s;
+    m_summaries = summaries;
     m_cachedMinimumSizeHint = QSize();
     m_cachedSizeHint = QSize();
     m_dayOfWeek = QDate::currentDate().dayOfWeek();
