@@ -580,15 +580,13 @@ void TimeTrackingWindow::importTasksFromFile( const QString &filename )
         if ( merger.modifiedTasks().count() == 0 && merger.addedTasks().count() == 0 ) {
             QMessageBox::information( this, tr( "Tasks Import" ), tr( "The selected task file does not contain any updates." ) );
         } else {
-            QString detailsText(
-                tr( "Importing this task list will result in %1 modified and %2 added tasks. Do you want to continue?" )
-                .arg( merger.modifiedTasks().count() )
-                .arg( merger.addedTasks().count() ) );
-            if ( MessageBox::question( this, tr( "Tasks Import" ), detailsText, tr( "Import" ), tr( "Cancel" ), QMessageBox::Yes )
-                 == QMessageBox::Yes ) {
-                CommandSetAllTasks* cmd = new CommandSetAllTasks( merger.mergedTaskList(), this );
-                sendCommand( cmd );
-            }
+            CommandSetAllTasks* cmd = new CommandSetAllTasks( merger.mergedTaskList(), this );
+            sendCommand( cmd );
+            const QString detailsText =
+                tr( "Task file imported, %1 tasks have been modified and %2 tasks added." )
+                .arg( QString::number( merger.modifiedTasks().count() ),
+                      QString::number( merger.addedTasks().count() ) );
+            QMessageBox::information( this, tr( "Tasks Import" ), detailsText );
         }
         QSettings settings;
         settings.beginGroup( "httpconfig" );
