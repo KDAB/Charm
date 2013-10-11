@@ -18,5 +18,6 @@ int warning( QWidget* parent,
               const QString& yesLabel,
               const QString& noLabel,
               QMessageBox::StandardButton defaultButton=QMessageBox::NoButton );
+
 }
 #endif
