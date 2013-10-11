@@ -194,42 +194,9 @@ void TimeTrackingWindow::slotSelectTasksToShow()
 {
     // we would like to always show some tasks, if there are any
     // first, we select tasks that most recently where active
-    //
-    // find this weeks time span, and retrieve the events matching:
     const NamedTimeSpan thisWeek = TimeSpans().thisWeek();
-    const EventIdList eventIds = DATAMODEL->eventsThatStartInTimeFrame( thisWeek.timespan );
-    // prepare a list of unique task ids used within the time span:
-    TaskIdList taskIds, uniqueTaskIds; // the list of tasks to show
-    EventList events;
-    Q_FOREACH( EventId id, eventIds ) {
-        Event event = DATAMODEL->eventForId( id );
-        events << event;
-        taskIds << event.taskId();
-    }
-    qSort( taskIds );
-    std::unique_copy( taskIds.begin(), taskIds.end(), std::back_inserter( uniqueTaskIds ) );
-    Q_ASSERT( events.size() == eventIds.size() );
-    // retrieve task information
-    QVector<WeeklySummary> summaries( uniqueTaskIds.size() );
-    for ( int i = 0; i < uniqueTaskIds.size(); ++i ) {
-        summaries[i].task = uniqueTaskIds.at( i );
-        const Task& task = DATAMODEL->getTask( uniqueTaskIds[i] );
-        summaries[i].taskname = DATAMODEL->fullTaskName( task );
-    }
-    // now add the times to the tasks:
-    Q_FOREACH( const Event& event, events ) {
-        // find the index for this event:
-        TaskIdList::iterator it = std::find( uniqueTaskIds.begin(), uniqueTaskIds.end(), event.taskId() );
-        if ( it != uniqueTaskIds.end() ) {
-            const int index = std::distance( uniqueTaskIds.begin(), it );
-            Q_ASSERT( index >= 0 && index < summaries.size() );
-            const int dayOfWeek = event.startDateTime().date().dayOfWeek() - 1;
-            Q_ASSERT( dayOfWeek >= 0 && dayOfWeek < 7 );
-            summaries[index].durations[dayOfWeek] += event.duration();
-        }
-    }
     // and update the widget:
-    m_summaries = summaries;
+    m_summaries = WeeklySummary::summariesForTimespan( DATAMODEL, thisWeek.timespan );
     m_summaryWidget->setSummaries( m_summaries );
 }
 
