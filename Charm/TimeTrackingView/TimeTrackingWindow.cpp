@@ -561,6 +561,8 @@ static void setValueIfNotNull(QSettings* s, const QString& key, const QString& v
 {
     if ( !value.isNull() )
         s->setValue( key, value );
+    else
+        s->remove( key );
 }
 
 void TimeTrackingWindow::importTasksFromFile( const QString &filename )
