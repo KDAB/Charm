@@ -230,7 +230,7 @@ int TimeTrackingView::taskColumnWidth() const
     return width() - m_cachedTotalsFieldRect.width() - 7 * m_cachedDayFieldRect.width();
 }
 
-void TimeTrackingView::data( DataField& field, int column, int row )
+void TimeTrackingView::data( DataField& field, int column, int row ) const
 {
     const int HeaderRow = 0;
     const int TotalsRow = rowCount() - 2;
