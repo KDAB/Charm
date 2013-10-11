@@ -5,8 +5,6 @@
 #include <QVector>
 #include "Core/Task.h"
 
-#define DAYS_IN_WEEK 7
-
 class WeeklySummary
 {
 public:
