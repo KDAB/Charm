@@ -1,5 +1,5 @@
 /******************************************************************************
- *   Copyright (C) 2011 Frank Osterfeld <frank.osterfeld@gmail.com>           *
+ *   Copyright (C) 2011-2013 Frank Osterfeld <frank.osterfeld@gmail.com>      *
  *                                                                            *
  * This program is distributed in the hope that it will be useful, but        *
  * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY *
@@ -17,7 +17,7 @@
 
 using namespace QKeychain;
 
-void ReadPasswordJobPrivate::doStart() {
+void ReadPasswordJobPrivate::scheduledStart() {
     //Use settings member if there, create local settings object if not
     std::auto_ptr<QSettings> local( !q->settings() ? new QSettings( q->service() ) : 0 );
     QSettings* actual = q->settings() ? q->settings() : local.get();
@@ -52,7 +52,7 @@ void ReadPasswordJobPrivate::doStart() {
     q->emitFinished();
 }
 
-void WritePasswordJobPrivate::doStart() {
+void WritePasswordJobPrivate::scheduledStart() {
     if ( mode == Delete ) {
         //Use settings member if there, create local settings object if not
         std::auto_ptr<QSettings> local( !q->settings() ? new QSettings( q->service() ) : 0 );
