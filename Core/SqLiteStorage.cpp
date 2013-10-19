@@ -10,6 +10,8 @@
 #include "CharmConstants.h"
 #include "CharmExceptions.h"
 
+#include <cerrno>
+
 // DATABASE STRUCTURE DEFINITION
 static const QString Tables[] =
 { "MetaData", "Installations", "Tasks", "Events", "Subscriptions", "Users" };
@@ -146,27 +148,22 @@ bool SqLiteStorage::createDatabaseTables()
 bool SqLiteStorage::connect( Configuration& configuration )
 {   // make sure the database folder exits:
     m_installationId = configuration.installationId;
-    bool error = false;
+    configuration.failure = true;
 
-
-
-    QFileInfo fileInfo( configuration.localStorageDatabase ); // this is the full path
+    const QFileInfo fileInfo( configuration.localStorageDatabase ); // this is the full path
 
     // make sure the path exists, file will be created by sqlite
-    if ( QDir( fileInfo.absolutePath() ).exists() )
+    if ( ! QDir().mkpath( fileInfo.absolutePath() ) )
     {
-//         qDebug() << "SqLiteStorage::configure: data folder exists at"
-//                  << fileInfo.absolutePath();
-    } else {
-        if ( ! QDir().mkpath( fileInfo.absolutePath() ) )
-            Q_ASSERT_X( false, "SqLiteStorage::configure",
-                        "Cannot make database directory" );
+        configuration.failureMessage = QObject::tr( "Cannot make database directory: %1").arg( qt_error_string(errno) );
         return false;
-//         qDebug() << "SqLiteStorage::configure: data folder created";
     }
 
-    Q_ASSERT_X( QDir( fileInfo.absolutePath() ).exists(), "SqLiteStorage::connect",
-                "I made a directory, but it is not there. Weird." );
+    if ( ! QDir( fileInfo.absolutePath() ).exists() )
+    {
+        configuration.failureMessage = QObject::tr("I made a directory, but it is not there. Weird.");
+        return false;
+    }
 
     // connect:
 //     qDebug() << "SqLiteStorage::connect: creating or opening local sqlite database at "
@@ -177,9 +174,13 @@ bool SqLiteStorage::connect( Configuration& configuration )
         migrateDatabaseDirectory( oldDatabaseDirectory, fileInfo.dir() );
 
     m_database.setHostName( "localhost" );
-    m_database.setDatabaseName( fileInfo.absoluteFilePath() );
+    const QString databaseName = fileInfo.absoluteFilePath();
+    m_database.setDatabaseName( databaseName );
 
-    if ( ! fileInfo.exists() && ! configuration.newDatabase ) {
+    bool error = false;
+
+    if ( ! fileInfo.exists() && ! configuration.newDatabase )
+    {
         error = true;
         configuration.failureMessage = QObject::tr(
             "<html><head><meta name=\"qrichtext\" content=\"1\" /></head>"
@@ -191,44 +192,41 @@ bool SqLiteStorage::connect( Configuration& configuration )
             "</body></html>");
     }
 
-    bool ok = m_database.open();
-    if ( ok ) {
+    if ( !m_database.open() )
+    {
+        configuration.failureMessage = QObject::tr("Could not open SQLite database %1").arg( databaseName );
+        return false;
+    }
+
 //         qDebug() << "SqLiteStorage::connect: SUCCESS - connected to database";
-        if ( verifyDatabase() )
-        {
-//             qDebug() << "SqLiteStorage::connect: database seems to be prepared";
-        } else {
+    if ( ! verifyDatabase() )
+    {
 //             qDebug() << "SqLiteStorage::connect: empty database, filling in the blanks";
-            if ( !createDatabase( configuration ) ) {
-                qDebug() << "SqLiteStorage::connect: error creating default database contents";
-                return false;
-            }
-
+        if ( !createDatabase( configuration ) )
+        {
+            configuration.failureMessage = QObject::tr( "SqLiteStorage::connect: error creating default database contents" );
+            return false;
         }
+    }
 
-        if ( !configuration.newDatabase ) {
-            int userid = configuration.user.id();
-            User user = getUser( userid );
+    if ( !configuration.newDatabase )
+    {
+        const int userid = configuration.user.id();
+        const User user = getUser( userid );
 //         qDebug() << "SqLiteStorage::connect: found user" << user.name()
 //                  << "for id" << userid << ( user.isValid() ? "(valid)" : "(invalid)");
-            if ( user.isValid() ) {
-                configuration.user = user;
-            } else {
-                return false;
-            }
-        }
-        // FIXME verify that a database user id has been generated
-    } else {
-        qDebug() << "SqLiteStorage::connect: FAILURE - cannot connect to database";
-        return false;
-    }
+        if ( !user.isValid() )
+            return false;
 
-    if ( ! ok || error ) {
-        configuration.failure = true;
-        return false;
-    } else {
-        return true;
+        configuration.user = user;
     }
+    // FIXME verify that a database user id has been generated
+
+    if ( error )
+        return false;
+
+    configuration.failure = false;
+    return true;
 }
 
 bool SqLiteStorage::migrateDatabaseDirectory( QDir oldDirectory, QDir newDirectory ) const
