@@ -50,7 +50,7 @@ public:
     void mousePressEvent( QMouseEvent* event );
     void mouseDoubleClickEvent( QMouseEvent * event );
 
-    void setSummaries( QVector<WeeklySummary> );
+    void setSummaries( const QVector<WeeklySummary>& summaries );
     QSize sizeHint() const;
     QSize minimumSizeHint() const;
     QMenu* menu() const;
@@ -72,7 +72,7 @@ private slots:
     void slotUpdateSummaries();
 
 private:
-    void data( DataField& out, int column, int row );
+    void data( DataField& out, int column, int row ) const;
     int columnCount() const { return 9; }
     int rowCount() const { return qMax( 6, m_summaries.count() ) + 3; }
     int getSummaryAt( const QPoint& position );

@@ -60,7 +60,7 @@ void XmlSerializationTests::testEventSerialization()
             QVERIFY( event.startDateTime() == readEvent.startDateTime() );
             QVERIFY( event.endDateTime() == readEvent.endDateTime() );
             QVERIFY( event == readEvent );
-        } catch( CharmException& e ) {
+        } catch( const CharmException& e ) {
             qDebug() << "XmlSerializationTests::testEventSerialization: exception caught ("
                      << e.what() << ")";
             QFAIL( "Event Serialization throws" );
@@ -79,7 +79,7 @@ void XmlSerializationTests::testTaskSerialization()
                 task.dump();
             }
             QVERIFY( task == readTask );
-        } catch( CharmException& e ) {
+        } catch( const CharmException& e ) {
             qDebug() << "XmlSerializationTests::testTaskSerialization: exception caught ("
                      << e.what() << ")";
             QFAIL( "Task Serialization throws" );
@@ -150,7 +150,7 @@ void XmlSerializationTests::testTaskListSerialization()
             }
         }
         QVERIFY( tasks == result );
-    } catch( XmlSerializationException e ) {
+    } catch( const XmlSerializationException& e ) {
         qDebug() << "Failure reading tasks:" << e.what();
         QFAIL( "Read tasks are not equal to the written ones" );
     }

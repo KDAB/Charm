@@ -130,7 +130,7 @@ NamedTimeSpan TimeSpans::theMonthBeforeLast() const
     return m_theMonthBeforeLast;
 }
 
-bool NamedTimeSpan::contains( const QDate& date )
+bool NamedTimeSpan::contains( const QDate& date ) const
 {
     return date >= timespan.first && date < timespan.second;
 }

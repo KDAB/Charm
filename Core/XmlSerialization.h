@@ -23,7 +23,10 @@ class TaskExport {
 public:
     // the only method that deals with writing:
     static void writeTo( const QString& filename, const TaskList& tasks );
+
     void readFrom( const QString& filename );
+    void readFrom( QIODevice* device );
+
     const TaskList& tasks() const;
     QString metadata( const QString& key ) const;
     static QString reportType();
