@@ -29,6 +29,7 @@ private: // reimpl
 
 private:
     // properties of the report:
+    int m_numberOfWeeks;
     int m_monthNumber;
     int m_yearOfMonth;
 };
