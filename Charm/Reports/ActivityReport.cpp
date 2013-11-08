@@ -93,7 +93,7 @@ void ActivityReportConfigurationDialog::slotTimeSpanSelected( int index )
 {
     if ( m_ui->comboBox->count() == 0 || index == -1 ) return;
     Q_ASSERT( m_ui->comboBox->count() > index );
-    if ( index >= m_timespans.size() - 2 ) { // manual selection
+    if ( index == m_timespans.size() - 1 ) { // manual selection
         m_ui->groupBox->setEnabled( true );
     } else {
         m_ui->spinBoxStartYear->setValue( m_timespans[index].timespan.first.year() );
