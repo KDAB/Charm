@@ -297,7 +297,7 @@ Event SqlStorage::makeEvent( const SqlRaiiTransactor& )
         }
         else
         {
-            Q_ASSERT_X(false, "SqlStorage::makeEvent",
+            Q_ASSERT_X(false, Q_FUNC_INFO,
                        "database implementation error (SELECT)");
         }
     }
@@ -314,7 +314,7 @@ Event SqlStorage::makeEvent( const SqlRaiiTransactor& )
         query.bindValue(":report_id", event.reportId());
         query.bindValue(":id", event.id());
         result = runQuery(query);
-        Q_ASSERT_X(result, "SqlStorage::makeEvent",
+        Q_ASSERT_X(result, Q_FUNC_INFO,
                    "database implementation error (UPDATE)");
     }
 
@@ -619,7 +619,7 @@ Installation SqlStorage::createInstallation(const QString& name)
         }
         else
         {
-            Q_ASSERT_X(false, "SqlStorage::makeInstallation",
+            Q_ASSERT_X(false, Q_FUNC_INFO,
                     "database implementation error (SELECT)");
         }
     }
@@ -634,7 +634,7 @@ Installation SqlStorage::createInstallation(const QString& name)
         query.bindValue(":inst_id", installation.id());
         query.bindValue(":id", installation.id());
         result = runQuery(query);
-        Q_ASSERT_X(result, "SqlStorage::makeInstallation",
+        Q_ASSERT_X(result, Q_FUNC_INFO,
                 "database implementation error (UPDATE)");
         Q_UNUSED(result);
     }

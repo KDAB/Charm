@@ -90,7 +90,7 @@ void CharmDataModel::setAllTasks( const TaskList& tasks )
 
 void CharmDataModel::addTask( const Task& task )
 {
-    Q_ASSERT_X( ! taskExists( task.id() ), " CharmDataModel::addTask",
+    Q_ASSERT_X( ! taskExists( task.id() ), Q_FUNC_INFO,
                 "New tasks need to have a unique task id" );
 
     if ( task.isValid() && ! taskExists( task.id() ) ) {
@@ -123,7 +123,7 @@ void CharmDataModel::addTask( const Task& task )
 void CharmDataModel::modifyTask( const Task& task )
 {
     TaskTreeItem::Map::iterator it = m_tasks.find( task.id() );
-    Q_ASSERT_X( it != m_tasks.end(), "CharmDataModel::modifyTask",
+    Q_ASSERT_X( it != m_tasks.end(), Q_FUNC_INFO,
               "Task to modify has to exist" );
 
     if ( it != m_tasks.end() ) {
@@ -151,10 +151,10 @@ void CharmDataModel::modifyTask( const Task& task )
 
 void CharmDataModel::deleteTask( const Task& task )
 {
-    Q_ASSERT_X( taskExists( task.id() ), "CharmDataModel::deleteTask",
+    Q_ASSERT_X( taskExists( task.id() ), Q_FUNC_INFO,
                 "Task to delete has to exist" );
     Q_ASSERT_X( taskTreeItem( task.id() ).childCount() == 0,
-                "CharmDataModel::deleteTask",
+                Q_FUNC_INFO,
                 "Cannot delete a task that has children" );
 
     Q_FOREACH( CharmDataModelAdapterInterface* adapter, m_adapters )
@@ -203,7 +203,7 @@ void CharmDataModel::setAllEvents( const EventList& events )
 
 void CharmDataModel::addEvent( const Event& event )
 {
-    Q_ASSERT_X( ! eventExists( event.id() ), "CharmDataModel::addEvent",
+    Q_ASSERT_X( ! eventExists( event.id() ), Q_FUNC_INFO,
                 "New event must have a unique id" );
 
     Q_FOREACH( CharmDataModelAdapterInterface* adapter, m_adapters )
@@ -217,7 +217,7 @@ void CharmDataModel::addEvent( const Event& event )
 
 void CharmDataModel::modifyEvent( const Event& newEvent )
 {
-    Q_ASSERT_X( eventExists( newEvent.id() ), "CharmDataModel::modifyEvent",
+    Q_ASSERT_X( eventExists( newEvent.id() ), Q_FUNC_INFO,
                 "Event to modify has to exist" );
 
     const Event oldEvent = eventForId( newEvent.id() );
@@ -230,9 +230,9 @@ void CharmDataModel::modifyEvent( const Event& newEvent )
 
 void CharmDataModel::deleteEvent( const Event& event )
 {
-    Q_ASSERT_X( eventExists( event.id() ), "CharmDataModel::deleteEvent",
+    Q_ASSERT_X( eventExists( event.id() ), Q_FUNC_INFO,
                 "Event to delete has to exist" );
-    Q_ASSERT_X( !m_activeEventIds.contains( event.id() ), "CharmDataModel::deleteEvent",
+    Q_ASSERT_X( !m_activeEventIds.contains( event.id() ), Q_FUNC_INFO,
                 "Cannot delete an active event" );
 
     Q_FOREACH( CharmDataModelAdapterInterface* adapter, m_adapters )
@@ -616,14 +616,12 @@ EventIdList CharmDataModel::eventsThatStartInTimeFrame( const TimeSpan& timeSpan
 
 bool CharmDataModel::isParentOf( TaskId parent, TaskId id ) const
 {
-    Q_ASSERT_X( parent != 0, "CharmDataModel::isParentOf",
-                "parent is invalid (0)" );
+    Q_ASSERT_X( parent != 0, Q_FUNC_INFO, "parent is invalid (0)" );
 
     if ( id == parent ) return false; // a task is not it's own child
     // get the item, make sure it is valid
     const TaskTreeItem& item( taskTreeItem( id ) );
-    Q_ASSERT_X( item.isValid(), "CharmDataModel::isParentOf",
-                "No such task" );
+    Q_ASSERT_X( item.isValid(), Q_FUNC_INFO, "No such task" );
     if ( ! item.isValid() ) return false;
 
     TaskId parentId = item.task().parent();

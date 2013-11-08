@@ -75,7 +75,7 @@ bool Controller::deleteEvent( const Event& e )
 
 bool Controller::addTask( const Task& task )
 {
-    qDebug() << "Controller::addTask: adding task" << task.id()
+    qDebug() << Q_FUNC_INFO << "adding task" << task.id()
              << "to parent" << task.parent();
     if ( m_storage->addTask( task ) ) {
         updateSubscriptionForTask( task );
@@ -91,13 +91,13 @@ bool Controller::addTask( const Task& task )
 bool Controller::modifyTask( const Task& task )
 {
     // find it
-    qDebug() << "Controller::modifyTask: committing changes to task"
+    qDebug() << Q_FUNC_INFO << "committing changes to task"
              << task.id();
     // modify the task itself:
     bool result = m_storage->modifyTask( task );
     Q_ASSERT( result ); Q_UNUSED( result );
     if ( ! result ) {
-        qDebug() << "Controller::modifyTask: modifyTask failed!";
+        qDebug() << Q_FUNC_INFO << "modifyTask failed!";
         return result;
     }
 
@@ -106,7 +106,7 @@ bool Controller::modifyTask( const Task& task )
     if ( result ) {
         emit( taskUpdated( task ) );
     } else {
-        qDebug() << "Controller::modifyTask: storing  subscription state failed.";
+        qDebug() << Q_FUNC_INFO << "storing  subscription state failed.";
     }
 
     return result;
@@ -114,7 +114,7 @@ bool Controller::modifyTask( const Task& task )
 
 bool Controller::deleteTask( const Task& task )
 {
-    qDebug() << "Controller::deleteTask: deleting task" << task.id();
+    qDebug() << Q_FUNC_INFO << "deleting task" << task.id();
     if ( m_storage->deleteTask( task ) ) {
         m_storage->deleteSubscription( CONFIGURATION.user, task );
         emit taskDeleted( task );
@@ -127,7 +127,7 @@ bool Controller::deleteTask( const Task& task )
 
 bool Controller::setAllTasks( const TaskList& tasks )
 {
-    qDebug() << "Controller::setAllTasks: replacing all tasks";
+    qDebug() << Q_FUNC_INFO << "replacing all tasks";
     if ( m_storage->setAllTasks( CONFIGURATION.user, tasks ) ) {
         const TaskList newTasks = m_storage->getAllTasks();
         // tell the view about the existing tasks;
@@ -200,8 +200,7 @@ struct Setting {
 
 void Controller::persistMetaData( Configuration& configuration )
 {
-    Q_ASSERT_X( m_storage != 0, "Controller::persistMetaData",
-                "No storage interface available" );
+    Q_ASSERT_X( m_storage != 0, Q_FUNC_INFO, "No storage interface available" );
     Setting settings[] = {
         { MetaKey_Key_UserName,
           configuration.user.name() },
@@ -226,7 +225,7 @@ void Controller::persistMetaData( Configuration& configuration )
     for ( int i = 0; i < NumberOfSettings; ++i ) {
         good = good && m_storage->setMetaData( settings[i].key, settings[i].value );
     }
-    Q_ASSERT_X( good, "Controller::persistMetaData", "Controller assumes write "
+    Q_ASSERT_X( good, Q_FUNC_INFO, "Controller assumes write "
                 "permissions in meta data table if persistMetaData is called" );
     CONFIGURATION.dump();
 }
@@ -242,8 +241,7 @@ void Controller::loadConfigValue( const QString& key, T& configValue ) const
 
 void Controller::provideMetaData( Configuration& configuration)
 {
-    Q_ASSERT_X( m_storage != 0, "Controller::provideMetaData",
-                "No storage interface available" );
+    Q_ASSERT_X( m_storage != 0, Q_FUNC_INFO, "No storage interface available" );
     configuration.user.setName( m_storage->getMetaData( MetaKey_Key_UserName ) );
 
     loadConfigValue( MetaKey_Key_TimeTrackerFontSize, configuration.timeTrackerFontSize );
@@ -268,8 +266,7 @@ bool Controller::initializeBackEnd( const QString& name )
         m_storage = new SqLiteStorage;
         return true;
     } else {
-        Q_ASSERT_X( false, "Controller::initializeBackEnd",
-                    "Unknown local storage backend type" );
+        Q_ASSERT_X( false, Q_FUNC_INFO, "Unknown local storage backend type" );
         return false;
     }
 }
