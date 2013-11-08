@@ -23,7 +23,7 @@ void CommandRelayCommand::setCommand( CharmCommand* command )
 
 bool CommandRelayCommand::prepare()
 {
-    Q_ASSERT_X( false, "CommandRelayCommand::prepare",
+    Q_ASSERT_X( false, Q_FUNC_INFO,
                 "Prepare should have been called by the owner instead." );
     return true;
 }

@@ -109,7 +109,7 @@ QString SqLiteStorage::description() const
 
 bool SqLiteStorage::createDatabaseTables()
 {
-    Q_ASSERT_X(database().open(), "SqlStorage::createDatabase",
+    Q_ASSERT_X(database().open(), Q_FUNC_INFO,
             "Connection to database must be established first");
 
     bool error = false;

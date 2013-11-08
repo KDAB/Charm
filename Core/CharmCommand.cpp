@@ -9,7 +9,7 @@ CharmCommand::CharmCommand( const QString& description, QObject *parent )
     if ( emitter ) {
         m_owner = emitter;
     } else {
-        Q_ASSERT_X( false, "CharmCommand ctor",
+        Q_ASSERT_X( false, Q_FUNC_INFO,
                     "CharmCommand widget pointers have to implement the "
                     "CommandEmitterInterface." );
     }

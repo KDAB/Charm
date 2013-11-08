@@ -86,7 +86,7 @@ const TaskTreeItem& TaskTreeItem::child( int row ) const
     if ( row >= 0 && row < m_children.size() ) {
         return * m_children.at( row );
     } else {
-        Q_ASSERT_X( false, "TaskTreeItem::child", "Invalid item position" );
+        Q_ASSERT_X( false, Q_FUNC_INFO, "Invalid item position" );
         return InvalidItem;
     }
 }
@@ -95,11 +95,11 @@ int TaskTreeItem::row() const
 {
     if ( m_parent ) {
         int row = m_parent->m_children.indexOf( this );
-        Q_ASSERT_X( row != -1, "TaskTreeItem::row",
+        Q_ASSERT_X( row != -1, Q_FUNC_INFO,
                     "Internal error - cannot find myself in my parents family" );
         return row;
     } else {
-        Q_ASSERT_X( false, "TaskTreeItem::row",
+        Q_ASSERT_X( false, Q_FUNC_INFO,
                     "Calling row() on an invalid item" );
         return -1;
     }
