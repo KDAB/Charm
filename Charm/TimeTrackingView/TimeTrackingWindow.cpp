@@ -250,7 +250,7 @@ void TimeTrackingWindow::slotEnterVacation()
         return;
     const EventList events = dialog.events();
     Q_FOREACH ( const Event& event, events ) {
-        CommandMakeEvent* command = new CommandMakeEvent( event, this );
+        auto command = new CommandMakeEvent( event, this );
         sendCommand( command );
     }
 }
@@ -508,7 +508,7 @@ void TimeTrackingWindow::maybeIdle()
                 QDateTime start  = period.first; // initializes a valid QDateTime
                 event.setEndDateTime( qMax( event.startDateTime(), start ) );
                 Q_ASSERT( event.isValid() );
-                CommandModifyEvent* cmd = new CommandModifyEvent( event, old, this );
+                auto cmd = new CommandModifyEvent( event, old, this );
                 emit emitCommand( cmd );
             }
         }
@@ -545,7 +545,7 @@ void TimeTrackingWindow::importTasksFromDeviceOrFile( QIODevice* device, const Q
         if ( merger.modifiedTasks().isEmpty() && merger.addedTasks().isEmpty() ) {
             QMessageBox::information( this, tr( "Tasks Import" ), tr( "The selected task file does not contain any updates." ) );
         } else {
-            CommandSetAllTasks* cmd = new CommandSetAllTasks( merger.mergedTaskList(), this );
+            auto cmd = new CommandSetAllTasks( merger.mergedTaskList(), this );
             sendCommand( cmd );
             const QString detailsText =
                 tr( "Task file imported, %1 tasks have been modified and %2 tasks added." )
