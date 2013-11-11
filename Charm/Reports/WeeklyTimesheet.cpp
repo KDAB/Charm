@@ -122,7 +122,7 @@ WeeklyTimesheetConfigurationDialog::WeeklyTimesheetConfigurationDialog( QWidget*
 
 WeeklyTimesheetConfigurationDialog::~WeeklyTimesheetConfigurationDialog()
 {
-    delete m_ui; m_ui = 0;
+    delete m_ui; m_ui = nullptr;
 }
 
 void WeeklyTimesheetConfigurationDialog::setDefaultWeek(int yearOfWeek, int week)

@@ -9,7 +9,7 @@ class IdleWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit IdleWidget( QWidget* parent = 0 );
+    explicit IdleWidget( QWidget* parent = nullptr );
 
     void paintEvent( QPaintEvent* );
     void resizeEvent( QResizeEvent* );

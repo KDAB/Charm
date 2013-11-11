@@ -16,7 +16,7 @@ class ReportPreviewWindow : public QDialog
     Q_OBJECT
 
 public:
-    explicit ReportPreviewWindow( QWidget* parent = 0 );
+    explicit ReportPreviewWindow( QWidget* parent = nullptr );
     virtual ~ReportPreviewWindow();
 
 protected:

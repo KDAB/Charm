@@ -21,7 +21,7 @@ class EventEditor: public QDialog
     Q_OBJECT
 
 public:
-    EventEditor( const Event& event, QWidget* parent = 0 );
+    EventEditor( const Event& event, QWidget* parent = nullptr );
     virtual ~EventEditor();
 
     // return the result after the dialog has been accepted

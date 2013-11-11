@@ -10,7 +10,7 @@ class MonthlyTimeSheetReport : public TimeSheetReport
     Q_OBJECT
 
 public:
-    explicit MonthlyTimeSheetReport( QWidget* parent = 0 );
+    explicit MonthlyTimeSheetReport( QWidget* parent = nullptr );
     virtual ~MonthlyTimeSheetReport();
 
     // reimpl

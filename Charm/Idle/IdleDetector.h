@@ -39,7 +39,7 @@ public:
 
 protected:
     virtual void idlenessDurationChanged() {}
-    explicit IdleDetector( QObject* parent = 0 );
+    explicit IdleDetector( QObject* parent = nullptr );
     virtual ~IdleDetector() {}
     void maybeIdle( IdlePeriod period );
 

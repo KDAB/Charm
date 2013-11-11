@@ -10,7 +10,7 @@ class GetProjectCodesJob : public HttpJob
     Q_OBJECT
 public:
 
-    explicit GetProjectCodesJob(QObject* parent=0);
+    explicit GetProjectCodesJob(QObject* parent=nullptr);
     ~GetProjectCodesJob();
 
     QByteArray payload() const;

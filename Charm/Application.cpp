@@ -39,11 +39,11 @@
 
 #include <algorithm> //for_each()
 
-Application* Application::m_instance = 0;
+Application* Application::m_instance = nullptr;
 
 Application::Application(int& argc, char** argv)
     : QApplication( argc, argv )
-    , m_closedWindow( 0 )
+    , m_closedWindow( nullptr )
     , m_actionStopAllTasks( this )
     , m_windows( QList<CharmWindow*> () << &m_tasksWindow << &m_eventWindow << &m_timeTracker )
     , m_actionQuit( this )
@@ -59,7 +59,7 @@ Application::Application(int& argc, char** argv)
     , m_actionActivityReport( this )
     , m_actionWeeklyTimesheetReport( this )
     , m_actionMonthlyTimesheetReport( this )
-    , m_idleDetector( 0 )
+    , m_idleDetector( nullptr )
     , m_timeTrackerHiddenFromSystrayToggle( false )
     , m_tasksWindowHiddenFromSystrayToggle( false )
     , m_eventWindowHiddenFromSystrayToggle( false )
@@ -93,7 +93,7 @@ Application::Application(int& argc, char** argv)
                  << m_uniqueApplicationServer.errorString();
 
     Q_INIT_RESOURCE(CharmResources);
-    Q_ASSERT_X(m_instance == 0, "Application ctor",
+    Q_ASSERT_X(m_instance == nullptr, "Application ctor",
                "Application is a singleton and cannot be created more than once");
     m_instance = this;
     qRegisterMetaType<State> ("State");
@@ -199,7 +199,7 @@ Application::Application(int& argc, char** argv)
 
     // set up idle detection
     m_idleDetector = IdleDetector::createIdleDetector( this );
-    if ( m_idleDetector == 0 ) {
+    if ( m_idleDetector == nullptr ) {
         qDebug() << "Application ctor: idle detection is not available on this platform.";
     } else {
         qDebug() << "Application ctor: idle detection initialized.";
@@ -230,7 +230,7 @@ void Application::slotHandleUniqueApplicationConnection()
 }
 
 void Application::openAWindow( bool raise ) {
-    CharmWindow* windowToOpen = 0;
+    CharmWindow* windowToOpen = nullptr;
     foreach( CharmWindow* window, m_windows )
         if ( !window->isHidden() )
             windowToOpen = window;
@@ -246,7 +246,7 @@ void Application::openAWindow( bool raise ) {
         windowToOpen->raise();
 
     if( windowToOpen == m_closedWindow )
-        m_closedWindow = 0;
+        m_closedWindow = nullptr;
 }
 
 void Application::createWindowMenu( QMenuBar *menuBar )
@@ -402,7 +402,7 @@ Application& Application::instance()
 
 bool Application::hasInstance()
 {
-    return m_instance != 0;
+    return m_instance != nullptr;
 }
 
 void Application::enterStartingUpState()
@@ -700,7 +700,7 @@ void Application::setHttpActionsVisible( bool visible )
 
 void Application::slotMaybeIdle()
 {
-    if ( idleDetector() == 0 ) return; // should not happen
+    if ( idleDetector() == nullptr ) return; // should not happen
 
     if ( DATAMODEL->activeEventCount() > 0 ) {
         if ( idleDetector()->idlePeriods().count() == 1 ) {

@@ -108,7 +108,7 @@ QModelIndex TaskModelAdapter::index( int row, int column, const QModelIndex & pa
         return QModelIndex();
 
     const TaskTreeItem* parentItem = itemFor( parent );
-    Q_ASSERT( parentItem!= 0 );
+    Q_ASSERT( parentItem != nullptr );
 
     // more sanity checks:
     if ( row >= parentItem->childCount() )
@@ -162,7 +162,7 @@ bool TaskModelAdapter::setData( const QModelIndex & index, const QVariant & valu
         return false;
 
     const TaskTreeItem* item = itemFor ( index );
-    Q_ASSERT( item != 0 );
+    Q_ASSERT( item != nullptr );
     Task task( item->task() ); // make a copy, so that we can modify it
 
     if ( role == Qt::EditRole ) {
@@ -328,7 +328,7 @@ Task TaskModelAdapter::taskForIndex( const QModelIndex& index ) const
 
 bool TaskModelAdapter::taskIsActive( const Task& task ) const
 {
-    Q_ASSERT( m_dataModel != 0 );
+    Q_ASSERT( m_dataModel != nullptr );
     return m_dataModel->isTaskActive( task.id() );
 }
 

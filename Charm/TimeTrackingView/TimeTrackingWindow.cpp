@@ -40,9 +40,9 @@
 
 TimeTrackingWindow::TimeTrackingWindow( QWidget* parent )
     : CharmWindow( tr( "Time Tracker" ), parent )
-    , m_weeklyTimesheetDialog( 0 )
-    , m_monthlyTimesheetDialog( 0 )
-    , m_activityReportDialog( 0 )
+    , m_weeklyTimesheetDialog( nullptr )
+    , m_monthlyTimesheetDialog( nullptr )
+    , m_activityReportDialog( nullptr )
     , m_summaryWidget( new TimeTrackingView( toolBar(), this ) )
     , m_billDialog( new BillDialog( this ) )
 {
@@ -298,19 +298,19 @@ void TimeTrackingWindow::slotMonthlyTimesheetReport()
 void TimeTrackingWindow::slotWeeklyTimesheetPreview( int result )
 {
     showPreview( m_weeklyTimesheetDialog, result );
-    m_weeklyTimesheetDialog = 0;
+    m_weeklyTimesheetDialog = nullptr;
 }
 
 void TimeTrackingWindow::slotMonthlyTimesheetPreview( int result )
 {
     showPreview( m_monthlyTimesheetDialog, result );
-    m_monthlyTimesheetDialog = 0;
+    m_monthlyTimesheetDialog = nullptr;
 }
 
 void TimeTrackingWindow::slotActivityReportPreview( int result )
 {
     showPreview( m_activityReportDialog, result );
-    m_activityReportDialog = 0;
+    m_activityReportDialog = nullptr;
 }
 
 void TimeTrackingWindow::showPreview( ReportConfigurationDialog* dialog, int result )
@@ -410,7 +410,7 @@ void TimeTrackingWindow::slotImportTasks()
                                                            tr("Task definitions (*.xml);;All Files (*)") );
     if ( filename.isNull() )
         return;
-    importTasksFromDeviceOrFile( 0, filename );
+    importTasksFromDeviceOrFile( nullptr, filename );
 }
 
 void TimeTrackingWindow::slotExportTasks()
@@ -471,7 +471,7 @@ void TimeTrackingWindow::slotBillGone(int result)
 void TimeTrackingWindow::maybeIdle()
 {
     static bool inProgress = false;
-    if ( Application::instance().idleDetector() == 0 ) return;
+    if ( Application::instance().idleDetector() == nullptr ) return;
 
     if ( inProgress == true ) return;
     Uniquifier u( &inProgress );

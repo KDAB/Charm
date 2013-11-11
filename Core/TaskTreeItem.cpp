@@ -3,7 +3,7 @@
 #include "TaskTreeItem.h"
 
 TaskTreeItem::TaskTreeItem()
-    : m_parent( 0 )
+    : m_parent( nullptr )
 {
 }
 
@@ -50,9 +50,9 @@ void TaskTreeItem::makeChildOf( TaskTreeItem& parent )
 
         // if there is an existing parent, unregister with it:
         // parent can only be zero if there never was a parent so far
-        if ( m_parent != 0 ) {
+        if ( m_parent != nullptr ) {
             m_parent->m_children.removeAt( row() );
-            m_parent = 0;
+            m_parent = nullptr;
         }
 
         // register with the new parent
