@@ -135,6 +135,6 @@ void TaskStructureTests::mergeTaskListsTest()
 
 QTEST_MAIN( TaskStructureTests )
 
-#include "TaskStructureTests.moc"
+#include "moc_TaskStructureTests.cpp"
 
 

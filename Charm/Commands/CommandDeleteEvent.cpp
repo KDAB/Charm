@@ -45,5 +45,5 @@ void CommandDeleteEvent::eventIdChanged(int oid, int nid)
         m_event.setId(nid);
 }
 
-#include "CommandDeleteEvent.moc"
+#include "moc_CommandDeleteEvent.cpp"
 

@@ -115,4 +115,4 @@ void ReportPreviewWindow::slotClose()
     close();
 }
 
-#include "ReportPreviewWindow.moc"
+#include "moc_ReportPreviewWindow.cpp"

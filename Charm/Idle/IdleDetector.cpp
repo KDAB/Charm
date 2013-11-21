@@ -101,4 +101,4 @@ void IdleDetector::clear()
     m_idlePeriods.clear();
 }
 
-#include "IdleDetector.moc"
+#include "moc_IdleDetector.cpp"

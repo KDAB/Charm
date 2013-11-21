@@ -45,5 +45,5 @@ bool CommandRelayCommand::finalize()
     return true;
 }
 
-#include "CommandRelayCommand.moc"
+#include "moc_CommandRelayCommand.cpp"
 

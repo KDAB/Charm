@@ -57,4 +57,4 @@ bool isIndirectParent( const Task& p, const Task& c )
     return isIndirectParent( item.task(), p );
 }
 
-#include "CharmReport.moc"
+#include "moc_CharmReport.cpp"

@@ -116,4 +116,4 @@ QString UploadTimesheetJob::dialogTitle() const
     return tr("Uploading");
 }
 
-#include "UploadTimesheetJob.moc"
+#include "moc_UploadTimesheetJob.cpp"

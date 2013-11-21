@@ -184,4 +184,4 @@ void SelectTaskDialog::slotAccepted()
     }
 }
 
-#include "SelectTaskDialog.moc"
+#include "moc_SelectTaskDialog.cpp"

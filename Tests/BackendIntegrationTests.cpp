@@ -141,5 +141,5 @@ bool BackendIntegrationTests::contentsEqual( const TaskList& listref1,
 
 QTEST_MAIN( BackendIntegrationTests )
 
-#include "BackendIntegrationTests.moc"
+#include "moc_BackendIntegrationTests.cpp"
 

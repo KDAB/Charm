@@ -98,4 +98,4 @@ int TestApplication::testInstallationId()
     return 1;
 }
 
-#include "TestApplication.moc"
+#include "moc_TestApplication.cpp"

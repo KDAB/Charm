@@ -101,5 +101,5 @@ void ImportExportTests::importDatabase( const QString& filename )
 
 QTEST_MAIN( ImportExportTests )
 
-#include "ImportExportTests.moc"
+#include "moc_ImportExportTests.cpp"
 

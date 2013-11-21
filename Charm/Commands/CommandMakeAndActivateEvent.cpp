@@ -47,4 +47,4 @@ bool CommandMakeAndActivateEvent::finalize()
     }
 }
 
-#include "CommandMakeAndActivateEvent.moc"
+#include "moc_CommandMakeAndActivateEvent.cpp"

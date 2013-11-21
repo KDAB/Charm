@@ -27,4 +27,4 @@ IdleCorrectionDialog::Result IdleCorrectionDialog::result()
     return Idle_NoResult;
 }
 
-#include "IdleCorrectionDialog.moc"
+#include "moc_IdleCorrectionDialog.cpp"

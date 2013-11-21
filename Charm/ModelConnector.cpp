@@ -63,4 +63,4 @@ void ModelConnector::slotSysTrayUpdate(const QString& toolTip, bool active)
     TRAY.setIcon( active ? Data::charmTrayActiveIcon() : Data::charmTrayIcon() );
 }
 
-#include "ModelConnector.moc"
+#include "moc_ModelConnector.cpp"

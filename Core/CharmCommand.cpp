@@ -44,4 +44,4 @@ void CharmCommand::requestSlotEventIdChanged(int oldId, int newId)
     emit emitSlotEventIdChanged(oldId,newId);
 }
 
-#include "CharmCommand.moc"
+#include "moc_CharmCommand.cpp"

@@ -435,4 +435,4 @@ void Controller::updateModelEventsAndTasks()
     emit allEvents( events );
 }
 
-#include "Controller.moc"
+#include "moc_Controller.cpp"

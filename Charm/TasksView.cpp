@@ -428,4 +428,4 @@ void TasksView::configureUi()
      }
  }
 
-#include "TasksView.moc"
+#include "moc_TasksView.cpp"

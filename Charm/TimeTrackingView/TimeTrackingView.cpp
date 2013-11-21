@@ -382,4 +382,4 @@ void TimeTrackingView::slotUpdateSummaries()
     setSummaries( m_summaries );
 }
 
-#include "TimeTrackingView.moc"
+#include "moc_TimeTrackingView.cpp"

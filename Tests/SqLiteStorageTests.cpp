@@ -327,4 +327,4 @@ void SqLiteStorageTests::cleanupTestCase ()
 
 QTEST_MAIN( SqLiteStorageTests )
 
-#include "SqLiteStorageTests.moc"
+#include "moc_SqLiteStorageTests.cpp"

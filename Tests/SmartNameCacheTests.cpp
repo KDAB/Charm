@@ -29,4 +29,4 @@ void SmartNameCacheTests::testCache()
 
 QTEST_MAIN( SmartNameCacheTests )
 
-#include "SmartNameCacheTests.moc"
+#include "moc_SmartNameCacheTests.cpp"
