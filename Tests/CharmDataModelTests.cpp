@@ -163,4 +163,4 @@ void CharmDataModelTests::cleanupTestCase ()
 
 QTEST_MAIN( CharmDataModelTests )
 
-#include "CharmDataModelTests.moc"
+#include "moc_CharmDataModelTests.cpp"

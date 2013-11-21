@@ -764,4 +764,4 @@ void Application::commitData( QSessionManager & manager )
     // our saving of the "visible" state later on in saveData.
 }
 
-#include "Application.moc"
+#include "moc_Application.cpp"

@@ -570,4 +570,4 @@ void TimeTrackingWindow::importTasksFromDeviceOrFile( QIODevice* device, const Q
     }
 }
 
-#include "TimeTrackingWindow.moc"
+#include "moc_TimeTrackingWindow.cpp"

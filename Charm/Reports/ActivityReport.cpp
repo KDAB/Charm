@@ -361,4 +361,4 @@ void ActivityReport::slotUpdate()
     setDocument( report );
 }
 
-#include "ActivityReport.moc"
+#include "moc_ActivityReport.cpp"

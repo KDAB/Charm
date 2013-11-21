@@ -80,5 +80,5 @@ int EventModelFilter::totalDuration()
     return total;
 }
 
-#include "EventModelFilter.moc"
+#include "moc_EventModelFilter.cpp"
 

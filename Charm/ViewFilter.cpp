@@ -158,4 +158,4 @@ void ViewFilter::commitCommand( CharmCommand* command )
     m_model.commitCommand( command );
 }
 
-#include "ViewFilter.moc"
+#include "moc_ViewFilter.cpp"

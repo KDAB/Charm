@@ -39,7 +39,7 @@ bool CommandAddTask::finalize()
     return m_success;
 }
 
-#include "CommandAddTask.moc"
+#include "moc_CommandAddTask.cpp"
 
 
 

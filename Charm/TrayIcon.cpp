@@ -40,4 +40,4 @@ void TrayIcon::slotActivated(QSystemTrayIcon::ActivationReason reason)
     }
 }
 
-#include "TrayIcon.moc"
+#include "moc_TrayIcon.cpp"

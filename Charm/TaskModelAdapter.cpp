@@ -349,4 +349,4 @@ void TaskModelAdapter::commitCommand( CharmCommand* command )
     command->finalize();
 }
 
-#include "TaskModelAdapter.moc"
+#include "moc_TaskModelAdapter.cpp"

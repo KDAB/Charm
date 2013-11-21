@@ -62,4 +62,4 @@ void DatesTests::testNumberOfWeeksInYear()
 
 QTEST_MAIN( DatesTests )
 
-#include "DatesTests.moc"
+#include "moc_DatesTests.cpp"

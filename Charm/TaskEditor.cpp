@@ -177,4 +177,4 @@ void TaskEditor::checkInvariants()
     m_ui->buttonBox->button( QDialogButtonBox::Ok )->setEnabled( acceptable );
 }
 
-#include "TaskEditor.moc"
+#include "moc_TaskEditor.cpp"

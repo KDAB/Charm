@@ -116,4 +116,4 @@ void SqlTransactionTests::testMySqlNestedTransactions()
 
 QTEST_MAIN( SqlTransactionTests )
 
-#include "SqlTransactionTests.moc"
+#include "moc_SqlTransactionTests.cpp"

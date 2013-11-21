@@ -44,5 +44,5 @@ bool CommandSetAllTasks::finalize()
     return m_success;
 }
 
-#include "CommandSetAllTasks.moc"
+#include "moc_CommandSetAllTasks.cpp"
 

@@ -67,4 +67,4 @@ QString GetProjectCodesJob::dialogTitle() const
     return tr("Downloading");
 }
 
-#include "GetProjectCodesJob.moc"
+#include "moc_GetProjectCodesJob.cpp"

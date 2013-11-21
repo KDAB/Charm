@@ -146,4 +146,4 @@ void CharmPreferences::slotWarnUnuploadedChanged( bool enabled )
     }
 }
 
-#include "CharmPreferences.moc"
+#include "moc_CharmPreferences.cpp"

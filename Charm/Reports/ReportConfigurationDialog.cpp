@@ -5,4 +5,4 @@ ReportConfigurationDialog::ReportConfigurationDialog( QWidget* parent )
 {
 }
 
-#include "ReportConfigurationDialog.moc"
+#include "moc_ReportConfigurationDialog.cpp"

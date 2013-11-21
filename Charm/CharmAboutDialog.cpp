@@ -18,4 +18,4 @@ CharmAboutDialog::~CharmAboutDialog()
     delete m_ui; m_ui = 0;
 }
 
-#include "CharmAboutDialog.moc"
+#include "moc_CharmAboutDialog.cpp"

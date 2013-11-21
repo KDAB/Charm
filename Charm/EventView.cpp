@@ -493,4 +493,4 @@ void EventView::slotEditNewEventCompleted( const Event& event )
     delete command;
 }
 
-#include "EventView.moc"
+#include "moc_EventView.cpp"

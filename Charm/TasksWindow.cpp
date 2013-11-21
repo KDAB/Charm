@@ -66,4 +66,4 @@ void TasksWindow::commitCommand( CharmCommand* )
 {
 }
 
-#include "TasksWindow.moc"
+#include "moc_TasksWindow.cpp"

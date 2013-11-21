@@ -54,4 +54,4 @@ bool CommandImportFromXml::finalize()
     return true;
 }
 
-#include "CommandImportFromXml.moc"
+#include "moc_CommandImportFromXml.cpp"

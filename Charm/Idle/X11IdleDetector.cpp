@@ -54,4 +54,4 @@ void X11IdleDetector::checkIdleness()
     m_heartbeat = QDateTime::currentDateTime();
 }
 
-#include "X11IdleDetector.moc"
+#include "moc_X11IdleDetector.cpp"

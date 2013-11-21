@@ -65,4 +65,4 @@ void BillDialog::slotLater()
     done(Later);
 }
 
-#include "BillDialog.moc"
+#include "moc_BillDialog.cpp"
