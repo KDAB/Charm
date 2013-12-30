@@ -31,3 +31,15 @@ int Charm::numberOfWeeksInYear( int year )
     Q_ASSERT(weeksInYear == 52 || weeksInYear == 53);
     return weeksInYear;
 }
+
+int Charm::weekDifference( const QDate &from, const QDate &to )
+{
+  int fromWeekYear, toWeekYear;
+  const int fromWeekNumber = from.weekNumber(&fromWeekYear);
+  const int toWeekNumber = to.weekNumber(&toWeekYear);
+  int weeksForInterveningYears = 0;
+  for (int year = fromWeekYear; year < toWeekYear; ++year)
+    weeksForInterveningYears += numberOfWeeksInYear(year);
+
+  return toWeekNumber + weeksForInterveningYears - fromWeekNumber;
+}

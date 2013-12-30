@@ -12,6 +12,8 @@ private slots:
     void testWeekDayInWeekOf();
     void testNumberOfWeeksInYear_data();
     void testNumberOfWeeksInYear();
+    void testWeekDifference_data();
+    void testWeekDifference();
 };
 
 #endif
