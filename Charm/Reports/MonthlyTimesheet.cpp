@@ -5,6 +5,7 @@
 #include <QPushButton>
 
 #include <Core/XmlSerialization.h>
+#include <Core/Dates.h>
 
 #include "ViewHelpers.h"
 
@@ -13,17 +14,13 @@
 namespace {
     typedef QHash<int, QVector<int> > WeeksByYear;
     static const float SecondsInDay = 60. * 60. * 8. /* eight hour work day */;
-
-    enum TimeSheetTableColumns {
-        Column_Task
-    };
 }
 
 MonthlyTimeSheetReport::MonthlyTimeSheetReport( QWidget* parent )
     : TimeSheetReport( parent )
-    , m_numberOfWeeks( 0 )
     , m_monthNumber( 0 )
     , m_yearOfMonth( 0 )
+    , m_weeksInMonth( 0 )
 {
 }
 
@@ -35,9 +32,9 @@ void MonthlyTimeSheetReport::setReportProperties(
     const QDate& start, const QDate& end,
     TaskId rootTask, bool activeTasksOnly )
 {
-    m_numberOfWeeks = (end.addDays( -1 ).weekNumber() + 1) - start.weekNumber();
     m_monthNumber = start.month();
     m_yearOfMonth = start.year();
+    m_weeksInMonth = Charm::weekDifference( start, end.addDays(-1) ) + 1;
     TimeSheetReport::setReportProperties(start, end, rootTask, activeTasksOnly);
 }
 
@@ -59,10 +56,10 @@ QByteArray MonthlyTimeSheetReport::saveToText()
     stream << content << '\n';
     stream << '\n';
     TimeSheetInfoList timeSheetInfo = TimeSheetInfo::filteredTaskWithSubTasks(
-        TimeSheetInfo::taskWithSubTasks( m_numberOfWeeks, rootTask(), secondsMap() ),
+        TimeSheetInfo::taskWithSubTasks( m_weeksInMonth, rootTask(), secondsMap() ),
         activeTasksOnly() );
 
-    TimeSheetInfo totalsLine( m_numberOfWeeks );
+    TimeSheetInfo totalsLine( m_weeksInMonth );
     if ( ! timeSheetInfo.isEmpty() ) {
         totalsLine = timeSheetInfo.first();
         if( rootTask() == 0 ) {
@@ -70,7 +67,7 @@ QByteArray MonthlyTimeSheetReport::saveToText()
         }
     }
 
-    for ( int i = 0; i < timeSheetInfo.size(); ++i ) {
+    for (int i = 0; i < timeSheetInfo.size(); ++i ) {
         stream << timeSheetInfo[i].taskname << "\t" << hoursAndMinutes( timeSheetInfo[i].total() ) << '\n';
     }
     stream << '\n';
@@ -111,7 +108,7 @@ QByteArray MonthlyTimeSheetReport::saveToXml()
 
         SecondsMap m_secondsMap;
         TimeSheetInfoList timeSheetInfo = TimeSheetInfo::filteredTaskWithSubTasks(
-            TimeSheetInfo::taskWithSubTasks( m_numberOfWeeks, rootTask(), m_secondsMap ),
+            TimeSheetInfo::taskWithSubTasks( m_weeksInMonth, rootTask(), m_secondsMap ),
             false ); // here, we don't care about active or not, because we only report on the tasks
 
         // extend report tag: add tasks and effort structure
@@ -200,11 +197,30 @@ QByteArray MonthlyTimeSheetReport::saveToXml()
 #endif
 
        return document.toByteArray( 4 );
-    } catch ( const XmlSerializationException& e ) {
+    } catch ( XmlSerializationException& e ) {
         QMessageBox::critical( this, tr( "Error exporting the report" ), e.what() );
     }
 
     return QByteArray();
+}
+
+static QDomElement addTblHdr( QDomElement &toRow, const QString &text )
+{
+    QDomElement header = toRow.ownerDocument().createElement( "th" );
+    QDomText textNode = toRow.ownerDocument().createTextNode( text );
+    header.appendChild( textNode );
+    toRow.appendChild( header );
+    return header;
+}
+
+static QDomElement addTblCell( QDomElement &toRow, const QString &text )
+{
+    QDomElement cell = toRow.ownerDocument().createElement( "td" );
+    cell.setAttribute( "align", "center" );
+    QDomText textNode = toRow.ownerDocument().createTextNode( text );
+    cell.appendChild( textNode );
+    toRow.appendChild( cell );
+    return cell;
 }
 
 void MonthlyTimeSheetReport::update()
@@ -214,18 +230,17 @@ void MonthlyTimeSheetReport::update()
     const EventIdList matchingEvents = DATAMODEL->eventsThatStartInTimeFrame( startDate(), endDate() );
 
     secondsMap().clear();
-
     // for every task, make a vector that includes a number of seconds
-    // for every week of a month ( int seconds[5]), and store those in
+    // for every week of a month ( int seconds[m_weeksInMonth]), and store those in
     // a map by their task id
     Q_FOREACH( EventId id, matchingEvents ) {
         const Event& event = DATAMODEL->eventForId( id );
-        QVector<int> seconds( m_numberOfWeeks );
+        QVector<int> seconds( m_weeksInMonth );
         if ( secondsMap().contains( event.taskId() ) ) {
             seconds = secondsMap().value(event.taskId());
         }
         // what week of the month is the event (normalized to vector indexes):
-        const int weekOfMonth = event.startDateTime().date().weekNumber() - startDate().weekNumber();
+        const int weekOfMonth = Charm::weekDifference( startDate(), event.startDateTime().date() );
         seconds[weekOfMonth] += event.duration();
         // store in minute map:
         secondsMap()[event.taskId()] = seconds;
@@ -264,7 +279,7 @@ void MonthlyTimeSheetReport::update()
         // retrieve the information for the report:
         // TimeSheetInfoList timeSheetInfo = taskWithSubTasks( m_rootTask, m_secondsMap );
         TimeSheetInfoList timeSheetInfo = TimeSheetInfo::filteredTaskWithSubTasks(
-            TimeSheetInfo::taskWithSubTasks( m_numberOfWeeks, rootTask(), secondsMap() ),
+            TimeSheetInfo::taskWithSubTasks( m_weeksInMonth, rootTask(), secondsMap() ),
             activeTasksOnly() );
 
         QDomElement table = doc.createElement( "table" );
@@ -274,7 +289,7 @@ void MonthlyTimeSheetReport::update()
         table.setAttribute( "cellspacing", "0" );
         body.appendChild( table );
 
-        TimeSheetInfo totalsLine( m_numberOfWeeks );
+        TimeSheetInfo totalsLine( m_weeksInMonth );
         if ( ! timeSheetInfo.isEmpty() ) {
             totalsLine = timeSheetInfo.first();
             if( rootTask() == 0 ) {
@@ -282,39 +297,28 @@ void MonthlyTimeSheetReport::update()
             }
         }
 
-        QDomElement headerRow = doc.createElement( "tr" );
-        headerRow.setAttribute( "class", "header_row" );
-        table.appendChild( headerRow );
-        QDomElement headerDayRow = doc.createElement( "tr" );
-        headerDayRow.setAttribute( "class", "header_row" );
-        table.appendChild( headerDayRow );
+        {   //Header Row
+            QDomElement headerRow = doc.createElement( "tr" );
+            headerRow.setAttribute( "class", "header_row" );
+            table.appendChild( headerRow );
+            addTblHdr( headerRow, tr( "Task" ) );
+            for ( int i = 0; i < m_weeksInMonth; ++i )
+                addTblHdr( headerRow, tr( "Week" ) );
+            addTblHdr( headerRow, tr( "Total" ) );
+            addTblHdr( headerRow, tr( "Days" ) );
+        }
 
-        QVector<QString> Headlines;
-        Headlines.append(tr( "Task" ));
-        for ( int si = 0; si < m_numberOfWeeks; ++si )
-            Headlines.append(tr( "Week" ));
-        Headlines.append(tr( "Total" ));
-        Headlines.append(tr( "Days" ));
-
-        QVector<QString> DayHeadlines;
-        DayHeadlines.append(QString());
-        for ( int si = 0; si < m_numberOfWeeks; ++si )
-            DayHeadlines.append(QString::fromLatin1("%1")
-                .arg(startDate().addDays( si * 7 ).weekNumber(), 2, 10, QLatin1Char('0') ));
-        DayHeadlines.append(QString());
-        DayHeadlines.append(tr("8 hours"));
-
-        const int numberOfColumns = m_numberOfWeeks + 3 /* Task, Total and Days Columns */;
-        for ( int i = 0; i < numberOfColumns; ++i )
-        {
-            QDomElement header = doc.createElement( "th" );
-            QDomText text = doc.createTextNode( Headlines[i] );
-            header.appendChild( text );
-            headerRow.appendChild( header );
-            QDomElement dayHeader = doc.createElement( "th" );
-            QDomText dayText = doc.createTextNode( DayHeadlines[i] );
-            dayHeader.appendChild( dayText );
-            headerDayRow.appendChild( dayHeader );
+        {   //Header day row
+            QDomElement headerDayRow = doc.createElement( "tr" );
+            headerDayRow.setAttribute( "class", "header_row" );
+            table.appendChild( headerDayRow );
+            addTblHdr( headerDayRow, QString() );
+            for ( int i = 0; i < m_weeksInMonth; ++i ) {
+                QString label = tr("%1").arg(startDate().addDays( i * 7 ).weekNumber(), 2, 10, QLatin1Char('0') );
+                addTblHdr( headerDayRow, label );
+            }
+            addTblHdr( headerDayRow, QString() );
+            addTblHdr( headerDayRow, tr("8 hours") );
         }
 
         for ( int i = 0; i < timeSheetInfo.size(); ++i )
@@ -324,47 +328,26 @@ void MonthlyTimeSheetReport::update()
                 row.setAttribute( "class", "alternate_row" );
             table.appendChild( row );
 
-            QVector<QString> texts;
-            texts.append(timeSheetInfo[i].taskname);
-            for ( int si = 0; si < m_numberOfWeeks; ++si )
-                texts.append(hoursAndMinutes( timeSheetInfo[i].seconds[si] ));
-            texts.append(hoursAndMinutes( timeSheetInfo[i].total() ));
-            texts.append(QString::number( timeSheetInfo[i].total() / SecondsInDay, 'f', 1));
-
-            for ( int column = 0; column < numberOfColumns; ++column )
-            {
-                QDomElement cell = doc.createElement( "td" );
-                cell.setAttribute( "align", column == Column_Task ? "left" : "center" );
-
-                if ( column == Column_Task ) {
-                    QString style = QString( "text-indent: %1px;" )
-                            .arg( 9 * timeSheetInfo[i].indentation );
-                    cell.setAttribute( "style", style );
-                }
-
-
-                QDomText text = doc.createTextNode( texts[column] );
-                cell.appendChild( text );
-                row.appendChild( cell );
-            }
+            QDomElement taskCell = addTblCell( row, timeSheetInfo[i].taskname );
+            taskCell.setAttribute( "align", "left" );
+            taskCell.setAttribute( "style", QString( "text-indent: %1px;" )
+                                            .arg( 9 * timeSheetInfo[i].indentation ) );
+            for ( int week = 0; week < m_weeksInMonth; ++week )
+                addTblCell( row, hoursAndMinutes( timeSheetInfo[i].seconds[week] ) );
+            addTblCell( row, hoursAndMinutes( timeSheetInfo[i].total() ) );
+            addTblCell( row, QString::number( timeSheetInfo[i].total() / SecondsInDay, 'f', 1) );
         }
-        // put the totals:
-        QVector<QString> TotalsTexts;
-        TotalsTexts.append(tr( "Total:" ));
-        for ( int si = 0; si < m_numberOfWeeks; ++si )
-            TotalsTexts.append(hoursAndMinutes( totalsLine.seconds[si] ));
-        TotalsTexts.append(hoursAndMinutes( totalsLine.total() ));
-        TotalsTexts.append(QString::number( totalsLine.total() / SecondsInDay, 'f', 1));
 
-        QDomElement totals = doc.createElement( "tr" );
-        totals.setAttribute( "class", "header_row" );
-        table.appendChild( totals );
-        for ( int i = 0; i < numberOfColumns; ++i )
-        {
-            QDomElement cell = doc.createElement( "th" );
-            QDomText text = doc.createTextNode( TotalsTexts[i] );
-            cell.appendChild( text );
-            totals.appendChild( cell );
+        {   // Totals row
+            QDomElement totals = doc.createElement( "tr" );
+            totals.setAttribute( "class", "header_row" );
+            table.appendChild( totals );
+
+            addTblHdr( totals, tr( "Total:" ) );
+            for ( int i = 0; i < m_weeksInMonth; ++i )
+                addTblHdr( totals, hoursAndMinutes( totalsLine.seconds[i] ) );
+            addTblHdr( totals, hoursAndMinutes( totalsLine.total() ) );
+            addTblHdr( totals, QString::number( totalsLine.total() / SecondsInDay, 'f', 1) );
         }
     }
 
@@ -379,7 +362,7 @@ void MonthlyTimeSheetReport::update()
             qDebug() << "MonthlyTimeSheet::create: default style sheet is empty, too bad";
         }
     } else {
-        qDebug() << "MonthlyTimeSheet::create: cannot load report style sheet: " << stylesheet.errorString();
+        qDebug() << "MonthlyTimeSheet::create: cannot load report style sheet";
     }
 
     report.setHtml( doc.toString() );

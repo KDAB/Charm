@@ -11,6 +11,8 @@ namespace Charm {
     QDate weekDayInWeekOf( Qt::DayOfWeek dayOfWeek, const QDate& date );
 
     int numberOfWeeksInYear( int year );
+
+    int weekDifference( const QDate &from, const QDate &to );
 }
 
 #endif // CHARM_DATES_H

@@ -32,6 +32,7 @@ private:
     int m_numberOfWeeks;
     int m_monthNumber;
     int m_yearOfMonth;
+    int m_weeksInMonth;
 };
 
 #endif
