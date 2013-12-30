@@ -18,9 +18,9 @@ namespace {
 
 MonthlyTimeSheetReport::MonthlyTimeSheetReport( QWidget* parent )
     : TimeSheetReport( parent )
+    , m_numberOfWeeks( 0 )
     , m_monthNumber( 0 )
     , m_yearOfMonth( 0 )
-    , m_weeksInMonth( 0 )
 {
 }
 
@@ -32,9 +32,9 @@ void MonthlyTimeSheetReport::setReportProperties(
     const QDate& start, const QDate& end,
     TaskId rootTask, bool activeTasksOnly )
 {
+    m_numberOfWeeks = Charm::weekDifference( start, end.addDays(-1) ) + 1;
     m_monthNumber = start.month();
     m_yearOfMonth = start.year();
-    m_weeksInMonth = Charm::weekDifference( start, end.addDays(-1) ) + 1;
     TimeSheetReport::setReportProperties(start, end, rootTask, activeTasksOnly);
 }
 
@@ -56,10 +56,10 @@ QByteArray MonthlyTimeSheetReport::saveToText()
     stream << content << '\n';
     stream << '\n';
     TimeSheetInfoList timeSheetInfo = TimeSheetInfo::filteredTaskWithSubTasks(
-        TimeSheetInfo::taskWithSubTasks( m_weeksInMonth, rootTask(), secondsMap() ),
+        TimeSheetInfo::taskWithSubTasks( m_numberOfWeeks, rootTask(), secondsMap() ),
         activeTasksOnly() );
 
-    TimeSheetInfo totalsLine( m_weeksInMonth );
+    TimeSheetInfo totalsLine( m_numberOfWeeks );
     if ( ! timeSheetInfo.isEmpty() ) {
         totalsLine = timeSheetInfo.first();
         if( rootTask() == 0 ) {
@@ -67,7 +67,7 @@ QByteArray MonthlyTimeSheetReport::saveToText()
         }
     }
 
-    for (int i = 0; i < timeSheetInfo.size(); ++i ) {
+    for ( int i = 0; i < timeSheetInfo.size(); ++i ) {
         stream << timeSheetInfo[i].taskname << "\t" << hoursAndMinutes( timeSheetInfo[i].total() ) << '\n';
     }
     stream << '\n';
@@ -108,7 +108,7 @@ QByteArray MonthlyTimeSheetReport::saveToXml()
 
         SecondsMap m_secondsMap;
         TimeSheetInfoList timeSheetInfo = TimeSheetInfo::filteredTaskWithSubTasks(
-            TimeSheetInfo::taskWithSubTasks( m_weeksInMonth, rootTask(), m_secondsMap ),
+            TimeSheetInfo::taskWithSubTasks( m_numberOfWeeks, rootTask(), m_secondsMap ),
             false ); // here, we don't care about active or not, because we only report on the tasks
 
         // extend report tag: add tasks and effort structure
@@ -197,7 +197,7 @@ QByteArray MonthlyTimeSheetReport::saveToXml()
 #endif
 
        return document.toByteArray( 4 );
-    } catch ( XmlSerializationException& e ) {
+    } catch ( const XmlSerializationException& e ) {
         QMessageBox::critical( this, tr( "Error exporting the report" ), e.what() );
     }
 
@@ -230,12 +230,13 @@ void MonthlyTimeSheetReport::update()
     const EventIdList matchingEvents = DATAMODEL->eventsThatStartInTimeFrame( startDate(), endDate() );
 
     secondsMap().clear();
+
     // for every task, make a vector that includes a number of seconds
-    // for every week of a month ( int seconds[m_weeksInMonth]), and store those in
+    // for every week of a month ( int seconds[m_numberOfWeeks]), and store those in
     // a map by their task id
     Q_FOREACH( EventId id, matchingEvents ) {
         const Event& event = DATAMODEL->eventForId( id );
-        QVector<int> seconds( m_weeksInMonth );
+        QVector<int> seconds( m_numberOfWeeks );
         if ( secondsMap().contains( event.taskId() ) ) {
             seconds = secondsMap().value(event.taskId());
         }
@@ -279,7 +280,7 @@ void MonthlyTimeSheetReport::update()
         // retrieve the information for the report:
         // TimeSheetInfoList timeSheetInfo = taskWithSubTasks( m_rootTask, m_secondsMap );
         TimeSheetInfoList timeSheetInfo = TimeSheetInfo::filteredTaskWithSubTasks(
-            TimeSheetInfo::taskWithSubTasks( m_weeksInMonth, rootTask(), secondsMap() ),
+            TimeSheetInfo::taskWithSubTasks( m_numberOfWeeks, rootTask(), secondsMap() ),
             activeTasksOnly() );
 
         QDomElement table = doc.createElement( "table" );
@@ -289,7 +290,7 @@ void MonthlyTimeSheetReport::update()
         table.setAttribute( "cellspacing", "0" );
         body.appendChild( table );
 
-        TimeSheetInfo totalsLine( m_weeksInMonth );
+        TimeSheetInfo totalsLine( m_numberOfWeeks );
         if ( ! timeSheetInfo.isEmpty() ) {
             totalsLine = timeSheetInfo.first();
             if( rootTask() == 0 ) {
@@ -302,7 +303,7 @@ void MonthlyTimeSheetReport::update()
             headerRow.setAttribute( "class", "header_row" );
             table.appendChild( headerRow );
             addTblHdr( headerRow, tr( "Task" ) );
-            for ( int i = 0; i < m_weeksInMonth; ++i )
+            for ( int i = 0; i < m_numberOfWeeks; ++i )
                 addTblHdr( headerRow, tr( "Week" ) );
             addTblHdr( headerRow, tr( "Total" ) );
             addTblHdr( headerRow, tr( "Days" ) );
@@ -313,7 +314,7 @@ void MonthlyTimeSheetReport::update()
             headerDayRow.setAttribute( "class", "header_row" );
             table.appendChild( headerDayRow );
             addTblHdr( headerDayRow, QString() );
-            for ( int i = 0; i < m_weeksInMonth; ++i ) {
+            for ( int i = 0; i < m_numberOfWeeks; ++i ) {
                 QString label = tr("%1").arg(startDate().addDays( i * 7 ).weekNumber(), 2, 10, QLatin1Char('0') );
                 addTblHdr( headerDayRow, label );
             }
@@ -332,7 +333,7 @@ void MonthlyTimeSheetReport::update()
             taskCell.setAttribute( "align", "left" );
             taskCell.setAttribute( "style", QString( "text-indent: %1px;" )
                                             .arg( 9 * timeSheetInfo[i].indentation ) );
-            for ( int week = 0; week < m_weeksInMonth; ++week )
+            for ( int week = 0; week < m_numberOfWeeks; ++week )
                 addTblCell( row, hoursAndMinutes( timeSheetInfo[i].seconds[week] ) );
             addTblCell( row, hoursAndMinutes( timeSheetInfo[i].total() ) );
             addTblCell( row, QString::number( timeSheetInfo[i].total() / SecondsInDay, 'f', 1) );
@@ -344,7 +345,7 @@ void MonthlyTimeSheetReport::update()
             table.appendChild( totals );
 
             addTblHdr( totals, tr( "Total:" ) );
-            for ( int i = 0; i < m_weeksInMonth; ++i )
+            for ( int i = 0; i < m_numberOfWeeks; ++i )
                 addTblHdr( totals, hoursAndMinutes( totalsLine.seconds[i] ) );
             addTblHdr( totals, hoursAndMinutes( totalsLine.total() ) );
             addTblHdr( totals, QString::number( totalsLine.total() / SecondsInDay, 'f', 1) );
@@ -362,7 +363,7 @@ void MonthlyTimeSheetReport::update()
             qDebug() << "MonthlyTimeSheet::create: default style sheet is empty, too bad";
         }
     } else {
-        qDebug() << "MonthlyTimeSheet::create: cannot load report style sheet";
+        qDebug() << "MonthlyTimeSheet::create: cannot load report style sheet: " << stylesheet.errorString();
     }
 
     report.setHtml( doc.toString() );
