@@ -60,6 +60,29 @@ void DatesTests::testNumberOfWeeksInYear()
     QCOMPARE( Charm::numberOfWeeksInYear(year), numWeeks );
 }
 
+void DatesTests::testWeekDifference_data()
+{
+    QTest::addColumn<QDate>("from");
+    QTest::addColumn<QDate>("to");
+    QTest::addColumn<int>("weekDiff");
+    QTest::newRow("2013/12/1 - 2013/12/30") << QDate(2013, 12, 1) << QDate(2013, 12, 30) << 5;
+    QTest::newRow("2013/12/1 - 2013/12/31") << QDate(2013, 12, 1) << QDate(2013, 12, 31) << 5;
+    QTest::newRow("2013/12/1 - 2014/1/3") << QDate(2013, 12, 1) << QDate(2014, 1, 3) << 5;
+    QTest::newRow("2013/12/1 - 2013/1/3") << QDate(2013, 12, 1) << QDate(2013, 1, 3) << -47;
+    QTest::newRow("2013/12/20 - 2013/1/5") << QDate(2013, 12, 20) << QDate(2014, 1, 5) << 2;
+    QTest::newRow("2013/1/1 - 2014/1/1") << QDate(2013, 1, 1) << QDate(2014, 1, 1) << 52;
+    QTest::newRow("2013/12/1 - 2050/4/3") << QDate(2013, 12, 1) << QDate(2050, 4, 3) << 1896;
+    QTest::newRow("1994/12/1 - 2050/2/2") << QDate(1994, 12, 1) << QDate(2050, 2, 2) << 2879;
+    QTest::newRow("2010/2/1 - 2010/3/1") << QDate(2010, 2, 1) << QDate(2010, 3, 1) << 4;
+}
+void DatesTests::testWeekDifference()
+{
+    QFETCH(QDate, from);
+    QFETCH(QDate, to);
+    QFETCH(int, weekDiff);
+    QCOMPARE( Charm::weekDifference(from, to), weekDiff );
+}
+
 QTEST_MAIN( DatesTests )
 
 #include "moc_DatesTests.cpp"
