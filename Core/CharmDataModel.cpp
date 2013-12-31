@@ -407,7 +407,8 @@ void CharmDataModel::startEventRequested( const Task& task )
     // clear the "last event editor datetime" so that the next manual "create event"
     // doesn't use some old date
     QSettings settings;
-    settings.remove( MetaKey_LastEventEditorDateTime );
+    settings.remove( MetaKey_LastEventEditorStartDateTime );
+    settings.remove( MetaKey_LastEventEditorEndDateTime );
 
     emit makeAndActivateEvent( task );
     updateToolTip();

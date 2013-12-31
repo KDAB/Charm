@@ -72,9 +72,10 @@ EventEditor::EventEditor( const Event& event, QWidget* parent )
     // initialize to some sensible values, unless we got something valid passed in
     if ( !m_event.isValid() ) {
         QSettings settings;
-        QDateTime start = settings.value( MetaKey_LastEventEditorDateTime, QDateTime::currentDateTime() ).toDateTime();
+        const QDateTime start = settings.value( MetaKey_LastEventEditorStartDateTime, QDateTime::currentDateTime() ).toDateTime();
+        const QDateTime end = settings.value( MetaKey_LastEventEditorEndDateTime, QDateTime::currentDateTime() ).toDateTime();
         m_event.setStartDateTime( start );
-        m_event.setEndDateTime( start );
+        m_event.setEndDateTime( end );
         m_endDateChanged = false;
     }
     updateValues( true );
@@ -88,7 +89,8 @@ EventEditor::~EventEditor()
 void EventEditor::accept()
 {
     QSettings settings;
-    settings.setValue( MetaKey_LastEventEditorDateTime, m_event.endDateTime() );
+    settings.setValue( MetaKey_LastEventEditorStartDateTime, m_event.startDateTime() );
+    settings.setValue( MetaKey_LastEventEditorEndDateTime, m_event.endDateTime() );
     QDialog::accept();
 }
 
