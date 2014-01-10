@@ -262,7 +262,9 @@ void Application::createWindowMenu( QMenuBar *menuBar )
     menu->addAction( &m_actionActivityReport );
     menu->addAction( &m_actionWeeklyTimesheetReport );
     menu->addAction( &m_actionMonthlyTimesheetReport );
+#ifndef Q_OS_MAC
     menu->addSeparator();
+#endif
     menu->addAction( &m_actionPreferences );
     menuBar->addMenu( menu );
 }
@@ -277,7 +279,9 @@ void Application::createFileMenu( QMenuBar *menuBar )
     menu->addAction( &m_actionSyncTasks );
     menu->addAction( &m_actionImportTasks );
     menu->addAction( &m_actionExportTasks );
+#ifndef Q_OS_MAC
     menu->addSeparator();
+#endif
     menu->addAction( &m_actionQuit );
     menuBar->addMenu( menu );
 }
