@@ -53,19 +53,29 @@ IF (Qt5Core_FOUND)
         set(QTPRINT_LIBRARIES ${Qt5PrintSupport_LIBRARIES})
     ENDIF()
 
-    find_package(Qt5DBus)
-    IF(Qt5DBus_FOUND)
-        set(HAVE_DBUS ON)
-        include_directories(${Qt5DBus_INCLUDE_DIRS})
-        set(QTDBUS_LIBRARIES ${Qt5DBus_LIBRARIES})
-        macro(qt_add_dbus_interface)
-            qt5_add_dbus_interface(${ARGN})
-        endmacro()
-    ELSE()
-        set(QTDBUS_LIBRARIES "")
-        macro(qt_add_dbus_interface)
-            # do nothing
-        endmacro()
+    set(QT_PLATFORM_SPECIFIC_LIBRARIES)
+
+    IF(APPLE)
+        find_package(Qt5MacExtras REQUIRED)
+        include_directories(${Qt5MacExtras_INCLUDE_DIRS})
+        set(QT_PLATFORM_SPECIFIC_LIBRARIES ${Qt5MacExtras_LIBRARIES})
+    ENDIF()
+
+    IF(NOT APPLE)
+        find_package(Qt5DBus)
+        IF(Qt5DBus_FOUND)
+            set(HAVE_DBUS ON)
+            include_directories(${Qt5DBus_INCLUDE_DIRS})
+            set(QTDBUS_LIBRARIES ${Qt5DBus_LIBRARIES})
+            macro(qt_add_dbus_interface)
+                qt5_add_dbus_interface(${ARGN})
+            endmacro()
+        ELSE()
+            set(QTDBUS_LIBRARIES "")
+            macro(qt_add_dbus_interface)
+                # do nothing
+            endmacro()
+        ENDIF()
     ENDIF()
 
     macro(qt_wrap_cpp)
@@ -89,6 +99,7 @@ IF (Qt5Core_FOUND)
         ${Qt5Sql_LIBRARIES}
         ${QTPRINT_LIBRARIES}
         ${QTDBUS_LIBRARIES}
+        ${QT_PLATFORM_SPECIFIC_LIBRARIES}
     )
 
     include_directories(

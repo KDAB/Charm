@@ -150,6 +150,25 @@ QSearchField::QSearchField(QWidget *parent) : QWidget(parent)
     [pool drain];
 }
 
+void QSearchField::setMenu(QMenu *menu)
+{
+    Q_ASSERT(pimpl);
+    if (!pimpl)
+        return;
+
+#if QT_VERSION < QT_VERSION_CHECK(5,0,0)
+    NSMenu *nsMenu = menu->macMenu();
+#else
+    NSMenu *nsMenu = menu->toNSMenu();
+#endif
+
+    [[pimpl->nsSearchField cell] setSearchMenuTemplate:nsMenu];
+}
+
+void QSearchField::popupMenu()
+{
+}
+
 void QSearchField::setText(const QString &text)
 {
     Q_ASSERT(pimpl);
@@ -209,7 +228,7 @@ QString QSearchField::placeholderText() const
     return toQString([[pimpl->nsSearchField cell] placeholderString]);
 }
 
-void QSearchField::setFocus(Qt::FocusReason reason)
+void QSearchField::setFocus(Qt::FocusReason)
 {
     Q_ASSERT(pimpl);
     if (!pimpl)
@@ -222,6 +241,19 @@ void QSearchField::setFocus(Qt::FocusReason reason)
 void QSearchField::setFocus()
 {
     setFocus(Qt::OtherFocusReason);
+}
+
+void QSearchField::changeEvent(QEvent* event)
+{
+    if (event->type() == QEvent::EnabledChange) {
+        Q_ASSERT(pimpl);
+        if (!pimpl)
+            return;
+
+        const bool enabled = isEnabled();
+        [pimpl->nsSearchField setEnabled: enabled];
+    }
+    QWidget::changeEvent(event);
 }
 
 void QSearchField::resizeEvent(QResizeEvent *resizeEvent)
