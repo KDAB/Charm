@@ -46,7 +46,7 @@ QButton::QButton(QWidget *parent, BezelStyle) : QWidget(parent)
             this, SIGNAL(clicked()));
     pimpl = new QButtonPrivate(this, button);
 
-    QVBoxLayout *layout = new QVBoxLayout(this);
+    auto layout = new QVBoxLayout(this);
     layout->setMargin(0);
     layout->addWidget(button);
 }

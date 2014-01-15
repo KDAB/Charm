@@ -50,7 +50,7 @@ public:
 
 QSearchField::QSearchField(QWidget *parent) : QWidget(parent)
 {
-    QLineEdit *lineEdit = new QLineEdit(this);
+    auto lineEdit = new QLineEdit(this);
     connect(lineEdit, SIGNAL(textChanged(QString)),
             this, SIGNAL(textChanged(QString)));
     connect(lineEdit, SIGNAL(editingFinished()),
@@ -60,7 +60,7 @@ QSearchField::QSearchField(QWidget *parent) : QWidget(parent)
     connect(lineEdit, SIGNAL(textChanged(QString)),
             this, SLOT(setText(QString)));
 
-    QToolButton *clearButton = new QToolButton(this);
+    auto clearButton = new QToolButton(this);
     QPixmap clearIcon(QString(":/Qocoa/qsearchfield_nonmac.png"));
     clearButton->setIcon(QIcon(clearIcon));
     clearButton->setIconSize(clearIcon.size());
@@ -76,7 +76,7 @@ QSearchField::QSearchField(QWidget *parent) : QWidget(parent)
     const int height = qMax(lineEdit->minimumSizeHint().height(), pimpl->clearButtonPaddedHeight());
     lineEdit->setMinimumSize(width, height);
 
-    QVBoxLayout *layout = new QVBoxLayout(this);
+    auto layout = new QVBoxLayout(this);
     layout->setMargin(0);
     layout->addWidget(lineEdit);
 }

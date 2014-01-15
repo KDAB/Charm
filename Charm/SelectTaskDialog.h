@@ -19,7 +19,7 @@ class SelectTaskDialogProxy : public ViewFilter
     Q_OBJECT
 
 public:
-    explicit SelectTaskDialogProxy( CharmDataModel*, QObject* parent = 0 );
+    explicit SelectTaskDialogProxy( CharmDataModel*, QObject* parent = nullptr );
 
     Qt::ItemFlags flags( const QModelIndex & index ) const;
     QVariant data( const QModelIndex& index, int role = Qt::DisplayRole ) const;
@@ -33,7 +33,7 @@ class SelectTaskDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit SelectTaskDialog( QWidget* parent=0 );
+    explicit SelectTaskDialog( QWidget* parent=nullptr );
     ~SelectTaskDialog();
 
     TaskId selectedTask() const;

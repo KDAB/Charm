@@ -10,7 +10,7 @@ class TimeSheetReport : public ReportPreviewWindow
     Q_OBJECT
 
 public:
-    explicit TimeSheetReport( QWidget* parent = 0 );
+    explicit TimeSheetReport( QWidget* parent = nullptr );
     virtual ~TimeSheetReport();
 
     virtual void setReportProperties( const QDate& start,
@@ -73,7 +73,7 @@ public:
     void dump();
 
 public:
-    static TimeSheetInfoList taskWithSubTasks( int segments, TaskId id, const TimeSheetReport::SecondsMap& secondsMap, TimeSheetInfo* addTo = 0 );
+    static TimeSheetInfoList taskWithSubTasks( int segments, TaskId id, const TimeSheetReport::SecondsMap& secondsMap, TimeSheetInfo* addTo = nullptr );
     static TimeSheetInfoList filteredTaskWithSubTasks( TimeSheetInfoList timeSheetInfo, bool activeTasksOnly );
 
 public:

@@ -13,7 +13,7 @@ namespace Ui {
 class EnterVacationDialog : public QDialog {
     Q_OBJECT
 public:
-    explicit EnterVacationDialog( QWidget* parent=0 );
+    explicit EnterVacationDialog( QWidget* parent=nullptr );
     ~EnterVacationDialog();
 
     EventList events() const;

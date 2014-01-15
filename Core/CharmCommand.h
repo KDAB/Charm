@@ -38,7 +38,7 @@ class CharmCommand : public QObject
     Q_OBJECT
 
 public:
-    explicit CharmCommand( const QString& description, QObject* parent = 0 );
+    explicit CharmCommand( const QString& description, QObject* parent = nullptr );
     virtual ~CharmCommand();
 
     QString description() const;

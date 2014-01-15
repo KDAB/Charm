@@ -11,7 +11,7 @@
 
 ControllerTests::ControllerTests()
     : QObject()
-    , m_controller( 0 )
+    , m_controller( nullptr )
     , m_configuration( Configuration::instance() )
     , m_localPath( "./ControllerTestDatabase.db" )
     , m_eventListReceived( false )
@@ -33,7 +33,7 @@ void ControllerTests::initTestCase ()
     m_configuration.localStorageType = CHARM_SQLITE_BACKEND_DESCRIPTOR;
     m_configuration.localStorageDatabase = m_localPath;
     m_configuration.newDatabase = true;
-    Controller* controller = new Controller;
+    auto controller = new Controller;
     m_controller = controller;
 //    connect( controller, SIGNAL( currentEvents( const EventList& ) ),
 //             SLOT( slotCurrentEvents( const EventList& ) ) );
@@ -253,7 +253,7 @@ void ControllerTests::cleanupTestCase ()
         bool result = QDir::home().remove( m_localPath );
         QVERIFY( result );
     }
-    delete m_controller; m_controller = 0;
+    delete m_controller; m_controller = nullptr;
 }
 
 QTEST_MAIN( ControllerTests )

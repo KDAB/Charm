@@ -8,7 +8,7 @@ class TrayIcon : public QSystemTrayIcon
     Q_OBJECT
 
 public:
-    explicit TrayIcon(QObject* parent = 0);
+    explicit TrayIcon(QObject* parent = nullptr);
     virtual ~TrayIcon();
 
 private Q_SLOTS:
