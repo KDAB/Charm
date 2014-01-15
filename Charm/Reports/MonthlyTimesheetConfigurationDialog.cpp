@@ -55,7 +55,7 @@ MonthlyTimesheetConfigurationDialog::MonthlyTimesheetConfigurationDialog( QWidge
 
 MonthlyTimesheetConfigurationDialog::~MonthlyTimesheetConfigurationDialog()
 {
-    delete m_ui; m_ui = 0;
+    delete m_ui; m_ui = nullptr;
 }
 
 void MonthlyTimesheetConfigurationDialog::setDefaultMonth(int yearOfMonth, int month)
@@ -90,7 +90,7 @@ void MonthlyTimesheetConfigurationDialog::showReportPreviewDialog( QWidget* pare
         end = m_monthInfo[index].timespan.second;
     }
     bool activeOnly = m_ui->checkBoxActiveOnly->isChecked();
-    MonthlyTimeSheetReport* report = new MonthlyTimeSheetReport( parent );
+    auto report = new MonthlyTimeSheetReport( parent );
     report->setReportProperties( start, end, m_rootTask, activeOnly );
     report->show();
 }

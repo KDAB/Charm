@@ -82,7 +82,7 @@ EventEditor::EventEditor( const Event& event, QWidget* parent )
 
 EventEditor::~EventEditor()
 {
-    delete m_ui; m_ui = 0;
+    delete m_ui; m_ui = nullptr;
 }
 
 void EventEditor::accept()

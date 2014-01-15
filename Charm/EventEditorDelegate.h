@@ -21,7 +21,7 @@ public:
     };
 
     explicit EventEditorDelegate( EventModelFilter* model,
-                                  QObject* parent = 0 );
+                                  QObject* parent = nullptr );
     // ~EventEditorDelegate();
 
     // reimpl

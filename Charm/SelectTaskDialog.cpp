@@ -83,7 +83,7 @@ SelectTaskDialog::SelectTaskDialog( QWidget* parent )
 
 SelectTaskDialog::~SelectTaskDialog()
 {
-    delete m_ui; m_ui = 0;
+    delete m_ui; m_ui = nullptr;
 }
 
 void SelectTaskDialog::showEvent ( QShowEvent * event )

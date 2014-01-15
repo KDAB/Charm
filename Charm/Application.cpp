@@ -39,11 +39,11 @@
 
 #include <algorithm> //for_each()
 
-Application* Application::m_instance = 0;
+Application* Application::m_instance = nullptr;
 
 Application::Application(int& argc, char** argv)
     : QApplication( argc, argv )
-    , m_closedWindow( 0 )
+    , m_closedWindow( nullptr )
     , m_actionStopAllTasks( this )
     , m_windows( QList<CharmWindow*> () << &m_tasksWindow << &m_eventWindow << &m_timeTracker )
     , m_actionQuit( this )
@@ -59,7 +59,7 @@ Application::Application(int& argc, char** argv)
     , m_actionActivityReport( this )
     , m_actionWeeklyTimesheetReport( this )
     , m_actionMonthlyTimesheetReport( this )
-    , m_idleDetector( 0 )
+    , m_idleDetector( nullptr )
     , m_timeTrackerHiddenFromSystrayToggle( false )
     , m_tasksWindowHiddenFromSystrayToggle( false )
     , m_eventWindowHiddenFromSystrayToggle( false )
@@ -93,7 +93,7 @@ Application::Application(int& argc, char** argv)
                  << m_uniqueApplicationServer.errorString();
 
     Q_INIT_RESOURCE(CharmResources);
-    Q_ASSERT_X(m_instance == 0, "Application ctor",
+    Q_ASSERT_X(m_instance == nullptr, "Application ctor",
                "Application is a singleton and cannot be created more than once");
     m_instance = this;
     qRegisterMetaType<State> ("State");
@@ -105,7 +105,7 @@ Application::Application(int& argc, char** argv)
 
     connectControllerAndModel(&m_controller, m_model.charmDataModel());
     connectControllerAndView(&m_controller, &mainView());
-    Q_FOREACH( CharmWindow* window, m_windows ) {
+    Q_FOREACH( auto window, m_windows ) {
         if ( window != &mainView() ) { // main view acts as the main relay
             connect( window, SIGNAL( emitCommand( CharmCommand* ) ),
                      &mainView(), SLOT( sendCommand( CharmCommand* ) ) );
@@ -140,7 +140,7 @@ Application::Application(int& argc, char** argv)
 
     setWindowIcon( Data::charmIcon() );
 
-    Q_FOREACH( CharmWindow* window, m_windows )
+    Q_FOREACH( auto window, m_windows )
         m_systrayContextMenu.addAction( window->showHideAction() );
 
     m_systrayContextMenu.addSeparator();
@@ -199,7 +199,7 @@ Application::Application(int& argc, char** argv)
 
     // set up idle detection
     m_idleDetector = IdleDetector::createIdleDetector( this );
-    if ( m_idleDetector == 0 ) {
+    if ( m_idleDetector == nullptr ) {
         qDebug() << "Application ctor: idle detection is not available on this platform.";
     } else {
         qDebug() << "Application ctor: idle detection initialized.";
@@ -230,7 +230,7 @@ void Application::slotHandleUniqueApplicationConnection()
 }
 
 void Application::openAWindow( bool raise ) {
-    CharmWindow* windowToOpen = 0;
+    CharmWindow* windowToOpen = nullptr;
     foreach( CharmWindow* window, m_windows )
         if ( !window->isHidden() )
             windowToOpen = window;
@@ -246,12 +246,12 @@ void Application::openAWindow( bool raise ) {
         windowToOpen->raise();
 
     if( windowToOpen == m_closedWindow )
-        m_closedWindow = 0;
+        m_closedWindow = nullptr;
 }
 
 void Application::createWindowMenu( QMenuBar *menuBar )
 {
-    QMenu* menu = new QMenu( menuBar );
+    auto menu = new QMenu( menuBar );
     menu->setTitle( tr( "Window" ) );
     Q_FOREACH( CharmWindow* window, m_windows ) {
         menu->addAction( window->showHideAction() );
@@ -269,7 +269,7 @@ void Application::createWindowMenu( QMenuBar *menuBar )
 
 void Application::createFileMenu( QMenuBar *menuBar )
 {
-    QMenu* menu = new QMenu( menuBar );
+    auto menu = new QMenu( menuBar );
     menu->setTitle ( tr( "File" ) );
     menu->addAction( &m_actionImportFromXml );
     menu->addAction( &m_actionExportToXml );
@@ -284,7 +284,7 @@ void Application::createFileMenu( QMenuBar *menuBar )
 
 void Application::createHelpMenu( QMenuBar *menuBar )
 {
-    QMenu* menu = new QMenu( menuBar );
+    auto menu = new QMenu( menuBar );
     menu->setTitle( tr( "Help" ) );
     menu->addAction( &m_actionAboutDialog );
     menuBar->addMenu( menu );
@@ -402,7 +402,7 @@ Application& Application::instance()
 
 bool Application::hasInstance()
 {
-    return m_instance != 0;
+    return m_instance != nullptr;
 }
 
 void Application::enterStartingUpState()
@@ -700,7 +700,7 @@ void Application::setHttpActionsVisible( bool visible )
 
 void Application::slotMaybeIdle()
 {
-    if ( idleDetector() == 0 ) return; // should not happen
+    if ( idleDetector() == nullptr ) return; // should not happen
 
     if ( DATAMODEL->activeEventCount() > 0 ) {
         if ( idleDetector()->idlePeriods().count() == 1 ) {

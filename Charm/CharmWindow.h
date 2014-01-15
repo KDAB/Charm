@@ -16,7 +16,7 @@ class CharmWindow : public QMainWindow,
     Q_OBJECT
 
 public:
-    explicit CharmWindow( const QString& name, QWidget* parent = 0 );
+    explicit CharmWindow( const QString& name, QWidget* parent = nullptr );
 
     QAction* showHideAction();
 
