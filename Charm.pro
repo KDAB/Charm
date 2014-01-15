@@ -1,3 +1,4 @@
+!android: error("Building Charm with QMake is not supported, and used only for Qt/Android experiments. For everything else, please use the CMake build system.")
 
 QT += core gui xml sql network widgets
 INCLUDEPATH += Core/
