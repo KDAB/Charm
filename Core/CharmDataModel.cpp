@@ -48,16 +48,7 @@ void CharmDataModel::unregisterAdapter( CharmDataModelAdapterInterface* adapter 
 
 void CharmDataModel::setAllTasks( const TaskList& tasks )
 {
-    // to clear the task list, all tasks have first to be changed to be children of the root item:
-    for ( auto it = m_tasks.begin(); it != m_tasks.end(); ++it )
-    {
-        it->second.makeChildOf( m_rootItem );
-    }
-    m_tasks.clear();
-    m_rootItem = TaskTreeItem();
-    // notify adapters of changes
-    for_each( m_adapters.begin(), m_adapters.end(),
-              std::mem_fun( &CharmDataModelAdapterInterface::resetTasks ) );
+    clearTasks();
 
     Q_ASSERT( Task::checkForTreeness( tasks ) );
     Q_ASSERT( Task::checkForUniqueTaskIds( tasks ) );
@@ -175,6 +166,12 @@ void CharmDataModel::deleteTask( const Task& task )
 
 void CharmDataModel::clearTasks()
 {
+    // to clear the task list, all tasks have first to be changed to be children of the root item:
+    for ( TaskTreeItem::Map::iterator it = m_tasks.begin(); it != m_tasks.end(); ++it )
+    {
+        it->second.makeChildOf( m_rootItem );
+    }
+
     m_tasks.clear();
     m_nameCache.clearTasks();
     m_rootItem = TaskTreeItem();
