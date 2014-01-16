@@ -18,7 +18,7 @@ public:
         Idle_EndEvent
     };
 
-    explicit IdleCorrectionDialog( QWidget* parent = nullptr );
+    explicit IdleCorrectionDialog( QWidget* parent = 0 );
     ~IdleCorrectionDialog();
 
     Result result();

@@ -196,7 +196,7 @@ void TimeTrackingTaskSelector::populate( const QVector<WeeklySummary>& summaries
     if( m_taskManuallySelected ) {
         m_taskManuallySelected = false;
         auto action = addedTasks.value( m_manuallySelectedTask );
-        Q_ASSERT_X( action != nullptr, Q_FUNC_INFO, "the manually selected task should always be in the menu" );
+        Q_ASSERT_X( action != 0, Q_FUNC_INFO, "the manually selected task should always be in the menu" );
         // this sets the correct text on the button
         slotActionSelected( action );
     }

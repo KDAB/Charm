@@ -16,7 +16,7 @@ class Controller : public QObject,
     Q_OBJECT
 
 public:
-    explicit Controller( QObject* parent = nullptr );
+    explicit Controller( QObject* parent = 0 );
     ~Controller();
 
     void stateChanged( State previous, State next );

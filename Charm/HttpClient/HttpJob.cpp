@@ -294,7 +294,7 @@ void HttpJob::emitFinished()
         setLastAuthenticationFailed(false);
     m_networkManager->disconnect(this);
     delete m_dialog;
-    m_dialog = nullptr;
+    m_dialog = 0;
     emit finished(this);
     deleteLater();
 }

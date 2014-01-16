@@ -19,7 +19,7 @@ class QToolBar;
 class CommentEditorPopup : public QDialog {
     Q_OBJECT
 public:
-    explicit CommentEditorPopup( QWidget* parent=nullptr );
+    explicit CommentEditorPopup( QWidget* parent=0 );
 
 public Q_SLOTS:
     void accept();
@@ -33,7 +33,7 @@ class TimeTrackingTaskSelector : public QWidget
 {
     Q_OBJECT
 public:
-    explicit TimeTrackingTaskSelector(QToolBar* toolBar, QWidget *parent = nullptr);
+    explicit TimeTrackingTaskSelector(QToolBar* toolBar, QWidget *parent = 0);
 
     void populate( const QVector<WeeklySummary>& summaries  );
     void handleActiveEvents();

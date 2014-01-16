@@ -55,7 +55,7 @@ MonthlyTimesheetConfigurationDialog::MonthlyTimesheetConfigurationDialog( QWidge
 
 MonthlyTimesheetConfigurationDialog::~MonthlyTimesheetConfigurationDialog()
 {
-    delete m_ui; m_ui = nullptr;
+    delete m_ui; m_ui = 0;
 }
 
 void MonthlyTimesheetConfigurationDialog::setDefaultMonth(int yearOfMonth, int month)

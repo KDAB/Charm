@@ -23,7 +23,7 @@ class TimeTrackingWindow : public CharmWindow,
 {
     Q_OBJECT
 public:
-    explicit TimeTrackingWindow( QWidget* parent = nullptr );
+    explicit TimeTrackingWindow( QWidget* parent = 0 );
     ~TimeTrackingWindow();
 
     // application:

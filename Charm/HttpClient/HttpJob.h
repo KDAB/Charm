@@ -30,7 +30,7 @@ public:
         SomethingWentWrong
     };
 
-    explicit HttpJob(QObject* parent=nullptr);
+    explicit HttpJob(QObject* parent=0);
     ~HttpJob();
 
     QString username() const;

@@ -12,7 +12,7 @@
 ReportPreviewWindow::ReportPreviewWindow( QWidget* parent )
     : QDialog( parent )
     , m_ui( new Ui::ReportPreviewWindow )
-    , m_document( nullptr )
+    , m_document( 0 )
 {
     m_ui->setupUi( this );
     setAttribute( Qt::WA_DeleteOnClose );
@@ -35,20 +35,20 @@ ReportPreviewWindow::ReportPreviewWindow( QWidget* parent )
 
 ReportPreviewWindow::~ReportPreviewWindow()
 {
-    delete m_document; m_document = nullptr;
-    delete m_ui; m_ui = nullptr;
+    delete m_document; m_document = 0;
+    delete m_ui; m_ui = 0;
 }
 
 void ReportPreviewWindow::setDocument( const QTextDocument* document )
 {
-    if ( document != nullptr ) {
+    if ( document != 0 ) {
         // we keep a copy, to be able to show different versions of the same document
         m_document = document->clone();
         m_ui->textBrowser->setDocument( m_document );
     } else {
-        m_ui->textBrowser->setDocument( nullptr );
+        m_ui->textBrowser->setDocument( 0 );
         delete m_document;
-        m_document = nullptr;
+        m_document = 0;
     }
 }
 

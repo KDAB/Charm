@@ -68,7 +68,7 @@ class DateChangeWatcher : public QObject
     Q_OBJECT
 
 public:
-    explicit DateChangeWatcher( QObject* parent = nullptr );
+    explicit DateChangeWatcher( QObject* parent = 0 );
 
 signals:
     void dateChanged();

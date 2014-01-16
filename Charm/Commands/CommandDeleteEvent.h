@@ -9,7 +9,7 @@ class CommandDeleteEvent : public CharmCommand
     Q_OBJECT
 
 public:
-    explicit CommandDeleteEvent( const Event&, QObject* parent = nullptr );
+    explicit CommandDeleteEvent( const Event&, QObject* parent = 0 );
     ~CommandDeleteEvent();
 
     bool prepare();

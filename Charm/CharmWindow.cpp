@@ -22,7 +22,7 @@ CharmWindow::CharmWindow( const QString& name, QWidget* parent )
     : QMainWindow( parent )
     , m_showHideAction( new QAction( this ) )
     , m_windowNumber( -1 )
-    , m_shortcut( nullptr )
+    , m_shortcut( 0 )
 {
     setWindowName( name );
     handleShowHide( false );

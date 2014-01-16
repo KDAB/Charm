@@ -11,7 +11,7 @@ IdleCorrectionDialog::IdleCorrectionDialog( QWidget* parent )
 IdleCorrectionDialog::~IdleCorrectionDialog()
 {
     delete m_ui;
-    m_ui = nullptr;
+    m_ui = 0;
 }
 
 IdleCorrectionDialog::Result IdleCorrectionDialog::result()

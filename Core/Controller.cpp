@@ -14,7 +14,7 @@
 Controller::Controller( QObject* parent_ )
     : QObject( parent_ )
     , ControllerInterface()
-    , m_storage( nullptr )
+    , m_storage( 0 )
 {
 }
 
@@ -179,7 +179,7 @@ void Controller::stateChanged( State previous, State next )
 //         qDebug() << "Application::enterConnectingState: closing existing storage interface";
             m_storage->disconnect();
             delete m_storage;
-            m_storage = nullptr;
+            m_storage = 0;
         }
     }
     break;
@@ -200,7 +200,7 @@ struct Setting {
 
 void Controller::persistMetaData( Configuration& configuration )
 {
-    Q_ASSERT_X( m_storage != nullptr, Q_FUNC_INFO, "No storage interface available" );
+    Q_ASSERT_X( m_storage != 0, Q_FUNC_INFO, "No storage interface available" );
     Setting settings[] = {
         { MetaKey_Key_UserName,
           configuration.user.name() },
@@ -241,7 +241,7 @@ void Controller::loadConfigValue( const QString& key, T& configValue ) const
 
 void Controller::provideMetaData( Configuration& configuration)
 {
-    Q_ASSERT_X( m_storage != nullptr, Q_FUNC_INFO, "No storage interface available" );
+    Q_ASSERT_X( m_storage != 0, Q_FUNC_INFO, "No storage interface available" );
     configuration.user.setName( m_storage->getMetaData( MetaKey_Key_UserName ) );
 
     loadConfigValue( MetaKey_Key_TimeTrackerFontSize, configuration.timeTrackerFontSize );

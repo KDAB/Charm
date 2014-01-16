@@ -28,7 +28,7 @@ class ViewFilter : public QSortFilterProxyModel,
 {
     Q_OBJECT
 public:    
-    explicit ViewFilter( CharmDataModel*, QObject* parent = nullptr );
+    explicit ViewFilter( CharmDataModel*, QObject* parent = 0 );
     virtual ~ViewFilter();
 
     // implement TaskModelInterface

@@ -12,7 +12,7 @@ class CharmPreferences : public QDialog
 
 public:
     explicit CharmPreferences( const Configuration& config,
-                               QWidget* parent = nullptr );
+                               QWidget* parent = 0 );
     ~CharmPreferences();
 
     Configuration::DurationFormat durationFormat() const;

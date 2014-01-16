@@ -15,7 +15,7 @@ CharmAboutDialog::CharmAboutDialog( QWidget* parent )
 
 CharmAboutDialog::~CharmAboutDialog()
 {
-    delete m_ui; m_ui = nullptr;
+    delete m_ui; m_ui = 0;
 }
 
 #include "moc_CharmAboutDialog.cpp"

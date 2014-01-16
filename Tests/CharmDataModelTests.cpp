@@ -9,7 +9,7 @@
 
 CharmDataModelTests::CharmDataModelTests()
     : QObject()
-    , m_referenceModel( nullptr )
+    , m_referenceModel( 0 )
 {
 }
 
@@ -158,7 +158,7 @@ void CharmDataModelTests::cleanupTestCase ()
     m_referenceModel->clearTasks();
     QVERIFY( m_referenceModel->taskTreeItem( 0 ).childCount() == 0 );
 
-    delete m_referenceModel; m_referenceModel = nullptr;
+    delete m_referenceModel; m_referenceModel = 0;
 }
 
 QTEST_MAIN( CharmDataModelTests )

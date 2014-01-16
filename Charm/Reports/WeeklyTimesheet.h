@@ -51,7 +51,7 @@ class WeeklyTimeSheetReport : public TimeSheetReport
     Q_OBJECT
 
 public:
-    explicit WeeklyTimeSheetReport( QWidget* parent = nullptr );
+    explicit WeeklyTimeSheetReport( QWidget* parent = 0 );
     virtual ~WeeklyTimeSheetReport();
 
     // reimpl

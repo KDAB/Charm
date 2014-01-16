@@ -10,7 +10,7 @@ class TasksWindow : public CharmWindow
     Q_OBJECT
 
 public:
-    explicit TasksWindow( QWidget* parent = nullptr );
+    explicit TasksWindow( QWidget* parent = 0 );
     ~TasksWindow();
 
     /* reimpl */ void stateChanged( State previous );

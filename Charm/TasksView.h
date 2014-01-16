@@ -27,7 +27,7 @@ class TasksView : public QWidget,
     Q_OBJECT
 
 public:
-    explicit TasksView ( QToolBar* toolBar, QWidget* parent = nullptr );
+    explicit TasksView ( QToolBar* toolBar, QWidget* parent = 0 );
     ~TasksView();
 
     // implement ViewModeInterface:

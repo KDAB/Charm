@@ -10,7 +10,7 @@ class UploadTimesheetJob : public HttpJob
     Q_OBJECT
 public:
 
-    explicit UploadTimesheetJob(QObject* parent=nullptr);
+    explicit UploadTimesheetJob(QObject* parent=0);
     ~UploadTimesheetJob();
 
     QByteArray payload() const;

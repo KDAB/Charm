@@ -19,7 +19,7 @@ class CharmReport : public QObject
     Q_OBJECT
 
 public:
-    explicit CharmReport( QObject* parent = nullptr );
+    explicit CharmReport( QObject* parent = 0 );
     virtual ~CharmReport();
 
     // fetch all necessary data to create the report
