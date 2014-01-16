@@ -36,9 +36,6 @@ MESSAGE( STATUS "Building Charm ${Charm_VERSION} in ${CMAKE_BUILD_TYPE} mode" )
 
 CMAKE_MINIMUM_REQUIRED( VERSION 2.6.0 )
 SET( CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMake" )
-
-SET( CMAKE_CXX_FLAGS "-std=c++0x ${CMAKE_CXX_FLAGS}" )
-
 SET( CMAKE_AUTOMOC ON )
 
 # try Qt5 first, and prefer that if found
@@ -113,7 +110,7 @@ IF (Qt5Core_FOUND)
         ${Qt5Sql_INCLUDE_DIRS}
     )
 
-    SET( CMAKE_CXX_FLAGS "${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS} ${CMAKE_CXX_FLAGS}" )
+    set(CMAKE_CXX_FLAGS "${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS}")
 ELSE()
     # No Qt5 found, try Qt4
     find_package(Qt4 COMPONENTS QtMain QtCore QtGui QtSql QtXml QtNetwork REQUIRED)
