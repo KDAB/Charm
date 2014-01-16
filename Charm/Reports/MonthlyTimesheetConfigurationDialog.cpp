@@ -90,7 +90,7 @@ void MonthlyTimesheetConfigurationDialog::showReportPreviewDialog( QWidget* pare
         end = m_monthInfo[index].timespan.second;
     }
     bool activeOnly = m_ui->checkBoxActiveOnly->isChecked();
-    auto report = new MonthlyTimeSheetReport( parent );
+    MonthlyTimeSheetReport* report = new MonthlyTimeSheetReport( parent );
     report->setReportProperties( start, end, m_rootTask, activeOnly );
     report->show();
 }

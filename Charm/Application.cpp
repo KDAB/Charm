@@ -105,7 +105,7 @@ Application::Application(int& argc, char** argv)
 
     connectControllerAndModel(&m_controller, m_model.charmDataModel());
     connectControllerAndView(&m_controller, &mainView());
-    Q_FOREACH( auto window, m_windows ) {
+    Q_FOREACH( CharmWindow* window, m_windows ) {
         if ( window != &mainView() ) { // main view acts as the main relay
             connect( window, SIGNAL( emitCommand( CharmCommand* ) ),
                      &mainView(), SLOT( sendCommand( CharmCommand* ) ) );
@@ -140,7 +140,7 @@ Application::Application(int& argc, char** argv)
 
     setWindowIcon( Data::charmIcon() );
 
-    Q_FOREACH( auto window, m_windows )
+    Q_FOREACH( CharmWindow* window, m_windows )
         m_systrayContextMenu.addAction( window->showHideAction() );
 
     m_systrayContextMenu.addSeparator();
@@ -251,7 +251,7 @@ void Application::openAWindow( bool raise ) {
 
 void Application::createWindowMenu( QMenuBar *menuBar )
 {
-    auto menu = new QMenu( menuBar );
+    QMenu* menu = new QMenu( menuBar );
     menu->setTitle( tr( "Window" ) );
     Q_FOREACH( CharmWindow* window, m_windows ) {
         menu->addAction( window->showHideAction() );
@@ -269,7 +269,7 @@ void Application::createWindowMenu( QMenuBar *menuBar )
 
 void Application::createFileMenu( QMenuBar *menuBar )
 {
-    auto menu = new QMenu( menuBar );
+    QMenu* menu = new QMenu( menuBar );
     menu->setTitle ( tr( "File" ) );
     menu->addAction( &m_actionImportFromXml );
     menu->addAction( &m_actionExportToXml );
@@ -284,7 +284,7 @@ void Application::createFileMenu( QMenuBar *menuBar )
 
 void Application::createHelpMenu( QMenuBar *menuBar )
 {
-    auto menu = new QMenu( menuBar );
+    QMenu* menu = new QMenu( menuBar );
     menu->setTitle( tr( "Help" ) );
     menu->addAction( &m_actionAboutDialog );
     menuBar->addMenu( menu );

@@ -47,13 +47,13 @@ void ModelConnector::slotMakeAndActivateEvent( const Task& task )
 {
     // the command will call activateEvent in finalize, this will
     // notify the task view to update
-    auto command = new CommandMakeAndActivateEvent( task, this );
+    CharmCommand* command = new CommandMakeAndActivateEvent( task, this );
     VIEW.sendCommand( command );
 }
 
 void ModelConnector::slotRequestEventModification( const Event& newEvent, const Event& oldEvent )
 {
-    auto command = new CommandModifyEvent( newEvent, oldEvent, this );
+    CommandModifyEvent* command = new CommandModifyEvent( newEvent, oldEvent, this );
     VIEW.sendCommand( command );
 }
 

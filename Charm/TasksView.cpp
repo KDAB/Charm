@@ -50,7 +50,7 @@ TasksView::TasksView( QToolBar* toolBar, QWidget* parent )
     , m_showSubscribedOnly( new QButton( toolBar, QButton::Recessed ) )
     , m_treeView( new QTreeView( this ) )
 {
-    auto layout = new QVBoxLayout( this );
+    QVBoxLayout* layout = new QVBoxLayout( this );
     layout->setContentsMargins( 0, 0, 0, 0 );
     layout->addWidget( m_treeView );
 
@@ -119,11 +119,11 @@ TasksView::TasksView( QToolBar* toolBar, QWidget* parent )
     connect( m_showSubscribedOnly, SIGNAL( clicked( bool ) ),
              SLOT( taskPrefilteringChanged() ) );
 
-    auto stretch = new QWidget( this );
+    QWidget *stretch = new QWidget( this );
     stretch->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
     toolBar->addWidget( stretch );
 
-    auto searchField = new QSearchField( this );
+    QSearchField* searchField = new QSearchField( this );
     connect( searchField, SIGNAL( textChanged( const QString& ) ),
              SLOT( slotFiltertextChanged( const QString& ) ) );
     toolBar->addWidget( searchField );
@@ -182,7 +182,7 @@ void TasksView::actionEditTask()
     if( editor.exec() ) {
         const Task newTask = editor.getTask();
         newTask.dump();
-        auto cmd = new CommandModifyTask( newTask, this );
+        CommandModifyTask* cmd = new CommandModifyTask( newTask, this );
         emit emitCommand( cmd );
     }
     configureUi(); // FIXME needed?
@@ -197,7 +197,7 @@ void TasksView::actionDeleteTask()
                                    "This operation cannot be undone." ),
                                tr( "Delete" ), tr( "Cancel" ) )
          == QMessageBox::Yes ) {
-        auto cmd = new CommandDeleteTask( task, this );
+        CommandDeleteTask* cmd = new CommandDeleteTask( task, this );
         emit emitCommand( cmd );
     }
 }
@@ -221,7 +221,7 @@ void TasksView::addTaskHelper( const Task& parent )
     if ( dialog.exec() ) {
         task.setId( dialog.selectedId() );
         task.setName( dialog.taskName() );
-        auto cmd = new CommandAddTask( task, this );
+        CommandAddTask* cmd = new CommandAddTask( task, this );
         emit emitCommand( cmd );
         if ( parent.isValid() ) {
             const QModelIndex parentIdx = filter->indexForTaskId( parent.id() );

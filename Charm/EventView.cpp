@@ -41,7 +41,7 @@ EventView::EventView( QToolBar* toolBar, QWidget* parent )
     , m_labelTotal( new QLabel( this ) )
     , m_listView( new QListView( this ) )
 {
-    auto layout = new QVBoxLayout( this );
+    QVBoxLayout* layout = new QVBoxLayout( this );
     layout->setContentsMargins( 0, 0, 0, 0 );
     layout->addWidget( m_listView );
 
@@ -113,7 +113,7 @@ EventView::EventView( QToolBar* toolBar, QWidget* parent )
     connect( m_comboBox, SIGNAL( currentIndexChanged( int ) ),
              SLOT( timeFrameChanged( int ) ) );
 
-    auto spacer = new QWidget( this );
+    QWidget *spacer = new QWidget( this );
     QSizePolicy spacerSizePolicy = spacer->sizePolicy();
     spacerSizePolicy.setHorizontalPolicy( QSizePolicy::Expanding );
     spacer->setSizePolicy( spacerSizePolicy );
@@ -215,7 +215,7 @@ void EventView::setCurrentEvent( const Event& event )
 
 void EventView::stageCommand(CharmCommand *command)
 {
-    auto undoCommand = new UndoCharmCommandWrapper(command);
+    UndoCharmCommandWrapper* undoCommand = new UndoCharmCommandWrapper(command);
     connect(command, SIGNAL(emitExecute(CharmCommand*)), this, SIGNAL(emitCommand(CharmCommand*)));
     connect(command, SIGNAL(emitRollback(CharmCommand*)), this, SIGNAL(emitCommandRollback(CharmCommand*)));
     connect(command, SIGNAL(emitSlotEventIdChanged(int,int)), this, SLOT(slotEventIdChanged(int,int)));
@@ -252,7 +252,7 @@ void EventView::slotDeleteEvent()
              tr( "<html>Do you really want to delete the event <b>%1</b>?" ).arg(eventDescription),
              tr( "Delete" ), tr("Cancel") )
          == QMessageBox::Yes ) {
-        auto command = new CommandDeleteEvent( m_event, this );
+        CommandDeleteEvent* command = new CommandDeleteEvent( m_event, this );
         command->prepare();
         stageCommand( command );
     }
@@ -444,7 +444,8 @@ void EventView::setModel( ModelConnector* connector )
 
     m_model = model;
     // normally, the model is set only once, so this should be no problem:
-    auto delegate = new EventEditorDelegate( model, m_listView );
+    EventEditorDelegate* delegate =
+        new EventEditorDelegate( model, m_listView );
     m_listView->setItemDelegate( delegate );
     timeSpansChanged();
 }
@@ -467,14 +468,16 @@ void EventView::slotEditEvent( const Event& event )
     if( editor.exec() ) {
         Event newEvent = editor.eventResult();
         if ( !newEvent.isValid() ) {
-            auto command = new CommandMakeEvent( newEvent, this );
+            CommandMakeEvent* command =
+                new CommandMakeEvent( newEvent, this );
             connect( command, SIGNAL( finishedOk( const Event& ) ),
                      this, SLOT( slotEditNewEventCompleted( const Event& ) ),
                      Qt::QueuedConnection );
             stageCommand( command );
             return;
         } else {
-            auto command = new CommandModifyEvent( newEvent, event, this );
+            CommandModifyEvent* command =
+                new CommandModifyEvent( newEvent, event, this );
             stageCommand( command );
         }
     }
@@ -484,7 +487,8 @@ void EventView::slotEditNewEventCompleted( const Event& event )
 {
     // make event editor finished, bypass the undo stack to set its contents
     // undo will just target CommandMakeEvent instead
-    auto command = new CommandModifyEvent( event, event, this );
+    CommandModifyEvent* command =
+        new CommandModifyEvent( event, event, this );
     emitCommand( command );
     delete command;
 }

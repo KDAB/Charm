@@ -66,7 +66,7 @@ public:
 
 QSearchField::QSearchField(QWidget *parent) : QWidget(parent)
 {
-    auto lineEdit = new QLineEdit(this);
+    QLineEdit *lineEdit = new QLineEdit(this);
     connect(lineEdit, SIGNAL(textChanged(QString)),
             this, SIGNAL(textChanged(QString)));
     connect(lineEdit, SIGNAL(editingFinished()),
@@ -77,7 +77,7 @@ QSearchField::QSearchField(QWidget *parent) : QWidget(parent)
             this, SLOT(setText(QString)));
 
     int iconsize = style()->pixelMetric(QStyle::PM_SmallIconSize);
-    auto clearButton = new QToolButton(this);
+    QToolButton *clearButton = new QToolButton(this);
     QIcon clearIcon = QIcon::fromTheme(QLatin1String("edit-clear"),
                                        QIcon(QLatin1String(":/Qocoa/qsearchfield_nonmac_clear.png")));
     clearButton->setIcon(clearIcon);
@@ -108,7 +108,7 @@ QSearchField::QSearchField(QWidget *parent) : QWidget(parent)
                             pimpl->searchButtonPaddedHeight()));
     lineEdit->setMinimumSize(width, height);
 
-    auto layout = new QVBoxLayout(this);
+    QVBoxLayout *layout = new QVBoxLayout(this);
     layout->setMargin(0);
     layout->addWidget(lineEdit);
 }

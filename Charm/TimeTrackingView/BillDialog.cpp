@@ -25,8 +25,8 @@ BillDialog::BillDialog( QWidget* parent, Qt::WindowFlags f )
     m_later = new QPushButton("Later");
     connect(m_later, SIGNAL(clicked()), SLOT(slotLater()));
 
-    auto layout = new QVBoxLayout(this);
-    auto buttonBox = new QDialogButtonBox();
+    QVBoxLayout *layout = new QVBoxLayout(this);
+    QDialogButtonBox *buttonBox = new QDialogButtonBox();
     buttonBox->addButton(m_asYouWish, QDialogButtonBox::YesRole);
     buttonBox->addButton(m_alreadyDone, QDialogButtonBox::NoRole);
     buttonBox->addButton(m_later, QDialogButtonBox::RejectRole);

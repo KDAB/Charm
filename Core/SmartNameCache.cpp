@@ -113,7 +113,7 @@ void SmartNameCache::regenerateSmartNames()
                         const QString newName = parent.name() + QLatin1Char('/') + currentName;
                         newByName[newName].append( qMakePair( taskPair.first, parent.parent() ) );
                     } else {
-                        const auto existing = newByName.constFind( currentName );
+                        QMap<QString, QVector<TaskParentPair> >::const_iterator existing = newByName.constFind( currentName );
                         if ( existing != newByName.constEnd() )
                             cannotMakeUnique.insert( currentName );
                         newByName[currentName].append( taskPair );

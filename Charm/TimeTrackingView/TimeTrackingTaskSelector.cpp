@@ -33,12 +33,12 @@ CommentEditorPopup::CommentEditorPopup( QWidget* parent )
     const EventIdList events = DATAMODEL->activeEvents();
     Q_ASSERT( events.size() == 1 );
     m_id = events.first();
-    auto layout = new QVBoxLayout( this );
+    QVBoxLayout* layout = new QVBoxLayout( this );
     layout->setMargin( 0 );
     m_edit->setTabChangesFocus( true );
     m_edit->setPlainText( DATAMODEL->eventForId( m_id ).comment() );
     layout->addWidget( m_edit );
-    auto box = new QDialogButtonBox;
+    QDialogButtonBox* box = new QDialogButtonBox;
     box->setStandardButtons( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
     box->button( QDialogButtonBox::Ok )->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_Return ) );
     connect( box, SIGNAL(accepted()), this, SLOT(accept()) );
@@ -142,7 +142,7 @@ void TimeTrackingTaskSelector::populate( const QVector<WeeklySummary>& summaries
     QMap<TaskId, QAction*> addedTasks;
     bool addedAction = false;
     Q_FOREACH( const WeeklySummary& s, summaries ) {
-        auto action = new QAction( DATAMODEL->taskIdAndSmartNameString( s.task ), m_menu );
+        QAction* action = new QAction( DATAMODEL->taskIdAndSmartNameString( s.task ), m_menu );
         addedTasks.insert( s.task, action );
         action->setProperty( CUSTOM_TASK_PROPERTY_NAME, QVariant::fromValue( s.task ) );
         Q_ASSERT( action->property( CUSTOM_TASK_PROPERTY_NAME ).value<TaskId>() == s.task );
@@ -156,7 +156,7 @@ void TimeTrackingTaskSelector::populate( const QVector<WeeklySummary>& summaries
     }
     if( m_manuallySelectedTask > 0 && ! addedTasks.contains( m_manuallySelectedTask )) {
         const Task& task = DATAMODEL->getTask( m_manuallySelectedTask );
-        auto action = new QAction( DATAMODEL->taskIdAndSmartNameString( task.id() ), m_menu );
+        QAction* action = new QAction( DATAMODEL->taskIdAndSmartNameString( task.id() ), m_menu );
         addedTasks.insert( m_manuallySelectedTask, action );
         action->setProperty( CUSTOM_TASK_PROPERTY_NAME, QVariant::fromValue( m_manuallySelectedTask ) );
         m_menu->addAction( action );
@@ -186,7 +186,7 @@ void TimeTrackingTaskSelector::populate( const QVector<WeeklySummary>& summaries
             m_menu->addSeparator();
             addedAction = true;
         }
-        auto action = new QAction( DATAMODEL->taskIdAndSmartNameString( id ), m_menu );
+        QAction* action = new QAction( DATAMODEL->taskIdAndSmartNameString( id ), m_menu );
         action->setProperty( CUSTOM_TASK_PROPERTY_NAME, QVariant::fromValue( id ) );
         m_menu->addAction( action );
         addedTasks.insert( id, action );
@@ -195,7 +195,7 @@ void TimeTrackingTaskSelector::populate( const QVector<WeeklySummary>& summaries
     // finally, select the task that the user has just selected
     if( m_taskManuallySelected ) {
         m_taskManuallySelected = false;
-        auto action = addedTasks.value( m_manuallySelectedTask );
+        QAction* action = addedTasks.value( m_manuallySelectedTask );
         Q_ASSERT_X( action != 0, Q_FUNC_INFO, "the manually selected task should always be in the menu" );
         // this sets the correct text on the button
         slotActionSelected( action );

@@ -129,7 +129,7 @@ void CharmWindow::hideEvent( QHideEvent* e )
 void CharmWindow::sendCommand( CharmCommand* cmd )
 {
     cmd->prepare();
-    auto relay = new CommandRelayCommand( this );
+    CommandRelayCommand* relay = new CommandRelayCommand( this );
     relay->setCommand( cmd );
     emit emitCommand( relay );
 }
@@ -137,7 +137,7 @@ void CharmWindow::sendCommand( CharmCommand* cmd )
 void CharmWindow::sendCommandRollback(CharmCommand *cmd)
 {
     cmd->prepare();
-    auto relay = new CommandRelayCommand( this );
+    CommandRelayCommand* relay = new CommandRelayCommand( this );
     relay->setCommand( cmd );
     emit emitCommandRollback ( relay );
 }

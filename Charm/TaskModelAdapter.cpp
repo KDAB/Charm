@@ -172,12 +172,12 @@ bool TaskModelAdapter::setData( const QModelIndex & index, const QVariant & valu
         QString comment = value.toString();
         Event event( old );
         event.setComment( comment );
-        auto command = new CommandModifyEvent( event, old, this );
+        CommandModifyEvent* command = new CommandModifyEvent( event, old, this );
         VIEW.sendCommand( command );
         return true;
     } else if ( role == Qt::CheckStateRole ) {
         task.setSubscribed( ! task.subscribed() );
-        auto command = new CommandModifyTask( task, this );
+        CommandModifyTask* command = new CommandModifyTask( task, this );
         VIEW.sendCommand( command );
         return true;
     }

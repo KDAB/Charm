@@ -158,7 +158,7 @@ void WeeklyTimesheetConfigurationDialog::showReportPreviewDialog( QWidget* paren
         end = m_weekInfo[index].timespan.second;
     }
     bool activeOnly = m_ui->checkBoxActiveOnly->isChecked();
-    auto report = new WeeklyTimeSheetReport( parent );
+    WeeklyTimeSheetReport* report = new WeeklyTimeSheetReport( parent );
     report->setReportProperties( start, end, m_rootTask, activeOnly );
     report->show();
 }
@@ -265,7 +265,7 @@ void WeeklyTimeSheetReport::setReportProperties(
 
 void WeeklyTimeSheetReport::slotUploadTimesheet()
 {
-    auto client = new UploadTimesheetJob( this );
+    UploadTimesheetJob* client = new UploadTimesheetJob( this );
     connect( client, SIGNAL(finished(HttpJob*)), this, SLOT(slotTimesheetUploaded(HttpJob*)) );
     client->setParentWidget( this );
     client->setFileName( suggestedFileName() );
