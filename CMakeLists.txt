@@ -53,7 +53,11 @@ IF (Qt5Core_FOUND)
         set(QTPRINT_LIBRARIES ${Qt5PrintSupport_LIBRARIES})
     ENDIF()
 
-    set(QT_PLATFORM_SPECIFIC_LIBRARIES)
+    IF(WIN32)
+        SET(QT_PLATFORM_SPECIFIC_LIBRARIES Qt5::WinMain)
+    ELSE()
+        SET(QT_PLATFORM_SPECIFIC_LIBRARIES)
+    ENDIF()
 
     IF(APPLE)
         find_package(Qt5MacExtras REQUIRED)
