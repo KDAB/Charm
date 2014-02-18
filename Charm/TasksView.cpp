@@ -255,6 +255,7 @@ void TasksView::configureUi()
          const QItemSelectionModel* smodel =  m_treeView->selectionModel();
          connect( smodel, SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ), SLOT( configureUi() ) );
          connect( smodel, SIGNAL( selectionChanged( const QItemSelection&, const QItemSelection& ) ), SLOT( configureUi() ) );
+         connect( smodel, SIGNAL( currentColumnChanged( QModelIndex, QModelIndex ) ), SLOT( configureUi() ) );
          connect( filter, SIGNAL( eventActivationNotice( EventId ) ),
                   SLOT( slotEventActivated( EventId ) ) );
          connect( filter, SIGNAL( eventDeactivationNotice( EventId ) ),
