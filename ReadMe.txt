@@ -50,6 +50,15 @@ was worked on during that time.
 Time Sheets are created per week, and group event time to tasks and
 week days. Time Sheets are great to report to the boss, you see.
 
+Downloads
+---------
+
+For released versions, binary packages are available:
+
+For various Linux distributions, packages are available via the [openSUSE Build Service](https://build.opensuse.org/package/show/isv:KDAB/charmtimetracker/).
+
+For Windows and OS X, [find installers here](http://www.kdab.com/~frank/Charm/).
+
 Authors and License
 -------------------
 Charm has been developed by Mirko Boehm (mirko@kde.org), as a work of fun and
