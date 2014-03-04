@@ -50,7 +50,8 @@ was worked on during that time.
 Time Sheets are created per week, and group event time to tasks and
 week days. Time Sheets are great to report to the boss, you see.
 
-###  Authors and License
+Authors and License
+-------------------
 Charm has been developed by Mirko Boehm (mirko@kde.org), as a work of fun and
 experimentation. The current maintainers are Frank Osterfeld and Guillermo A.
 Amaral B.
