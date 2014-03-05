@@ -14,14 +14,14 @@
 
 using namespace QKeychain;
 
-void ReadPasswordJobPrivate::doStart() {
+void ReadPasswordJobPrivate::scheduledStart() {
     QScopedPointer<QSettings> local( !q->settings() ? new QSettings( q->service() ) : 0 );
     QSettings* actual = q->settings() ? q->settings() : local.data();
     data = actual->value( key ).toByteArray();
     q->emitFinished();
 }
 
-void WritePasswordJobPrivate::doStart() {
+void WritePasswordJobPrivate::scheduledStart() {
     if ( mode == Delete ) {
         QScopedPointer<QSettings> local( !q->settings() ? new QSettings( q->service() ) : 0 );
         QSettings* actual = q->settings() ? q->settings() : local.data();

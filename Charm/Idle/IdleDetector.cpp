@@ -11,7 +11,11 @@
 
 IdleDetector::IdleDetector( QObject* parent )
     : QObject( parent )
+#ifdef Q_OS_ANDROID
+    , m_idlenessDuration( 0 ) // from my head
+#else
     , m_idlenessDuration( CHARM_IDLE_TIME ) // from CharmCMake.h
+#endif
 {
 }
 
