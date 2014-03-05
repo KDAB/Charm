@@ -1,12 +1,13 @@
 !android: error("Building Charm with QMake is not supported, and used only for Qt/Android experiments. For everything else, please use the CMake build system.")
 
-QT += core gui xml sql network widgets
+QT += core gui xml sql network widgets qml quick
+
 INCLUDEPATH += Core/
 INCLUDEPATH += Charm/
 
 TARGET = AndCharm
 TEMPLATE = app
-RESOURCES = Charm/CharmResources.qrc
+RESOURCES = Charm/CharmResources.qrc QtQuickControls/qml.qrc
 
 DEFINES += 'CHARM_VERSION=\'\"0.1a\"\''
 DEFINES += 'CHARM_IDLE_TIME=0'
@@ -21,7 +22,10 @@ SOURCES += $$files(Charm/Idle/*.cpp)
 SOURCES += $$files(Charm/Reports/*.cpp)
 SOURCES += $$files(Charm/TimeTrackingView/*.cpp)
 SOURCES += $$files(Charm/Qocoa/*_nonmac.cpp)
+SOURCES += $$files(QtQuickControls/*.cpp)
 
+
+SOURCES -= $$files(Charm/Charm.cpp)
 SOURCES -= $$files(Charm/IdleWidget.cpp)
 SOURCES -= $$files(Charm/Idle/Windows*.cpp)
 SOURCES -= $$files(Charm/Idle/X11*.cpp)
@@ -89,7 +93,12 @@ for(hdr, MOC_HEADERS) {
     }
 }
 
-# Create that CharmCMake.h file that is auto-created by cmake ahnd included
+# Create that CharmCMake.h file that is auto-created by cmake and included
 # everywhere. Here we could also hard-code defines or whatever that file
 # includes when cmake creates it.
 system('echo "" > "$${OUT_PWD}/CharmCMake.h"')
+
+ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
+
+OTHER_FILES += \
+    android/AndroidManifest.xml
