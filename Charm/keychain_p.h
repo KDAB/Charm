@@ -15,7 +15,7 @@
 #include <QSettings>
 #include <QVector>
 
-#if defined(Q_OS_UNIX) && !defined(Q_OS_DARWIN)
+#if defined(Q_OS_UNIX) && !defined(Q_OS_DARWIN) && !defined(Q_OS_ANDROID)
 
 #include <QDBusPendingCallWatcher>
 
@@ -65,7 +65,7 @@ public:
     };
     DataType dataType;
 
-#if defined(Q_OS_UNIX) && !defined(Q_OS_DARWIN)
+#if defined(Q_OS_UNIX) && !defined(Q_OS_DARWIN) && !defined(Q_OS_ANDROID)
     org::kde::KWallet* iface;
     static void gnomeKeyring_cb( int result, const char* string, ReadPasswordJobPrivate* data );
     friend class QKeychain::JobExecutor;
@@ -103,7 +103,7 @@ public:
     QByteArray binaryData;
     QString textData;
 
-#if defined(Q_OS_UNIX) && !defined(Q_OS_DARWIN)
+#if defined(Q_OS_UNIX) && !defined(Q_OS_DARWIN)  && !defined(Q_OS_ANDROID)
     org::kde::KWallet* iface;
     static void gnomeKeyring_cb( int result, WritePasswordJobPrivate* self );
     friend class QKeychain::JobExecutor;
