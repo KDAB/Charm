@@ -14,6 +14,9 @@ ConfigurationDialog::ConfigurationDialog( const Configuration& config,
     m_ui.databaseLocation->setText( config.localStorageDatabase );
     connect( m_ui.buttonBox, SIGNAL( rejected() ), SLOT( reject() ) );
     connect( m_ui.buttonBox, SIGNAL( accepted() ), SLOT( accept() ) );
+#ifdef Q_OS_ANDROID
+    setWindowState(windowState() | Qt::WindowMaximized);
+#endif
 }
 
 Configuration ConfigurationDialog::configuration() const
