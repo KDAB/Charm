@@ -1,14 +1,16 @@
 !android: error("Building Charm with QMake is not supported, and used only for Qt/Android experiments. For everything else, please use the CMake build system.")
 
-QT += core gui xml sql network widgets
+QT += core gui xml sql network widgets qml quick
+
 INCLUDEPATH += Core/
 INCLUDEPATH += Charm/
 
 TARGET = AndCharm
 TEMPLATE = app
-RESOURCES = Charm/CharmResources.qrc
+RESOURCES = Charm/CharmResources.qrc QtQuickControls/qml.qrc
 
 DEFINES += 'CHARM_VERSION=\'\"0.1a\"\''
+DEFINES += 'CHARM_IDLE_TIME=0'
 DEFINES += QT_NO_DBUS QT_NO_PRINTER
 
 SOURCES += $$files(Core/*.cpp)
@@ -20,7 +22,10 @@ SOURCES += $$files(Charm/Idle/*.cpp)
 SOURCES += $$files(Charm/Reports/*.cpp)
 SOURCES += $$files(Charm/TimeTrackingView/*.cpp)
 SOURCES += $$files(Charm/Qocoa/*_nonmac.cpp)
+SOURCES += $$files(QtQuickControls/*.cpp)
 
+
+SOURCES -= $$files(Charm/Charm.cpp)
 SOURCES -= $$files(Charm/IdleWidget.cpp)
 SOURCES -= $$files(Charm/Idle/Windows*.cpp)
 SOURCES -= $$files(Charm/Idle/X11*.cpp)
@@ -60,107 +65,6 @@ FORMS += $$files(Charm/TimeTrackingView/*.ui)
 CONFIG += mobility
 MOBILITY =
 
-OTHER_FILES += \
-    android/version.xml \
-    android/src/org/kde/necessitas/ministro/IMinistroCallback.aidl \
-    android/src/org/kde/necessitas/ministro/IMinistro.aidl \
-    android/src/org/kde/necessitas/origo/QtActivity.java \
-    android/src/org/kde/necessitas/origo/QtApplication.java \
-    android/res/values-et/strings.xml \
-    android/res/values-fr/strings.xml \
-    android/res/values-fa/strings.xml \
-    android/res/drawable-hdpi/icon.png \
-    android/res/values-nb/strings.xml \
-    android/res/drawable/icon.png \
-    android/res/drawable/logo.png \
-    android/res/values-ru/strings.xml \
-    android/res/values-id/strings.xml \
-    android/res/values-zh-rCN/strings.xml \
-    android/res/values-zh-rTW/strings.xml \
-    android/res/values-ro/strings.xml \
-    android/res/values/strings.xml \
-    android/res/values/libs.xml \
-    android/res/values-de/strings.xml \
-    android/res/values-ms/strings.xml \
-    android/res/drawable-mdpi/icon.png \
-    android/res/values-pl/strings.xml \
-    android/res/values-es/strings.xml \
-    android/res/values-nl/strings.xml \
-    android/res/layout/splash.xml \
-    android/res/values-el/strings.xml \
-    android/res/drawable-ldpi/icon.png \
-    android/res/values-it/strings.xml \
-    android/res/values-ja/strings.xml \
-    android/res/values-pt-rBR/strings.xml \
-    android/res/values-rs/strings.xml \
-    android/AndroidManifest.xml \
-    android/res/layout/splash.xml \
-    android/res/values/strings.xml \
-    android/res/values-de/strings.xml \
-    android/res/values-el/strings.xml \
-    android/res/values-es/strings.xml \
-    android/res/values-et/strings.xml \
-    android/res/values-fa/strings.xml \
-    android/res/values-fr/strings.xml \
-    android/res/values-id/strings.xml \
-    android/res/values-it/strings.xml \
-    android/res/values-ja/strings.xml \
-    android/res/values-ms/strings.xml \
-    android/res/values-nb/strings.xml \
-    android/res/values-nl/strings.xml \
-    android/res/values-pl/strings.xml \
-    android/res/values-pt-rBR/strings.xml \
-    android/res/values-ro/strings.xml \
-    android/res/values-rs/strings.xml \
-    android/res/values-ru/strings.xml \
-    android/res/values-zh-rCN/strings.xml \
-    android/res/values-zh-rTW/strings.xml \
-    android/src/org/kde/necessitas/ministro/IMinistro.aidl \
-    android/src/org/kde/necessitas/ministro/IMinistroCallback.aidl \
-    android/src/org/kde/necessitas/origo/QtActivity.java \
-    android/src/org/kde/necessitas/origo/QtApplication.java \
-    android/version.xml \
-    android/AndroidManifest.xml \
-    android/res/drawable/icon.png \
-    android/res/drawable/logo.png \
-    android/res/drawable-hdpi/icon.png \
-    android/res/drawable-ldpi/icon.png \
-    android/res/drawable-mdpi/icon.png \
-    android/res/values/libs.xml \
-    android/version.xml \
-    android/src/org/kde/necessitas/ministro/IMinistroCallback.aidl \
-    android/src/org/kde/necessitas/ministro/IMinistro.aidl \
-    android/src/org/kde/necessitas/origo/QtActivity.java \
-    android/src/org/kde/necessitas/origo/QtApplication.java \
-    android/res/values-et/strings.xml \
-    android/res/values-fr/strings.xml \
-    android/res/values-fa/strings.xml \
-    android/res/drawable-hdpi/icon.png \
-    android/res/values-nb/strings.xml \
-    android/res/drawable/icon.png \
-    android/res/drawable/logo.png \
-    android/res/values-ru/strings.xml \
-    android/res/values-id/strings.xml \
-    android/res/values-zh-rCN/strings.xml \
-    android/res/values-zh-rTW/strings.xml \
-    android/res/values-ro/strings.xml \
-    android/res/values/strings.xml \
-    android/res/values/libs.xml \
-    android/res/values-de/strings.xml \
-    android/res/values-ms/strings.xml \
-    android/res/drawable-mdpi/icon.png \
-    android/res/values-pl/strings.xml \
-    android/res/values-es/strings.xml \
-    android/res/values-nl/strings.xml \
-    android/res/layout/splash.xml \
-    android/res/values-el/strings.xml \
-    android/res/drawable-ldpi/icon.png \
-    android/res/values-it/strings.xml \
-    android/res/values-ja/strings.xml \
-    android/res/values-pt-rBR/strings.xml \
-    android/res/values-rs/strings.xml \
-    android/AndroidManifest.xml
-
 # Disable some of the noise for now.
 *-g++*|*-clang*|*-llvm* {
     QMAKE_CXXFLAGS += -Wno-unused-variable -Wno-unused-parameter -Wno-unused-function
@@ -189,7 +93,12 @@ for(hdr, MOC_HEADERS) {
     }
 }
 
-# Create that CharmCMake.h file that is auto-created by cmake ahnd included
+# Create that CharmCMake.h file that is auto-created by cmake and included
 # everywhere. Here we could also hard-code defines or whatever that file
 # includes when cmake creates it.
 system('echo "" > "$${OUT_PWD}/CharmCMake.h"')
+
+ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
+
+OTHER_FILES += \
+    android/AndroidManifest.xml
