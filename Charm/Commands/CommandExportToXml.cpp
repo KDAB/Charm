@@ -1,5 +1,4 @@
 #include <QDomDocument>
-#include <QMessageBox>
 #include <QFile>
 #include <QTextStream>
 
@@ -48,10 +47,7 @@ bool CommandExportToXml::finalize()
 {
     // any errors?
     if ( m_error ) {
-        CharmWindow* view = dynamic_cast<CharmWindow*>( owner() );
-        Q_ASSERT( view ); // this command is "owned" by a CharmWindow
-        QMessageBox::critical( view, tr( "Error exporting Database to XML" ),
-                               tr("The database could not be exported:\n%1" ).arg( m_errorString ) );
+        showCritical( tr( "Error exporting Database to XML" ), tr("The database could not be exported:\n%1" ).arg( m_errorString ) );
     }
     return true;
 }

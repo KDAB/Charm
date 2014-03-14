@@ -1,5 +1,3 @@
-#include <QMessageBox>
-
 #include <Core/CharmConstants.h>
 #include <Core/ControllerInterface.h>
 #include <Core/CommandEmitterInterface.h>
@@ -32,8 +30,7 @@ bool CommandDeleteTask::execute( ControllerInterface* controller )
 bool CommandDeleteTask::finalize()
 {
     if ( !m_success ) {
-        QMessageBox::information( &VIEW, tr( "Unable to delete task" ),
-                                  tr( "Deleting the task failed" ) );
+        showInformation( tr( "Unable to delete task" ), tr( "Deleting the task failed" ) );
     }
     return m_success;
 }

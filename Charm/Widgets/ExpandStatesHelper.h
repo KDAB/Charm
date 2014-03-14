@@ -2,7 +2,6 @@
 #define EXPANDSTATESHELPER_H
 
 #include "Core/Task.h"
-#include "TaskModelAdapter.h"
 
 #include <QHash>
 

@@ -1,5 +1,4 @@
 #include <QDomDocument>
-#include <QMessageBox>
 #include <QFile>
 #include <QTextStream>
 
@@ -46,10 +45,7 @@ bool CommandImportFromXml::finalize()
 {
     // any errors?
     if ( ! m_error.isEmpty() ) {
-        CharmWindow* view = dynamic_cast<CharmWindow*>( owner() );
-        Q_ASSERT( view ); // this command is "owned" by a CharmWindow
-        QMessageBox::critical( view, tr( "Error importing the Database" ),
-                               tr("An error has occurred:\n%1" ).arg( m_error ) );
+        showCritical( tr( "Error importing the Database" ), tr("An error has occurred:\n%1" ).arg( m_error ) );
     }
     return true;
 }
