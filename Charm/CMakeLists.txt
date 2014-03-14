@@ -42,6 +42,7 @@ SET(
     Widgets/EventEditorDelegate.cpp
     Widgets/EventView.cpp
     Widgets/EventWindow.cpp
+    Widgets/ExpandStatesHelper.cpp
     Widgets/IdleCorrectionDialog.cpp
     Widgets/MessageBox.cpp
     Widgets/MonthlyTimesheet.cpp

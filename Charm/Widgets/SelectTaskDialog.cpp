@@ -8,6 +8,7 @@
 
 #include "ViewHelpers.h"
 #include "Data.h"
+#include "ExpandStatesHelper.h"
 #include "GUIState.h"
 #include "ModelConnector.h"
 #include "ViewFilter.h"

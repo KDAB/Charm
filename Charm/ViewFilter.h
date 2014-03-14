@@ -8,17 +8,9 @@
 #include "Core/TaskModelInterface.h"
 #include "Core/CommandEmitterInterface.h"
 
-class QTreeView;
-template <typename K, typename V> class QMap;
 
 class CharmDataModel;
 class CharmCommand;
-
-namespace Charm {
-    //helper functions for saving and restoring expansion states when filtering
-    void saveExpandStates( QTreeView* tv, QHash<TaskId,bool>* map );
-    void restoreExpandStates( QTreeView* tv, QHash<TaskId,bool>* map );
-}
 
 // ViewFilter is implemented as a decorator to avoid accidental direct
 // access to the task model with indexes of the proxy

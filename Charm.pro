@@ -55,6 +55,7 @@ SOURCES += \
     Charm/Widgets/EventEditorDelegate.cpp \
     Charm/Widgets/EventView.cpp \
     Charm/Widgets/EventWindow.cpp \
+    Charm/Widgets/ExpandStatesHelper.cpp \
     Charm/Widgets/IdleCorrectionDialog.cpp \
     Charm/Widgets/MessageBox.cpp \
     Charm/Widgets/MonthlyTimesheet.cpp \
@@ -119,6 +120,7 @@ HEADERS += \
     Charm/Widgets/TimeTrackingView.h \
     Charm/Widgets/ActivityReport.h \
     Charm/Widgets/EventEditorDelegate.h \
+    Charm/Widgets/ExpandStatesHelper.h \
     Charm/Widgets/SelectTaskDialog.h \
     Charm/Widgets/MonthlyTimesheet.h \
     Charm/Widgets/EventWindow.h \
