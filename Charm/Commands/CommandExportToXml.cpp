@@ -49,7 +49,7 @@ bool CommandExportToXml::finalize()
     if ( m_error ) {
         showCritical( tr( "Error exporting Database to XML" ), tr("The database could not be exported:\n%1" ).arg( m_errorString ) );
     }
-    return true;
+    return !m_error;
 }
 
 #include "moc_CommandExportToXml.cpp"
