@@ -35,7 +35,6 @@ SET(
     TimeTrackingView/WeeklySummary.cpp
     TimeTrackingView/TimeTrackingTaskSelector.cpp
     TimeTrackingView/BillDialog.cpp
-    IdleWidget.cpp
     Reports/ReportConfigurationDialog.cpp
     Reports/CharmReport.cpp
     Reports/ActivityReport.cpp
