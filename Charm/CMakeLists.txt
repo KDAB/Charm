@@ -2,47 +2,18 @@ INCLUDE_DIRECTORIES( ${Charm_SOURCE_DIR} ${Charm_BINARY_DIR} )
 
 SET(
     CharmApplication_SRCS
-    CharmWindow.cpp
     Application.cpp
     ApplicationFactory.cpp
-    ViewHelpers.cpp
-    TaskIdDialog.cpp
     Data.cpp
-    ConfigurationDialog.cpp
-    CharmPreferences.cpp
-    TasksView.cpp
-    TasksWindow.cpp
-    TaskEditor.cpp
-    TrayIcon.cpp
     GUIState.cpp
     DateEntrySyncer.cpp
-    EnterVacationDialog.cpp
-    EventView.cpp
-    EventWindow.cpp
-    EventEditor.cpp
-    EventEditorDelegate.cpp
-    SelectTaskDialog.cpp
-    MessageBox.cpp
     ModelConnector.cpp
     ViewFilter.cpp
     TaskModelAdapter.cpp
     EventModelAdapter.cpp
     EventModelFilter.cpp
-    TasksViewDelegate.cpp
-    CharmAboutDialog.cpp
-    TimeTrackingView/TimeTrackingView.cpp
-    TimeTrackingView/TimeTrackingWindow.cpp
-    TimeTrackingView/WeeklySummary.cpp
-    TimeTrackingView/TimeTrackingTaskSelector.cpp
-    TimeTrackingView/BillDialog.cpp
-    Reports/ReportConfigurationDialog.cpp
-    Reports/CharmReport.cpp
-    Reports/ActivityReport.cpp
-    Reports/Timesheet.cpp
-    Reports/WeeklyTimesheet.cpp
-    Reports/MonthlyTimesheet.cpp
-    Reports/MonthlyTimesheetConfigurationDialog.cpp
-    Reports/ReportPreviewWindow.cpp
+    ViewHelpers.cpp
+    WeeklySummary.cpp
     UndoCharmCommandWrapper.cpp
     Commands/CommandRelayCommand.cpp
     Commands/CommandModifyEvent.cpp
@@ -56,10 +27,39 @@ SET(
     Commands/CommandImportFromXml.cpp
     Commands/CommandMakeAndActivateEvent.cpp
     Idle/IdleDetector.cpp
-    Idle/IdleCorrectionDialog.cpp
     HttpClient/HttpJob.cpp
     HttpClient/GetProjectCodesJob.cpp
     HttpClient/UploadTimesheetJob.cpp
+    Widgets/ActivityReport.cpp
+    Widgets/BillDialog.cpp
+    Widgets/CharmPreferences.cpp
+    Widgets/CharmReport.cpp
+    Widgets/CharmWindow.cpp
+    Widgets/CharmAboutDialog.cpp
+    Widgets/ConfigurationDialog.cpp
+    Widgets/EnterVacationDialog.cpp
+    Widgets/EventEditor.cpp
+    Widgets/EventEditorDelegate.cpp
+    Widgets/EventView.cpp
+    Widgets/EventWindow.cpp
+    Widgets/IdleCorrectionDialog.cpp
+    Widgets/MessageBox.cpp
+    Widgets/MonthlyTimesheet.cpp
+    Widgets/MonthlyTimesheetConfigurationDialog.cpp
+    Widgets/ReportConfigurationDialog.cpp
+    Widgets/ReportPreviewWindow.cpp
+    Widgets/SelectTaskDialog.cpp
+    Widgets/TaskIdDialog.cpp
+    Widgets/TaskEditor.cpp
+    Widgets/TasksView.cpp
+    Widgets/TasksViewDelegate.cpp
+    Widgets/TasksWindow.cpp
+    Widgets/TimeTrackingView.cpp
+    Widgets/TimeTrackingWindow.cpp
+    Widgets/TimeTrackingTaskSelector.cpp
+    Widgets/TrayIcon.cpp
+    Widgets/Timesheet.cpp
+    Widgets/WeeklyTimesheet.cpp
 )
 
 SET(CharmApplication_LIBS)
@@ -119,19 +119,19 @@ ENDIF()
 
 QT_WRAP_UI(
     UiGenerated_SRCS
-    ConfigurationDialog.ui
-    CharmPreferences.ui
-    TaskIdDialog.ui
-    Reports/ActivityReportConfigurationDialog.ui
-    Reports/WeeklyTimesheetConfigurationDialog.ui
-    Reports/MonthlyTimesheetConfigurationDialog.ui
-    Reports/ReportPreviewWindow.ui
-    TaskEditor.ui
-    EnterVacationDialog.ui
-    EventEditor.ui
-    SelectTaskDialog.ui
-    CharmAboutDialog.ui
-    Idle/IdleCorrectionDialog.ui
+    Widgets/ConfigurationDialog.ui
+    Widgets/CharmPreferences.ui
+    Widgets/TaskIdDialog.ui
+    Widgets/TaskEditor.ui
+    Widgets/EnterVacationDialog.ui
+    Widgets/EventEditor.ui
+    Widgets/SelectTaskDialog.ui
+    Widgets/CharmAboutDialog.ui
+    Widgets/IdleCorrectionDialog.ui
+    Widgets/ActivityReportConfigurationDialog.ui
+    Widgets/WeeklyTimesheetConfigurationDialog.ui
+    Widgets/MonthlyTimesheetConfigurationDialog.ui
+    Widgets/ReportPreviewWindow.ui
 )
 
 QT_ADD_RESOURCES( Resources_SRCS CharmResources.qrc )

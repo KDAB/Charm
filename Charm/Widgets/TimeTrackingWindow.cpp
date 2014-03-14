@@ -31,12 +31,12 @@
 #include "Commands/CommandModifyEvent.h"
 #include "Commands/CommandImportFromXml.h"
 #include "Idle/IdleDetector.h"
-#include "Idle/IdleCorrectionDialog.h"
 #include "HttpClient/GetProjectCodesJob.h"
-#include "Reports/ActivityReport.h"
-#include "Reports/WeeklyTimesheet.h"
-#include "Reports/MonthlyTimesheet.h"
-#include "Reports/MonthlyTimesheetConfigurationDialog.h"
+#include "IdleCorrectionDialog.h"
+#include "ActivityReport.h"
+#include "WeeklyTimesheet.h"
+#include "MonthlyTimesheet.h"
+#include "MonthlyTimesheetConfigurationDialog.h"
 
 TimeTrackingWindow::TimeTrackingWindow( QWidget* parent )
     : CharmWindow( tr( "Time Tracker" ), parent )

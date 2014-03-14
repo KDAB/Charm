@@ -6,7 +6,7 @@
 #include "ViewHelpers.h"
 #include "CharmReport.h"
 #include "Core/CharmDataModel.h"
-#include "ReportPreviewWindow.h"
+#include "Widgets/ReportPreviewWindow.h"
 
 CharmReport::CharmReport( QObject* parent )
     : QObject( parent )

@@ -371,4 +371,3 @@ void MonthlyTimeSheetReport::update()
     uploadButton()->setVisible(false);
     uploadButton()->setEnabled(false);
 }
-

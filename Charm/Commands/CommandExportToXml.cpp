@@ -6,7 +6,7 @@
 #include <Core/CharmExceptions.h>
 #include <Core/ControllerInterface.h>
 
-#include "CharmWindow.h"
+#include "Widgets/CharmWindow.h"
 #include "CommandExportToXml.h"
 
 CommandExportToXml::CommandExportToXml( QString filename, QObject* parent )

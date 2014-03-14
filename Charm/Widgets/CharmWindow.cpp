@@ -222,4 +222,3 @@ void CharmWindow::restoreGuiState()
 }
 
 #include "moc_CharmWindow.cpp"
-

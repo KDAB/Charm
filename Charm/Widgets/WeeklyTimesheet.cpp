@@ -644,4 +644,3 @@ QByteArray WeeklyTimeSheetReport::saveToText()
 
     return output;
 }
-

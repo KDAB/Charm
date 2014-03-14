@@ -257,4 +257,3 @@ void EventEditor::endToNowButtonClicked()
 }
 
 #include "moc_EventEditor.cpp"
-

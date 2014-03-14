@@ -32,10 +32,11 @@
 #include "ViewHelpers.h"
 #include "Data.h"
 #include "Application.h"
-#include "ConfigurationDialog.h"
 #include "Idle/IdleDetector.h"
 #include "Uniquifier.h"
 #include "HttpClient/HttpJob.h"
+
+#include "Widgets/ConfigurationDialog.h"
 
 #include <algorithm> //for_each()
 
