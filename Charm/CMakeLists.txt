@@ -5,13 +5,13 @@ SET(
     Application.cpp
     ApplicationFactory.cpp
     Data.cpp
-    GUIState.cpp
     DateEntrySyncer.cpp
+    EventModelAdapter.cpp
+    EventModelFilter.cpp
+    GUIState.cpp
     ModelConnector.cpp
     ViewFilter.cpp
     TaskModelAdapter.cpp
-    EventModelAdapter.cpp
-    EventModelFilter.cpp
     ViewHelpers.cpp
     WeeklySummary.cpp
     UndoCharmCommandWrapper.cpp
@@ -26,10 +26,10 @@ SET(
     Commands/CommandExportToXml.cpp
     Commands/CommandImportFromXml.cpp
     Commands/CommandMakeAndActivateEvent.cpp
-    Idle/IdleDetector.cpp
     HttpClient/HttpJob.cpp
     HttpClient/GetProjectCodesJob.cpp
     HttpClient/UploadTimesheetJob.cpp
+    Idle/IdleDetector.cpp
     Widgets/ActivityReport.cpp
     Widgets/BillDialog.cpp
     Widgets/CharmPreferences.cpp
