@@ -18,7 +18,6 @@ SOURCES += \
     Charm/Application.cpp \
     Charm/ApplicationFactory.cpp \
     Charm/Data.cpp \
-    Charm/DateEntrySyncer.cpp \
     Charm/EventModelAdapter.cpp \
     Charm/EventModelFilter.cpp \
     Charm/GUIState.cpp \
@@ -50,6 +49,7 @@ SOURCES += \
     Charm/Widgets/CharmWindow.cpp \
     Charm/Widgets/CharmAboutDialog.cpp \
     Charm/Widgets/ConfigurationDialog.cpp \
+    Charm/Widgets/DateEntrySyncer.cpp \
     Charm/Widgets/EnterVacationDialog.cpp \
     Charm/Widgets/EventEditor.cpp \
     Charm/Widgets/EventEditorDelegate.cpp \
@@ -89,7 +89,6 @@ HEADERS += $$files(Core/*.h)
 HEADERS += \
     Charm/MakeTemporarilyVisible.h \
     Charm/EventModelAdapter.h \
-    Charm/DateEntrySyncer.h \
     Charm/EventModelFilter.h \
     Charm/Idle/IdleDetector.h \
     Charm/Uniquifier.h \
@@ -104,6 +103,7 @@ HEADERS += \
     Charm/Widgets/TasksWindow.h \
     Charm/Widgets/CharmReport.h \
     Charm/Widgets/CharmWindow.h \
+    Charm/Widgets/DateEntrySyncer.h \
     Charm/Widgets/MonthlyTimesheetConfigurationDialog.h \
     Charm/Widgets/TaskIdDialog.h \
     Charm/Widgets/MessageBox.h \

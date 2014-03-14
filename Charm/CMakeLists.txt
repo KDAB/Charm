@@ -5,7 +5,6 @@ SET(
     Application.cpp
     ApplicationFactory.cpp
     Data.cpp
-    DateEntrySyncer.cpp
     EventModelAdapter.cpp
     EventModelFilter.cpp
     GUIState.cpp
@@ -37,6 +36,7 @@ SET(
     Widgets/CharmWindow.cpp
     Widgets/CharmAboutDialog.cpp
     Widgets/ConfigurationDialog.cpp
+    Widgets/DateEntrySyncer.cpp
     Widgets/EnterVacationDialog.cpp
     Widgets/EventEditor.cpp
     Widgets/EventEditorDelegate.cpp
