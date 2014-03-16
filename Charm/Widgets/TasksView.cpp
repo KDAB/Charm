@@ -19,7 +19,6 @@
 #include "MessageBox.h"
 #include "TasksView.h"
 #include "TaskEditor.h"
-#include <QInputDialog>
 #include "ViewHelpers.h"
 #include "Core/State.h"
 #include "GUIState.h"
