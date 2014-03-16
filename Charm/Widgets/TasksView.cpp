@@ -123,8 +123,8 @@ TasksView::TasksView( QToolBar* toolBar, QWidget* parent )
     toolBar->addWidget( stretch );
 
     QSearchField* searchField = new QSearchField( this );
-    connect( searchField, SIGNAL( textChanged( const QString& ) ),
-             SLOT( slotFiltertextChanged( const QString& ) ) );
+    connect( searchField, SIGNAL(textChanged(QString)),
+             SLOT(slotFiltertextChanged(QString)) );
     toolBar->addWidget( searchField );
 
     m_treeView->setEditTriggers(QAbstractItemView::EditKeyPressed);
@@ -134,8 +134,8 @@ TasksView::TasksView( QToolBar* toolBar, QWidget* parent )
     m_treeView->setTextElideMode( Qt::ElideNone );
     m_treeView->setRootIsDecorated( true );
     m_treeView->setContextMenuPolicy( Qt::CustomContextMenu );
-    connect( m_treeView, SIGNAL( customContextMenuRequested( const QPoint& ) ),
-             SLOT( slotContextMenuRequested( const QPoint& ) ) );
+    connect( m_treeView, SIGNAL(customContextMenuRequested(QPoint)),
+             SLOT(slotContextMenuRequested(QPoint)) );
 
     // I hate doing this but the stupid default view sizeHints suck badly.
     setMinimumHeight( 200 );
@@ -252,13 +252,13 @@ void TasksView::configureUi()
          ViewFilter* filter = Application::instance().model().taskModel();
          m_treeView->setModel( filter );
          const QItemSelectionModel* smodel =  m_treeView->selectionModel();
-         connect( smodel, SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ), SLOT( configureUi() ) );
-         connect( smodel, SIGNAL( selectionChanged( const QItemSelection&, const QItemSelection& ) ), SLOT( configureUi() ) );
-         connect( smodel, SIGNAL( currentColumnChanged( QModelIndex, QModelIndex ) ), SLOT( configureUi() ) );
-         connect( filter, SIGNAL( eventActivationNotice( EventId ) ),
-                  SLOT( slotEventActivated( EventId ) ) );
-         connect( filter, SIGNAL( eventDeactivationNotice( EventId ) ),
-                  SLOT( slotEventDeactivated( EventId ) ) );
+         connect( smodel, SIGNAL(currentChanged(QModelIndex,QModelIndex)), SLOT(configureUi()) );
+         connect( smodel, SIGNAL(selectionChanged(QItemSelection, QItemSelection)), SLOT(configureUi()) );
+         connect( smodel, SIGNAL(currentColumnChanged(QModelIndex, QModelIndex)), SLOT(configureUi()) );
+         connect( filter, SIGNAL(eventActivationNotice(EventId)),
+                  SLOT(slotEventActivated(EventId)) );
+         connect( filter, SIGNAL(eventDeactivationNotice(EventId)),
+                  SLOT(slotEventDeactivated(EventId)) );
      }
      break;
      case Connected:
