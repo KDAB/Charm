@@ -21,8 +21,8 @@ bool Event::operator == ( const Event& other ) const
              && other.comment() == comment()
              && other.startDateTime() ==  startDateTime()
              && other.endDateTime() == endDateTime()
-                         && other.userId() == userId()
-                         && other.reportId() == reportId() );
+             && other.userId() == userId()
+             && other.reportId() == reportId() );
 }
 
 EventId Event::id() const
@@ -37,22 +37,22 @@ void Event::setId( EventId id )
 
 int Event::userId() const
 {
-        return m_userid;
+    return m_userid;
 }
 
 void Event::setUserId( int userId )
 {
-        m_userid = userId;
+    m_userid = userId;
 }
 
 int Event::reportId() const
 {
-        return m_reportid;
+    return m_reportid;
 }
 
 void Event::setReportId( int reportId )
 {
-        m_reportid = reportId;
+    m_reportid = reportId;
 }
 
 void Event::setInstallationId( int instId )

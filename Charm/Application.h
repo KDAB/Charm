@@ -24,12 +24,13 @@
 #include "Core/Configuration.h"
 #include "Core/StorageInterface.h"
 
-#include "CharmWindow.h"
-#include "TasksWindow.h"
-#include "EventWindow.h"
-#include "TimeTrackingView/TimeTrackingWindow.h"
+#include "Widgets/CharmWindow.h"
+#include "Widgets/TasksWindow.h"
+#include "Widgets/EventWindow.h"
+#include "Widgets//TimeTrackingWindow.h"
+#include "Widgets/TrayIcon.h"
+
 #include "ModelConnector.h"
-#include "TrayIcon.h"
 
 // FIXME read configuration name from command line
 

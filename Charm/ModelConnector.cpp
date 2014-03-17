@@ -11,12 +11,12 @@ ModelConnector::ModelConnector()
     , m_viewFilter( &m_dataModel )
     , m_eventModelFilter( &m_dataModel )
 {
-    connect( &m_dataModel, SIGNAL( makeAndActivateEvent( const Task& ) ),
-             SLOT( slotMakeAndActivateEvent( const Task& ) ) );
-    connect( &m_dataModel, SIGNAL( requestEventModification( const Event&, const Event& ) ),
-             SLOT( slotRequestEventModification( const Event&, const Event& ) ) );
-    connect( &m_dataModel, SIGNAL( sysTrayUpdate( const QString&, bool ) ),
-             SLOT( slotSysTrayUpdate( const QString&, bool ) ) );
+    connect( &m_dataModel, SIGNAL(makeAndActivateEvent(Task)),
+             SLOT(slotMakeAndActivateEvent(Task)) );
+    connect( &m_dataModel, SIGNAL(requestEventModification(Event,Event)),
+             SLOT(slotRequestEventModification(Event,Event)) );
+    connect( &m_dataModel, SIGNAL(sysTrayUpdate(QString,bool)),
+             SLOT(slotSysTrayUpdate(QString,bool)) );
 }
 
 CharmDataModel* ModelConnector::charmDataModel()

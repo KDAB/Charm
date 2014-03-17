@@ -18,8 +18,7 @@
 #include "Core/Event.h"
 #include "Data.h"
 #include "ViewHelpers.h"
-#include "Charm/SelectTaskDialog.h"
-
+#include "SelectTaskDialog.h"
 #include "TimeTrackingTaskSelector.h"
 
 #define CUSTOM_TASK_PROPERTY_NAME "CUSTOM_TASK_PROPERTY"

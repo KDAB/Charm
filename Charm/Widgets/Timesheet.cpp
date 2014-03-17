@@ -202,4 +202,3 @@ TimeSheetInfoList TimeSheetInfo::filteredTaskWithSubTasks(
 
     return timeSheetInfo;
 }
-

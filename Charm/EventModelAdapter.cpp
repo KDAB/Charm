@@ -5,7 +5,6 @@
 
 EventModelAdapter::EventModelAdapter( CharmDataModel* parent )
     : QAbstractListModel( parent )
-    , m_selectedEvent( 0 )
     , m_dataModel( parent )
 {
     m_dataModel->registerAdapter( this );

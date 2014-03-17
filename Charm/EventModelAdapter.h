@@ -56,7 +56,6 @@ signals:
     void eventDeactivationNotice( EventId id );
 
 private:
-    EventId m_selectedEvent;
     // if this is slow, we may want to store pointers here:
     EventIdList m_events;
     CharmDataModel* m_dataModel;

@@ -2,48 +2,17 @@ INCLUDE_DIRECTORIES( ${Charm_SOURCE_DIR} ${Charm_BINARY_DIR} )
 
 SET(
     CharmApplication_SRCS
-    CharmWindow.cpp
     Application.cpp
     ApplicationFactory.cpp
-    ViewHelpers.cpp
-    TaskIdDialog.cpp
     Data.cpp
-    ConfigurationDialog.cpp
-    CharmPreferences.cpp
-    TasksView.cpp
-    TasksWindow.cpp
-    TaskEditor.cpp
-    TrayIcon.cpp
+    EventModelAdapter.cpp
+    EventModelFilter.cpp
     GUIState.cpp
-    DateEntrySyncer.cpp
-    EnterVacationDialog.cpp
-    EventView.cpp
-    EventWindow.cpp
-    EventEditor.cpp
-    EventEditorDelegate.cpp
-    SelectTaskDialog.cpp
-    MessageBox.cpp
     ModelConnector.cpp
     ViewFilter.cpp
     TaskModelAdapter.cpp
-    EventModelAdapter.cpp
-    EventModelFilter.cpp
-    TasksViewDelegate.cpp
-    CharmAboutDialog.cpp
-    TimeTrackingView/TimeTrackingView.cpp
-    TimeTrackingView/TimeTrackingWindow.cpp
-    TimeTrackingView/WeeklySummary.cpp
-    TimeTrackingView/TimeTrackingTaskSelector.cpp
-    TimeTrackingView/BillDialog.cpp
-    IdleWidget.cpp
-    Reports/ReportConfigurationDialog.cpp
-    Reports/CharmReport.cpp
-    Reports/ActivityReport.cpp
-    Reports/Timesheet.cpp
-    Reports/WeeklyTimesheet.cpp
-    Reports/MonthlyTimesheet.cpp
-    Reports/MonthlyTimesheetConfigurationDialog.cpp
-    Reports/ReportPreviewWindow.cpp
+    ViewHelpers.cpp
+    WeeklySummary.cpp
     UndoCharmCommandWrapper.cpp
     Commands/CommandRelayCommand.cpp
     Commands/CommandModifyEvent.cpp
@@ -56,11 +25,42 @@ SET(
     Commands/CommandExportToXml.cpp
     Commands/CommandImportFromXml.cpp
     Commands/CommandMakeAndActivateEvent.cpp
-    Idle/IdleDetector.cpp
-    Idle/IdleCorrectionDialog.cpp
     HttpClient/HttpJob.cpp
     HttpClient/GetProjectCodesJob.cpp
     HttpClient/UploadTimesheetJob.cpp
+    Idle/IdleDetector.cpp
+    Widgets/ActivityReport.cpp
+    Widgets/BillDialog.cpp
+    Widgets/CharmPreferences.cpp
+    Widgets/CharmReport.cpp
+    Widgets/CharmWindow.cpp
+    Widgets/CharmAboutDialog.cpp
+    Widgets/ConfigurationDialog.cpp
+    Widgets/DateEntrySyncer.cpp
+    Widgets/EnterVacationDialog.cpp
+    Widgets/EventEditor.cpp
+    Widgets/EventEditorDelegate.cpp
+    Widgets/EventView.cpp
+    Widgets/EventWindow.cpp
+    Widgets/ExpandStatesHelper.cpp
+    Widgets/IdleCorrectionDialog.cpp
+    Widgets/MessageBox.cpp
+    Widgets/MonthlyTimesheet.cpp
+    Widgets/MonthlyTimesheetConfigurationDialog.cpp
+    Widgets/ReportConfigurationDialog.cpp
+    Widgets/ReportPreviewWindow.cpp
+    Widgets/SelectTaskDialog.cpp
+    Widgets/TaskIdDialog.cpp
+    Widgets/TaskEditor.cpp
+    Widgets/TasksView.cpp
+    Widgets/TasksViewDelegate.cpp
+    Widgets/TasksWindow.cpp
+    Widgets/TimeTrackingView.cpp
+    Widgets/TimeTrackingWindow.cpp
+    Widgets/TimeTrackingTaskSelector.cpp
+    Widgets/TrayIcon.cpp
+    Widgets/Timesheet.cpp
+    Widgets/WeeklyTimesheet.cpp
 )
 
 SET(CharmApplication_LIBS)
@@ -84,10 +84,10 @@ IF( CHARM_IDLE_DETECTION )
     ENDIF()
 ENDIF()
 
-LIST( APPEND CharmApplication_SRCS keychain.cpp )
+LIST( APPEND CharmApplication_SRCS Keychain/keychain.cpp )
 
 IF (APPLE)
-    LIST( APPEND CharmApplication_SRCS keychain_mac.cpp MacApplication.mm )
+    LIST( APPEND CharmApplication_SRCS Keychain/keychain_mac.cpp MacApplication.mm )
 
     FIND_LIBRARY( COREFOUNDATION_LIBRARY CoreFoundation )
     LIST( APPEND CharmApplication_LIBS ${COREFOUNDATION_LIBRARY} )
@@ -98,14 +98,14 @@ IF (APPLE)
     FIND_LIBRARY( APPKIT_LIBRARY AppKit )
     LIST( APPEND CharmApplication_LIBS ${APPKIT_LIBRARY} )
 ELSEIF ( WIN32 )
-    LIST( APPEND CharmApplication_SRCS keychain_win.cpp )
+    LIST( APPEND CharmApplication_SRCS Keychain/keychain_win.cpp )
 ELSEIF ( UNIX )
     IF (HAVE_DBUS)
-        LIST( APPEND CharmApplication_SRCS keychain_dbus.cpp )
-        QT_ADD_DBUS_INTERFACE( CharmApplication_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/org.kde.KWallet.xml kwallet_interface KWalletInterface )
+        LIST( APPEND CharmApplication_SRCS Keychain/keychain_dbus.cpp )
+        QT_ADD_DBUS_INTERFACE( CharmApplication_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/Keychain/org.kde.KWallet.xml kwallet_interface KWalletInterface )
         LIST( APPEND CharmApplication_LIBS ${QT_QTDBUS_LIBRARY} )
     ELSE()
-        LIST( APPEND CharmApplication_SRCS keychain_unsecure.cpp )
+        LIST( APPEND CharmApplication_SRCS Keychain/keychain_unsecure.cpp )
     ENDIF()
 ENDIF()
 
@@ -120,19 +120,19 @@ ENDIF()
 
 QT_WRAP_UI(
     UiGenerated_SRCS
-    ConfigurationDialog.ui
-    CharmPreferences.ui
-    TaskIdDialog.ui
-    Reports/ActivityReportConfigurationDialog.ui
-    Reports/WeeklyTimesheetConfigurationDialog.ui
-    Reports/MonthlyTimesheetConfigurationDialog.ui
-    Reports/ReportPreviewWindow.ui
-    TaskEditor.ui
-    EnterVacationDialog.ui
-    EventEditor.ui
-    SelectTaskDialog.ui
-    CharmAboutDialog.ui
-    Idle/IdleCorrectionDialog.ui
+    Widgets/ConfigurationDialog.ui
+    Widgets/CharmPreferences.ui
+    Widgets/TaskIdDialog.ui
+    Widgets/TaskEditor.ui
+    Widgets/EnterVacationDialog.ui
+    Widgets/EventEditor.ui
+    Widgets/SelectTaskDialog.ui
+    Widgets/CharmAboutDialog.ui
+    Widgets/IdleCorrectionDialog.ui
+    Widgets/ActivityReportConfigurationDialog.ui
+    Widgets/WeeklyTimesheetConfigurationDialog.ui
+    Widgets/MonthlyTimesheetConfigurationDialog.ui
+    Widgets/ReportPreviewWindow.ui
 )
 
 QT_ADD_RESOURCES( Resources_SRCS CharmResources.qrc )
@@ -150,7 +150,7 @@ IF( APPLE )
     SET( MACOSX_BUNDLE_BUNDLE_VERSION "Charm ${Charm_VERSION}" )
     SET( MACOSX_BUNDLE_LONG_VERSION_STRING "Charm ${Charm_VERSION}" )
     SET( MACOSX_BUNDLE_SHORT_VERSION_STRING "${Charm_VERSION}" )
-    SET( MACOSX_BUNDLE_COPYRIGHT "2006-2011 KDAB" )
+    SET( MACOSX_BUNDLE_COPYRIGHT "2006-2014 KDAB" )
     SET( MACOSX_BUNDLE_ICON_FILE "Charm.icns" )
     SET( MACOSX_BUNDLE_GUI_IDENTIFIER "com.kdab" )
     SET( MACOSX_BUNDLE_BUNDLE_NAME "Charm" )

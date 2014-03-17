@@ -26,7 +26,7 @@
 #include "Commands/CommandMakeEvent.h"
 #include "Commands/CommandModifyEvent.h"
 #include "Commands/CommandDeleteEvent.h"
-#include "Reports/WeeklyTimesheet.h"
+#include "WeeklyTimesheet.h"
 
 EventView::EventView( QToolBar* toolBar, QWidget* parent )
     : QWidget( parent )
@@ -419,28 +419,28 @@ void EventView::setModel( ModelConnector* connector )
     m_listView->setSelectionMode( QAbstractItemView::SingleSelection );
 
     connect( m_listView->selectionModel(),
-             SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ),
-             SLOT( slotCurrentItemChanged( const QModelIndex&, const QModelIndex& ) ) );
+             SIGNAL(currentChanged(QModelIndex, QModelIndex)),
+             SLOT(slotCurrentItemChanged(QModelIndex,QModelIndex)) );
 
-    connect( model, SIGNAL( eventActivationNotice( EventId ) ),
-             SLOT( slotEventActivated( EventId ) ) );
-    connect( model, SIGNAL( eventDeactivationNotice( EventId ) ),
-             SLOT( slotEventDeactivated( EventId ) ) );
+    connect( model, SIGNAL(eventActivationNotice(EventId)),
+             SLOT(slotEventActivated(EventId)) );
+    connect( model, SIGNAL(eventDeactivationNotice(EventId)),
+             SLOT(slotEventDeactivated(EventId)) );
 
-    connect( model, SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ),
-             SLOT( slotUpdateCurrent() ) );
-    connect( model, SIGNAL( rowsInserted( const QModelIndex&, int, int ) ),
-             SLOT( slotUpdateTotal() ) );
-    connect( model, SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ),
-             SLOT( slotUpdateTotal() ) );
-    connect( model, SIGNAL( rowsInserted( const QModelIndex&, int, int ) ),
-             SLOT( slotConfigureUi() ) );
-    connect( model, SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ),
-             SLOT( slotConfigureUi() ) );
-    connect( model, SIGNAL( layoutChanged() ),
-             SLOT( slotUpdateCurrent() ) );
-    connect( model, SIGNAL( modelReset() ),
-             SLOT( slotUpdateTotal() ) );
+    connect( model, SIGNAL(dataChanged(QModelIndex,QModelIndex)),
+             SLOT(slotUpdateCurrent()) );
+    connect( model, SIGNAL(rowsInserted(QModelIndex,int,int)),
+             SLOT(slotUpdateTotal()) );
+    connect( model, SIGNAL(rowsRemoved(QModelIndex,int,int)),
+             SLOT(slotUpdateTotal()) );
+    connect( model, SIGNAL(rowsInserted(QModelIndex,int,int)),
+             SLOT(slotConfigureUi()) );
+    connect( model, SIGNAL(rowsRemoved(QModelIndex,int,int)),
+             SLOT(slotConfigureUi()) );
+    connect( model, SIGNAL(layoutChanged()),
+             SLOT(slotUpdateCurrent()) );
+    connect( model, SIGNAL(modelReset()),
+             SLOT(slotUpdateTotal()) );
 
     m_model = model;
     // normally, the model is set only once, so this should be no problem:
@@ -470,8 +470,8 @@ void EventView::slotEditEvent( const Event& event )
         if ( !newEvent.isValid() ) {
             CommandMakeEvent* command =
                 new CommandMakeEvent( newEvent, this );
-            connect( command, SIGNAL( finishedOk( const Event& ) ),
-                     this, SLOT( slotEditNewEventCompleted( const Event& ) ),
+            connect( command, SIGNAL(finishedOk(Event)),
+                     this, SLOT(slotEditNewEventCompleted(Event)),
                      Qt::QueuedConnection );
             stageCommand( command );
             return;

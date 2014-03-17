@@ -6,7 +6,6 @@
 #include "Core/CharmConstants.h"
 #include "ViewHelpers.h"
 #include <Core/Configuration.h>
-#include <Core/CharmCommand.h>
 #include "Commands/CommandModifyTask.h"
 #include "Commands/CommandModifyEvent.h"
 #include "TaskModelAdapter.h"

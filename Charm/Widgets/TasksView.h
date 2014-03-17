@@ -14,7 +14,6 @@ class QMenu;
 class QItemSelection;
 class QModelIndex;
 class TasksViewDelegate;
-class StatusBarWidget;
 class QToolBar;
 class QToolButton;
 class QButton;
@@ -76,7 +75,6 @@ private:
     QAction m_actionDeleteTask;
     QAction m_actionExpandTree;
     QAction m_actionCollapseTree;
-    StatusBarWidget* m_statusBarWidget;
     QButton* m_showCurrentOnly;
     QButton* m_showSubscribedOnly;
     QTreeView* m_treeView;

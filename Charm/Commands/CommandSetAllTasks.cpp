@@ -1,6 +1,3 @@
-#include <QWidget>
-#include <QMessageBox>
-
 #include <Core/ControllerInterface.h>
 #include <Core/CommandEmitterInterface.h>
 
@@ -31,15 +28,9 @@ bool CommandSetAllTasks::execute( ControllerInterface* controller )
 bool CommandSetAllTasks::finalize()
 {
     if ( m_success ) {
-        QWidget* parent = dynamic_cast<QWidget*>( owner() );
-        Q_ASSERT( parent );
-        QMessageBox::information( parent, tr( "New Tasks Imported" ),
-                                  tr( "The new tasks have been successfully imported." ) );
+        showInformation( tr( "New Tasks Imported" ), tr( "The new tasks have been successfully imported." ) );
     } else {
-        QWidget* parent = dynamic_cast<QWidget*>( owner() );
-        Q_ASSERT( parent );
-        QMessageBox::information( parent, tr( "Failure setting new tasks" ),
-                                  tr( "Setting the new tasks failed." ) );
+        showInformation( tr( "Failure setting new tasks" ), tr( "Setting the new tasks failed." ) );
     }
     return m_success;
 }

@@ -1,21 +1,10 @@
 #include <QtDebug>
 #include <QSettings>
 #include <QPushButton>
-#include <QDialogButtonBox>
-#include <QHeaderView>
-
-#include <Core/CharmConstants.h>
 
 #include "ViewHelpers.h"
-#include "Data.h"
+#include "ExpandStatesHelper.h"
 #include "GUIState.h"
-#include "ModelConnector.h"
-#include "ViewFilter.h"
-#include "Application.h"
-#include "ModelConnector.h"
-#include "TaskModelAdapter.h"
-#include "ViewFilter.h"
-#include "TasksView.h"
 #include "SelectTaskDialog.h"
 #include "ui_SelectTaskDialog.h"
 

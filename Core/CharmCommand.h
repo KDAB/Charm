@@ -64,6 +64,10 @@ signals:
     void emitRollback(CharmCommand*);
     void emitSlotEventIdChanged(int,int);
 
+protected:
+    void showInformation(const QString& title, const QString& message);
+    void showCritical(const QString& title, const QString& message);
+
 private:
     CharmCommand( const CharmCommand& ); // disallow copying
 

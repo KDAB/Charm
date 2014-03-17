@@ -43,22 +43,22 @@ const QString& stringForBool( bool val )
 
 void connectControllerAndModel( Controller* controller, CharmDataModel* model )
 {
-    QObject::connect( controller, SIGNAL( eventAdded( const Event& ) ),
-                      model, SLOT( addEvent( const Event& ) ) );
-    QObject::connect( controller, SIGNAL( eventModified( const Event& ) ),
-                      model, SLOT( modifyEvent( const Event& ) ) );
-    QObject::connect( controller, SIGNAL( eventDeleted( const Event& ) ),
-                      model, SLOT( deleteEvent( const Event& ) ) );
-    QObject::connect( controller, SIGNAL( allEvents( const EventList& ) ),
-                      model, SLOT( setAllEvents( const EventList& ) ) );
-    QObject::connect( controller, SIGNAL( definedTasks( const TaskList& ) ),
-                      model, SLOT( setAllTasks( const TaskList& ) ) );
-    QObject::connect( controller, SIGNAL( taskAdded( const Task& ) ),
-                      model, SLOT( addTask( const Task& ) ) );
-    QObject::connect( controller, SIGNAL( taskUpdated( const Task& ) ),
-                      model, SLOT( modifyTask( const Task& ) ) );
-    QObject::connect( controller, SIGNAL( taskDeleted( const Task& ) ),
-                      model, SLOT( deleteTask( const Task& ) ) );
+    QObject::connect( controller, SIGNAL(eventAdded(Event)),
+                      model, SLOT(addEvent(Event)) );
+    QObject::connect( controller, SIGNAL(eventModified(Event)),
+                      model, SLOT(modifyEvent(Event)) );
+    QObject::connect( controller, SIGNAL(eventDeleted(Event)),
+                      model, SLOT(deleteEvent(Event)) );
+    QObject::connect( controller, SIGNAL(allEvents(EventList)),
+                      model, SLOT(setAllEvents(EventList)) );
+    QObject::connect( controller, SIGNAL(definedTasks(TaskList)),
+                      model, SLOT(setAllTasks(TaskList)) );
+    QObject::connect( controller, SIGNAL(taskAdded(Task)),
+                      model, SLOT(addTask(Task)) );
+    QObject::connect( controller, SIGNAL(taskUpdated(Task)),
+                      model, SLOT(modifyTask(Task)) );
+    QObject::connect( controller, SIGNAL(taskDeleted(Task)),
+                      model, SLOT(deleteTask(Task)) );
 }
 
 static QString formatDecimal( double d ) {

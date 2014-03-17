@@ -1,7 +1,7 @@
 #include <QtDebug>
 #include <QDateTime>
 
-#include "EventView.h"
+#include "Widgets/EventView.h"
 #include <Core/ControllerInterface.h>
 
 #include "CommandMakeEvent.h"
