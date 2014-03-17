@@ -35,16 +35,16 @@ void ControllerTests::initTestCase ()
     m_configuration.newDatabase = true;
     Controller* controller = new Controller;
     m_controller = controller;
-//    connect( controller, SIGNAL( currentEvents( const EventList& ) ),
-//             SLOT( slotCurrentEvents( const EventList& ) ) );
-    connect( controller, SIGNAL( definedTasks( const TaskList& ) ),
-             SLOT( slotDefinedTasks( const TaskList& ) ) );
-    connect( controller, SIGNAL( taskAdded( const Task& ) ),
-             SLOT( slotTaskAdded( const Task& ) ) );
-    connect( controller, SIGNAL( taskUpdated( const Task& ) ),
-             SLOT( slotTaskUpdated( const Task& ) ) );
-    connect( controller, SIGNAL( taskDeleted( const Task& ) ),
-             SLOT( slotTaskDeleted( const Task& ) ) );
+//    connect( controller, SIGNAL(currentEvents(EventList)),
+//             SLOT(slotCurrentEvents(EventList)) );
+    connect( controller, SIGNAL(definedTasks(TaskList)),
+             SLOT(slotDefinedTasks(TaskList)) );
+    connect( controller, SIGNAL(taskAdded(Task)),
+             SLOT(slotTaskAdded(Task)) );
+    connect( controller, SIGNAL(taskUpdated(Task)),
+             SLOT(slotTaskUpdated(Task)) );
+    connect( controller, SIGNAL(taskDeleted(Task)),
+             SLOT(slotTaskDeleted(Task)) );
 }
 
 void ControllerTests::initializeConnectBackendTest()

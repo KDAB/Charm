@@ -1,5 +1,5 @@
 #include "HttpJob.h"
-#include "keychain.h"
+#include "Keychain/keychain.h"
 
 #include <QDebug>
 #include <QNetworkAccessManager>

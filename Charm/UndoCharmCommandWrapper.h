@@ -13,7 +13,7 @@
 class UndoCharmCommandWrapper : public QUndoCommand
 {
 public:
-    UndoCharmCommandWrapper(CharmCommand* command);
+    explicit UndoCharmCommandWrapper(CharmCommand* command);
     virtual ~UndoCharmCommandWrapper();
     virtual void undo();
     virtual void redo();

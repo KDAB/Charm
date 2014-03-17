@@ -1,6 +1,3 @@
-#include <QWidget>
-#include <QMessageBox>
-
 #include <Core/ControllerInterface.h>
 #include <Core/CommandEmitterInterface.h>
 
@@ -31,10 +28,7 @@ bool CommandAddTask::execute( ControllerInterface* controller )
 bool CommandAddTask::finalize()
 {
     if ( !m_success ) {
-        QWidget* parent = dynamic_cast<QWidget*>( owner() );
-        Q_ASSERT( parent );
-        QMessageBox::information( parent, tr( "Unable to add task" ),
-                                  tr( "Adding the task failed." ) );
+        showInformation( tr( "Unable to add task" ), tr( "Adding the task failed." ) );
     }
     return m_success;
 }

@@ -179,4 +179,3 @@ TasksViewDelegate::Layout TasksViewDelegate::doLayout( const QStyleOptionViewIte
 }
 
 #include "moc_TasksViewDelegate.cpp"
-

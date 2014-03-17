@@ -167,4 +167,3 @@ void MonthlyTimesheetConfigurationDialog::slotSelectTask()
             m_ui->checkBoxSubTasksOnly->setChecked( false );
     }
 }
-

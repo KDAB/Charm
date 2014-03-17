@@ -1,6 +1,3 @@
-#include <QWidget>
-#include <QMessageBox>
-
 #include <Core/ControllerInterface.h>
 #include <Core/CommandEmitterInterface.h>
 
@@ -31,11 +28,8 @@ bool CommandModifyTask::execute( ControllerInterface* controller )
 bool CommandModifyTask::finalize()
 {
     if ( !m_success ) {
-        QWidget* parent = dynamic_cast<QWidget*>( owner() );
-        Q_ASSERT( parent );
         // this might be slightly to little informative:
-        QMessageBox::information( parent, tr( "Unable to modify task" ),
-                                  tr( "Modifying the task failed." ) );
+        showInformation( tr( "Unable to modify task" ), tr( "Modifying the task failed." ) );
     }
     return m_success;
 }

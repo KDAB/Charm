@@ -7,7 +7,7 @@
 #include "Core/CharmDataModelAdapterInterface.h"
 
 #include "CharmWindow.h"
-#include "TimeTrackingView/WeeklySummary.h"
+#include "WeeklySummary.h"
 #include "BillDialog.h"
 
 class HttpJob;

@@ -1,12 +1,11 @@
 #include <QDomDocument>
-#include <QMessageBox>
 #include <QFile>
 #include <QTextStream>
 
 #include <Core/CharmExceptions.h>
 #include <Core/ControllerInterface.h>
 
-#include "CharmWindow.h"
+#include "Widgets/CharmWindow.h"
 #include "CommandExportToXml.h"
 
 CommandExportToXml::CommandExportToXml( QString filename, QObject* parent )
@@ -48,12 +47,9 @@ bool CommandExportToXml::finalize()
 {
     // any errors?
     if ( m_error ) {
-        CharmWindow* view = dynamic_cast<CharmWindow*>( owner() );
-        Q_ASSERT( view ); // this command is "owned" by a CharmWindow
-        QMessageBox::critical( view, tr( "Error exporting Database to XML" ),
-                               tr("The database could not be exported:\n%1" ).arg( m_errorString ) );
+        showCritical( tr( "Error exporting Database to XML" ), tr("The database could not be exported:\n%1" ).arg( m_errorString ) );
     }
-    return true;
+    return !m_error;
 }
 
 #include "moc_CommandExportToXml.cpp"
