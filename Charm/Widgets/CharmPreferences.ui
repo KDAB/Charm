@@ -156,7 +156,7 @@
       </widget>
      </item>
      <item row="3" column="0" alignment="Qt::AlignRight">
-      <widget class="QLabel" name="label">
+      <widget class="QLabel" name="labelIdleDetection">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
          <horstretch>0</horstretch>
