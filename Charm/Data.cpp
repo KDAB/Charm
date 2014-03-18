@@ -19,7 +19,7 @@ const QIcon& Data::charmTrayIcon()
     // On X11: pure-Qt apps get 22x22 from QSystemTrayIcon.
     // KDE apps seem to get 24x24 in KSystemTrayIcon via KIconLoader, which is actually better.
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_OSX
     static const QString iconPath = QLatin1String(":/Charm/charmtray_mac.png");
 #else
     static const QString iconPath = QLatin1String(":/Charm/charmtray22.png");
@@ -38,7 +38,7 @@ const QIcon& Data::charmTrayActiveIcon()
     // On X11: pure-Qt apps get 22x22 from QSystemTrayIcon.
     // KDE apps seem to get 24x24 in KSystemTrayIcon via KIconLoader, which is actually better.
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_OSX
     static const QString iconPath = QLatin1String(":/Charm/charmtrayactive_mac.png");
 #else
     static const QString iconPath = QLatin1String(":/Charm/charmtrayactive22.png");

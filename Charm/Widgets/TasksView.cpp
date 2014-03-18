@@ -82,7 +82,7 @@ TasksView::TasksView( QToolBar* toolBar, QWidget* parent )
     m_actionDeleteTask.setText( tr( "Delete Task" ) );
     QList<QKeySequence> deleteShortcuts;
     deleteShortcuts << QKeySequence::Delete;
-#ifdef Q_WS_MAC
+#ifdef Q_OS_OSX
     deleteShortcuts << Qt::Key_Backspace;
 #endif
     m_actionDeleteTask.setShortcuts(deleteShortcuts);
@@ -102,7 +102,7 @@ TasksView::TasksView( QToolBar* toolBar, QWidget* parent )
     // filter setup
     m_showCurrentOnly->setText( tr( "Current" ) );
     m_showCurrentOnly->setCheckable( true );
-#ifdef Q_WS_MAC
+#ifdef Q_OS_OSX
     m_showCurrentOnly->setMinimumWidth( 60 );
 #endif
     toolBar->addWidget( m_showCurrentOnly );
@@ -111,7 +111,7 @@ TasksView::TasksView( QToolBar* toolBar, QWidget* parent )
 
     m_showSubscribedOnly->setText( tr( "Selected" ) );
     m_showSubscribedOnly->setCheckable( true );
-#ifdef Q_WS_MAC
+#ifdef Q_OS_OSX
     m_showSubscribedOnly->setMinimumWidth( 70 );
 #endif
     toolBar->addWidget( m_showSubscribedOnly );

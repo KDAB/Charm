@@ -333,7 +333,7 @@ bool TimeTrackingView::isTracking() const
 void TimeTrackingView::configurationChanged()
 {
     m_fixedFont = font();
-#ifdef Q_WS_MAC
+#ifdef Q_OS_OSX
     m_fixedFont.setFamily( "Andale Mono" );
     m_fixedFont.setPointSize( 11 );
 #endif

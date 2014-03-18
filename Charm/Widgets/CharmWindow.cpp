@@ -85,7 +85,7 @@ void CharmWindow::setWindowNumber( int number )
     delete m_shortcut;
     m_shortcut = new QShortcut( this );
     QKeySequence sequence( tr( "Ctrl+%1" ).arg( number ) );
-#ifdef Q_WS_MAC
+#ifdef Q_OS_OSX
     m_shortcut->setKey( sequence );
 #endif
     m_shortcut->setContext( Qt::ApplicationShortcut );
