@@ -64,14 +64,15 @@ ApplicationWindow {
             Layout.fillHeight: true
             Layout.fillWidth: true
 
-            TableViewColumn { role: "task"  ; title: qsTr("Task"); width: tableView.width - 7 * tableColumn.width; movable: false }
-            TableViewColumn{ id: tableColumn; role: "monday" ; title: qsTr("Mon"); movable: false; horizontalAlignment: Text.AlignRight }
+            TableViewColumn{ role: "task"  ; title: qsTr("Task"); width: tableView.width - 8 * tableColumn.width; movable: false }
+            TableViewColumn{ role: "monday" ; title: qsTr("Mon"); movable: false; horizontalAlignment: Text.AlignRight; id: tableColumn }
             TableViewColumn{ role: "tuesday" ; title: qsTr("Tue"); movable: false; horizontalAlignment: Text.AlignRight }
             TableViewColumn{ role: "wednesday" ; title: qsTr("Wed"); movable: false; horizontalAlignment: Text.AlignRight }
             TableViewColumn{ role: "thursday" ; title: qsTr("Thu"); movable: false; horizontalAlignment: Text.AlignRight }
             TableViewColumn{ role: "friday" ; title: qsTr("Fri"); movable: false; horizontalAlignment: Text.AlignRight }
             TableViewColumn{ role: "saturday" ; title: qsTr("Sat"); movable: false; horizontalAlignment: Text.AlignRight }
             TableViewColumn{ role: "sunday" ; title: qsTr("Sun"); movable: false; horizontalAlignment: Text.AlignRight }
+            TableViewColumn{ role: "total" ; title: qsTr("Total"); movable: false; horizontalAlignment: Text.AlignRight }
 
             model: ListModel {
                 ListElement{
@@ -99,11 +100,13 @@ ApplicationWindow {
                     text: qsTr("Stop task")
                     onClicked: stopTask.trigger()
                 }
+
                 Button {
                     id: editCommentButton
                     text: qsTr("Edit comment")
                     onClicked: editComment.trigger()
                 }
+
                 ComboBox {
                     Layout.fillWidth: true
                     model: [ "8714 IT Infrastructure/Internal karm/charm development", "8914 Qt Contributions/Android" ]
