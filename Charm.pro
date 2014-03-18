@@ -7,7 +7,7 @@ INCLUDEPATH += Charm/
 
 TARGET = AndCharm
 TEMPLATE = app
-RESOURCES = Charm/CharmResources.qrc QtQuickControls/qml.qrc
+RESOURCES = Charm/CharmResources.qrc Charm/QtQuick/qml.qrc
 
 DEFINES += 'CHARM_VERSION=\'\"0.1a\"\''
 DEFINES += 'CHARM_IDLE_TIME=0'
@@ -83,7 +83,7 @@ SOURCES += \
     Charm/Keychain/keychain.cpp \
     Charm/Keychain/keychain_unsecure.cpp
 
-SOURCES += $$files(QtQuickControls/*.cpp)
+SOURCES += Charm/QtQuick/Charm.cpp
 
 HEADERS += $$files(Core/*.h)
 
