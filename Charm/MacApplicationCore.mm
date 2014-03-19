@@ -2,6 +2,7 @@
 
 #include "MacApplicationCore.h"
 
+#include <QApplication>
 #include <QShortcut>
 #include <QShortcutEvent>
 
@@ -98,7 +99,7 @@ void MacApplicationCore::Private::setupCocoaEventHandler() const
 }
 
 MacApplicationCore::MacApplicationCore( QObject* parent )
-    : Application( parent )
+    : ApplicationCore( parent )
     , m_private( new MacApplicationCore::Private() )
 {
     m_private->dockIconClickEventHandler->macApplication = this;
