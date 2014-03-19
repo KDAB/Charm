@@ -1,6 +1,6 @@
 #include <Cocoa/Cocoa.h>
 
-#include "MacApplication.h"
+#include "MacApplicationCore.h"
 
 #include <QShortcut>
 #include <QShortcutEvent>
@@ -10,7 +10,7 @@ extern void qt_mac_set_dock_menu(QMenu*);
 @interface DockIconClickEventHandler : NSObject
 {
 @public
-    MacApplication* macApplication;
+    MacApplicationCore* macApplication;
 }
 - (void)handleDockClickEvent:(NSAppleEventDescriptor*)event withReplyEvent:(NSAppleEventDescriptor*)replyEvent;
 @end
@@ -22,7 +22,7 @@ extern void qt_mac_set_dock_menu(QMenu*);
 }
 @end
 
-class MacApplication::Private {
+class MacApplicationCore::Private {
 public:
     Private();
     ~Private();
@@ -34,7 +34,7 @@ public:
     DockIconClickEventHandler* dockIconClickEventHandler;
 };
 
-MacApplication::Private::Private()
+MacApplicationCore::Private::Private()
     : pool( 0 ), eventMonitor( 0 ), dockIconClickEventHandler( 0 )
 {
     pool = [[NSAutoreleasePool alloc] init];
@@ -46,13 +46,13 @@ MacApplication::Private::Private()
     }];
 }
 
-MacApplication::Private::~Private()
+MacApplicationCore::Private::~Private()
 {
     [NSEvent removeMonitor:eventMonitor];
     [pool drain];
 }
 
-NSEvent* MacApplication::Private::cocoaEventFilter( NSEvent* incomingEvent )
+NSEvent* MacApplicationCore::Private::cocoaEventFilter( NSEvent* incomingEvent )
 {
     NSUInteger modifierFlags = [incomingEvent modifierFlags];
 
@@ -84,7 +84,7 @@ NSEvent* MacApplication::Private::cocoaEventFilter( NSEvent* incomingEvent )
     return incomingEvent;
 }
 
-void MacApplication::Private::setupCocoaEventHandler() const
+void MacApplicationCore::Private::setupCocoaEventHandler() const
 {
     // TODO: This apparently uses a legacy API and we should be using the
     // applicationShouldHandleReopen:hasVisibleWindows: method on
@@ -97,9 +97,9 @@ void MacApplication::Private::setupCocoaEventHandler() const
      andEventID:kAEReopenApplication];
 }
 
-MacApplication::MacApplication( int& argc, char* argv[] )
-    : Application( argc, argv )
-    , m_private( new MacApplication::Private() )
+MacApplicationCore::MacApplicationCore( QObject* parent )
+    : Application( parent )
+    , m_private( new MacApplicationCore::Private() )
 {
     m_private->dockIconClickEventHandler->macApplication = this;
 
@@ -117,30 +117,30 @@ MacApplication::MacApplication( int& argc, char* argv[] )
     qt_mac_set_dock_menu( &m_dockMenu );
 
     // OSX doesn't use icons in menus
-    setWindowIcon( QIcon() );
+    QApplication::setWindowIcon( QIcon() );
     Q_FOREACH( CharmWindow* window, m_windows )
         window->setWindowIcon( QIcon() );
     m_actionQuit.setIcon( QIcon() );
     QCoreApplication::setAttribute( Qt::AA_DontShowIconsInMenus );
 }
 
-MacApplication::~MacApplication()
+MacApplicationCore::~MacApplicationCore()
 {
     delete m_private;
 }
 
-void MacApplication::handleStateChange(State state) const
+void MacApplicationCore::handleStateChange(State state) const
 {
     if (state == Configuring)
         m_private->setupCocoaEventHandler();
 }
 
-void MacApplication::dockIconClickEvent()
+void MacApplicationCore::dockIconClickEvent()
 {
     openAWindow();
 }
 
-QList< QShortcut* > MacApplication::shortcuts( QWidget* parent )
+QList< QShortcut* > MacApplicationCore::shortcuts( QWidget* parent )
 {
     QList< QShortcut* > result;
     if( parent == 0 )
@@ -163,7 +163,7 @@ QList< QShortcut* > MacApplication::shortcuts( QWidget* parent )
     return result;
 }
 
-QList< QShortcut* > MacApplication::activeShortcuts( const QKeySequence& seq, bool autorep, QWidget* parent )
+QList< QShortcut* > MacApplicationCore::activeShortcuts( const QKeySequence& seq, bool autorep, QWidget* parent )
 {
     const QList< QShortcut* > cuts = shortcuts( parent );
     QList< QShortcut* > result;

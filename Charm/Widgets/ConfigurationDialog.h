@@ -3,7 +3,7 @@
 
 #include <QDialog>
 
-#include "Application.h"
+#include "ApplicationCore.h"
 #include "Core/Configuration.h"
 
 #include "ui_ConfigurationDialog.h"

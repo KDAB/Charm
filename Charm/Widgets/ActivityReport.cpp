@@ -16,7 +16,7 @@
 #include <QDialogButtonBox>
 #include <QTimer>
 
-#include "Application.h"
+#include "ApplicationCore.h"
 #include "ViewHelpers.h"
 #include "CharmReport.h"
 #include "SelectTaskDialog.h"
@@ -67,7 +67,7 @@ ActivityReportConfigurationDialog::~ActivityReportConfigurationDialog()
 void ActivityReportConfigurationDialog::slotDelayedInitialization()
 {
     slotStandardTimeSpansChanged();
-    connect( Application::instance().dateChangeWatcher(),
+    connect( ApplicationCore::instance().dateChangeWatcher(),
              SIGNAL( dateChanged() ),
              SLOT( slotStandardTimeSpansChanged() ) );
     // FIXME load settings

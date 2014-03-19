@@ -17,6 +17,7 @@
 #include <QSessionManager>
 #include <QLocalSocket>
 #include <QFile>
+#include <QApplication>
 
 #if QT_VERSION < 0x050000
 #include <QDesktopServices>
@@ -31,7 +32,7 @@
 
 #include "ViewHelpers.h"
 #include "Data.h"
-#include "Application.h"
+#include "ApplicationCore.h"
 #include "Idle/IdleDetector.h"
 #include "Uniquifier.h"
 #include "HttpClient/HttpJob.h"
@@ -40,10 +41,10 @@
 
 #include <algorithm> //for_each()
 
-Application* Application::m_instance = 0;
+ApplicationCore* ApplicationCore::m_instance = 0;
 
-Application::Application(int& argc, char** argv)
-    : QApplication( argc, argv )
+ApplicationCore::ApplicationCore( QObject* parent )
+    : QObject( parent )
     , m_closedWindow( 0 )
     , m_actionStopAllTasks( this )
     , m_windows( QList<CharmWindow*> () << &m_tasksWindow << &m_eventWindow << &m_timeTracker )
@@ -67,7 +68,7 @@ Application::Application(int& argc, char** argv)
     , m_dateChangeWatcher( new DateChangeWatcher( this ) )
 {
     // QApplication setup
-    setQuitOnLastWindowClosed(false);
+    QApplication::setQuitOnLastWindowClosed(false);
     // application metadata setup
     // note that this modifies the behaviour of QSettings:
     QCoreApplication::setOrganizationName("KDAB");
@@ -139,7 +140,7 @@ Application::Application(int& argc, char** argv)
     m_trayIcon.setIcon( Data::charmTrayIcon() );
     m_trayIcon.show();
 
-    setWindowIcon( Data::charmIcon() );
+    QApplication::setWindowIcon( Data::charmIcon() );
 
     Q_FOREACH( CharmWindow* window, m_windows )
         m_systrayContextMenu.addAction( window->showHideAction() );
@@ -209,28 +210,28 @@ Application::Application(int& argc, char** argv)
 
     setHttpActionsVisible(HttpJob::credentialsAvailable());
     // add default plugin path for deployment
-    addLibraryPath( applicationDirPath() + "/plugins" );
+    QCoreApplication::addLibraryPath( QCoreApplication::applicationDirPath() + "/plugins" );
 
-    if ( applicationDirPath().endsWith("MacOS") )
-        addLibraryPath( applicationDirPath() + "/../plugins");
+    if ( QCoreApplication::applicationDirPath().endsWith("MacOS") )
+        QCoreApplication::addLibraryPath( QCoreApplication::applicationDirPath() + "/../plugins");
 
     // Ladies and gentlemen, please raise upon your seats -
     // the show is about to begin:
     emit goToState(StartingUp);
 }
 
-Application::~Application()
+ApplicationCore::~ApplicationCore()
 {
 }
 
-void Application::slotHandleUniqueApplicationConnection()
+void ApplicationCore::slotHandleUniqueApplicationConnection()
 {
     QLocalSocket* socket = m_uniqueApplicationServer.nextPendingConnection();
     delete socket;
     openAWindow( true );
 }
 
-void Application::openAWindow( bool raise ) {
+void ApplicationCore::openAWindow( bool raise ) {
     CharmWindow* windowToOpen = 0;
     foreach( CharmWindow* window, m_windows )
         if ( !window->isHidden() )
@@ -250,7 +251,7 @@ void Application::openAWindow( bool raise ) {
         m_closedWindow = 0;
 }
 
-void Application::createWindowMenu( QMenuBar *menuBar )
+void ApplicationCore::createWindowMenu( QMenuBar *menuBar )
 {
     QMenu* menu = new QMenu( menuBar );
     menu->setTitle( tr( "Window" ) );
@@ -270,7 +271,7 @@ void Application::createWindowMenu( QMenuBar *menuBar )
     menuBar->addMenu( menu );
 }
 
-void Application::createFileMenu( QMenuBar *menuBar )
+void ApplicationCore::createFileMenu( QMenuBar *menuBar )
 {
     QMenu* menu = new QMenu( menuBar );
     menu->setTitle ( tr( "File" ) );
@@ -287,7 +288,7 @@ void Application::createFileMenu( QMenuBar *menuBar )
     menuBar->addMenu( menu );
 }
 
-void Application::createHelpMenu( QMenuBar *menuBar )
+void ApplicationCore::createHelpMenu( QMenuBar *menuBar )
 {
     QMenu* menu = new QMenu( menuBar );
     menu->setTitle( tr( "Help" ) );
@@ -295,11 +296,11 @@ void Application::createHelpMenu( QMenuBar *menuBar )
     menuBar->addMenu( menu );
 }
 
-void Application::setState(State state)
+void ApplicationCore::setState(State state)
 {
     if (m_state == state)
         return;
-    qDebug() << "Application::setState: going from" << StateNames[m_state]
+    qDebug() << "ApplicationCore::setState: going from" << StateNames[m_state]
              << "to" << StateNames[state];
     State previous = m_state;
 
@@ -328,7 +329,7 @@ void Application::setState(State state)
         leaveShuttingDownState();
         break;
     default:
-        Q_ASSERT_X(false, "Application::setState",
+        Q_ASSERT_X(false, "ApplicationCore::setState",
                    "Unknown previous application state");
     };
 
@@ -383,43 +384,42 @@ void Application::setState(State state)
         enterShuttingDownState();
         break;
     default:
-        Q_ASSERT_X(false, "Application::setState",
+        Q_ASSERT_X(false, "ApplicationCore::setState",
                    "Unknown new application state");
     };
     } catch( const CharmException& e ) {
-        QMessageBox::critical( &mainView(), tr( "Critical Charm Problem" ),
-                               e.what() );
-        quit();
+        showCritical( tr( "Critical Charm Problem" ), e.what() );
+        QCoreApplication::quit();
     }
 }
 
-State Application::state() const
+State ApplicationCore::state() const
 {
     return m_state;
 }
 
-Application& Application::instance()
+ApplicationCore& ApplicationCore::instance()
 {
-    Q_ASSERT_X(m_instance, "Application::instance",
+    Q_ASSERT_X(m_instance, "ApplicationCore::instance",
                "Singleton not constructed yet");
     return *m_instance;
 }
 
-bool Application::hasInstance()
+bool ApplicationCore::hasInstance()
 {
     return m_instance != 0;
 }
 
-void Application::enterStartingUpState()
+void ApplicationCore::enterStartingUpState()
 {
     emit goToState( Configuring );
 }
 
-void Application::leaveStartingUpState()
+void ApplicationCore::leaveStartingUpState()
 {
 }
 
-void Application::enterConfiguringState()
+void ApplicationCore::enterConfiguringState()
 {
 
     if (configure())
@@ -427,23 +427,32 @@ void Application::enterConfiguringState()
         emit goToState(Connecting);
     } else {
         // user has cancelled configure, exit the application
-        quit();
+        QCoreApplication::quit();
     }
 }
 
-void Application::leaveConfiguringState()
+void ApplicationCore::leaveConfiguringState()
 {
 }
 
-void Application::enterConnectingState()
+void ApplicationCore::showCritical( const QString& title, const QString& message )
+{
+    QMessageBox::critical( &mainView(), title, message );
+}
+
+void ApplicationCore::showInformation( const QString& title, const QString& message )
+{
+    QMessageBox::information( &mainView(), title, message );
+}
+
+void ApplicationCore::enterConnectingState()
 {
     try {
         if (!m_controller.initializeBackEnd(CHARM_SQLITE_BACKEND_DESCRIPTOR))
-            quit();
+            QCoreApplication::quit();
     } catch ( const CharmException& e ) {
-        QMessageBox::critical( &mainView(), QObject::tr("Database Backend Error"),
-                              tr( "The backend could not be initialized: %1" )
-                              .arg( e.what() ) );
+        showCritical( tr("Database Backend Error"),
+                      tr("The backend could not be initialized: %1").arg( e.what() ) );
         slotQuitApplication();
         return;
     }
@@ -473,45 +482,44 @@ void Application::enterConnectingState()
                                        "~/.Charm folder and restart this version of Charm and select File->Import from "
                                        "previous export and select the file you saved in the previous step.</li>"
                                        "</ul></body></html>");
-        QMessageBox::critical( &mainView(), QObject::tr("Charm Database Error"),
-                              message);
+        showCritical( QObject::tr("Charm Database Error"), message );
         slotQuitApplication();
         return;
     }
 }
 
-void Application::leaveConnectingState()
+void ApplicationCore::leaveConnectingState()
 {
 }
 
-void Application::enterConnectedState()
+void ApplicationCore::enterConnectedState()
 {
 }
 
-void Application::leaveConnectedState()
+void ApplicationCore::leaveConnectedState()
 {
     m_controller.persistMetaData(CONFIGURATION);
 }
 
-void Application::enterDisconnectingState()
+void ApplicationCore::enterDisconnectingState()
 {
     // just wait for controller to emit readyToQuit()
 }
 
-void Application::leaveDisconnectingState()
+void ApplicationCore::leaveDisconnectingState()
 {
 }
 
-void Application::enterShuttingDownState()
+void ApplicationCore::enterShuttingDownState()
 {
-    QTimer::singleShot(0, this, SLOT(quit()));
+    QTimer::singleShot(0, qApp, SLOT(quit()));
 }
 
-void Application::leaveShuttingDownState()
+void ApplicationCore::leaveShuttingDownState()
 {
 }
 
-void Application::slotGoToConnectedState()
+void ApplicationCore::slotGoToConnectedState()
 {
     if (state() == Connecting)
     {
@@ -530,17 +538,15 @@ static QString charmDataDir() {
 #endif
 }
 
-bool Application::configure()
+bool ApplicationCore::configure()
 {
     if (CONFIGURATION.failure == true)
     {
         qDebug()
-            << "Application::configure: an error was found within the configuration.";
+            << "ApplicationCore::configure: an error was found within the configuration.";
         if (!CONFIGURATION.failureMessage.isEmpty())
         {
-            QMessageBox::information( &mainView(),
-                                     tr("Configuration Problem"), CONFIGURATION.failureMessage,
-                                     tr("OK"));
+            showInformation( tr("Configuration Problem"), CONFIGURATION.failureMessage );
             CONFIGURATION.failureMessage.clear();
         }
     }
@@ -554,7 +560,7 @@ bool Application::configure()
     if (!configurationComplete || CONFIGURATION.failure)
     {
         qDebug()
-            << "Application::configure: no complete configuration found for configuration name"
+            << "ApplicationCore::configure: no complete configuration found for configuration name"
             << CONFIGURATION.configurationName;
         // FIXME maybe move to Configuration::loadDefaults
 
@@ -582,7 +588,7 @@ bool Application::configure()
         else
         {
             qDebug()
-                << "Application::configure: user cancelled configuration. Exiting.";
+                << "ApplicationCore::configure: user cancelled configuration. Exiting.";
             // quit();
             return false;
         }
@@ -591,7 +597,7 @@ bool Application::configure()
     return true;
 }
 
-void Application::toggleShowHide()
+void ApplicationCore::toggleShowHide()
 {
     if ( m_timeTracker.isHidden() && m_tasksWindow.isHidden() && m_eventWindow.isHidden() ) {
         int raised = 0;
@@ -625,7 +631,7 @@ void Application::toggleShowHide()
     }
 }
 
-QString Application::titleString( const QString& text ) const
+QString ApplicationCore::titleString( const QString& text ) const
 {
     QString dbInfo;
     const QString userName = CONFIGURATION.user.name();
@@ -641,7 +647,7 @@ QString Application::titleString( const QString& text ) const
     }
 }
 
-void Application::slotCurrentBackendStatusChanged( const QString& text )
+void ApplicationCore::slotCurrentBackendStatusChanged( const QString& text )
 {
     const QString title = titleString( text );
 
@@ -655,22 +661,22 @@ void Application::slotCurrentBackendStatusChanged( const QString& text )
     m_trayIcon.setToolTip( title );
 }
 
-void Application::slotStopAllTasks()
+void ApplicationCore::slotStopAllTasks()
 {
     DATAMODEL->endAllEventsRequested();
 }
 
-void Application::slotQuitApplication()
+void ApplicationCore::slotQuitApplication()
 {
     emit goToState(Disconnecting);
 }
 
-void Application::slotControllerReadyToQuit()
+void ApplicationCore::slotControllerReadyToQuit()
 {
     emit goToState(ShuttingDown);
 }
 
-void Application::slotSaveConfiguration()
+void ApplicationCore::slotSaveConfiguration()
 {
     QSettings settings;
     settings.beginGroup(CONFIGURATION.configurationName);
@@ -683,27 +689,27 @@ void Application::slotSaveConfiguration()
                    std::mem_fun( &CharmWindow::configurationChanged ) );
 }
 
-ModelConnector& Application::model()
+ModelConnector& ApplicationCore::model()
 {
     return m_model;
 }
 
-DateChangeWatcher* Application::dateChangeWatcher() const
+DateChangeWatcher* ApplicationCore::dateChangeWatcher() const
 {
     return m_dateChangeWatcher;
 }
 
-IdleDetector* Application::idleDetector()
+IdleDetector* ApplicationCore::idleDetector()
 {
     return m_idleDetector;
 }
 
-void Application::setHttpActionsVisible( bool visible )
+void ApplicationCore::setHttpActionsVisible( bool visible )
 {
     m_actionSyncTasks.setVisible( visible );
 }
 
-void Application::slotMaybeIdle()
+void ApplicationCore::slotMaybeIdle()
 {
     if ( idleDetector() == 0 ) return; // should not happen
 
@@ -725,24 +731,25 @@ void Application::slotMaybeIdle()
     // it
 }
 
-CharmWindow& Application::mainView()
+CharmWindow& ApplicationCore::mainView()
 {
     return m_timeTracker;
 }
 
-TrayIcon& Application::trayIcon()
+TrayIcon& ApplicationCore::trayIcon()
 {
     return m_trayIcon;
 }
 
-void Application::slotCharmWindowVisibilityChanged( bool visible )
+void ApplicationCore::slotCharmWindowVisibilityChanged( bool visible )
 {
     if( !visible )
         m_closedWindow = dynamic_cast< CharmWindow* >( sender() );
 }
 
-void Application::saveState( QSessionManager & manager )
+void ApplicationCore::saveState( QSessionManager & manager )
 {
+    Q_UNUSED( manager )
     //qDebug() << "saveState(QSessionManager)";
     if (m_state == Connected) {
         //QSettings settings;
@@ -762,11 +769,12 @@ void Application::saveState( QSessionManager & manager )
     }
 }
 
-void Application::commitData( QSessionManager & manager )
+void ApplicationCore::commitData( QSessionManager & manager )
 {
+    Q_UNUSED( manager )
     // Do nothing here. The default implementation closes all windows,
     // (just to see if the closeEvent is accepted), and this messes up
     // our saving of the "visible" state later on in saveData.
 }
 
-#include "moc_Application.cpp"
+#include "moc_ApplicationCore.cpp"

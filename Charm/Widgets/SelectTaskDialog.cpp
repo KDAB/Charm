@@ -153,8 +153,8 @@ void SelectTaskDialog::slotAccepted()
     QSettings settings;
     // FIXME refactor, code duplication with taskview
     // save user settings
-    if ( Application::instance().state() == Connected ||
-        Application::instance().state() == Disconnecting ) {
+    if ( ApplicationCore::instance().state() == Connected ||
+        ApplicationCore::instance().state() == Disconnecting ) {
         GUIState state;
         // selected task
         state.setSelectedTask( selectedTask() );

@@ -36,7 +36,7 @@ MonthlyTimesheetConfigurationDialog::MonthlyTimesheetConfigurationDialog( QWidge
     slotCheckboxSubtasksOnlyChecked( m_ui->checkBoxSubTasksOnly->isChecked() );
 
     slotStandardTimeSpansChanged();
-    connect( Application::instance().dateChangeWatcher(),
+    connect( ApplicationCore::instance().dateChangeWatcher(),
              SIGNAL( dateChanged() ),
              SLOT( slotStandardTimeSpansChanged() ) );
 

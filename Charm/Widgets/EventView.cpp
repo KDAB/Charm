@@ -13,7 +13,7 @@
 #include "Data.h"
 #include "Core/Event.h"
 #include "Core/CharmConstants.h"
-#include "Application.h"
+#include "ApplicationCore.h"
 #include "EventView.h"
 #include "EventEditor.h"
 #include "Core/Configuration.h"
@@ -134,7 +134,7 @@ EventView::~EventView()
 void EventView::delayedInitialization()
 {
     timeSpansChanged();
-    connect( Application::instance().dateChangeWatcher(),
+    connect( ApplicationCore::instance().dateChangeWatcher(),
              SIGNAL( dateChanged() ),
              SLOT( timeSpansChanged() ) );
 

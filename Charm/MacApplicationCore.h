@@ -1,14 +1,14 @@
-#ifndef MACCOCOAAPPLICATION_H
-#define MACCOCOAAPPLICATION_H
+#ifndef MACCOCOAAPPLICATIONCORE_H
+#define MACCOCOAAPPLICATIONCORE_H
 
-#include "Application.h"
+#include "ApplicationCore.h"
 
-class MacApplication : public Application
+class MacApplicationCore : public ApplicationCore
 {
     Q_OBJECT
 public:
-    MacApplication( int& argc, char* argv[] );
-    ~MacApplication();
+    explicit MacApplicationCore( QObject* parent = 0 );
+    ~MacApplicationCore();
     // This method to be public due to lack of friend classes in Objective-C and
     // the lack inheritance of Objective-C classes from C++ ones.
     void dockIconClickEvent();

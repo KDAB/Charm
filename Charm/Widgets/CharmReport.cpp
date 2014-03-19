@@ -2,7 +2,7 @@
 
 #include "Core/CharmConstants.h"
 #include "ModelConnector.h"
-#include "Application.h"
+#include "ApplicationCore.h"
 #include "ViewHelpers.h"
 #include "CharmReport.h"
 #include "Core/CharmDataModel.h"

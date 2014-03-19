@@ -2,7 +2,7 @@
 #include <QMessageBox>
 
 #include "Core/Configuration.h"
-#include "Application.h"
+#include "ApplicationCore.h"
 #include "CharmPreferences.h"
 #include "MessageBox.h"
 
@@ -11,7 +11,7 @@ CharmPreferences::CharmPreferences( const Configuration& config,
     : QDialog( parent_ )
 {
     m_ui.setupUi( this );
-    const bool haveIdleDetection = Application::instance().idleDetector() != 0;
+    const bool haveIdleDetection = ApplicationCore::instance().idleDetector() != 0;
     m_ui.cbIdleDetection->setEnabled( haveIdleDetection );
     m_ui.labelIdleDetection->setEnabled( haveIdleDetection );
     m_ui.cbIdleDetection->setChecked( config.detectIdling && m_ui.cbIdleDetection->isEnabled() );

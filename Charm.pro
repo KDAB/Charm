@@ -7,7 +7,7 @@ INCLUDEPATH += Charm/
 
 TARGET = AndCharm
 TEMPLATE = app
-RESOURCES = Charm/CharmResources.qrc QtQuickControls/qml.qrc
+RESOURCES = Charm/CharmResources.qrc Charm/QtQuick/qml.qrc
 
 DEFINES += 'CHARM_VERSION=\'\"0.1a\"\''
 DEFINES += 'CHARM_IDLE_TIME=0'
@@ -15,8 +15,7 @@ DEFINES += QT_NO_DBUS QT_NO_PRINTER
 
 SOURCES += $$files(Core/*.cpp)
 SOURCES += \
-    Charm/Application.cpp \
-    Charm/ApplicationFactory.cpp \
+    Charm/ApplicationCore.cpp \
     Charm/Data.cpp \
     Charm/EventModelAdapter.cpp \
     Charm/EventModelFilter.cpp \
@@ -83,7 +82,7 @@ SOURCES += \
     Charm/Keychain/keychain.cpp \
     Charm/Keychain/keychain_unsecure.cpp
 
-SOURCES += $$files(QtQuickControls/*.cpp)
+SOURCES += Charm/QtQuick/Charm.cpp
 
 HEADERS += $$files(Core/*.h)
 
@@ -129,7 +128,6 @@ HEADERS += \
     Charm/Widgets/ReportPreviewWindow.h \
     Charm/Widgets/BillDialog.h \
     Charm/Widgets/CharmAboutDialog.h \
-    Charm/ApplicationFactory.h \
     Charm/Qocoa/qbutton.h \
     Charm/Qocoa/qsearchfield.h \
     Charm/Commands/CommandImportFromXml.h \
@@ -149,7 +147,7 @@ HEADERS += \
     Charm/HttpClient/GetProjectCodesJob.h \
     Charm/HttpClient/UploadTimesheetJob.h \
     Charm/HttpClient/HttpJob.h \
-    Charm/Application.h \
+    Charm/ApplicationCore.h \
     Charm/Keychain/keychain.h \
     Charm/Keychain/keychain_p.h \
     Charm/TaskModelAdapter.h \

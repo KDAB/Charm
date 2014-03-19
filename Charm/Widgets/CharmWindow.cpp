@@ -11,7 +11,7 @@
 #include <Core/CharmConstants.h>
 
 #include "ViewHelpers.h"
-#include "Application.h"
+#include "ApplicationCore.h"
 #include "Data.h"
 #include "Commands/CommandRelayCommand.h"
 #include "CharmWindow.h"
@@ -33,7 +33,7 @@ CharmWindow::CharmWindow( const QString& name, QWidget* parent )
 
 void CharmWindow::stateChanged( State )
 {
-    switch( Application::instance().state() ) {
+    switch( ApplicationCore::instance().state() ) {
     case Connecting:
         setEnabled( false );
         restoreGuiState();
@@ -41,10 +41,10 @@ void CharmWindow::stateChanged( State )
         break;
     case Connected:
         configurationChanged();
-        Application::instance().createFileMenu( menuBar() );
+        ApplicationCore::instance().createFileMenu( menuBar() );
         insertEditMenu();
-        Application::instance().createWindowMenu( menuBar() );
-        Application::instance().createHelpMenu( menuBar() );
+        ApplicationCore::instance().createWindowMenu( menuBar() );
+        ApplicationCore::instance().createHelpMenu( menuBar() );
         setEnabled( true );
         break;
     case Disconnecting:

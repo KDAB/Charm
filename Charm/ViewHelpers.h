@@ -4,13 +4,13 @@
 #include "Core/Event.h"
 #include "Core/CharmConstants.h"
 
-#include "Application.h"
+#include "ApplicationCore.h"
 #include "ModelConnector.h"
 
-#define MODEL ( Application::instance().model() )
+#define MODEL ( ApplicationCore::instance().model() )
 #define DATAMODEL ( MODEL.charmDataModel() )
-#define VIEW ( Application::instance().mainView() )
-#define TRAY ( Application::instance().trayIcon() )
+#define VIEW ( ApplicationCore::instance().mainView() )
+#define TRAY ( ApplicationCore::instance().trayIcon() )
 
 void connectControllerAndView( Controller*, CharmWindow* );
 EventIdList eventIdsSortedByStartTime( EventIdList );
