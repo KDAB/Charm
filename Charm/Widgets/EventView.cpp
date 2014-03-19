@@ -96,7 +96,7 @@ EventView::EventView( QToolBar* toolBar, QWidget* parent )
     m_actionDeleteEvent.setText( tr( "Delete Event..." ) );
     QList<QKeySequence> deleteShortcuts;
     deleteShortcuts << QKeySequence::Delete;
-#ifdef Q_WS_MAC
+#ifdef Q_OS_OSX
     deleteShortcuts << Qt::Key_Backspace;
 #endif
     m_actionDeleteEvent.setShortcuts(deleteShortcuts);

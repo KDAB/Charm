@@ -11,7 +11,9 @@ CharmPreferences::CharmPreferences( const Configuration& config,
     : QDialog( parent_ )
 {
     m_ui.setupUi( this );
-    m_ui.cbIdleDetection->setEnabled( Application::instance().idleDetector() != 0 );
+    const bool haveIdleDetection = Application::instance().idleDetector() != 0;
+    m_ui.cbIdleDetection->setEnabled( haveIdleDetection );
+    m_ui.labelIdleDetection->setEnabled( haveIdleDetection );
     m_ui.cbIdleDetection->setChecked( config.detectIdling && m_ui.cbIdleDetection->isEnabled() );
     m_ui.cbWarnUnuploadedTimesheets->setChecked( config.warnUnuploadedTimesheets );
 

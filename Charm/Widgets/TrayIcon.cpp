@@ -26,7 +26,7 @@ void TrayIcon::slotActivated(QSystemTrayIcon::ActivationReason reason)
         break;
     case QSystemTrayIcon::Trigger: //(single click)
     case QSystemTrayIcon::DoubleClick:
-#ifndef Q_WS_MAC
+#ifndef Q_OS_OSX
         Application::instance().toggleShowHide();
 #endif
         break;

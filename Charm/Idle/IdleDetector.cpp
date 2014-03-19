@@ -18,15 +18,15 @@ IdleDetector::IdleDetector( QObject* parent )
 IdleDetector* IdleDetector::createIdleDetector( QObject* parent )
 {
 #ifdef CHARM_IDLE_DETECTION
-#ifdef Q_WS_MAC
+#ifdef Q_OS_OSX
     return new MacIdleDetector( parent );
 #endif
 
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN
     return new WindowsIdleDetector( parent );
 #endif
 
-#if defined Q_WS_X11 && defined CHARM_IDLE_DETECTION_AVAILABLE_X11
+#ifdef CHARM_IDLE_DETECTION_AVAILABLE_X11
     if ( X11IdleDetector::idleCheckPossible() )
         return new X11IdleDetector( parent );
 #endif
