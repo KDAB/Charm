@@ -86,7 +86,7 @@ ENDIF()
 LIST( APPEND CharmApplication_SRCS Keychain/keychain.cpp )
 
 IF (APPLE)
-    LIST( APPEND CharmApplication_SRCS Keychain/keychain_mac.cpp MacApplication.mm )
+    LIST( APPEND CharmApplication_SRCS Keychain/keychain_mac.cpp MacApplicationCore.mm )
 
     FIND_LIBRARY( COREFOUNDATION_LIBRARY CoreFoundation )
     LIST( APPEND CharmApplication_LIBS ${COREFOUNDATION_LIBRARY} )
