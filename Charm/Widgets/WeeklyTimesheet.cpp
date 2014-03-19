@@ -107,7 +107,7 @@ WeeklyTimesheetConfigurationDialog::WeeklyTimesheetConfigurationDialog( QWidget*
     new DateEntrySyncer( m_ui->spinBoxWeek, m_ui->spinBoxYear, m_ui->dateEditDay, 1, this );
 
     slotStandardTimeSpansChanged();
-    connect( Application::instance().dateChangeWatcher(),
+    connect( ApplicationCore::instance().dateChangeWatcher(),
              SIGNAL( dateChanged() ),
              SLOT( slotStandardTimeSpansChanged() ) );
 

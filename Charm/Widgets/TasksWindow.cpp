@@ -1,6 +1,6 @@
 #include <QMenuBar>
 
-#include "Application.h"
+#include "ApplicationCore.h"
 #include "TasksWindow.h"
 #include "TasksView.h"
 
@@ -30,8 +30,8 @@ void TasksWindow::stateChanged( State previous )
     CharmWindow::stateChanged( previous );
     m_tasksView->stateChanged( previous );
 
-    if ( Application::instance().state() == Connecting ) {
-        m_tasksView->setModel( & Application::instance().model() );
+    if ( ApplicationCore::instance().state() == Connecting ) {
+        m_tasksView->setModel( & ApplicationCore::instance().model() );
     }
 }
 

@@ -23,7 +23,7 @@
 #include "Core/State.h"
 #include "GUIState.h"
 #include "ViewFilter.h"
-#include "Application.h"
+#include "ApplicationCore.h"
 #include "TaskIdDialog.h"
 #include "TasksViewDelegate.h"
 
@@ -203,7 +203,7 @@ void TasksView::actionDeleteTask()
 
 void TasksView::addTaskHelper( const Task& parent )
 {
-    ViewFilter* filter = Application::instance().model().taskModel();
+    ViewFilter* filter = ApplicationCore::instance().model().taskModel();
     Task task;
     int suggestedId = parent.isValid() ? parent.id() : 1;
     if ( parent.isValid() ) {
@@ -233,7 +233,7 @@ void TasksView::configureUi()
 {
     const QItemSelectionModel* smodel = m_treeView->selectionModel();
     const QModelIndex current = smodel ? smodel->currentIndex() : QModelIndex();
-    const ViewFilter* filter = Application::instance().model().taskModel();
+    const ViewFilter* filter = ApplicationCore::instance().model().taskModel();
     const bool selected = current.isValid();
     const Task task = selected ? filter->taskForIndex( current ) : Task();
     const bool hasChildren = filter->taskHasChildren( task );
@@ -245,11 +245,11 @@ void TasksView::configureUi()
 
  void TasksView::stateChanged( State previous )
  {
-     switch( Application::instance().state() ) {
+     switch( ApplicationCore::instance().state() ) {
      case Connecting:
      {
          // set model on view:
-         ViewFilter* filter = Application::instance().model().taskModel();
+         ViewFilter* filter = ApplicationCore::instance().model().taskModel();
          m_treeView->setModel( filter );
          const QItemSelectionModel* smodel =  m_treeView->selectionModel();
          connect( smodel, SIGNAL(currentChanged(QModelIndex,QModelIndex)), SLOT(configureUi()) );
@@ -278,12 +278,12 @@ void TasksView::configureUi()
  void TasksView::saveGuiState()
  {
      Q_ASSERT( m_treeView );
-     ViewFilter* filter = Application::instance().model().taskModel();
+     ViewFilter* filter = ApplicationCore::instance().model().taskModel();
      Q_ASSERT( filter );
      QSettings settings;
      // save user settings
-     if ( Application::instance().state() == Connected ||
-          Application::instance().state() == Disconnecting ) {
+     if ( ApplicationCore::instance().state() == Connected ||
+          ApplicationCore::instance().state() == Disconnecting ) {
          GUIState state;
          // selected task
          state.setSelectedTask( selectedTask().id() );
@@ -304,12 +304,12 @@ void TasksView::configureUi()
  void TasksView::restoreGuiState()
  {
      Q_ASSERT( m_treeView );
-     ViewFilter* filter = Application::instance().model().taskModel();
+     ViewFilter* filter = ApplicationCore::instance().model().taskModel();
      Q_ASSERT( filter );
      QSettings settings;
      // restore user settings, but only when we are connected
      // (otherwise, we do not have any user data):
-     if ( Application::instance().state() == Connected ) {
+     if ( ApplicationCore::instance().state() == Connected ) {
          GUIState state;
          state.loadFrom( settings );
          QModelIndex index( filter->indexForTaskId( state.selectedTask() ) );
@@ -346,7 +346,7 @@ void TasksView::configureUi()
 
  void TasksView::slotFiltertextChanged( const QString& filtertextRaw )
  {
-     ViewFilter* filter = Application::instance().model().taskModel();
+     ViewFilter* filter = ApplicationCore::instance().model().taskModel();
      QString filtertext = filtertextRaw.simplified();
      filtertext.replace( ' ', '*' );
 
@@ -375,7 +375,7 @@ void TasksView::configureUi()
          mode = Configuration::TaskPrefilter_ShowAll;
      }
 
-     ViewFilter* filter = Application::instance().model().taskModel();
+     ViewFilter* filter = ApplicationCore::instance().model().taskModel();
      CONFIGURATION.taskPrefilteringMode = mode;
      filter->prefilteringModeChanged();
      emit saveConfiguration();
@@ -416,7 +416,7 @@ void TasksView::configureUi()
  Task TasksView::selectedTask()
  {
      Q_ASSERT( m_treeView );
-     ViewFilter* filter = Application::instance().model().taskModel();
+     ViewFilter* filter = ApplicationCore::instance().model().taskModel();
      Q_ASSERT( filter );
      // find current selection
      QModelIndexList selection = m_treeView->selectionModel()->selectedIndexes();

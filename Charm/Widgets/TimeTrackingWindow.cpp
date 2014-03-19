@@ -15,7 +15,7 @@
 #include "Core/TaskListMerger.h"
 #include "Core/XmlSerialization.h"
 
-#include "Application.h"
+#include "ApplicationCore.h"
 #include "MessageBox.h"
 #include "EnterVacationDialog.h"
 #include "ViewHelpers.h"
@@ -76,16 +76,16 @@ QMenu* TimeTrackingWindow::menu() const
 
 TimeTrackingWindow::~TimeTrackingWindow()
 {
-    if ( Application::hasInstance() )
+    if ( ApplicationCore::hasInstance() )
         DATAMODEL->unregisterAdapter( this );
 }
 
 void TimeTrackingWindow::stateChanged( State previous )
 {
     CharmWindow::stateChanged( previous );
-    switch( Application::instance().state() ) {
+    switch( ApplicationCore::instance().state() ) {
     case Connecting: {
-        connect( Application::instance().dateChangeWatcher(), SIGNAL( dateChanged() ),
+        connect( ApplicationCore::instance().dateChangeWatcher(), SIGNAL( dateChanged() ),
                  SLOT( slotSelectTasksToShow() ) );
         DATAMODEL->registerAdapter( this );
         m_summaryWidget->setSummaries( QVector<WeeklySummary>() );
@@ -471,15 +471,15 @@ void TimeTrackingWindow::slotBillGone(int result)
 void TimeTrackingWindow::maybeIdle()
 {
     static bool inProgress = false;
-    if ( Application::instance().idleDetector() == 0 ) return;
+    if ( ApplicationCore::instance().idleDetector() == 0 ) return;
 
     if ( inProgress == true ) return;
     Uniquifier u( &inProgress );
 
-    IdleDetector* detector = Application::instance().idleDetector();
+    IdleDetector* detector = ApplicationCore::instance().idleDetector();
 
     Q_FOREACH( const IdleDetector::IdlePeriod& p, detector->idlePeriods() ) {
-        qDebug() << "Application::slotMaybeIdle: computer might be have been idle from"
+        qDebug() << "ApplicationCore::slotMaybeIdle: computer might be have been idle from"
                  << p.first
                  << "to" << p.second;
     }
@@ -560,7 +560,7 @@ void TimeTrackingWindow::importTasksFromDeviceOrFile( QIODevice* device, const Q
         setValueIfNotNull( &settings, QLatin1String("loginUrl"), exporter.metadata( QLatin1String("login-url") ) );
         setValueIfNotNull( &settings, QLatin1String("timesheetUploadUrl"), exporter.metadata( QLatin1String("timesheet-upload-url") ) );
         setValueIfNotNull( &settings, QLatin1String("projectCodeDownloadUrl"), exporter.metadata( QLatin1String("project-code-download-url") ) );
-        Application::instance().setHttpActionsVisible( true );
+        ApplicationCore::instance().setHttpActionsVisible( true );
     } catch( const CharmException& e ) {
         const QString message = e.what().isEmpty()
                                 ?  tr( "The selected task definitions are invalid and cannot be imported." )

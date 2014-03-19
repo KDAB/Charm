@@ -1,6 +1,6 @@
 #include <QMenuBar>
 
-#include "Application.h"
+#include "ApplicationCore.h"
 #include "EventWindow.h"
 #include "EventView.h"
 
@@ -43,8 +43,8 @@ void EventWindow::stateChanged( State previous )
     CharmWindow::stateChanged( previous );
     m_eventView->stateChanged( previous );
 
-    if ( Application::instance().state() == Connecting ) {
-        m_eventView->setModel( & Application::instance().model() );
+    if ( ApplicationCore::instance().state() == Connecting ) {
+        m_eventView->setModel( & ApplicationCore::instance().model() );
     }
 }
 

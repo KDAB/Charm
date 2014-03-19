@@ -1,6 +1,6 @@
 #include "TrayIcon.h"
 
-#include "Application.h"
+#include "ApplicationCore.h"
 
 #include <QEvent>
 
@@ -27,12 +27,12 @@ void TrayIcon::slotActivated(QSystemTrayIcon::ActivationReason reason)
     case QSystemTrayIcon::Trigger: //(single click)
     case QSystemTrayIcon::DoubleClick:
 #ifndef Q_OS_OSX
-        Application::instance().toggleShowHide();
+        ApplicationCore::instance().toggleShowHide();
 #endif
         break;
     case QSystemTrayIcon::MiddleClick:
         // TODO: Start task?
-        Application::instance().slotStopAllTasks();
+        ApplicationCore::instance().slotStopAllTasks();
         break;
     case QSystemTrayIcon::Unknown:
     default:

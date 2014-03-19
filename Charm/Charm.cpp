@@ -7,9 +7,18 @@
 #include <QSettings>
 #include <QString>
 
-#include "ApplicationFactory.h"
+#include "ApplicationCore.h"
+#include "MacApplicationCore.h"
 #include "Core/CharmExceptions.h"
 #include "CharmCMake.h"
+
+static ApplicationCore* createApplicationCore()
+{
+#ifdef Q_OS_OSX
+    return new MacApplicationCore;
+#endif
+    return new ApplicationCore;
+}
 
 void showCriticalError( const QString& msg ) {
     QMessageBox::critical( 0, QObject::tr( "Application Error" ), msg );
@@ -37,8 +46,11 @@ int main ( int argc, char** argv )
     }
 
     try {
-        QApplication *app = ApplicationFactory::localApplication( argc, argv );
-        return app->exec();
+        QApplication app( argc, argv );
+        ApplicationCore* core = createApplicationCore(); //FIXME this should be a QScopedPointer, but correct destruction crashes...
+        QObject::connect( &app, SIGNAL(commitDataRequest(QSessionManager&)), core, SLOT(commitData(QSessionManager&)) );
+        QObject::connect( &app, SIGNAL(saveStateRequest(QSessionManager&)), core, SLOT(saveState(QSessionManager&)) );
+        return app.exec();
     } catch( const AlreadyRunningException& ) {
         using namespace std;
         cout << "Charm already running, exiting..." << endl;

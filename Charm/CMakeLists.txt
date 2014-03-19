@@ -2,8 +2,7 @@ INCLUDE_DIRECTORIES( ${Charm_SOURCE_DIR} ${Charm_BINARY_DIR} )
 
 SET(
     CharmApplication_SRCS
-    Application.cpp
-    ApplicationFactory.cpp
+    ApplicationCore.cpp
     Data.cpp
     EventModelAdapter.cpp
     EventModelFilter.cpp

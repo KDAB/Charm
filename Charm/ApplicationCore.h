@@ -12,7 +12,6 @@
 
 #include <QMenu>
 #include <QAction>
-#include <QApplication>
 #include <QLocalServer>
 
 // this is an application, not a library:
@@ -35,16 +34,17 @@
 // FIXME read configuration name from command line
 
 class IdleDetector;
+class QSessionManager;
 
-class Application : public QApplication
+class ApplicationCore : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit Application( int& argc,  char** argv );
-    ~Application();
+    explicit ApplicationCore( QObject* parent = 0 );
+    ~ApplicationCore();
 
-    static Application& instance();
+    static ApplicationCore& instance();
     static bool hasInstance();
 
     // FIXME broken by design?
@@ -74,9 +74,6 @@ public:
 
     TrayIcon& trayIcon();
 
-    /*! \reimp */ void saveState( QSessionManager & manager );
-    /*! \reimp */ void commitData( QSessionManager & manager );
-
 public slots:
     void setState( State state );
     void slotStopAllTasks();
@@ -86,6 +83,8 @@ public slots:
     void slotGoToConnectedState();
     void toggleShowHide();
     void setHttpActionsVisible( bool visible );
+    void saveState( QSessionManager & manager );
+    void commitData( QSessionManager & manager );
 
 private slots:
 //     void slotMainWindowVisibilityChanged( bool );
@@ -153,7 +152,7 @@ private:
     // supposed to help on Windows, where constructors for statics
     // do not seem to called correctly.
     DateChangeWatcher* m_dateChangeWatcher;
-    static Application* m_instance;
+    static ApplicationCore* m_instance;
 };
 
 #endif
