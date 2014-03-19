@@ -173,4 +173,4 @@ QList< QShortcut* > MacApplicationCore::activeShortcuts( const QKeySequence& seq
     return result;
 }
 
-#include "MacApplication.moc"
+#include "MacApplicationCore.moc"
