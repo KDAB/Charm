@@ -387,8 +387,7 @@ void Application::setState(State state)
                    "Unknown new application state");
     };
     } catch( const CharmException& e ) {
-        QMessageBox::critical( &mainView(), tr( "Critical Charm Problem" ),
-                               e.what() );
+        showCritical( tr( "Critical Charm Problem" ), e.what() );
         quit();
     }
 }
@@ -435,15 +434,24 @@ void Application::leaveConfiguringState()
 {
 }
 
+void Application::showCritical( const QString& title, const QString& message )
+{
+    QMessageBox::critical( &mainView(), title, message );
+}
+
+void Application::showInformation( const QString& title, const QString& message )
+{
+    QMessageBox::information( &mainView(), title, message );
+}
+
 void Application::enterConnectingState()
 {
     try {
         if (!m_controller.initializeBackEnd(CHARM_SQLITE_BACKEND_DESCRIPTOR))
             quit();
     } catch ( const CharmException& e ) {
-        QMessageBox::critical( &mainView(), QObject::tr("Database Backend Error"),
-                              tr( "The backend could not be initialized: %1" )
-                              .arg( e.what() ) );
+        showCritical( tr("Database Backend Error"),
+                      tr("The backend could not be initialized: %1").arg( e.what() ) );
         slotQuitApplication();
         return;
     }
@@ -473,8 +481,7 @@ void Application::enterConnectingState()
                                        "~/.Charm folder and restart this version of Charm and select File->Import from "
                                        "previous export and select the file you saved in the previous step.</li>"
                                        "</ul></body></html>");
-        QMessageBox::critical( &mainView(), QObject::tr("Charm Database Error"),
-                              message);
+        showCritical( QObject::tr("Charm Database Error"), message );
         slotQuitApplication();
         return;
     }
@@ -538,9 +545,7 @@ bool Application::configure()
             << "Application::configure: an error was found within the configuration.";
         if (!CONFIGURATION.failureMessage.isEmpty())
         {
-            QMessageBox::information( &mainView(),
-                                     tr("Configuration Problem"), CONFIGURATION.failureMessage,
-                                     tr("OK"));
+            showInformation( tr("Configuration Problem"), CONFIGURATION.failureMessage );
             CONFIGURATION.failureMessage.clear();
         }
     }

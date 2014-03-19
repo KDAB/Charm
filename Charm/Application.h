@@ -108,6 +108,9 @@ protected:
     QAction m_actionQuit;
 
 private:
+    void showCritical( const QString& title, const QString& message );
+    void showInformation( const QString& title, const QString& message );
+
     QString titleString( const QString& text ) const;
     void enterStartingUpState();
     void leaveStartingUpState();
