@@ -4,7 +4,6 @@
 
 #include <Core/ControllerInterface.h>
 
-#include "Widgets/CharmWindow.h"
 #include "CommandImportFromXml.h"
 
 CommandImportFromXml::CommandImportFromXml( QString filename, QObject* parent )
