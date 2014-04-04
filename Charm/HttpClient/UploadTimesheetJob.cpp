@@ -4,7 +4,6 @@
 #include <QNetworkReply>
 #include <QNetworkRequest>
 #include <QSettings>
-#include <QTimer>
 
 UploadTimesheetJob::UploadTimesheetJob(QObject* parent)
     : HttpJob(parent), m_fileName("payload")

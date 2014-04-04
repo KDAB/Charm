@@ -4,7 +4,6 @@
 #include <QNetworkReply>
 #include <QNetworkRequest>
 #include <QSettings>
-#include <QTimer>
 
 GetProjectCodesJob::GetProjectCodesJob(QObject* parent)
     : HttpJob(parent)

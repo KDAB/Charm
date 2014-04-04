@@ -1,5 +1,4 @@
 #include <QtDebug>
-#include <QTimer>
 #include <QTime>
 
 #include "TimeSpans.h"

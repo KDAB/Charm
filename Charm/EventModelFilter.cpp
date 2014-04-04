@@ -1,5 +1,3 @@
-#include <QTimer>
-
 #include "EventModelFilter.h"
 
 EventModelFilter::EventModelFilter( CharmDataModel* model, QObject* parent )

@@ -3,8 +3,6 @@
 
 #include <Core/CharmCommand.h>
 
-class CommandEmitterInterface;
-
 /** CommandRelayCommand is a decorator class that is used to wrap all
     commands send by the view.
     ATM, CommandRelayCommand sets the hour glass cursor on the view

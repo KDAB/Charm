@@ -6,6 +6,7 @@
 #include <QToolBar>
 #include <QComboBox>
 #include <QLabel>
+#include <QTimer>
 #include <QVBoxLayout>
 
 #include "TasksView.h"

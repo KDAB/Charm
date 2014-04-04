@@ -1,6 +1,5 @@
 #include <Core/CharmConstants.h>
 #include <Core/ControllerInterface.h>
-#include <Core/CommandEmitterInterface.h>
 
 #include "ViewHelpers.h"
 #include "CommandDeleteTask.h"

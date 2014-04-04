@@ -1,5 +1,4 @@
 #include <Core/ControllerInterface.h>
-#include <Core/CommandEmitterInterface.h>
 
 #include "CommandModifyTask.h"
 

@@ -14,7 +14,6 @@
 #include <Core/Dates.h>
 
 #include <QDialogButtonBox>
-#include <QTimer>
 
 #include "ApplicationCore.h"
 #include "ViewHelpers.h"

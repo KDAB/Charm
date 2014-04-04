@@ -1,7 +1,6 @@
 #ifndef CONTROLLER_H
 #define CONTROLLER_H
 
-#include <QTimer>
 #include <QObject>
 
 #include "Task.h"
