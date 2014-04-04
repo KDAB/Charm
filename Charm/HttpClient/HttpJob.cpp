@@ -167,10 +167,9 @@ void HttpJob::passwordRead(QKeychain::Job* j) {
         writeJob->setKey(QLatin1String("lotsofcake"));
         writeJob->setTextData(newpass);
         writeJob->start();
-    } else
+    } else {
         passwordWritten();
-
-
+    }
 }
 
 void HttpJob::passwordWritten()
@@ -181,7 +180,6 @@ void HttpJob::passwordWritten()
     m_dialog->show();
 
     delayedNext();
-
 }
 
 void HttpJob::cancel()
