@@ -111,9 +111,4 @@ bool UploadTimesheetJob::handle(QNetworkReply *reply)
     return true;
 }
 
-QString UploadTimesheetJob::dialogTitle() const
-{
-    return tr("Uploading");
-}
-
 #include "moc_UploadTimesheetJob.cpp"

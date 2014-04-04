@@ -4,11 +4,8 @@
 #include <QDebug>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
-#include <QProgressDialog>
 #include <QSettings>
 #include <QSslError>
-#include <QInputDialog>
-#include <QLineEdit>
 
 #if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
 #include <QUrlQuery>
@@ -44,8 +41,8 @@ HttpJob::HttpJob(QObject* parent)
     , m_password()
     , m_currentState(Ready)
     , m_errorCode(NoError)
-    , m_dialog()
     , m_lastAuthenticationFailed(true)
+    , m_passwordReadError(false)
 {
     connect(m_networkManager, SIGNAL(finished(QNetworkReply *)), SLOT(handle(QNetworkReply *)));
     QSettings settings;
@@ -139,46 +136,44 @@ void HttpJob::passwordRead(QKeychain::Job* j) {
     ReadPasswordJob* job = qobject_cast<ReadPasswordJob*>(j);
     Q_ASSERT(job);
 
-    const bool readError = job->error() != QKeychain::NoError && job->error() != QKeychain::EntryNotFound;
+    m_passwordReadError = job->error() != QKeychain::NoError && job->error() != QKeychain::EntryNotFound;
 
     const QString oldpass = job->error() ? QString() : job->textData();
 
     const bool authenticationFailed = lastAuthenticationFailed();
 
-    QString newpass;
-
-    if (!oldpass.isEmpty() && !authenticationFailed) {
-        newpass = oldpass;
+    if (oldpass.isEmpty() || authenticationFailed) {
+        emit passwordRequested();
+        return;
     } else {
-        bool ok;
-        QPointer<QObject> that( this ); //guard against destruction while dialog is open
-        newpass = QInputDialog::getText(m_parentWidget, tr("Password"), tr("Please enter your lotsofcake password"), QLineEdit::Password, oldpass, &ok);
-        if (!that || !ok) {
-            setErrorAndEmitFinished(Canceled, tr("Canceled"));
-            return;
-        }
+        provideRequestedPassword(oldpass);
     }
+}
 
-    m_password = newpass;
+void HttpJob::provideRequestedPassword(const QString &password)
+{
+    const QString oldpass = m_password;
+    m_password = password;
 
-    if (oldpass != newpass && !readError) {
+    if (oldpass != m_password && !m_passwordReadError) {
         WritePasswordJob* writeJob = new WritePasswordJob(QLatin1String("Charm"), this);
         connect(writeJob, SIGNAL(finished(QKeychain::Job*)), this, SLOT(passwordWritten()));
         writeJob->setKey(QLatin1String("lotsofcake"));
-        writeJob->setTextData(newpass);
+        writeJob->setTextData(m_password);
         writeJob->start();
     } else {
         passwordWritten();
     }
 }
 
+void HttpJob::passwordRequestCanceled()
+{
+    setErrorAndEmitFinished(Canceled, tr("Canceled"));
+}
+
 void HttpJob::passwordWritten()
 {
-    m_dialog = new QProgressDialog(m_parentWidget);
-    m_dialog->setWindowTitle(dialogTitle());
-    m_dialog->setLabelText(tr("Wait..."));
-    m_dialog->show();
-
+    emit transferStarted();
     delayedNext();
 }
 
@@ -291,8 +286,6 @@ void HttpJob::emitFinished()
     else if (m_errorCode == NoError)
         setLastAuthenticationFailed(false);
     m_networkManager->disconnect(this);
-    delete m_dialog;
-    m_dialog = 0;
     emit finished(this);
     deleteLater();
 }
@@ -302,16 +295,6 @@ void HttpJob::setErrorAndEmitFinished(int code, const QString& errorString)
     m_errorCode = code;
     m_errorString = errorString;
     emitFinished();
-}
-
-QWidget* HttpJob::parentWidget() const
-{
-    return m_parentWidget;
-}
-
-void HttpJob::setParentWidget(QWidget* pw)
-{
-    m_parentWidget = pw;
 }
 
 #include "moc_HttpJob.cpp"

@@ -2,9 +2,7 @@
 #define HTTPJOB_H
 
 #include <QObject>
-#include <QPointer>
 #include <QUrl>
-#include <QWidget>
 
 namespace QKeychain {
     class Job;
@@ -50,12 +48,22 @@ public:
 
     void start();
     void cancel();
+    void provideRequestedPassword(const QString &password);
+    void passwordRequestCanceled();
 
-    QWidget* parentWidget() const;
-    void setParentWidget(QWidget* pw);
-
-signals:
+Q_SIGNALS:
     void finished(HttpJob*);
+    /**
+     * the actual communication was started
+     */
+    void transferStarted();
+
+    /**
+     * The job requests the password from the user
+     *
+     * Must be replied to via provideRequestedPassword() or passwordRequestCanceled() to continue.
+     */
+    void passwordRequested();
 
 protected:
 
@@ -70,8 +78,6 @@ protected:
     int state() const;
 
     virtual bool execute(int state, QNetworkAccessManager *manager);
-
-    virtual QString dialogTitle() const = 0;
 
     void emitFinished();
     void setErrorAndEmitFinished(int code, const QString& errorString);
@@ -94,11 +100,10 @@ private:
     int m_currentState;
     int m_errorCode;
     QString m_errorString;
-    QPointer<QWidget> m_parentWidget;
-    QPointer<QProgressDialog> m_dialog;
     QUrl m_loginUrl;
     QUrl m_portalUrl;
     bool m_lastAuthenticationFailed;
+    bool m_passwordReadError;
 };
 
 #endif

@@ -42,6 +42,7 @@ SET(
     Widgets/EventView.cpp
     Widgets/EventWindow.cpp
     Widgets/ExpandStatesHelper.cpp
+    Widgets/HttpJobProgressDialog.cpp
     Widgets/IdleCorrectionDialog.cpp
     Widgets/MessageBox.cpp
     Widgets/MonthlyTimesheet.cpp

@@ -11,6 +11,8 @@
 
 #include "DateEntrySyncer.h"
 #include "HttpClient/UploadTimesheetJob.h"
+#include "Widgets/HttpJobProgressDialog.h"
+
 #include "SelectTaskDialog.h"
 #include "ViewHelpers.h"
 
@@ -266,8 +268,10 @@ void WeeklyTimeSheetReport::setReportProperties(
 void WeeklyTimeSheetReport::slotUploadTimesheet()
 {
     UploadTimesheetJob* client = new UploadTimesheetJob( this );
+    HttpJobProgressDialog* dialog = new HttpJobProgressDialog( client, this );
+    dialog->setWindowTitle( tr("Uploading") );
+
     connect( client, SIGNAL(finished(HttpJob*)), this, SLOT(slotTimesheetUploaded(HttpJob*)) );
-    client->setParentWidget( this );
     client->setFileName( suggestedFileName() );
     client->setPayload( saveToXml() );
     client->start();

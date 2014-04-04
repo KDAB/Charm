@@ -32,6 +32,7 @@
 #include "Commands/CommandImportFromXml.h"
 #include "Idle/IdleDetector.h"
 #include "HttpClient/GetProjectCodesJob.h"
+#include "Widgets/HttpJobProgressDialog.h"
 #include "IdleCorrectionDialog.h"
 #include "ActivityReport.h"
 #include "WeeklyTimesheet.h"
@@ -381,8 +382,9 @@ void TimeTrackingWindow::slotImportFromXml()
 void TimeTrackingWindow::slotSyncTasks()
 {
     GetProjectCodesJob* client = new GetProjectCodesJob( this );
-    client->setParentWidget( this );
-    connect(client, SIGNAL(finished(HttpJob*)), this, SLOT(slotTasksDownloaded(HttpJob*)) );
+    HttpJobProgressDialog* dialog = new HttpJobProgressDialog( client, this );
+    dialog->setWindowTitle( tr("Downloading") );
+    connect( client, SIGNAL(finished(HttpJob*)), this, SLOT(slotTasksDownloaded(HttpJob*)) );
     client->start();
 }
 

@@ -29,8 +29,6 @@ protected:
         GetProjectCodes = HttpJob::Base
     };
 
-    QString dialogTitle() const;
-
 private:
     QByteArray m_payload;
     QUrl m_downloadUrl;
