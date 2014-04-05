@@ -20,15 +20,12 @@ BillDialog::BillDialog( QWidget* parent, Qt::WindowFlags f )
 
     m_asYouWish = new QPushButton("As you wish");
     connect(m_asYouWish, SIGNAL(clicked()), SLOT(slotAsYouWish()));
-    m_alreadyDone = new QPushButton("Already done");
-    connect(m_alreadyDone, SIGNAL(clicked()), SLOT(slotAlreadyDone()));
     m_later = new QPushButton("Later");
     connect(m_later, SIGNAL(clicked()), SLOT(slotLater()));
 
     QVBoxLayout *layout = new QVBoxLayout(this);
     QDialogButtonBox *buttonBox = new QDialogButtonBox();
     buttonBox->addButton(m_asYouWish, QDialogButtonBox::YesRole);
-    buttonBox->addButton(m_alreadyDone, QDialogButtonBox::NoRole);
     buttonBox->addButton(m_later, QDialogButtonBox::RejectRole);
     layout->addWidget(buttonBox, 0, Qt::AlignBottom);
 }
@@ -37,7 +34,6 @@ void BillDialog::setReport(int year, int week)
 {
     m_year = year;
     m_week = week;
-    m_alreadyDone->setText(QString("Already sent Week %1 (%2)").arg(week).arg(year));
 }
 
 int BillDialog::year() const
@@ -53,11 +49,6 @@ int BillDialog::week() const
 void BillDialog::slotAsYouWish()
 {
     done(AsYouWish);
-}
-
-void BillDialog::slotAlreadyDone()
-{
-    done(AlreadyDone);
 }
 
 void BillDialog::slotLater()
