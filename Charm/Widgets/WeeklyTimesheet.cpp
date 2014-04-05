@@ -19,9 +19,6 @@
 #include "ui_WeeklyTimesheetConfigurationDialog.h"
 
 namespace {
-    static const char * SETTING_GRP_TIMESHEETS = "timesheets";
-    static const char * SETTING_VAL_FIRSTYEAR = "firstYear";
-    static const char * SETTING_VAL_FIRSTWEEK = "firstWeek";
     static const int MAX_WEEK = 53;
     static const int MIN_YEAR = 1990;
     static const int DaysInWeek = 7;
@@ -38,48 +35,6 @@ namespace {
         Column_Total,
         NumberOfColumns
     };
-}
-
-void addUploadedTimesheet(int year, int week)
-{
-    Q_ASSERT(year >= MIN_YEAR && week > 0 && week <= MAX_WEEK);
-    QSettings settings;
-    settings.beginGroup(SETTING_GRP_TIMESHEETS);
-    QString yearStr = QString::number(year);
-    QString weekStr = QString::number(week);
-    QStringList existingSheets = settings.value(yearStr).toStringList();
-    if (!existingSheets.contains(weekStr))
-        settings.setValue(yearStr, existingSheets << weekStr);
-    if (settings.value(SETTING_VAL_FIRSTYEAR, QString()).toString().isEmpty())
-        settings.setValue(SETTING_VAL_FIRSTYEAR, yearStr);
-    if (settings.value(SETTING_VAL_FIRSTWEEK, QString()).toString().isEmpty())
-        settings.setValue(SETTING_VAL_FIRSTWEEK, weekStr);
-}
-
-WeeksByYear missingTimeSheets()
-{
-    WeeksByYear missing;
-    QSettings settings;
-    settings.beginGroup(SETTING_GRP_TIMESHEETS);
-    int year = QDateTime::currentDateTime().date().year();
-    int week = QDateTime::currentDateTime().date().weekNumber();
-    int firstYear = settings.value(SETTING_VAL_FIRSTYEAR, year).value<int>();
-    int firstWeek = settings.value(SETTING_VAL_FIRSTWEEK, week).value<int>();
-    for(int iYear = firstYear; iYear <= year; ++iYear)
-    {
-        QStringList uploaded = settings.value(QString::number(iYear)).toStringList();
-        int firstWeekOfYear = iYear == firstYear ? firstWeek : 1;
-        int lastWeekOfYear = iYear == year ? week - 1 : Charm::numberOfWeeksInYear(iYear);
-        for(int iWeek = firstWeekOfYear; iWeek <= lastWeekOfYear; ++iWeek)
-        {
-            if (!uploaded.contains(QString::number(iWeek)))
-            {
-                Q_ASSERT(iYear >= MIN_YEAR && iWeek > 0 && iWeek <= MAX_WEEK);
-                missing[iYear].append(iWeek);
-            }
-        }
-    }
-    return missing;
 }
 
 /************************************************** WeeklyTimesheetConfigurationDialog */
@@ -286,7 +241,6 @@ void WeeklyTimeSheetReport::slotTimesheetUploaded(HttpJob* client)
     }
     else
     {
-        addUploadedTimesheet(m_yearOfWeek, m_weekNumber);
         QMessageBox::information(this, tr("Timesheet Uploaded"), tr("Your timesheet was successfully uploaded."));
     }
 }
