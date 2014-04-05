@@ -38,7 +38,9 @@ SOURCES += \
     Charm/Commands/CommandImportFromXml.cpp \
     Charm/Commands/CommandMakeAndActivateEvent.cpp \
     Charm/HttpClient/HttpJob.cpp \
+    Charm/HttpClient/HttpGetJob.cpp \
     Charm/HttpClient/GetProjectCodesJob.cpp \
+    Charm/HttpClient/GetTimesheetStatusJob.cpp \
     Charm/HttpClient/UploadTimesheetJob.cpp \
     Charm/Idle/IdleDetector.cpp \
     Charm/Widgets/ActivityReport.cpp \

@@ -10,6 +10,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QDir>
+#include <QXmlStreamReader>
 
 #include "Core/TimeSpans.h"
 #include "Core/TaskListMerger.h"
@@ -32,6 +33,7 @@
 #include "Commands/CommandImportFromXml.h"
 #include "Idle/IdleDetector.h"
 #include "HttpClient/GetProjectCodesJob.h"
+#include "HttpClient/GetTimesheetStatusJob.h"
 #include "IdleCorrectionDialog.h"
 #include "ActivityReport.h"
 #include "WeeklyTimesheet.h"
@@ -434,28 +436,72 @@ void TimeTrackingWindow::slotExportTasks()
 
 void TimeTrackingWindow::slotCheckUploadedTimesheets()
 {
-    WeeksByYear missing = missingTimeSheets();
-    if (missing.isEmpty())
+    GetTimesheetStatusJob* client = new GetTimesheetStatusJob( this );
+    client->setSilent( true );
+    client->setParentWidget( this );
+    connect(client, SIGNAL(finished(HttpJob*)), this, SLOT(slotParseTimesheetStatus(HttpJob*)) );
+    client->start();
+}
+
+void TimeTrackingWindow::slotParseTimesheetStatus( HttpJob *job_ )
+{
+    const QDate currentDate = QDate::currentDate();
+    const QDate lastWeekDate = currentDate.addDays(-currentDate.dayOfWeek());
+    const int lastWeekYear = lastWeekDate.year();
+    const int lastWeekNumber = lastWeekDate.weekNumber();
+
+    GetTimesheetStatusJob *job = qobject_cast<GetTimesheetStatusJob *>( job_ );
+    Q_ASSERT( job );
+    if ( job->error() ) {
+        qWarning("Faild to download timesheet status: %s", job->errorString().toLatin1().constData() );
         return;
-    m_checkUploadedSheetsTimer.stop();
-    //The usual case is just one missing week, unless we've been giving Bill a hard time
-    //Perhaps in the future Bill can bug us about more than one report at a time
-    Q_ASSERT(!missing.begin().value().isEmpty());
-    int year = missing.begin().key();
-    int week = missing.begin().value().first();
-    m_billDialog->setReport(year, week);
-    m_billDialog->show();
-    m_billDialog->raise();
-    m_billDialog->activateWindow();
+    }
+
+    QXmlStreamReader xml( job->payload() );
+    while (!xml.atEnd()) {
+        switch (xml.readNext()) {
+        case QXmlStreamReader::StartElement: {
+            const QStringRef token = xml.name();
+            if (token.compare("timesheet") == 0) {
+                const int year =
+                    xml.attributes().value(QLatin1String("year")).toString().toInt();
+                const int week =
+                    xml.attributes().value(QLatin1String("week")).toString().toInt();
+
+                /*
+                 * How Week Comparison Works
+                 *
+                 * Year is offset by two positions allowing us to build a
+                 * unique week identifier by mixing both the year and week
+                 * number.
+                 *
+                 *  E.g. Year 2014 Week 01 => 201401 (LAST WEEK)
+                 *       Year 2013 Week 52 => 201301 (WEEK BEFORE LAST & LAST TIMESHEET)
+                 *
+                 *       We then check if 201301 is lower than 201401, if so,
+                 *       Bill nags Peter.
+                 */
+                if ((year * 100) + week < (lastWeekYear * 100) + lastWeekNumber) {
+                    m_checkUploadedSheetsTimer.stop();
+                    m_billDialog->setReport(lastWeekYear, lastWeekNumber);
+                    m_billDialog->show();
+                    m_billDialog->raise();
+                    m_billDialog->activateWindow();
+                    break;
+                }
+            }
+            } break;
+
+        default: continue;
+        }
+    }
+
 }
 
 void TimeTrackingWindow::slotBillGone(int result)
 {
     switch(result)
     {
-    case BillDialog::AlreadyDone:
-        addUploadedTimesheet( m_billDialog->year(), m_billDialog->week() );
-        break;
     case BillDialog::AsYouWish:
         resetWeeklyTimesheetDialog();
         m_weeklyTimesheetDialog->setDefaultWeek(m_billDialog->year(), m_billDialog->week());

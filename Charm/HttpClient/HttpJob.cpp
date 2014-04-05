@@ -46,6 +46,7 @@ HttpJob::HttpJob(QObject* parent)
     , m_errorCode(NoError)
     , m_dialog()
     , m_lastAuthenticationFailed(true)
+    , m_silent(false)
 {
     connect(m_networkManager, SIGNAL(finished(QNetworkReply *)), SLOT(handle(QNetworkReply *)));
     QSettings settings;
@@ -115,6 +116,16 @@ QString HttpJob::errorString() const
     return m_errorString;
 }
 
+bool HttpJob::isSilent() const
+{
+    return m_silent;
+}
+
+void HttpJob::setSilent(bool silent)
+{
+    m_silent = silent;
+}
+
 void HttpJob::start()
 {
     QMetaObject::invokeMethod(this, "doStart", Qt::QueuedConnection);
@@ -149,7 +160,7 @@ void HttpJob::passwordRead(QKeychain::Job* j) {
 
     if (!oldpass.isEmpty() && !authenticationFailed) {
         newpass = oldpass;
-    } else {
+    } else if (!m_silent) {
         bool ok;
         QPointer<QObject> that( this ); //guard against destruction while dialog is open
         newpass = QInputDialog::getText(m_parentWidget, tr("Password"), tr("Please enter your lotsofcake password"), QLineEdit::Password, oldpass, &ok);
@@ -157,6 +168,9 @@ void HttpJob::passwordRead(QKeychain::Job* j) {
             setErrorAndEmitFinished(Canceled, tr("Canceled"));
             return;
         }
+    } else {
+        setErrorAndEmitFinished(Canceled, tr("Canceled Silently"));
+        return;
     }
 
     m_password = newpass;
@@ -178,10 +192,8 @@ void HttpJob::passwordWritten()
     m_dialog = new QProgressDialog(m_parentWidget);
     m_dialog->setWindowTitle(dialogTitle());
     m_dialog->setLabelText(tr("Wait..."));
-    m_dialog->show();
-
+    if (!m_silent) m_dialog->show();
     delayedNext();
-
 }
 
 void HttpJob::cancel()

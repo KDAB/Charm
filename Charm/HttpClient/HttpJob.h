@@ -18,6 +18,7 @@ class QSslError;
 class HttpJob : public QObject
 {
     Q_OBJECT
+    Q_DISABLE_COPY(HttpJob)
 public:
 
     static bool credentialsAvailable();
@@ -47,6 +48,9 @@ public:
 
     QString errorString() const;
     int error() const;
+
+    bool isSilent() const;
+    void setSilent(bool silent);
 
     void start();
     void cancel();
@@ -99,6 +103,7 @@ private:
     QUrl m_loginUrl;
     QUrl m_portalUrl;
     bool m_lastAuthenticationFailed;
+    bool m_silent;
 };
 
 #endif
