@@ -35,26 +35,4 @@ void CharmReport::makeReportPreviewWindow()
     }
 }
 
-int pointSize( double relSize, float scale )
-{
-    return static_cast<int>( relSize * scale );
-}
-
-bool StartsEarlier( EventId firstId, EventId secondId )
-{
-    const Event& first = DATAMODEL->eventForId( firstId );
-    const Event& second = DATAMODEL->eventForId( secondId );
-    return first.startDateTime() < second.startDateTime();
-}
-
-bool isIndirectParent( const Task& p, const Task& c )
-{
-    if ( c.parent() == p.id() ) return true;
-    if ( c.parent() == 0 ) return false;
-    if ( p.parent() == 0 ) return false;
-
-    const TaskTreeItem& item = DATAMODEL->taskTreeItem( p.parent() );
-    return isIndirectParent( item.task(), p );
-}
-
 #include "moc_CharmReport.cpp"
