@@ -4,6 +4,7 @@
 #include <Core/Task.h>
 
 #include "ReportPreviewWindow.h"
+#include "Reports/TimesheetInfo.h"
 
 class TimeSheetReport : public ReportPreviewWindow
 {
@@ -17,8 +18,6 @@ public:
                                       const QDate& end,
                                       TaskId rootTask,
                                       bool activeTasksOnly );
-
-    typedef QMap< TaskId, QVector<int> > SecondsMap;
 
 protected:
 
@@ -41,7 +40,7 @@ protected:
     inline bool activeTasksOnly() const
         { return m_activeTasksOnly; }
 
-    inline SecondsMap & secondsMap()
+    inline SecondsMap  secondsMap() const
         { return m_secondsMap; }
 
     QString getFileName( const QString& filter );
@@ -60,29 +59,6 @@ private:
     TaskId m_rootTask;
     bool m_activeTasksOnly;
     SecondsMap m_secondsMap;
-};
-
-class TimeSheetInfo;
-typedef QList<TimeSheetInfo> TimeSheetInfoList;
-
-class TimeSheetInfo
-{
-public:
-    TimeSheetInfo(int segments);
-    int total() const;
-    void dump();
-
-public:
-    static TimeSheetInfoList taskWithSubTasks( int segments, TaskId id, const TimeSheetReport::SecondsMap& secondsMap, TimeSheetInfo* addTo = 0 );
-    static TimeSheetInfoList filteredTaskWithSubTasks( TimeSheetInfoList timeSheetInfo, bool activeTasksOnly );
-
-public:
-    // the level of indentation, >0 means the numbers are aggregated for the subtasks:
-    int indentation;
-    QString taskname;
-    QVector<int> seconds;
-    TaskId taskId;
-    bool aggregated;
 };
 
 #endif

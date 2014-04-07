@@ -41,6 +41,9 @@ SOURCES += \
     Charm/HttpClient/GetProjectCodesJob.cpp \
     Charm/HttpClient/UploadTimesheetJob.cpp \
     Charm/Idle/IdleDetector.cpp \
+    Charm/Reports/MonthlyTimesheetXmlWriter.cpp \
+    Charm/Reports/TimesheetInfo.cpp \
+    Charm/Reports/WeeklyTimesheetXmlWriter.cpp \
     Charm/Widgets/ActivityReport.cpp \
     Charm/Widgets/BillDialog.cpp \
     Charm/Widgets/CharmPreferences.cpp \
@@ -97,6 +100,9 @@ HEADERS += \
     Charm/GUIState.h \
     Charm/UndoCharmCommandWrapper.h \
     Charm/ViewFilter.h \
+    Charm/Reports/MonthlyTimesheetXmlWriter.h \
+    Charm/Reports/TimesheetInfo.h \
+    Charm/Reports/WeeklyTimesheetXmlWriter.h \
     Charm/Widgets/TasksViewDelegate.h \
     Charm/Widgets/IdleCorrectionDialog.h \
     Charm/Widgets/Timesheet.h \

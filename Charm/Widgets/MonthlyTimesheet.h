@@ -19,8 +19,6 @@ public:
                               TaskId rootTask,
                               bool activeTasksOnly );
 
-    typedef QMap< TaskId, QVector<int> > SecondsMap;
-
 private: // reimpl
     QString suggestedFileName() const;
     void update();

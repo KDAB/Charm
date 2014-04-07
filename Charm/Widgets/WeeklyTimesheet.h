@@ -62,8 +62,6 @@ public:
                               TaskId rootTask,
                               bool activeTasksOnly );
 
-    typedef QMap< TaskId, QVector<int> > SecondsMap;
-
 private slots:
     void slotUploadTimesheet();
     void slotTimesheetUploaded(HttpJob*);

@@ -1,4 +1,5 @@
 #include "WeeklyTimesheet.h"
+#include "Reports/WeeklyTimesheetXmlWriter.h"
 
 #include <QCalendarWidget>
 #include <QFile>
@@ -7,7 +8,6 @@
 #include <QSettings>
 
 #include <Core/Dates.h>
-#include <Core/XmlSerialization.h>
 
 #include "DateEntrySyncer.h"
 #include "HttpClient/UploadTimesheetJob.h"
@@ -15,8 +15,6 @@
 
 #include "SelectTaskDialog.h"
 #include "ViewHelpers.h"
-
-#include "CharmCMake.h"
 
 #include "ui_WeeklyTimesheetConfigurationDialog.h"
 
@@ -354,7 +352,7 @@ void WeeklyTimeSheetReport::update()
         // retrieve the information for the report:
         // TimeSheetInfoList timeSheetInfo = taskWithSubTasks( rootTask(), secondsMap() );
         TimeSheetInfoList timeSheetInfo = TimeSheetInfo::filteredTaskWithSubTasks(
-            TimeSheetInfo::taskWithSubTasks( DaysInWeek, rootTask(), secondsMap() ),
+            TimeSheetInfo::taskWithSubTasks( DATAMODEL, DaysInWeek, rootTask(), secondsMap() ),
             activeTasksOnly() );
 
         QDomElement table = doc.createElement( "table" );
@@ -495,119 +493,19 @@ void WeeklyTimeSheetReport::update()
 QByteArray WeeklyTimeSheetReport::saveToXml()
 {
     try {
-        // now create the report:
-        QDomDocument document = XmlSerialization::createXmlTemplate( "weekly-timesheet" );
+        WeeklyTimesheetXmlWriter timesheet;
+        timesheet.setDataModel( DATAMODEL );
+        timesheet.setYear( m_yearOfWeek );
+        timesheet.setWeekNumber( m_weekNumber );
+        timesheet.setRootTask( rootTask() );
+        const EventIdList matchingEventIds = DATAMODEL->eventsThatStartInTimeFrame( startDate(), endDate() );
+        EventList events;
+        events.reserve( matchingEventIds.size() );
+        Q_FOREACH ( const EventId& id, matchingEventIds )
+            events.append( DATAMODEL->eventForId( id ) );
+        timesheet.setEvents( events );
 
-        // find metadata and report element:
-        QDomElement root = document.documentElement();
-        QDomElement metadata = XmlSerialization::metadataElement( document );
-        QDomElement charmVersion = document.createElement( "charmversion" );
-        QDomText charmVersionString = document.createTextNode( CHARM_VERSION );
-        charmVersion.appendChild( charmVersionString );
-        metadata.appendChild( charmVersion );
-        QDomElement report = XmlSerialization::reportElement( document );
-        Q_ASSERT( !root.isNull() && !metadata.isNull() && !report.isNull() );
-
-        // extend metadata tag: add year, and serial (week) number:
-        {
-            QDomElement yearElement = document.createElement( "year" );
-            metadata.appendChild( yearElement );
-            QDomText text = document.createTextNode( QString::number( m_yearOfWeek ) );
-            yearElement.appendChild( text );
-            QDomElement weekElement = document.createElement( "serial-number" );
-            weekElement.setAttribute( "semantics", "week-number" );
-            metadata.appendChild( weekElement );
-            QDomText weektext = document.createTextNode( QString::number( m_weekNumber ) );
-            weekElement.appendChild( weektext );
-        }
-
-        SecondsMap m_secondsMap;
-        TimeSheetInfoList timeSheetInfo = TimeSheetInfo::filteredTaskWithSubTasks(
-            TimeSheetInfo::taskWithSubTasks( DaysInWeek, rootTask(), m_secondsMap ),
-            false ); // here, we don't care about active or not, because we only report on the tasks
-
-        // extend report tag: add tasks and effort structure
-        {   // tasks
-            QDomElement tasks = document.createElement( "tasks" );
-            report.appendChild( tasks );
-            Q_FOREACH( TimeSheetInfo info, timeSheetInfo ) {
-                if ( info.taskId == 0 ) // the root task
-                    continue;
-                const Task& modelTask = DATAMODEL->getTask( info.taskId );
-                tasks.appendChild( modelTask.toXml( document ) );
-//             TaskId parentTask = DATAMODEL->parentItem( modelTask ).task().id();
-//             QDomElement task = document.createElement( "task" );
-//             task.setAttribute( "taskid", QString::number( info.taskId ) );
-//             if ( parentTask != 0 )
-//                 task.setAttribute( "parent", QString::number( parentTask ) );
-
-//             QDomText name = document.createTextNode( modelTask.name() );
-//             task.appendChild( name );
-//             tasks.appendChild( task );
-            }
-        }
-        {   // effort
-            // make effort element:
-            QDomElement effort = document.createElement( "effort" );
-            report.appendChild( effort );
-
-            // retrieve it:
-            EventIdList matchingEvents = DATAMODEL->eventsThatStartInTimeFrame( startDate(), endDate() );
-            // aggregate (group by task and day):
-            typedef QPair<TaskId, QDate> Key;
-            QMap< Key, Event> events;
-            Q_FOREACH( EventId id, matchingEvents ) {
-                const Event& event = DATAMODEL->eventForId( id );
-                TimeSheetInfoList::iterator it;
-                for ( it = timeSheetInfo.begin(); it != timeSheetInfo.end(); ++it )
-                    if ( ( *it ).taskId == event.taskId() ) break;
-                if ( it == timeSheetInfo.end() )
-                    continue;
-                Key key( event.taskId(), event.startDateTime().date() );
-                if ( events.contains( key ) ) {
-                    // add to previous events:
-                    const Event& oldEvent = events[key];
-                    const int seconds = oldEvent.duration() + event.duration();
-                    const QDateTime start = oldEvent.startDateTime();
-                    const QDateTime end( start.addSecs( seconds ) );
-                    Q_ASSERT( start.secsTo( end ) == seconds );
-                    Event newEvent( oldEvent );
-                    newEvent.setStartDateTime( start );
-                    newEvent.setEndDateTime( end );
-                    Q_ASSERT( newEvent.duration() == seconds );
-                    QString comment = oldEvent.comment();
-                    if ( ! event.comment().isEmpty() ) {
-                        if ( !comment.isEmpty() ) { // make separator
-                            comment += " / ";
-                        }
-                        comment += event.comment();
-                        newEvent.setComment( comment );
-                    }
-                    events[key] = newEvent;
-                } else {
-                    // add this event:
-                    events[key] = event;
-                    events[key].setId( -events[key].id() ); // "synthetic" :-)
-                    // move to start at midnight in UTC (for privacy reasons)
-                    // never, never, never use setTime() here, it breaks on DST changes! (twice a year)
-                    QDateTime start( event.startDateTime().date(), QTime(0, 0, 0, 0), Qt::UTC );
-                    QDateTime end( start.addSecs( event.duration() ) );
-                    events[key].setStartDateTime( start );
-                    events[key].setEndDateTime( end );
-                    Q_ASSERT( events[key].duration() == event.duration() );
-                    Q_ASSERT( start.time() == QTime(0, 0, 0, 0) );
-                }
-            }
-            // create elements:
-            Q_FOREACH( const Event & event, events ) {
-                effort.appendChild( event.toXml( document ) );
-            }
-        }
-
-//     qDebug() << "WeeklyTimeSheetReport::slotSaveToXml: generated XML:" << endl
-//              << document.toString( 4 );
-//
-        return document.toByteArray( 4 );
+        return timesheet.saveToXml();
     } catch ( const XmlSerializationException& e ) {
         QMessageBox::critical( this, tr( "Error exporting the report" ), e.what() );
     }
@@ -627,7 +525,7 @@ QByteArray WeeklyTimeSheetReport::saveToText()
     stream << content << '\n';
     stream << '\n';
     TimeSheetInfoList timeSheetInfo = TimeSheetInfo::filteredTaskWithSubTasks(
-        TimeSheetInfo::taskWithSubTasks( DaysInWeek, rootTask(), secondsMap() ),
+        TimeSheetInfo::taskWithSubTasks( DATAMODEL, DaysInWeek, rootTask(), secondsMap() ),
         activeTasksOnly() );
 
     TimeSheetInfo totalsLine( DaysInWeek );
