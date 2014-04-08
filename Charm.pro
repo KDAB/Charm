@@ -48,6 +48,7 @@ SOURCES += \
     Charm/Widgets/CharmWindow.cpp \
     Charm/Widgets/CharmAboutDialog.cpp \
     Charm/Widgets/ConfigurationDialog.cpp \
+    Charm/Widgets/HttpJobProgressDialog.cpp \
     Charm/Widgets/DateEntrySyncer.cpp \
     Charm/Widgets/EnterVacationDialog.cpp \
     Charm/Widgets/EventEditor.cpp \
@@ -125,6 +126,7 @@ HEADERS += \
     Charm/Widgets/EventWindow.h \
     Charm/Widgets/EventView.h \
     Charm/Widgets/ConfigurationDialog.h \
+    Charm/Widgets/HttpJobProgressDialog.h \
     Charm/Widgets/ReportPreviewWindow.h \
     Charm/Widgets/BillDialog.h \
     Charm/Widgets/CharmAboutDialog.h \
