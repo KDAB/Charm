@@ -68,7 +68,7 @@ QByteArray MonthlyTimeSheetReport::saveToText()
     }
 
     for ( int i = 0; i < timeSheetInfo.size(); ++i ) {
-        stream << timeSheetInfo[i].taskname << "\t" << hoursAndMinutes( timeSheetInfo[i].total() ) << '\n';
+        stream << timeSheetInfo[i].formattedTaskIdAndName( CONFIGURATION.taskPaddingLength ) << "\t" << hoursAndMinutes( timeSheetInfo[i].total() ) << '\n';
     }
     stream << '\n';
     stream << "Month total: " << hoursAndMinutes( totalsLine.total() ) << '\n';
@@ -226,7 +226,7 @@ void MonthlyTimeSheetReport::update()
                 row.setAttribute( "class", "alternate_row" );
             table.appendChild( row );
 
-            QDomElement taskCell = addTblCell( row, timeSheetInfo[i].taskname );
+            QDomElement taskCell = addTblCell( row, timeSheetInfo[i].formattedTaskIdAndName( CONFIGURATION.taskPaddingLength ) );
             taskCell.setAttribute( "align", "left" );
             taskCell.setAttribute( "style", QString( "text-indent: %1px;" )
                                             .arg( 9 * timeSheetInfo[i].indentation ) );

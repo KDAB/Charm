@@ -21,7 +21,13 @@ int TimeSheetInfo::total() const
 
 void TimeSheetInfo::dump()
 {
-    qDebug() << "TimeSheetInfo: (" << indentation << ")" << taskname << ":" << seconds << "-" << total() << "total";
+    qDebug() << "TimeSheetInfo: (" << indentation << ")" << formattedTaskIdAndName( 6 ) << ":" << seconds << "-" << total() << "total";
+}
+
+QString TimeSheetInfo::formattedTaskIdAndName( int taskPaddingLength ) const
+{
+    const QString formattedId = QString::fromLatin1( "%1" ).arg( taskId, taskPaddingLength, 10, QChar( '0' ) );
+    return QString::fromLatin1("%1: %2").arg( formattedId, taskName );
 }
 
 // make the list, aggregate the seconds in the subtask:
@@ -42,13 +48,9 @@ TimeSheetInfoList TimeSheetInfo::taskWithSubTasks( const CharmDataModel* dataMod
         if ( secondsMap.contains( id ) ) {
             myInformation.seconds = secondsMap.value(id);
         }
-        // add name:
-        QTextStream stream( &myInformation.taskname );
-        stream << QString("%1" ).arg(
-            item.task().id(),
-            6, //default padding length
-            10, QChar( '0' ) )
-               << ": " << item.task().name();
+        // add name and id:
+        myInformation.taskId = item.task().id();
+        myInformation.taskName = item.task().name();
 
         if ( addTo != 0 ) {
             myInformation.indentation = addTo->indentation + 1;
