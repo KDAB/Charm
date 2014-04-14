@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include <QDomDocument>
+#include <QScopedPointer>
 #include <QTextDocument>
 
 namespace Ui {
@@ -21,10 +22,10 @@ public:
 
 protected:
     void setDocument( const QTextDocument* document );
-    QDomDocument createReportTemplate();
-    QPushButton* saveToXmlButton();
-    QPushButton* saveToTextButton();
-    QPushButton* uploadButton();
+    QDomDocument createReportTemplate() const;
+    QPushButton* saveToXmlButton() const;
+    QPushButton* saveToTextButton() const;
+    QPushButton* uploadButton() const;
 
 private slots:
     virtual void slotSaveToXml();
@@ -34,8 +35,8 @@ private slots:
     virtual void slotClose();
 
 private:
-    Ui::ReportPreviewWindow* m_ui;
-    QTextDocument* m_document;
+    QScopedPointer<Ui::ReportPreviewWindow> m_ui;
+    QScopedPointer<QTextDocument> m_document;
 };
 
 #endif

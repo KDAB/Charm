@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include <QHash>
+#include <QScopedPointer>
 #include <QSortFilterProxyModel>
 
 #include "ViewFilter.h"
@@ -52,7 +53,7 @@ private:
     bool isValidAndTrackable( const QModelIndex& index ) const;
 
 private:
-    Ui::SelectTaskDialog* m_ui;
+    QScopedPointer<Ui::SelectTaskDialog> m_ui;
     TaskId m_selectedTask;
     SelectTaskDialogProxy m_proxy;
     QHash<TaskId,bool> m_expansionStates;

@@ -20,7 +20,7 @@
 
 TaskEditor::TaskEditor( QWidget* parent )
     : QDialog( parent )
-    , m_ui( new Ui::TaskEditor() )
+    , m_ui( new Ui::TaskEditor )
 {
     m_ui->setupUi( this );
     m_ui->dateEditFrom->calendarWidget()->setFirstDayOfWeek( Qt::Monday );
@@ -41,7 +41,6 @@ TaskEditor::TaskEditor( QWidget* parent )
 
 TaskEditor::~TaskEditor()
 {
-    delete m_ui; m_ui = 0;
 }
 
 void TaskEditor::setTask( const Task& task )

@@ -12,7 +12,7 @@
 ReportPreviewWindow::ReportPreviewWindow( QWidget* parent )
     : QDialog( parent )
     , m_ui( new Ui::ReportPreviewWindow )
-    , m_document( 0 )
+    , m_document()
 {
     m_ui->setupUi( this );
     setAttribute( Qt::WA_DeleteOnClose );
@@ -35,24 +35,21 @@ ReportPreviewWindow::ReportPreviewWindow( QWidget* parent )
 
 ReportPreviewWindow::~ReportPreviewWindow()
 {
-    delete m_document; m_document = 0;
-    delete m_ui; m_ui = 0;
 }
 
 void ReportPreviewWindow::setDocument( const QTextDocument* document )
 {
     if ( document != 0 ) {
         // we keep a copy, to be able to show different versions of the same document
-        m_document = document->clone();
-        m_ui->textBrowser->setDocument( m_document );
+        m_document.reset( document->clone() );
+        m_ui->textBrowser->setDocument( m_document.data() );
     } else {
         m_ui->textBrowser->setDocument( 0 );
-        delete m_document;
-        m_document = 0;
+        m_document.reset();
     }
 }
 
-QDomDocument ReportPreviewWindow::createReportTemplate()
+QDomDocument ReportPreviewWindow::createReportTemplate() const
 {
     // create XHTML v1.0 structure:
     QDomDocument doc( "html" );
@@ -72,17 +69,17 @@ QDomDocument ReportPreviewWindow::createReportTemplate()
     return doc;
 }
 
-QPushButton* ReportPreviewWindow::saveToXmlButton()
+QPushButton* ReportPreviewWindow::saveToXmlButton() const
 {
     return m_ui->pushButtonSave;
 }
 
-QPushButton* ReportPreviewWindow::saveToTextButton()
+QPushButton* ReportPreviewWindow::saveToTextButton() const
 {
     return m_ui->pushButtonSaveTotals;
 }
 
-QPushButton* ReportPreviewWindow::uploadButton()
+QPushButton* ReportPreviewWindow::uploadButton() const
 {
     return m_ui->pushButtonUpload;
 }

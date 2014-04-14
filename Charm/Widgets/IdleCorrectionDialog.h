@@ -2,6 +2,7 @@
 #define IDLECORRECTIONDIALOG_H
 
 #include <QDialog>
+#include <QScopedPointer>
 
 namespace Ui {
     class IdleCorrectionDialog;
@@ -21,10 +22,10 @@ public:
     explicit IdleCorrectionDialog( QWidget* parent = 0 );
     ~IdleCorrectionDialog();
 
-    Result result();
+    Result result() const;
 
 private:
-    Ui::IdleCorrectionDialog* m_ui;
+    QScopedPointer<Ui::IdleCorrectionDialog> m_ui;
 };
 
 #endif

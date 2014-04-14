@@ -21,11 +21,11 @@
 
 EventEditor::EventEditor( const Event& event, QWidget* parent )
     : QDialog( parent )
+    , m_ui( new Ui::EventEditor )
     , m_event( event )
     , m_updating( false )
     , m_endDateChanged( true )
 {
-    m_ui = new Ui::EventEditor();
     m_ui->setupUi( this );
     m_ui->dateEditEnd->calendarWidget()->setFirstDayOfWeek( Qt::Monday );
     m_ui->dateEditEnd->calendarWidget()->setVerticalHeaderFormat( QCalendarWidget::ISOWeekNumbers );
@@ -82,7 +82,6 @@ EventEditor::EventEditor( const Event& event, QWidget* parent )
 
 EventEditor::~EventEditor()
 {
-    delete m_ui; m_ui = 0;
 }
 
 void EventEditor::accept()

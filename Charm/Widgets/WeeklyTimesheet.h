@@ -7,6 +7,8 @@
 #include "Timesheet.h"
 #include "ReportConfigurationDialog.h"
 
+#include <QScopedPointer>
+
 namespace Ui {
     class WeeklyTimesheetConfigurationDialog;
 }
@@ -41,7 +43,7 @@ private slots:
     void slotSelectTask();
 
 private:
-    Ui::WeeklyTimesheetConfigurationDialog* m_ui;
+    QScopedPointer<Ui::WeeklyTimesheetConfigurationDialog> m_ui;
     QList<NamedTimeSpan> m_weekInfo;
     TaskId m_rootTask;
 };

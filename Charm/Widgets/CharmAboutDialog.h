@@ -2,6 +2,7 @@
 #define CHARMABOUTDIALOG_H
 
 #include <QDialog>
+#include <QScopedPointer>
 
 namespace Ui {
     class CharmAboutDialog;
@@ -16,7 +17,7 @@ public:
     ~CharmAboutDialog();
 
 private:
-    Ui::CharmAboutDialog* m_ui;
+    QScopedPointer<Ui::CharmAboutDialog> m_ui;
 };
 
 #endif

@@ -7,6 +7,8 @@
 #include "ReportConfigurationDialog.h"
 #include "ReportPreviewWindow.h"
 
+#include <QScopedPointer>
+
 namespace Ui {
     class ActivityReportConfigurationDialog;
 }
@@ -36,7 +38,7 @@ private slots:
 private:
     bool selectTask(TaskId& task);
 
-    Ui::ActivityReportConfigurationDialog* m_ui;
+    QScopedPointer<Ui::ActivityReportConfigurationDialog> m_ui;
     QList<NamedTimeSpan> m_timespans;
     TaskId m_rootTask;
     TaskId m_rootExcludeTask;

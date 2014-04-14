@@ -12,6 +12,8 @@
 
 #include "Core/Task.h"
 
+#include <QScopedPointer>
+
 namespace Ui {
     class TaskEditor;
 }
@@ -36,7 +38,7 @@ private Q_SLOTS:
 private:
     void checkInvariants();
 
-    Ui::TaskEditor* m_ui;
+    QScopedPointer<Ui::TaskEditor> m_ui;
     mutable Task m_task;
 };
 

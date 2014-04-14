@@ -6,6 +6,8 @@
 
 #include "ReportConfigurationDialog.h"
 
+#include <QScopedPointer>
+
 namespace Ui { class MonthlyTimesheetConfigurationDialog; }
 
 class MonthlyTimesheetConfigurationDialog : public ReportConfigurationDialog
@@ -30,7 +32,7 @@ private slots:
     void slotSelectTask();
 
 private:
-    Ui::MonthlyTimesheetConfigurationDialog* m_ui;
+    QScopedPointer<Ui::MonthlyTimesheetConfigurationDialog> m_ui;
     QList<NamedTimeSpan> m_monthInfo;
     TaskId m_rootTask;
 };

@@ -102,7 +102,6 @@ EnterVacationDialog::EnterVacationDialog( QWidget* parent )
 
 EnterVacationDialog::~EnterVacationDialog()
 {
-    delete m_ui;
 }
 
 void EnterVacationDialog::createEvents()

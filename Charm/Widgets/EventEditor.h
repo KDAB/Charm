@@ -9,6 +9,7 @@
 #define EVENTEDITOR_H_
 
 #include <QDialog>
+#include <QScopedPointer>
 
 #include "Core/Event.h"
 
@@ -46,7 +47,7 @@ private:
     void updateEndTime();
     void updateValues( bool all = false );
 
-    Ui::EventEditor* m_ui;
+    QScopedPointer<Ui::EventEditor> m_ui;
     Event m_event;
     bool m_updating;
     bool m_endDateChanged;

@@ -6,6 +6,8 @@
 #include "Core/Event.h"
 #include "Core/Task.h"
 
+#include <QScopedPointer>
+
 namespace Ui {
     class EnterVacationDialog;
 }
@@ -28,7 +30,7 @@ private slots:
     void updateButtonStates();
 
 private:
-    Ui::EnterVacationDialog* m_ui;
+    QScopedPointer<Ui::EnterVacationDialog> m_ui;
     TaskId m_selectedTaskId;
     EventList m_events;
 };
