@@ -16,19 +16,6 @@ class QToolButton;
 class QTextEdit;
 class QToolBar;
 
-class CommentEditorPopup : public QDialog {
-    Q_OBJECT
-public:
-    explicit CommentEditorPopup( QWidget* parent=0 );
-
-public Q_SLOTS:
-    void accept();
-
-private:
-    QTextEdit* m_edit;
-    EventId m_id;
-};
-
 class TimeTrackingTaskSelector : public QWidget
 {
     Q_OBJECT

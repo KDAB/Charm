@@ -16,45 +16,9 @@
 #include "ViewHelpers.h"
 #include "SelectTaskDialog.h"
 #include "TimeTrackingTaskSelector.h"
+#include "CommentEditorPopup.h"
 
 #define CUSTOM_TASK_PROPERTY_NAME "CUSTOM_TASK_PROPERTY"
-
-CommentEditorPopup::CommentEditorPopup( QWidget* parent )
-    : QDialog( parent )
-    , m_edit( new QTextEdit )
-{
-    setWindowModality( Qt::WindowModal );
-    setWindowTitle( tr("Comment Event") );
-    const EventIdList events = DATAMODEL->activeEvents();
-    Q_ASSERT( events.size() == 1 );
-    m_id = events.first();
-    QVBoxLayout* layout = new QVBoxLayout( this );
-    m_edit->setTabChangesFocus( true );
-    m_edit->setPlainText( DATAMODEL->eventForId( m_id ).comment() );
-    layout->addWidget( m_edit );
-    QDialogButtonBox* box = new QDialogButtonBox;
-    box->setStandardButtons( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
-    box->button( QDialogButtonBox::Ok )->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_Return ) );
-    connect( box, SIGNAL(accepted()), this, SLOT(accept()) );
-    connect( box, SIGNAL(rejected()), this, SLOT(reject()) );
-    layout->addWidget( box );
-    m_edit->setFocus( Qt::TabFocusReason );
-}
-
-void CommentEditorPopup::accept() {
-    const QString t = m_edit->toPlainText();
-    Event event = DATAMODEL->eventForId( m_id );
-    if ( event.isValid() ) {
-        event.setComment( t );
-        DATAMODEL->modifyEvent( event );
-    } else { // event already gone? should never happen, but you never know
-        QPointer<QObject> that( this );
-        QMessageBox::critical( this, tr("Error"), tr("Could not save the comment, the edited event was deleted in the meantime."), QMessageBox::Ok );
-        if ( !that ) // in case the popup was deleted while the msg box was open
-            return;
-    }
-    QDialog::accept();
-}
 
 TimeTrackingTaskSelector::TimeTrackingTaskSelector(QWidget *parent)
     : QWidget(parent)
@@ -204,9 +168,11 @@ void TimeTrackingTaskSelector::populate( const QVector<WeeklySummary>& summaries
 }
 
 void TimeTrackingTaskSelector::slotEditCommentClicked() {
-    QPointer<CommentEditorPopup> popup( new CommentEditorPopup( this ) );
-    popup->exec();
-    delete popup;
+    const EventIdList events = DATAMODEL->activeEvents();
+    Q_ASSERT( events.size() == 1 );
+    CommentEditorPopup popup;
+    popup.loadEvent( events.first() );
+    popup.exec();
 }
 
 void TimeTrackingTaskSelector::handleActiveEvents()

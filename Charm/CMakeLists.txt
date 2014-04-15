@@ -37,6 +37,7 @@ SET(
     Widgets/CharmReport.cpp
     Widgets/CharmWindow.cpp
     Widgets/CharmAboutDialog.cpp
+    Widgets/CommentEditorPopup.cpp
     Widgets/ConfigurationDialog.cpp
     Widgets/DateEntrySyncer.cpp
     Widgets/EnterVacationDialog.cpp
@@ -123,6 +124,7 @@ ENDIF()
 
 QT_WRAP_UI(
     UiGenerated_SRCS
+    Widgets/CommentEditorPopup.ui
     Widgets/ConfigurationDialog.ui
     Widgets/CharmPreferences.ui
     Widgets/TaskIdDialog.ui
