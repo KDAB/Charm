@@ -14,7 +14,7 @@ CharmPreferences::CharmPreferences( const Configuration& config,
     m_ui.setupUi( this );
     const bool haveIdleDetection = ApplicationCore::instance().idleDetector()->available();
     m_ui.cbIdleDetection->setEnabled( haveIdleDetection );
-    m_ui.labelIdleDetection->setEnabled( haveIdleDetection );
+    m_ui.lbIdleDetection->setEnabled( haveIdleDetection );
     m_ui.cbIdleDetection->setChecked( config.detectIdling && m_ui.cbIdleDetection->isEnabled() );
     m_ui.cbWarnUnuploadedTimesheets->setChecked( config.warnUnuploadedTimesheets );
 
