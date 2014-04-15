@@ -61,7 +61,6 @@ public:
     DateChangeWatcher* dateChangeWatcher() const;
 
     IdleDetector* idleDetector();
-
     State state() const;
 
     void createWindowMenu( QMenuBar *menuBar );

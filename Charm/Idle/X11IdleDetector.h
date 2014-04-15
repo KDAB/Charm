@@ -13,7 +13,7 @@ public:
     static bool idleCheckPossible();
 
 protected:
-    void idlenessDurationChanged();
+    void onIdlenessDurationChanged();
 
 private slots:
     void checkIdleness();

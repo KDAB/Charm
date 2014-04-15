@@ -28,7 +28,7 @@ X11IdleDetector::X11IdleDetector( QObject* parent )
     m_heartbeat = QDateTime::currentDateTime();
 }
 
-void X11IdleDetector::idlenessDurationChanged()
+void X11IdleDetector::onIdlenessDurationChanged()
 {
     m_timer.stop();
     m_timer.start( idlenessDuration() * 1000 / 5 );

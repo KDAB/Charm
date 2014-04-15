@@ -13,6 +13,7 @@
 class HttpJob;
 class CharmCommand;
 class TimeTrackingView;
+class IdleDetector;
 class ReportConfigurationDialog;
 class WeeklyTimesheetConfigurationDialog;
 class MonthlyTimesheetConfigurationDialog;
@@ -63,7 +64,7 @@ public slots:
     void slotSyncTasks();
     void slotImportTasks();
     void slotExportTasks();
-    void maybeIdle();
+    void maybeIdle( IdleDetector* idleDetector );
     void slotTasksDownloaded( HttpJob* );
 
 protected:

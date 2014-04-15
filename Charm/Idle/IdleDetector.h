@@ -10,18 +10,20 @@
  * Idle detection is (as of now) platform dependant. The factory
  * function createIdleDetector returns an implementation that
  * implements idle detection for the current platform. If idle
- * detection is not supported, a null pointer is returned.
+ * detection is not supported, a dummy object is returned,
+ * with @c available being false.
  */
 class IdleDetector : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(bool available READ available NOTIFY availableChanged)
+    Q_PROPERTY(int idlenessDuration READ idlenessDuration WRITE setIdlenessDuration NOTIFY idlenessDurationChanged)
 
 public:
     typedef QPair<QDateTime, QDateTime> IdlePeriod;
     typedef QVector<IdlePeriod> IdlePeriods;
 
-    /** Create an idle detector for this platform.
-     * Returns 0 if idle detection is not available. */
+    /** Create an idle detector for this platform. */
     static IdleDetector* createIdleDetector( QObject* parent );
 
     /** Returns the idle periods. */
@@ -37,18 +39,27 @@ public:
     int idlenessDuration() const;
     void setIdlenessDuration( int seconds );
 
-protected:
-    virtual void idlenessDurationChanged() {}
-    explicit IdleDetector( QObject* parent = 0 );
-    virtual ~IdleDetector() {}
-    void maybeIdle( IdlePeriod period );
+    /**
+     * Returns whether idle detection is available
+     */
+    bool available() const;
+
 
 Q_SIGNALS:
     void maybeIdle();
+    void idlenessDurationChanged( int idlenessDuration );
+    void availableChanged( bool available );
+
+protected:
+    virtual void onIdlenessDurationChanged() {}
+    explicit IdleDetector( QObject* parent = 0 );
+    void maybeIdle( IdlePeriod period );
+    void setAvailable( bool available );
 
 private:
     IdlePeriods m_idlePeriods;
     int m_idlenessDuration;
+    bool m_available;
 };
 
 #endif

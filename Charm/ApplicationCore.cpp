@@ -201,12 +201,8 @@ ApplicationCore::ApplicationCore( QObject* parent )
 
     // set up idle detection
     m_idleDetector = IdleDetector::createIdleDetector( this );
-    if ( m_idleDetector == 0 ) {
-        qDebug() << "Application ctor: idle detection is not available on this platform.";
-    } else {
-        qDebug() << "Application ctor: idle detection initialized.";
-        connect( m_idleDetector, SIGNAL( maybeIdle() ), SLOT( slotMaybeIdle() ) );
-    }
+    Q_ASSERT( m_idleDetector );
+    connect( m_idleDetector, SIGNAL( maybeIdle() ), SLOT( slotMaybeIdle() ) );
 
     setHttpActionsVisible(HttpJob::credentialsAvailable());
     // add default plugin path for deployment
@@ -711,11 +707,9 @@ void ApplicationCore::setHttpActionsVisible( bool visible )
 
 void ApplicationCore::slotMaybeIdle()
 {
-    if ( idleDetector() == 0 ) return; // should not happen
-
     if ( DATAMODEL->activeEventCount() > 0 ) {
         if ( idleDetector()->idlePeriods().count() == 1 ) {
-            m_timeTracker.maybeIdle();
+            m_timeTracker.maybeIdle( idleDetector() );
         } // otherwise, the dialog will be showing already
     }
     // there are four parameters to the idle property:

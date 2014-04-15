@@ -11,7 +11,7 @@ WindowsIdleDetector::WindowsIdleDetector( QObject* parent ) : IdleDetector( pare
     m_timer.start();
 }
 
-void WindowsIdleDetector::idlenessDurationChanged() {
+void WindowsIdleDetector::onIdlenessDurationChanged() {
     m_timer.stop();
     m_timer.setInterval( idlenessDuration() * 1000 / 2 );
     m_timer.start();

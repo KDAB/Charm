@@ -4,6 +4,7 @@
 #include "Core/Configuration.h"
 #include "ApplicationCore.h"
 #include "CharmPreferences.h"
+#include "Idle/IdleDetector.h"
 #include "MessageBox.h"
 
 CharmPreferences::CharmPreferences( const Configuration& config,
@@ -11,7 +12,7 @@ CharmPreferences::CharmPreferences( const Configuration& config,
     : QDialog( parent_ )
 {
     m_ui.setupUi( this );
-    const bool haveIdleDetection = ApplicationCore::instance().idleDetector() != 0;
+    const bool haveIdleDetection = ApplicationCore::instance().idleDetector()->available();
     m_ui.cbIdleDetection->setEnabled( haveIdleDetection );
     m_ui.labelIdleDetection->setEnabled( haveIdleDetection );
     m_ui.cbIdleDetection->setChecked( config.detectIdling && m_ui.cbIdleDetection->isEnabled() );

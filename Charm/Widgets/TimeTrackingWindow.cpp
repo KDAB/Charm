@@ -470,15 +470,13 @@ void TimeTrackingWindow::slotBillGone(int result)
         m_checkUploadedSheetsTimer.start();
 }
 
-void TimeTrackingWindow::maybeIdle()
+void TimeTrackingWindow::maybeIdle( IdleDetector* detector )
 {
+    Q_ASSERT( detector );
     static bool inProgress = false;
-    if ( ApplicationCore::instance().idleDetector() == 0 ) return;
 
     if ( inProgress == true ) return;
     Uniquifier u( &inProgress );
-
-    IdleDetector* detector = ApplicationCore::instance().idleDetector();
 
     Q_FOREACH( const IdleDetector::IdlePeriod& p, detector->idlePeriods() ) {
         qDebug() << "ApplicationCore::slotMaybeIdle: computer might be have been idle from"

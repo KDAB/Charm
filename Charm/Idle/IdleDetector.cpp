@@ -4,6 +4,8 @@
 #include "Core/Configuration.h"
 #include "CharmCMake.h"
 
+#include <QScopedPointer>
+
 #include "IdleDetector.h"
 #include "MacIdleDetector.h"
 #include "WindowsIdleDetector.h"
@@ -12,6 +14,7 @@
 IdleDetector::IdleDetector( QObject* parent )
     : QObject( parent )
     , m_idlenessDuration( CHARM_IDLE_TIME ) // from CharmCMake.h
+    , m_available( true )
 {
 }
 
@@ -27,12 +30,28 @@ IdleDetector* IdleDetector::createIdleDetector( QObject* parent )
 #endif
 
 #ifdef CHARM_IDLE_DETECTION_AVAILABLE_X11
-    if ( X11IdleDetector::idleCheckPossible() )
-        return new X11IdleDetector( parent );
+    X11IdleDetector* detector = new X11IdleDetector( parent );
+    detector->setAvailable( X11IdleDetector::idleCheckPossible() );
+    return detector;
 #endif
 #endif
 
-    return 0;
+    IdleDetector* unavailable = new IdleDetector( parent );
+    unavailable->setAvailable( false );
+    return unavailable;
+}
+
+bool IdleDetector::available() const
+{
+    return m_available;
+}
+
+void IdleDetector::setAvailable( bool available )
+{
+    if ( m_available == available )
+        return;
+    m_available = available;
+    emit availableChanged( m_available );
 }
 
 IdleDetector::IdlePeriods IdleDetector::idlePeriods() const
@@ -44,7 +63,8 @@ void IdleDetector::setIdlenessDuration( int seconds ) {
     if ( m_idlenessDuration == seconds )
         return;
     m_idlenessDuration = seconds;
-    idlenessDurationChanged();
+    emit idlenessDurationChanged( m_idlenessDuration );
+    onIdlenessDurationChanged();
 }
 
 int IdleDetector::idlenessDuration() const {
