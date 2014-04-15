@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>449</width>
+    <width>465</width>
     <height>250</height>
    </rect>
   </property>
@@ -16,16 +16,6 @@
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <layout class="QGridLayout" name="gridLayout">
-     <item row="4" column="1">
-      <widget class="QCheckBox" name="cbWarnUnuploadedTimesheets">
-       <property name="text">
-        <string/>
-       </property>
-       <property name="checked">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
      <item row="4" column="0" alignment="Qt::AlignRight">
       <widget class="QLabel" name="lbWarnUnuploadedTimesheets">
        <property name="sizePolicy">
@@ -39,22 +29,6 @@
        </property>
        <property name="buddy">
         <cstring>cbWarnUnuploadedTimesheets</cstring>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="0" alignment="Qt::AlignRight">
-      <widget class="QLabel" name="lbTimeTrackerFontSize">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>Time tracker window font size</string>
-       </property>
-       <property name="buddy">
-        <cstring>cbTimeTrackerFontSize</cstring>
        </property>
       </widget>
      </item>
@@ -77,6 +51,16 @@
        </item>
       </widget>
      </item>
+     <item row="3" column="1">
+      <widget class="QCheckBox" name="cbIdleDetection">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
      <item row="1" column="0" alignment="Qt::AlignRight">
       <widget class="QLabel" name="lbToolButtonStyle">
        <property name="sizePolicy">
@@ -90,6 +74,32 @@
        </property>
        <property name="buddy">
         <cstring>cbToolButtonStyle</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QCheckBox" name="cbWarnUnuploadedTimesheets">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0" alignment="Qt::AlignRight">
+      <widget class="QLabel" name="lbTimeTrackerFontSize">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Time tracker window font size</string>
+       </property>
+       <property name="buddy">
+        <cstring>cbTimeTrackerFontSize</cstring>
        </property>
       </widget>
      </item>
@@ -120,6 +130,22 @@
          <string>System default</string>
         </property>
        </item>
+      </widget>
+     </item>
+     <item row="3" column="0" alignment="Qt::AlignRight">
+      <widget class="QLabel" name="lbIdleDetection">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Enable idle detection</string>
+       </property>
+       <property name="buddy">
+        <cstring>cbIdleDetection</cstring>
+       </property>
       </widget>
      </item>
      <item row="2" column="0" alignment="Qt::AlignRight">
@@ -155,8 +181,8 @@
        </item>
       </widget>
      </item>
-     <item row="3" column="0" alignment="Qt::AlignRight">
-      <widget class="QLabel" name="lbIdleDetection">
+     <item row="5" column="0" alignment="Qt::AlignRight">
+      <widget class="QLabel" name="lbRequestEventComment">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
          <horstretch>0</horstretch>
@@ -164,15 +190,15 @@
         </sizepolicy>
        </property>
        <property name="text">
-        <string>Enable idle detection</string>
+        <string>Comment finished events</string>
        </property>
        <property name="buddy">
-        <cstring>cbIdleDetection</cstring>
+        <cstring>cbRequestEventComment</cstring>
        </property>
       </widget>
      </item>
-     <item row="3" column="1">
-      <widget class="QCheckBox" name="cbIdleDetection">
+     <item row="5" column="1">
+      <widget class="QCheckBox" name="cbRequestEventComment">
        <property name="text">
         <string/>
        </property>

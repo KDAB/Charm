@@ -30,6 +30,7 @@ const QString MetaKey_Key_24hEditing = "Key24hEditing";
 const QString MetaKey_Key_DurationFormat = "DurationFormat";
 const QString MetaKey_Key_IdleDetection = "IdleDetection";
 const QString MetaKey_Key_WarnUnuploadedTimesheets = "WarnUnuploadedTimesheets";
+const QString MetaKey_Key_RequestEventComment = "RequestEventComment";
 const QString MetaKey_Key_ToolButtonStyle = "ToolButtonStyle";
 const QString MetaKey_Key_ShowStatusBar = "ShowStatusBar";
 

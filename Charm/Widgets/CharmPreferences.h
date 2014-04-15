@@ -18,6 +18,7 @@ public:
     Configuration::DurationFormat durationFormat() const;
     bool detectIdling() const;
     bool warnUnuploadedTimesheets() const;
+    bool requestEventComment() const;
 
     Qt::ToolButtonStyle toolButtonStyle() const;
 

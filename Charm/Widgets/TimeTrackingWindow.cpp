@@ -237,6 +237,7 @@ void TimeTrackingWindow::slotEditPreferences( bool )
         CONFIGURATION.toolButtonStyle = dialog.toolButtonStyle();
         CONFIGURATION.detectIdling = dialog.detectIdling();
         CONFIGURATION.warnUnuploadedTimesheets = dialog.warnUnuploadedTimesheets();
+        CONFIGURATION.requestEventComment = dialog.requestEventComment();
         emit saveConfiguration();
     }
 }

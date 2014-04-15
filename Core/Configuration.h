@@ -52,6 +52,7 @@ public:
     bool showStatusBar;
     bool detectIdling;
     bool warnUnuploadedTimesheets;
+    bool requestEventComment;
 
     // these are stored in QSettings, since we need this information to locate and open the database:
     QString configurationName;
@@ -74,7 +75,7 @@ private:
     Configuration( bool eventsInLeafsOnly, bool oneEventAtATime, User user,
                    TaskPrefilteringMode taskPrefilteringMode, TimeTrackerFontSize,
                    DurationFormat durationFormat, bool detectIdling, Qt::ToolButtonStyle buttonstyle,
-                   bool showStatusBar, bool warnUnuploadedTimesheets );
+                   bool showStatusBar, bool warnUnuploadedTimesheets, bool _requestEventComment );
     Configuration();
 };
 

@@ -24,6 +24,7 @@ Configuration::Configuration()
     , showStatusBar( true )
     , detectIdling( true )
     , warnUnuploadedTimesheets( true )
+    , requestEventComment( false )
     , configurationName( DEFAULT_CONFIG_GROUP )
     , installationId( 0 )
     , newDatabase( false )
@@ -37,7 +38,7 @@ Configuration::Configuration( bool _eventsInLeafsOnly, bool _oneEventAtATime, Us
                               TimeTrackerFontSize _timeTrackerFontSize,
                               DurationFormat _durationFormat, bool _detectIdling,
                               Qt::ToolButtonStyle _buttonstyle, bool _showStatusBar,
-                              bool _warnUnuploadedTimesheets )
+                              bool _warnUnuploadedTimesheets, bool _requestEventComment )
     : taskPrefilteringMode( _taskPrefilteringMode )
     , timeTrackerFontSize( _timeTrackerFontSize )
     , durationFormat( _durationFormat )
@@ -45,6 +46,7 @@ Configuration::Configuration( bool _eventsInLeafsOnly, bool _oneEventAtATime, Us
     , showStatusBar( _showStatusBar )
     , detectIdling ( _detectIdling )
     , warnUnuploadedTimesheets( _warnUnuploadedTimesheets )
+    , requestEventComment( _requestEventComment )
     , configurationName( DEFAULT_CONFIG_GROUP )
     , installationId( 0 )
     , newDatabase( false )
@@ -61,6 +63,7 @@ bool Configuration::operator==( const Configuration& other ) const
         durationFormat == other.durationFormat &&
         detectIdling == other.detectIdling &&
         warnUnuploadedTimesheets == other.warnUnuploadedTimesheets &&
+        requestEventComment == other.requestEventComment &&
         toolButtonStyle == other.toolButtonStyle &&
         showStatusBar == other.showStatusBar &&
         configurationName == other.configurationName &&
@@ -122,6 +125,7 @@ void Configuration::dump( const QString& why )
              << "--> Idle Detection:           " << detectIdling << endl
              << "--> toolButtonStyle:          " << toolButtonStyle << endl
              << "--> showStatusBar:            " << showStatusBar << endl
-             << "--> warnUnuploadedTimesheets: " << warnUnuploadedTimesheets;
+             << "--> warnUnuploadedTimesheets: " << warnUnuploadedTimesheets << endl
+             << "--> requestEventComment:      " << requestEventComment;
 }
 

@@ -17,6 +17,7 @@ CharmPreferences::CharmPreferences( const Configuration& config,
     m_ui.lbIdleDetection->setEnabled( haveIdleDetection );
     m_ui.cbIdleDetection->setChecked( config.detectIdling && m_ui.cbIdleDetection->isEnabled() );
     m_ui.cbWarnUnuploadedTimesheets->setChecked( config.warnUnuploadedTimesheets );
+    m_ui.cbRequestEventComment->setChecked( config.requestEventComment );
 
     connect(m_ui.cbWarnUnuploadedTimesheets, SIGNAL(toggled(bool)),
             SLOT(slotWarnUnuploadedChanged(bool)));
@@ -75,6 +76,11 @@ bool CharmPreferences::detectIdling() const
 bool CharmPreferences::warnUnuploadedTimesheets() const
 {
     return m_ui.cbWarnUnuploadedTimesheets->isChecked();
+}
+
+bool CharmPreferences::requestEventComment() const
+{
+    return m_ui.cbRequestEventComment->isChecked();
 }
 
 Configuration::DurationFormat CharmPreferences::durationFormat() const

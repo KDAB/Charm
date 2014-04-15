@@ -214,6 +214,8 @@ void Controller::persistMetaData( Configuration& configuration )
           stringForBool( configuration.detectIdling ) },
         { MetaKey_Key_WarnUnuploadedTimesheets,
           stringForBool( configuration.warnUnuploadedTimesheets ) },
+        { MetaKey_Key_RequestEventComment,
+          stringForBool( configuration.requestEventComment ) },
         { MetaKey_Key_ToolButtonStyle,
           QString().setNum( configuration.toolButtonStyle ) },
         { MetaKey_Key_ShowStatusBar,
@@ -249,6 +251,7 @@ void Controller::provideMetaData( Configuration& configuration)
     loadConfigValue( MetaKey_Key_SubscribedTasksOnly, configuration.taskPrefilteringMode );
     loadConfigValue( MetaKey_Key_IdleDetection, configuration.detectIdling );
     loadConfigValue( MetaKey_Key_WarnUnuploadedTimesheets, configuration.warnUnuploadedTimesheets );
+    loadConfigValue( MetaKey_Key_RequestEventComment, configuration.requestEventComment );
     loadConfigValue( MetaKey_Key_ToolButtonStyle, configuration.toolButtonStyle );
     loadConfigValue( MetaKey_Key_ShowStatusBar, configuration.showStatusBar );
 
