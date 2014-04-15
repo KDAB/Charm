@@ -39,7 +39,7 @@ private:
     void checkInvariants();
 
     QScopedPointer<Ui::TaskEditor> m_ui;
-    mutable Task m_task;
+    Task m_task;
 };
 
 #endif /* TASKEDITOR_H_ */

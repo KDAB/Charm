@@ -86,22 +86,23 @@ void TaskEditor::setTask( const Task& task )
 
 Task TaskEditor::getTask() const
 {
-    m_task.setName( m_ui->lineEditName->text() );
-    m_task.setTrackable( m_ui->checkBoxTrackable->isChecked() );
+    Task newTask = m_task;
+    newTask.setName( m_ui->lineEditName->text() );
+    newTask.setTrackable( m_ui->checkBoxTrackable->isChecked() );
     if( m_ui->checkBoxTopLevel->isChecked() ) {
-        m_task.setParent( 0 );
+        newTask.setParent( 0 );
     }
     if( m_ui->checkBoxFrom->isChecked() ) {
-        m_task.setValidFrom( QDateTime() );
+        newTask.setValidFrom( QDateTime() );
     } else {
-        m_task.setValidFrom( m_ui->dateEditFrom->dateTime() );
+        newTask.setValidFrom( m_ui->dateEditFrom->dateTime() );
     }
     if( m_ui->checkBoxUntil->isChecked() ) {
-        m_task.setValidUntil( QDateTime() );
+        newTask.setValidUntil( QDateTime() );
     } else {
-        m_task.setValidUntil( m_ui->dateEditTo->dateTime() );
+        newTask.setValidUntil( m_ui->dateEditTo->dateTime() );
     }
-    return m_task;
+    return newTask;
 }
 
 bool parentTreeIsTree( TaskId newParent, TaskId task )
