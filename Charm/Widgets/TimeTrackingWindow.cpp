@@ -15,6 +15,7 @@
 #include "Core/XmlSerialization.h"
 
 #include "ApplicationCore.h"
+#include "CommentEditorPopup.h"
 #include "MessageBox.h"
 #include "EnterVacationDialog.h"
 #include "ViewHelpers.h"
@@ -180,6 +181,15 @@ void TimeTrackingWindow::eventActivated( EventId id )
 void TimeTrackingWindow::eventDeactivated( EventId id )
 {
     m_summaryWidget->handleActiveEvents();
+
+    if (CONFIGURATION.requestEventComment) {
+        Event event = DATAMODEL->eventForId( id );
+        if ( event.isValid() && event.comment().isEmpty() ) {
+            CommentEditorPopup popup;
+            popup.loadEvent( id );
+            popup.exec();
+        }
+    }
 }
 
 void TimeTrackingWindow::configurationChanged()
