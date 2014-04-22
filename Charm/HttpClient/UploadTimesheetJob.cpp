@@ -3,6 +3,7 @@
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QNetworkRequest>
+#include <QRegExp>
 #include <QSettings>
 
 UploadTimesheetJob::UploadTimesheetJob(QObject* parent)
