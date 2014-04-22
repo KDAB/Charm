@@ -41,7 +41,8 @@ void ReportPreviewWindow::setDocument( const QTextDocument* document )
 {
     if ( document != 0 ) {
         // we keep a copy, to be able to show different versions of the same document
-        m_document.reset( document->clone() );
+        QScopedPointer<QTextDocument> docClone( document->clone() );
+        m_document.swap( docClone );
         m_ui->textBrowser->setDocument( m_document.data() );
     } else {
         m_ui->textBrowser->setDocument( 0 );
