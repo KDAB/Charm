@@ -40,7 +40,7 @@ protected:
     inline bool activeTasksOnly() const
         { return m_activeTasksOnly; }
 
-    inline SecondsMap  secondsMap() const
+    inline const SecondsMap &secondsMap() const
         { return m_secondsMap; }
 
     QString getFileName( const QString& filter );
@@ -52,13 +52,15 @@ protected:
     // reimpl
     void slotSaveToXml();
 
+protected:
+    SecondsMap m_secondsMap;
+
 private:
     // properties of the report:
     QDate m_start;
     QDate m_end;
     TaskId m_rootTask;
     bool m_activeTasksOnly;
-    SecondsMap m_secondsMap;
 };
 
 #endif

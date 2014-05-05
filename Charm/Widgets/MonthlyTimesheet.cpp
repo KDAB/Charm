@@ -126,7 +126,7 @@ void MonthlyTimeSheetReport::update()
     // retrieve matching events:
     const EventIdList matchingEvents = DATAMODEL->eventsThatStartInTimeFrame( startDate(), endDate() );
 
-    secondsMap().clear();
+    m_secondsMap.clear();
 
     // for every task, make a vector that includes a number of seconds
     // for every week of a month ( int seconds[m_numberOfWeeks]), and store those in
@@ -134,14 +134,14 @@ void MonthlyTimeSheetReport::update()
     Q_FOREACH( EventId id, matchingEvents ) {
         const Event& event = DATAMODEL->eventForId( id );
         QVector<int> seconds( m_numberOfWeeks );
-        if ( secondsMap().contains( event.taskId() ) ) {
-            seconds = secondsMap().value(event.taskId());
+        if ( m_secondsMap.contains( event.taskId() ) ) {
+            seconds = m_secondsMap.value(event.taskId());
         }
         // what week of the month is the event (normalized to vector indexes):
         const int weekOfMonth = Charm::weekDifference( startDate(), event.startDateTime().date() );
         seconds[weekOfMonth] += event.duration();
         // store in minute map:
-        secondsMap()[event.taskId()] = seconds;
+        m_secondsMap[event.taskId()] = seconds;
     }
     // now the reporting:
     // headline first:

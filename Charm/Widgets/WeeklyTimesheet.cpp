@@ -256,7 +256,7 @@ void WeeklyTimeSheetReport::update()
     // retrieve matching events:
     const EventIdList matchingEvents = DATAMODEL->eventsThatStartInTimeFrame( startDate(), endDate() );
 
-    secondsMap().clear();
+    m_secondsMap.clear();
 
     // for every task, make a vector that includes a number of seconds
     // for every day of the week ( int seconds[7]), and store those in
@@ -264,15 +264,15 @@ void WeeklyTimeSheetReport::update()
     Q_FOREACH( EventId id, matchingEvents ) {
         const Event& event = DATAMODEL->eventForId( id );
         QVector<int> seconds( DaysInWeek );
-        if ( secondsMap().contains( event.taskId() ) ) {
-            seconds = secondsMap().value(event.taskId());
+        if ( m_secondsMap.contains( event.taskId() ) ) {
+            seconds = m_secondsMap.value(event.taskId());
         }
         // what day in the week is the event (normalized to vector indexes):
         int dayOfWeek = event.startDateTime().date().dayOfWeek() - 1;
         Q_ASSERT( dayOfWeek >= 0 && dayOfWeek < DaysInWeek );
         seconds[dayOfWeek] += event.duration();
         // store in minute map:
-        secondsMap()[event.taskId()] = seconds;
+        m_secondsMap[event.taskId()] = seconds;
     }
     // now the reporting:
     // headline first:
