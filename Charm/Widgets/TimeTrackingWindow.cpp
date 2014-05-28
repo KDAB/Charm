@@ -220,6 +220,10 @@ void TimeTrackingWindow::slotStartEvent( TaskId id )
 
     if( item.task().isCurrentlyValid() ) {
         DATAMODEL->startEventRequested( item.task() );
+    } else {
+        QString nm = item.task().name();
+        QMessageBox::critical( this, tr( "Invalid task" ),
+                               tr( "Task '%1' is no longer valid, so can't be started" ).arg( nm ) );
     }
 }
 
