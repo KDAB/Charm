@@ -251,11 +251,9 @@ void ReadPasswordJobPrivate::fallbackOnError(const QDBusError& err )
 {
     QScopedPointer<QSettings> local( !q->settings() ? new QSettings( q->service() ) : 0 );
     QSettings* actual = q->settings() ? q->settings() : local.data();
-    WritePasswordJobPrivate::Mode mode;
 
     if ( q->insecureFallback() && actual->contains( dataKey( key ) ) ) {
 
-        mode = (WritePasswordJobPrivate::Mode)actual->value( typeKey( key ) ).toInt();
         data = actual->value( dataKey( key ) ).toByteArray();
 
         q->emitFinished();
@@ -285,7 +283,7 @@ void ReadPasswordJobPrivate::kwalletOpenFinished( QDBusPendingCallWatcher* watch
         // Do the migration
 
         data = actual->value( dataKey( key ) ).toByteArray();
-        mode = (WritePasswordJobPrivate::Mode)actual->value( typeKey( key ) ).toInt();
+        mode = static_cast<WritePasswordJobPrivate::Mode>(actual->value( typeKey( key ) ).toInt());
         actual->remove( key );
 
         q->emitFinished();
@@ -435,7 +433,7 @@ void WritePasswordJobPrivate::fallbackOnError(const QDBusError &err)
         return;
    }
 
-    actual->setValue( QString::fromLatin1( "%1/type" ).arg( key ), (int)mode );
+    actual->setValue( QString::fromLatin1( "%1/type" ).arg( key ), int(mode) );
     if ( mode == Text )
         actual->setValue( QString::fromLatin1( "%1/data" ).arg( key ), textData.toUtf8() );
     else if ( mode == Binary )
