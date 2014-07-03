@@ -131,6 +131,12 @@ QMenu* TimeTrackingTaskSelector::menu() const
     return m_menu;
 }
 
+static QString escapeAmpersands( QString text )
+{
+    text.replace( QLatin1String("&"), QLatin1String("&&") );
+    return text;
+}
+
 void TimeTrackingTaskSelector::populate( const QVector<WeeklySummary>& summaries )
 {
     // Don't repopulate while the menu is displayed; very ugly and it can wait.
@@ -141,7 +147,7 @@ void TimeTrackingTaskSelector::populate( const QVector<WeeklySummary>& summaries
     QMap<TaskId, QAction*> addedTasks;
     bool addedAction = false;
     Q_FOREACH( const WeeklySummary& s, summaries ) {
-        QAction* action = new QAction( DATAMODEL->taskIdAndSmartNameString( s.task ), m_menu );
+        QAction* action = new QAction( escapeAmpersands( DATAMODEL->taskIdAndSmartNameString( s.task ) ), m_menu );
         addedTasks.insert( s.task, action );
         action->setProperty( CUSTOM_TASK_PROPERTY_NAME, QVariant::fromValue( s.task ) );
         Q_ASSERT( action->property( CUSTOM_TASK_PROPERTY_NAME ).value<TaskId>() == s.task );
@@ -257,7 +263,7 @@ void TimeTrackingTaskSelector::taskSelected( const QString& taskname, TaskId id 
 {
     m_selectedTask = id;
     m_stopGoAction->setEnabled( true );
-    m_taskSelectorButton->setText( taskname );
+    m_taskSelectorButton->setText( escapeAmpersands( taskname ) );
 }
 
 void TimeTrackingTaskSelector::slotGoStopToggled( bool on )
