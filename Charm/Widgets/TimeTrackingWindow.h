@@ -78,9 +78,7 @@ private slots:
     void slotWeeklyTimesheetPreview( int result );
     void slotMonthlyTimesheetPreview( int result );
     void slotActivityReportPreview( int result );
-    void slotTimesheetStatusCheck();
-    void slotTimesheetStatusParse( HttpJob* );
-    void slotTimesheetStatusPasswordRequest();
+    void slotCheckUploadedTimesheets();
     void slotBillGone( int result );
 
     void configurationChanged();

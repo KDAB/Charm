@@ -85,14 +85,3 @@ IF( CHARM_DATABASE_CONFIGURATION )
         "CHARM_DATABASE_CONFIGURATION=${CHARM_DATABASE_CONFIGURATION}"
     )
 ENDIF()
-
-SET( TimesheetStatusTests_SRCS
-    TimesheetStatusTests.cpp
-    ${Charm_SOURCE_DIR}/Charm/LOC/TimesheetStatus.cpp
-)
-ADD_EXECUTABLE( TimesheetStatusTests
-    ${TimesheetStatusTests_SRCS}
-    ${TestDataResources_SRCS}
-)
-TARGET_LINK_LIBRARIES( TimesheetStatusTests ${TEST_LIBRARIES} )
-ADD_TEST( NAME TimesheetStatusTests COMMAND TimesheetStatusTests )

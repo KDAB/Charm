@@ -10,7 +10,8 @@ public:
     enum BillResponse
     {
         Later,
-        AsYouWish
+        AsYouWish,
+        AlreadyDone,
     };
     explicit BillDialog(QWidget* parent = 0, Qt::WindowFlags f = 0);
     void setReport(int year, int week);
@@ -18,9 +19,11 @@ public:
     int week() const;
 private slots:
     void slotAsYouWish();
+    void slotAlreadyDone();
     void slotLater();
 private:
     QPushButton *m_asYouWish;
+    QPushButton *m_alreadyDone;
     QPushButton *m_later;
     int m_year;
     int m_week;

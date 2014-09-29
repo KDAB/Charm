@@ -40,12 +40,9 @@ SOURCES += \
     Charm/Commands/CommandImportFromXml.cpp \
     Charm/Commands/CommandMakeAndActivateEvent.cpp \
     Charm/HttpClient/HttpJob.cpp \
-    Charm/HttpClient/HttpGetJob.cpp \
     Charm/HttpClient/GetProjectCodesJob.cpp \
-    Charm/HttpClient/GetTimesheetStatusJob.cpp \
     Charm/HttpClient/UploadTimesheetJob.cpp \
     Charm/Idle/IdleDetector.cpp \
-    Charm/LOC/TimesheetStatus.cpp \
     Charm/Reports/MonthlyTimesheetXmlWriter.cpp \
     Charm/Reports/TimesheetInfo.cpp \
     Charm/Reports/WeeklyTimesheetXmlWriter.cpp \
@@ -158,11 +155,8 @@ HEADERS += \
     Charm/ModelConnector.h \
     Charm/WeeklySummary.h \
     Charm/HttpClient/GetProjectCodesJob.h \
-    Charm/HttpClient/GetTimesheetStatusJob.h \
     Charm/HttpClient/UploadTimesheetJob.h \
     Charm/HttpClient/HttpJob.h \
-    Charm/HttpClient/HttpGetJob.h \
-    Charm/LOC/TimesheetStatus.h \
     Charm/ApplicationCore.h \
     Charm/Keychain/keychain.h \
     Charm/Keychain/keychain_p.h \

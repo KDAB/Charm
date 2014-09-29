@@ -15,8 +15,6 @@
 #include "Core/TaskListMerger.h"
 #include "Core/XmlSerialization.h"
 
-#include "LOC/TimesheetStatus.h"
-
 #include "ApplicationCore.h"
 #include "MessageBox.h"
 #include "EnterVacationDialog.h"
@@ -34,7 +32,6 @@
 #include "Commands/CommandImportFromXml.h"
 #include "Idle/IdleDetector.h"
 #include "HttpClient/GetProjectCodesJob.h"
-#include "HttpClient/GetTimesheetStatusJob.h"
 #include "Widgets/HttpJobProgressDialog.h"
 #include "IdleCorrectionDialog.h"
 #include "ActivityReport.h"
@@ -59,17 +56,13 @@ TimeTrackingWindow::TimeTrackingWindow( QWidget* parent )
     connect( m_summaryWidget, SIGNAL( stopEvents() ),
              SLOT( slotStopEvent() ) );
     connect( &m_checkUploadedSheetsTimer, SIGNAL( timeout() ),
-             SLOT( slotTimesheetStatusCheck() ) );
+             SLOT( slotCheckUploadedTimesheets() ) );
     connect( m_billDialog, SIGNAL( finished(int) ),
              SLOT( slotBillGone(int) ) );
     //Check every 60 minutes if there are timesheets due
     m_checkUploadedSheetsTimer.setInterval(60 * 60 * 1000);
-    if (CONFIGURATION.warnUnuploadedTimesheets) {
+    if (CONFIGURATION.warnUnuploadedTimesheets)
         m_checkUploadedSheetsTimer.start();
-
-        // Run first timesheet check a minute after start-up
-        QTimer::singleShot(60 * 1000, this, SLOT(slotTimesheetStatusCheck()));
-    }
 }
 
 void TimeTrackingWindow::showEvent( QShowEvent* e )
@@ -445,56 +438,30 @@ void TimeTrackingWindow::slotExportTasks()
     }
 }
 
-void TimeTrackingWindow::slotTimesheetStatusCheck()
+void TimeTrackingWindow::slotCheckUploadedTimesheets()
 {
-    GetTimesheetStatusJob* job = new GetTimesheetStatusJob( this );
-    connect(job, SIGNAL(finished( HttpJob* )), SLOT(slotTimesheetStatusParse( HttpJob* )) );
-    connect(job, SIGNAL(passwordRequested()), SLOT(slotTimesheetStatusPasswordRequest()) );
-    job->start();
-}
-
-void TimeTrackingWindow::slotTimesheetStatusParse( HttpJob *job_ )
-{
-    GetTimesheetStatusJob *job = qobject_cast<GetTimesheetStatusJob*>( job_ );
-    Q_ASSERT( job );
-
-    if ( job->error() == HttpJob::Canceled )
+    WeeksByYear missing = missingTimeSheets();
+    if (missing.isEmpty())
         return;
-
-    if ( job->error() ) {
-        qWarning("Could not download timesheet status: %s", job->errorString().toLatin1().constData() );
-        return;
-    }
-
-    TimesheetStatus tpstatus;
-
-    if (!tpstatus.parse(job->payload()))
-        return;
-
-    if (tpstatus.isMissingTimesheet()) {
-        m_checkUploadedSheetsTimer.stop();
-        m_billDialog->setReport(tpstatus.missingTimesheetYear(), tpstatus.missingTimesheetWeek());
-        m_billDialog->show();
-        m_billDialog->raise();
-        m_billDialog->activateWindow();
-    }
-}
-
-void TimeTrackingWindow::slotTimesheetStatusPasswordRequest()
-{
-    GetTimesheetStatusJob *job =
-        qobject_cast<GetTimesheetStatusJob*>( QObject::sender() );
-    Q_ASSERT( job );
-
-    qWarning("Skipping timesheet status check. No valid LOC password.");
-
-    job->passwordRequestCanceled();
+    m_checkUploadedSheetsTimer.stop();
+    //The usual case is just one missing week, unless we've been giving Bill a hard time
+    //Perhaps in the future Bill can bug us about more than one report at a time
+    Q_ASSERT(!missing.begin().value().isEmpty());
+    int year = missing.begin().key();
+    int week = missing.begin().value().first();
+    m_billDialog->setReport(year, week);
+    m_billDialog->show();
+    m_billDialog->raise();
+    m_billDialog->activateWindow();
 }
 
 void TimeTrackingWindow::slotBillGone(int result)
 {
     switch(result)
     {
+    case BillDialog::AlreadyDone:
+        addUploadedTimesheet( m_billDialog->year(), m_billDialog->week() );
+        break;
     case BillDialog::AsYouWish:
         resetWeeklyTimesheetDialog();
         m_weeklyTimesheetDialog->setDefaultWeek(m_billDialog->year(), m_billDialog->week());

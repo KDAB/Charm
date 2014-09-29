@@ -14,7 +14,4 @@
     <qresource prefix="/testTaskExportImport">
         <file>Data/test-tasklistexport.xml</file>
     </qresource>
-    <qresource prefix="/timesheetStatusTest">
-        <file>Data/test-timesheets.xml</file>
-    </qresource>
 </RCC>

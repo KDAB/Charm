@@ -25,12 +25,9 @@ SET(
     Commands/CommandImportFromXml.cpp
     Commands/CommandMakeAndActivateEvent.cpp
     HttpClient/HttpJob.cpp
-    HttpClient/HttpGetJob.cpp
     HttpClient/GetProjectCodesJob.cpp
-    HttpClient/GetTimesheetStatusJob.cpp
     HttpClient/UploadTimesheetJob.cpp
     Idle/IdleDetector.cpp
-    LOC/TimesheetStatus.cpp
     Reports/TimesheetInfo.cpp
     Reports/MonthlyTimesheetXmlWriter.cpp
     Reports/WeeklyTimesheetXmlWriter.cpp
