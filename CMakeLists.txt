@@ -53,6 +53,8 @@ IF (Qt5Core_FOUND)
         set(QTPRINT_LIBRARIES ${Qt5PrintSupport_LIBRARIES})
     ENDIF()
 
+    SET(CHARM_MAC_HIGHRES_SUPPORT_ENABLED ON)
+
     IF(WIN32)
         SET(QT_PLATFORM_SPECIFIC_LIBRARIES Qt5::WinMain)
     ELSE()
@@ -119,6 +121,8 @@ ELSE()
     # No Qt5 found, try Qt4
     find_package(Qt4 COMPONENTS QtMain QtCore QtGui QtSql QtXml QtNetwork REQUIRED)
     INCLUDE( UseQt4 )
+
+    SET(CHARM_MAC_HIGHRES_SUPPORT_ENABLED OFF)
 
     IF(UNIX AND NOT APPLE)
         find_package(Qt4 COMPONENTS QtDBus)
