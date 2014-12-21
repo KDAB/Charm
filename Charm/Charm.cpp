@@ -46,9 +46,9 @@ int main ( int argc, char** argv )
 
     try {
         QApplication app( argc, argv );
-        ApplicationCore* core = createApplicationCore(); //FIXME this should be a QScopedPointer, but correct destruction crashes...
-        QObject::connect( &app, SIGNAL(commitDataRequest(QSessionManager&)), core, SLOT(commitData(QSessionManager&)) );
-        QObject::connect( &app, SIGNAL(saveStateRequest(QSessionManager&)), core, SLOT(saveState(QSessionManager&)) );
+        QScopedPointer<ApplicationCore> core( createApplicationCore() );
+        QObject::connect( &app, SIGNAL(commitDataRequest(QSessionManager&)), core.data(), SLOT(commitData(QSessionManager&)) );
+        QObject::connect( &app, SIGNAL(saveStateRequest(QSessionManager&)), core.data(), SLOT(saveState(QSessionManager&)) );
         return app.exec();
     } catch( const AlreadyRunningException& ) {
         using namespace std;

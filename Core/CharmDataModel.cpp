@@ -19,6 +19,7 @@ CharmDataModel::CharmDataModel()
 
 CharmDataModel::~CharmDataModel()
 {
+    m_adapters.clear();
     setAllTasks( TaskList() );
 }
 

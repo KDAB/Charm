@@ -217,6 +217,7 @@ ApplicationCore::ApplicationCore( QObject* parent )
 
 ApplicationCore::~ApplicationCore()
 {
+    m_instance = 0;
 }
 
 void ApplicationCore::slotHandleUniqueApplicationConnection()

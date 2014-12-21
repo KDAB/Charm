@@ -18,7 +18,9 @@ TaskModelAdapter::TaskModelAdapter( CharmDataModel* parent )
 
 TaskModelAdapter::~TaskModelAdapter()
 {
-    m_dataModel->unregisterAdapter( this );
+    if ( m_dataModel ) {
+        m_dataModel->unregisterAdapter( this );
+    }
 }
 
 // reimplement QAbstractItemModel:

@@ -1,6 +1,7 @@
 #include <Core/CharmDataModel.h>
 #include <Core/CharmCommand.h>
 
+#include "ApplicationCore.h"
 #include "EventModelAdapter.h"
 
 EventModelAdapter::EventModelAdapter( CharmDataModel* parent )
@@ -12,7 +13,9 @@ EventModelAdapter::EventModelAdapter( CharmDataModel* parent )
 
 EventModelAdapter::~EventModelAdapter()
 {
-    m_dataModel->unregisterAdapter( this );
+    if ( m_dataModel ) {
+        m_dataModel->unregisterAdapter( this );
+    }
 }
 
 int EventModelAdapter::rowCount( const QModelIndex& ) const

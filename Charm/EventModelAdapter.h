@@ -2,6 +2,7 @@
 #define EVENTMODELADAPTER_H
 
 #include <QAbstractItemModel>
+#include <QPointer>
 
 #include "Core/Event.h"
 #include "Core/EventModelInterface.h"
@@ -58,7 +59,7 @@ signals:
 private:
     // if this is slow, we may want to store pointers here:
     EventIdList m_events;
-    CharmDataModel* m_dataModel;
+    QPointer<CharmDataModel> m_dataModel;
 };
 
 #endif

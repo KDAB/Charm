@@ -2,6 +2,7 @@
 #define TASKMODELADAPTER_H
 
 #include <QAbstractItemModel>
+#include <QPointer>
 
 #include "Core/TaskModelInterface.h"
 #include "Core/CharmDataModel.h"
@@ -87,7 +88,7 @@ private:
     const TaskTreeItem* itemFor ( const QModelIndex& ) const;
     QModelIndex indexForTaskTreeItem( const TaskTreeItem& item, int column = 0 ) const;
 
-    CharmDataModel* m_dataModel;
+    QPointer<CharmDataModel> m_dataModel;
 };
 
 #endif
