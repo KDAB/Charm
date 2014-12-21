@@ -11,7 +11,6 @@ TasksWindow::TasksWindow( QWidget* parent )
     setWindowNumber( 1 );
     setWindowIdentifier( QLatin1String( "window_tasks" ) );
     setCentralWidget( m_tasksView );
-    setUnifiedTitleAndToolBarOnMac( true );
     setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Expanding );
     connect( m_tasksView, SIGNAL( emitCommand( CharmCommand* ) ),
              SIGNAL( emitCommand( CharmCommand* ) ) );
