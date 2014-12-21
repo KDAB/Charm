@@ -16,9 +16,9 @@
 
 const int Margin = 2;
 
-TimeTrackingView::TimeTrackingView( QToolBar* toolBar, QWidget* parent )
+TimeTrackingView::TimeTrackingView( QWidget* parent )
     : QWidget( parent )
-    , m_taskSelector( new TimeTrackingTaskSelector( toolBar, this ) )
+    , m_taskSelector( new TimeTrackingTaskSelector( this ) )
     , m_dayOfWeek( 0 )
 {
     setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );

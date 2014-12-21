@@ -8,7 +8,6 @@
 #include <QTextEdit>
 #include <QDialogButtonBox>
 #include <QMessageBox>
-#include <QToolBar>
 #include <QPushButton>
 
 #include "Core/Task.h"
@@ -57,7 +56,7 @@ void CommentEditorPopup::accept() {
     QDialog::accept();
 }
 
-TimeTrackingTaskSelector::TimeTrackingTaskSelector(QToolBar* toolBar, QWidget *parent)
+TimeTrackingTaskSelector::TimeTrackingTaskSelector(QWidget *parent)
     : QWidget(parent)
     , m_stopGoButton( new QToolButton( this ) )
     , m_stopGoAction( new QAction( this ) )
@@ -70,7 +69,6 @@ TimeTrackingTaskSelector::TimeTrackingTaskSelector(QToolBar* toolBar, QWidget *p
     , m_manuallySelectedTask( 0 )
     , m_taskManuallySelected( false )
 {
-    toolBar->hide();
     connect( m_menu, SIGNAL( triggered( QAction* ) ),
              SLOT( slotActionSelected( QAction* ) ) );
 

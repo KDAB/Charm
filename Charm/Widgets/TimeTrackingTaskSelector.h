@@ -33,7 +33,7 @@ class TimeTrackingTaskSelector : public QWidget
 {
     Q_OBJECT
 public:
-    explicit TimeTrackingTaskSelector(QToolBar* toolBar, QWidget *parent = 0);
+    explicit TimeTrackingTaskSelector(QWidget *parent = 0);
 
     void populate( const QVector<WeeklySummary>& summaries  );
     void handleActiveEvents();

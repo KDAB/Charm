@@ -8,6 +8,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QDir>
+#include <QToolBar>
 
 #include "Core/TimeSpans.h"
 #include "Core/TaskListMerger.h"
@@ -42,7 +43,7 @@ TimeTrackingWindow::TimeTrackingWindow( QWidget* parent )
     , m_weeklyTimesheetDialog( 0 )
     , m_monthlyTimesheetDialog( 0 )
     , m_activityReportDialog( 0 )
-    , m_summaryWidget( new TimeTrackingView( toolBar(), this ) )
+    , m_summaryWidget( new TimeTrackingView( this ) )
     , m_billDialog( new BillDialog( this ) )
 {
     setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
@@ -61,6 +62,7 @@ TimeTrackingWindow::TimeTrackingWindow( QWidget* parent )
     m_checkUploadedSheetsTimer.setInterval(60 * 60 * 1000);
     if (CONFIGURATION.warnUnuploadedTimesheets)
         m_checkUploadedSheetsTimer.start();
+    toolBar()->hide();
 }
 
 void TimeTrackingWindow::showEvent( QShowEvent* e )
