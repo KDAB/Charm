@@ -61,8 +61,8 @@ WeeksByYear missingTimeSheets()
     WeeksByYear missing;
     QSettings settings;
     settings.beginGroup(SETTING_GRP_TIMESHEETS);
-    int year = QDateTime::currentDateTime().date().year();
-    int week = QDateTime::currentDateTime().date().weekNumber();
+    int year = 0;
+    int week = QDateTime::currentDateTime().date().weekNumber(&year);
     int firstYear = settings.value(SETTING_VAL_FIRSTYEAR, year).value<int>();
     int firstWeek = settings.value(SETTING_VAL_FIRSTWEEK, week).value<int>();
     for(int iYear = firstYear; iYear <= year; ++iYear)
