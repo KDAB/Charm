@@ -4,8 +4,6 @@
 #include "EventWindow.h"
 #include "EventView.h"
 
-#include <QToolBar>
-#include <QLabel>
 
 EventWindow::EventWindow( QWidget* parent )
     : CharmWindow( tr( "Events Editor" ), parent )

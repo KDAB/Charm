@@ -3,10 +3,7 @@
 
 #include <QWidget>
 #include <QVector>
-#include <QPen>
 #include <QMenu>
-#include <QToolButton>
-#include <QTimeLine>
 
 #include "Core/Task.h"
 #include "TimeTrackingTaskSelector.h"

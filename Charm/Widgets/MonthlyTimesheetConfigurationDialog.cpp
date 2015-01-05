@@ -1,6 +1,5 @@
 #include "MonthlyTimesheetConfigurationDialog.h"
 
-#include <QCalendarWidget>
 #include <QSettings>
 
 #include "DateEntrySyncer.h"

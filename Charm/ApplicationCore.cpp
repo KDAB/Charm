@@ -11,7 +11,6 @@
 #include <QTimer>
 #include <QAction>
 #include <QSettings>
-#include <QMetaType>
 #include <QMenuBar>
 #include <QMessageBox>
 #include <QSessionManager>

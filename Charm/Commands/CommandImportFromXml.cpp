@@ -1,6 +1,5 @@
 #include <QDomDocument>
 #include <QFile>
-#include <QTextStream>
 
 #include <Core/ControllerInterface.h>
 

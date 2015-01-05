@@ -1,10 +1,6 @@
 #include <QFile>
 #include <QTimer>
-#include <QSettings>
 #include <QDomElement>
-#include <QTextStream>
-#include <QMessageBox>
-#include <QFileDialog>
 #include <QtAlgorithms>
 #include <QCalendarWidget>
 #include <QDomDocument>
@@ -13,7 +9,6 @@
 #include <Core/Configuration.h>
 #include <Core/Dates.h>
 
-#include <QDialogButtonBox>
 
 #include "ApplicationCore.h"
 #include "ViewHelpers.h"

@@ -5,7 +5,6 @@
 #include <QPainter>
 #include <QFont>
 #include <QFontMetrics>
-#include <QToolButton>
 #include <QPaintEvent>
 
 #include "Core/CharmConstants.h"

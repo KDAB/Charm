@@ -1,7 +1,6 @@
 #include "BillDialog.h"
 #include <QVBoxLayout>
 #include <QPushButton>
-#include <QLayout>
 #include <QDialogButtonBox>
 
 BillDialog::BillDialog( QWidget* parent, Qt::WindowFlags f )

@@ -1,4 +1,3 @@
-#include <QtDebug>
 #include <QSettings>
 #include <QPushButton>
 

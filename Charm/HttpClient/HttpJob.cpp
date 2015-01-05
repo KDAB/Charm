@@ -1,11 +1,9 @@
 #include "HttpJob.h"
 #include "Keychain/keychain.h"
 
-#include <QDebug>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QSettings>
-#include <QSslError>
 
 #if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
 #include <QUrlQuery>

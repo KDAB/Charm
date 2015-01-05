@@ -3,7 +3,6 @@
 #include <QApplication>
 #include <QFile>
 #include <QMessageBox>
-#include <QtPlugin>
 #include <QSettings>
 #include <QString>
 

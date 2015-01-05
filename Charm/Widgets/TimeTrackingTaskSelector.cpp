@@ -1,13 +1,10 @@
-#include <QtDebug>
 
 #include <QAction>
 #include <QMap>
 #include <QMenu>
-#include <QDateTime>
 #include <QToolButton>
 #include <QVBoxLayout>
 #include <QPointer>
-#include <QLineEdit>
 #include <QTextEdit>
 #include <QDialogButtonBox>
 #include <QMessageBox>

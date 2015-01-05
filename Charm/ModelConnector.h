@@ -1,7 +1,6 @@
 #ifndef MODELCONNECTOR_H
 #define MODELCONNECTOR_H
 
-#include <QPixmap>
 #include "ViewFilter.h"
 #include "Core/CharmDataModel.h"
 #include "EventModelFilter.h"

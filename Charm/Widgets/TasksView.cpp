@@ -1,15 +1,12 @@
 #include <QMenu>
 #include <QPoint>
 #include <QAction>
-#include <QtDebug>
 #include <QToolBar>
 #include <QSettings>
 #include <QTreeView>
-#include <QCloseEvent>
 #include <QHeaderView>
 #include <QItemSelectionModel>
 #include <QToolBar>
-#include <QToolButton>
 #include <QCheckBox>
 #include <QTreeView>
 

@@ -1,5 +1,4 @@
 #include "X11IdleDetector.h"
-#include <QTimer>
 #include "CharmCMake.h"
 
 //TODO for Qt5 port to XCB...

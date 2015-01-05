@@ -1,4 +1,3 @@
-#include <QtDebug>
 
 #include "Core/CharmConstants.h"
 #include "ModelConnector.h"

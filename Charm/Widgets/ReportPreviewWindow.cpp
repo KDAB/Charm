@@ -1,9 +1,7 @@
-#include <QtDebug>
 #ifndef QT_NO_PRINTER
 #include <QPrinter>
 #include <QPrintDialog>
 #endif
-#include <QTextBrowser>
 
 #include "ViewHelpers.h"
 #include "ReportPreviewWindow.h"

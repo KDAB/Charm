@@ -1,5 +1,4 @@
 #include <QList>
-#include <QtDebug>
 #include <QSettings>
 
 #include "Core/CharmConstants.h"

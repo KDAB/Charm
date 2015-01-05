@@ -1,6 +1,5 @@
 #include <cmath>
 
-#include <QtDebug>
 #include <QPainter>
 
 #include <Core/Event.h>

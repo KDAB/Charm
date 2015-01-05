@@ -1,10 +1,7 @@
-#include <QtDebug>
-#include <QDebug>
 #include <QPainter>
 #include <QEvent>
 
 #include "TasksViewDelegate.h"
-#include <QApplication>
 #include <QMouseEvent>
 #include "TaskModelAdapter.h"
 #include "ViewHelpers.h"

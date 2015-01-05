@@ -1,7 +1,6 @@
 #ifndef CHARMREPORT_H
 #define CHARMREPORT_H
 
-#include <QMap>
 #include <QObject>
 
 #include "Core/Task.h"

@@ -4,7 +4,6 @@
 #include <QDialog>
 #include <QHash>
 #include <QScopedPointer>
-#include <QSortFilterProxyModel>
 
 #include "ViewFilter.h"
 

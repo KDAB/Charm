@@ -7,7 +7,6 @@
 #include "Commands/CommandMakeEvent.h"
 
 #include <QCalendarWidget>
-#include <QDateEdit>
 #include <QDialogButtonBox>
 #include <QSettings>
 #include <QTextBrowser>

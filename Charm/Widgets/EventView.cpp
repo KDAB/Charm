@@ -1,5 +1,4 @@
 #include <QMenu>
-#include <QtDebug>
 #include <QListView>
 #include <QCloseEvent>
 #include <QDateTimeEdit>

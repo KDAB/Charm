@@ -2,7 +2,6 @@
 
 #include "ApplicationCore.h"
 
-#include <QEvent>
 
 TrayIcon::TrayIcon(QObject* parent)
 {

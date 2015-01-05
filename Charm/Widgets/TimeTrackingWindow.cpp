@@ -2,9 +2,7 @@
 
 #include <QBuffer>
 #include <QSettings>
-#include <QCloseEvent>
 #include <QtAlgorithms>
-#include <QKeyEvent>
 #include <QMenuBar>
 #include <QFileInfo>
 #include <QFileDialog>

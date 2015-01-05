@@ -4,7 +4,6 @@
 #include "Core/Configuration.h"
 #include "CharmCMake.h"
 
-#include <QScopedPointer>
 
 #include "IdleDetector.h"
 #include "MacIdleDetector.h"

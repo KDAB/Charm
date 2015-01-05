@@ -1,4 +1,3 @@
-#include <QtDebug>
 #include <QDateTime>
 
 #include "Widgets/EventView.h"

@@ -1,4 +1,3 @@
-#include <QPixmap>
 #include <QApplication>
 #include <QPalette>
 

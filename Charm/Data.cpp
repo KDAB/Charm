@@ -1,4 +1,3 @@
-#include <QFile>
 #include <QIcon>
 #include <QPixmap>
 
