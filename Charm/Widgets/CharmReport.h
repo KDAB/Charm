@@ -10,7 +10,6 @@
 class QWidget;
 
 class ReportDialog;
-class StorageInterface;
 class QTextDocument;
 class ParagraphFormatCollection;
 

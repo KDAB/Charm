@@ -14,9 +14,7 @@
 
 class QModelIndex;
 
-class EventDisplay;
 class CharmCommand;
-class QAbstractItemModel;
 class EventModelFilter;
 class QToolBar;
 class QComboBox;

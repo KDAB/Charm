@@ -10,7 +10,6 @@
 class CharmCommand;
 class Configuration;
 class StorageInterface;
-class XmlSerializationException;
 
 class ControllerInterface
 {

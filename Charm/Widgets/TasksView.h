@@ -11,11 +11,8 @@
 #include "ViewModeInterface.h"
 
 class QMenu;
-class QItemSelection;
-class QModelIndex;
 class TasksViewDelegate;
 class QToolBar;
-class QToolButton;
 class QButton;
 class QTreeView;
 

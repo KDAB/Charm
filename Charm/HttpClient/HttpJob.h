@@ -10,8 +10,6 @@ namespace QKeychain {
 
 class QNetworkAccessManager;
 class QNetworkReply;
-class QProgressDialog;
-class QSslError;
 
 class HttpJob : public QObject
 {
