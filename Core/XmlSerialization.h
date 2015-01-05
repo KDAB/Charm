@@ -9,7 +9,7 @@
 
 namespace XmlSerialization {
 
-    QDomDocument createXmlTemplate( QString docClass );
+    QDomDocument createXmlTemplate(const QString &docClass );
 
     QDomElement reportElement( const QDomDocument& doc );
 

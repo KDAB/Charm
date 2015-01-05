@@ -229,7 +229,7 @@ bool SqLiteStorage::connect( Configuration& configuration )
     return true;
 }
 
-bool SqLiteStorage::migrateDatabaseDirectory( QDir oldDirectory, QDir newDirectory ) const
+bool SqLiteStorage::migrateDatabaseDirectory( QDir oldDirectory, const QDir &newDirectory ) const
 {
     if ( oldDirectory == newDirectory )
         return true;

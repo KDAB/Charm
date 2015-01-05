@@ -28,7 +28,7 @@ namespace XmlSerialization {
         return "type";
     }
 
-    QDomDocument createXmlTemplate( QString docClass )
+    QDomDocument createXmlTemplate( const QString &docClass )
     {
         QDomDocument doc( reportTagName() );
 
