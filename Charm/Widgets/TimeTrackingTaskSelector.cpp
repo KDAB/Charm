@@ -30,7 +30,6 @@ CommentEditorPopup::CommentEditorPopup( QWidget* parent )
     Q_ASSERT( events.size() == 1 );
     m_id = events.first();
     QVBoxLayout* layout = new QVBoxLayout( this );
-    layout->setMargin( 0 );
     m_edit->setTabChangesFocus( true );
     m_edit->setPlainText( DATAMODEL->eventForId( m_id ).comment() );
     layout->addWidget( m_edit );
