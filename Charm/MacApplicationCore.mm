@@ -123,6 +123,9 @@ MacApplicationCore::MacApplicationCore( QObject* parent )
         window->setWindowIcon( QIcon() );
     m_actionQuit.setIcon( QIcon() );
     QCoreApplication::setAttribute( Qt::AA_DontShowIconsInMenus );
+#if QT_VERSION >= 0x050300
+    QCoreApplication::setAttribute( Qt::AA_NativeWindows );
+#endif
 }
 
 MacApplicationCore::~MacApplicationCore()
