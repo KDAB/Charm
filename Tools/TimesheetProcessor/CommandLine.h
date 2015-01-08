@@ -7,6 +7,9 @@ class CommandLine
 {
 public:
     CommandLine(int argc, char** argv);
+    CommandLine(const QString file, const int userId);
+    CommandLine(const int userId, const int index);
+
 
     enum Mode {
         Mode_None,

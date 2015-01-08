@@ -1,0 +1,18 @@
+<!DOCTYPE charmreport>
+<charmreport type="weekly-timesheet">
+    <metadata>
+        <username></username>
+        <creation-time>2015-01-08T11:32:52Z</creation-time>
+        <charmversion>1.8.0-136-gbe24</charmversion>
+        <year>2015</year>
+        <serial-number semantics="week-number">1</serial-number>
+    </metadata>
+    <report>
+        <tasks>
+            <task taskid="9997" subscribed="0" trackable="1" parentid="0">National holiday</task>
+        </tasks>
+        <effort>
+            <event eventid="-2" installationid="1" taskid="9997" userid="0" end="2015-01-01T08:00:00Z" reportid="0" start="2015-01-01T00:00:00Z"/>
+        </effort>
+    </report>
+</charmreport>

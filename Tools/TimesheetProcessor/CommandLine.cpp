@@ -214,6 +214,18 @@ CommandLine::CommandLine(int argc, char** argv) :
 	}
 }
 
+CommandLine::CommandLine(const QString file, const int userId)
+{
+    m_filename = file;
+    m_userid = userId;
+}
+
+CommandLine::CommandLine(const int userId, const int index)
+{
+    m_userid = userId;
+    m_index = index;
+}
+
 CommandLine::Mode CommandLine::mode() const
 {
 	return m_mode;

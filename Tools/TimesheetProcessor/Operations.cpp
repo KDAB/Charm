@@ -97,6 +97,8 @@ void addTimesheet(const CommandLine& cmd)
         }
     }
 
+    uint dateTimeUploaded = QDateTime::currentMSecsSinceEpoch()/1000;// seconds since 1970-01-01
+
     // 2) log into database
     Database database;
     database.login();
@@ -111,13 +113,14 @@ void addTimesheet(const CommandLine& cmd)
         // add time sheet to time sheets list
         {
             QSqlQuery query( database.database() );
-            query.prepare( "INSERT into timesheets VALUES( 0, :filename, :original_filename, :year, :week, :total, :userid, 0)" );
+            query.prepare( "INSERT into timesheets VALUES( 0, :filename, :original_filename, :year, :week, :total, :userid, 0, :date_time_uploaded)" );
             query.bindValue( QString::fromLatin1( ":filename" ), cmd.filename() );
             query.bindValue( QString::fromLatin1( ":original_filename" ), cmd.userComment() );
             query.bindValue( QString::fromLatin1( ":year" ), year );
             query.bindValue( QString::fromLatin1( ":week" ), week );
             query.bindValue( QString::fromLatin1( ":total" ), totalSeconds );
             query.bindValue( ":userid", cmd.userid() );
+            query.bindValue( QString::fromLatin1( ":date_time_uploaded" ), dateTimeUploaded );
             if ( ! query.exec() ) {
                 QString msg = QObject::tr( "Error adding time sheet %1.").arg(cmd.filename() );
                 throw TimesheetProcessorException( msg );
@@ -162,6 +165,7 @@ void addTimesheet(const CommandLine& cmd)
                 << "total:" << totalSeconds << endl
                 << "year:" << year.toLocal8Bit().constData() << endl
                 << "week:" << week.toLocal8Bit().constData() << endl
+                << "uploadedTime:" << dateTimeUploaded << endl
                 << "index:" << index << endl;
 
     } catch (TimesheetProcessorException &e) {

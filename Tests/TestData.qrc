@@ -5,6 +5,9 @@
     <qresource prefix="/importExportTest">
         <file>Data/test-database-export.charmdatabaseexport</file>
     </qresource>
+    <qresource prefix="/timeSheetProcessorTest">
+        <file>Data/test-timesheet-report.charmreport</file>
+    </qresource>
     <qresource prefix="/mergeTaskListsTest">
         <file>Data/tasklist-merges.xml</file>
     </qresource>
