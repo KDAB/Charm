@@ -92,36 +92,48 @@ public:
 @end
 
 @interface QocoaSearchField : NSSearchField
+{
+@public
+    QPointer<QSearchFieldPrivate> pimpl;
+}
 -(BOOL)performKeyEquivalent:(NSEvent*)event;
 @end
 
 @implementation QocoaSearchField
 -(BOOL)performKeyEquivalent:(NSEvent*)event {
+    Q_ASSERT(pimpl);
+
     if ([event type] == NSKeyDown && [event modifierFlags] & NSCommandKeyMask)
     {
-        const unsigned short keyCode = [event keyCode];
-        if (keyCode == KEYCODE_A)
+        const QString characters = toQString([event characters]).toUpper();
+        const QKeySequence ks(QLatin1String("Ctrl+") +characters);
+
+        if (ks.matches(QKeySequence::SelectAll))
         {
             [self performSelector:@selector(selectText:)];
             return YES;
         }
-        else if (keyCode == KEYCODE_C)
+        else if (ks.matches(QKeySequence::Copy))
         {
             QClipboard* clipboard = QApplication::clipboard();
             clipboard->setText(toQString([self stringValue]));
             return YES;
         }
-        else if (keyCode == KEYCODE_V)
+        else if (ks.matches(QKeySequence::Paste))
         {
             QClipboard* clipboard = QApplication::clipboard();
             [self setStringValue:fromQString(clipboard->text())];
+            if (pimpl)
+                pimpl->textDidChange(clipboard->text());
             return YES;
         }
-        else if (keyCode == KEYCODE_X)
+        else if (ks.matches(QKeySequence::Cut))
         {
             QClipboard* clipboard = QApplication::clipboard();
             clipboard->setText(toQString([self stringValue]));
             [self setStringValue:@""];
+            if (pimpl)
+                pimpl->textDidChange(QString());
             return YES;
         }
     }
@@ -134,10 +146,10 @@ QSearchField::QSearchField(QWidget *parent) : QWidget(parent)
 {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 
-    NSSearchField *search = [[QocoaSearchField alloc] init];
+    QocoaSearchField *search = [[QocoaSearchField alloc] init];
 
     QSearchFieldDelegate *delegate = [[QSearchFieldDelegate alloc] init];
-    pimpl = delegate->pimpl = new QSearchFieldPrivate(this, search);
+    pimpl = delegate->pimpl = search->pimpl = new QSearchFieldPrivate(this, search);
     [search setDelegate:delegate];
 
     setupLayout(search, this);
