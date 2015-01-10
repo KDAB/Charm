@@ -240,7 +240,9 @@ void Controller::persistMetaData( Configuration& configuration )
         { MetaKey_Key_ToolButtonStyle,
           QString().setNum( configuration.toolButtonStyle ) },
         { MetaKey_Key_ShowStatusBar,
-          stringForBool( configuration.showStatusBar ) }
+          stringForBool( configuration.showStatusBar ) },
+        { MetaKey_Key_EnableCommandInterface,
+          stringForBool( configuration.enableCommandInterface ) }
     };
     int NumberOfSettings = sizeof settings / sizeof settings[0];
 
@@ -275,6 +277,7 @@ void Controller::provideMetaData( Configuration& configuration)
     loadConfigValue( MetaKey_Key_RequestEventComment, configuration.requestEventComment );
     loadConfigValue( MetaKey_Key_ToolButtonStyle, configuration.toolButtonStyle );
     loadConfigValue( MetaKey_Key_ShowStatusBar, configuration.showStatusBar );
+    loadConfigValue( MetaKey_Key_EnableCommandInterface, configuration.enableCommandInterface );
 
     CONFIGURATION.dump();
 }

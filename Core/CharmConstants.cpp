@@ -60,6 +60,7 @@ const QString MetaKey_Key_WarnUnuploadedTimesheets = "WarnUnuploadedTimesheets";
 const QString MetaKey_Key_RequestEventComment = "RequestEventComment";
 const QString MetaKey_Key_ToolButtonStyle = "ToolButtonStyle";
 const QString MetaKey_Key_ShowStatusBar = "ShowStatusBar";
+const QString MetaKey_Key_EnableCommandInterface = "EnableCommandInterface";
 
 const QString TrueString( "true" );
 const QString FalseString( "false" );

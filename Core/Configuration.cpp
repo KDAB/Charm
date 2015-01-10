@@ -50,6 +50,7 @@ Configuration::Configuration()
     , detectIdling( true )
     , warnUnuploadedTimesheets( true )
     , requestEventComment( false )
+    , enableCommandInterface( false )
     , configurationName( DEFAULT_CONFIG_GROUP )
     , installationId( 0 )
     , newDatabase( false )
@@ -63,7 +64,8 @@ Configuration::Configuration( bool _eventsInLeafsOnly, bool _oneEventAtATime, Us
                               TimeTrackerFontSize _timeTrackerFontSize,
                               DurationFormat _durationFormat, bool _detectIdling,
                               Qt::ToolButtonStyle _buttonstyle, bool _showStatusBar,
-                              bool _warnUnuploadedTimesheets, bool _requestEventComment )
+                              bool _warnUnuploadedTimesheets, bool _requestEventComment,
+                              bool _enableCommandInterface )
     : taskPrefilteringMode( _taskPrefilteringMode )
     , timeTrackerFontSize( _timeTrackerFontSize )
     , durationFormat( _durationFormat )
@@ -72,6 +74,7 @@ Configuration::Configuration( bool _eventsInLeafsOnly, bool _oneEventAtATime, Us
     , detectIdling ( _detectIdling )
     , warnUnuploadedTimesheets( _warnUnuploadedTimesheets )
     , requestEventComment( _requestEventComment )
+    , enableCommandInterface( _enableCommandInterface )
     , configurationName( DEFAULT_CONFIG_GROUP )
     , installationId( 0 )
     , newDatabase( false )
@@ -151,5 +154,6 @@ void Configuration::dump( const QString& why )
              << "--> toolButtonStyle:          " << toolButtonStyle << endl
              << "--> showStatusBar:            " << showStatusBar << endl
              << "--> warnUnuploadedTimesheets: " << warnUnuploadedTimesheets << endl
-             << "--> requestEventComment:      " << requestEventComment;
+             << "--> requestEventComment:      " << requestEventComment << endl
+             << "--> enableCommandInterface:   " << enableCommandInterface;
 }

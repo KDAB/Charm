@@ -224,6 +224,32 @@
        </property>
       </widget>
      </item>
+     <item row="6" column="0" alignment="Qt::AlignRight">
+      <widget class="QLabel" name="lbCommandInterface">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Enable command interface</string>
+       </property>
+       <property name="buddy">
+        <cstring>cbEnableCommandInterface</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="1">
+      <widget class="QCheckBox" name="cbEnableCommandInterface">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
    <item>

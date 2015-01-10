@@ -41,11 +41,16 @@ CharmPreferences::CharmPreferences( const Configuration& config,
 {
     m_ui.setupUi( this );
     const bool haveIdleDetection = ApplicationCore::instance().idleDetector()->available();
+    const bool haveCommandInterface = (ApplicationCore::instance().commandInterface() != nullptr);
+
     m_ui.cbIdleDetection->setEnabled( haveIdleDetection );
     m_ui.lbIdleDetection->setEnabled( haveIdleDetection );
     m_ui.cbIdleDetection->setChecked( config.detectIdling && m_ui.cbIdleDetection->isEnabled() );
     m_ui.cbWarnUnuploadedTimesheets->setChecked( config.warnUnuploadedTimesheets );
     m_ui.cbRequestEventComment->setChecked( config.requestEventComment );
+    m_ui.lbCommandInterface->setEnabled( haveCommandInterface );
+    m_ui.cbEnableCommandInterface->setEnabled( haveCommandInterface );
+    m_ui.cbEnableCommandInterface->setChecked( haveCommandInterface && config.enableCommandInterface );
 
     connect(m_ui.cbWarnUnuploadedTimesheets, SIGNAL(toggled(bool)),
             SLOT(slotWarnUnuploadedChanged(bool)));
@@ -111,6 +116,11 @@ bool CharmPreferences::warnUnuploadedTimesheets() const
 bool CharmPreferences::requestEventComment() const
 {
     return m_ui.cbRequestEventComment->isChecked();
+}
+
+bool CharmPreferences::enableCommandInterface() const
+{
+    return m_ui.cbEnableCommandInterface->isChecked();
 }
 
 Configuration::DurationFormat CharmPreferences::durationFormat() const

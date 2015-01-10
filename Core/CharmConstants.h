@@ -70,6 +70,7 @@ extern const QString MetaKey_Key_WarnUnuploadedTimesheets;
 extern const QString MetaKey_Key_RequestEventComment;
 extern const QString MetaKey_Key_ToolButtonStyle;
 extern const QString MetaKey_Key_ShowStatusBar;
+extern const QString MetaKey_Key_EnableCommandInterface;
 
 extern const QString TrueString;
 extern const QString FalseString;

@@ -75,6 +75,20 @@ SET(
 
 SET(CharmApplication_LIBS)
 
+IF( CHARM_CI_SUPPORT )
+    LIST( APPEND CharmApplication_SRCS
+        CI/CharmCommandInterface.cpp
+        CI/CharmCommandServer.cpp
+        CI/CharmCommandSession.cpp
+        )
+    IF( CHARM_CI_LOCALSERVER )
+        LIST( APPEND CharmApplication_SRCS CI/CharmLocalCommandServer.cpp )
+    ENDIF()
+    IF( CHARM_CI_TCPSERVER )
+        LIST( APPEND CharmApplication_SRCS CI/CharmTCPCommandServer.cpp )
+    ENDIF()
+ENDIF()
+
 IF( CHARM_IDLE_DETECTION )
     IF( APPLE )
         LIST( APPEND CharmApplication_SRCS Idle/MacIdleDetector.mm )

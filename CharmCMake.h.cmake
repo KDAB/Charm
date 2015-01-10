@@ -8,3 +8,11 @@
 #define CHARM_IDLE_TIME @CHARM_IDLE_TIME@
 /* Define the url where to check for updates */
 #define UPDATE_CHECK_URL "@UPDATE_CHECK_URL@"
+/* Defined if command interface is enabled */
+#cmakedefine CHARM_CI_SUPPORT
+#ifdef CHARM_CI_SUPPORT
+/* Defined if TCP command interface is enabled */
+#cmakedefine CHARM_CI_TCPSERVER
+/* Defined if local socket command interface is enabled */
+#cmakedefine CHARM_CI_LOCALSERVER
+#endif

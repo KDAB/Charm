@@ -48,6 +48,7 @@
 
 // FIXME read configuration name from command line
 
+class CharmCommandInterface;
 class IdleDetector;
 class QSessionManager;
 
@@ -76,6 +77,7 @@ public:
     DateChangeWatcher* dateChangeWatcher() const;
 
     IdleDetector* idleDetector();
+    CharmCommandInterface* commandInterface() const;
     State state() const;
 
     void createWindowMenu( QMenuBar *menuBar );
@@ -160,6 +162,7 @@ private:
     TasksWindow m_tasksWindow;
     EventWindow m_eventWindow;
     IdleDetector* m_idleDetector;
+    CharmCommandInterface* m_cmdInterface;
     bool m_timeTrackerHiddenFromSystrayToggle;
     bool m_tasksWindowHiddenFromSystrayToggle;
     bool m_eventWindowHiddenFromSystrayToggle;

@@ -56,6 +56,10 @@
 #include <algorithm>
 #include <functional>
 
+#ifdef CHARM_CI_SUPPORT
+#  include "CI/CharmCommandInterface.h"
+#endif
+
 ApplicationCore* ApplicationCore::m_instance = nullptr;
 
 ApplicationCore::ApplicationCore( QObject* parent )
@@ -79,6 +83,7 @@ ApplicationCore::ApplicationCore( QObject* parent )
     , m_actionWeeklyTimesheetReport( this )
     , m_actionMonthlyTimesheetReport( this )
     , m_idleDetector( nullptr )
+    , m_cmdInterface( nullptr )
     , m_timeTrackerHiddenFromSystrayToggle( false )
     , m_tasksWindowHiddenFromSystrayToggle( false )
     , m_eventWindowHiddenFromSystrayToggle( false )
@@ -238,6 +243,11 @@ ApplicationCore::ApplicationCore( QObject* parent )
 
     if ( QCoreApplication::applicationDirPath().endsWith(QLatin1String("MacOS") ))
         QCoreApplication::addLibraryPath( QCoreApplication::applicationDirPath() + "/../plugins");
+
+    // set up command interface
+#ifdef CHARM_CI_SUPPORT
+    m_cmdInterface = new CharmCommandInterface( this );
+#endif // CHARM_CI_SUPPORT
 
     // Ladies and gentlemen, please raise upon your seats -
     // the show is about to begin:
@@ -530,10 +540,17 @@ void ApplicationCore::leaveConnectingState()
 
 void ApplicationCore::enterConnectedState()
 {
+#ifdef CHARM_CI_SUPPORT
+    m_cmdInterface->start();
+#endif
 }
 
 void ApplicationCore::leaveConnectedState()
 {
+#ifdef CHARM_CI_SUPPORT
+    m_cmdInterface->stop();
+#endif
+
     m_controller.persistMetaData(CONFIGURATION);
 }
 
@@ -720,6 +737,9 @@ void ApplicationCore::slotSaveConfiguration()
     if (state() == Connected)
     {
         m_controller.persistMetaData(CONFIGURATION);
+#ifdef CHARM_CI_SUPPORT
+        m_cmdInterface->configurationChanged();
+#endif
     }
     std::for_each( m_windows.begin(), m_windows.end(),
                    std::mem_fun( &CharmWindow::configurationChanged ) );
@@ -738,6 +758,11 @@ DateChangeWatcher* ApplicationCore::dateChangeWatcher() const
 IdleDetector* ApplicationCore::idleDetector()
 {
     return m_idleDetector;
+}
+
+CharmCommandInterface* ApplicationCore::commandInterface() const
+{
+    return m_cmdInterface;
 }
 
 void ApplicationCore::setHttpActionsVisible( bool visible )

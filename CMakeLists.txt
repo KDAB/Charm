@@ -215,6 +215,12 @@ SET( ICONS_DIR "${CMAKE_SOURCE_DIR}/Charm/Icons" )
 OPTION( CHARM_IDLE_DETECTION "Build the Charm idle detector" ON )
 OPTION( CHARM_TIMESHEET_TOOLS "Build the Charm timesheet tools" OFF )
 set( CHARM_IDLE_TIME "360" CACHE STRING "Set the idle timeout (default 360)" )
+OPTION( CHARM_CI_SUPPORT "Build Charm with command interface support" OFF )
+
+IF( CHARM_CI_SUPPORT )
+    OPTION( CHARM_CI_TCPSERVER "Build Charm with TCP command interface support" ON )
+    OPTION( CHARM_CI_LOCALSERVER "Build Charm with local socket command interface support" ON )
+ENDIF()
 
 ADD_SUBDIRECTORY( Core )
 ADD_SUBDIRECTORY( Charm )
