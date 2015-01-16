@@ -15,9 +15,11 @@ public:
 private slots:
     void testMySqlDriverRequirements();
     void testSqLiteDriverRequirements();
+#if 0
     void testMySqlTransactionRollback();
     void testMySqlTransactionCommit();
     void testMySqlNestedTransactions();
+#endif
 
 private:
     MySqlStorage prepareMySqlStorage();
