@@ -81,10 +81,6 @@ SOURCES += \
     Charm/Widgets/WeeklyTimesheet.cpp \
 
 SOURCES += \
-    Charm/Qocoa/qbutton_nonmac.cpp \
-    Charm/Qocoa/qsearchfield_nonmac.cpp
-
-SOURCES += \
     Charm/Keychain/keychain.cpp \
     Charm/Keychain/keychain_unsecure.cpp
 
@@ -138,8 +134,6 @@ HEADERS += \
     Charm/Widgets/ReportPreviewWindow.h \
     Charm/Widgets/BillDialog.h \
     Charm/Widgets/CharmAboutDialog.h \
-    Charm/Qocoa/qbutton.h \
-    Charm/Qocoa/qsearchfield.h \
     Charm/Commands/CommandImportFromXml.h \
     Charm/Commands/CommandModifyTask.h \
     Charm/Commands/CommandAddTask.h \

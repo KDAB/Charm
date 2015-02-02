@@ -29,8 +29,6 @@
 #include "Commands/CommandAddTask.h"
 #include "Commands/CommandModifyTask.h"
 #include "Commands/CommandDeleteTask.h"
-#include "Qocoa/qbutton.h"
-#include "Qocoa/qsearchfield.h"
 
 TasksView::TasksView( QToolBar* toolBar, QWidget* parent )
     : QWidget( parent )
@@ -42,8 +40,8 @@ TasksView::TasksView( QToolBar* toolBar, QWidget* parent )
     , m_actionDeleteTask( this )
     , m_actionExpandTree( this )
     , m_actionCollapseTree( this )
-    , m_showCurrentOnly( new QButton( toolBar, QButton::Recessed ) )
-    , m_showSubscribedOnly( new QButton( toolBar, QButton::Recessed ) )
+    , m_showCurrentOnly( new QAction( toolBar ) )
+    , m_showSubscribedOnly( new QAction( toolBar ) )
     , m_treeView( new QTreeView( this ) )
 {
     QVBoxLayout* layout = new QVBoxLayout( this );
@@ -99,27 +97,20 @@ TasksView::TasksView( QToolBar* toolBar, QWidget* parent )
     // filter setup
     m_showCurrentOnly->setText( tr( "Current" ) );
     m_showCurrentOnly->setCheckable( true );
-#ifdef Q_OS_OSX
-    m_showCurrentOnly->setMinimumWidth( 60 );
-#endif
-    toolBar->addWidget( m_showCurrentOnly );
-    connect( m_showCurrentOnly, SIGNAL( clicked( bool ) ),
+
+    toolBar->addAction( m_showCurrentOnly );
+    connect( m_showCurrentOnly, SIGNAL( triggered(bool) ),
              SLOT( taskPrefilteringChanged() ) );
 
     m_showSubscribedOnly->setText( tr( "Selected" ) );
     m_showSubscribedOnly->setCheckable( true );
-#ifdef Q_OS_OSX
-    m_showSubscribedOnly->setMinimumWidth( 70 );
-#endif
-    toolBar->addWidget( m_showSubscribedOnly );
-    connect( m_showSubscribedOnly, SIGNAL( clicked( bool ) ),
+
+    toolBar->addAction( m_showSubscribedOnly );
+    connect( m_showSubscribedOnly, SIGNAL( triggered( bool ) ),
              SLOT( taskPrefilteringChanged() ) );
 
-    QWidget *stretch = new QWidget( this );
-    stretch->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
-    toolBar->addWidget( stretch );
+    QLineEdit* searchField = new QLineEdit( this );
 
-    QSearchField* searchField = new QSearchField( this );
     connect( searchField, SIGNAL(textChanged(QString)),
              SLOT(slotFiltertextChanged(QString)) );
     toolBar->addWidget( searchField );

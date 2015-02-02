@@ -13,7 +13,6 @@
 class QMenu;
 class TasksViewDelegate;
 class QToolBar;
-class QButton;
 class QTreeView;
 
 class TasksView : public QWidget,
@@ -72,8 +71,8 @@ private:
     QAction m_actionDeleteTask;
     QAction m_actionExpandTree;
     QAction m_actionCollapseTree;
-    QButton* m_showCurrentOnly;
-    QButton* m_showSubscribedOnly;
+    QAction* m_showCurrentOnly;
+    QAction* m_showSubscribedOnly;
     QTreeView* m_treeView;
 };
 

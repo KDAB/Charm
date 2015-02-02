@@ -113,15 +113,6 @@ ELSEIF ( UNIX )
     ENDIF()
 ENDIF()
 
-QT_WRAP_CPP( MOC_QOCOA_SRCS Qocoa/qbutton.h Qocoa/qsearchfield.h )
-
-LIST( APPEND CharmApplication_SRCS ${MOC_QOCOA_SRCS} )
-IF (APPLE)
-    LIST( APPEND CharmApplication_SRCS Qocoa/qbutton_mac.mm Qocoa/qsearchfield_mac.mm )
-ELSE()
-    LIST( APPEND CharmApplication_SRCS Qocoa/qbutton_nonmac.cpp Qocoa/qsearchfield_nonmac.cpp )
-ENDIF()
-
 QT_WRAP_UI(
     UiGenerated_SRCS
     Widgets/CommentEditorPopup.ui
