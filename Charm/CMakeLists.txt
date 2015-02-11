@@ -27,6 +27,7 @@ SET(
     HttpClient/HttpJob.cpp
     HttpClient/GetProjectCodesJob.cpp
     HttpClient/UploadTimesheetJob.cpp
+    HttpClient/GetUserInfoJob.cpp
     Idle/IdleDetector.cpp
     Reports/TimesheetInfo.cpp
     Reports/MonthlyTimesheetXmlWriter.cpp

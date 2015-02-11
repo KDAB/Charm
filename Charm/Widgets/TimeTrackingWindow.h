@@ -66,6 +66,7 @@ public slots:
     void slotExportTasks();
     void maybeIdle( IdleDetector* idleDetector );
     void slotTasksDownloaded( HttpJob* );
+    void slotUserInfoDownloaded( HttpJob* );
 
 protected:
 
@@ -93,6 +94,7 @@ private:
     void showPreview( ReportConfigurationDialog*, int result );
     //ugly but private:
     void importTasksFromDeviceOrFile( QIODevice* device, const QString& filename );
+    void getUserInfo();
 
     WeeklyTimesheetConfigurationDialog* m_weeklyTimesheetDialog;
     MonthlyTimesheetConfigurationDialog* m_monthlyTimesheetDialog;
@@ -101,6 +103,7 @@ private:
     QVector<WeeklySummary> m_summaries;
     QTimer m_checkUploadedSheetsTimer;
     BillDialog *m_billDialog;
+    QString m_user;
 };
 
 #endif

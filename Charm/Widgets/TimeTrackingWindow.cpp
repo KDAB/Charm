@@ -38,6 +38,7 @@
 #include "WeeklyTimesheet.h"
 #include "MonthlyTimesheet.h"
 #include "MonthlyTimesheetConfigurationDialog.h"
+#include "HttpClient/GetUserInfoJob.h"
 
 TimeTrackingWindow::TimeTrackingWindow( QWidget* parent )
     : CharmWindow( tr( "Time Tracker" ), parent )
@@ -568,6 +569,8 @@ void TimeTrackingWindow::importTasksFromDeviceOrFile( QIODevice* device, const Q
                 .arg( QString::number( merger.modifiedTasks().count() ),
                       QString::number( merger.addedTasks().count() ) );
             QMessageBox::information( this, tr( "Tasks Import" ), detailsText );
+
+	    getUserInfo();
         }
         QSettings settings;
         settings.beginGroup( "httpconfig" );
@@ -576,6 +579,13 @@ void TimeTrackingWindow::importTasksFromDeviceOrFile( QIODevice* device, const Q
         setValueIfNotNull( &settings, QLatin1String("loginUrl"), exporter.metadata( QLatin1String("login-url") ) );
         setValueIfNotNull( &settings, QLatin1String("timesheetUploadUrl"), exporter.metadata( QLatin1String("timesheet-upload-url") ) );
         setValueIfNotNull( &settings, QLatin1String("projectCodeDownloadUrl"), exporter.metadata( QLatin1String("project-code-download-url") ) );
+	settings.endGroup();
+        settings.beginGroup( "users" );
+        settings.setValue( QLatin1String("portalUrl"), QLatin1String("https://lotsofcake.kdab.com:443/KdabHome/apps/portal/"));
+        settings.setValue( QLatin1String("loginUrl"), QLatin1String("https://lotsofcake.kdab.com:443/KdabHome/apps/portal/j_security_check"));
+        settings.setValue( QLatin1String("userInfoDownloadUrl"), QLatin1String("https://lotsofcake.kdab.com/KdabHome/rest/user"));
+        settings.endGroup();
+
         ApplicationCore::instance().setHttpActionsVisible( true );
     } catch( const CharmException& e ) {
         const QString message = e.what().isEmpty()
@@ -586,4 +596,47 @@ void TimeTrackingWindow::importTasksFromDeviceOrFile( QIODevice* device, const Q
     }
 }
 
+void  TimeTrackingWindow::getUserInfo()
+{
+    QSettings settings;
+    settings.beginGroup( "httpconfig" );
+    m_user = settings.value("username").toString();
+    settings.endGroup();
+
+    settings.beginGroup( "users" );
+    settings.setValue( QLatin1String("userInfoDownloadUrl"), QLatin1String("https://lotsofcake.kdab.com/KdabHome/rest/user?user=") + m_user );
+    settings.endGroup();
+
+    GetUserInfoJob *client = new GetUserInfoJob(this,"users");
+    client->schema() = m_user;
+    HttpJobProgressDialog* dialog = new HttpJobProgressDialog( client, this );
+    dialog->setWindowTitle( tr("Downloading weekly hours") );
+    connect( client, SIGNAL(finished(HttpJob*)), this, SLOT(slotUserInfoDownloaded(HttpJob*)) );
+    client->start();
+}
+
+void TimeTrackingWindow::slotUserInfoDownloaded( HttpJob* job_ )
+{
+    GetUserInfoJob * job = qobject_cast<GetUserInfoJob *>( job_ );
+    Q_ASSERT( job );
+    if ( job->error() == HttpJob::Canceled )
+        return;
+
+    if ( job->error() ) {
+        QMessageBox::critical( this, tr("Error"), tr("Could not download weekly hours: %1").arg( job->errorString() ) );
+        return;
+    }
+
+    QByteArray readData = job->userInfo();
+    int index = readData.indexOf("weeklyHours");
+    index += 13;
+    QString weeklyH = readData.mid(index,2).trimmed();
+    if (weeklyH.length() != 2 )
+        weeklyH = "40";
+    QSettings settings;
+    settings.beginGroup( "users" );
+    settings.setValue( QLatin1String("weeklyhours"), weeklyH);
+    settings.endGroup();
+
+}
 #include "moc_TimeTrackingWindow.cpp"

@@ -30,6 +30,8 @@ private:
     int m_numberOfWeeks;
     int m_monthNumber;
     int m_yearOfMonth;
+    QString m_weeklyhours;
+    float m_dailyhours;
 };
 
 #endif
