@@ -4,7 +4,7 @@
 #include <QFile>
 #include <QMessageBox>
 #include <QPushButton>
-
+#include <QSettings>
 #include <Core/Dates.h>
 
 #include "ViewHelpers.h"
@@ -13,7 +13,7 @@
 
 namespace {
     typedef QHash<int, QVector<int> > WeeksByYear;
-    static const float SecondsInDay = 60. * 60. * 8. /* eight hour work day */;
+    static float SecondsInDay = 60. * 60. * 8. /* eight hour work day */;
 }
 
 MonthlyTimeSheetReport::MonthlyTimeSheetReport( QWidget* parent )
@@ -22,6 +22,17 @@ MonthlyTimeSheetReport::MonthlyTimeSheetReport( QWidget* parent )
     , m_monthNumber( 0 )
     , m_yearOfMonth( 0 )
 {
+    QSettings settings;
+    settings.beginGroup("users");
+    m_weeklyhours = settings.value("weeklyhours").toString().trimmed();
+    settings.endGroup();
+    m_dailyhours = m_weeklyhours.toInt() / 5;
+    if (m_dailyhours>0 &&m_dailyhours<=8)
+    {
+        SecondsInDay = 60. * 60. * m_dailyhours;
+    }
+    else
+        m_dailyhours = 8;
 }
 
 MonthlyTimeSheetReport::~MonthlyTimeSheetReport()
@@ -216,7 +227,7 @@ void MonthlyTimeSheetReport::update()
                 addTblHdr( headerDayRow, label );
             }
             addTblHdr( headerDayRow, QString() );
-            addTblHdr( headerDayRow, tr("8 hours") );
+            addTblHdr( headerDayRow, QString::number(m_dailyhours) + tr(" hours") );
         }
 
         for ( int i = 0; i < timeSheetInfo.size(); ++i )
