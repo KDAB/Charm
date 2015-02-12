@@ -3,6 +3,8 @@
 
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
+#include <QNetworkRequest>
+#include <QAuthenticator>
 #include <QSettings>
 
 #if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
@@ -40,9 +42,12 @@ HttpJob::HttpJob(QObject* parent)
     , m_currentState(Ready)
     , m_errorCode(NoError)
     , m_lastAuthenticationFailed(true)
+    , m_authenticationDoneAlready(false)
     , m_passwordReadError(false)
 {
     connect(m_networkManager, SIGNAL(finished(QNetworkReply *)), SLOT(handle(QNetworkReply *)));
+    connect(m_networkManager, SIGNAL(authenticationRequired(QNetworkReply*,QAuthenticator*)), SLOT(authenticationRequired(QNetworkReply*,QAuthenticator*)));
+
     QSettings settings;
     settings.beginGroup("httpconfig");
     setUsername(settings.value(QLatin1String("username")).toString());
@@ -187,8 +192,15 @@ void HttpJob::doCancel()
 
 void HttpJob::next()
 {
+    /* go to the next state */
+    ++m_currentState;
+
+    /* skip login if authenticationRequired() was called meanwhile */
+    if (m_authenticationDoneAlready && m_currentState == Login)
+        ++m_currentState;
+
     /* finish if next state is not found */
-    if (!execute(++m_currentState, m_networkManager)) {
+    if (!execute(m_currentState, m_networkManager)) {
         emitFinished();
         return;
     }
@@ -275,6 +287,13 @@ bool HttpJob::handle(QNetworkReply *reply)
     }
 
     return false;
+}
+
+void HttpJob::authenticationRequired(QNetworkReply *reply , QAuthenticator *authenticator)
+{
+    authenticator->setUser(m_username);
+    authenticator->setPassword(m_password);
+    m_authenticationDoneAlready = true;
 }
 
 void HttpJob::emitFinished()
