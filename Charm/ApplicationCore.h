@@ -5,6 +5,7 @@
 
   Copyright (C) 2014-2015 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
 
+  Author: Mirko Boehm <mirko.boehm@kdab.com>
   Author: Frank Osterfeld <frank.osterfeld@kdab.com>
 
   This program is free software; you can redistribute it and/or modify
@@ -23,15 +24,6 @@
 
 #ifndef CHARM_APPLICATION_H
 #define CHARM_APPLICATION_H
-
-/*
- *  Application.h
- *  Charm
- *
- *  Created by Mirko Boehm on 9/15/06.
- *  Copyright 2006 KDAB. All rights reserved.
- *
- */
 
 #include <QMenu>
 #include <QAction>
