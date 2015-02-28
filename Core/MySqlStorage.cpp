@@ -22,13 +22,6 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/*
- * MySqlStorage.cpp
- *
- *  Created on: Apr 23, 2008
- *      Author: mirko
- */
-
 #include <QStringList>
 #include <QSqlQuery>
 #include <QProcess>

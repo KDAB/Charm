@@ -3,8 +3,9 @@
 
   This file is part of Charm, a task-based time tracking application.
 
-  Copyright (C) 2014-2015 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2008-2015 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
 
+  Author: Mirko Boehm <mirko.boehm@kdab.com>
   Author: Frank Osterfeld <frank.osterfeld@kdab.com>
 
   This program is free software; you can redistribute it and/or modify
@@ -21,12 +22,6 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/*
- * TaskEditor.cpp
- *
- *  Created on: Jul 4, 2008
- *      Author: mirko
- */
 #include <QCalendarWidget>
 #include <QCheckBox>
 #include <QPushButton>
