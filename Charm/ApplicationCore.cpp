@@ -222,7 +222,7 @@ ApplicationCore::ApplicationCore( QObject* parent )
     // add default plugin path for deployment
     QCoreApplication::addLibraryPath( QCoreApplication::applicationDirPath() + "/plugins" );
 
-    if ( QCoreApplication::applicationDirPath().endsWith("MacOS") )
+    if ( QCoreApplication::applicationDirPath().endsWith(QLatin1String("MacOS") ))
         QCoreApplication::addLibraryPath( QCoreApplication::applicationDirPath() + "/../plugins");
 
     // Ladies and gentlemen, please raise upon your seats -
