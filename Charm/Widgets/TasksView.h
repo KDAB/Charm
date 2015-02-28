@@ -75,7 +75,7 @@ private slots:
 
     void slotEventActivated( EventId );
     void slotEventDeactivated( EventId );
-    // this method is called everytime the UI actions need update, for
+    // this method is called every time the UI actions need update, for
     // example when the current index changes:
     void configureUi();
     void restoreGuiState();

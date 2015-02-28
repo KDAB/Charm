@@ -110,7 +110,7 @@ QSize TimeTrackingView::minimumSizeHint() const
         const QRect taskColumnFieldRect = narrowFontMetrics.boundingRect(
             tr( "KDABStuffngy" ) )
                                           .adjusted( 0, 0, 2 * Margin, 2 * Margin );
-        // the tracking row needs to accomodate the task selector widget
+        // the tracking row needs to accommodate the task selector widget
         const QSize taskSelectorSizeHint = m_taskSelector->sizeHint();
         const int trackingRowHeight = qMax( fieldHeight, taskSelectorSizeHint.height() + 2 * Margin );
 

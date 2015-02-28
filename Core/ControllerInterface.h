@@ -48,7 +48,7 @@ public:
     virtual void provideMetaData( Configuration& ) = 0;
 
     /** Add an event.
-        Return a valid event if successfull. */
+        Return a valid event if successful. */
     virtual Event makeEvent( const Task& ) = 0;
     /** Add an event, copying data from another event. */
     virtual Event cloneEvent( const Event& ) = 0;

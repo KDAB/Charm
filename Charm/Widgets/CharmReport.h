@@ -50,7 +50,7 @@ public:
     virtual bool prepare();
 
     // create the report.
-    // return true if successfull, false otherwise
+    // return true if successful, false otherwise
     virtual bool create() = 0;
 
     // return the report as a QTextDocument
