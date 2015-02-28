@@ -35,7 +35,7 @@ class JobExecutor;
 class JobPrivate : public QObject {
     Q_OBJECT
 public:
-    JobPrivate( const QString& service_ )
+    explicit JobPrivate( const QString& service_ )
         : error( NoError )
         , service( service_ )
         , autoDelete( true )
