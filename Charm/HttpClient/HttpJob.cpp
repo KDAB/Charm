@@ -66,7 +66,7 @@ HttpJob::HttpJob(QObject* parent)
     , m_lastAuthenticationFailed(true)
     , m_passwordReadError(false)
 {
-    connect(m_networkManager, SIGNAL(finished(QNetworkReply *)), SLOT(handle(QNetworkReply *)));
+    connect(m_networkManager, SIGNAL(finished(QNetworkReply*)), SLOT(handle(QNetworkReply*)));
     QSettings settings;
     settings.beginGroup("httpconfig");
     setUsername(settings.value(QLatin1String("username")).toString());

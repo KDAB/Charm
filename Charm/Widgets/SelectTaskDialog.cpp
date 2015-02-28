@@ -72,16 +72,16 @@ SelectTaskDialog::SelectTaskDialog( QWidget* parent )
     m_ui->treeView->expandAll();
     m_ui->treeView->header()->hide();
     connect( m_ui->treeView->selectionModel(),
-             SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ),
-             SLOT( slotCurrentItemChanged( const QModelIndex&, const QModelIndex& ) ) );
+             SIGNAL(currentChanged(QModelIndex,QModelIndex)),
+             SLOT(slotCurrentItemChanged(QModelIndex,QModelIndex)) );
     connect( m_ui->treeView,
-             SIGNAL( doubleClicked( const QModelIndex& ) ),
-             SLOT( slotDoubleClicked( const QModelIndex& ) ) );
+             SIGNAL(doubleClicked(QModelIndex)),
+             SLOT(slotDoubleClicked(QModelIndex)) );
 
-    connect( m_ui->filter, SIGNAL( textChanged( QString ) ),
-             SLOT( slotFilterTextChanged( QString ) ) );
-    connect( this, SIGNAL( accepted() ),
-             SLOT( slotAccepted() ) );
+    connect( m_ui->filter, SIGNAL(textChanged(QString)),
+             SLOT(slotFilterTextChanged(QString)) );
+    connect( this, SIGNAL(accepted()),
+             SLOT(slotAccepted()) );
 
     QSettings settings;
     settings.beginGroup( staticMetaObject.className() );

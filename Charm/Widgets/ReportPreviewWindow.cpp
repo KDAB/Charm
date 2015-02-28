@@ -37,17 +37,17 @@ ReportPreviewWindow::ReportPreviewWindow( QWidget* parent )
 {
     m_ui->setupUi( this );
     setAttribute( Qt::WA_DeleteOnClose );
-    connect( m_ui->pushButtonClose, SIGNAL( clicked() ),
-             SLOT( slotClose() ) );
-    connect( m_ui->pushButtonUpdate, SIGNAL( clicked() ),
-             SLOT( slotUpdate() ) );
-    connect( m_ui->pushButtonSave, SIGNAL( clicked() ),
-             SLOT( slotSaveToXml() ) );
-    connect( m_ui->pushButtonSaveTotals, SIGNAL( clicked() ),
-             SLOT( slotSaveToText() ) );
+    connect( m_ui->pushButtonClose, SIGNAL(clicked()),
+             SLOT(slotClose()) );
+    connect( m_ui->pushButtonUpdate, SIGNAL(clicked()),
+             SLOT(slotUpdate()) );
+    connect( m_ui->pushButtonSave, SIGNAL(clicked()),
+             SLOT(slotSaveToXml()) );
+    connect( m_ui->pushButtonSaveTotals, SIGNAL(clicked()),
+             SLOT(slotSaveToText()) );
 #ifndef QT_NO_PRINTER
-    connect( m_ui->pushButtonPrint, SIGNAL( clicked() ),
-             SLOT( slotPrint() ) );
+    connect( m_ui->pushButtonPrint, SIGNAL(clicked()),
+             SLOT(slotPrint()) );
 #else
     m_ui->pushButtonPrint->setEnabled(false);
 #endif

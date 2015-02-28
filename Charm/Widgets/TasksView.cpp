@@ -72,30 +72,30 @@ TasksView::TasksView( QToolBar* toolBar, QWidget* parent )
     layout->addWidget( m_treeView );
 
     m_treeView->setItemDelegate( m_delegate );
-    connect( m_delegate, SIGNAL( editingStateChanged() ),
-             SLOT( configureUi() ) );
+    connect( m_delegate, SIGNAL(editingStateChanged()),
+             SLOT(configureUi()) );
 
     // set up actions
     m_actionNewTask.setText( tr( "New &Task" ) );
     m_actionNewTask.setShortcut( QKeySequence::New );
     m_actionNewTask.setIcon( Data::newTaskIcon() );
     toolBar->addAction( &m_actionNewTask );
-    connect( &m_actionNewTask, SIGNAL( triggered( bool ) ),
-             SLOT( actionNewTask() ) );
+    connect( &m_actionNewTask, SIGNAL(triggered(bool)),
+             SLOT(actionNewTask()) );
 
     m_actionNewSubTask.setText( tr( "New &Subtask" ) );
     m_actionNewSubTask.setShortcut( Qt::META + Qt::Key_N );
     m_actionNewSubTask.setIcon( Data::newSubtaskIcon() );
     toolBar->addAction( &m_actionNewSubTask );
-    connect( &m_actionNewSubTask, SIGNAL( triggered( bool ) ),
-             SLOT( actionNewSubTask() ) );
+    connect( &m_actionNewSubTask, SIGNAL(triggered(bool)),
+             SLOT(actionNewSubTask()) );
 
     m_actionEditTask.setText( tr( "Edit Task" ) );
     m_actionEditTask.setShortcut( Qt::CTRL + Qt::Key_E );
     m_actionEditTask.setIcon( Data::editTaskIcon() );
     toolBar->addAction( &m_actionEditTask );
-    connect( &m_actionEditTask, SIGNAL( triggered( bool ) ),
-             SLOT( actionEditTask() ) );
+    connect( &m_actionEditTask, SIGNAL(triggered(bool)),
+             SLOT(actionEditTask()) );
 
     m_actionDeleteTask.setText( tr( "Delete Task" ) );
     QList<QKeySequence> deleteShortcuts;
@@ -106,31 +106,31 @@ TasksView::TasksView( QToolBar* toolBar, QWidget* parent )
     m_actionDeleteTask.setShortcuts(deleteShortcuts);
     m_actionDeleteTask.setIcon( Data::deleteTaskIcon() );
     toolBar->addAction( &m_actionDeleteTask );
-    connect( &m_actionDeleteTask, SIGNAL( triggered( bool ) ),
-             SLOT( actionDeleteTask() ) );
+    connect( &m_actionDeleteTask, SIGNAL(triggered(bool)),
+             SLOT(actionDeleteTask()) );
 
     m_actionExpandTree.setText( tr( "Expand All" ) );
-    connect( &m_actionExpandTree, SIGNAL( triggered ( bool ) ),
-             m_treeView, SLOT( expandAll() ) );
+    connect( &m_actionExpandTree, SIGNAL(triggered(bool)),
+             m_treeView, SLOT(expandAll()) );
 
     m_actionCollapseTree.setText( tr( "Collapse All" ) );
-    connect( &m_actionCollapseTree, SIGNAL( triggered ( bool ) ),
-             m_treeView, SLOT( collapseAll() ) );
+    connect( &m_actionCollapseTree, SIGNAL(triggered(bool)),
+             m_treeView, SLOT(collapseAll()) );
 
     // filter setup
     m_showCurrentOnly->setText( tr( "Current" ) );
     m_showCurrentOnly->setCheckable( true );
 
     toolBar->addAction( m_showCurrentOnly );
-    connect( m_showCurrentOnly, SIGNAL( triggered(bool) ),
-             SLOT( taskPrefilteringChanged() ) );
+    connect( m_showCurrentOnly, SIGNAL(triggered(bool)),
+             SLOT(taskPrefilteringChanged()) );
 
     m_showSubscribedOnly->setText( tr( "Selected" ) );
     m_showSubscribedOnly->setCheckable( true );
 
     toolBar->addAction( m_showSubscribedOnly );
-    connect( m_showSubscribedOnly, SIGNAL( triggered( bool ) ),
-             SLOT( taskPrefilteringChanged() ) );
+    connect( m_showSubscribedOnly, SIGNAL(triggered(bool)),
+             SLOT(taskPrefilteringChanged()) );
 
     QLineEdit* searchField = new QLineEdit( this );
 
@@ -264,8 +264,8 @@ void TasksView::configureUi()
          m_treeView->setModel( filter );
          const QItemSelectionModel* smodel =  m_treeView->selectionModel();
          connect( smodel, SIGNAL(currentChanged(QModelIndex,QModelIndex)), SLOT(configureUi()) );
-         connect( smodel, SIGNAL(selectionChanged(QItemSelection, QItemSelection)), SLOT(configureUi()) );
-         connect( smodel, SIGNAL(currentColumnChanged(QModelIndex, QModelIndex)), SLOT(configureUi()) );
+         connect( smodel, SIGNAL(selectionChanged(QItemSelection,QItemSelection)), SLOT(configureUi()) );
+         connect( smodel, SIGNAL(currentColumnChanged(QModelIndex,QModelIndex)), SLOT(configureUi()) );
          connect( filter, SIGNAL(eventActivationNotice(EventId)),
                   SLOT(slotEventActivated(EventId)) );
          connect( filter, SIGNAL(eventDeactivationNotice(EventId)),

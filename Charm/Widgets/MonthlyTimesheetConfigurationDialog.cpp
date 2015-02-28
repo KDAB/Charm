@@ -48,19 +48,19 @@ MonthlyTimesheetConfigurationDialog::MonthlyTimesheetConfigurationDialog( QWidge
     connect( m_ui->buttonBox, SIGNAL(accepted()), this, SLOT(accept()) );
     connect( m_ui->buttonBox, SIGNAL(rejected()), this, SLOT(reject()) );
 
-    connect( m_ui->comboBoxMonth, SIGNAL( currentIndexChanged( int ) ),
-             SLOT( slotMonthComboItemSelected( int ) ) );
-    connect( m_ui->toolButtonSelectTask, SIGNAL( clicked() ),
-             SLOT( slotSelectTask() ) );
-    connect( m_ui->checkBoxSubTasksOnly, SIGNAL( toggled( bool ) ),
-             SLOT( slotCheckboxSubtasksOnlyChecked( bool ) ) );
+    connect( m_ui->comboBoxMonth, SIGNAL(currentIndexChanged(int)),
+             SLOT(slotMonthComboItemSelected(int)) );
+    connect( m_ui->toolButtonSelectTask, SIGNAL(clicked()),
+             SLOT(slotSelectTask()) );
+    connect( m_ui->checkBoxSubTasksOnly, SIGNAL(toggled(bool)),
+             SLOT(slotCheckboxSubtasksOnlyChecked(bool)) );
     m_ui->comboBoxMonth->setCurrentIndex( 1 );
     slotCheckboxSubtasksOnlyChecked( m_ui->checkBoxSubTasksOnly->isChecked() );
 
     slotStandardTimeSpansChanged();
     connect( ApplicationCore::instance().dateChangeWatcher(),
-             SIGNAL( dateChanged() ),
-             SLOT( slotStandardTimeSpansChanged() ) );
+             SIGNAL(dateChanged()),
+             SLOT(slotStandardTimeSpansChanged()) );
 
     // set current month and year:
     m_ui->spinBoxMonth->setValue(QDate::currentDate().month());

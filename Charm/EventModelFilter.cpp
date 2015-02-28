@@ -32,10 +32,10 @@ EventModelFilter::EventModelFilter( CharmDataModel* model, QObject* parent )
     setDynamicSortFilter( true );
     sort( 0, Qt::AscendingOrder );
 
-    connect( &m_model, SIGNAL( eventActivationNotice( EventId ) ),
-             SIGNAL( eventActivationNotice( EventId ) ) );
-    connect( &m_model, SIGNAL( eventDeactivationNotice( EventId ) ),
-             SIGNAL( eventDeactivationNotice( EventId ) ) );
+    connect( &m_model, SIGNAL(eventActivationNotice(EventId)),
+             SIGNAL(eventActivationNotice(EventId)) );
+    connect( &m_model, SIGNAL(eventDeactivationNotice(EventId)),
+             SIGNAL(eventDeactivationNotice(EventId)) );
 }
 
 EventModelFilter::~EventModelFilter()

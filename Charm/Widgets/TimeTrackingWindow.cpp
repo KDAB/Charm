@@ -76,14 +76,14 @@ TimeTrackingWindow::TimeTrackingWindow( QWidget* parent )
     setWindowNumber( 3 );
     setWindowIdentifier( QLatin1String( "window_tracking" ) );
     setCentralWidget( m_summaryWidget );
-    connect( m_summaryWidget, SIGNAL( startEvent( TaskId ) ),
-             SLOT( slotStartEvent( TaskId ) ) );
-    connect( m_summaryWidget, SIGNAL( stopEvents() ),
-             SLOT( slotStopEvent() ) );
-    connect( &m_checkUploadedSheetsTimer, SIGNAL( timeout() ),
-             SLOT( slotCheckUploadedTimesheets() ) );
-    connect( m_billDialog, SIGNAL( finished(int) ),
-             SLOT( slotBillGone(int) ) );
+    connect( m_summaryWidget, SIGNAL(startEvent(TaskId)),
+             SLOT(slotStartEvent(TaskId)) );
+    connect( m_summaryWidget, SIGNAL(stopEvents()),
+             SLOT(slotStopEvent()) );
+    connect( &m_checkUploadedSheetsTimer, SIGNAL(timeout()),
+             SLOT(slotCheckUploadedTimesheets()) );
+    connect( m_billDialog, SIGNAL(finished(int)),
+             SLOT(slotBillGone(int)) );
     //Check every 60 minutes if there are timesheets due
     m_checkUploadedSheetsTimer.setInterval(60 * 60 * 1000);
     if (CONFIGURATION.warnUnuploadedTimesheets)
@@ -113,8 +113,8 @@ void TimeTrackingWindow::stateChanged( State previous )
     CharmWindow::stateChanged( previous );
     switch( ApplicationCore::instance().state() ) {
     case Connecting: {
-        connect( ApplicationCore::instance().dateChangeWatcher(), SIGNAL( dateChanged() ),
-                 SLOT( slotSelectTasksToShow() ) );
+        connect( ApplicationCore::instance().dateChangeWatcher(), SIGNAL(dateChanged()),
+                 SLOT(slotSelectTasksToShow()) );
         DATAMODEL->registerAdapter( this );
         m_summaryWidget->setSummaries( QVector<WeeklySummary>() );
         m_summaryWidget->handleActiveEvents();
@@ -302,8 +302,8 @@ void TimeTrackingWindow::slotActivityReport()
     delete m_activityReportDialog;
     m_activityReportDialog = new ActivityReportConfigurationDialog( this );
     m_activityReportDialog->setAttribute( Qt::WA_DeleteOnClose );
-    connect( m_activityReportDialog, SIGNAL( finished( int ) ),
-             this, SLOT( slotActivityReportPreview( int ) ) );
+    connect( m_activityReportDialog, SIGNAL(finished(int)),
+             this, SLOT(slotActivityReportPreview(int)) );
     m_activityReportDialog->show();
 }
 
@@ -312,8 +312,8 @@ void TimeTrackingWindow::resetWeeklyTimesheetDialog()
     delete m_weeklyTimesheetDialog;
     m_weeklyTimesheetDialog = new WeeklyTimesheetConfigurationDialog( this );
     m_weeklyTimesheetDialog->setAttribute( Qt::WA_DeleteOnClose );
-    connect( m_weeklyTimesheetDialog, SIGNAL( finished( int ) ),
-             this, SLOT( slotWeeklyTimesheetPreview( int ) ) );
+    connect( m_weeklyTimesheetDialog, SIGNAL(finished(int)),
+             this, SLOT(slotWeeklyTimesheetPreview(int)) );
 }
 
 void TimeTrackingWindow::slotWeeklyTimesheetReport()
@@ -327,8 +327,8 @@ void TimeTrackingWindow::resetMonthlyTimesheetDialog()
     delete m_monthlyTimesheetDialog;
     m_monthlyTimesheetDialog = new MonthlyTimesheetConfigurationDialog( this );
     m_monthlyTimesheetDialog->setAttribute( Qt::WA_DeleteOnClose );
-    connect( m_monthlyTimesheetDialog, SIGNAL( finished( int ) ),
-             this, SLOT( slotMonthlyTimesheetPreview( int ) ) );
+    connect( m_monthlyTimesheetDialog, SIGNAL(finished(int)),
+             this, SLOT(slotMonthlyTimesheetPreview(int)) );
 }
 
 void TimeTrackingWindow::slotMonthlyTimesheetReport()

@@ -35,12 +35,12 @@ TasksWindow::TasksWindow( QWidget* parent )
     setWindowIdentifier( QLatin1String( "window_tasks" ) );
     setCentralWidget( m_tasksView );
     setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Expanding );
-    connect( m_tasksView, SIGNAL( emitCommand( CharmCommand* ) ),
-             SIGNAL( emitCommand( CharmCommand* ) ) );
-    connect( m_tasksView, SIGNAL( emitCommandRollback( CharmCommand* ) ),
-             SIGNAL( emitCommandRollback( CharmCommand* ) ) );
-    connect( m_tasksView, SIGNAL( saveConfiguration() ),
-             SIGNAL( saveConfiguration() ) );
+    connect( m_tasksView, SIGNAL(emitCommand(CharmCommand*)),
+             SIGNAL(emitCommand(CharmCommand*)) );
+    connect( m_tasksView, SIGNAL(emitCommandRollback(CharmCommand*)),
+             SIGNAL(emitCommandRollback(CharmCommand*)) );
+    connect( m_tasksView, SIGNAL(saveConfiguration()),
+             SIGNAL(saveConfiguration()) );
 }
 
 TasksWindow::~TasksWindow()

@@ -50,12 +50,12 @@ TimeTrackingView::TimeTrackingView( QWidget* parent )
     for( int i = 0; i < 7; ++i ) {
         m_shortDayNames[i] = QDate::shortDayName( i + 1 );
     }
-    connect( m_taskSelector, SIGNAL( startEvent( TaskId ) ),
-             SIGNAL( startEvent( TaskId ) ) );
-    connect( m_taskSelector, SIGNAL( stopEvents() ),
-             SIGNAL( stopEvents() ) );
-    connect( m_taskSelector, SIGNAL( updateSummariesPlease() ),
-             SLOT( slotUpdateSummaries() ) );
+    connect( m_taskSelector, SIGNAL(startEvent(TaskId)),
+             SIGNAL(startEvent(TaskId)) );
+    connect( m_taskSelector, SIGNAL(stopEvents()),
+             SIGNAL(stopEvents()) );
+    connect( m_taskSelector, SIGNAL(updateSummariesPlease()),
+             SLOT(slotUpdateSummaries()) );
 
     setFocusProxy( m_taskSelector );
     setFocusPolicy( Qt::StrongFocus );

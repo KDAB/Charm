@@ -42,7 +42,7 @@
 CharmDataModel::CharmDataModel()
     : QObject()
 {
-    connect( &m_timer, SIGNAL( timeout() ), SLOT( eventUpdateTimerEvent() ) );
+    connect( &m_timer, SIGNAL(timeout()), SLOT(eventUpdateTimerEvent()) );
 }
 
 CharmDataModel::~CharmDataModel()

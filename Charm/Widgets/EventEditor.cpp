@@ -59,26 +59,26 @@ EventEditor::EventEditor( const Event& event, QWidget* parent )
     m_ui->buttonBox->button(QDialogButtonBox::Ok)->setShortcut(Qt::CTRL + Qt::Key_Return);
 
     // connect stuff:
-    connect( m_ui->spinBoxHours, SIGNAL( valueChanged( int ) ),
-             SLOT( durationHoursEdited( int ) ) );
-    connect( m_ui->spinBoxMinutes, SIGNAL( valueChanged( int ) ),
-             SLOT( durationMinutesEdited( int ) ) );
-    connect( m_ui->dateEditStart, SIGNAL( dateChanged( QDate ) ),
-             SLOT( startDateChanged( QDate ) ) );
-    connect( m_ui->timeEditStart, SIGNAL( timeChanged( QTime ) ),
-             SLOT( startTimeChanged( QTime ) ) );
-    connect( m_ui->dateEditEnd, SIGNAL( dateChanged( QDate ) ),
-             SLOT( endDateChanged( QDate ) ) );
-    connect( m_ui->timeEditEnd, SIGNAL( timeChanged( QTime ) ),
-             SLOT( endTimeChanged( QTime ) ) );
-    connect( m_ui->pushButtonSelectTask, SIGNAL( clicked() ),
-             SLOT( selectTaskClicked() ) );
-    connect( m_ui->textEditComment, SIGNAL( textChanged() ),
-             SLOT( commentChanged() ) );
-    connect( m_ui->startToNowButton, SIGNAL( clicked() ),
-             SLOT( startToNowButtonClicked() ) );
-    connect( m_ui->endToNowButton, SIGNAL( clicked() ),
-             SLOT( endToNowButtonClicked() ) );
+    connect( m_ui->spinBoxHours, SIGNAL(valueChanged(int)),
+             SLOT(durationHoursEdited(int)) );
+    connect( m_ui->spinBoxMinutes, SIGNAL(valueChanged(int)),
+             SLOT(durationMinutesEdited(int)) );
+    connect( m_ui->dateEditStart, SIGNAL(dateChanged(QDate)),
+             SLOT(startDateChanged(QDate)) );
+    connect( m_ui->timeEditStart, SIGNAL(timeChanged(QTime)),
+             SLOT(startTimeChanged(QTime)) );
+    connect( m_ui->dateEditEnd, SIGNAL(dateChanged(QDate)),
+             SLOT(endDateChanged(QDate)) );
+    connect( m_ui->timeEditEnd, SIGNAL(timeChanged(QTime)),
+             SLOT(endTimeChanged(QTime)) );
+    connect( m_ui->pushButtonSelectTask, SIGNAL(clicked()),
+             SLOT(selectTaskClicked()) );
+    connect( m_ui->textEditComment, SIGNAL(textChanged()),
+             SLOT(commentChanged()) );
+    connect( m_ui->startToNowButton, SIGNAL(clicked()),
+             SLOT(startToNowButtonClicked()) );
+    connect( m_ui->endToNowButton, SIGNAL(clicked()),
+             SLOT(endToNowButtonClicked()) );
     // what a fricking hack - but QDateTimeEdit does not seem to have
     // a simple function to toggle 12h and 24h mode:
     // yeah, I know, this will survive changes in the user prefs, but

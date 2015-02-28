@@ -161,7 +161,7 @@ bool NamedTimeSpan::contains( const QDate& date ) const
 DateChangeWatcher::DateChangeWatcher( QObject* parent )
     : QObject( parent )
 {
-    connect( &m_timer, SIGNAL( timeout() ), SLOT( slotTimeout() ) );
+    connect( &m_timer, SIGNAL(timeout()), SLOT(slotTimeout()) );
     m_timer.start( 1000 * 60 );
     slotTimeout();
 }

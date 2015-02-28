@@ -49,7 +49,7 @@ CharmWindow::CharmWindow( const QString& name, QWidget* parent )
 {
     setWindowName( name );
     handleShowHide( false );
-    connect( m_showHideAction, SIGNAL( triggered( bool ) ), SLOT( showHideView() ) );
+    connect( m_showHideAction, SIGNAL(triggered(bool)), SLOT(showHideView()) );
     m_toolBar = addToolBar( "Toolbar" );
     m_toolBar->setMovable( false );
 }
@@ -113,7 +113,7 @@ void CharmWindow::setWindowNumber( int number )
 #endif
     m_shortcut->setContext( Qt::ApplicationShortcut );
     m_showHideAction->setShortcut( sequence );
-    connect( m_shortcut, SIGNAL( activated() ), SLOT( showHideView() ) );
+    connect( m_shortcut, SIGNAL(activated()), SLOT(showHideView()) );
 }
 
 int CharmWindow::windowNumber() const

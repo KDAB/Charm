@@ -48,7 +48,7 @@ bool X11IdleDetector::idleCheckPossible()
 X11IdleDetector::X11IdleDetector( QObject* parent )
     : IdleDetector( parent )
 {
-    connect( &m_timer, SIGNAL( timeout() ), this, SLOT( checkIdleness() ) );
+    connect( &m_timer, SIGNAL(timeout()), this, SLOT(checkIdleness()) );
     m_timer.start( idlenessDuration() * 1000 / 5 );
     m_heartbeat = QDateTime::currentDateTime();
 }
