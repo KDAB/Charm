@@ -112,7 +112,7 @@ protected:
     // This includes creating the tables et cetera.
     // Different backends will have to reimplement this function to
     // get special requirements in.
-    // return true if successfull, false otherwise
+    // return true if successful, false otherwise
     virtual bool createDatabase(Configuration&) = 0;
     /** Verify database content and database version.
      * Will return false if the database is found, but for some reason does not contain

@@ -79,7 +79,7 @@ void SqlTransactionTests::testMySqlTransactionRollback()
         query.prepare("DELETE from Tasks where id=:id");
         query.bindValue( "id", first.id() );
         QVERIFY( storage.runQuery( query ) );
-    } // this transaction was NOT commited
+    } // this transaction was NOT committed
     QList<Task> tasksAfter = storage.getAllTasks();
     QVERIFY( ! tasksAfter.isEmpty() );
     QVERIFY( tasksBefore == tasksAfter );
@@ -101,7 +101,7 @@ void SqlTransactionTests::testMySqlTransactionCommit()
         query.bindValue( "id", first.id() );
         QVERIFY( storage.runQuery( query ) );
         transactor.commit();
-    } // this transaction WAS commited
+    } // this transaction WAS committed
     QList<Task> tasksAfter = storage.getAllTasks();
     QVERIFY( ! tasksAfter.isEmpty() );
     QVERIFY( tasksBefore == tasksAfter );
@@ -124,7 +124,7 @@ void SqlTransactionTests::testMySqlNestedTransactions()
         query.prepare("DELETE from Tasks where id=:id");
         query.bindValue( "id", first.id() );
         QVERIFY( storage.runQuery( query ) );
-        {   // now before the first transaction is commited and done, a second one is started
+        {   // now before the first transaction is committed and done, a second one is started
             // this should throw an exception
             SqlRaiiTransactor transactor2( storage.database() );
             QSqlError error = storage.database().lastError();

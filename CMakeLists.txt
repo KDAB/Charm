@@ -173,7 +173,7 @@ ENDIF()
 SET( CMAKE_INCLUDE_CURRENT_DIR ON )
 
 # Put the include directories which are in the source or build tree
-# before all other include directories so they are prefered over
+# before all other include directories so they are preferred over
 # any installed Charm headers.
 SET( CMAKE_INCLUDE_DIRECTORIES_PROJECT_BEFORE ON )
 

@@ -95,7 +95,7 @@ public:
 private:
     /** The id of the user who owns the event. */
     int m_userid;
-    /** The report id. This field is only usefull
+    /** The report id. This field is only useful
      * if the event is imported from a report.
      */
     int m_reportid;
