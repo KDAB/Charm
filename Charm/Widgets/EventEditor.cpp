@@ -80,8 +80,8 @@ EventEditor::EventEditor( const Event& event, QWidget* parent )
     QString originalDateTimeFormat = m_ui->timeEditStart->displayFormat();
 
     QString format = originalDateTimeFormat
-                     .replace( "ap", "" )
-                     .replace( "AP", "" )
+                     .remove( "ap" )
+                     .remove( "AP" )
                      .simplified();
     m_ui->timeEditStart->setDisplayFormat( format );
     m_ui->timeEditEnd->setDisplayFormat( format );
@@ -250,8 +250,8 @@ void EventEditor::updateValues( bool all )
     m_ui->labelTaskName->setText( name );
 
     QString format = m_ui->dateEditStart->displayFormat()
-                     .replace( "ap",  "" )
-                     .replace( "AP",  "" )
+                     .remove( "ap" )
+                     .remove( "AP" )
                      .simplified();
     m_ui->dateEditStart->setDisplayFormat( format );
     m_ui->dateEditEnd->setDisplayFormat( format );
