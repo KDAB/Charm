@@ -3,8 +3,9 @@
 
   This file is part of Charm, a task-based time tracking application.
 
-  Copyright (C) 2014-2015 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2008-2015 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
 
+  Author: Mirko Boehm <mirko.boehm@kdab.com>
   Author: Frank Osterfeld <frank.osterfeld@kdab.com>
 
   This program is free software; you can redistribute it and/or modify
@@ -20,13 +21,6 @@
   You should have received a copy of the GNU General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-
-/*
- * TaskEditor.h
- *
- *  Created on: Jul 4, 2008
- *      Author: mirko
- */
 
 #ifndef TASKEDITOR_H_
 #define TASKEDITOR_H_

@@ -21,13 +21,6 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/*
- * MySqlStorage.h
- *
- *  Created on: Apr 23, 2008
- *      Author: mirko
- */
-
 #ifndef MYSQLSTORAGE_H_
 #define MYSQLSTORAGE_H_
 
