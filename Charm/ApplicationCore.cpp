@@ -123,17 +123,17 @@ ApplicationCore::ApplicationCore( QObject* parent )
     connectControllerAndView(&m_controller, &mainView());
     Q_FOREACH( CharmWindow* window, m_windows ) {
         if ( window != &mainView() ) { // main view acts as the main relay
-            connect( window, SIGNAL( emitCommand( CharmCommand* ) ),
-                     &mainView(), SLOT( sendCommand( CharmCommand* ) ) );
-            connect( window, SIGNAL( emitCommandRollback( CharmCommand* ) ),
-                     &mainView(), SLOT( sendCommandRollback( CharmCommand* ) ) );
+            connect( window, SIGNAL(emitCommand(CharmCommand*)),
+                     &mainView(), SLOT(sendCommand(CharmCommand*)) );
+            connect( window, SIGNAL(emitCommandRollback(CharmCommand*)),
+                     &mainView(), SLOT(sendCommandRollback(CharmCommand*)) );
         }
         // save the configuration (configuration is managed by the application)
-        connect( window, SIGNAL(saveConfiguration() ),
-                 SLOT( slotSaveConfiguration() ) );
+        connect( window, SIGNAL(saveConfiguration()),
+                 SLOT(slotSaveConfiguration()) );
 
-        connect( window, SIGNAL( visibilityChanged( bool ) ),
-                 this,   SLOT( slotCharmWindowVisibilityChanged( bool ) ) );
+        connect( window, SIGNAL(visibilityChanged(bool)),
+                 this,   SLOT(slotCharmWindowVisibilityChanged(bool)) );
     }
     // my own signals:
     connect(this, SIGNAL(goToState(State)), SLOT(setState(State)),
@@ -144,7 +144,7 @@ ApplicationCore::ApplicationCore( QObject* parent )
     m_actionStopAllTasks.setShortcut( Qt::Key_Escape );
     m_actionStopAllTasks.setShortcutContext( Qt::ApplicationShortcut );
     mainView().addAction(&m_actionStopAllTasks); // for the shortcut to work
-    connect( &m_actionStopAllTasks, SIGNAL( triggered() ), SLOT( slotStopAllTasks() ) );
+    connect( &m_actionStopAllTasks, SIGNAL(triggered()), SLOT(slotStopAllTasks()) );
 
     m_systrayContextMenu.addAction( &m_actionStopAllTasks );
     m_systrayContextMenu.addSeparator();
@@ -169,54 +169,54 @@ ApplicationCore::ApplicationCore( QObject* parent )
     m_actionQuit.setShortcut( Qt::CTRL + Qt::Key_Q );
     m_actionQuit.setText( tr( "Quit" ) );
     m_actionQuit.setIcon( Data::quitCharmIcon() );
-    connect( &m_actionQuit, SIGNAL( triggered( bool ) ),
-             SLOT( slotQuitApplication() ) );
+    connect( &m_actionQuit, SIGNAL(triggered(bool)),
+             SLOT(slotQuitApplication()) );
 
     m_actionAboutDialog.setText( tr( "About Charm" ) );
-    connect( &m_actionAboutDialog, SIGNAL( triggered() ),
-             &mainView(),  SLOT( slotAboutDialog() ) );
+    connect( &m_actionAboutDialog, SIGNAL(triggered()),
+             &mainView(),  SLOT(slotAboutDialog()) );
 
     m_actionPreferences.setText( tr( "Preferences" ) );
     m_actionPreferences.setIcon( Data::configureIcon() );
-    connect( &m_actionPreferences, SIGNAL( triggered( bool ) ),
-             &mainView(),  SLOT( slotEditPreferences( bool ) ) );
+    connect( &m_actionPreferences, SIGNAL(triggered(bool)),
+             &mainView(),  SLOT(slotEditPreferences(bool)) );
     m_actionPreferences.setEnabled( true );
 
     m_actionImportFromXml.setText( tr( "Import Database from Previous Export..." ) );
-    connect( &m_actionImportFromXml, SIGNAL( triggered() ),
-             &mainView(),  SLOT( slotImportFromXml() ) );
+    connect( &m_actionImportFromXml, SIGNAL(triggered()),
+             &mainView(),  SLOT(slotImportFromXml()) );
     m_actionExportToXml.setText( tr( "Export Database..." ) );
-    connect( &m_actionExportToXml, SIGNAL( triggered() ),
-             &mainView(),  SLOT( slotExportToXml() ) );
+    connect( &m_actionExportToXml, SIGNAL(triggered()),
+             &mainView(),  SLOT(slotExportToXml()) );
     m_actionSyncTasks.setText( tr( "Download Task Definitions..." ) );
-    connect( &m_actionSyncTasks, SIGNAL( triggered() ),
-             &mainView(),  SLOT( slotSyncTasks() ) );
+    connect( &m_actionSyncTasks, SIGNAL(triggered()),
+             &mainView(),  SLOT(slotSyncTasks()) );
     m_actionImportTasks.setText( tr( "Import and Merge Task Definitions..." ) );
-    connect( &m_actionImportTasks, SIGNAL( triggered() ),
-             &mainView(),  SLOT( slotImportTasks() ) );
+    connect( &m_actionImportTasks, SIGNAL(triggered()),
+             &mainView(),  SLOT(slotImportTasks()) );
     m_actionExportTasks.setText( tr( "Export Task Definitions..." ) );
-    connect( &m_actionExportTasks, SIGNAL( triggered() ),
-             &mainView(), SLOT( slotExportTasks() ) );
+    connect( &m_actionExportTasks, SIGNAL(triggered()),
+             &mainView(), SLOT(slotExportTasks()) );
     m_actionEnterVacation.setText( tr( "Enter Vacation...") );
     connect( &m_actionEnterVacation, SIGNAL(triggered()),
              &mainView(), SLOT(slotEnterVacation()) );
     m_actionActivityReport.setText( tr( "Activity Report..." ) );
     m_actionActivityReport.setShortcut( Qt::CTRL + Qt::Key_A );
-    connect( &m_actionActivityReport, SIGNAL( triggered() ),
-             &mainView(), SLOT( slotActivityReport() ) );
+    connect( &m_actionActivityReport, SIGNAL(triggered()),
+             &mainView(), SLOT(slotActivityReport()) );
     m_actionWeeklyTimesheetReport.setText( tr( "Weekly Timesheet...") );
     m_actionWeeklyTimesheetReport.setShortcut( Qt::CTRL + Qt::Key_R );
-    connect( &m_actionWeeklyTimesheetReport, SIGNAL( triggered() ),
-             &mainView(), SLOT( slotWeeklyTimesheetReport() ) );
+    connect( &m_actionWeeklyTimesheetReport, SIGNAL(triggered()),
+             &mainView(), SLOT(slotWeeklyTimesheetReport()) );
     m_actionMonthlyTimesheetReport.setText( tr( "Monthly Timesheet...") );
     m_actionMonthlyTimesheetReport.setShortcut( Qt::CTRL + Qt::Key_M );
-    connect( &m_actionMonthlyTimesheetReport, SIGNAL( triggered() ),
-             &mainView(), SLOT( slotMonthlyTimesheetReport() ) );
+    connect( &m_actionMonthlyTimesheetReport, SIGNAL(triggered()),
+             &mainView(), SLOT(slotMonthlyTimesheetReport()) );
 
     // set up idle detection
     m_idleDetector = IdleDetector::createIdleDetector( this );
     Q_ASSERT( m_idleDetector );
-    connect( m_idleDetector, SIGNAL( maybeIdle() ), SLOT( slotMaybeIdle() ) );
+    connect( m_idleDetector, SIGNAL(maybeIdle()), SLOT(slotMaybeIdle()) );
 
     setHttpActionsVisible(HttpJob::credentialsAvailable());
     // add default plugin path for deployment

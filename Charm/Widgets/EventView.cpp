@@ -71,19 +71,19 @@ EventView::EventView( QToolBar* toolBar, QWidget* parent )
     m_listView->setAlternatingRowColors( true );
     m_listView->setContextMenuPolicy( Qt::CustomContextMenu );
     connect( m_listView,
-             SIGNAL( customContextMenuRequested( const QPoint& ) ),
-             SLOT( slotContextMenuRequested( const QPoint& ) ) );
+             SIGNAL(customContextMenuRequested(QPoint)),
+             SLOT(slotContextMenuRequested(QPoint)) );
     connect( m_listView,
-             SIGNAL( doubleClicked( const QModelIndex& ) ),
-             SLOT( slotEventDoubleClicked( const QModelIndex& ) ) );
-    connect( &m_actionNewEvent, SIGNAL( triggered() ),
-             SLOT( slotNewEvent() ) );
-    connect( &m_actionEditEvent, SIGNAL( triggered() ),
-             SLOT( slotEditEvent() ) );
-    connect( &m_actionDeleteEvent, SIGNAL( triggered() ),
-             SLOT( slotDeleteEvent() ) );
-//     connect( &m_commitTimer, SIGNAL( timeout() ),
-//              SLOT( slotCommitTimeout() ) );
+             SIGNAL(doubleClicked(QModelIndex)),
+             SLOT(slotEventDoubleClicked(QModelIndex)) );
+    connect( &m_actionNewEvent, SIGNAL(triggered()),
+             SLOT(slotNewEvent()) );
+    connect( &m_actionEditEvent, SIGNAL(triggered()),
+             SLOT(slotEditEvent()) );
+    connect( &m_actionDeleteEvent, SIGNAL(triggered()),
+             SLOT(slotDeleteEvent()) );
+//     connect( &m_commitTimer, SIGNAL(timeout()),
+//              SLOT(slotCommitTimeout()) );
 //     m_commitTimer.setSingleShot( true );
 
     m_actionUndo.setText(tr("Undo"));
@@ -133,8 +133,8 @@ EventView::EventView( QToolBar* toolBar, QWidget* parent )
     m_actionDeleteEvent.setEnabled( false );
 
     toolBar->addWidget( m_comboBox );
-    connect( m_comboBox, SIGNAL( currentIndexChanged( int ) ),
-             SLOT( timeFrameChanged( int ) ) );
+    connect( m_comboBox, SIGNAL(currentIndexChanged(int)),
+             SLOT(timeFrameChanged(int)) );
 
     QWidget *spacer = new QWidget( this );
     QSizePolicy spacerSizePolicy = spacer->sizePolicy();
@@ -144,7 +144,7 @@ EventView::EventView( QToolBar* toolBar, QWidget* parent )
 
     toolBar->addWidget( m_labelTotal );
 
-    QTimer::singleShot( 0, this, SLOT( delayedInitialization() ) );
+    QTimer::singleShot( 0, this, SLOT(delayedInitialization()) );
 
     // I hate doing this but the stupid default view sizeHints suck badly.
     setMinimumHeight( 200 );
@@ -158,8 +158,8 @@ void EventView::delayedInitialization()
 {
     timeSpansChanged();
     connect( ApplicationCore::instance().dateChangeWatcher(),
-             SIGNAL( dateChanged() ),
-             SLOT( timeSpansChanged() ) );
+             SIGNAL(dateChanged()),
+             SLOT(timeSpansChanged()) );
 
 }
 
@@ -442,7 +442,7 @@ void EventView::setModel( ModelConnector* connector )
     m_listView->setSelectionMode( QAbstractItemView::SingleSelection );
 
     connect( m_listView->selectionModel(),
-             SIGNAL(currentChanged(QModelIndex, QModelIndex)),
+             SIGNAL(currentChanged(QModelIndex,QModelIndex)),
              SLOT(slotCurrentItemChanged(QModelIndex,QModelIndex)) );
 
     connect( model, SIGNAL(eventActivationNotice(EventId)),

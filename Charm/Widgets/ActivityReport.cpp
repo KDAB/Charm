@@ -57,23 +57,23 @@ ActivityReportConfigurationDialog::ActivityReportConfigurationDialog( QWidget* p
 
     connect( m_ui->buttonBox, SIGNAL(accepted()), this, SLOT(accept()) );
     connect( m_ui->buttonBox, SIGNAL(rejected()), this, SLOT(reject()) );
-    connect( m_ui->comboBox, SIGNAL( currentIndexChanged( int ) ),
-             SLOT( slotTimeSpanSelected( int ) ) );
-    connect( m_ui->checkBoxSubTasksOnly, SIGNAL( toggled( bool ) ),
-             SLOT( slotCheckboxSubtasksOnlyChecked( bool ) ) );
-    connect( m_ui->checkBoxExcludeTasks, SIGNAL( toggled( bool ) ),
-             SLOT( slotCheckBoxExcludeTasksChecked( bool ) ) );
-    connect( m_ui->toolButtonSelectTask, SIGNAL( clicked() ),
-             SLOT( slotSelectTask() ) );
-    connect( m_ui->toolButtonExcludeTask, SIGNAL( clicked() ),
-             SLOT( slotExcludeTask() ) );
+    connect( m_ui->comboBox, SIGNAL(currentIndexChanged(int)),
+             SLOT(slotTimeSpanSelected(int)) );
+    connect( m_ui->checkBoxSubTasksOnly, SIGNAL(toggled(bool)),
+             SLOT(slotCheckboxSubtasksOnlyChecked(bool)) );
+    connect( m_ui->checkBoxExcludeTasks, SIGNAL(toggled(bool)),
+             SLOT(slotCheckBoxExcludeTasksChecked(bool)) );
+    connect( m_ui->toolButtonSelectTask, SIGNAL(clicked()),
+             SLOT(slotSelectTask()) );
+    connect( m_ui->toolButtonExcludeTask, SIGNAL(clicked()),
+             SLOT(slotExcludeTask()) );
     slotCheckboxSubtasksOnlyChecked( m_ui->checkBoxSubTasksOnly->isChecked() );
     slotCheckBoxExcludeTasksChecked( m_ui->checkBoxExcludeTasks->isChecked() );
 
     new DateEntrySyncer(m_ui->spinBoxStartWeek, m_ui->spinBoxStartYear, m_ui->dateEditStart, 1,  this );
     new DateEntrySyncer(m_ui->spinBoxEndWeek, m_ui->spinBoxEndYear, m_ui->dateEditEnd, 7, this );
 
-    QTimer::singleShot( 0, this, SLOT( slotDelayedInitialization() ) );
+    QTimer::singleShot( 0, this, SLOT(slotDelayedInitialization()) );
 }
 
 ActivityReportConfigurationDialog::~ActivityReportConfigurationDialog()
@@ -84,8 +84,8 @@ void ActivityReportConfigurationDialog::slotDelayedInitialization()
 {
     slotStandardTimeSpansChanged();
     connect( ApplicationCore::instance().dateChangeWatcher(),
-             SIGNAL( dateChanged() ),
-             SLOT( slotStandardTimeSpansChanged() ) );
+             SIGNAL(dateChanged()),
+             SLOT(slotStandardTimeSpansChanged()) );
     // FIXME load settings
 }
 

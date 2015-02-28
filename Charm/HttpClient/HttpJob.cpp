@@ -71,7 +71,6 @@ HttpJob::HttpJob(QObject* parent)
 {
     connect(m_networkManager, SIGNAL(finished(QNetworkReply *)), SLOT(handle(QNetworkReply *)));
     connect(m_networkManager, SIGNAL(authenticationRequired(QNetworkReply*,QAuthenticator*)), SLOT(authenticationRequired(QNetworkReply*,QAuthenticator*)));
-
     QSettings settings;
     settings.beginGroup("httpconfig");
     setUsername(settings.value(QLatin1String("username")).toString());

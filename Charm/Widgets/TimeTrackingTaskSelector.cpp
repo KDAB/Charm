@@ -57,8 +57,8 @@ TimeTrackingTaskSelector::TimeTrackingTaskSelector(QWidget *parent)
     , m_manuallySelectedTask( 0 )
     , m_taskManuallySelected( false )
 {
-    connect( m_menu, SIGNAL( triggered( QAction* ) ),
-             SLOT( slotActionSelected( QAction* ) ) );
+    connect( m_menu, SIGNAL(triggered(QAction*)),
+             SLOT(slotActionSelected(QAction*)) );
 
     m_stopGoAction->setText( tr("Start Task") );
     m_stopGoAction->setIcon( Data::goIcon() );
@@ -71,8 +71,8 @@ TimeTrackingTaskSelector::TimeTrackingTaskSelector(QWidget *parent)
     m_editCommentAction->setIcon( Data::editEventIcon() );
     m_editCommentAction->setShortcut( Qt::Key_E );
     m_editCommentAction->setToolTip( m_editCommentAction->text() );
-    connect( m_editCommentAction, SIGNAL( triggered(bool) ),
-             SLOT( slotEditCommentClicked() ) );
+    connect( m_editCommentAction, SIGNAL(triggered(bool)),
+             SLOT(slotEditCommentClicked()) );
     m_editCommentButton->setDefaultAction( m_editCommentAction );
 
     m_taskSelectorButton->setPopupMode( QToolButton::InstantPopup );
@@ -80,8 +80,8 @@ TimeTrackingTaskSelector::TimeTrackingTaskSelector(QWidget *parent)
     m_taskSelectorButton->setText( tr( "Select Task" ) );
 
     m_startOtherTaskAction->setShortcut( Qt::Key_T );
-    connect( m_startOtherTaskAction, SIGNAL( triggered() ),
-             SLOT( slotManuallySelectTask() ) );
+    connect( m_startOtherTaskAction, SIGNAL(triggered()),
+             SLOT(slotManuallySelectTask()) );
 }
 
 void TimeTrackingTaskSelector::populateEditMenu( QMenu* menu )

@@ -35,8 +35,8 @@ ConfigurationDialog::ConfigurationDialog( const Configuration& config,
     m_ui.setupUi( this );
     m_ui.nameLineEdit->setText( config.user.name() );
     m_ui.databaseLocation->setText( config.localStorageDatabase );
-    connect( m_ui.buttonBox, SIGNAL( rejected() ), SLOT( reject() ) );
-    connect( m_ui.buttonBox, SIGNAL( accepted() ), SLOT( accept() ) );
+    connect( m_ui.buttonBox, SIGNAL(rejected()), SLOT(reject()) );
+    connect( m_ui.buttonBox, SIGNAL(accepted()), SLOT(accept()) );
 #ifdef Q_OS_ANDROID
     setWindowState(windowState() | Qt::WindowMaximized);
 #endif

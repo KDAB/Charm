@@ -119,20 +119,20 @@ WeeklyTimesheetConfigurationDialog::WeeklyTimesheetConfigurationDialog( QWidget*
     connect( m_ui->buttonBox, SIGNAL(accepted()), this, SLOT(accept()) );
     connect( m_ui->buttonBox, SIGNAL(rejected()), this, SLOT(reject()) );
 
-    connect( m_ui->comboBoxWeek, SIGNAL( currentIndexChanged( int ) ),
-             SLOT( slotWeekComboItemSelected( int ) ) );
-    connect( m_ui->toolButtonSelectTask, SIGNAL( clicked() ),
-             SLOT( slotSelectTask() ) );
-    connect( m_ui->checkBoxSubTasksOnly, SIGNAL( toggled( bool ) ),
-             SLOT( slotCheckboxSubtasksOnlyChecked( bool ) ) );
+    connect( m_ui->comboBoxWeek, SIGNAL(currentIndexChanged(int)),
+             SLOT(slotWeekComboItemSelected(int)) );
+    connect( m_ui->toolButtonSelectTask, SIGNAL(clicked()),
+             SLOT(slotSelectTask()) );
+    connect( m_ui->checkBoxSubTasksOnly, SIGNAL(toggled(bool)),
+             SLOT(slotCheckboxSubtasksOnlyChecked(bool)) );
     m_ui->comboBoxWeek->setCurrentIndex( 1 );
     slotCheckboxSubtasksOnlyChecked( m_ui->checkBoxSubTasksOnly->isChecked() );
     new DateEntrySyncer( m_ui->spinBoxWeek, m_ui->spinBoxYear, m_ui->dateEditDay, 1, this );
 
     slotStandardTimeSpansChanged();
     connect( ApplicationCore::instance().dateChangeWatcher(),
-             SIGNAL( dateChanged() ),
-             SLOT( slotStandardTimeSpansChanged() ) );
+             SIGNAL(dateChanged()),
+             SLOT(slotStandardTimeSpansChanged()) );
 
     // load settings:
     QSettings settings;

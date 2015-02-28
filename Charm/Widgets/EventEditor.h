@@ -3,8 +3,9 @@
 
   This file is part of Charm, a task-based time tracking application.
 
-  Copyright (C) 2014-2015 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2008-2015 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
 
+  Author: Mirko Boehm <mirko.boehm@kdab.com>
   Author: Frank Osterfeld <frank.osterfeld@kdab.com>
 
   This program is free software; you can redistribute it and/or modify
@@ -20,13 +21,6 @@
   You should have received a copy of the GNU General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-
-/*
- * EventEditor.h
- *
- *  Created on: Jun 27, 2008
- *      Author: mirko
- */
 
 #ifndef EVENTEDITOR_H_
 #define EVENTEDITOR_H_
@@ -45,7 +39,7 @@ class EventEditor: public QDialog
     Q_OBJECT
 
 public:
-    EventEditor( const Event& event, QWidget* parent = 0 );
+    explicit EventEditor( const Event& event, QWidget* parent = 0 );
     virtual ~EventEditor();
 
     // return the result after the dialog has been accepted

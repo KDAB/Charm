@@ -37,10 +37,10 @@ ViewFilter::ViewFilter( CharmDataModel* model, QObject* parent )
     setFilterCaseSensitivity( Qt::CaseInsensitive );
 
     // relay signals to the view:
-    connect( &m_model, SIGNAL( eventActivationNotice( EventId ) ),
-             SIGNAL( eventActivationNotice( EventId ) ) );
-    connect( &m_model, SIGNAL( eventDeactivationNotice( EventId ) ),
-             SIGNAL( eventDeactivationNotice( EventId ) ) );
+    connect( &m_model, SIGNAL(eventActivationNotice(EventId)),
+             SIGNAL(eventActivationNotice(EventId)) );
+    connect( &m_model, SIGNAL(eventDeactivationNotice(EventId)),
+             SIGNAL(eventDeactivationNotice(EventId)) );
 
     sort( Column_TaskId );
 }
