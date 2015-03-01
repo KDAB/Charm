@@ -121,7 +121,7 @@ bool Controller::modifyTask( const Task& task )
              << task.id();
     // modify the task itself:
     bool result = m_storage->modifyTask( task );
-    Q_ASSERT( result ); Q_UNUSED( result );
+    Q_ASSERT( result );
     if ( ! result ) {
         qDebug() << Q_FUNC_INFO << "modifyTask failed!";
         return result;

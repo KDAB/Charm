@@ -111,6 +111,7 @@ const char DriverName[] = "QSQLITE";
 SqLiteStorage::SqLiteStorage()
     : SqlStorage()
     , m_database( QSqlDatabase::addDatabase( DriverName, DatabaseName ) )
+    , m_installationId( 0 )
 {
     if ( ! QSqlDatabase::isDriverAvailable( DriverName ) ) {
         throw CharmException( QObject::tr( "QSQLITE driver not available" ) );
