@@ -202,6 +202,8 @@ void ActivityReportConfigurationDialog::showReportPreviewDialog( QWidget* parent
 
 ActivityReport::ActivityReport( QWidget* parent )
     : ReportPreviewWindow( parent )
+    , m_rootTask( 0 )
+    , m_rootExcludeTask( 0 )
 {
     saveToXmlButton()->hide();
     saveToTextButton()->hide();

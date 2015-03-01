@@ -29,6 +29,7 @@
 
 CharmCommand::CharmCommand( const QString& description, QObject *parent )
     : QObject( parent ),
+      m_owner(0),
       m_description(description)
 {
     CommandEmitterInterface* emitter = dynamic_cast<CommandEmitterInterface*>( parent );
