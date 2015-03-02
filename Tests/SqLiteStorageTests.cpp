@@ -40,6 +40,11 @@ SqLiteStorageTests::SqLiteStorageTests()
 {
 }
 
+SqLiteStorageTests::~SqLiteStorageTests()
+{
+    delete m_storage;
+}
+
 void SqLiteStorageTests::initTestCase ()
 {
     QFileInfo file( m_localPath );

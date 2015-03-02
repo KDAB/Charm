@@ -34,6 +34,7 @@ class SqLiteStorageTests : public QObject
     Q_OBJECT
 public:
     SqLiteStorageTests();
+    ~SqLiteStorageTests();
 
 private:
     StorageInterface* m_storage;

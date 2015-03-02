@@ -128,14 +128,9 @@ bool Controller::modifyTask( const Task& task )
     }
 
     updateSubscriptionForTask( task );
+    emit( taskUpdated( task ) );
 
-    if ( result ) {
-        emit( taskUpdated( task ) );
-    } else {
-        qDebug() << Q_FUNC_INFO << "storing  subscription state failed.";
-    }
-
-    return result;
+    return true;
 }
 
 bool Controller::deleteTask( const Task& task )
