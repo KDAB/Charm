@@ -35,9 +35,6 @@
 
 #include "ui_MonthlyTimesheetConfigurationDialog.h"
 
-static const int MAX_MONTH = 12;
-static const int MIN_YEAR = 1990;
-
 MonthlyTimesheetConfigurationDialog::MonthlyTimesheetConfigurationDialog( QWidget* parent )
     : ReportConfigurationDialog( parent )
     , m_ui( new Ui::MonthlyTimesheetConfigurationDialog )
