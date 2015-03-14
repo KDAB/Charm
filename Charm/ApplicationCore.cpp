@@ -64,6 +64,7 @@ ApplicationCore::ApplicationCore( QObject* parent )
     , m_windows( QList<CharmWindow*> () << &m_tasksWindow << &m_eventWindow << &m_timeTracker )
     , m_actionQuit( this )
     , m_state(Constructed)
+    , m_systrayContextMenuStartTask( m_timeTracker.menu()->title() )
     , m_actionAboutDialog( this )
     , m_actionPreferences( this )
     , m_actionExportToXml( this )
@@ -160,12 +161,14 @@ ApplicationCore::ApplicationCore( QObject* parent )
         m_systrayContextMenu.addAction( window->showHideAction() );
 
     m_systrayContextMenu.addSeparator();
-    m_systrayContextMenu.addMenu( m_timeTracker.menu() );
+    m_systrayContextMenu.addMenu( &m_systrayContextMenuStartTask );
 
     m_systrayContextMenu.addSeparator();
     m_systrayContextMenu.addAction( &m_actionQuit );
 
     // set up actions:
+    connect( &m_systrayContextMenuStartTask, SIGNAL(aboutToShow()),
+             SLOT(slotStartTaskMenuAboutToShow()) );
     m_actionQuit.setShortcut( Qt::CTRL + Qt::Key_Q );
     m_actionQuit.setText( tr( "Quit" ) );
     m_actionQuit.setIcon( Data::quitCharmIcon() );
@@ -233,6 +236,12 @@ ApplicationCore::ApplicationCore( QObject* parent )
 ApplicationCore::~ApplicationCore()
 {
     m_instance = 0;
+}
+
+void ApplicationCore::slotStartTaskMenuAboutToShow()
+{
+    m_systrayContextMenuStartTask.clear();
+    m_systrayContextMenuStartTask.addActions( m_timeTracker.menu()->actions() );
 }
 
 void ApplicationCore::slotHandleUniqueApplicationConnection()

@@ -107,6 +107,7 @@ private slots:
     void slotMaybeIdle();
     void slotCharmWindowVisibilityChanged( bool visibility );
     void slotHandleUniqueApplicationConnection();
+    void slotStartTaskMenuAboutToShow();
 
 signals:
     void goToState( State state );
@@ -143,6 +144,7 @@ private:
     Controller m_controller;
     TrayIcon m_trayIcon;
     QMenu m_systrayContextMenu;
+    QMenu m_systrayContextMenuStartTask;
     QAction m_actionAboutDialog;
     QAction m_actionPreferences;
     QAction m_actionExportToXml;
