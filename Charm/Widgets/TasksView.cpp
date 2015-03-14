@@ -245,7 +245,7 @@ void TasksView::configureUi()
     const QItemSelectionModel* smodel = m_treeView->selectionModel();
     const QModelIndex current = smodel ? smodel->currentIndex() : QModelIndex();
     const ViewFilter* filter = ApplicationCore::instance().model().taskModel();
-    const bool selected = current.isValid();
+    const bool selected = smodel ? smodel->hasSelection() : false;
     const Task task = selected ? filter->taskForIndex( current ) : Task();
     const bool hasChildren = filter->taskHasChildren( task );
 
