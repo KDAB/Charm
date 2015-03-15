@@ -600,9 +600,9 @@ void TimeTrackingWindow::importTasksFromDeviceOrFile( QIODevice* device, const Q
                 .arg( QString::number( merger.modifiedTasks().count() ),
                       QString::number( merger.addedTasks().count() ) );
             QMessageBox::information( this, tr( "Tasks Import" ), detailsText );
-	    
 	    getUserInfo();
         }
+
         QSettings settings;
         settings.beginGroup( "httpconfig" );
         setValueIfNotNull( &settings, QLatin1String("username"), exporter.metadata( QLatin1String("username") ) );
@@ -616,7 +616,7 @@ void TimeTrackingWindow::importTasksFromDeviceOrFile( QIODevice* device, const Q
         settings.setValue( QLatin1String("loginUrl"), QLatin1String("https://lotsofcake.kdab.com:443/KdabHome/apps/portal/j_security_check"));
         settings.setValue( QLatin1String("userInfoDownloadUrl"), QLatin1String("https://lotsofcake.kdab.com/KdabHome/rest/user"));
         settings.endGroup();
-	
+
         ApplicationCore::instance().setHttpActionsVisible( true );
     } catch( const CharmException& e ) {
         const QString message = e.what().isEmpty()

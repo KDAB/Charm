@@ -33,6 +33,8 @@ namespace QKeychain {
 
 class QNetworkAccessManager;
 class QNetworkReply;
+class QNetworkRequest;
+class QAuthenticator;
 
 class HttpJob : public QObject
 {
@@ -113,6 +115,7 @@ private Q_SLOTS:
     void next();
     void passwordRead(QKeychain::Job*);
     void passwordWritten();
+    void authenticationRequired(QNetworkReply *reply , QAuthenticator *authenticator);
 
 private:
     QNetworkAccessManager *m_networkManager;
@@ -124,6 +127,7 @@ private:
     QUrl m_loginUrl;
     QUrl m_portalUrl;
     bool m_lastAuthenticationFailed;
+    bool m_authenticationDoneAlready;
     bool m_passwordReadError;
 };
 
