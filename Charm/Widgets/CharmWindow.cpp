@@ -39,7 +39,8 @@
 #include "Commands/CommandRelayCommand.h"
 #include "CharmWindow.h"
 
-#include <algorithm> //for_each()
+#include <algorithm>
+#include <functional>
 
 CharmWindow::CharmWindow( const QString& name, QWidget* parent )
     : QMainWindow( parent )

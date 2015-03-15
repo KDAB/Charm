@@ -27,6 +27,7 @@
 */
 
 #include <algorithm>
+#include <functional>
 #include <queue>
 
 #include <QList>

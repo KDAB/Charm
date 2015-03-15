@@ -53,7 +53,8 @@
 
 #include "Widgets/ConfigurationDialog.h"
 
-#include <algorithm> //for_each()
+#include <algorithm>
+#include <functional>
 
 ApplicationCore* ApplicationCore::m_instance = 0;
 
