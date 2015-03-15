@@ -377,6 +377,7 @@ void TimeTrackingView::configurationChanged()
     /* invalidate cache and force recalc */
     m_cachedSizeHint = QSize();
     m_cachedMinimumSizeHint = QSize();
+    updateGeometry();
     sizeHint();
 
     /* force repaint */
