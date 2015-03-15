@@ -1,5 +1,9 @@
 INCLUDE_DIRECTORIES( ${Charm_SOURCE_DIR} ${Charm_BINARY_DIR} )
 
+if(POLICY CMP0020)
+    CMAKE_POLICY(SET CMP0020 NEW)
+endif()
+
 SET(
     CharmApplication_SRCS
     ApplicationCore.cpp

@@ -1,5 +1,9 @@
 INCLUDE_DIRECTORIES( ${Charm_SOURCE_DIR} )
 
+if(POLICY CMP0020)
+    CMAKE_POLICY(SET CMP0020 NEW)
+endif()
+
 SET( TestApplication_SRCS TestApplication.cpp )
 
 SET( TEST_LIBRARIES CharmCore ${QT_QTTEST_LIBRARY} ${QT_LIBRARIES} )
