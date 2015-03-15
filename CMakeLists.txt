@@ -67,7 +67,7 @@ IF (Qt5Core_FOUND)
         set(QT_PLATFORM_SPECIFIC_LIBRARIES ${Qt5MacExtras_LIBRARIES})
     ENDIF()
 
-    IF(NOT APPLE)
+    IF(UNIX AND NOT APPLE)
         find_package(Qt5DBus)
         IF(Qt5DBus_FOUND)
             set(HAVE_DBUS ON)
