@@ -55,6 +55,7 @@ public:
     void restore();
     void quit();
 
+    bool event( QEvent* );
     void showEvent( QShowEvent* );
     QMenu* menu() const;
     // model adapter:

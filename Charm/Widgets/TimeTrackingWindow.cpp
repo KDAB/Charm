@@ -91,6 +91,13 @@ TimeTrackingWindow::TimeTrackingWindow( QWidget* parent )
     toolBar()->hide();
 }
 
+bool TimeTrackingWindow::event( QEvent* event )
+{
+    if (event->type() == QEvent::LayoutRequest)
+        setMaximumHeight( sizeHint().height() );
+    return CharmWindow::event( event );
+}
+
 void TimeTrackingWindow::showEvent( QShowEvent* e )
 {
     CharmWindow::showEvent( e );
