@@ -1,5 +1,5 @@
 /******************************************************************************
- *   Copyright (C) 2011-2013 Frank Osterfeld <frank.osterfeld@gmail.com>      *
+ *   Copyright (C) 2011-2014 Frank Osterfeld <frank.osterfeld@gmail.com>      *
  *                                                                            *
  * This program is distributed in the hope that it will be useful, but        *
  * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY *
@@ -154,8 +154,10 @@ void DeletePasswordJob::doStart() {
     //In all current implementations, this deletes the entry so this is sufficient
     WritePasswordJob* job = new WritePasswordJob( service(), this );
     connect( job, SIGNAL(finished(QKeychain::Job*)), d, SLOT(jobFinished(QKeychain::Job*)) );
+    job->setInsecureFallback(true);
+    job->setSettings(settings());
     job->setKey( d->key );
-    job->start();
+    job->doStart();
 }
 
 QString DeletePasswordJob::key() const {

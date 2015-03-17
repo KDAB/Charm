@@ -1,5 +1,5 @@
 /******************************************************************************
- *   Copyright (C) 2011-2013 Frank Osterfeld <frank.osterfeld@gmail.com>      *
+ *   Copyright (C) 2011-2014 Frank Osterfeld <frank.osterfeld@gmail.com>      *
  *                                                                            *
  * This program is distributed in the hope that it will be useful, but        *
  * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY *
@@ -15,7 +15,7 @@
 #include <QSettings>
 #include <QVector>
 
-#if defined(Q_OS_UNIX) && !defined(Q_OS_DARWIN) && !defined(Q_OS_ANDROID)
+#if defined(Q_OS_UNIX) && !defined(Q_OS_DARWIN)
 
 #include <QDBusPendingCallWatcher>
 
@@ -35,7 +35,7 @@ class JobExecutor;
 class JobPrivate : public QObject {
     Q_OBJECT
 public:
-    explicit JobPrivate( const QString& service_ )
+    JobPrivate( const QString& service_ )
         : error( NoError )
         , service( service_ )
         , autoDelete( true )
@@ -52,15 +52,7 @@ public:
 class ReadPasswordJobPrivate : public QObject {
     Q_OBJECT
 public:
-    explicit ReadPasswordJobPrivate( ReadPasswordJob* qq )
-        : q( qq )
-        , walletHandle( 0 )
-        , dataType( Text )
-#if defined(Q_OS_UNIX) && !defined(Q_OS_DARWIN) && !defined(Q_OS_ANDROID)
-        , iface( 0 )
-#endif
-    {
-    }
+    explicit ReadPasswordJobPrivate( ReadPasswordJob* qq ) : q( qq ), walletHandle( 0 ), dataType( Text ) {}
     void scheduledStart();
 
     ReadPasswordJob* const q;
@@ -73,7 +65,7 @@ public:
     };
     DataType dataType;
 
-#if defined(Q_OS_UNIX) && !defined(Q_OS_DARWIN) && !defined(Q_OS_ANDROID)
+#if defined(Q_OS_UNIX) && !defined(Q_OS_DARWIN)
     org::kde::KWallet* iface;
     static void gnomeKeyring_cb( int result, const char* string, ReadPasswordJobPrivate* data );
     friend class QKeychain::JobExecutor;
@@ -97,14 +89,7 @@ private Q_SLOTS:
 class WritePasswordJobPrivate : public QObject {
     Q_OBJECT
 public:
-    explicit WritePasswordJobPrivate( WritePasswordJob* qq )
-        : q( qq )
-        , mode( Delete )
-#if defined(Q_OS_UNIX) && !defined(Q_OS_DARWIN)  && !defined(Q_OS_ANDROID)
-        , iface( 0 )
-#endif
-    {
-    }
+    explicit WritePasswordJobPrivate( WritePasswordJob* qq ) : q( qq ), mode( Delete ) {}
     void scheduledStart();
 
     enum Mode {
@@ -112,23 +97,29 @@ public:
         Text,
         Binary
     };
+
+    static QString modeToString(Mode m);
+    static Mode stringToMode(const QString& s);
+
     WritePasswordJob* const q;
     Mode mode;
     QString key;
     QByteArray binaryData;
     QString textData;
 
-#if defined(Q_OS_UNIX) && !defined(Q_OS_DARWIN)  && !defined(Q_OS_ANDROID)
+#if defined(Q_OS_UNIX) && !defined(Q_OS_DARWIN)
     org::kde::KWallet* iface;
     static void gnomeKeyring_cb( int result, WritePasswordJobPrivate* self );
     friend class QKeychain::JobExecutor;
     void fallbackOnError(const QDBusError& err);
 
 private Q_SLOTS:
+    void kwalletWalletFound( QDBusPendingCallWatcher* watcher );
     void kwalletOpenFinished( QDBusPendingCallWatcher* watcher );
     void kwalletWriteFinished( QDBusPendingCallWatcher* watcher );
 #else
 private Q_SLOTS:
+    void kwalletWalletFound( QDBusPendingCallWatcher* ) {}
     void kwalletOpenFinished( QDBusPendingCallWatcher* ) {}
     void kwalletWriteFinished( QDBusPendingCallWatcher* ) {}
 #endif
