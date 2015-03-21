@@ -52,7 +52,14 @@ public:
 class ReadPasswordJobPrivate : public QObject {
     Q_OBJECT
 public:
-    explicit ReadPasswordJobPrivate( ReadPasswordJob* qq ) : q( qq ), walletHandle( 0 ), dataType( Text ) {}
+    explicit ReadPasswordJobPrivate( ReadPasswordJob* qq ) :
+        q( qq )
+        , walletHandle( 0 )
+        , dataType( Text )
+#if defined(Q_OS_UNIX) && !defined(Q_OS_DARWIN)
+        ,iface(0)
+#endif
+    {}
     void scheduledStart();
 
     ReadPasswordJob* const q;
@@ -89,7 +96,13 @@ private Q_SLOTS:
 class WritePasswordJobPrivate : public QObject {
     Q_OBJECT
 public:
-    explicit WritePasswordJobPrivate( WritePasswordJob* qq ) : q( qq ), mode( Delete ) {}
+    explicit WritePasswordJobPrivate( WritePasswordJob* qq )
+        : q( qq )
+        , mode( Delete )
+#if defined(Q_OS_UNIX) && !defined(Q_OS_DARWIN)
+        ,iface(0)
+#endif
+    {}
     void scheduledStart();
 
     enum Mode {
