@@ -45,7 +45,7 @@ static ApplicationCore* createApplicationCore()
 }
 
 void showCriticalError( const QString& msg ) {
-    QMessageBox::critical( 0, QObject::tr( "Application Error" ), msg );
+    QMessageBox::critical( nullptr, QObject::tr( "Application Error" ), msg );
     using namespace std;
     cerr << qPrintable( msg ) << endl;
 }

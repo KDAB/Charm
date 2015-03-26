@@ -33,7 +33,7 @@ class CommandAddTask : public CharmCommand
     Q_OBJECT
 
 public:
-    explicit CommandAddTask( const Task&, QObject* parent = 0 );
+    explicit CommandAddTask( const Task&, QObject* parent = nullptr );
     ~CommandAddTask();
 
     bool prepare();

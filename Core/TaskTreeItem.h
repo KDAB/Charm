@@ -49,7 +49,7 @@ public:
 
     TaskTreeItem();
 
-    explicit TaskTreeItem( const Task& task, TaskTreeItem* parent = 0 );
+    explicit TaskTreeItem( const Task& task, TaskTreeItem* parent = nullptr );
     TaskTreeItem( const TaskTreeItem& other );
     TaskTreeItem& operator=( const TaskTreeItem& other );
 

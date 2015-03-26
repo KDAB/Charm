@@ -32,7 +32,7 @@
 #include <QDomDocument>
 
 MonthlyTimesheetXmlWriter::MonthlyTimesheetXmlWriter()
-    : m_dataModel( 0 )
+    : m_dataModel( nullptr )
     , m_yearOfMonth ( 0 )
     , m_monthNumber( 0 )
     , m_numberOfWeeks( 0 )

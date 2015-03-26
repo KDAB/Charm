@@ -36,7 +36,7 @@ class CharmAboutDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit CharmAboutDialog( QWidget* parent = 0 );
+    explicit CharmAboutDialog( QWidget* parent = nullptr );
     ~CharmAboutDialog();
 
 private:

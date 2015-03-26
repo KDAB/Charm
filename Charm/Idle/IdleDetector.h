@@ -76,7 +76,7 @@ Q_SIGNALS:
 
 protected:
     virtual void onIdlenessDurationChanged() {}
-    explicit IdleDetector( QObject* parent = 0 );
+    explicit IdleDetector( QObject* parent = nullptr );
     void maybeIdle( IdlePeriod period );
     void setAvailable( bool available );
 

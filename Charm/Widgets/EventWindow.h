@@ -33,7 +33,7 @@ class EventWindow : public CharmWindow
     Q_OBJECT
 
 public:
-    explicit EventWindow( QWidget* parent = 0 );
+    explicit EventWindow( QWidget* parent = nullptr );
     ~EventWindow();
 
     /* reimpl */ void stateChanged( State previous );

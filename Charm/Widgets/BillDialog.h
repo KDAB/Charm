@@ -36,7 +36,7 @@ public:
         AsYouWish,
         AlreadyDone,
     };
-    explicit BillDialog(QWidget* parent = 0, Qt::WindowFlags f = 0);
+    explicit BillDialog(QWidget* parent = nullptr, Qt::WindowFlags f = 0);
     void setReport(int year, int week);
     int year() const;
     int week() const;

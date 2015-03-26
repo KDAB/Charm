@@ -76,7 +76,7 @@ void TaskTreeItem::makeChildOf( TaskTreeItem& parent )
         // parent can only be zero if there never was a parent so far
         if ( m_parent != 0 ) {
             m_parent->m_children.removeAt( row() );
-            m_parent = 0;
+            m_parent = nullptr;
         }
 
         // register with the new parent

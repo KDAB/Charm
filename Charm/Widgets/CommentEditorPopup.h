@@ -37,7 +37,7 @@ class CommentEditorPopup : public QDialog
     Q_OBJECT
 
 public:
-    explicit CommentEditorPopup( QWidget *parent = 0 );
+    explicit CommentEditorPopup( QWidget *parent = nullptr );
     ~CommentEditorPopup();
 
 public Q_SLOTS:

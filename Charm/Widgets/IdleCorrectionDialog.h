@@ -42,7 +42,7 @@ public:
         Idle_EndEvent
     };
 
-    explicit IdleCorrectionDialog( QWidget* parent = 0 );
+    explicit IdleCorrectionDialog( QWidget* parent = nullptr );
     ~IdleCorrectionDialog();
 
     Result result() const;

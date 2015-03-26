@@ -56,7 +56,7 @@ class ApplicationCore : public QObject
     Q_OBJECT
 
 public:
-    explicit ApplicationCore( QObject* parent = 0 );
+    explicit ApplicationCore( QObject* parent = nullptr );
     ~ApplicationCore();
 
     static ApplicationCore& instance();

@@ -35,7 +35,7 @@ class TestApplication : public QObject
 {
     Q_OBJECT
 public:
-    explicit TestApplication(const QString &databasePath, QObject *parent = 0);
+    explicit TestApplication(const QString &databasePath, QObject *parent = nullptr);
 
     void initialize();
     void destroy();

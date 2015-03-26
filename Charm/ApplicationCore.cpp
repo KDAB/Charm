@@ -56,11 +56,11 @@
 #include <algorithm>
 #include <functional>
 
-ApplicationCore* ApplicationCore::m_instance = 0;
+ApplicationCore* ApplicationCore::m_instance = nullptr;
 
 ApplicationCore::ApplicationCore( QObject* parent )
     : QObject( parent )
-    , m_closedWindow( 0 )
+    , m_closedWindow( nullptr )
     , m_actionStopAllTasks( this )
     , m_windows( QList<CharmWindow*> () << &m_tasksWindow << &m_eventWindow << &m_timeTracker )
     , m_actionQuit( this )
@@ -77,7 +77,7 @@ ApplicationCore::ApplicationCore( QObject* parent )
     , m_actionActivityReport( this )
     , m_actionWeeklyTimesheetReport( this )
     , m_actionMonthlyTimesheetReport( this )
-    , m_idleDetector( 0 )
+    , m_idleDetector( nullptr )
     , m_timeTrackerHiddenFromSystrayToggle( false )
     , m_tasksWindowHiddenFromSystrayToggle( false )
     , m_eventWindowHiddenFromSystrayToggle( false )
@@ -236,7 +236,7 @@ ApplicationCore::ApplicationCore( QObject* parent )
 
 ApplicationCore::~ApplicationCore()
 {
-    m_instance = 0;
+    m_instance = nullptr;
 }
 
 void ApplicationCore::slotStartTaskMenuAboutToShow()
@@ -269,7 +269,7 @@ void ApplicationCore::openAWindow( bool raise ) {
         windowToOpen->raise();
 
     if( windowToOpen == m_closedWindow )
-        m_closedWindow = 0;
+        m_closedWindow = nullptr;
 }
 
 void ApplicationCore::createWindowMenu( QMenuBar *menuBar )
@@ -428,7 +428,7 @@ ApplicationCore& ApplicationCore::instance()
 
 bool ApplicationCore::hasInstance()
 {
-    return m_instance != 0;
+    return m_instance != nullptr;
 }
 
 void ApplicationCore::enterStartingUpState()

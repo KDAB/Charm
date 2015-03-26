@@ -30,7 +30,7 @@ class MacApplicationCore : public ApplicationCore
 {
     Q_OBJECT
 public:
-    explicit MacApplicationCore( QObject* parent = 0 );
+    explicit MacApplicationCore( QObject* parent = nullptr );
     ~MacApplicationCore();
     // This method to be public due to lack of friend classes in Objective-C and
     // the lack inheritance of Objective-C classes from C++ ones.
@@ -41,7 +41,7 @@ private slots:
 
 private:
     static QList< QShortcut* > shortcuts( QWidget* parent );
-    static QList< QShortcut* > activeShortcuts( const QKeySequence& seq, bool autorep, QWidget* parent = 0);
+    static QList< QShortcut* > activeShortcuts( const QKeySequence& seq, bool autorep, QWidget* parent = nullptr);
 
     QMenu m_dockMenu;
 

@@ -33,7 +33,7 @@ class CommandModifyEvent : public CharmCommand
     Q_OBJECT
 
 public:
-    explicit CommandModifyEvent( const Event&, const Event&, QObject* parent = 0 );
+    explicit CommandModifyEvent( const Event&, const Event&, QObject* parent = nullptr );
     ~CommandModifyEvent();
 
     bool prepare();

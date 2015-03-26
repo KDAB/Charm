@@ -40,8 +40,8 @@ const int InstallationId = 1;
 
 TestApplication::TestApplication(const QString &databasePath, QObject *parent)
     : QObject(parent)
-    , m_controller( 0 )
-    , m_model( 0 )
+    , m_controller( nullptr )
+    , m_model( nullptr )
     , m_configuration( &Configuration::instance() )
     , m_localPath( databasePath )
 {
@@ -98,14 +98,14 @@ void TestApplication::initialize()
     m_model = new CharmDataModel;
     // ... connect model and controller:
     connectControllerAndModel( m_controller, m_model );
-    QVERIFY( m_controller->storage() != 0 );
+    QVERIFY( m_controller->storage() != nullptr );
 }
 
 void TestApplication::destroy()
 {
     QVERIFY( controller()->disconnectFromBackend() );
-    delete m_model; m_model = 0;
-    delete m_controller; m_controller = 0;
+    delete m_model; m_model = nullptr;
+    delete m_controller; m_controller = nullptr;
     if ( QDir::home().exists( databasePath() ) ) {
         const bool result = QDir::home().remove( databasePath() );
         QVERIFY( result );

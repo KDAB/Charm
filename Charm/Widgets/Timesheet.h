@@ -34,7 +34,7 @@ class TimeSheetReport : public ReportPreviewWindow
     Q_OBJECT
 
 public:
-    explicit TimeSheetReport( QWidget* parent = 0 );
+    explicit TimeSheetReport( QWidget* parent = nullptr );
     virtual ~TimeSheetReport();
 
     virtual void setReportProperties( const QDate& start,

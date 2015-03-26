@@ -60,13 +60,13 @@ ReportPreviewWindow::~ReportPreviewWindow()
 
 void ReportPreviewWindow::setDocument( const QTextDocument* document )
 {
-    if ( document != 0 ) {
+    if ( document != nullptr ) {
         // we keep a copy, to be able to show different versions of the same document
         QScopedPointer<QTextDocument> docClone( document->clone() );
         m_document.swap( docClone );
         m_ui->textBrowser->setDocument( m_document.data() );
     } else {
-        m_ui->textBrowser->setDocument( 0 );
+        m_ui->textBrowser->setDocument( nullptr );
         m_document.reset();
     }
 }

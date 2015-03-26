@@ -72,7 +72,7 @@ class ActivityReport : public ReportPreviewWindow
     Q_OBJECT
 
 public:
-    explicit ActivityReport( QWidget* parent = 0 );
+    explicit ActivityReport( QWidget* parent = nullptr );
     ~ActivityReport();
 
     void setReportProperties( const QDate& start, const QDate& end,

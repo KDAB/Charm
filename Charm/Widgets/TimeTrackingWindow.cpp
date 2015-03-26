@@ -66,9 +66,9 @@
 
 TimeTrackingWindow::TimeTrackingWindow( QWidget* parent )
     : CharmWindow( tr( "Time Tracker" ), parent )
-    , m_weeklyTimesheetDialog( 0 )
-    , m_monthlyTimesheetDialog( 0 )
-    , m_activityReportDialog( 0 )
+    , m_weeklyTimesheetDialog( nullptr )
+    , m_monthlyTimesheetDialog( nullptr )
+    , m_activityReportDialog( nullptr )
     , m_summaryWidget( new TimeTrackingView( this ) )
     , m_billDialog( new BillDialog( this ) )
 {
@@ -347,19 +347,19 @@ void TimeTrackingWindow::slotMonthlyTimesheetReport()
 void TimeTrackingWindow::slotWeeklyTimesheetPreview( int result )
 {
     showPreview( m_weeklyTimesheetDialog, result );
-    m_weeklyTimesheetDialog = 0;
+    m_weeklyTimesheetDialog = nullptr;
 }
 
 void TimeTrackingWindow::slotMonthlyTimesheetPreview( int result )
 {
     showPreview( m_monthlyTimesheetDialog, result );
-    m_monthlyTimesheetDialog = 0;
+    m_monthlyTimesheetDialog = nullptr;
 }
 
 void TimeTrackingWindow::slotActivityReportPreview( int result )
 {
     showPreview( m_activityReportDialog, result );
-    m_activityReportDialog = 0;
+    m_activityReportDialog = nullptr;
 }
 
 void TimeTrackingWindow::showPreview( ReportConfigurationDialog* dialog, int result )

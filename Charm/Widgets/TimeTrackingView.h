@@ -64,7 +64,7 @@ private:
     };
 
 public:
-    explicit TimeTrackingView( QWidget* parent = 0 );
+    explicit TimeTrackingView( QWidget* parent = nullptr );
     void paintEvent( QPaintEvent* );
     void resizeEvent( QResizeEvent* );
     void mousePressEvent( QMouseEvent* event );

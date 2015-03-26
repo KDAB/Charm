@@ -37,7 +37,7 @@
 
 ControllerTests::ControllerTests()
     : QObject()
-    , m_controller( 0 )
+    , m_controller( nullptr )
     , m_configuration( Configuration::instance() )
     , m_localPath( "./ControllerTestDatabase.db" )
     , m_eventListReceived( false )
@@ -279,7 +279,7 @@ void ControllerTests::cleanupTestCase ()
         bool result = QDir::home().remove( m_localPath );
         QVERIFY( result );
     }
-    delete m_controller; m_controller = 0;
+    delete m_controller; m_controller = nullptr;
 }
 
 QTEST_MAIN( ControllerTests )

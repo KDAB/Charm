@@ -34,7 +34,7 @@ class TasksViewDelegate : public QItemDelegate
     Q_OBJECT
 
 public:
-    explicit TasksViewDelegate( QObject* parent = 0 );
+    explicit TasksViewDelegate( QObject* parent = nullptr );
 
     /*! \reimp */ void paint( QPainter *painter,
                               const QStyleOptionViewItem &option,
