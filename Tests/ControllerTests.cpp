@@ -59,7 +59,7 @@ void ControllerTests::initTestCase ()
     m_configuration.localStorageType = CHARM_SQLITE_BACKEND_DESCRIPTOR;
     m_configuration.localStorageDatabase = m_localPath;
     m_configuration.newDatabase = true;
-    Controller* controller = new Controller;
+    auto controller = new Controller;
     m_controller = controller;
 //    connect( controller, SIGNAL(currentEvents(EventList)),
 //             SLOT(slotCurrentEvents(EventList)) );

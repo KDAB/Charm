@@ -152,7 +152,7 @@ void HttpJob::doStart()
         return;
     }
 
-    ReadPasswordJob* readJob = new ReadPasswordJob(QLatin1String("Charm"), this);
+    auto readJob = new ReadPasswordJob(QLatin1String("Charm"), this);
     connect(readJob, SIGNAL(finished(QKeychain::Job*)), this, SLOT(passwordRead(QKeychain::Job*)));
     readJob->setKey(QLatin1String("lotsofcake"));
     readJob->start();
@@ -182,7 +182,7 @@ void HttpJob::provideRequestedPassword(const QString &password)
     m_password = password;
 
     if (oldpass != m_password && !m_passwordReadError) {
-        WritePasswordJob* writeJob = new WritePasswordJob(QLatin1String("Charm"), this);
+        auto writeJob = new WritePasswordJob(QLatin1String("Charm"), this);
         connect(writeJob, SIGNAL(finished(QKeychain::Job*)), this, SLOT(passwordWritten()));
         writeJob->setKey(QLatin1String("lotsofcake"));
         writeJob->setTextData(m_password);

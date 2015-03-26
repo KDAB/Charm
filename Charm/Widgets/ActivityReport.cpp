@@ -195,7 +195,7 @@ void ActivityReportConfigurationDialog::showReportPreviewDialog( QWidget* parent
         end = m_timespans[index].timespan.second;
     }
 
-    ActivityReport* report = new ActivityReport( parent );
+    auto report = new ActivityReport( parent );
     report->setReportProperties( start, end, m_rootTask, m_rootExcludeTask );
     report->show();
 }
@@ -250,7 +250,7 @@ void ActivityReport::slotUpdate()
         totalSeconds += event.duration();
     }
 
-    QTextDocument* report = new QTextDocument( this );
+    auto report = new QTextDocument( this );
     QDomDocument doc = createReportTemplate();
     QDomElement root = doc.documentElement();
     QDomElement body = root.firstChildElement( "body" );

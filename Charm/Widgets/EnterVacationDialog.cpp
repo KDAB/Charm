@@ -134,14 +134,14 @@ void EnterVacationDialog::createEvents()
                                               m_selectedTaskId );
 
     QDialog confirmationDialog( this );
-    QVBoxLayout* layout = new QVBoxLayout( &confirmationDialog );
+    auto layout = new QVBoxLayout( &confirmationDialog );
 
-    QLabel* label = new QLabel( tr( "The following vacation events will be created." ) );
+    auto label = new QLabel( tr( "The following vacation events will be created." ) );
     label->setWordWrap( true );
     layout->addWidget( label );
-    QTextBrowser* textBrowser = new QTextBrowser;
+    auto textBrowser = new QTextBrowser;
     layout->addWidget( textBrowser );
-    QDialogButtonBox* box = new QDialogButtonBox;
+    auto box = new QDialogButtonBox;
     box->setStandardButtons( QDialogButtonBox::Ok|QDialogButtonBox::Cancel );
     box->button(QDialogButtonBox::Ok)->setText(tr("Create"));
     connect( box, SIGNAL(accepted()), &confirmationDialog, SLOT(accept()) );

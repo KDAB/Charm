@@ -117,7 +117,7 @@ void CharmDataModel::addTask( const Task& task )
     if ( task.isValid() && ! taskExists( task.id() ) ) {
         const TaskTreeItem& parent = taskTreeItem( task.parent() );
 
-        Q_FOREACH( CharmDataModelAdapterInterface* adapter, m_adapters )
+        Q_FOREACH( auto adapter, m_adapters )
             adapter->taskAboutToBeAdded( parent.task().id(),
                                          parent.childCount() );
 
@@ -127,13 +127,13 @@ void CharmDataModel::addTask( const Task& task )
 
         // the item in the map has a different address, let's find it:
         Q_ASSERT( taskExists( task.id() ) ); // we just put it in
-        const TaskTreeItem::Map::iterator it = m_tasks.find( task.id() );
+        const auto it = m_tasks.find( task.id() );
         it->second.makeChildOf( parentItem( task ) );
 
         determineTaskPaddingLength();
 //        regenerateSmartNames();
 
-        Q_FOREACH( CharmDataModelAdapterInterface* adapter, m_adapters )
+        Q_FOREACH( auto adapter, m_adapters )
             adapter->taskAdded( task.id() );
     } else {
         qDebug() << "CharmDataModel::addTask: duplicate task id"
@@ -143,30 +143,30 @@ void CharmDataModel::addTask( const Task& task )
 
 void CharmDataModel::modifyTask( const Task& task )
 {
-    TaskTreeItem::Map::iterator it = m_tasks.find( task.id() );
+    const auto it = m_tasks.find( task.id() );
     Q_ASSERT_X( it != m_tasks.end(), Q_FUNC_INFO,
               "Task to modify has to exist" );
 
-    if ( it != m_tasks.end() ) {
-        const TaskId oldParentId = it->second.task().parent();
-        const bool parentChanged = task.parent() != oldParentId;
+    if ( it == m_tasks.end() )
+        return;
+    const TaskId oldParentId = it->second.task().parent();
+    const bool parentChanged = task.parent() != oldParentId;
 
-        if ( parentChanged ) {
-            Q_FOREACH( CharmDataModelAdapterInterface* adapter, m_adapters )
-                       adapter->taskParentChanged( task.id(), oldParentId, task.parent() );
-            m_tasks[ task.id() ].makeChildOf( parentItem( task ) );
-        }
+    if ( parentChanged ) {
+        Q_FOREACH( auto adapter, m_adapters )
+            adapter->taskParentChanged( task.id(), oldParentId, task.parent() );
+        m_tasks[ task.id() ].makeChildOf( parentItem( task ) );
+    }
 
-        m_tasks[ task.id() ].task() = task;
-        m_nameCache.modifyTask( task );
+    m_tasks[ task.id() ].task() = task;
+    m_nameCache.modifyTask( task );
 
-        if( parentChanged ) {
-            Q_FOREACH( CharmDataModelAdapterInterface* adapter, m_adapters )
-                adapter->resetTasks();
-        } else {
-            Q_FOREACH( CharmDataModelAdapterInterface* adapter, m_adapters )
+    if( parentChanged ) {
+        Q_FOREACH( auto adapter, m_adapters )
+            adapter->resetTasks();
+    } else {
+        Q_FOREACH( auto adapter, m_adapters )
             adapter->taskModified( task.id() );
-        }
     }
 }
 
@@ -178,10 +178,10 @@ void CharmDataModel::deleteTask( const Task& task )
                 Q_FUNC_INFO,
                 "Cannot delete a task that has children" );
 
-    Q_FOREACH( CharmDataModelAdapterInterface* adapter, m_adapters )
+    Q_FOREACH( auto adapter, m_adapters )
         adapter->taskAboutToBeDeleted( task.id() );
 
-    const TaskTreeItem::Map::iterator it = m_tasks.find( task.id() );
+    const auto it = m_tasks.find( task.id() );
     if ( it != m_tasks.end() ) {
         TaskTreeItem tmpParent;
         it->second.makeChildOf( tmpParent );
@@ -190,7 +190,7 @@ void CharmDataModel::deleteTask( const Task& task )
 
     m_nameCache.deleteTask( task );
 
-    Q_FOREACH( CharmDataModelAdapterInterface* adapter, m_adapters )
+    Q_FOREACH( auto adapter, m_adapters )
         adapter->taskDeleted( task.id() );
 }
 
@@ -206,7 +206,7 @@ void CharmDataModel::clearTasks()
     m_nameCache.clearTasks();
     m_rootItem = TaskTreeItem();
 
-    Q_FOREACH( CharmDataModelAdapterInterface* adapter, m_adapters )
+    Q_FOREACH( auto adapter, m_adapters )
         adapter->resetTasks();
 }
 
@@ -224,7 +224,7 @@ void CharmDataModel::setAllEvents( const EventList& events )
         }
     }
 
-    Q_FOREACH( CharmDataModelAdapterInterface* adapter, m_adapters )
+    Q_FOREACH( auto adapter, m_adapters )
         adapter->resetEvents();
 }
 
@@ -233,12 +233,12 @@ void CharmDataModel::addEvent( const Event& event )
     Q_ASSERT_X( ! eventExists( event.id() ), Q_FUNC_INFO,
                 "New event must have a unique id" );
 
-    Q_FOREACH( CharmDataModelAdapterInterface* adapter, m_adapters )
+    Q_FOREACH( auto adapter, m_adapters )
         adapter->eventAboutToBeAdded( event.id() );
 
     m_events[ event.id() ] = event;
 
-    Q_FOREACH( CharmDataModelAdapterInterface* adapter, m_adapters )
+    Q_FOREACH( auto adapter, m_adapters )
         adapter->eventAdded( event.id() );
 }
 
@@ -251,7 +251,7 @@ void CharmDataModel::modifyEvent( const Event& newEvent )
 
     m_events[ newEvent.id() ] = newEvent;
 
-    Q_FOREACH( CharmDataModelAdapterInterface* adapter, m_adapters )
+    Q_FOREACH( auto adapter, m_adapters )
         adapter->eventModified( newEvent.id(), oldEvent );
 }
 
@@ -262,14 +262,14 @@ void CharmDataModel::deleteEvent( const Event& event )
     Q_ASSERT_X( !m_activeEventIds.contains( event.id() ), Q_FUNC_INFO,
                 "Cannot delete an active event" );
 
-    Q_FOREACH( CharmDataModelAdapterInterface* adapter, m_adapters )
+    Q_FOREACH( auto adapter, m_adapters )
         adapter->eventAboutToBeDeleted( event.id() );
 
-    const EventMap::iterator it = m_events.find( event.id() );
+    const auto it = m_events.find( event.id() );
     if ( it != m_events.end() )
         m_events.erase( it );
 
-    Q_FOREACH( CharmDataModelAdapterInterface* adapter, m_adapters )
+    Q_FOREACH( auto adapter, m_adapters )
         adapter->eventDeleted( event.id() );
 }
 
@@ -277,7 +277,7 @@ void CharmDataModel::clearEvents()
 {
     m_events.clear();
 
-    Q_FOREACH( CharmDataModelAdapterInterface* adapter, m_adapters )
+    Q_FOREACH( auto adapter, m_adapters )
         adapter->resetEvents();
 }
 
@@ -285,7 +285,7 @@ const TaskTreeItem& CharmDataModel::taskTreeItem( TaskId id ) const
 {
     if ( id <= 0 ) return m_rootItem;
 
-    TaskTreeItem::Map::const_iterator it = m_tasks.find( id );
+    const auto it = m_tasks.find( id );
     if ( it == m_tasks.end() ) {
         return m_rootItem;
     } else {
@@ -325,7 +325,7 @@ const Event& CharmDataModel::eventForId( EventId id ) const
 Event& CharmDataModel::findEvent( int id )
 {
     // in this method, the event has to exist
-    const EventMap::iterator it = m_events.find( id );
+    const auto it = m_events.find( id );
     Q_ASSERT( it != m_events.end() );
     return it->second;
 }
@@ -354,7 +354,7 @@ bool CharmDataModel::activateEvent( const Event& activeEvent )
     }
 
     m_activeEventIds << activeEvent.id();
-    Q_FOREACH( CharmDataModelAdapterInterface* adapter, m_adapters ) {
+    Q_FOREACH( auto adapter, m_adapters ) {
         adapter->eventActivated( activeEvent.id() );
     }
     m_timer.start( 10000 );
@@ -450,7 +450,7 @@ void CharmDataModel::endEventRequested( const Task& task )
         if ( eventForId( m_activeEventIds[i] ).taskId() == task.id() ) {
             eventId = m_activeEventIds[i];
             m_activeEventIds.removeAt( i );
-            Q_FOREACH( CharmDataModelAdapterInterface* adapter, m_adapters ) {
+            Q_FOREACH( auto adapter, m_adapters ) {
                 adapter->eventDeactivated( eventId );
             }
             break;
@@ -474,7 +474,7 @@ void CharmDataModel::endAllEventsRequested()
     while ( ! m_activeEventIds.isEmpty() ) {
         EventId eventId = m_activeEventIds.first();
         m_activeEventIds.pop_front();
-        Q_FOREACH( CharmDataModelAdapterInterface* adapter, m_adapters ) {
+        Q_FOREACH( auto adapter, m_adapters ) {
             adapter->eventDeactivated( eventId );
         }
 
@@ -748,7 +748,7 @@ bool CharmDataModel::operator==( const CharmDataModel& other ) const
 
 CharmDataModel* CharmDataModel::clone() const
 {
-    CharmDataModel* c = new CharmDataModel();
+    auto c = new CharmDataModel();
     c->setAllTasks( getAllTasks() );
     c->m_events = m_events;
     c->m_activeEventIds = m_activeEventIds;

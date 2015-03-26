@@ -67,7 +67,7 @@ TasksView::TasksView( QToolBar* toolBar, QWidget* parent )
     , m_showSubscribedOnly( new QAction( toolBar ) )
     , m_treeView( new QTreeView( this ) )
 {
-    QVBoxLayout* layout = new QVBoxLayout( this );
+    auto layout = new QVBoxLayout( this );
     layout->setContentsMargins( 0, 0, 0, 0 );
     layout->addWidget( m_treeView );
 
@@ -132,7 +132,7 @@ TasksView::TasksView( QToolBar* toolBar, QWidget* parent )
     connect( m_showSubscribedOnly, SIGNAL(triggered(bool)),
              SLOT(taskPrefilteringChanged()) );
 
-    QLineEdit* searchField = new QLineEdit( this );
+    auto searchField = new QLineEdit( this );
 
     connect( searchField, SIGNAL(textChanged(QString)),
              SLOT(slotFiltertextChanged(QString)) );
@@ -192,7 +192,7 @@ void TasksView::actionEditTask()
     if( editor.exec() ) {
         const Task newTask = editor.getTask();
         newTask.dump();
-        CommandModifyTask* cmd = new CommandModifyTask( newTask, this );
+        auto cmd = new CommandModifyTask( newTask, this );
         emit emitCommand( cmd );
     }
     configureUi(); // FIXME needed?
@@ -207,7 +207,7 @@ void TasksView::actionDeleteTask()
                                    "This operation cannot be undone." ),
                                tr( "Delete" ), tr( "Cancel" ) )
          == QMessageBox::Yes ) {
-        CommandDeleteTask* cmd = new CommandDeleteTask( task, this );
+        auto cmd = new CommandDeleteTask( task, this );
         emit emitCommand( cmd );
     }
 }
@@ -231,7 +231,7 @@ void TasksView::addTaskHelper( const Task& parent )
     if ( dialog.exec() ) {
         task.setId( dialog.selectedId() );
         task.setName( dialog.taskName() );
-        CommandAddTask* cmd = new CommandAddTask( task, this );
+        auto cmd = new CommandAddTask( task, this );
         emit emitCommand( cmd );
         if ( parent.isValid() ) {
             const QModelIndex parentIdx = filter->indexForTaskId( parent.id() );
