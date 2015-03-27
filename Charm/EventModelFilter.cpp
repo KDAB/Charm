@@ -90,7 +90,7 @@ void EventModelFilter::setFilterEndDate( const QDate& date )
     filterChanged();
 }
 
-int EventModelFilter::totalDuration()
+int EventModelFilter::totalDuration() const
 {
     int total = 0;
     for ( int i = 0; i < rowCount(); ++i )

@@ -46,7 +46,7 @@ public:
     virtual ~EventModelFilter();
 
     /** Returns the total number of seconds of all events in the model. */
-    int totalDuration();
+    int totalDuration() const;
 
     // implement EventModelInterface:
     const Event& eventForIndex( const QModelIndex& ) const;
