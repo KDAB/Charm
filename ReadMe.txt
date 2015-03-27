@@ -57,7 +57,7 @@ For released versions, binary packages are available:
 
 For various Linux distributions, packages are available via the [openSUSE Build Service](https://build.opensuse.org/package/show/isv:KDAB/charmtimetracker/).
 
-For Windows and OS X, [find installers here](http://www.kdab.com/~frank/Charm/).
+For Windows and OS X, [find installers here](https://github.com/KDAB/Charm/releases).
 
 Authors and License
 -------------------
