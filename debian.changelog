@@ -1,0 +1,30 @@
+charmtimetracker (1.9.0) stable; urgency=low
+
+  * 1.9.0 release
+
+ -- Allen Winter <allen.winter@kdab.com>  Thu, 26 Mar 2015 10:30:00 -0500
+
+  
+charmtimetracker (1.8.0) stable; urgency=low
+
+  * 1.8.0 release
+
+ -- Kevin Ottens <kevin.ottens@kdab.com>  Tue, 02 Jul 2013 12:11:38 +0200
+
+charmtimetracker (1.7.0) stable; urgency=low
+
+  * 1.7.0 release
+
+ -- Frank Osterfeld <frank.osterfeld@kdab.com>  Fri, 27 Jul 2012 14:10:14 +0000
+
+charmtimetracker (1.6.0) stable; urgency=low
+
+  * 1.6.0 release
+
+ -- Mike McQuaid <mike.mcquaid@kdab.com>  Thu, 23 Feb 2012 14:10:14 +0000
+
+charmtimetracker (1.5.2) stable; urgency=low
+
+  * Initial Debian Package
+
+ -- Mike McQuaid <mike.mcquaid@kdab.com>  Wed, 07 Dec 2011 14:18:38 +0000
