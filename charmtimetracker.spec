@@ -20,6 +20,11 @@ BuildRequires:  gcc-c++ qt-devel cmake desktop-file-utils
 Requires:       qt4-sqlite
 %endif
 
+%if %{defined rhel}
+BuildRequires:  gcc-c++ qt-devel cmake desktop-file-utils
+Requires:       qt4-sqlite
+%endif
+
 %description
 Charm is a program for OS X, Linux and Windows that helps to keep
 track of time. It is built around two major ideas - tasks, and
