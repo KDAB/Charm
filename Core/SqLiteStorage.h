@@ -38,18 +38,18 @@ public:
     SqLiteStorage();
     ~SqLiteStorage();
 
-    QString description() const;
-    bool connect( Configuration& );
-    bool disconnect();
+    QString description() const override;
+    bool connect( Configuration& ) override;
+    bool disconnect() override;
 
-    QSqlDatabase& database();
-    int installationId() const;
+    QSqlDatabase& database() override;
+    int installationId() const override;
 
 protected:
-    bool createDatabase( Configuration& );
-    bool createDatabaseTables();
+    bool createDatabase( Configuration& ) override;
+    bool createDatabaseTables() override;
     bool migrateDatabaseDirectory(QDir, const QDir & ) const;
-    QString lastInsertRowFunction() const;
+    QString lastInsertRowFunction() const override;
 
 private:
     QSqlDatabase m_database;

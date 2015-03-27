@@ -38,9 +38,9 @@ public:
     explicit CommandMakeAndActivateEvent( const Task&, QObject* parent );
     ~CommandMakeAndActivateEvent();
 
-    bool prepare();
-    bool execute( ControllerInterface* );
-    bool finalize();
+    bool prepare() override;
+    bool execute( ControllerInterface* ) override;
+    bool finalize() override;
 
 private:
     Task m_task; // the task we send to the controller

@@ -44,7 +44,7 @@ private slots:
     void on_databaseLocation_textChanged( const QString& text );
     void on_nameLineEdit_textChanged( const QString& text );
 
-    virtual void accept();
+    void accept() override;
 
 private:
     void checkInput();

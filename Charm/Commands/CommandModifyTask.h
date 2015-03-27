@@ -36,9 +36,9 @@ public:
     explicit CommandModifyTask( const Task&, QObject* parent = nullptr );
     ~CommandModifyTask();
 
-    bool prepare();
-    bool execute( ControllerInterface* );
-    bool finalize();
+    bool prepare() override;
+    bool execute( ControllerInterface* ) override;
+    bool finalize() override;
 
 private:
     Task m_task;

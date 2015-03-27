@@ -41,10 +41,10 @@ public:
 
     void setCommand( CharmCommand* command );
 
-    bool prepare();
-    bool execute( ControllerInterface* );
-    bool rollback( ControllerInterface* );
-    bool finalize();
+    bool prepare() override;
+    bool execute( ControllerInterface* ) override;
+    bool rollback( ControllerInterface* ) override;
+    bool finalize() override;
 
 private:
     CharmCommand* m_payload;

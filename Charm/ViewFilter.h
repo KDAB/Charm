@@ -48,18 +48,18 @@ public:
     virtual ~ViewFilter();
 
     // implement TaskModelInterface
-    Task taskForIndex( const QModelIndex& ) const;
-    QModelIndex indexForTaskId( TaskId ) const;
-    bool taskIsActive( const Task& task ) const;
-    bool taskHasChildren( const Task& task ) const;
+    Task taskForIndex( const QModelIndex& ) const override;
+    QModelIndex indexForTaskId( TaskId ) const override;
+    bool taskIsActive( const Task& task ) const override;
+    bool taskHasChildren( const Task& task ) const override;
 
     // filter for subscriptions:
     void prefilteringModeChanged();
 
-    bool taskIdExists( TaskId taskId ) const;
-    void commitCommand( CharmCommand* );
-    bool filterAcceptsColumn( int source_column, const QModelIndex& source_parent ) const;
-    bool filterAcceptsRow( int row, const QModelIndex& parent ) const;
+    bool taskIdExists( TaskId taskId ) const override;
+    void commitCommand( CharmCommand* ) override;
+    bool filterAcceptsColumn( int source_column, const QModelIndex& source_parent ) const override;
+    bool filterAcceptsRow( int row, const QModelIndex& parent ) const override;
 
 signals:
     void eventActivationNotice( EventId id );

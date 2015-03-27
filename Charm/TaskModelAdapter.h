@@ -66,43 +66,43 @@ public:
     ~TaskModelAdapter();
 
     // reimplement QAbstractItemModel:
-    int columnCount( const QModelIndex& parent = QModelIndex() ) const;
-    int rowCount( const QModelIndex& parent = QModelIndex() ) const;
-    QVariant data( const QModelIndex& index, int role = Qt::DisplayRole ) const;
-    QModelIndex index( int row, int column, const QModelIndex & parent = QModelIndex() ) const;
-    QModelIndex parent( const QModelIndex & index ) const;
+    int columnCount( const QModelIndex& parent = QModelIndex() ) const override;
+    int rowCount( const QModelIndex& parent = QModelIndex() ) const override;
+    QVariant data( const QModelIndex& index, int role = Qt::DisplayRole ) const override;
+    QModelIndex index( int row, int column, const QModelIndex & parent = QModelIndex() ) const override;
+    QModelIndex parent( const QModelIndex & index ) const override;
     // QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
-    Qt::ItemFlags flags( const QModelIndex & index ) const;
-    bool setData( const QModelIndex & index, const QVariant & value, int role = Qt::EditRole );
+    Qt::ItemFlags flags( const QModelIndex & index ) const override;
+    bool setData( const QModelIndex & index, const QVariant & value, int role = Qt::EditRole ) override;
 
     // reimplement CharmDataModelAdapterInterface:
-    void resetTasks();
-    void taskAboutToBeAdded( TaskId parent, int pos );
-    void taskAdded( TaskId id );
-    void taskModified( TaskId id );
-    void taskParentChanged( TaskId task, TaskId oldParent, TaskId newParent );
-    void taskAboutToBeDeleted( TaskId );
-    void taskDeleted( TaskId id );
+    void resetTasks() override;
+    void taskAboutToBeAdded( TaskId parent, int pos ) override;
+    void taskAdded( TaskId id ) override;
+    void taskModified( TaskId id ) override;
+    void taskParentChanged( TaskId task, TaskId oldParent, TaskId newParent ) override;
+    void taskAboutToBeDeleted( TaskId ) override;
+    void taskDeleted( TaskId id ) override;
 
-    void resetEvents() {}
-    void eventAboutToBeAdded( EventId id ) {}
-    void eventAdded( EventId );
-    void eventModified( EventId, Event );
-    void eventAboutToBeDeleted( EventId id ) {}
-    void eventDeleted( EventId );
+    void resetEvents() override {}
+    void eventAboutToBeAdded( EventId ) override {}
+    void eventAdded( EventId ) override;
+    void eventModified( EventId, Event ) override;
+    void eventAboutToBeDeleted( EventId ) override {}
+    void eventDeleted( EventId ) override;
 
-    void eventActivated( EventId id );
-    void eventDeactivated( EventId id );
+    void eventActivated( EventId id ) override;
+    void eventDeactivated( EventId id ) override;
 
     // reimplement TaskModelInterface:
-    Task taskForIndex( const QModelIndex& ) const;
-    QModelIndex indexForTaskId( TaskId ) const;
-    bool taskIsActive( const Task& task ) const;
-    bool taskHasChildren( const Task& task ) const;
-    bool taskIdExists( TaskId taskId ) const;
+    Task taskForIndex( const QModelIndex& ) const override;
+    QModelIndex indexForTaskId( TaskId ) const override;
+    bool taskIsActive( const Task& task ) const override;
+    bool taskHasChildren( const Task& task ) const override;
+    bool taskIdExists( TaskId taskId ) const override;
 
     // reimplement CommandEmitterInterface:
-    void commitCommand( CharmCommand* );
+    void commitCommand( CharmCommand* ) override;
 
 signals:
     void eventActivationNotice( EventId id );

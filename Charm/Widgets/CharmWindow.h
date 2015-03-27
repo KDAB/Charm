@@ -63,10 +63,10 @@ protected:
     virtual void insertEditMenu() {}
 
 public:
-    /* reimpl */ void stateChanged( State previous );
-    /* reimpl */ void showEvent( QShowEvent* );
-    /* reimpl */ void hideEvent( QHideEvent* );
-    /* reimpl */ void keyPressEvent( QKeyEvent* event );
+    void stateChanged( State previous ) override;
+    void showEvent( QShowEvent* ) override;
+    void hideEvent( QHideEvent* ) override;
+    void keyPressEvent( QKeyEvent* event ) override;
 
     virtual void saveGuiState();
     virtual void restoreGuiState();
@@ -74,16 +74,16 @@ public:
     static bool showHideView( QWidget* w );
 
 signals:
-    /* reimpl */ void visibilityChanged( bool );
-    /* reimpl */ void saveConfiguration();
+    void visibilityChanged( bool ) override;
+    void saveConfiguration() override;
 
 public slots:
-    /* reimpl */ void sendCommandRollback( CharmCommand* );
-    /* reimpl */ void sendCommand( CharmCommand* );
-    /* reimpl */ void commitCommand( CharmCommand* );
-    void restore();
+    void sendCommandRollback( CharmCommand* ) override;
+    void sendCommand( CharmCommand* ) override;
+    void commitCommand( CharmCommand* ) override;
+    void restore() override;
     void showHideView();
-    void configurationChanged();
+    void configurationChanged() override;
 
 private:
     void handleShowHide( bool visible );

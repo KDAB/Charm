@@ -42,7 +42,7 @@ public:
 
 public Q_SLOTS:
     void loadEvent( EventId id );
-    void accept();
+    void accept() override;
 
 private:
     Ui::CommentEditorPopup *ui;

@@ -36,9 +36,9 @@ public:
     explicit CommandDeleteTask( const Task&, QObject* parent = nullptr );
     ~CommandDeleteTask();
 
-    bool prepare();
-    bool execute( ControllerInterface* );
-    bool finalize();
+    bool prepare() override;
+    bool execute( ControllerInterface* ) override;
+    bool finalize() override;
 
 private:
     Task m_task;

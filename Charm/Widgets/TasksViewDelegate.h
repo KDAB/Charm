@@ -36,22 +36,22 @@ class TasksViewDelegate : public QItemDelegate
 public:
     explicit TasksViewDelegate( QObject* parent = nullptr );
 
-    /*! \reimp */ void paint( QPainter *painter,
-                              const QStyleOptionViewItem &option,
-                              const QModelIndex &index ) const;
-    /*! \reimp */ QSize sizeHint( const QStyleOptionViewItem &option,
-                                  const QModelIndex &index ) const;
+    void paint( QPainter *painter,
+                const QStyleOptionViewItem &option,
+                const QModelIndex &index ) const override;
+    QSize sizeHint( const QStyleOptionViewItem &option,
+                    const QModelIndex &index ) const override;
 
-    /*! \reimp */ QWidget* createEditor( QWidget* parent,
-                                         const QStyleOptionViewItem& option,
-                                         const QModelIndex& index ) const;
-    /*! \reimp */ bool editorEvent( QEvent *event, QAbstractItemModel *model,
-                                    const QStyleOptionViewItem &option,
-                                    const QModelIndex &index );
-    /*! \reimp */ void updateEditorGeometry( QWidget * editor,
-                                             const QStyleOptionViewItem & option,
-                                             const QModelIndex & index ) const;
-    /*! \reimp */ void setEditorData( QWidget * editor, const QModelIndex & index ) const;
+    QWidget* createEditor( QWidget* parent,
+                           const QStyleOptionViewItem& option,
+                           const QModelIndex& index ) const override;
+    bool editorEvent( QEvent *event, QAbstractItemModel *model,
+                      const QStyleOptionViewItem &option,
+                      const QModelIndex &index ) override;
+    void updateEditorGeometry( QWidget * editor,
+                               const QStyleOptionViewItem & option,
+                               const QModelIndex & index ) const override;
+    void setEditorData( QWidget * editor, const QModelIndex & index ) const override;
 
     bool isEditing() const;
 

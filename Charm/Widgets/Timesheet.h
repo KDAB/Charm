@@ -68,12 +68,9 @@ protected:
 
     QString getFileName( const QString& filter );
 
-    // reimpl
-    void slotUpdate();
-    // reimpl
-    void slotSaveToText();
-    // reimpl
-    void slotSaveToXml();
+    void slotUpdate() override;
+    void slotSaveToText() override;
+    void slotSaveToXml() override;
 
 protected:
     SecondsMap m_secondsMap;

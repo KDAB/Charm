@@ -36,13 +36,13 @@ public:
     explicit CommandDeleteEvent( const Event&, QObject* parent = nullptr );
     ~CommandDeleteEvent();
 
-    bool prepare();
-    bool execute( ControllerInterface* );
-    bool rollback( ControllerInterface* );
-    bool finalize();
+    bool prepare() override;
+    bool execute( ControllerInterface* ) override;
+    bool rollback( ControllerInterface* ) override;
+    bool finalize() override;
 
 public slots:
-    virtual void eventIdChanged(int,int);
+    void eventIdChanged(int,int) override;
 
 private:
     Event m_event;

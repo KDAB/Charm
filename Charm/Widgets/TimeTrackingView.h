@@ -65,14 +65,14 @@ private:
 
 public:
     explicit TimeTrackingView( QWidget* parent = nullptr );
-    void paintEvent( QPaintEvent* );
-    void resizeEvent( QResizeEvent* );
-    void mousePressEvent( QMouseEvent* event );
-    void mouseDoubleClickEvent( QMouseEvent * event );
+    void paintEvent( QPaintEvent* ) override;
+    void resizeEvent( QResizeEvent* ) override;
+    void mousePressEvent( QMouseEvent* event ) override;
+    void mouseDoubleClickEvent( QMouseEvent * event ) override;
 
     void setSummaries( const QVector<WeeklySummary>& summaries );
-    QSize sizeHint() const;
-    QSize minimumSizeHint() const;
+    QSize sizeHint() const override;
+    QSize minimumSizeHint() const override;
     QMenu* menu() const;
 
     void populateEditMenu( QMenu* );

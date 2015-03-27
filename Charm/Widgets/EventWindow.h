@@ -36,20 +36,20 @@ public:
     explicit EventWindow( QWidget* parent = nullptr );
     ~EventWindow();
 
-    /* reimpl */ void stateChanged( State previous );
+    void stateChanged( State previous ) override;
 
     // restore the view
-    /* reimpl */ void restore();
+    void restore() override;
 public slots:
-    /* reimpl */ void configurationChanged();
+    void configurationChanged() override;
 
 protected:
-    /* reimpl */ void insertEditMenu();
+    void insertEditMenu() override;
 
 signals:
-    /* reimpl */ void emitCommand( CharmCommand* );
-    /* reimpl */ void emitCommandRollback( CharmCommand* );
-    /* reimpl */ void quit();
+    void emitCommand( CharmCommand* );
+    void emitCommandRollback( CharmCommand* );
+    void quit();
 
 private:
     EventView* m_eventView;

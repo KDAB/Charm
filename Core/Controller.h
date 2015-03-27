@@ -43,34 +43,34 @@ public:
     explicit Controller( QObject* parent = nullptr );
     ~Controller();
 
-    void stateChanged( State previous, State next );
-    void persistMetaData( Configuration& );
-    void provideMetaData( Configuration& );
+    void stateChanged( State previous, State next ) override;
+    void persistMetaData( Configuration& ) override;
+    void provideMetaData( Configuration& ) override;
 
-    bool initializeBackEnd( const QString& name );
-    bool connectToBackend();
-    bool disconnectFromBackend();
-    StorageInterface* storage();
+    bool initializeBackEnd( const QString& name ) override;
+    bool connectToBackend() override;
+    bool disconnectFromBackend() override;
+    StorageInterface* storage() override;
 
     // FIXME add the add/modify/delete functions will not be slots anymore
-    Event makeEvent( const Task& );
-    Event cloneEvent( const Event& );
-    bool modifyEvent( const Event& );
-    bool deleteEvent( const Event& );
+    Event makeEvent( const Task& ) override;
+    Event cloneEvent( const Event& ) override;
+    bool modifyEvent( const Event& ) override;
+    bool deleteEvent( const Event& ) override;
 
-    bool addTask( const Task& parent );
-    bool modifyTask( const Task& );
-    bool deleteTask( const Task& );
-    bool setAllTasks( const TaskList& );
-    QDomDocument exportDatabasetoXml() const;
-    QString importDatabaseFromXml( const QDomDocument& );
+    bool addTask( const Task& parent ) override;
+    bool modifyTask( const Task& ) override;
+    bool deleteTask( const Task& ) override;
+    bool setAllTasks( const TaskList& ) override;
+    QDomDocument exportDatabasetoXml() const override;
+    QString importDatabaseFromXml( const QDomDocument& ) override;
 
     void updateModelEventsAndTasks();
 
 public slots:
 
-    void executeCommand( CharmCommand* );
-    void rollbackCommand ( CharmCommand* );
+    void executeCommand( CharmCommand* ) override;
+    void rollbackCommand ( CharmCommand* ) override;
 
 signals:
     void eventAdded( const Event& event );

@@ -35,9 +35,9 @@ public:
     explicit CommandImportFromXml( QString filename, QObject* parent );
     ~CommandImportFromXml();
 
-    bool prepare();
-    bool execute( ControllerInterface* );
-    bool finalize();
+    bool prepare() override;
+    bool execute( ControllerInterface* ) override;
+    bool finalize() override;
 
 private:
     QString m_error;

@@ -41,12 +41,12 @@ public:
     explicit MonthlyTimesheetConfigurationDialog( QWidget* parent );
     virtual ~MonthlyTimesheetConfigurationDialog();
 
-    void showReportPreviewDialog( QWidget* parent );
-    void showEvent( QShowEvent* );
+    void showReportPreviewDialog( QWidget* parent ) override;
+    void showEvent( QShowEvent* ) override;
     void setDefaultMonth( int yearOfMonth, int month );
 
 public Q_SLOTS:
-    void accept();
+    void accept() override;
 
 private slots:
     void slotCheckboxSubtasksOnlyChecked( bool );

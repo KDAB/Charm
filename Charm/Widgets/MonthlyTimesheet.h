@@ -36,17 +36,16 @@ public:
     explicit MonthlyTimeSheetReport( QWidget* parent = nullptr );
     virtual ~MonthlyTimeSheetReport();
 
-    // reimpl
     void setReportProperties( const QDate& start,
                               const QDate& end,
                               TaskId rootTask,
-                              bool activeTasksOnly );
+                              bool activeTasksOnly ) override;
 
-private: // reimpl
-    QString suggestedFileName() const;
-    void update();
-    QByteArray saveToText();
-    QByteArray saveToXml();
+private:
+    QString suggestedFileName() const override;
+    void update() override;
+    QByteArray saveToText() override;
+    QByteArray saveToXml() override;
 
 private:
     // properties of the report:

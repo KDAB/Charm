@@ -46,7 +46,7 @@ public:
     EventModelFilter* eventModel();
 
     // implement CommandEmitterInterface
-    void commitCommand( CharmCommand* );
+    void commitCommand( CharmCommand* ) override;
 
 public slots:
     void slotMakeAndActivateEvent( const Task& );

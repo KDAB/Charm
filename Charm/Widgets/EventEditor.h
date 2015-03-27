@@ -46,7 +46,7 @@ public:
     Event eventResult() const;
 
 protected Q_SLOTS:
-    void accept();
+    void accept() override;
 
 private Q_SLOTS:
     void durationHoursEdited( int );

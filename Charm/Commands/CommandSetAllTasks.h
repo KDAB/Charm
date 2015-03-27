@@ -35,9 +35,9 @@ public:
     explicit CommandSetAllTasks( const TaskList&, QObject* parent );
     ~CommandSetAllTasks();
 
-    bool prepare();
-    bool execute( ControllerInterface* );
-    bool finalize();
+    bool prepare() override;
+    bool execute( ControllerInterface* ) override;
+    bool finalize() override;
 
 private:
     TaskList m_tasks;

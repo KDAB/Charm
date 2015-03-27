@@ -35,9 +35,9 @@ public:
     explicit CommandExportToXml( QString filename, QObject* parent );
     ~CommandExportToXml();
 
-    bool prepare();
-    bool execute( ControllerInterface* );
-    bool finalize();
+    bool prepare() override;
+    bool execute( ControllerInterface* ) override;
+    bool finalize() override;
 
 private:
     bool m_error;

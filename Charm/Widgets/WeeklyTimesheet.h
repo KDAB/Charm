@@ -52,12 +52,12 @@ public:
     explicit WeeklyTimesheetConfigurationDialog( QWidget* parent );
     ~WeeklyTimesheetConfigurationDialog();
 
-    void showReportPreviewDialog( QWidget* parent );
-    void showEvent( QShowEvent* );
+    void showReportPreviewDialog( QWidget* parent ) override;
+    void showEvent( QShowEvent* ) override;
     void setDefaultWeek( int yearOfWeek, int week );
 
 public Q_SLOTS:
-    void accept();
+    void accept() override;
 
 private slots:
     void slotCheckboxSubtasksOnlyChecked( bool );
@@ -79,21 +79,20 @@ public:
     explicit WeeklyTimeSheetReport( QWidget* parent = nullptr );
     virtual ~WeeklyTimeSheetReport();
 
-    // reimpl
     void setReportProperties( const QDate& start,
                               const QDate& end,
                               TaskId rootTask,
-                              bool activeTasksOnly );
+                              bool activeTasksOnly ) override;
 
 private slots:
     void slotUploadTimesheet();
     void slotTimesheetUploaded(HttpJob*);
 
-private: // reimpl
-    QString suggestedFileName() const;
-    void update();
-    QByteArray saveToXml();
-    QByteArray saveToText();
+private:
+    QString suggestedFileName() const override;
+    void update() override;
+    QByteArray saveToXml() override;
+    QByteArray saveToText() override;
 
 private:
     // properties of the report:

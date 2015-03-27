@@ -46,35 +46,35 @@ public:
     explicit EventModelAdapter( CharmDataModel* parent );
     virtual ~EventModelAdapter();
 
-    int rowCount( const QModelIndex& parent = QModelIndex() ) const;
+    int rowCount( const QModelIndex& parent = QModelIndex() ) const override;
 
-    QVariant data( const QModelIndex& index, int role = Qt::DisplayRole ) const;
+    QVariant data( const QModelIndex& index, int role = Qt::DisplayRole ) const override;
 
     // reimplement CharmDataModelAdapterInterface:
-    void resetTasks() {}
-    void taskAboutToBeAdded( TaskId parentTask, int pos ) {}
-    void taskAdded( TaskId id ) {}
-    void taskModified( TaskId id ) {}
-    void taskParentChanged( TaskId, TaskId, TaskId ) {}
-    void taskAboutToBeDeleted( TaskId ) {}
-    void taskDeleted( TaskId id ) {}
+    void resetTasks() override {}
+    void taskAboutToBeAdded( TaskId parentTask, int pos ) override {}
+    void taskAdded( TaskId id ) override {}
+    void taskModified( TaskId id ) override {}
+    void taskParentChanged( TaskId, TaskId, TaskId ) override {}
+    void taskAboutToBeDeleted( TaskId ) override {}
+    void taskDeleted( TaskId id ) override {}
 
-    void resetEvents();
-    void eventAboutToBeAdded( EventId id );
-    void eventAdded( EventId id );
-    void eventModified( EventId id, Event );
-    void eventAboutToBeDeleted( EventId id );
-    void eventDeleted( EventId id );
+    void resetEvents() override;
+    void eventAboutToBeAdded( EventId id ) override;
+    void eventAdded( EventId id ) override;
+    void eventModified( EventId id, Event ) override;
+    void eventAboutToBeDeleted( EventId id ) override;
+    void eventDeleted( EventId id ) override;
 
-    void eventActivated( EventId id );
-    void eventDeactivated( EventId id );
+    void eventActivated( EventId id ) override;
+    void eventDeactivated( EventId id ) override;
 
     // reimplement EventModelInterface:
-    const Event& eventForIndex( const QModelIndex& index ) const;
-    QModelIndex indexForEvent( const Event& ) const;
+    const Event& eventForIndex( const QModelIndex& index ) const override;
+    QModelIndex indexForEvent( const Event& ) const override;
 
     // reimplement CommandEmitterInterface:
-    void commitCommand( CharmCommand* );
+    void commitCommand( CharmCommand* ) override;
 
 signals:
     void eventActivationNotice( EventId id );

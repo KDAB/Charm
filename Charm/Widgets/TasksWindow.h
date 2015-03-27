@@ -36,24 +36,24 @@ public:
     explicit TasksWindow( QWidget* parent = nullptr );
     ~TasksWindow();
 
-    /* reimpl */ void stateChanged( State previous );
-    /* reimpl */ void sendCommand( CharmCommand* );
-    /* reimpl */ void sendCommandRollback( CharmCommand* );
-    /* reimpl */ void commitCommand( CharmCommand* );
+    void stateChanged( State previous ) override;
+    void sendCommand( CharmCommand* ) override;
+    void sendCommandRollback( CharmCommand* ) override;
+    void commitCommand( CharmCommand* ) override;
 
     // restore the view
-    /* reimpl */ void restore();
+    void restore() override;
 
 public slots:
-    /* reimpl */ void configurationChanged();
+    void configurationChanged() override;
 
 protected:
-    /* reimpl */ void insertEditMenu();
+    void insertEditMenu() override;
 
 signals:
-    /* reimpl */ void emitCommand( CharmCommand* );
-    /* reimpl */ void emitCommandRollback( CharmCommand* );
-    /* reimpl */ void quit();
+    void emitCommand( CharmCommand* ) override;
+    void emitCommandRollback( CharmCommand* ) override;
+    void quit() override;
 
 private:
     TasksView* m_tasksView;

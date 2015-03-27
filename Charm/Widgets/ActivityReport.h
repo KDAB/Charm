@@ -44,10 +44,10 @@ public:
     explicit ActivityReportConfigurationDialog( QWidget* parent );
     ~ActivityReportConfigurationDialog();
 
-    void showReportPreviewDialog( QWidget* parent );
+    void showReportPreviewDialog( QWidget* parent ) override;
 
 public Q_SLOTS:
-    void accept();
+    void accept() override;
 
 private slots:
     void slotDelayedInitialization();
@@ -79,8 +79,7 @@ public:
         TaskId rootTask, TaskId rootExcludeTask );
 
 private:
-    // reimpl
-    void slotUpdate();
+    void slotUpdate() override;
 
 private:
     QDate m_start;

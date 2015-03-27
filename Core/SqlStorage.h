@@ -45,56 +45,56 @@ public:
     virtual QSqlDatabase& database() = 0;
 
     // installation id handling
-    Installation createInstallation( const QString& name );
-    Installation getInstallation( int installationId );
-    bool modifyInstallation( const Installation& );
-    bool deleteInstallation( const Installation& );
+    Installation createInstallation( const QString& name ) override;
+    Installation getInstallation( int installationId ) override;
+    bool modifyInstallation( const Installation& ) override;
+    bool deleteInstallation( const Installation& ) override;
 
     // implement user database functions:
-    User getUser ( int userid );
-    User makeUser( const QString& name );
-    bool modifyUser ( const User& user );
-    bool deleteUser ( const User& user );
+    User getUser ( int userid ) override;
+    User makeUser( const QString& name ) override;
+    bool modifyUser ( const User& user ) override;
+    bool deleteUser ( const User& user ) override;
 
     // implement task database functions:
-    TaskList getAllTasks();
-    bool setAllTasks( const User& user, const TaskList& tasks );
-    bool addTask( const Task& task );
-    bool addTask( const Task& task, const SqlRaiiTransactor& );
-    Task getTask( int taskid );
-    bool modifyTask( const Task& task );
-    bool deleteTask( const Task& task );
-    bool deleteAllTasks();
-    bool deleteAllTasks( const SqlRaiiTransactor& );
+    TaskList getAllTasks() override;
+    bool setAllTasks( const User& user, const TaskList& tasks ) override;
+    bool addTask( const Task& task ) override;
+    bool addTask( const Task& task, const SqlRaiiTransactor& ) override;
+    Task getTask( int taskid ) override;
+    bool modifyTask( const Task& task ) override;
+    bool deleteTask( const Task& task ) override;
+    bool deleteAllTasks() override;
+    bool deleteAllTasks( const SqlRaiiTransactor& ) override;
 
     // implement event database functions:
-    EventList getAllEvents();
-    Event makeEvent();
-    Event makeEvent( const SqlRaiiTransactor& );
-    Event getEvent( int eventid );
-    bool modifyEvent( const Event& event );
-    bool modifyEvent( const Event& event, const SqlRaiiTransactor& );
-    bool deleteEvent( const Event& event );
-    bool deleteAllEvents();
-    bool deleteAllEvents( const SqlRaiiTransactor& );
+    EventList getAllEvents() override;
+    Event makeEvent() override;
+    Event makeEvent( const SqlRaiiTransactor& ) override;
+    Event getEvent( int eventid ) override;
+    bool modifyEvent( const Event& event ) override;
+    bool modifyEvent( const Event& event, const SqlRaiiTransactor& ) override;
+    bool deleteEvent( const Event& event ) override;
+    bool deleteAllEvents() override;
+    bool deleteAllEvents( const SqlRaiiTransactor& ) override;
 
     // implement subscription management functions:
-    bool addSubscription( User, Task );
-    bool deleteSubscription( User, Task );
+    bool addSubscription( User, Task ) override;
+    bool deleteSubscription( User, Task ) override;
 
     // implement metadata management functions:
-    bool setMetaData( const QString&,  const QString& );
+    bool setMetaData( const QString&,  const QString& ) override;
     bool setMetaData( const QString&,  const QString&, const SqlRaiiTransactor& );
 
-    QString getMetaData( const QString& );
+    QString getMetaData( const QString& ) override;
 
     // implement import functions:
-    QString setAllTasksAndEvents( const User&, const TaskList&, const EventList& );
+    QString setAllTasksAndEvents( const User&, const TaskList&, const EventList& ) override;
 
     /**
      * @throws UnsupportedDatabaseVersionException
      */
-    bool verifyDatabase();
+    bool verifyDatabase() override;
 
     virtual bool createDatabaseTables() = 0;
 

@@ -49,19 +49,19 @@ public:
     int totalDuration() const;
 
     // implement EventModelInterface:
-    const Event& eventForIndex( const QModelIndex& ) const;
-    QModelIndex indexForEvent( const Event& ) const;
+    const Event& eventForIndex( const QModelIndex& ) const override;
+    QModelIndex indexForEvent( const Event& ) const override;
 
-    bool filterAcceptsRow( int srow, const QModelIndex & sparent ) const;
+    bool filterAcceptsRow( int srow, const QModelIndex & sparent ) const override;
 
     void setFilterStartDate( const QDate& date );
     void setFilterEndDate( const QDate& date );
 
     // implement CommandEmitterInterface:
-    void commitCommand( CharmCommand* );
+    void commitCommand( CharmCommand* ) override;
 
     // implement to sort by event start datetime
-    bool lessThan( const QModelIndex& left, const QModelIndex& right ) const;
+    bool lessThan( const QModelIndex& left, const QModelIndex& right ) const override;
 
 signals:
     void eventActivationNotice( EventId id );

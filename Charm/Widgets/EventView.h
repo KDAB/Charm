@@ -54,18 +54,18 @@ public:
     explicit EventView( QToolBar* toolBar, QWidget* parent );
     ~EventView();
 
-    void closeEvent( QCloseEvent* );
+    void closeEvent( QCloseEvent* ) override;
 
     void reject();
 
     void makeVisibleAndCurrent( const Event& );
 
     // implement ViewModeInterface:
-    void saveGuiState();
-    void restoreGuiState();
-    void stateChanged( State previous );
-    void configurationChanged();
-    void setModel( ModelConnector* );
+    void saveGuiState() override;
+    void restoreGuiState() override;
+    void stateChanged( State previous ) override;
+    void configurationChanged() override;
+    void setModel( ModelConnector* ) override;
 
     void populateEditMenu( QMenu* );
 
@@ -75,7 +75,7 @@ signals:
     void emitCommandRollback( CharmCommand* );
 
 public slots:
-    void commitCommand( CharmCommand* );
+    void commitCommand( CharmCommand* ) override;
     void delayedInitialization();
     void timeSpansChanged();
     void timeFrameChanged(int );

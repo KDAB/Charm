@@ -51,29 +51,29 @@ public:
     ~TimeTrackingWindow();
 
     // application:
-    void stateChanged( State previous );
-    void restore();
-    void quit();
+    void stateChanged( State previous ) override;
+    void restore() override;
+    void quit() override;
 
-    bool event( QEvent* );
-    void showEvent( QShowEvent* );
+    bool event( QEvent* ) override;
+    void showEvent( QShowEvent* ) override;
     QMenu* menu() const;
     // model adapter:
-    void resetTasks();
-    void taskAboutToBeAdded( TaskId parent, int pos );
-    void taskAdded( TaskId id );
-    void taskModified( TaskId id );
-    void taskParentChanged( TaskId task, TaskId oldParent, TaskId newParent );
-    void taskAboutToBeDeleted( TaskId );
-    void taskDeleted( TaskId id );
-    void resetEvents();
-    void eventAboutToBeAdded( EventId id );
-    void eventAdded( EventId id );
-    void eventModified( EventId id, Event discardedEvent );
-    void eventAboutToBeDeleted( EventId id );
-    void eventDeleted( EventId id );
-    void eventActivated( EventId id );
-    void eventDeactivated( EventId id );
+    void resetTasks() override;
+    void taskAboutToBeAdded( TaskId parent, int pos ) override;
+    void taskAdded( TaskId id ) override;
+    void taskModified( TaskId id ) override;
+    void taskParentChanged( TaskId task, TaskId oldParent, TaskId newParent ) override;
+    void taskAboutToBeDeleted( TaskId ) override;
+    void taskDeleted( TaskId id ) override;
+    void resetEvents() override;
+    void eventAboutToBeAdded( EventId id ) override;
+    void eventAdded( EventId id ) override;
+    void eventModified( EventId id, Event discardedEvent ) override;
+    void eventAboutToBeDeleted( EventId id ) override;
+    void eventDeleted( EventId id ) override;
+    void eventActivated( EventId id ) override;
+    void eventDeactivated( EventId id ) override;
 
 public slots:
     // slots migrated from the old main window:
@@ -94,7 +94,7 @@ public slots:
 
 protected:
 
-    /* reimpl */ void insertEditMenu();
+    void insertEditMenu() override;
 
 private slots:
     void slotStartEvent( TaskId );
@@ -106,7 +106,7 @@ private slots:
     void slotCheckUploadedTimesheets();
     void slotBillGone( int result );
 
-    void configurationChanged();
+    void configurationChanged() override;
 
 signals:
     void emitCommand( CharmCommand* );

@@ -49,14 +49,14 @@ public:
     ~TasksView();
 
     // implement ViewModeInterface:
-    void stateChanged( State previous );
-    void configurationChanged();
-    void setModel( ModelConnector* );
+    void stateChanged( State previous ) override;
+    void configurationChanged() override;
+    void setModel( ModelConnector* ) override;
 
     void populateEditMenu( QMenu* );
 
 public Q_SLOTS:
-    /* reimpl */ void commitCommand( CharmCommand* );
+    void commitCommand( CharmCommand* ) override;
 
 signals:
     // FIXME connect to MainWindow
@@ -78,10 +78,10 @@ private slots:
     // this method is called every time the UI actions need update, for
     // example when the current index changes:
     void configureUi();
-    void restoreGuiState();
+    void restoreGuiState() override;
 
 private:
-    void saveGuiState();
+    void saveGuiState() override;
 
     // helper to retrieve selected task:
     Task selectedTask();

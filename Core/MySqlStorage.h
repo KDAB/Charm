@@ -43,19 +43,19 @@ public:
     MySqlStorage();
     virtual ~MySqlStorage();
 
-    QSqlDatabase& database();
+    QSqlDatabase& database() override;
 
-    QString description() const;
-    bool connect(Configuration&);
-    bool disconnect();
-    int installationId() const;
-    bool createDatabase(Configuration&);
-    bool createDatabaseTables();
+    QString description() const override;
+    bool connect(Configuration&) override;
+    bool disconnect() override;
+    int installationId() const override;
+    bool createDatabase(Configuration&) override;
+    bool createDatabaseTables() override;
 
     static Parameters parseParameterEnvironmentVariable();
     void configure( const Parameters& );
 protected:
-    QString lastInsertRowFunction() const;
+    QString lastInsertRowFunction() const override;
 
 private:
     QSqlDatabase m_database;

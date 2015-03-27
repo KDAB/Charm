@@ -47,8 +47,8 @@ public:
 
 public slots:
 
-    virtual bool execute(int state, QNetworkAccessManager *manager);
-    virtual bool handle(QNetworkReply *reply);
+    bool execute(int state, QNetworkAccessManager *manager) override;
+    bool handle(QNetworkReply *reply) override;
 
 protected:
 
