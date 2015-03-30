@@ -26,9 +26,9 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <algorithm>
-#include <functional>
-#include <queue>
+#include "CharmDataModel.h"
+#include "CharmConstants.h"
+#include "Configuration.h"
 
 #include <QList>
 #include <QtDebug>
@@ -36,9 +36,9 @@
 #include <QSettings>
 #include <QStringList>
 
-#include "CharmConstants.h"
-#include "Configuration.h"
-#include "CharmDataModel.h"
+#include <algorithm>
+#include <functional>
+#include <queue>
 
 CharmDataModel::CharmDataModel()
     : QObject()

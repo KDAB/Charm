@@ -22,25 +22,25 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
-#include <QAction>
-#include <QMap>
-#include <QMenu>
-#include <QToolButton>
-#include <QVBoxLayout>
-#include <QPointer>
-#include <QTextEdit>
-#include <QDialogButtonBox>
-#include <QMessageBox>
-#include <QPushButton>
-
-#include "Core/Task.h"
-#include "Core/Event.h"
-#include "Data.h"
-#include "ViewHelpers.h"
-#include "SelectTaskDialog.h"
 #include "TimeTrackingTaskSelector.h"
 #include "CommentEditorPopup.h"
+#include "Data.h"
+#include "SelectTaskDialog.h"
+#include "ViewHelpers.h"
+
+#include "Core/Event.h"
+#include "Core/Task.h"
+
+#include <QAction>
+#include <QDialogButtonBox>
+#include <QMap>
+#include <QMenu>
+#include <QMessageBox>
+#include <QPointer>
+#include <QPushButton>
+#include <QTextEdit>
+#include <QToolButton>
+#include <QVBoxLayout>
 
 #define CUSTOM_TASK_PROPERTY_NAME "CUSTOM_TASK_PROPERTY"
 

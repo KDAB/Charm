@@ -22,6 +22,20 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "ApplicationCore.h"
+#include "CharmCMake.h"
+#include "Data.h"
+#include "ViewHelpers.h"
+#include "Uniquifier.h"
+
+#include "Core/CharmConstants.h"
+#include "Core/CharmExceptions.h"
+#include "Core/SqLiteStorage.h"
+
+#include "HttpClient/HttpJob.h"
+#include "Idle/IdleDetector.h"
+#include "Widgets/ConfigurationDialog.h"
+
 #include <QDir>
 #include <QTimer>
 #include <QAction>
@@ -38,20 +52,6 @@
 #else
 #include <QStandardPaths>
 #endif
-
-#include <Core/CharmConstants.h>
-#include <Core/CharmExceptions.h>
-#include <Core/SqLiteStorage.h>
-#include <CharmCMake.h>
-
-#include "ViewHelpers.h"
-#include "Data.h"
-#include "ApplicationCore.h"
-#include "Idle/IdleDetector.h"
-#include "Uniquifier.h"
-#include "HttpClient/HttpJob.h"
-
-#include "Widgets/ConfigurationDialog.h"
 
 #include <algorithm>
 #include <functional>

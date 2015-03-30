@@ -21,13 +21,13 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QList>
-#include <QSettings>
+#include "GUIState.h"
 
 #include "Core/CharmConstants.h"
-
 #include "Core/Task.h"
-#include "GUIState.h"
+
+#include <QList>
+#include <QSettings>
 
 GUIState::GUIState()
     : m_selectedTask( 0 )

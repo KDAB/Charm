@@ -22,13 +22,13 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QDateTime>
-#include <QFile>
-
 #include "XmlSerialization.h"
+#include "CharmConstants.h"
 #include "CharmExceptions.h"
 #include "Configuration.h"
-#include "CharmConstants.h"
+
+#include <QDateTime>
+#include <QFile>
 
 static QHash<QString,QString> readMetadata( const QDomElement& metadata ) {
     QHash<QString,QString> l;
@@ -44,10 +44,10 @@ static QHash<QString,QString> readMetadata( const QDomElement& metadata ) {
 
 namespace XmlSerialization {
 
-    QString reportTagName() { 
+    QString reportTagName() {
         return "charmreport";
     }
-    
+
     QString reportTypeAttribute() {
         return "type";
     }

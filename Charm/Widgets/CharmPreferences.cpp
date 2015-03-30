@@ -22,14 +22,15 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QCheckBox>
-#include <QMessageBox>
+#include "CharmPreferences.h"
+#include "ApplicationCore.h"
+#include "MessageBox.h"
 
 #include "Core/Configuration.h"
-#include "ApplicationCore.h"
-#include "CharmPreferences.h"
 #include "Idle/IdleDetector.h"
-#include "MessageBox.h"
+
+#include <QCheckBox>
+#include <QMessageBox>
 
 CharmPreferences::CharmPreferences( const Configuration& config,
                                     QWidget* parent_ )

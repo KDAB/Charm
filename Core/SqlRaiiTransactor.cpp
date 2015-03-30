@@ -21,13 +21,13 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "SqlRaiiTransactor.h"
+#include "CharmExceptions.h"
+
 #include <QtDebug>
 #include <QSqlDatabase>
 #include <QSqlDriver>
 #include <QSqlError>
-
-#include "CharmExceptions.h"
-#include "SqlRaiiTransactor.h"
 
 SqlRaiiTransactor::SqlRaiiTransactor( QSqlDatabase& database )
     : m_database ( database )

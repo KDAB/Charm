@@ -21,10 +21,10 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <Core/ControllerInterface.h>
-#include <Core/StorageInterface.h>
-
 #include "CommandModifyEvent.h"
+
+#include "Core/ControllerInterface.h"
+#include "Core/StorageInterface.h"
 
 CommandModifyEvent::CommandModifyEvent( const Event& event, const Event& oldEvent, QObject* parent )
     : CharmCommand( tr("Modify Event"), parent )
@@ -69,5 +69,3 @@ void CommandModifyEvent::eventIdChanged(int oid, int nid)
 }
 
 #include "moc_CommandModifyEvent.cpp"
-
-

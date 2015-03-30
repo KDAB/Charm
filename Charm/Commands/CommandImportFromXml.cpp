@@ -22,12 +22,11 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "CommandImportFromXml.h"
+#include "Core/ControllerInterface.h"
+
 #include <QDomDocument>
 #include <QFile>
-
-#include <Core/ControllerInterface.h>
-
-#include "CommandImportFromXml.h"
 
 CommandImportFromXml::CommandImportFromXml( QString filename, QObject* parent )
     : CharmCommand( tr("Import from XML"), parent )

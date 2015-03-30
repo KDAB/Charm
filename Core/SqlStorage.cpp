@@ -22,21 +22,21 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QtSql>
+#include "SqlStorage.h"
+#include "CharmConstants.h"
+#include "CharmExceptions.h"
+#include "Event.h"
+#include "SqlRaiiTransactor.h"
+#include "State.h"
+#include "Task.h"
+
+#include <QDateTime>
 #include <QFile>
-#include <QtDebug>
 #include <QSqlDatabase>
 #include <QStringList>
 #include <QTextStream>
-#include <QDateTime>
-
-#include "Task.h"
-#include "Event.h"
-#include "State.h"
-#include "SqlStorage.h"
-#include "CharmExceptions.h"
-#include "SqlRaiiTransactor.h"
-#include "CharmConstants.h"
+#include <QtDebug>
+#include <QtSql>
 
 // SqlStorage class
 
@@ -873,4 +873,3 @@ QString SqlStorage::setAllTasksAndEvents( const User& user, const TaskList& task
     transactor.commit();
     return QString();
 }
-

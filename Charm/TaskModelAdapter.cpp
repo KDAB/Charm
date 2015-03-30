@@ -24,16 +24,17 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QApplication>
-#include <QPalette>
-
+#include "TaskModelAdapter.h"
 #include "Data.h"
-#include "Core/CharmConstants.h"
 #include "ViewHelpers.h"
-#include <Core/Configuration.h>
+
+#include "Core/CharmConstants.h"
+#include "Core/Configuration.h"
 #include "Commands/CommandModifyTask.h"
 #include "Commands/CommandModifyEvent.h"
-#include "TaskModelAdapter.h"
+
+#include <QApplication>
+#include <QPalette>
 
 TaskModelAdapter::TaskModelAdapter( CharmDataModel* parent )
     : QAbstractItemModel()

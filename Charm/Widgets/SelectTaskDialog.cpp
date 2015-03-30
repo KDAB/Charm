@@ -21,13 +21,14 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QSettings>
-#include <QPushButton>
-
-#include "ViewHelpers.h"
+#include "SelectTaskDialog.h"
 #include "ExpandStatesHelper.h"
 #include "GUIState.h"
-#include "SelectTaskDialog.h"
+#include "ViewHelpers.h"
+
+#include <QPushButton>
+#include <QSettings>
+
 #include "ui_SelectTaskDialog.h"
 
 SelectTaskDialogProxy::SelectTaskDialogProxy( CharmDataModel* model, QObject* parent )

@@ -22,7 +22,15 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <iostream>
+#include "Operations.h"
+#include "CommandLine.h"
+#include "Exceptions.h"
+#include "Database.h"
+
+#include "Core/User.h"
+#include "Core/Event.h"
+#include "Core/SqlRaiiTransactor.h"
+#include "Core/XmlSerialization.h"
 
 #include <QtDebug>
 #include <QFile>
@@ -33,38 +41,30 @@
 #include <QSqlQuery>
 #include <QSqlRecord>
 
-#include <Core/User.h>
-#include <Core/Event.h>
-#include <Core/SqlRaiiTransactor.h>
-#include <Core/XmlSerialization.h>
-
-#include "CommandLine.h"
-#include "Operations.h"
-#include "Exceptions.h"
-#include "Database.h"
+#include <iostream>
 
 void initializeDatabase(const CommandLine& cmd)
 {
-	using namespace std;
+        using namespace std;
 
-	cout << "Initializing database." << endl;
+        cout << "Initializing database." << endl;
 
-	Database database;
-	database.login();
-	cout << "Logged in." << endl;
+        Database database;
+        database.login();
+        cout << "Logged in." << endl;
 
-	database.initializeDatabase();
+        database.initializeDatabase();
 
-	cout << "Database initialized." << endl;
+        cout << "Database initialized." << endl;
 }
 
 void checkOrCreateUser(const CommandLine& cmd)
 {
-	using namespace std;
-	Database database;
-	database.login();
-	User user = database.getOrCreateUserByName( cmd.userName( ));
-	cout << user.id() << endl;
+        using namespace std;
+        Database database;
+        database.login();
+        User user = database.getOrCreateUserByName( cmd.userName( ));
+        cout << user.id() << endl;
 }
 
 void addTimesheet(const CommandLine& cmd)
@@ -216,40 +216,40 @@ void addTimesheet(const CommandLine& cmd)
 
 void removeTimesheet(const CommandLine& cmd)
 {
-	using namespace std;
-	cout << "Removing report " << cmd.index() << endl;
+        using namespace std;
+        cout << "Removing report " << cmd.index() << endl;
 
-	Database database;
-	database.login();
-	SqlRaiiTransactor transaction( database.database() );
-	database.deleteEventsForReport( cmd.userid(), cmd.index() );
+        Database database;
+        database.login();
+        SqlRaiiTransactor transaction( database.database() );
+        database.deleteEventsForReport( cmd.userid(), cmd.index() );
 
-	{
-		QSqlQuery query( database.database() );
-		if ( ! query.prepare( "DELETE from timesheets WHERE id = :index" ) ) {
-			QString msg = QObject::tr( "Error prepare to remove timesheet %1.").arg(cmd.index() );
-			throw TimesheetProcessorException( msg );
-		}
+        {
+                QSqlQuery query( database.database() );
+                if ( ! query.prepare( "DELETE from timesheets WHERE id = :index" ) ) {
+                        QString msg = QObject::tr( "Error prepare to remove timesheet %1.").arg(cmd.index() );
+                        throw TimesheetProcessorException( msg );
+                }
 
-		query.bindValue( QString::fromLatin1( ":index" ), cmd.index() );
+                query.bindValue( QString::fromLatin1( ":index" ), cmd.index() );
 
-		if ( ! query.exec() ) {
-			QString msg = QObject::tr( "Error removing timesheet %1.").arg(cmd.index() );
-			throw TimesheetProcessorException( msg );
-		}
+                if ( ! query.exec() ) {
+                        QString msg = QObject::tr( "Error removing timesheet %1.").arg(cmd.index() );
+                        throw TimesheetProcessorException( msg );
+                }
 
-		if ( query.numRowsAffected() < 1 ) {
-			QString msg = QObject::tr( "No such timesheet %1.").arg(cmd.index() );
-			throw TimesheetProcessorException( msg );
-		}
-	}
+                if ( query.numRowsAffected() < 1 ) {
+                        QString msg = QObject::tr( "No such timesheet %1.").arg(cmd.index() );
+                        throw TimesheetProcessorException( msg );
+                }
+        }
 
-	if ( ! transaction.commit() ) {
-		QString msg = QObject::tr( "Error commit remove timesheet %1.").arg(cmd.index() );
-		throw TimesheetProcessorException( msg );
-	}
+        if ( ! transaction.commit() ) {
+                QString msg = QObject::tr( "Error commit remove timesheet %1.").arg(cmd.index() );
+                throw TimesheetProcessorException( msg );
+        }
 
-	cout << "Report " << cmd.index() << " removed" << endl;
+        cout << "Report " << cmd.index() << " removed" << endl;
 }
 
 void exportProjectcodes( const CommandLine& cmd )

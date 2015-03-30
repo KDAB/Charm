@@ -22,10 +22,10 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "TimeSpans.h"
+
 #include <QtDebug>
 #include <QTime>
-
-#include "TimeSpans.h"
 
 TimeSpans::TimeSpans(const QDate &today)
 {

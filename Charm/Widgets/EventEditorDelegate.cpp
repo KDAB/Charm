@@ -21,17 +21,18 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <cmath>
+
+#include "EventEditorDelegate.h"
+#include "Data.h"
+#include "EventModelFilter.h"
+#include "ViewHelpers.h"
+
+#include "Core/CharmConstants.h"
+#include "Core/Event.h"
 
 #include <QPainter>
 
-#include <Core/Event.h>
-#include <Core/CharmConstants.h>
-
-#include "Data.h"
-#include "ViewHelpers.h"
-#include "EventModelFilter.h"
-#include "EventEditorDelegate.h"
+#include <cmath>
 
 EventEditorDelegate::EventEditorDelegate( EventModelFilter* model,
                                           QObject* parent )

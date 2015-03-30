@@ -21,12 +21,12 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "CharmReport.h"
+#include "ApplicationCore.h"
+#include "ModelConnector.h"
+#include "ViewHelpers.h"
 
 #include "Core/CharmConstants.h"
-#include "ModelConnector.h"
-#include "ApplicationCore.h"
-#include "ViewHelpers.h"
-#include "CharmReport.h"
 #include "Core/CharmDataModel.h"
 #include "Widgets/ReportPreviewWindow.h"
 

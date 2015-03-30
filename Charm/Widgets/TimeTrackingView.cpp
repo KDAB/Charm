@@ -21,21 +21,21 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <numeric>
-#include <functional>
-#include <algorithm>
-
-#include <QPainter>
-#include <QFont>
-#include <QFontMetrics>
-#include <QPaintEvent>
+#include "TimeTrackingView.h"
+#include "Data.h"
+#include "ViewHelpers.h"
 
 #include "Core/CharmConstants.h"
 #include "Core/Configuration.h"
 
-#include "Data.h"
-#include "ViewHelpers.h"
-#include "TimeTrackingView.h"
+#include <QFont>
+#include <QFontMetrics>
+#include <QPaintEvent>
+#include <QPainter>
+
+#include <algorithm>
+#include <functional>
+#include <numeric>
 
 const int Margin = 2;
 

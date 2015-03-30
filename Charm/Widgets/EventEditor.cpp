@@ -22,19 +22,19 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "Core/CharmConstants.h"
-#include "Core/TaskTreeItem.h"
-#include "Core/CharmDataModel.h"
-
-#include "ViewHelpers.h"
 #include "EventEditor.h"
 #include "SelectTaskDialog.h"
-#include "Commands/CommandMakeEvent.h"
+#include "ViewHelpers.h"
 
-#include "ui_EventEditor.h"
+#include "Commands/CommandMakeEvent.h"
+#include "Core/CharmConstants.h"
+#include "Core/CharmDataModel.h"
+#include "Core/TaskTreeItem.h"
 
 #include <QCalendarWidget>
 #include <QSettings>
+
+#include "ui_EventEditor.h"
 
 EventEditor::EventEditor( const Event& event, QWidget* parent )
     : QDialog( parent )

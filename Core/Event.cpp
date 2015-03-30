@@ -21,11 +21,11 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "Event.h"
+#include "CharmExceptions.h"
+
 #include <QDomElement>
 #include <QDomText>
-
-#include "CharmExceptions.h"
-#include "Event.h"
 
 Event::Event()
     : m_userid()

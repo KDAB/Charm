@@ -22,8 +22,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "CommandEmitterInterface.h"
 #include "CharmCommand.h"
+#include "CommandEmitterInterface.h"
 
 #include <QMessageBox>
 

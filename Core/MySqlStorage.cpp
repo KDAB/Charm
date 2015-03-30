@@ -22,12 +22,12 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "MySqlStorage.h"
+#include "CharmConstants.h"
+
 #include <QStringList>
 #include <QSqlQuery>
 #include <QProcess>
-
-#include "MySqlStorage.h"
-#include "CharmConstants.h"
 
 // DATABASE STRUCTURE DEFINITION FOR MYSQL
 static const QString Tables[] =

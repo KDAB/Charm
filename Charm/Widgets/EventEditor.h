@@ -22,8 +22,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef EVENTEDITOR_H_
-#define EVENTEDITOR_H_
+#ifndef EVENTEDITOR_H
+#define EVENTEDITOR_H
 
 #include <QDialog>
 #include <QScopedPointer>
@@ -70,4 +70,4 @@ private:
     bool m_endDateChanged;
 };
 
-#endif /* EVENTEDITOR_H_ */
+#endif /* EVENTEDITOR_H */

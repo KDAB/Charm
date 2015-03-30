@@ -21,8 +21,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "CharmExceptions.h"
 #include "TaskListMerger.h"
+#include "CharmExceptions.h"
 
 TaskListMerger::TaskListMerger()
     : m_resultsValid( false )
@@ -137,7 +137,3 @@ TaskList TaskListMerger::mergedTaskList() const
     calculateResults();
     return m_results;
 }
-
-
-
-

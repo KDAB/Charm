@@ -21,11 +21,10 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QFileDialog>
-
+#include "ConfigurationDialog.h"
 #include "Core/CharmConstants.h"
 
-#include "ConfigurationDialog.h"
+#include <QFileDialog>
 
 ConfigurationDialog::ConfigurationDialog( const Configuration& config,
                                           QWidget* parent )

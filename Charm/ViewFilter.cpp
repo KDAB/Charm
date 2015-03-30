@@ -22,8 +22,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "Core/CharmDataModel.h"
 #include "ViewFilter.h"
+#include "Core/CharmDataModel.h"
 
 ViewFilter::ViewFilter( CharmDataModel* model, QObject* parent )
     : QSortFilterProxyModel( parent )

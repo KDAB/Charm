@@ -21,8 +21,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CHATTYITEMDELEGATE_H
-#define CHATTYITEMDELEGATE_H
+#ifndef TASKSVIEWDELEGATE_H
+#define TASKSVIEWDELEGATE_H
 
 #include <QItemDelegate>
 

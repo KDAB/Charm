@@ -22,14 +22,14 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "CommandExportToXml.h"
+
+#include "Core/CharmExceptions.h"
+#include "Core/ControllerInterface.h"
+
 #include <QDomDocument>
 #include <QFile>
 #include <QTextStream>
-
-#include <Core/CharmExceptions.h>
-#include <Core/ControllerInterface.h>
-
-#include "CommandExportToXml.h"
 
 CommandExportToXml::CommandExportToXml( QString filename, QObject* parent )
     : CharmCommand( tr("Export to XML"), parent )

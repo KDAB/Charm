@@ -24,18 +24,18 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QtDebug>
-
-#include "CharmExceptions.h"
-#include "SqlRaiiTransactor.h"
-#include "Task.h"
-#include "Event.h"
-#include "CharmConstants.h"
 #include "Controller.h"
-#include "SqLiteStorage.h"
-#include "StorageInterface.h"
 #include "CharmCommand.h"
+#include "CharmConstants.h"
+#include "CharmExceptions.h"
 #include "Configuration.h"
+#include "Event.h"
+#include "SqLiteStorage.h"
+#include "SqlRaiiTransactor.h"
+#include "StorageInterface.h"
+#include "Task.h"
+
+#include <QtDebug>
 
 Controller::Controller( QObject* parent_ )
     : QObject( parent_ )

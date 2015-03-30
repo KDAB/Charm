@@ -21,8 +21,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef COMMANDLINE_H_
-#define COMMANDLINE_H_
+#ifndef COMMANDLINE_H
+#define COMMANDLINE_H
 
 #include <QString>
 
@@ -73,4 +73,4 @@ private:
     int m_userid;
 };
 
-#endif /*COMMANDLINE_H_*/
+#endif /*COMMANDLINE_H*/

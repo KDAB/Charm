@@ -23,17 +23,17 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "SqLiteStorage.h"
+#include "CharmConstants.h"
+#include "CharmExceptions.h"
+#include "Configuration.h"
+#include "Event.h"
+
 #include <QDir>
 #include <QtSql>
 #include <QtDebug>
 #include <QFileInfo>
 #include <QSqlDatabase>
-
-#include "Event.h"
-#include "Configuration.h"
-#include "SqLiteStorage.h"
-#include "CharmConstants.h"
-#include "CharmExceptions.h"
 
 #include <cerrno>
 

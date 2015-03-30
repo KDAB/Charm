@@ -21,9 +21,9 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QtAlgorithms>
-
 #include "ViewHelpers.h"
+
+#include <QtAlgorithms>
 
 void connectControllerAndView( Controller* controller, CharmWindow* view )
 {

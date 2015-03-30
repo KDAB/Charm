@@ -21,8 +21,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef MACCOCOAIDLEDETECTOR_H
-#define MACCOCOAIDLEDETECTOR_H
+#ifndef MACIDLEDETECTOR_H
+#define MACIDLEDETECTOR_H
 
 #include <QObject>
 #include <QDateTime>

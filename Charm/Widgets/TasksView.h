@@ -21,8 +21,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CHARM_VIEW_H
-#define CHARM_VIEW_H
+#ifndef TASKSVIEW_H
+#define TASKSVIEW_H
 
 #include <QWidget>
 #include <QAction>

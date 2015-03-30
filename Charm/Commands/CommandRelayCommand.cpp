@@ -22,10 +22,10 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QApplication>
-#include <Core/CommandEmitterInterface.h>
-
 #include "CommandRelayCommand.h"
+#include "Core/CommandEmitterInterface.h"
+
+#include <QApplication>
 
 CommandRelayCommand::CommandRelayCommand( QObject* parent )
     : CharmCommand( tr("Relay"), parent )
@@ -70,4 +70,3 @@ bool CommandRelayCommand::finalize()
 }
 
 #include "moc_CommandRelayCommand.cpp"
-

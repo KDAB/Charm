@@ -22,19 +22,20 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "TaskEditor.h"
+#include "SelectTaskDialog.h"
+#include "ViewHelpers.h"
+
+#include "Core/CharmConstants.h"
+#include "Core/CharmDataModel.h"
+#include "Core/TaskTreeItem.h"
+
 #include <QCalendarWidget>
 #include <QCheckBox>
 #include <QPushButton>
 #include <QMessageBox>
 
-#include "Core/CharmConstants.h"
-#include "Core/TaskTreeItem.h"
-#include "Core/CharmDataModel.h"
-
-#include "ViewHelpers.h"
-#include "TaskEditor.h"
 #include "ui_TaskEditor.h"
-#include "SelectTaskDialog.h"
 
 TaskEditor::TaskEditor( QWidget* parent )
     : QDialog( parent )

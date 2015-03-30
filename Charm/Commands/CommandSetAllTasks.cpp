@@ -22,9 +22,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <Core/ControllerInterface.h>
-
 #include "CommandSetAllTasks.h"
+#include "Core/ControllerInterface.h"
 
 CommandSetAllTasks::CommandSetAllTasks( const TaskList& tasks, QObject* parent )
     : CharmCommand( tr("Import Tasks"), parent )
@@ -59,4 +58,3 @@ bool CommandSetAllTasks::finalize()
 }
 
 #include "moc_CommandSetAllTasks.cpp"
-

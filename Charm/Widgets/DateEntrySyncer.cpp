@@ -22,12 +22,10 @@
 */
 
 #include "DateEntrySyncer.h"
-#include <Core/Dates.h>
+#include "Core/Dates.h"
 
 #include <QDateEdit>
 #include <QSpinBox>
-
-#include <Core/Dates.h>
 
 DateEntrySyncer::DateEntrySyncer( QSpinBox* week, QSpinBox* year, QDateEdit* date, int weekDay, QObject* parent )
     : QObject( parent )

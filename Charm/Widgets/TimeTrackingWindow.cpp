@@ -22,47 +22,51 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <algorithm>
-
-#include <QBuffer>
-#include <QSettings>
-#include <QtAlgorithms>
-#include <QMenuBar>
-#include <QFileInfo>
-#include <QFileDialog>
-#include <QMessageBox>
-#include <QDir>
-#include <QToolBar>
-
-#include "Core/TimeSpans.h"
-#include "Core/TaskListMerger.h"
-#include "Core/XmlSerialization.h"
-
-#include "ApplicationCore.h"
-#include "CommentEditorPopup.h"
-#include "MessageBox.h"
-#include "EnterVacationDialog.h"
-#include "ViewHelpers.h"
-#include "TimeTrackingView.h"
 #include "TimeTrackingWindow.h"
-#include "Uniquifier.h"
-#include "MakeTemporarilyVisible.h"
-#include "CharmPreferences.h"
-#include "CharmAboutDialog.h"
-#include "Commands/CommandExportToXml.h"
-#include "Commands/CommandSetAllTasks.h"
-#include "Commands/CommandMakeEvent.h"
-#include "Commands/CommandModifyEvent.h"
-#include "Commands/CommandImportFromXml.h"
-#include "Idle/IdleDetector.h"
-#include "HttpClient/GetProjectCodesJob.h"
-#include "Widgets/HttpJobProgressDialog.h"
-#include "IdleCorrectionDialog.h"
 #include "ActivityReport.h"
-#include "WeeklyTimesheet.h"
+#include "ApplicationCore.h"
+#include "CharmAboutDialog.h"
+#include "CharmPreferences.h"
+#include "CommentEditorPopup.h"
+#include "EnterVacationDialog.h"
+#include "IdleCorrectionDialog.h"
+#include "MakeTemporarilyVisible.h"
+#include "MessageBox.h"
 #include "MonthlyTimesheet.h"
 #include "MonthlyTimesheetConfigurationDialog.h"
+#include "TimeTrackingView.h"
+#include "Uniquifier.h"
+#include "ViewHelpers.h"
+#include "WeeklyTimesheet.h"
+
+#include "Commands/CommandExportToXml.h"
+#include "Commands/CommandImportFromXml.h"
+#include "Commands/CommandMakeEvent.h"
+#include "Commands/CommandModifyEvent.h"
+#include "Commands/CommandSetAllTasks.h"
+
+#include "Core/TaskListMerger.h"
+#include "Core/TimeSpans.h"
+#include "Core/XmlSerialization.h"
+
+#include "HttpClient/GetProjectCodesJob.h"
 #include "HttpClient/GetUserInfoJob.h"
+
+#include "Idle/IdleDetector.h"
+
+#include "Widgets/HttpJobProgressDialog.h"
+
+#include <QBuffer>
+#include <QDir>
+#include <QFileDialog>
+#include <QFileInfo>
+#include <QMenuBar>
+#include <QMessageBox>
+#include <QSettings>
+#include <QToolBar>
+#include <QtAlgorithms>
+
+#include <algorithm>
 
 TimeTrackingWindow::TimeTrackingWindow( QWidget* parent )
     : CharmWindow( tr( "Time Tracker" ), parent )
@@ -600,7 +604,7 @@ void TimeTrackingWindow::importTasksFromDeviceOrFile( QIODevice* device, const Q
                 .arg( QString::number( merger.modifiedTasks().count() ),
                       QString::number( merger.addedTasks().count() ) );
             QMessageBox::information( this, tr( "Tasks Import" ), detailsText );
-	    getUserInfo();
+            getUserInfo();
         }
 
         QSettings settings;
@@ -610,7 +614,7 @@ void TimeTrackingWindow::importTasksFromDeviceOrFile( QIODevice* device, const Q
         setValueIfNotNull( &settings, QLatin1String("loginUrl"), exporter.metadata( QLatin1String("login-url") ) );
         setValueIfNotNull( &settings, QLatin1String("timesheetUploadUrl"), exporter.metadata( QLatin1String("timesheet-upload-url") ) );
         setValueIfNotNull( &settings, QLatin1String("projectCodeDownloadUrl"), exporter.metadata( QLatin1String("project-code-download-url") ) );
-	settings.endGroup();
+        settings.endGroup();
         settings.beginGroup( "users" );
         settings.setValue( QLatin1String("portalUrl"), QLatin1String("https://lotsofcake.kdab.com:443/KdabHome/apps/portal/"));
         settings.setValue( QLatin1String("loginUrl"), QLatin1String("https://lotsofcake.kdab.com:443/KdabHome/apps/portal/j_security_check"));

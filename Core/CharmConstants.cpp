@@ -23,12 +23,12 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "CharmConstants.h"
+#include "CharmDataModel.h"
+#include "Controller.h"
+
 #include <QObject>
 #include <QTextStream>
-
-#include "CharmConstants.h"
-#include "Controller.h"
-#include "CharmDataModel.h"
 
 const QString MetaKey_EventsInLeafsOnly = "EventsInLeafsOnly";
 const QString MetaKey_OneEventAtATime = "OneEventAtATime";

@@ -22,12 +22,11 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QDateTime>
-
-#include "Widgets/EventView.h"
-#include <Core/ControllerInterface.h>
-
 #include "CommandMakeEvent.h"
+#include "Core/ControllerInterface.h"
+#include "Widgets/EventView.h"
+
+#include <QDateTime>
 
 CommandMakeEvent::CommandMakeEvent( const Task& task,
                                     QObject* parent )

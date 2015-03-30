@@ -21,13 +21,14 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "ReportPreviewWindow.h"
+#include "ViewHelpers.h"
+
 #ifndef QT_NO_PRINTER
 #include <QPrinter>
 #include <QPrintDialog>
 #endif
 
-#include "ViewHelpers.h"
-#include "ReportPreviewWindow.h"
 #include "ui_ReportPreviewWindow.h"
 
 ReportPreviewWindow::ReportPreviewWindow( QWidget* parent )

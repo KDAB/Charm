@@ -21,12 +21,11 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QMenuBar>
-
-#include "ApplicationCore.h"
 #include "EventWindow.h"
 #include "EventView.h"
+#include "ApplicationCore.h"
 
+#include <QMenuBar>
 
 EventWindow::EventWindow( QWidget* parent )
     : CharmWindow( tr( "Events Editor" ), parent )

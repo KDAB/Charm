@@ -21,8 +21,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef OPERATIONS_H_
-#define OPERATIONS_H_
+#ifndef OPERATIONS_H
+#define OPERATIONS_H
 
 /* Define functions that implement the operations of the time sheet processor. */
 class CommandLine;
@@ -37,4 +37,4 @@ void checkOrCreateUser(const CommandLine& cmd);
 
 void exportProjectcodes( const CommandLine& cmd );
 
-#endif /*OPERATIONS_H_*/
+#endif /*OPERATIONS_H*/

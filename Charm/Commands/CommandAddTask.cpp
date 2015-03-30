@@ -21,10 +21,10 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <Core/ControllerInterface.h>
-#include <Core/CommandEmitterInterface.h>
-
 #include "CommandAddTask.h"
+
+#include "Core/ControllerInterface.h"
+#include "Core/CommandEmitterInterface.h"
 
 CommandAddTask::CommandAddTask( const Task& task, QObject* parent )
     : CharmCommand( tr("Add Task"), parent )
@@ -57,6 +57,3 @@ bool CommandAddTask::finalize()
 }
 
 #include "moc_CommandAddTask.cpp"
-
-
-

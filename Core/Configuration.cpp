@@ -23,11 +23,11 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QtDebug>
-#include <QSettings>
-
 #include "Configuration.h"
 #include "CharmConstants.h"
+
+#include <QtDebug>
+#include <QSettings>
 
 #ifdef NDEBUG
 #define DEFAULT_CONFIG_GROUP "default"
@@ -153,4 +153,3 @@ void Configuration::dump( const QString& why )
              << "--> warnUnuploadedTimesheets: " << warnUnuploadedTimesheets << endl
              << "--> requestEventComment:      " << requestEventComment;
 }
-

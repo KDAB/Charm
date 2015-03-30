@@ -21,11 +21,11 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QMenuBar>
-
-#include "ApplicationCore.h"
 #include "TasksWindow.h"
+#include "ApplicationCore.h"
 #include "TasksView.h"
+
+#include <QMenuBar>
 
 TasksWindow::TasksWindow( QWidget* parent )
     : CharmWindow( tr( "Tasks Editor" ), parent )

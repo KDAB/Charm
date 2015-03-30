@@ -21,15 +21,16 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef DATABASE_H_
-#define DATABASE_H_
+#ifndef DATABASE_H
+#define DATABASE_H
 
-#include <QString>
+#include "Exceptions.h"
 
 #include "Core/User.h"
 #include "Core/Task.h"
 #include "Core/MySqlStorage.h"
-#include "Exceptions.h"
+
+#include <QString>
 
 class SqlRaiiTransactor;
 
@@ -54,4 +55,4 @@ private:
     MySqlStorage m_storage;
 };
 
-#endif /*DATABASE_H_*/
+#endif /*DATABASE_H*/

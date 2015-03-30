@@ -21,20 +21,19 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-extern "C"
-{
-#include <stdlib.h>
-#include <getopt.h>
-}
-
-#include <iostream>
+#include "Options.h"
+#include "Exceptions.h"
+#include "CharmCMake.h"
 
 #include <QObject>
 #include <QFile>
 
-#include "Exceptions.h"
-#include "Options.h"
-#include "CharmCMake.h"
+extern "C" {
+#include <getopt.h>
+}
+
+#include <cstdlib>
+#include <iostream>
 
 using namespace TimesheetGenerator;
 
@@ -108,4 +107,3 @@ QDate Options::date() const
 {
     return mDate;
 }
-

@@ -21,24 +21,24 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QFile>
-#include <QTimer>
-#include <QDomElement>
-#include <QtAlgorithms>
+
+#include "ActivityReport.h"
+#include "ApplicationCore.h"
+#include "CharmReport.h"
+#include "DateEntrySyncer.h"
+#include "SelectTaskDialog.h"
+#include "ViewHelpers.h"
+
+#include "Core/Configuration.h"
+#include "Core/Dates.h"
+
 #include <QCalendarWidget>
 #include <QDomDocument>
+#include <QDomElement>
+#include <QFile>
 #include <QPushButton>
-
-#include <Core/Configuration.h>
-#include <Core/Dates.h>
-
-
-#include "ApplicationCore.h"
-#include "ViewHelpers.h"
-#include "CharmReport.h"
-#include "SelectTaskDialog.h"
-#include "ActivityReport.h"
-#include "DateEntrySyncer.h"
+#include <QTimer>
+#include <QtAlgorithms>
 
 #include "ui_ActivityReportConfigurationDialog.h"
 

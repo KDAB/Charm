@@ -21,37 +21,36 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QMenu>
-#include <QPoint>
-#include <QAction>
-#include <QToolBar>
-#include <QSettings>
-#include <QTreeView>
-#include <QHeaderView>
-#include <QItemSelectionModel>
-#include <QToolBar>
-#include <QCheckBox>
-#include <QTreeView>
-
-#include "Data.h"
-#include "Core/Task.h"
-#include "Core/CharmConstants.h"
-#include "MessageBox.h"
 #include "TasksView.h"
-#include "TaskEditor.h"
-#include "ViewHelpers.h"
-#include "Core/State.h"
-#include "GUIState.h"
-#include "ViewFilter.h"
 #include "ApplicationCore.h"
+#include "Data.h"
+#include "GUIState.h"
+#include "MessageBox.h"
+#include "TaskEditor.h"
 #include "TaskIdDialog.h"
 #include "TasksViewDelegate.h"
+#include "ViewFilter.h"
+#include "ViewHelpers.h"
+
+#include "Commands/CommandAddTask.h"
+#include "Commands/CommandDeleteTask.h"
+#include "Commands/CommandModifyTask.h"
+#include "Commands/CommandRelayCommand.h"
 
 #include "Core/CharmCommand.h"
-#include "Commands/CommandRelayCommand.h"
-#include "Commands/CommandAddTask.h"
-#include "Commands/CommandModifyTask.h"
-#include "Commands/CommandDeleteTask.h"
+#include "Core/CharmConstants.h"
+#include "Core/State.h"
+#include "Core/Task.h"
+
+#include <QAction>
+#include <QCheckBox>
+#include <QHeaderView>
+#include <QItemSelectionModel>
+#include <QMenu>
+#include <QPoint>
+#include <QSettings>
+#include <QToolBar>
+#include <QTreeView>
 
 TasksView::TasksView( QToolBar* toolBar, QWidget* parent )
     : QWidget( parent )

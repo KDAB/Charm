@@ -21,14 +21,14 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QDateTime>
-
-#include <Core/CharmDataModel.h>
-#include <Core/CommandEmitterInterface.h>
-#include <Core/ControllerInterface.h>
-
-#include "ModelConnector.h"
 #include "CommandMakeAndActivateEvent.h"
+#include "ModelConnector.h"
+
+#include "Core/CharmDataModel.h"
+#include "Core/CommandEmitterInterface.h"
+#include "Core/ControllerInterface.h"
+
+#include <QDateTime>
 
 CommandMakeAndActivateEvent::CommandMakeAndActivateEvent( const Task& task,
                                                           QObject* parent )

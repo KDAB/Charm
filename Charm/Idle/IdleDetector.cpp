@@ -24,17 +24,16 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QtAlgorithms>
-#include <QDebug>
-
-#include "Core/Configuration.h"
-#include "CharmCMake.h"
-
-
 #include "IdleDetector.h"
+#include "CharmCMake.h"
 #include "MacIdleDetector.h"
 #include "WindowsIdleDetector.h"
 #include "X11IdleDetector.h"
+
+#include "Core/Configuration.h"
+
+#include <QtAlgorithms>
+#include <QDebug>
 
 IdleDetector::IdleDetector( QObject* parent )
     : QObject( parent )

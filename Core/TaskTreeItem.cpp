@@ -22,9 +22,9 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QtDebug>
-
 #include "TaskTreeItem.h"
+
+#include <QtDebug>
 
 TaskTreeItem::TaskTreeItem()
     : m_parent( 0 )

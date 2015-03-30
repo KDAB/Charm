@@ -22,8 +22,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CHARM_APPLICATION_H
-#define CHARM_APPLICATION_H
+#ifndef APPLICATIONCORE_H
+#define APPLICATIONCORE_H
 
 #include <QMenu>
 #include <QAction>

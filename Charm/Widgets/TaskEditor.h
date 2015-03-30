@@ -22,8 +22,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef TASKEDITOR_H_
-#define TASKEDITOR_H_
+#ifndef TASKEDITOR_H
+#define TASKEDITOR_H
 
 #include <QDialog>
 
@@ -59,4 +59,4 @@ private:
     Task m_task;
 };
 
-#endif /* TASKEDITOR_H_ */
+#endif /* TASKEDITOR_H */

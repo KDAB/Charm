@@ -21,13 +21,13 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QPainter>
-#include <QEvent>
-
 #include "TasksViewDelegate.h"
-#include <QMouseEvent>
 #include "TaskModelAdapter.h"
 #include "ViewHelpers.h"
+
+#include <QEvent>
+#include <QMouseEvent>
+#include <QPainter>
 
 TasksViewDelegate::TasksViewDelegate( QObject* parent )
     : QItemDelegate( parent )

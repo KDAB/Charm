@@ -21,9 +21,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <Core/ControllerInterface.h>
-
 #include "CommandDeleteEvent.h"
+#include "Core/ControllerInterface.h"
 
 CommandDeleteEvent::CommandDeleteEvent( const Event& event, QObject* parent )
     : CharmCommand( tr("Delete Event"), parent )
@@ -69,4 +68,3 @@ void CommandDeleteEvent::eventIdChanged(int oid, int nid)
 }
 
 #include "moc_CommandDeleteEvent.cpp"
-

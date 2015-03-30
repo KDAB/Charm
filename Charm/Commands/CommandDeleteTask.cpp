@@ -22,11 +22,11 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <Core/CharmConstants.h>
-#include <Core/ControllerInterface.h>
-
-#include "ViewHelpers.h"
 #include "CommandDeleteTask.h"
+#include "ViewHelpers.h"
+
+#include "Core/CharmConstants.h"
+#include "Core/ControllerInterface.h"
 
 CommandDeleteTask::CommandDeleteTask( const Task& task, QObject* parent )
     : CharmCommand( tr("Delete Task"), parent )

@@ -21,18 +21,20 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "Core/Dates.h"
-#include "Core/Event.h"
 #include "EnterVacationDialog.h"
-#include "ui_EnterVacationDialog.h"
 #include "SelectTaskDialog.h"
 #include "ViewHelpers.h"
+
 #include "Commands/CommandMakeEvent.h"
+#include "Core/Dates.h"
+#include "Core/Event.h"
 
 #include <QCalendarWidget>
 #include <QDialogButtonBox>
 #include <QSettings>
 #include <QTextBrowser>
+
+#include "ui_EnterVacationDialog.h"
 
 static bool isWorkDay( const QDate& date )
 {

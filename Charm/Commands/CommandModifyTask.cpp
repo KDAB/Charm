@@ -22,9 +22,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <Core/ControllerInterface.h>
-
 #include "CommandModifyTask.h"
+#include "Core/ControllerInterface.h"
 
 CommandModifyTask::CommandModifyTask( const Task& task, QObject* parent )
     : CharmCommand( tr("Edit Task"), parent )
@@ -58,4 +57,3 @@ bool CommandModifyTask::finalize()
 }
 
 #include "moc_CommandModifyTask.cpp"
-

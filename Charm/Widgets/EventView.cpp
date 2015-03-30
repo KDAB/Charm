@@ -21,35 +21,37 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QMenu>
-#include <QListView>
-#include <QCloseEvent>
-#include <QDateTimeEdit>
-#include <QToolBar>
-#include <QComboBox>
-#include <QLabel>
-#include <QTimer>
-#include <QVBoxLayout>
-
+#include "EventView.h"
+#include "ApplicationCore.h"
+#include "Data.h"
+#include "EventEditor.h"
+#include "EventEditorDelegate.h"
+#include "EventModelFilter.h"
+#include "MessageBox.h"
+#include "SelectTaskDialog.h"
 #include "TasksView.h"
 #include "ViewHelpers.h"
-#include "Data.h"
-#include "Core/Event.h"
-#include "Core/CharmConstants.h"
-#include "ApplicationCore.h"
-#include "EventView.h"
-#include "EventEditor.h"
-#include "Core/Configuration.h"
-#include "EventEditorDelegate.h"
-#include "MessageBox.h"
-#include "Core/TaskTreeItem.h"
-#include "Core/CharmDataModel.h"
-#include "SelectTaskDialog.h"
-#include "EventModelFilter.h"
+#include "WeeklyTimesheet.h"
+
+#include "Commands/CommandDeleteEvent.h"
 #include "Commands/CommandMakeEvent.h"
 #include "Commands/CommandModifyEvent.h"
-#include "Commands/CommandDeleteEvent.h"
-#include "WeeklyTimesheet.h"
+
+#include "Core/CharmConstants.h"
+#include "Core/CharmDataModel.h"
+#include "Core/Configuration.h"
+#include "Core/Event.h"
+#include "Core/TaskTreeItem.h"
+
+#include <QCloseEvent>
+#include <QComboBox>
+#include <QDateTimeEdit>
+#include <QLabel>
+#include <QListView>
+#include <QMenu>
+#include <QTimer>
+#include <QToolBar>
+#include <QVBoxLayout>
 
 EventView::EventView( QToolBar* toolBar, QWidget* parent )
     : QWidget( parent )

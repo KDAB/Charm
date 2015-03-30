@@ -21,8 +21,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef MYSQLSTORAGE_H_
-#define MYSQLSTORAGE_H_
+#ifndef MYSQLSTORAGE_H
+#define MYSQLSTORAGE_H
 
 #include "SqlStorage.h"
 
@@ -61,4 +61,4 @@ private:
     QSqlDatabase m_database;
 };
 
-#endif /* MYSQLSTORAGE_H_ */
+#endif /* MYSQLSTORAGE_H */

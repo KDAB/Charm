@@ -23,14 +23,14 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <set>
-#include <algorithm>
-
-#include <QtDebug>
-
 #include "Task.h"
 #include "CharmConstants.h"
 #include "CharmExceptions.h"
+
+#include <QtDebug>
+
+#include <set>
+#include <algorithm>
 
 Task::Task()
     : m_id(0)
@@ -378,5 +378,3 @@ bool Task::checkForTreeness( const TaskList& tasks )
 
     return true;
 }
-
-

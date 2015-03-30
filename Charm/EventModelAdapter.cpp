@@ -22,11 +22,11 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <Core/CharmDataModel.h>
-#include <Core/CharmCommand.h>
-
-#include "ApplicationCore.h"
 #include "EventModelAdapter.h"
+#include "ApplicationCore.h"
+
+#include "Core/CharmCommand.h"
+#include "Core/CharmDataModel.h"
 
 EventModelAdapter::EventModelAdapter( CharmDataModel* parent )
     : QAbstractListModel( parent )

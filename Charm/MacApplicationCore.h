@@ -21,8 +21,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef MACCOCOAAPPLICATIONCORE_H
-#define MACCOCOAAPPLICATIONCORE_H
+#ifndef MACAPPLICATIONCORE_H
+#define MACAPPLICATIONCORE_H
 
 #include "ApplicationCore.h"
 

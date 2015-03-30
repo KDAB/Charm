@@ -21,23 +21,24 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QKeyEvent>
+#include "CharmWindow.h"
+#include "ApplicationCore.h"
+#include "Data.h"
+#include "ViewHelpers.h"
+
+#include "Commands/CommandRelayCommand.h"
+
+#include "Core/CharmCommand.h"
+#include "Core/CharmConstants.h"
+
 #include <QAction>
+#include <QKeyEvent>
+#include <QKeySequence>
 #include <QMenuBar>
 #include <QSettings>
 #include <QShortcut>
-#include <QKeySequence>
-#include <QToolButton>
 #include <QToolBar>
-
-#include <Core/CharmCommand.h>
-#include <Core/CharmConstants.h>
-
-#include "ViewHelpers.h"
-#include "ApplicationCore.h"
-#include "Data.h"
-#include "Commands/CommandRelayCommand.h"
-#include "CharmWindow.h"
+#include <QToolButton>
 
 #include <algorithm>
 #include <functional>

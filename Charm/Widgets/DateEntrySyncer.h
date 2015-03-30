@@ -21,8 +21,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef DATAENTRYSYNCER_H_
-#define DATAENTRYSYNCER_H_
+#ifndef DATEENTRYSYNCER_H
+#define DATEENTRYSYNCER_H
 
 #include <QObject>
 
@@ -45,5 +45,4 @@ private:
     int m_weekDay;
 };
 
-#endif //DATAENTRYSYNCER_H_
-
+#endif //DATEENTRYSYNCER_H
