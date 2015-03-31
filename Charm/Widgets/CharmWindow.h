@@ -43,8 +43,8 @@ public:
 
     QAction* showHideAction();
 
-    const QString& windowName() const;
-    const QString& windowIdentfier() const;
+    QString windowName() const;
+    QString windowIdentfier() const;
     int windowNumber() const;
 
     virtual QToolBar* toolBar() const;

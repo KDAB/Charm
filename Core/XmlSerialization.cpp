@@ -189,7 +189,7 @@ void TaskExport::readFrom( QIODevice* device )
     m_tasks = Task::readTasksElement( tasksElement, CHARM_DATABASE_VERSION );
 }
 
-const TaskList& TaskExport::tasks() const
+TaskList TaskExport::tasks() const
 {
     return m_tasks;
 }

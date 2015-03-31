@@ -51,7 +51,7 @@ public:
     void readFrom( const QString& filename );
     void readFrom( QIODevice* device );
 
-    const TaskList& tasks() const;
+    TaskList tasks() const;
     QString metadata( const QString& key ) const;
     static QString reportType();
 

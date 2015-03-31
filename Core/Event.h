@@ -70,7 +70,7 @@ public:
 
     void setTaskId( TaskId id);
 
-    const QString& comment() const;
+    QString comment() const;
 
     void setComment( const QString& );
 

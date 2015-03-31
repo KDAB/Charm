@@ -127,7 +127,7 @@ void Task::setTrackable(bool trackable)
     m_trackable = trackable;
 }
 
-const QDateTime& Task::validFrom() const
+QDateTime Task::validFrom() const
 {
     return m_validFrom;
 }
@@ -140,7 +140,7 @@ void Task::setValidFrom(const QDateTime& stamp)
     m_validFrom.setTime( time );
 }
 
-const QDateTime& Task::validUntil() const
+QDateTime Task::validUntil() const
 {
     return m_validUntil;
 }

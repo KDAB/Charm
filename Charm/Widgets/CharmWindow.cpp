@@ -89,7 +89,7 @@ void CharmWindow::setWindowName( const QString& text )
     setWindowTitle( text );
 }
 
-const QString& CharmWindow::windowName() const
+QString CharmWindow::windowName() const
 {
     return m_windowName;
 }
@@ -99,7 +99,7 @@ void CharmWindow::setWindowIdentifier( const QString& id )
     m_windowIdentifier = id;
 }
 
-const QString& CharmWindow::windowIdentfier() const
+QString CharmWindow::windowIdentfier() const
 {
     return m_windowIdentifier;
 }

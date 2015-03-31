@@ -103,7 +103,7 @@ void Event::setTaskId( TaskId taskId )
     m_taskId = taskId;
 }
 
-const QString& Event::comment() const
+QString Event::comment() const
 {
     return m_comment;
 }

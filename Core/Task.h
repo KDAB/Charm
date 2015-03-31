@@ -72,11 +72,11 @@ public:
 
     void setSubscribed( bool value );
 
-    const QDateTime& validFrom() const;
+    QDateTime validFrom() const;
 
     void setValidFrom( const QDateTime& );
 
-    const QDateTime& validUntil() const;
+    QDateTime validUntil() const;
 
     void setValidUntil( const QDateTime& );
 
