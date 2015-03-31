@@ -98,7 +98,7 @@ public:
 
     static QDomElement makeTasksElement( QDomDocument, const TaskList& );
 
-    static bool checkForUniqueTaskIds( TaskList tasks );
+    static bool checkForUniqueTaskIds( const TaskList& tasks );
 
     static bool checkForTreeness( const TaskList& tasks );
 

@@ -281,16 +281,15 @@ bool Task::lowerTaskId( const Task& left,  const Task& right )
     return left.id() < right.id();
 }
 
-bool Task::checkForUniqueTaskIds( TaskList tasks )
+bool Task::checkForUniqueTaskIds( const TaskList& tasks )
 {
     std::set<TaskId> ids;
+
     for ( TaskList::const_iterator it = tasks.begin(); it != tasks.end(); ++it ) {
-        if ( ids.find( ( *it ).id() ) != ids.end() ) {
-            return false;
-        }
         ids.insert( ( *it ).id() );
     }
-    return true;
+
+    return ids.size() == tasks.size();
 }
 
 /** collectTaskIds visits the task and all subtasks recursively, and
