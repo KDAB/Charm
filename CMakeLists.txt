@@ -43,9 +43,14 @@ endif()
 
 SET( CMAKE_AUTOMOC ON )
 
+OPTION( CHARM_FORCE_QT4 "Force building Charm with Qt4" OFF )
+
 # try Qt5 first, and prefer that if found
-find_package(Qt5Core QUIET)
-IF (Qt5Core_FOUND)
+IF( NOT CHARM_FORCE_QT4 )
+    find_package( Qt5Core QUIET )
+ENDIF()
+
+IF(Qt5Core_FOUND)
     find_package(Qt5Widgets REQUIRED)
     find_package(Qt5Xml REQUIRED)
     find_package(Qt5Network REQUIRED)
