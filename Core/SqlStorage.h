@@ -38,7 +38,7 @@ public:
     SqlStorage();
     ~SqlStorage();
 
-    void stateChanged( State previous );
+    void stateChanged( State previous ) override;
 
     int makeEventId();
 
