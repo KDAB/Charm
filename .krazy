@@ -1,0 +1,16 @@
+CHECKSETS qt4,c++,foss
+
+#exclude intrusive checks to investigate later
+EXCLUDE foreach,nullstrassign
+
+#KDAB-specific checks
+EXTRA kdabcopyright
+
+#additional checks
+EXTRA camelcase,null,defines,crud
+
+#skip Keychain
+SKIP /Charm/Keychain/
+#if you have a build subdir, skip it
+SKIP /build-
+
