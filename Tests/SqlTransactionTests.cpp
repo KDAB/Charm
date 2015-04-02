@@ -21,15 +21,15 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "SqlTransactionTests.h"
+
+#include "Core/SqlRaiiTransactor.h"
+
 #include <QtTest/QtTest>
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlDriver>
 #include <QSqlError>
-
-#include "Core/SqlRaiiTransactor.h"
-
-#include "SqlTransactionTests.h"
 
 SqlTransactionTests::SqlTransactionTests()
     : QObject()

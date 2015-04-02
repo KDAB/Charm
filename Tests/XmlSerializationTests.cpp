@@ -23,15 +23,16 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QDateTime>
-#include <QtDebug>
-#include <QtTest/QtTest>
+#include "XmlSerializationTests.h"
 
 #include "Core/CharmConstants.h"
 #include "Core/CharmExceptions.h"
 #include "Core/Event.h"
 #include "Core/XmlSerialization.h"
-#include "XmlSerializationTests.h"
+
+#include <QDateTime>
+#include <QtDebug>
+#include <QtTest/QtTest>
 
 XmlSerializationTests::XmlSerializationTests()
     : QObject()

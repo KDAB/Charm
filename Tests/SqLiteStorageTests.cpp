@@ -21,17 +21,17 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QDir>
-#include <QFileInfo>
-#include <QDateTime>
-#include <QtTest/QtTest>
+#include "SqLiteStorageTests.h"
 
 #include "Core/User.h"
 #include "Core/CharmConstants.h"
 #include "Core/Installation.h"
 #include "Core/SqLiteStorage.h"
 
-#include "SqLiteStorageTests.h"
+#include <QDir>
+#include <QFileInfo>
+#include <QDateTime>
+#include <QtTest/QtTest>
 
 SqLiteStorageTests::SqLiteStorageTests()
     : QObject()

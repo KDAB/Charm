@@ -21,18 +21,18 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QtDebug>
-#include <QString>
-#include <QtTest/QtTest>
-#include <QSharedPointer>
-#include <QDomDocument>
+#include "ImportExportTests.h"
 
 #include "Core/Controller.h"
 #include "Core/Task.h"
 #include "Core/CharmDataModel.h"
 #include "Charm/Commands/CommandImportFromXml.h"
 
-#include "ImportExportTests.h"
+#include <QtDebug>
+#include <QString>
+#include <QtTest/QtTest>
+#include <QSharedPointer>
+#include <QDomDocument>
 
 ImportExportTests::ImportExportTests()
     : TestApplication("./ImportExportTestDatabase.db")
@@ -125,4 +125,3 @@ void ImportExportTests::importDatabase( const QString& filename )
 QTEST_MAIN( ImportExportTests )
 
 #include "moc_ImportExportTests.cpp"
-

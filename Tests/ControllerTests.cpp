@@ -24,16 +24,16 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QDir>
-#include <QFileInfo>
-#include <QtDebug>
-#include <QtTest/QtTest>
+#include "ControllerTests.h"
 
 #include "Core/StorageInterface.h"
 #include "Core/CharmConstants.h"
 #include "Core/Controller.h"
 
-#include "ControllerTests.h"
+#include <QDir>
+#include <QFileInfo>
+#include <QtDebug>
+#include <QtTest/QtTest>
 
 ControllerTests::ControllerTests()
     : QObject()

@@ -22,14 +22,14 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QtDebug>
-#include <QtTest/QtTest>
+#include "CharmDataModelTests.h"
 
 #include "Core/Task.h"
 #include "Core/TaskTreeItem.h"
 #include "Core/CharmDataModel.h"
 
-#include "CharmDataModelTests.h"
+#include <QtDebug>
+#include <QtTest/QtTest>
 
 CharmDataModelTests::CharmDataModelTests()
     : QObject()

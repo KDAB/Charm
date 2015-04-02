@@ -24,6 +24,11 @@
 #ifndef TESTHELPERS_H
 #define TESTHELPERS_H
 
+#include "Core/CharmExceptions.h"
+
+#include <QDebug>
+#include <QDir>
+
 namespace TestHelpers {
 
     QList<QDomElement> retrieveTestCases( QString path, QString type )

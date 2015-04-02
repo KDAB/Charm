@@ -22,18 +22,18 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "TestApplication.h"
+
+#include "Core/Configuration.h"
+#include "Core/CharmConstants.h"
+#include "Core/Controller.h"
+#include "Core/CharmDataModel.h"
+
 #include <QString>
 #include <QFileInfo>
 #include <QtDebug>
 #include <QDir>
 #include <QtTest/QtTest>
-
-#include "Core/Configuration.h"
-#include "Core/CharmConstants.h"
-#include "Core/Controller.h"
-#include "Core/Configuration.h"
-#include "Core/CharmDataModel.h"
-#include "TestApplication.h"
 
 const int UserId = 1;
 const int InstallationId = 1;

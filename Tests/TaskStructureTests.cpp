@@ -21,18 +21,15 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QtDebug>
-#include <QtTest/QtTest>
-#include <QDir>
-#include <QFileInfo>
+#include "TaskStructureTests.h"
+#include "TestHelpers.h"
 
 #include "Core/Task.h"
 #include "Core/TaskListMerger.h"
-#include "Core/CharmExceptions.h"
 #include "Core/CharmConstants.h"
 
-#include "TestHelpers.h"
-#include "TaskStructureTests.h"
+#include <QtDebug>
+#include <QtTest/QtTest>
 
 TaskStructureTests::TaskStructureTests()
     : QObject()
@@ -159,5 +156,3 @@ void TaskStructureTests::mergeTaskListsTest()
 QTEST_MAIN( TaskStructureTests )
 
 #include "moc_TaskStructureTests.cpp"
-
-

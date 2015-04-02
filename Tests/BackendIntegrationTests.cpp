@@ -21,10 +21,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QDir>
-#include <QFileInfo>
-#include <QtDebug>
-#include <QtTest/QtTest>
+#include "BackendIntegrationTests.h"
 
 #include "Core/CharmConstants.h"
 #include "Core/Controller.h"
@@ -33,7 +30,10 @@
 #include "Core/CharmDataModel.h"
 #include "Core/StorageInterface.h"
 
-#include "BackendIntegrationTests.h"
+#include <QDir>
+#include <QFileInfo>
+#include <QtDebug>
+#include <QtTest/QtTest>
 
 BackendIntegrationTests::BackendIntegrationTests()
     : TestApplication("./BackendIntegrationTestDatabase.db")
@@ -165,4 +165,3 @@ bool BackendIntegrationTests::contentsEqual( const TaskList& listref1,
 QTEST_MAIN( BackendIntegrationTests )
 
 #include "moc_BackendIntegrationTests.cpp"
-

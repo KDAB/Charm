@@ -33,10 +33,13 @@
 #include <QDateTime>
 #include <QFile>
 #include <QSqlDatabase>
+#include <QSqlError>
+#include <QSqlField>
+#include <QSqlQuery>
+#include <QSqlRecord>
 #include <QStringList>
 #include <QTextStream>
 #include <QtDebug>
-#include <QtSql>
 
 // SqlStorage class
 
