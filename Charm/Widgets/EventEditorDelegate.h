@@ -45,7 +45,6 @@ public:
 
     explicit EventEditorDelegate( EventModelFilter* model,
                                   QObject* parent = nullptr );
-    // ~EventEditorDelegate();
 
     QSize sizeHint( const QStyleOptionViewItem&, const QModelIndex& ) const override;
     void paint( QPainter*, const QStyleOptionViewItem&, const QModelIndex& ) const override;
