@@ -35,7 +35,7 @@ class GetUserInfoJob : public HttpJob
     Q_OBJECT
 public:
 
-    explicit GetUserInfoJob(QObject* parent=0, const QString &schema = " ");
+    explicit GetUserInfoJob(QObject* parent=nullptr, const QString &schema = " ");
     ~GetUserInfoJob();
 
     QByteArray userInfo() const;

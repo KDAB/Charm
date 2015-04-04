@@ -51,7 +51,7 @@ public:
         SomethingWentWrong
     };
 
-    explicit HttpJob(QObject* parent=0);
+    explicit HttpJob(QObject* parent=nullptr);
     ~HttpJob();
 
     QString username() const;

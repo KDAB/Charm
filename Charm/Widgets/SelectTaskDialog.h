@@ -56,7 +56,7 @@ class SelectTaskDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit SelectTaskDialog( QWidget* parent=0 );
+    explicit SelectTaskDialog( QWidget* parent=nullptr );
     ~SelectTaskDialog();
 
     TaskId selectedTask() const;

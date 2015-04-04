@@ -33,7 +33,7 @@ class DateEntrySyncer : public QObject
 {
     Q_OBJECT
 public:
-    DateEntrySyncer( QSpinBox* weekNumberSB, QSpinBox* yearSB, QDateEdit* dateedit, int weekDay=1, QObject* parent=0 );
+    DateEntrySyncer( QSpinBox* weekNumberSB, QSpinBox* yearSB, QDateEdit* dateedit, int weekDay=1, QObject* parent=nullptr );
 
 private Q_SLOTS:
     void dateSelectionChanged();
