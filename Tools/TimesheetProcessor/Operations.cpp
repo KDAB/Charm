@@ -115,8 +115,8 @@ void addTimesheet(const CommandLine& cmd)
             events << e;
             totalSeconds += e.duration();
             // e.dump();
-        } catch(XmlSerializationException& e ) {
-            QString msg = QObject::tr("Syntax error in file %1.").arg(cmd.filename());
+        } catch ( const XmlSerializationException& e ) {
+            const QString msg = QObject::tr("Syntax error in file %1: %2.").arg( cmd.filename(), e.what() );
             throw TimesheetProcessorException( msg );
         }
     }
@@ -192,7 +192,7 @@ void addTimesheet(const CommandLine& cmd)
                 << "uploadedTime:" << dateTimeUploaded << endl
                 << "index:" << index << endl;
 
-    } catch (TimesheetProcessorException &e) {
+    } catch ( const TimesheetProcessorException& e ) {
         if ( index >= 0 ) {
             // A valid index means that something with the events/tasks went wrong and triggered the
             // exception. In that case we already created an entry in the Charm/timesheets table that
@@ -264,8 +264,8 @@ void exportProjectcodes( const CommandLine& cmd )
     TaskList tasks = database.getAllTasks();
     try {
         TaskExport::writeTo( cmd.exportFilename(), tasks );
-    } catch ( XmlSerializationException& e) {
-        throw TimesheetProcessorException( QObject::tr( "Cannot write to file %1" ).arg( cmd.exportFilename() ) );
+    } catch ( const XmlSerializationException& e ) {
+        throw TimesheetProcessorException( QObject::tr( "Cannot write to file %1: %2" ).arg( cmd.exportFilename(), e.what() ) );
     }
 
     cout << "Done, " << tasks.count() << " tasks definitions exported." << endl;

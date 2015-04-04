@@ -66,11 +66,11 @@ int main(int argc, char** argv)
                 CommandLine::usage();
                 return 0;
         }
-    } catch (UsageException& e) {
+    } catch (const UsageException& e) {
         cerr << e.what() << endl;
         CommandLine::usage();
         return 1;
-    } catch (TimesheetProcessorException& e) {
+    } catch (const TimesheetProcessorException& e) {
         cerr << e.what() << endl;
         CommandLine::usage();
         return 1;
