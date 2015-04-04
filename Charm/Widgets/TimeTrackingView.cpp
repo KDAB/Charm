@@ -76,7 +76,6 @@ void TimeTrackingView::PaintAttributes::initialize( const QPalette& palette ) {
     QColor dimHighlight = palette.highlight().color();
     dim = 0.25;
     dimHighlight.setAlphaF( dim * dimHighlight.alphaF() );
-    const QBrush halfHighlight( dimHighlight );
     runningTaskColor = palette.highlight().color();
 }
 
