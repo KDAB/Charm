@@ -24,6 +24,7 @@
 */
 
 #include <iostream>
+#include <memory>
 
 #include <QApplication>
 #include <QFile>
@@ -36,12 +37,13 @@
 #include "Core/CharmExceptions.h"
 #include "CharmCMake.h"
 
-static ApplicationCore* createApplicationCore()
+static std::shared_ptr<ApplicationCore> createApplicationCore()
 {
 #ifdef Q_OS_OSX
-    return new MacApplicationCore;
+    return std::make_shared<MacApplicationCore>();
+#else
+    return std::make_shared<ApplicationCore>();
 #endif
-    return new ApplicationCore;
 }
 
 void showCriticalError( const QString& msg ) {
@@ -71,9 +73,9 @@ int main ( int argc, char** argv )
 
     try {
         QApplication app( argc, argv );
-        QScopedPointer<ApplicationCore> core( createApplicationCore() );
-        QObject::connect( &app, SIGNAL(commitDataRequest(QSessionManager&)), core.data(), SLOT(commitData(QSessionManager&)) );
-        QObject::connect( &app, SIGNAL(saveStateRequest(QSessionManager&)), core.data(), SLOT(saveState(QSessionManager&)) );
+        const std::shared_ptr<ApplicationCore> core( createApplicationCore() );
+        QObject::connect( &app, SIGNAL(commitDataRequest(QSessionManager&)), core.get(), SLOT(commitData(QSessionManager&)) );
+        QObject::connect( &app, SIGNAL(saveStateRequest(QSessionManager&)), core.get(), SLOT(saveState(QSessionManager&)) );
         return app.exec();
     } catch( const AlreadyRunningException& ) {
         using namespace std;
