@@ -39,7 +39,7 @@ XmlSerializationTests::XmlSerializationTests()
 {
 }
 
-TaskList XmlSerializationTests::tasksToTest()
+TaskList XmlSerializationTests::tasksToTest() const
 {
     // set up test candidates:
     TaskList tasks;

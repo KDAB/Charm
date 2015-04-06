@@ -43,7 +43,7 @@ private slots:
     void testTaskExportImport();
 
 private:
-    TaskList tasksToTest();
+    TaskList tasksToTest() const;
 };
 
 #endif

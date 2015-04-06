@@ -47,22 +47,22 @@ TestApplication::TestApplication(const QString &databasePath, QObject *parent)
 {
 }
 
-Controller* TestApplication::controller()
+Controller* TestApplication::controller() const
 {
     return m_controller;
 }
 
-CharmDataModel* TestApplication::model()
+CharmDataModel* TestApplication::model() const
 {
     return m_model;
 }
 
-Configuration* TestApplication::configuration()
+Configuration* TestApplication::configuration() const
 {
     return m_configuration;
 }
 
-QString TestApplication::databasePath()
+QString TestApplication::databasePath() const
 {
     return m_localPath;
 }
@@ -112,12 +112,12 @@ void TestApplication::destroy()
     }
 }
 
-int TestApplication::testUserId()
+int TestApplication::testUserId() const
 {
     return 1;
 }
 
-int TestApplication::testInstallationId()
+int TestApplication::testInstallationId() const
 {
     return 1;
 }

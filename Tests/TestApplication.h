@@ -39,14 +39,14 @@ public:
 
     void initialize();
     void destroy();
-    int testUserId();
-    int testInstallationId();
+    int testUserId() const;
+    int testInstallationId() const;
 
 protected:
-    Controller* controller();
-    CharmDataModel* model();
-    Configuration* configuration();
-    QString databasePath();
+    Controller* controller() const;
+    CharmDataModel* model() const;
+    Configuration* configuration() const;
+    QString databasePath() const;
 
 private:
     Controller* m_controller;
