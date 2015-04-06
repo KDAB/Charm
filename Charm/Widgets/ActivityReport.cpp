@@ -231,14 +231,14 @@ void ActivityReport::slotUpdate()
 
     // retrieve matching events:
     EventIdList matchingEvents = DATAMODEL->eventsThatStartInTimeFrame( m_start, m_end );
-    matchingEvents = eventIdsSortedByStartTime( matchingEvents );
+    matchingEvents = Charm::eventIdsSortedByStartTime( matchingEvents );
     if ( m_rootTask != 0 ) {
-        matchingEvents = filteredBySubtree( matchingEvents, m_rootTask );
+        matchingEvents = Charm::filteredBySubtree( matchingEvents, m_rootTask );
     }
 
     // filter unproductive events:
     if ( m_rootExcludeTask != 0 ) {
-        matchingEvents = filteredBySubtree( matchingEvents, m_rootExcludeTask, true );
+        matchingEvents = Charm::filteredBySubtree( matchingEvents, m_rootExcludeTask, true );
     }
 
     // calculate total:

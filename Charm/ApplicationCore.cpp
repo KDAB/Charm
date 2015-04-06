@@ -122,7 +122,7 @@ ApplicationCore::ApplicationCore( QObject* parent )
                 slotControllerReadyToQuit()));
 
     connectControllerAndModel(&m_controller, m_model.charmDataModel());
-    connectControllerAndView(&m_controller, &mainView());
+    Charm::connectControllerAndView(&m_controller, &mainView());
     Q_FOREACH( auto window, m_windows ) {
         if ( window != &mainView() ) { // main view acts as the main relay
             connect( window, SIGNAL(emitCommand(CharmCommand*)),

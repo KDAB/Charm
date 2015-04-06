@@ -86,8 +86,8 @@ void TasksViewDelegate::paint( QPainter *painter,
 
     // Draw text (task id+name)
     const QString taskName = index.data(Qt::DisplayRole).toString();
-    QString elidedTask = elidedTaskName( taskName, painter->font(),
-                                         textRect.width() );
+    QString elidedTask = Charm::elidedTaskName( taskName, painter->font(),
+                                                textRect.width() );
     drawDisplay(painter, modifiedOption, textRect, elidedTask);
 
     // Draw checkbox

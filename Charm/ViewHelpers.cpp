@@ -25,7 +25,7 @@
 
 #include <QtAlgorithms>
 
-void connectControllerAndView( Controller* controller, CharmWindow* view )
+void Charm::connectControllerAndView( Controller* controller, CharmWindow* view )
 {
     // connect view and controller:
     // make controller process commands send by the view:
@@ -38,20 +38,21 @@ void connectControllerAndView( Controller* controller, CharmWindow* view )
                       view, SLOT(commitCommand(CharmCommand*)) );
 }
 
-bool startsEarlier(const EventId& leftId, const EventId& rightId )
-{
-    const Event& left = DATAMODEL->eventForId( leftId );
-    const Event& right = DATAMODEL->eventForId( rightId );
-    return left.startDateTime() < right.startDateTime();
-}
+struct StartsEarlier {
+    bool operator()( const EventId& leftId, const EventId& rightId ) const {
+        const Event& left = DATAMODEL->eventForId( leftId );
+        const Event& right = DATAMODEL->eventForId( rightId );
+        return left.startDateTime() < right.startDateTime();
+    }
+};
 
-EventIdList eventIdsSortedByStartTime( EventIdList ids )
+EventIdList Charm::eventIdsSortedByStartTime( EventIdList ids )
 {
-    qStableSort( ids.begin(), ids.end(), startsEarlier );
+    qStableSort( ids.begin(), ids.end(), StartsEarlier() );
     return ids;
 }
 
-EventIdList filteredBySubtree( EventIdList ids, TaskId parent, bool exclude )
+EventIdList Charm::filteredBySubtree( EventIdList ids, TaskId parent, bool exclude )
 {
     EventIdList result;
     bool isParent = false;
@@ -65,7 +66,7 @@ EventIdList filteredBySubtree( EventIdList ids, TaskId parent, bool exclude )
     return result;
 }
 
-QString elidedTaskName( const QString& text, const QFont& font, int width )
+QString Charm::elidedTaskName( const QString& text, const QFont& font, int width )
 {
     QFontMetrics metrics( font );
     const QString& projectCode =

@@ -394,7 +394,7 @@ void TimeTrackingView::handleActiveEvents()
 QString TimeTrackingView::elidedText( const QString& text, const QFont& font, int width )
 {
     if( ! m_elidedTexts.contains( text ) )
-        m_elidedTexts.insert( text, elidedTaskName( text, font, width ) );
+        m_elidedTexts.insert( text, Charm::elidedTaskName( text, font, width ) );
     Q_ASSERT( m_elidedTexts.contains( text ) );
     return m_elidedTexts.value( text );
 }

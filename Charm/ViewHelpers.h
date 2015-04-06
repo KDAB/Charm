@@ -35,11 +35,13 @@
 #define VIEW ( ApplicationCore::instance().mainView() )
 #define TRAY ( ApplicationCore::instance().trayIcon() )
 
-void connectControllerAndView( Controller*, CharmWindow* );
-EventIdList eventIdsSortedByStartTime( EventIdList );
-/** Return those ids in the input list that elements of the subtree
- * under the parent task, which includes the parent task. */
-EventIdList filteredBySubtree( EventIdList, TaskId parent, bool exclude=false );
-QString elidedTaskName( const QString& text, const QFont& font, int width );
+namespace Charm {
+    void connectControllerAndView( Controller*, CharmWindow* );
+    EventIdList eventIdsSortedByStartTime( EventIdList );
+    /** Return those ids in the input list that elements of the subtree
+     * under the parent task, which includes the parent task. */
+    EventIdList filteredBySubtree( EventIdList, TaskId parent, bool exclude=false );
+    QString elidedTaskName( const QString& text, const QFont& font, int width );
+}
 
 #endif

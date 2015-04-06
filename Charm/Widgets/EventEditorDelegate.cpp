@@ -160,7 +160,7 @@ QRect EventEditorDelegate::paint( QPainter* painter,
                              option.rect.top() + ( option.rect.height() - decoration.height() ) / 2 );
 
     QRect boundingRect;
-    QString elidedTask = elidedTaskName( taskName, mainFont, taskRect.width() );
+    QString elidedTask = Charm::elidedTaskName( taskName, mainFont, taskRect.width() );
     painter->drawText( taskRect, Qt::AlignLeft | Qt::AlignTop, elidedTask,
                        &boundingRect );
     taskRect.setSize( boundingRect.size() );
