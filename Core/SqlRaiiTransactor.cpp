@@ -31,6 +31,7 @@
 
 SqlRaiiTransactor::SqlRaiiTransactor( QSqlDatabase& database )
     : m_database ( database )
+    , m_active( false )
 {
     if ( ! database.driver()->hasFeature( QSqlDriver::Transactions ) ) {
         throw TransactionException( QObject::tr( "Database driver does not support transactions." ) );
