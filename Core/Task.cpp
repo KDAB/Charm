@@ -289,7 +289,7 @@ bool Task::checkForUniqueTaskIds( const TaskList& tasks )
         ids.insert( ( *it ).id() );
     }
 
-    return ids.size() == tasks.size();
+    return static_cast<int>(ids.size()) == tasks.size();
 }
 
 /** collectTaskIds visits the task and all subtasks recursively, and
