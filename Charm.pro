@@ -49,7 +49,6 @@ SOURCES += \
     Charm/Widgets/ActivityReport.cpp \
     Charm/Widgets/BillDialog.cpp \
     Charm/Widgets/CharmPreferences.cpp \
-    Charm/Widgets/CharmReport.cpp \
     Charm/Widgets/CharmWindow.cpp \
     Charm/Widgets/CharmAboutDialog.cpp \
     Charm/Widgets/ConfigurationDialog.cpp \
@@ -106,7 +105,6 @@ HEADERS += \
     Charm/Widgets/Timesheet.h \
     Charm/Widgets/WeeklyTimesheet.h \
     Charm/Widgets/TasksWindow.h \
-    Charm/Widgets/CharmReport.h \
     Charm/Widgets/CharmWindow.h \
     Charm/Widgets/DateEntrySyncer.h \
     Charm/Widgets/MonthlyTimesheetConfigurationDialog.h \

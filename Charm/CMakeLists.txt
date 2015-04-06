@@ -39,7 +39,6 @@ SET(
     Widgets/ActivityReport.cpp
     Widgets/BillDialog.cpp
     Widgets/CharmPreferences.cpp
-    Widgets/CharmReport.cpp
     Widgets/CharmWindow.cpp
     Widgets/CharmAboutDialog.cpp
     Widgets/CommentEditorPopup.cpp

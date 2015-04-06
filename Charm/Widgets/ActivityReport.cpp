@@ -24,7 +24,6 @@
 
 #include "ActivityReport.h"
 #include "ApplicationCore.h"
-#include "CharmReport.h"
 #include "DateEntrySyncer.h"
 #include "SelectTaskDialog.h"
 #include "ViewHelpers.h"
