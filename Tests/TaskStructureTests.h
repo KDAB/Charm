@@ -45,10 +45,6 @@ private slots:
 
     void mergeTaskListsTest_data();
     void mergeTaskListsTest();
-
-private:
-    QList<QDomElement> retrieveTestCases( QString path, QString type );
-    bool attribute( const QString& name, const QDomElement& element );
 };
 
 #endif

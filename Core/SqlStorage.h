@@ -40,8 +40,6 @@ public:
 
     void stateChanged( State previous ) override;
 
-    int makeEventId();
-
     virtual QSqlDatabase& database() = 0;
 
     // installation id handling
