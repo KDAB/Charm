@@ -53,7 +53,6 @@ public:
     static const QPixmap& editorDirtyPixmap();
     static const QPixmap& recorderStopIcon();
     static const QPixmap& recorderGoIcon();
-    static const QPixmap& backdropPixmap();
 };
 
 #endif
