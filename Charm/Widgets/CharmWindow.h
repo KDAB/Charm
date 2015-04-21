@@ -42,6 +42,8 @@ public:
     explicit CharmWindow( const QString& name, QWidget* parent = nullptr );
 
     QAction* showHideAction();
+    QAction* showAction();
+    QAction* openCharmAction();
 
     QString windowName() const;
     QString windowIdentfier() const;
@@ -71,6 +73,7 @@ public:
     virtual void saveGuiState();
     virtual void restoreGuiState();
 
+    static void showView( QWidget* w );
     static bool showHideView( QWidget* w );
 
 signals:
@@ -82,12 +85,17 @@ public slots:
     void sendCommand( CharmCommand* ) override;
     void commitCommand( CharmCommand* ) override;
     void restore() override;
+    void showView();
     void showHideView();
     void configurationChanged() override;
 
 private:
+    void handleOpenCharm( bool visible );
+    void handleShow( bool visible );
     void handleShowHide( bool visible );
     QString m_windowName;
+    QAction* m_openCharmAction;
+    QAction* m_showAction;
     QAction* m_showHideAction;
     int m_windowNumber; // Mac numerical window number, used for shortcut etc
     QString m_windowIdentifier;

@@ -147,7 +147,10 @@ ApplicationCore::ApplicationCore( QObject* parent )
     m_actionStopAllTasks.setShortcutContext( Qt::ApplicationShortcut );
     mainView().addAction(&m_actionStopAllTasks); // for the shortcut to work
     connect( &m_actionStopAllTasks, SIGNAL(triggered()), SLOT(slotStopAllTasks()) );
-
+    int index = m_windows.indexOf( &m_timeTracker );
+    auto window = m_windows[index];
+    m_systrayContextMenu.addAction( window->openCharmAction() );
+    m_systrayContextMenu.addSeparator();
     m_systrayContextMenu.addAction( &m_actionStopAllTasks );
     m_systrayContextMenu.addSeparator();
 
@@ -158,8 +161,10 @@ ApplicationCore::ApplicationCore( QObject* parent )
 
     QApplication::setWindowIcon( Data::charmIcon() );
 
-    Q_FOREACH( auto window, m_windows )
-        m_systrayContextMenu.addAction( window->showHideAction() );
+    Q_FOREACH( auto window, m_windows ) {
+        if ( window != &m_timeTracker )
+            m_systrayContextMenu.addAction( window->showAction() );
+    }
 
     m_systrayContextMenu.addSeparator();
     m_systrayContextMenu.addMenu( &m_systrayContextMenuStartTask );

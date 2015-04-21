@@ -45,12 +45,18 @@
 
 CharmWindow::CharmWindow( const QString& name, QWidget* parent )
     : QMainWindow( parent )
+    , m_openCharmAction( new QAction( tr( "Open Charm" ), this ) )
+    , m_showAction( new QAction( this ) )
     , m_showHideAction( new QAction( this ) )
     , m_windowNumber( -1 )
     , m_shortcut( 0 )
 {
     setWindowName( name );
+    handleOpenCharm( false );
+    handleShow( false );
     handleShowHide( false );
+    connect( m_openCharmAction, SIGNAL(triggered(bool)), SLOT(showView()) );
+    connect( m_showAction, SIGNAL(triggered(bool)), SLOT(showView()) );
     connect( m_showHideAction, SIGNAL(triggered(bool)), SLOT(showHideView()) );
     m_toolBar = addToolBar( "Toolbar" );
     m_toolBar->setMovable( false );
@@ -115,7 +121,9 @@ void CharmWindow::setWindowNumber( int number )
 #endif
     m_shortcut->setContext( Qt::ApplicationShortcut );
     m_showHideAction->setShortcut( sequence );
+    m_showAction->setShortcut( sequence );
     connect( m_shortcut, SIGNAL(activated()), SLOT(showHideView()) );
+    connect( m_shortcut, SIGNAL(activated()), SLOT(showView()) );
 }
 
 int CharmWindow::windowNumber() const
@@ -126,6 +134,16 @@ int CharmWindow::windowNumber() const
 QToolBar* CharmWindow::toolBar() const
 {
     return m_toolBar;
+}
+
+QAction* CharmWindow::openCharmAction()
+{
+    return m_openCharmAction;
+}
+
+QAction* CharmWindow::showAction()
+{
+    return m_showAction;
 }
 
 QAction* CharmWindow::showHideAction()
@@ -140,12 +158,16 @@ void CharmWindow::restore()
 
 void CharmWindow::showEvent( QShowEvent* e )
 {
+    handleOpenCharm( true );
+    handleShow( true );
     handleShowHide( true );
     QMainWindow::showEvent( e );
 }
 
 void CharmWindow::hideEvent( QHideEvent* e )
 {
+    handleOpenCharm( false );
+    handleShow( false );
     handleShowHide( false );
     QMainWindow::hideEvent( e );
 }
@@ -165,6 +187,18 @@ void CharmWindow::sendCommandRollback(CharmCommand *cmd)
     auto relay = new CommandRelayCommand( this );
     relay->setCommand( cmd );
     emit emitCommandRollback ( relay );
+}
+
+void CharmWindow::handleOpenCharm( bool visible )
+{
+    m_openCharmAction->setEnabled( !visible );
+}
+
+void CharmWindow::handleShow( bool visible )
+{
+    const QString text = tr( "Show %1" ).arg( m_windowName );
+    m_showAction->setText( text );
+    m_showAction->setEnabled( !visible );
 }
 
 void CharmWindow::handleShowHide( bool visible )
@@ -194,6 +228,13 @@ void CharmWindow::keyPressEvent( QKeyEvent* event )
     QMainWindow::keyPressEvent( event );
 }
 
+void CharmWindow::showView( QWidget* w )
+{
+    w->show();
+    w->raise();
+    w->activateWindow();
+}
+
 bool CharmWindow::showHideView( QWidget* w )
 {
     // hide or restore the view
@@ -206,6 +247,11 @@ bool CharmWindow::showHideView( QWidget* w )
         w->activateWindow();
         return true;
     }
+}
+
+void CharmWindow::showView()
+{
+    showView( this );
 }
 
 void CharmWindow::showHideView()
