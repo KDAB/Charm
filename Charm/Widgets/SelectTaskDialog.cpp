@@ -71,7 +71,6 @@ SelectTaskDialog::SelectTaskDialog( QWidget* parent )
 {
     m_ui->setupUi( this );
     m_ui->treeView->setModel( &m_proxy );
-    m_ui->treeView->expandAll();
     m_ui->treeView->header()->hide();
     connect( m_ui->treeView->selectionModel(),
              SIGNAL(currentChanged(QModelIndex,QModelIndex)),
@@ -82,6 +81,10 @@ SelectTaskDialog::SelectTaskDialog( QWidget* parent )
 
     connect( m_ui->filter, SIGNAL(textChanged(QString)),
              SLOT(slotFilterTextChanged(QString)) );
+    connect( m_ui->showExpired, SIGNAL(toggled(bool)),
+             SLOT(slotPrefilteringChanged()) );
+    connect( m_ui->showSelected, SIGNAL(toggled(bool)),
+             SLOT(slotPrefilteringChanged()) );
     connect( this, SIGNAL(accepted()),
              SLOT(slotAccepted()) );
 
@@ -90,7 +93,8 @@ SelectTaskDialog::SelectTaskDialog( QWidget* parent )
     if ( settings.contains( MetaKey_MainWindowGeometry ) ) {
         resize( settings.value( MetaKey_MainWindowGeometry ).toSize() );
     }
-
+    // initialize prefiltering
+    slotPrefilteringChanged();
     m_ui->filter->setFocus();
 }
 
@@ -115,6 +119,9 @@ void SelectTaskDialog::showEvent ( QShowEvent * event )
             m_ui->treeView->expand( indexForId );
         }
     }
+
+    m_ui->showExpired->setChecked( state.showExpired() );
+    m_ui->showSelected->setChecked( state.showCurrents() );
 
     QDialog::showEvent( event );
 }
@@ -191,9 +198,34 @@ void SelectTaskDialog::slotAccepted()
             }
         }
         state.setExpandedTasks( expandedTasks );
+        state.setShowExpired( m_ui->showExpired->isChecked() );
+        state.setShowCurrents( m_ui->showSelected->isChecked() );
         settings.beginGroup( staticMetaObject.className() );
         state.saveTo( settings );
     }
+}
+
+void SelectTaskDialog::slotPrefilteringChanged()
+{
+    // find out about the selected mode:
+    Configuration::TaskPrefilteringMode mode;
+    const bool showCurrentOnly = ! m_ui->showExpired->isChecked();
+    const bool showSubscribedOnly = m_ui->showSelected->isChecked();
+    if (  showCurrentOnly && showSubscribedOnly ) {
+        mode = Configuration::TaskPrefilter_SubscribedAndCurrentOnly;
+    } else if ( showCurrentOnly && ! showSubscribedOnly ) {
+        mode = Configuration::TaskPrefilter_CurrentOnly;
+    } else if ( ! showCurrentOnly && showSubscribedOnly ) {
+        mode = Configuration::TaskPrefilter_SubscribedOnly;
+    } else {
+        mode = Configuration::TaskPrefilter_ShowAll;
+    }
+
+    CONFIGURATION.taskPrefilteringMode = mode;
+    Charm::saveExpandStates( m_ui->treeView, &m_expansionStates );
+    m_proxy.prefilteringModeChanged();
+    Charm::restoreExpandStates( m_ui->treeView, &m_expansionStates );
+    emit saveConfiguration();
 }
 
 #include "moc_SelectTaskDialog.cpp"

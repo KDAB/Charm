@@ -61,6 +61,9 @@ public:
 
     TaskId selectedTask() const;
 
+signals:
+    void saveConfiguration();
+
 protected:
     void showEvent( QShowEvent * event ) override;
     void hideEvent( QHideEvent* event ) override;
@@ -70,6 +73,7 @@ private slots:
     void slotDoubleClicked ( const QModelIndex & );
     void slotFilterTextChanged( const QString& );
     void slotAccepted();
+    void slotPrefilteringChanged();
 
 private:
     bool isValidAndTrackable( const QModelIndex& index ) const;

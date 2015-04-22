@@ -44,6 +44,16 @@ TaskId GUIState::selectedTask() const
     return m_selectedTask;
 }
 
+bool GUIState::showExpired() const
+{
+    return m_showExpired;
+}
+
+bool GUIState::showCurrents() const
+{
+    return m_showCurrents;
+}
+
 void GUIState::setSelectedTask( TaskId task )
 {
     m_selectedTask = task;
@@ -52,6 +62,16 @@ void GUIState::setSelectedTask( TaskId task )
 void GUIState::setExpandedTasks( const TaskIdList& tasks )
 {
     m_expandedTasks = tasks;
+}
+
+void GUIState::setShowExpired( bool show )
+{
+    m_showExpired = show;
+}
+
+void GUIState::setShowCurrents( bool show )
+{
+    m_showCurrents = show;
 }
 
 void GUIState::saveTo( QSettings& settings )
@@ -63,6 +83,8 @@ void GUIState::saveTo( QSettings& settings )
         variants << v;
     }
     settings.setValue( MetaKey_MainWindowGUIStateExpandedTasks, variants );
+    settings.setValue( MetaKey_MainWindowGUIStateShowExpiredTasks, showExpired() );
+    settings.setValue( MetaKey_MainWindowGUIStateShowCurrentTasks, showCurrents() );
 }
 
 void GUIState::loadFrom( const QSettings& settings )
@@ -78,5 +100,7 @@ void GUIState::loadFrom( const QSettings& settings )
             ids << variant.value<TaskId>();
         }
         setExpandedTasks( ids );
+        setShowExpired( settings.value( MetaKey_MainWindowGUIStateShowExpiredTasks ).toBool() );
+        setShowCurrents( settings.value( MetaKey_MainWindowGUIStateShowCurrentTasks ).toBool() );
     }
 }

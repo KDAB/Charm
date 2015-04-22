@@ -38,9 +38,13 @@ public:
 
     const TaskIdList& expandedTasks() const;
     TaskId selectedTask() const;
+    bool showExpired() const;
+    bool showCurrents() const;
 
     void setSelectedTask( TaskId );
     void setExpandedTasks( const TaskIdList& );
+    void setShowExpired( bool show );
+    void setShowCurrents( bool show );
 
     void saveTo( QSettings& settings );
     void loadFrom( const QSettings& settings );
@@ -48,6 +52,8 @@ public:
 private:
     TaskIdList m_expandedTasks;
     TaskId m_selectedTask;
+    bool m_showExpired = false; // show also expired tasks
+    bool m_showCurrents = false; // show only selected tasks
 };
 
 #endif

@@ -43,7 +43,7 @@ class ViewFilter : public QSortFilterProxyModel,
                    public CommandEmitterInterface
 {
     Q_OBJECT
-public:    
+public:
     explicit ViewFilter( CharmDataModel*, QObject* parent = nullptr );
     virtual ~ViewFilter();
 

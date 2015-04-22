@@ -47,6 +47,8 @@ extern const QString MetaKey_MainWindowGeometry;
 extern const QString MetaKey_MainWindowVisible;
 extern const QString MetaKey_MainWindowGUIStateSelectedTask;
 extern const QString MetaKey_MainWindowGUIStateExpandedTasks;
+extern const QString MetaKey_MainWindowGUIStateShowExpiredTasks;
+extern const QString MetaKey_MainWindowGUIStateShowCurrentTasks;
 extern const QString MetaKey_TimeTrackerGeometry;
 extern const QString MetaKey_TimeTrackerVisible;
 extern const QString MetaKey_ReportsRecentSavePath;
