@@ -43,6 +43,9 @@ public:
     explicit ReportPreviewWindow( QWidget* parent = nullptr );
     virtual ~ReportPreviewWindow();
 
+signals:
+    void anchorClicked(const QUrl& which);
+
 protected:
     void setDocument( const QTextDocument* document );
     QDomDocument createReportTemplate() const;

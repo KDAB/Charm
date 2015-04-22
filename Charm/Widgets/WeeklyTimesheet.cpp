@@ -29,6 +29,7 @@
 #include <QMessageBox>
 #include <QPushButton>
 #include <QSettings>
+#include <QUrl>
 
 #include <Core/Dates.h>
 
@@ -268,7 +269,8 @@ WeeklyTimeSheetReport::WeeklyTimeSheetReport( QWidget* parent )
     , m_yearOfWeek( 0 )
 {
     QPushButton* upload = uploadButton();
-    connect(upload, SIGNAL(clicked()), SLOT(slotUploadTimesheet()) );
+    connect( upload, SIGNAL(clicked()), SLOT(slotUploadTimesheet()) );
+    connect( this, SIGNAL(anchorClicked(const QUrl&)), SLOT(slotLinkClicked(const QUrl&)) );
     if (!HttpJob::credentialsAvailable())
         upload->hide();
 }
@@ -366,6 +368,16 @@ void WeeklyTimeSheetReport::update()
         QDomText text = doc.createTextNode( content );
         headline.appendChild( text );
         body.appendChild( headline );
+        QDomElement previousLink = doc.createElement( "a" );
+        previousLink.setAttribute( "href" , "Previous" );
+        QDomText previousLinkText = doc.createTextNode( tr( "<Previous Week>" ) );
+        previousLink.appendChild( previousLinkText );
+        body.appendChild( previousLink );
+        QDomElement nextLink = doc.createElement( "a" );
+        nextLink.setAttribute( "href" , "Next" );
+        QDomText nextLinkText = doc.createTextNode( tr( "<Next Week>" ) );
+        nextLink.appendChild( nextLinkText );
+        body.appendChild( nextLink );
         QDomElement paragraph = doc.createElement( "br" );
         body.appendChild( paragraph );
     }
@@ -566,4 +578,11 @@ QByteArray WeeklyTimeSheetReport::saveToText()
     stream.flush();
 
     return output;
+}
+
+void WeeklyTimeSheetReport::slotLinkClicked( const QUrl& which )
+{
+    QDate start = which.toString() == "Previous" ? startDate().addDays( -7 ) : startDate().addDays( 7 );
+    QDate end = which.toString() == "Previous" ? endDate().addDays( -7 ) : endDate().addDays( 7 );
+    setReportProperties( start, end, rootTask(), activeTasksOnly() );
 }

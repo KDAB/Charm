@@ -33,56 +33,66 @@ TimeSpans::TimeSpans(const QDate &today)
     m_today.timespan =
         TimeSpan( today,
                   today.addDays( 1 ) );
+    m_today.timeSpanType = Day;
 
     m_yesterday.name = tr( "Yesterday" );
     m_yesterday.timespan =
         TimeSpan( m_today.timespan.first.addDays( -1 ),
                   m_today.timespan.second.addDays( -1 ) );
+    m_yesterday.timeSpanType = Day;
 
     m_dayBeforeYesterday.name = tr( "The Day Before Yesterday" );
     m_dayBeforeYesterday.timespan =
         TimeSpan( m_today.timespan.first.addDays( -2 ),
                   m_today.timespan.second.addDays( -2 ) );
-
+    m_dayBeforeYesterday.timeSpanType = Day;
     m_thisWeek.name = tr( "This Week" );
     m_thisWeek.timespan =
         TimeSpan( today.addDays( - today.dayOfWeek() + 1 ),
                   today.addDays( 7 - today.dayOfWeek() + 1 ) );
+    m_thisWeek.timeSpanType = Week;
 
     m_lastWeek.name = tr( "Last Week" );
     m_lastWeek.timespan =
         TimeSpan( m_thisWeek.timespan.first.addDays( -7 ),
                   m_thisWeek.timespan.second.addDays( -7 ) );
+    m_lastWeek.timeSpanType = Week;
 
     m_theWeekBeforeLast.name = tr( "The Week Before Last Week" );
     m_theWeekBeforeLast.timespan =
         TimeSpan( m_thisWeek.timespan.first.addDays( -14 ),
                   m_thisWeek.timespan.second.addDays( -14 ) );
+    m_theWeekBeforeLast.timeSpanType = Week;
 
     m_3WeeksAgo.name = tr( "3 Weeks Ago" );
     m_3WeeksAgo.timespan =
         TimeSpan( m_thisWeek.timespan.first.addDays( -21 ),
                   m_thisWeek.timespan.second.addDays( -21 ) );
+    m_3WeeksAgo.timeSpanType = Week;
 
     m_thisMonth.name = tr( "This Month" );
     m_thisMonth.timespan =
         TimeSpan( today.addDays( - today.day() + 1 ),
                   today.addDays( today.daysInMonth() - today.day() + 1) );
+    m_thisMonth.timeSpanType = Month;
 
     m_lastMonth.name = tr( "Last Month" );
     m_lastMonth.timespan =
         TimeSpan( m_thisMonth.timespan.first.addMonths( -1 ),
                   m_thisMonth.timespan.second.addMonths( -1 ) );
+    m_lastMonth.timeSpanType = Month;
 
     m_theMonthBeforeLast.name = tr( "The Month Before Last Month" );
     m_theMonthBeforeLast.timespan =
         TimeSpan( m_thisMonth.timespan.first.addMonths( -2 ),
                   m_thisMonth.timespan.second.addMonths( -2 ) );
+    m_theMonthBeforeLast.timeSpanType = Month;
 
     m_3MonthsAgo.name = tr( "3 Months Ago" );
     m_3MonthsAgo.timespan =
         TimeSpan( m_thisMonth.timespan.first.addMonths( -3 ),
                   m_thisMonth.timespan.second.addMonths( -3 ) );
+    m_3MonthsAgo.timeSpanType = Month;
 }
 
 QList<NamedTimeSpan> TimeSpans::standardTimeSpans() const

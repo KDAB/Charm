@@ -37,6 +37,7 @@ namespace Ui {
 }
 
 class HttpJob;
+class QUrl;
 
 typedef QHash<int, QVector<int> > WeeksByYear;
 ///Set the timesheet for the @param week of the @param year as having been uploaded
@@ -86,7 +87,8 @@ public:
 
 private slots:
     void slotUploadTimesheet();
-    void slotTimesheetUploaded(HttpJob*);
+    void slotTimesheetUploaded( HttpJob* );
+    void slotLinkClicked( const QUrl& which );
 
 private:
     QString suggestedFileName() const override;

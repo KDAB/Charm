@@ -38,6 +38,8 @@
 #include <QPushButton>
 #include <QTimer>
 #include <QtAlgorithms>
+#include <QUrl>
+#include <QDebug>
 
 #include "ui_ActivityReportConfigurationDialog.h"
 
@@ -94,7 +96,8 @@ void ActivityReportConfigurationDialog::slotStandardTimeSpansChanged()
     m_timespans = timeSpans.standardTimeSpans();
     NamedTimeSpan customRange = {
         tr( "Select Range" ),
-        timeSpans.thisWeek().timespan
+        timeSpans.thisWeek().timespan,
+        Range
     };
     m_timespans << customRange;
     m_ui->comboBox->clear();
@@ -195,6 +198,7 @@ void ActivityReportConfigurationDialog::showReportPreviewDialog( QWidget* parent
     }
 
     auto report = new ActivityReport( parent );
+    report->timeSpanSelection(  m_timespans[index] );
     report->setReportProperties( start, end, m_rootTask, m_rootExcludeTask );
     report->show();
 }
@@ -207,20 +211,25 @@ ActivityReport::ActivityReport( QWidget* parent )
     saveToXmlButton()->hide();
     saveToTextButton()->hide();
     uploadButton()->hide();
+    connect( this, SIGNAL(anchorClicked(QUrl)), SLOT(slotLinkClicked(QUrl)) );
 }
 
 ActivityReport::~ActivityReport()
 {
 }
 
-void ActivityReport::setReportProperties(
-    const QDate& start, const QDate& end, TaskId rootTask, TaskId rootExcludeTask )
+void ActivityReport::setReportProperties( const QDate& start, const QDate& end, TaskId rootTask, TaskId rootExcludeTask )
 {
     m_start = start;
     m_end = end;
     m_rootTask = rootTask;
     m_rootExcludeTask = rootExcludeTask;
     slotUpdate();
+}
+
+void ActivityReport::timeSpanSelection( NamedTimeSpan timeSpanSelection )
+{
+    m_timeSpanSelection = timeSpanSelection;
 }
 
 void ActivityReport::slotUpdate()
@@ -249,6 +258,25 @@ void ActivityReport::slotUpdate()
         totalSeconds += event.duration();
     }
 
+    // which TimeSpan type
+    QString timeSpanTypeName;
+    switch( m_timeSpanSelection.timeSpanType ) {
+    case Day:
+        timeSpanTypeName = tr ( "Day");
+        break;
+    case Week:
+        timeSpanTypeName = tr ( "Week" );
+        break;
+    case Month:
+        timeSpanTypeName = tr ( "Month" );
+        break;
+    case Range:
+        timeSpanTypeName = tr ( "Range" );
+        break;
+    default:
+        Q_ASSERT( false ); // should not happen
+    }
+
     auto report = new QTextDocument( this );
     QDomDocument doc = createReportTemplate();
     QDomElement root = doc.documentElement();
@@ -270,6 +298,16 @@ void ActivityReport::slotUpdate()
         QDomText text = doc.createTextNode( content );
         headline.appendChild( text );
         body.appendChild( headline );
+        QDomElement previousLink = doc.createElement( "a" );
+        previousLink.setAttribute( "href" , "Previous" );
+        QDomText previousLinkText = doc.createTextNode( tr( "<Previous %1>" ).arg( timeSpanTypeName ) );
+        previousLink.appendChild( previousLinkText );
+        body.appendChild( previousLink );
+        QDomElement nextLink = doc.createElement( "a" );
+        nextLink.setAttribute( "href" , "Next" );
+        QDomText nextLinkText = doc.createTextNode( tr( "<Next %1>" ).arg( timeSpanTypeName ) );
+        nextLink.appendChild( nextLinkText );
+        body.appendChild( nextLink );
         {
             QDomElement paragraph = doc.createElement( "h4" );
             QString totalsText = tr( "Total: %1" ).arg( hoursAndMinutes( totalSeconds ) );
@@ -378,4 +416,34 @@ void ActivityReport::slotUpdate()
     setDocument( report );
 }
 
+void ActivityReport::slotLinkClicked( const QUrl& which )
+{
+    QDate start, end;
+    switch( m_timeSpanSelection.timeSpanType ) {
+    case Day: {
+        start = which.toString() == "Previous" ? m_start.addDays( -1 ) : m_start.addDays( 1 );
+        end = which.toString() == "Previous" ? m_end.addDays( -1 ) : m_end.addDays( 1 );
+    }
+    break;
+    case Week: {
+        start = which.toString() == "Previous" ? m_start.addDays( -7 ) : m_start.addDays( 7 );
+        end = which.toString() == "Previous" ? m_end.addDays( -7 ) : m_end.addDays( 7 );
+    }
+    break;
+    case Month: {
+        start = which.toString() == "Previous" ? m_start.addMonths( -1 ) : m_start.addMonths( 1 );
+        end = which.toString() == "Previous" ? m_end.addMonths( -1 ) : m_end.addMonths( 1 );
+    }
+    break;
+    case Range: {
+        int spanRange = m_start.daysTo(m_end);
+        start = which.toString() == "Previous" ? m_start.addDays( -spanRange ) : m_start.addDays( spanRange );
+        end = which.toString() == "Previous" ? m_end.addDays( -spanRange ) : m_end.addDays( spanRange );
+    }
+    break;
+    default:
+        Q_ASSERT( false ); // should not happen
+    }
+    setReportProperties( start, end, m_rootTask, m_rootExcludeTask );
+}
 #include "moc_ActivityReport.cpp"

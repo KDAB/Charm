@@ -36,6 +36,8 @@ namespace Ui {
     class ActivityReportConfigurationDialog;
 }
 
+class QUrl;
+
 class ActivityReportConfigurationDialog : public ReportConfigurationDialog
 {
     Q_OBJECT
@@ -77,6 +79,10 @@ public:
 
     void setReportProperties( const QDate& start, const QDate& end,
         TaskId rootTask, TaskId rootExcludeTask );
+    void timeSpanSelection( NamedTimeSpan timeSpanSelection );
+
+private slots:
+    void slotLinkClicked( const QUrl& which );
 
 private:
     void slotUpdate() override;
@@ -86,6 +92,7 @@ private:
     QDate m_end;
     TaskId m_rootTask;
     TaskId m_rootExcludeTask;
+    NamedTimeSpan m_timeSpanSelection;
 };
 
 #endif

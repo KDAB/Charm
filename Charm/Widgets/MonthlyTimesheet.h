@@ -28,6 +28,8 @@
 
 #include "Timesheet.h"
 
+class QUrl;
+
 class MonthlyTimeSheetReport : public TimeSheetReport
 {
     Q_OBJECT
@@ -40,6 +42,9 @@ public:
                               const QDate& end,
                               TaskId rootTask,
                               bool activeTasksOnly ) override;
+
+private slots:
+    void slotLinkClicked( const QUrl& which );
 
 private:
     QString suggestedFileName() const override;

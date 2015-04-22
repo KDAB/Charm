@@ -34,10 +34,18 @@
 
 typedef QPair<QDate, QDate> TimeSpan;
 
+enum TimeSpanType {
+    Day=0,
+    Week,
+    Month,
+    Range
+};
+
 struct NamedTimeSpan {
     QString name;
     TimeSpan timespan;
     bool contains( const QDate& date ) const;
+    TimeSpanType timeSpanType;
 };
 
 /** Provides commonly used time spans for a given date.

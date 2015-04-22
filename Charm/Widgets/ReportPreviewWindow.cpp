@@ -46,13 +46,15 @@ ReportPreviewWindow::ReportPreviewWindow( QWidget* parent )
              SLOT(slotSaveToXml()) );
     connect( m_ui->pushButtonSaveTotals, SIGNAL(clicked()),
              SLOT(slotSaveToText()) );
+    connect( m_ui->textBrowser, SIGNAL(anchorClicked(QUrl)),
+             SIGNAL(anchorClicked(QUrl)) );
 #ifndef QT_NO_PRINTER
     connect( m_ui->pushButtonPrint, SIGNAL(clicked()),
              SLOT(slotPrint()) );
 #else
     m_ui->pushButtonPrint->setEnabled(false);
 #endif
-    resize(600, 600);
+    resize(850, 600);
 }
 
 ReportPreviewWindow::~ReportPreviewWindow()

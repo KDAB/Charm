@@ -28,6 +28,8 @@
 #include <QMessageBox>
 #include <QPushButton>
 #include <QSettings>
+#include <QUrl>
+
 #include <Core/Dates.h>
 
 #include "ViewHelpers.h"
@@ -56,6 +58,8 @@ MonthlyTimeSheetReport::MonthlyTimeSheetReport( QWidget* parent )
     }
     else
         m_dailyhours = 8;
+
+    connect( this, SIGNAL(anchorClicked(QUrl)), SLOT(slotLinkClicked(QUrl)) );
 }
 
 MonthlyTimeSheetReport::~MonthlyTimeSheetReport()
@@ -203,6 +207,16 @@ void MonthlyTimeSheetReport::update()
         QDomText text = doc.createTextNode( content );
         headline.appendChild( text );
         body.appendChild( headline );
+        QDomElement previousLink = doc.createElement( "a" );
+        previousLink.setAttribute( "href" , "Previous" );
+        QDomText previousLinkText = doc.createTextNode( tr( "<Previous Month>" ) );
+        previousLink.appendChild( previousLinkText );
+        body.appendChild( previousLink );
+        QDomElement nextLink = doc.createElement( "a" );
+        nextLink.setAttribute( "href" , "Next" );
+        QDomText nextLinkText = doc.createTextNode( tr( "<Next Month>" ) );
+        nextLink.appendChild( nextLinkText );
+        body.appendChild( nextLink );
         QDomElement paragraph = doc.createElement( "br" );
         body.appendChild( paragraph );
     }
@@ -301,4 +315,11 @@ void MonthlyTimeSheetReport::update()
     setDocument( &report );
     uploadButton()->setVisible(false);
     uploadButton()->setEnabled(false);
+}
+
+void MonthlyTimeSheetReport::slotLinkClicked( const QUrl& which )
+{
+    QDate start = which.toString() == "Previous" ? startDate().addMonths( -1 ) : startDate().addMonths( 1 );
+    QDate end = which.toString() == "Previous" ? endDate().addMonths( -1 ) : endDate().addMonths( 1 );
+    setReportProperties( start, end, rootTask(), activeTasksOnly() );
 }
