@@ -28,9 +28,12 @@
 
 #include "Core/Configuration.h"
 #include "Idle/IdleDetector.h"
+#include "HttpClient/HttpJob.h"
 
 #include <QCheckBox>
 #include <QMessageBox>
+#include <QLineEdit>
+#include <QInputDialog>
 
 CharmPreferences::CharmPreferences( const Configuration& config,
                                     QWidget* parent_ )
@@ -46,6 +49,8 @@ CharmPreferences::CharmPreferences( const Configuration& config,
 
     connect(m_ui.cbWarnUnuploadedTimesheets, SIGNAL(toggled(bool)),
             SLOT(slotWarnUnuploadedChanged(bool)));
+    connect(m_ui.pbResetPassword, SIGNAL(clicked()),
+            SLOT(slotResetPassword()));
 
     // this would not need a switch, but i hate casting enums to int:
     switch( config.timeTrackerFontSize ) {
@@ -177,6 +182,19 @@ void CharmPreferences::slotWarnUnuploadedChanged( bool enabled )
                                                   QMessageBox::Yes);
         if (response == QMessageBox::Yes)
             m_ui.cbWarnUnuploadedTimesheets->setCheckState(Qt::Checked);
+    }
+}
+
+void CharmPreferences::slotResetPassword()
+{
+    HttpJob* job = new HttpJob(this);
+    bool ok;
+    QPointer<QObject> that( this ); //guard against destruction while dialog is open
+    const QString newpass = QInputDialog::getText( this, tr("Password"), tr("Please enter your lotsofcake password"), QLineEdit::Password, "", &ok );
+    if ( !that )
+        return;
+    if ( ok ) {
+        job->provideRequestedPassword(newpass);
     }
 }
 
