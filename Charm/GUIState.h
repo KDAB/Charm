@@ -52,8 +52,8 @@ public:
 private:
     TaskIdList m_expandedTasks;
     TaskId m_selectedTask;
-    bool m_showExpired = false; // show also expired tasks
-    bool m_showCurrents = false; // show only selected tasks
+    bool m_showExpired; // show also expired tasks
+    bool m_showCurrents; // show only selected tasks
 };
 
 #endif
