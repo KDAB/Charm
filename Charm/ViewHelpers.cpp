@@ -24,6 +24,7 @@
 #include "ViewHelpers.h"
 
 #include <QtAlgorithms>
+#include <QFile>
 
 void Charm::connectControllerAndView( Controller* controller, CharmWindow* view )
 {
@@ -81,4 +82,23 @@ QString Charm::elidedTaskName( const QString& text, const QFont& font, int width
     }
 
     return metrics.elidedText( text, Qt::ElideMiddle, width );
+}
+
+QString Charm::reportStylesheet( const QPalette& palette )
+{
+    QString style;
+    QFile stylesheet( ":/Charm/report_stylesheet.sty" );
+    if ( stylesheet.open( QIODevice::ReadOnly | QIODevice::Text ) ) {
+        style = stylesheet.readAll();
+        style.replace(QLatin1String("@header_row_background_color@"), palette.highlight().color().name());
+        style.replace(QLatin1String("@header_row_foreground_color@"), palette.highlightedText().color().name());
+        style.replace(QLatin1String("@alternate_row_background_color@"), palette.alternateBase().color().name());
+        style.replace(QLatin1String("@event_attributes_row_background_color@"), palette.midlight().color().name());
+        if ( style.isEmpty() ) {
+            qDebug() << "reportStylesheet: default style sheet is empty, too bad";
+        }
+    } else {
+        qDebug() << "reportStylesheet: cannot load report style sheet:" << stylesheet.errorString();
+    }
+    return style;
 }
