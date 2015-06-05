@@ -52,7 +52,7 @@ void SmartNameCache::sortTasks()
 void SmartNameCache::modifyTask( const Task& task )
 {
     const TaskList::Iterator it = qBinaryFind( m_tasks.begin(), m_tasks.end(), Task( task.id(), QString() ), IdLessThan() );
-    if ( it != m_tasks.constEnd() )
+    if ( it != m_tasks.end() )
         *it = task;
     sortTasks();
     regenerateSmartNames();
@@ -61,7 +61,7 @@ void SmartNameCache::modifyTask( const Task& task )
 void SmartNameCache::deleteTask( const Task& task )
 {
     const TaskList::Iterator it = qBinaryFind( m_tasks.begin(), m_tasks.end(), Task( task.id(), QString() ), IdLessThan() );
-    if ( it != m_tasks.constEnd() ) {
+    if ( it != m_tasks.end() ) {
         m_tasks.erase( it );
         regenerateSmartNames();
     }
