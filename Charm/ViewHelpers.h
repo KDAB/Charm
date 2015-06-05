@@ -42,6 +42,7 @@ namespace Charm {
      * under the parent task, which includes the parent task. */
     EventIdList filteredBySubtree( EventIdList, TaskId parent, bool exclude=false );
     QString elidedTaskName( const QString& text, const QFont& font, int width );
+    QString reportStylesheet( const QPalette& palette );
 }
 
 #endif

@@ -400,17 +400,7 @@ void ActivityReport::slotUpdate()
 
     // NOTE: seems like the style sheet has to be set before the html
     // code is pushed into the QTextDocument
-    QFile stylesheet( ":/Charm/report_stylesheet.sty" );
-    if ( stylesheet.open( QIODevice::ReadOnly | QIODevice::Text ) ) {
-        QString style = stylesheet.readAll();
-        if ( !style.isEmpty() ) {
-            report->setDefaultStyleSheet( style );
-        } else {
-            qDebug() << "WeeklyTimeSheet::create: default style sheet is empty, too bad";
-        }
-    } else {
-        qDebug() << "WeeklyTimeSheet::create: cannot load report style sheet: " << stylesheet.errorString();
-    }
+    report->setDefaultStyleSheet(Charm::reportStylesheet(palette()));
 
     report->setHtml( doc.toString() );
     setDocument( report );
