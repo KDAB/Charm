@@ -218,4 +218,15 @@ IF( NOT "${CMAKE_VERSION}" VERSION_LESS "2.8.4" )
         INCLUDE( DeployQt4 )
         INSTALL_QT4_EXECUTABLE( "${EXECUTABLE}" "qsqlite" )
     ENDIF()
+
+    # Plugin deployment for Windows/Qt5
+    IF( WIN32 AND Qt5Core_FOUND )
+        # Deploy platform plugin to platforms/ (plugins/platforms isn't found, for whatever reason)
+        GET_TARGET_PROPERTY(_qmake_executable Qt5::qmake IMPORTED_LOCATION)
+        EXEC_PROGRAM( ${_qmake_executable} ARGS -query QT_INSTALL_PLUGINS OUTPUT_VARIABLE _loc )
+        INSTALL( FILES ${_loc}/platforms/qwindows.dll DESTINATION platforms )
+        # Deploy qsqlite plugin
+        GET_TARGET_PROPERTY( _loc Qt5::QSQLiteDriverPlugin LOCATION )
+        INSTALL( FILES ${_loc} DESTINATION plugins/sqldrivers )
+    ENDIF()
 ENDIF()
