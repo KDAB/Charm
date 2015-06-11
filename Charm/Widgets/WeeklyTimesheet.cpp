@@ -269,7 +269,7 @@ WeeklyTimeSheetReport::WeeklyTimeSheetReport( QWidget* parent )
 {
     QPushButton* upload = uploadButton();
     connect( upload, SIGNAL(clicked()), SLOT(slotUploadTimesheet()) );
-    connect( this, SIGNAL(anchorClicked(const QUrl&)), SLOT(slotLinkClicked(const QUrl&)) );
+    connect( this, SIGNAL(anchorClicked(QUrl)), SLOT(slotLinkClicked(QUrl)) );
     if (!HttpJob::credentialsAvailable())
         upload->hide();
 }
