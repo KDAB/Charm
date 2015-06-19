@@ -30,6 +30,7 @@
 #include <QNetworkRequest>
 #include <QAuthenticator>
 #include <QSettings>
+#include <QXmlStreamReader>
 
 #if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
 #include <QUrlQuery>
@@ -56,6 +57,21 @@ bool HttpJob::credentialsAvailable()
     return !settings.value(QLatin1String("username")).toString().isEmpty()
         && settings.value(QLatin1String("portalUrl")).toUrl().isValid()
         && settings.value(QLatin1String("loginUrl")).toUrl().isValid();
+}
+
+QString HttpJob::extractErrorMessageFromReply(const QByteArray& xml)
+{
+    QXmlStreamReader reader(xml);
+    while (!reader.atEnd() && !reader.hasError()) {
+        reader.readNext();
+        if (reader.isStartElement() && reader.name() == QLatin1String("div")
+                && reader.attributes().value(QLatin1String("class")) == QLatin1String("ErrorResultMessage"))
+        {
+            return reader.readElementText();
+        }
+    }
+
+    return QString();
 }
 
 HttpJob::HttpJob(QObject* parent)

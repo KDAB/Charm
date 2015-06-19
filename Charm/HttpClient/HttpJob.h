@@ -106,6 +106,8 @@ protected:
     void setErrorAndEmitFinished(int code, const QString& errorString);
     void delayedNext();
 
+    static QString extractErrorMessageFromReply(const QByteArray& xml);
+
 protected Q_SLOTS:
     virtual bool handle(QNetworkReply *reply);
 

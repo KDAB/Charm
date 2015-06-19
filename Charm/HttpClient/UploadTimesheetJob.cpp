@@ -130,7 +130,10 @@ bool UploadTimesheetJob::handle(QNetworkReply *reply)
     if (answer.contains("SuccessResultMessage")) {
         delayedNext();
     } else {
-        setErrorAndEmitFinished(SomethingWentWrong, tr("No confirmation from server."));
+        const QString errorMessage = extractErrorMessageFromReply(answer);
+        setErrorAndEmitFinished(SomethingWentWrong, !errorMessage.isEmpty()
+                                ? errorMessage
+                                : tr("An error occurred, could not extract details"));
     }
     return true;
 }
