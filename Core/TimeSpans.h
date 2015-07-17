@@ -38,7 +38,8 @@ enum TimeSpanType {
     Day=0,
     Week,
     Month,
-    Range
+    Range,
+    Year
 };
 
 struct NamedTimeSpan {
@@ -78,6 +79,7 @@ public:
     NamedTimeSpan lastWeek() const;
     NamedTimeSpan theWeekBeforeLast() const;
     NamedTimeSpan thisMonth() const;
+    NamedTimeSpan thisYear() const;
     NamedTimeSpan lastMonth() const;
     NamedTimeSpan theMonthBeforeLast() const;
 
@@ -90,6 +92,7 @@ private:
     NamedTimeSpan m_theWeekBeforeLast;
     NamedTimeSpan m_3WeeksAgo;
     NamedTimeSpan m_thisMonth;
+    NamedTimeSpan m_thisYear;
     NamedTimeSpan m_lastMonth;
     NamedTimeSpan m_theMonthBeforeLast;
     NamedTimeSpan m_3MonthsAgo;

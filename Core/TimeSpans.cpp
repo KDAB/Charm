@@ -93,6 +93,12 @@ TimeSpans::TimeSpans(const QDate &today)
         TimeSpan( m_thisMonth.timespan.first.addMonths( -3 ),
                   m_thisMonth.timespan.second.addMonths( -3 ) );
     m_3MonthsAgo.timeSpanType = Month;
+
+    m_thisYear.name = tr( "This year" );
+    m_thisYear.timespan =
+       TimeSpan( QDate( today.year(), 1, 1 ),
+                 QDate( today.year(), 12, 31 ) );
+    m_thisYear.timeSpanType = Year;
 }
 
 QList<NamedTimeSpan> TimeSpans::standardTimeSpans() const
@@ -100,7 +106,7 @@ QList<NamedTimeSpan> TimeSpans::standardTimeSpans() const
     QList<NamedTimeSpan> spans;
     spans << m_today << m_yesterday << m_dayBeforeYesterday
           << m_thisWeek << m_lastWeek << m_theWeekBeforeLast
-          << m_thisMonth << m_lastMonth;
+          << m_thisMonth << m_lastMonth << m_thisYear;
     return spans;
 }
 
@@ -161,6 +167,11 @@ NamedTimeSpan TimeSpans::lastMonth() const
 NamedTimeSpan TimeSpans::theMonthBeforeLast() const
 {
     return m_theMonthBeforeLast;
+}
+
+NamedTimeSpan TimeSpans::thisYear() const
+{
+    return m_thisYear;
 }
 
 bool NamedTimeSpan::contains( const QDate& date ) const

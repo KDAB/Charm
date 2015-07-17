@@ -270,6 +270,9 @@ void ActivityReport::slotUpdate()
     case Month:
         timeSpanTypeName = tr ( "Month" );
         break;
+    case Year:
+        timeSpanTypeName = tr ( "Year" );
+        break;
     case Range:
         timeSpanTypeName = tr ( "Range" );
         break;
@@ -423,6 +426,10 @@ void ActivityReport::slotLinkClicked( const QUrl& which )
     case Month: {
         start = which.toString() == "Previous" ? m_start.addMonths( -1 ) : m_start.addMonths( 1 );
         end = which.toString() == "Previous" ? m_end.addMonths( -1 ) : m_end.addMonths( 1 );
+    }
+    case Year: {
+        start = which.toString() == "Previous" ? m_start.addYears( -1 ) : m_start.addYears( 1 );
+        end = which.toString() == "Previous" ? m_end.addYears( -1 ) : m_end.addYears( 1 );
     }
     break;
     case Range: {
