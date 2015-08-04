@@ -173,6 +173,7 @@ void ActivityReportConfigurationDialog::slotExcludeTask()
 bool ActivityReportConfigurationDialog::selectTask(TaskId& task)
 {
     SelectTaskDialog dialog( this );
+    dialog.setNonTrackableSelectable();
     const bool taskSelected = dialog.exec();
     if ( taskSelected )
         task = dialog.selectedTask();

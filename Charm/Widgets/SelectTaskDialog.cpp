@@ -68,6 +68,7 @@ SelectTaskDialog::SelectTaskDialog( QWidget* parent )
     , m_ui( new Ui::SelectTaskDialog() )
     , m_selectedTask( 0 )
     , m_proxy( MODEL.charmDataModel() )
+    , m_nonTrackableSelectable( false )
 {
     m_ui->setupUi( this );
     m_ui->treeView->setModel( &m_proxy );
@@ -157,6 +158,10 @@ bool SelectTaskDialog::isValidAndTrackable( const QModelIndex& index ) const
     if ( !index.isValid() )
         return false;
     const Task task = m_proxy.taskForIndex( index );
+
+    if ( m_nonTrackableSelectable )
+        return task.isValid();
+
     return task.isValid() && task.trackable();
 }
 
@@ -226,6 +231,11 @@ void SelectTaskDialog::slotPrefilteringChanged()
     m_proxy.prefilteringModeChanged();
     Charm::restoreExpandStates( m_ui->treeView, &m_expansionStates );
     emit saveConfiguration();
+}
+
+void SelectTaskDialog::setNonTrackableSelectable()
+{
+    m_nonTrackableSelectable = true;
 }
 
 #include "moc_SelectTaskDialog.cpp"

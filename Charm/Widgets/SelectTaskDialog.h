@@ -60,6 +60,7 @@ public:
     ~SelectTaskDialog();
 
     TaskId selectedTask() const;
+    void setNonTrackableSelectable();
 
 signals:
     void saveConfiguration();
@@ -83,6 +84,7 @@ private:
     TaskId m_selectedTask;
     SelectTaskDialogProxy m_proxy;
     QHash<TaskId,bool> m_expansionStates;
+    bool m_nonTrackableSelectable;
 };
 
 #endif
