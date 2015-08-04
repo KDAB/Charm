@@ -231,6 +231,25 @@ void TimeTrackingTaskSelector::handleActiveEvents()
 void TimeTrackingTaskSelector::slotActionSelected( QAction* action )
 {
     TaskId taskId = action->property( CUSTOM_TASK_PROPERTY_NAME ).value<TaskId>();
+    const Task& task = DATAMODEL->getTask( taskId );
+    if ( task.isValid() ) {
+        bool expired = !task.isCurrentlyValid();
+        bool trackable = task.trackable();
+        bool notTrackableAndExpired = ( !trackable && expired );
+        int id = task.id();
+        const QString name = task.name();
+        const QString expirationDate = QLocale::system().toString(task.validUntil(), QLocale::ShortFormat);
+
+        if ( !trackable || expired ) {
+            QString message = notTrackableAndExpired ? tr( "The task %1 (%2) is not trackable and expired since %3").arg( id ).arg( name ).arg( expirationDate ) :
+                                                       expired ? tr( "The task %1 (%2) is expired since %3").arg( id ).arg( name ).arg( expirationDate ) :
+                                                                 tr( "The task %1 (%2) is not trackable").arg( id ).arg( name );
+
+            QMessageBox::information( this, tr( "Please choose another task" ), message );
+            return;
+        }
+    }
+
     if( taskId > 0 ) {
         taskSelected( action->text(), taskId );
         handleActiveEvents();

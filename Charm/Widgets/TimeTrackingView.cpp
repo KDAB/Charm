@@ -30,6 +30,7 @@
 
 #include <QFont>
 #include <QFontMetrics>
+#include <QMessageBox>
 #include <QPaintEvent>
 #include <QPainter>
 
@@ -205,8 +206,15 @@ void TimeTrackingView::resizeEvent( QResizeEvent* )
 
 void TimeTrackingView::mousePressEvent( QMouseEvent* event )
 {
+    const int position = getSummaryAt( event->pos() );
+    if ( position < 0 )
+        return;
+    const TaskId id = m_summaries.at( position ).task;
+
+    if ( !taskIsValidAndTrackable( id ) )
+        return;
+
     if ( ! isTracking() ) {
-        const int position = getSummaryAt( event->pos() );
         if ( position >= 0 && position < m_summaries.size() ) {
             m_taskSelector->taskSelected( m_summaries.at( position ) );
         }
@@ -222,6 +230,10 @@ void TimeTrackingView::mouseDoubleClickEvent( QMouseEvent* event )
         return;
 
     const TaskId id = m_summaries.at( position ).task;
+
+    if ( !taskIsValidAndTrackable( id ) )
+        return;
+
     if ( !DATAMODEL->isTaskActive( id ) ) {
         emit stopEvents();
         emit startEvent( id );
@@ -402,6 +414,28 @@ QString TimeTrackingView::elidedText( const QString& text, const QFont& font, in
 void TimeTrackingView::slotUpdateSummaries()
 {
     setSummaries( m_summaries );
+}
+
+bool TimeTrackingView::taskIsValidAndTrackable( int taskId )
+{
+    const Task& task = DATAMODEL->getTask( taskId );
+
+    bool expired = !task.isCurrentlyValid();
+    bool trackable = task.trackable();
+    bool notTrackableAndExpired = ( !trackable && expired );
+    int id = task.id();
+    const QString name = task.name();
+    QString expirationDate = QLocale::system().toString(task.validUntil(), QLocale::ShortFormat);
+
+    if ( !trackable || expired ) {
+        QString message = notTrackableAndExpired ? tr( "The task %1 (%2) is not trackable and expired since %3").arg( id ).arg( name ).arg( expirationDate ) :
+                                                   expired ? tr( "The task %1 (%2) is expired since %3").arg( id ).arg( name ).arg( expirationDate ) :
+                                                             tr( "The task %1 (%2) is not trackable").arg( id ).arg( name );
+
+        QMessageBox::information( this, tr( "Please choose another task" ), message );
+        return false;
+    }
+    return true;
 }
 
 #include "moc_TimeTrackingView.cpp"
