@@ -41,14 +41,14 @@
      <item>
       <widget class="QCheckBox" name="showExpired">
        <property name="text">
-        <string>Show expired entries</string>
+        <string>Show expired</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QCheckBox" name="showSelected">
        <property name="text">
-        <string>Show selected entries</string>
+        <string>Show only subscribed</string>
        </property>
       </widget>
      </item>
