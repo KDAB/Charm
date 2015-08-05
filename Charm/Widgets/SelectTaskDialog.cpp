@@ -73,6 +73,8 @@ SelectTaskDialog::SelectTaskDialog( QWidget* parent )
     m_ui->setupUi( this );
     m_ui->treeView->setModel( &m_proxy );
     m_ui->treeView->header()->hide();
+    m_ui->buttonBox->button( QDialogButtonBox::Cancel )->setEnabled( true );
+    m_ui->buttonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
     connect( m_ui->treeView->selectionModel(),
              SIGNAL(currentChanged(QModelIndex,QModelIndex)),
              SLOT(slotCurrentItemChanged(QModelIndex,QModelIndex)) );
