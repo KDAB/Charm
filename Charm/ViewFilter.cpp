@@ -24,6 +24,7 @@
 
 #include "ViewFilter.h"
 #include "Core/CharmDataModel.h"
+#include "ViewHelpers.h"
 
 ViewFilter::ViewFilter( CharmDataModel* model, QObject* parent )
     : QSortFilterProxyModel( parent )
@@ -108,6 +109,16 @@ bool ViewFilter::filterAcceptsRow( int source_row, const QModelIndex& parent ) c
         break;
     default:
         break;
+    }
+
+    if ( !accepted && taskHasChildren( task ) ) {
+        TaskIdList idList = m_model.childrenIds( task );
+        for ( int i = 0; i < idList.count(); ++i ) {
+            Task childTask = DATAMODEL->getTask( idList[i] );
+            accepted = childTask.isCurrentlyValid();
+            if ( accepted )
+                break;
+        }
     }
 
     return accepted;
