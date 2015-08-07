@@ -73,6 +73,7 @@ ApplicationCore::ApplicationCore( QObject* parent )
     , m_actionSyncTasks( this )
     , m_actionImportTasks( this )
     , m_actionExportTasks( this )
+    , m_actionCheckForUpdates( this )
     , m_actionEnterVacation( this )
     , m_actionActivityReport( this )
     , m_actionWeeklyTimesheetReport( this )
@@ -206,6 +207,10 @@ ApplicationCore::ApplicationCore( QObject* parent )
     m_actionExportTasks.setText( tr( "Export Task Definitions..." ) );
     connect( &m_actionExportTasks, SIGNAL(triggered()),
              &mainView(), SLOT(slotExportTasks()) );
+    m_actionCheckForUpdates.setText( tr("Check for Updates...") );
+    m_actionCheckForUpdates.setMenuRole( QAction::ApplicationSpecificRole );
+    connect( &m_actionCheckForUpdates, SIGNAL(triggered()),
+             &mainView(), SLOT(slotCheckForUpdatesManual()) );
     m_actionEnterVacation.setText( tr( "Enter Vacation...") );
     connect( &m_actionEnterVacation, SIGNAL(triggered()),
              &mainView(), SLOT(slotEnterVacation()) );
@@ -319,6 +324,11 @@ void ApplicationCore::createHelpMenu( QMenuBar *menuBar )
     auto menu = new QMenu( menuBar );
     menu->setTitle( tr( "Help" ) );
     menu->addAction( &m_actionAboutDialog );
+#if defined(Q_OS_OSX) || defined(Q_OS_WIN)
+#if defined(UPDATE_CHECK_URL)
+        menu->addAction( &m_actionCheckForUpdates );
+#endif
+#endif
     menuBar->addMenu( menu );
 }
 

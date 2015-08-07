@@ -26,6 +26,8 @@
 #include "ActivityReport.h"
 #include "ApplicationCore.h"
 #include "CharmAboutDialog.h"
+#include "CharmCMake.h"
+#include "CharmNewReleaseDialog.h"
 #include "CharmPreferences.h"
 #include "CommentEditorPopup.h"
 #include "EnterVacationDialog.h"
@@ -88,10 +90,20 @@ TimeTrackingWindow::TimeTrackingWindow( QWidget* parent )
              SLOT(slotCheckUploadedTimesheets()) );
     connect( m_billDialog, SIGNAL(finished(int)),
              SLOT(slotBillGone(int)) );
+    connect( &m_checkCharmReleaseVersionTimer, SIGNAL(timeout()),
+             SLOT(slotCheckForUpdatesAutomatic()) );
+
     //Check every 60 minutes if there are timesheets due
     m_checkUploadedSheetsTimer.setInterval(60 * 60 * 1000);
     if (CONFIGURATION.warnUnuploadedTimesheets)
         m_checkUploadedSheetsTimer.start();
+#if defined(Q_OS_OSX) || defined(Q_OS_WIN)
+#if defined(UPDATE_CHECK_URL)
+    QTimer::singleShot( 1000, this, SLOT( slotCheckForUpdatesAutomatic() ) );
+    m_checkCharmReleaseVersionTimer.setInterval(24 * 60 * 60 * 1000);
+    m_checkCharmReleaseVersionTimer.start();
+#endif
+#endif
     toolBar()->hide();
 }
 
@@ -520,6 +532,79 @@ void TimeTrackingWindow::slotBillGone(int result)
     }
     if (CONFIGURATION.warnUnuploadedTimesheets)
         m_checkUploadedSheetsTimer.start();
+}
+
+void TimeTrackingWindow::slotCheckForUpdatesAutomatic()
+{
+    // do not display message error when auto-checking
+    startCheckForUpdates();
+}
+
+void TimeTrackingWindow::slotCheckForUpdatesManual()
+{
+    startCheckForUpdates( Verbose );
+}
+
+void TimeTrackingWindow::startCheckForUpdates( VerboseMode mode )
+{
+    CheckForUpdatesJob* checkForUpdates = new CheckForUpdatesJob( this );
+    connect( checkForUpdates, SIGNAL( finished( CheckForUpdatesJob::JobData ) ), this, SLOT( slotCheckForUpdates( CheckForUpdatesJob::JobData ) ) );
+    const QString urlString = UPDATE_CHECK_URL;
+    checkForUpdates->setUrl( QUrl( urlString ) );
+    if ( mode == Verbose )
+        checkForUpdates->setVerbose( true );
+    checkForUpdates->start();
+}
+
+void TimeTrackingWindow::slotCheckForUpdates( CheckForUpdatesJob::JobData data )
+{
+    const QString errorString = data.errorString;
+    if ( data.verbose && ( data.error != 0 || !errorString.isEmpty() ) ) {
+        QMessageBox::critical( this, tr( "Error" ), errorString );
+        return;
+    }
+
+    const QString releaseVersion = data.releaseVersion;
+
+    QSettings settings;
+    settings.beginGroup( QLatin1String( "UpdateChecker" ) );
+    const QString skipVersion = settings.value( QLatin1String( "skip-version" ) ).toString();
+    if ( ( skipVersion == releaseVersion ) && !data.verbose )
+        return;
+
+    if ( checkIfGreaterCharmVersion( releaseVersion ) )
+        informUserAboutNewRelease( releaseVersion, data.link, data.releaseInformationLink );
+    else {
+        if ( data.verbose )
+            QMessageBox::information( this, tr( "Charm Release" ), tr( "There is no newer Charm version available!" ) );
+    }
+}
+
+bool TimeTrackingWindow::checkIfGreaterCharmVersion( const QString& releaseVersion )
+{
+    QString versionRelease = releaseVersion;
+    QString localVersion = CHARM_VERSION;
+    localVersion.truncate( releaseVersion.length() );
+
+    const QStringList local = localVersion.split( "." );
+    const QStringList release = versionRelease.split( "." );
+    for ( int i = 0; i < local.count() && i < release.count(); ++i ) {
+        if ( release[i].toInt() > local[i].toInt() ) {
+            return true;
+        }
+    }
+    return false;
+}
+
+void TimeTrackingWindow::informUserAboutNewRelease( const QString& releaseVersion, const QUrl& link, const QString& releaseInfoLink )
+{
+    QString localVersion = CHARM_VERSION;
+    localVersion.truncate( releaseVersion.length() );
+    CharmNewReleaseDialog dialog( this );
+    dialog.setVersion( releaseVersion, localVersion );
+    dialog.setDownloadLink( link );
+    dialog.setReleaseInformationLink( releaseInfoLink );
+    dialog.exec();
 }
 
 void TimeTrackingWindow::maybeIdle( IdleDetector* detector )

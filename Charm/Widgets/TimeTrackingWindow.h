@@ -29,11 +29,14 @@
 #include "Core/ViewInterface.h"
 #include "Core/CharmDataModelAdapterInterface.h"
 
+#include "HttpClient/CheckForUpdatesJob.h"
+
 #include "CharmWindow.h"
 #include "WeeklySummary.h"
 #include "BillDialog.h"
 
 class HttpJob;
+class CheckForUpdatesJob;
 class CharmCommand;
 class TimeTrackingView;
 class IdleDetector;
@@ -91,6 +94,7 @@ public slots:
     void maybeIdle( IdleDetector* idleDetector );
     void slotTasksDownloaded( HttpJob* );
     void slotUserInfoDownloaded( HttpJob* );
+    void slotCheckForUpdatesManual();
 
 protected:
 
@@ -105,6 +109,8 @@ private slots:
     void slotActivityReportPreview( int result );
     void slotCheckUploadedTimesheets();
     void slotBillGone( int result );
+    void slotCheckForUpdatesAutomatic();
+    void slotCheckForUpdates( CheckForUpdatesJob::JobData );
 
     void configurationChanged() override;
 
@@ -113,12 +119,20 @@ signals:
     void emitCommandRollback( CharmCommand* );
 
 private:
+    enum VerboseMode {
+        Verbose = 0,
+        Silent
+    };
+
     void resetWeeklyTimesheetDialog();
     void resetMonthlyTimesheetDialog();
     void showPreview( ReportConfigurationDialog*, int result );
     //ugly but private:
     void importTasksFromDeviceOrFile( QIODevice* device, const QString& filename );
     void getUserInfo();
+    void startCheckForUpdates( VerboseMode mode = Silent );
+    bool checkIfGreaterCharmVersion( const QString& releaseVersion );
+    void informUserAboutNewRelease( const QString& releaseVersion, const QUrl& link , const QString& releaseInfoLink );
 
     WeeklyTimesheetConfigurationDialog* m_weeklyTimesheetDialog;
     MonthlyTimesheetConfigurationDialog* m_monthlyTimesheetDialog;
@@ -126,7 +140,9 @@ private:
     TimeTrackingView* m_summaryWidget;
     QVector<WeeklySummary> m_summaries;
     QTimer m_checkUploadedSheetsTimer;
+    QTimer m_checkCharmReleaseVersionTimer;
     BillDialog *m_billDialog;
+    CheckForUpdatesJob* m_checkForUpdatesJob;
     QString m_user;
 };
 

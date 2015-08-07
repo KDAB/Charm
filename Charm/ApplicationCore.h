@@ -152,6 +152,7 @@ private:
     QAction m_actionSyncTasks;
     QAction m_actionImportTasks;
     QAction m_actionExportTasks;
+    QAction m_actionCheckForUpdates;
     QAction m_actionEnterVacation;
     QAction m_actionActivityReport;
     QAction m_actionWeeklyTimesheetReport;

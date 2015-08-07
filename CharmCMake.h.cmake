@@ -6,3 +6,5 @@
 #cmakedefine CHARM_IDLE_DETECTION_AVAILABLE_X11 1
 /* Delay for idle detection, default is 360 */
 #define CHARM_IDLE_TIME @CHARM_IDLE_TIME@
+/* Define the url where to check for updates */
+#define UPDATE_CHECK_URL "@UPDATE_CHECK_URL@"

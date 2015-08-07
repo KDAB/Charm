@@ -32,6 +32,7 @@ SET(
     HttpClient/GetProjectCodesJob.cpp
     HttpClient/UploadTimesheetJob.cpp
     HttpClient/GetUserInfoJob.cpp
+    HttpClient/CheckForUpdatesJob.cpp
     Idle/IdleDetector.cpp
     Reports/TimesheetInfo.cpp
     Reports/MonthlyTimesheetXmlWriter.cpp
@@ -41,6 +42,7 @@ SET(
     Widgets/CharmPreferences.cpp
     Widgets/CharmWindow.cpp
     Widgets/CharmAboutDialog.cpp
+    Widgets/CharmNewReleaseDialog.cpp
     Widgets/CommentEditorPopup.cpp
     Widgets/ConfigurationDialog.cpp
     Widgets/DateEntrySyncer.cpp
@@ -128,6 +130,7 @@ QT_WRAP_UI(
     Widgets/EventEditor.ui
     Widgets/SelectTaskDialog.ui
     Widgets/CharmAboutDialog.ui
+    Widgets/CharmNewReleaseDialog.ui
     Widgets/IdleCorrectionDialog.ui
     Widgets/ActivityReportConfigurationDialog.ui
     Widgets/WeeklyTimesheetConfigurationDialog.ui
