@@ -66,6 +66,7 @@ signals:
     void eventDeactivationNotice( EventId id );
 
 private:
+    bool hasValidChildren(Task task) const;
     TaskModelAdapter m_model;
 };
 
