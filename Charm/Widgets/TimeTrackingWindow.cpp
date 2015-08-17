@@ -572,28 +572,12 @@ void TimeTrackingWindow::slotCheckForUpdates( CheckForUpdatesJob::JobData data )
     if ( ( skipVersion == releaseVersion ) && !data.verbose )
         return;
 
-    if ( checkIfGreaterCharmVersion( releaseVersion ) )
+    if ( Charm::versionLessThan( CHARM_VERSION, releaseVersion ) ) {
         informUserAboutNewRelease( releaseVersion, data.link, data.releaseInformationLink );
-    else {
+    } else {
         if ( data.verbose )
             QMessageBox::information( this, tr( "Charm Release" ), tr( "There is no newer Charm version available!" ) );
     }
-}
-
-bool TimeTrackingWindow::checkIfGreaterCharmVersion( const QString& releaseVersion )
-{
-    QString versionRelease = releaseVersion;
-    QString localVersion = CHARM_VERSION;
-    localVersion.truncate( releaseVersion.length() );
-
-    const QStringList local = localVersion.split( "." );
-    const QStringList release = versionRelease.split( "." );
-    for ( int i = 0; i < local.count() && i < release.count(); ++i ) {
-        if ( release[i].toInt() > local[i].toInt() ) {
-            return true;
-        }
-    }
-    return false;
 }
 
 void TimeTrackingWindow::informUserAboutNewRelease( const QString& releaseVersion, const QUrl& link, const QString& releaseInfoLink )

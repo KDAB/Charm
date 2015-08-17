@@ -8,6 +8,10 @@ class QByteArray;
 class QNetworkReply;
 class QUrl;
 
+namespace Charm {
+    bool versionLessThan( const QString& lhs, const QString& rhs );
+}
+
 class CheckForUpdatesJob : public QObject
 {
     Q_OBJECT

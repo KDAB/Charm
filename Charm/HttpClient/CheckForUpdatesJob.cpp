@@ -29,6 +29,26 @@
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QNetworkReply>
+#include <QStringList>
+
+bool Charm::versionLessThan( const QString& lhs, const QString& rhs )
+{
+    const QStringList lhsSplit = lhs.split( QLatin1Char('.') );
+    const QStringList rhsSplit = rhs.split( QLatin1Char('.') );
+    for ( int i = 0; i < lhsSplit.count() && i < rhsSplit.count(); ++i ) {
+        const int diff = rhsSplit[i].toInt() - lhsSplit[i].toInt();
+        if ( diff != 0 ) {
+            return diff > 0;
+        }
+    }
+
+    for ( int i = lhsSplit.size(); i < rhsSplit.size(); ++i ) {
+        if ( rhsSplit[i].toInt() > 0 ) {
+            return true;
+        }
+    }
+    return false;
+}
 
 CheckForUpdatesJob::CheckForUpdatesJob( QObject* parent )
     : QObject( parent )

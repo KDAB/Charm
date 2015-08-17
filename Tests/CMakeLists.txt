@@ -103,3 +103,7 @@ IF( CHARM_DATABASE_CONFIGURATION )
     ADD_TEST(NAME TimeSheetProcessorTests COMMAND TimeSheetProcessorTests )
 
 ENDIF()
+
+SET( UpdateCheckerTests_SRCS ${Charm_SOURCE_DIR}/Charm/HttpClient/CheckForUpdatesJob.cpp UpdateCheckerTests.cpp )
+ADD_EXECUTABLE( UpdateCheckerTests ${UpdateCheckerTests_SRCS} )
+TARGET_LINK_LIBRARIES( UpdateCheckerTests ${TEST_LIBRARIES} )

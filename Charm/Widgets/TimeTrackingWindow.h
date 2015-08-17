@@ -131,7 +131,6 @@ private:
     void importTasksFromDeviceOrFile( QIODevice* device, const QString& filename );
     void getUserInfo();
     void startCheckForUpdates( VerboseMode mode = Silent );
-    bool checkIfGreaterCharmVersion( const QString& releaseVersion );
     void informUserAboutNewRelease( const QString& releaseVersion, const QUrl& link , const QString& releaseInfoLink );
 
     WeeklyTimesheetConfigurationDialog* m_weeklyTimesheetDialog;
