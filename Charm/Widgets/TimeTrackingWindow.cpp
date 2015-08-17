@@ -94,15 +94,15 @@ TimeTrackingWindow::TimeTrackingWindow( QWidget* parent )
              SLOT(slotCheckForUpdatesAutomatic()) );
 
     //Check every 60 minutes if there are timesheets due
-    m_checkUploadedSheetsTimer.setInterval(60 * 60 * 1000);
     if (CONFIGURATION.warnUnuploadedTimesheets)
         m_checkUploadedSheetsTimer.start();
+    m_checkUploadedSheetsTimer.setInterval(60 * 60 * 1000);
 #if defined(Q_OS_OSX) || defined(Q_OS_WIN)
-#if defined(UPDATE_CHECK_URL)
-    QTimer::singleShot( 1000, this, SLOT( slotCheckForUpdatesAutomatic() ) );
     m_checkCharmReleaseVersionTimer.setInterval(24 * 60 * 60 * 1000);
-    m_checkCharmReleaseVersionTimer.start();
-#endif
+    if ( !QString::fromLatin1(UPDATE_CHECK_URL).isEmpty() ) {
+        QTimer::singleShot( 1000, this, SLOT(slotCheckForUpdatesAutomatic()) );
+        m_checkCharmReleaseVersionTimer.start();
+    }
 #endif
     toolBar()->hide();
 }

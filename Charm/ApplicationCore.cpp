@@ -325,9 +325,9 @@ void ApplicationCore::createHelpMenu( QMenuBar *menuBar )
     menu->setTitle( tr( "Help" ) );
     menu->addAction( &m_actionAboutDialog );
 #if defined(Q_OS_OSX) || defined(Q_OS_WIN)
-#if defined(UPDATE_CHECK_URL)
+    if ( !QString::fromLatin1(UPDATE_CHECK_URL).isEmpty() ) {
         menu->addAction( &m_actionCheckForUpdates );
-#endif
+    }
 #endif
     menuBar->addMenu( menu );
 }
