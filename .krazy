@@ -14,3 +14,5 @@ SKIP /Charm/Keychain/
 #if you have a build subdir, skip it
 SKIP /build-
 
+#other skips
+SKIP /CharmCMake.h.cmake
