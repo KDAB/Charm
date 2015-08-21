@@ -548,7 +548,7 @@ void TimeTrackingWindow::slotCheckForUpdatesManual()
 void TimeTrackingWindow::startCheckForUpdates( VerboseMode mode )
 {
     CheckForUpdatesJob* checkForUpdates = new CheckForUpdatesJob( this );
-    connect( checkForUpdates, SIGNAL( finished( CheckForUpdatesJob::JobData ) ), this, SLOT( slotCheckForUpdates( CheckForUpdatesJob::JobData ) ) );
+    connect( checkForUpdates, SIGNAL(finished(CheckForUpdatesJob::JobData)), this, SLOT(slotCheckForUpdates(CheckForUpdatesJob::JobData)) );
     const QString urlString = UPDATE_CHECK_URL;
     checkForUpdates->setUrl( QUrl( urlString ) );
     if ( mode == Verbose )

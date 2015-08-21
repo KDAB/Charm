@@ -36,11 +36,11 @@ CharmNewReleaseDialog::CharmNewReleaseDialog( QWidget* parent )
 {
     m_ui->setupUi( this );
     m_skipUpdate = new QPushButton( tr( "Skip Update" ) );
-    connect( m_skipUpdate, SIGNAL( clicked() ), SLOT( slotSkipVersion() ) );
+    connect( m_skipUpdate, SIGNAL(clicked()), SLOT(slotSkipVersion()) );
     m_remindMeLater = new QPushButton( tr( "Remind Me Later" ) );
-    connect( m_remindMeLater, SIGNAL( clicked() ), SLOT( slotRemindMe() ) );
+    connect( m_remindMeLater, SIGNAL(clicked()), SLOT(slotRemindMe()) );
     m_update = new QPushButton( tr( "Update" ) );
-    connect( m_update, SIGNAL( clicked() ), SLOT( slotLaunchBrowser() ) );
+    connect( m_update, SIGNAL(clicked()), SLOT(slotLaunchBrowser()) );
 
     m_ui->buttonBox->addButton( m_skipUpdate, QDialogButtonBox::NoRole );
     m_ui->buttonBox->addButton( m_remindMeLater, QDialogButtonBox::RejectRole );

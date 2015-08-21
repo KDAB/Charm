@@ -65,7 +65,7 @@ void CheckForUpdatesJob::start()
 {
     Q_ASSERT( !m_url.toString().isEmpty() );
     QNetworkAccessManager * manager = new QNetworkAccessManager( this );
-    connect(manager, SIGNAL( finished( QNetworkReply* ) ), SLOT( jobFinished( QNetworkReply* ) ));
+    connect(manager, SIGNAL(finished(QNetworkReply*)), SLOT(jobFinished(QNetworkReply*)));
     manager->get( QNetworkRequest( m_url ) );
 }
 
