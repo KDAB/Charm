@@ -71,6 +71,7 @@ SET(
     Widgets/TrayIcon.cpp
     Widgets/Timesheet.cpp
     Widgets/WeeklyTimesheet.cpp
+    Widgets/NotificationPopup.cpp
 )
 
 SET(CharmApplication_LIBS)
@@ -150,6 +151,7 @@ QT_WRAP_UI(
     Widgets/WeeklyTimesheetConfigurationDialog.ui
     Widgets/MonthlyTimesheetConfigurationDialog.ui
     Widgets/ReportPreviewWindow.ui
+    Widgets/NotificationPopup.ui
 )
 
 QT_ADD_RESOURCES( Resources_SRCS CharmResources.qrc )

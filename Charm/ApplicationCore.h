@@ -110,6 +110,7 @@ private slots:
     void slotCharmWindowVisibilityChanged( bool visibility );
     void slotHandleUniqueApplicationConnection();
     void slotStartTaskMenuAboutToShow();
+    void slotShowNotification( const QString& title, const QString& message );
 
 signals:
     void goToState( State state );

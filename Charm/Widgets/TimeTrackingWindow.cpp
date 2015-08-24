@@ -92,6 +92,8 @@ TimeTrackingWindow::TimeTrackingWindow( QWidget* parent )
              SLOT(slotBillGone(int)) );
     connect( &m_checkCharmReleaseVersionTimer, SIGNAL(timeout()),
              SLOT(slotCheckForUpdatesAutomatic()) );
+    connect( &m_updateTasksDefinitionsTimer, SIGNAL(timeout()),
+             SLOT(slotSyncTasksAutomatic()) );
 
     //Check every 60 minutes if there are timesheets due
     if (CONFIGURATION.warnUnuploadedTimesheets)
@@ -104,6 +106,11 @@ TimeTrackingWindow::TimeTrackingWindow( QWidget* parent )
         m_checkCharmReleaseVersionTimer.start();
     }
 #endif
+    //Update tasks definitions once every 24h
+    m_updateTasksDefinitionsTimer.setInterval(24 * 60 * 60 * 1000);
+    QTimer::singleShot( 1000, this, SLOT(slotSyncTasksAutomatic()) );
+    m_updateTasksDefinitionsTimer.start();
+
     toolBar()->hide();
 }
 
@@ -444,31 +451,50 @@ void TimeTrackingWindow::slotImportFromXml()
     sendCommand( cmd );
 }
 
-void TimeTrackingWindow::slotSyncTasks()
+void TimeTrackingWindow::slotSyncTasks( VerboseMode mode )
 {
     GetProjectCodesJob* client = new GetProjectCodesJob( this );
-    HttpJobProgressDialog* dialog = new HttpJobProgressDialog( client, this );
-    dialog->setWindowTitle( tr("Downloading") );
+    if ( mode == Verbose ) {
+        HttpJobProgressDialog* dialog = new HttpJobProgressDialog( client, this );
+        dialog->setWindowTitle( tr("Downloading") );
+    } else
+        client->setVerbose( false );
+
     connect( client, SIGNAL(finished(HttpJob*)), this, SLOT(slotTasksDownloaded(HttpJob*)) );
     client->start();
 }
 
-void TimeTrackingWindow::slotTasksDownloaded( HttpJob* job_ )
+void TimeTrackingWindow::slotSyncTasksAutomatic()
+{
+    // check if HttpJob is possible
+    if ( HttpJob::credentialsAvailable() && !HttpJob::lastAuthenticationFailed() ) {
+        slotSyncTasks( Silent );
+    }
+}
+
+void TimeTrackingWindow::slotTasksDownloaded(HttpJob* job_)
 {
     GetProjectCodesJob* job = qobject_cast<GetProjectCodesJob*>( job_ );
     Q_ASSERT( job );
+    const bool verbose = job->isVerbose();
     if ( job->error() == HttpJob::Canceled )
         return;
 
     if ( job->error() ) {
-        QMessageBox::critical( this, tr("Error"), tr("Could not download the task list: %1").arg( job->errorString() ) );
+        const QString title = tr("Error");
+        const QString message = tr("Could not download the task list: %1").arg( job->errorString() );
+        if ( verbose )
+            QMessageBox::critical( this, title, message );
+        else
+            emit showNotification( title, message );
+
         return;
     }
 
     QBuffer buffer;
     buffer.setData( job->payload() );
     buffer.open( QIODevice::ReadOnly );
-    importTasksFromDeviceOrFile( &buffer, QString() );
+    importTasksFromDeviceOrFile( &buffer, QString(), verbose );
 }
 
 void TimeTrackingWindow::slotImportTasks()
@@ -650,7 +676,7 @@ static void setValueIfNotNull(QSettings* s, const QString& key, const QString& v
         s->remove( key );
 }
 
-void TimeTrackingWindow::importTasksFromDeviceOrFile( QIODevice* device, const QString& filename )
+void TimeTrackingWindow::importTasksFromDeviceOrFile( QIODevice* device, const QString& filename , bool verbose )
 {
     const MakeTemporarilyVisible m( this );
     Q_UNUSED( m );
@@ -665,15 +691,23 @@ void TimeTrackingWindow::importTasksFromDeviceOrFile( QIODevice* device, const Q
         merger.setOldTasks( DATAMODEL->getAllTasks() );
         merger.setNewTasks( exporter.tasks() );
         if ( merger.modifiedTasks().isEmpty() && merger.addedTasks().isEmpty() ) {
-            QMessageBox::information( this, tr( "Tasks Import" ), tr( "The selected task file does not contain any updates." ) );
+            const QString title = tr( "Tasks Import" );
+            const QString message = tr( "The selected task file does not contain any updates." );
+            if ( verbose )
+                QMessageBox::information( this, title, message );
+            else
+                emit showNotification( title, message );
         } else {
             auto cmd = new CommandSetAllTasks( merger.mergedTaskList(), this );
             sendCommand( cmd );
-            const QString detailsText =
-                tr( "Task file imported, %1 tasks have been modified and %2 tasks added." )
-                .arg( QString::number( merger.modifiedTasks().count() ),
-                      QString::number( merger.addedTasks().count() ) );
-            QMessageBox::information( this, tr( "Tasks Import" ), detailsText );
+            // At this point the command was finalized and we have a result.
+            const bool success = cmd->finalize();
+            const QString detailsText = success ? tr( "The task list has been updated." ) : tr( "Setting the new tasks failed." );
+            const QString title = success ? tr( "Tasks Import" ) : tr( "Failure setting new tasks" );
+            if ( verbose )
+                QMessageBox::information( this, title, detailsText );
+            else
+                emit showNotification( title, detailsText );
             getUserInfo();
         }
 
@@ -693,10 +727,14 @@ void TimeTrackingWindow::importTasksFromDeviceOrFile( QIODevice* device, const Q
 
         ApplicationCore::instance().setHttpActionsVisible( true );
     } catch( const CharmException& e ) {
+        const QString title = tr( "Invalid Task Definitions" );
         const QString message = e.what().isEmpty()
                                 ?  tr( "The selected task definitions are invalid and cannot be imported." )
                                     : tr( "There was an error importing the task definitions:<br />%1" ).arg( e.what() );
-        QMessageBox::critical( this, tr( "Invalid Task Definitions" ), message );
+        if ( verbose )
+            QMessageBox::critical( this, title, message );
+        else
+            emit showNotification( title, message );
         return;
     }
 }

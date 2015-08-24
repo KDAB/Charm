@@ -53,6 +53,10 @@ public:
     explicit TimeTrackingWindow( QWidget* parent = nullptr );
     ~TimeTrackingWindow();
 
+    enum VerboseMode {
+        Verbose = 0,
+        Silent
+    };
     // application:
     void stateChanged( State previous ) override;
     void restore() override;
@@ -88,7 +92,7 @@ public slots:
     void slotMonthlyTimesheetReport();
     void slotExportToXml();
     void slotImportFromXml();
-    void slotSyncTasks();
+    void slotSyncTasks( VerboseMode mode = Verbose );
     void slotImportTasks();
     void slotExportTasks();
     void maybeIdle( IdleDetector* idleDetector );
@@ -111,24 +115,21 @@ private slots:
     void slotBillGone( int result );
     void slotCheckForUpdatesAutomatic();
     void slotCheckForUpdates( CheckForUpdatesJob::JobData );
+    void slotSyncTasksAutomatic();
 
     void configurationChanged() override;
 
 signals:
     void emitCommand( CharmCommand* );
     void emitCommandRollback( CharmCommand* );
+    void showNotification( const QString& title, const QString& message );
 
 private:
-    enum VerboseMode {
-        Verbose = 0,
-        Silent
-    };
-
     void resetWeeklyTimesheetDialog();
     void resetMonthlyTimesheetDialog();
     void showPreview( ReportConfigurationDialog*, int result );
     //ugly but private:
-    void importTasksFromDeviceOrFile( QIODevice* device, const QString& filename );
+    void importTasksFromDeviceOrFile( QIODevice* device, const QString& filename, bool verbose = true );
     void getUserInfo();
     void startCheckForUpdates( VerboseMode mode = Silent );
     void informUserAboutNewRelease( const QString& releaseVersion, const QUrl& link , const QString& releaseInfoLink );
@@ -140,6 +141,7 @@ private:
     QVector<WeeklySummary> m_summaries;
     QTimer m_checkUploadedSheetsTimer;
     QTimer m_checkCharmReleaseVersionTimer;
+    QTimer m_updateTasksDefinitionsTimer;
     BillDialog *m_billDialog;
     CheckForUpdatesJob* m_checkForUpdatesJob;
     QString m_user;

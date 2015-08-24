@@ -40,6 +40,8 @@ public:
 
     QUrl downloadUrl() const;
     void setDownloadUrl(const QUrl& url);
+    void setVerbose(bool verbose);
+    bool isVerbose() const;
 
 public slots:
 
@@ -55,6 +57,7 @@ protected:
 private:
     QByteArray m_payload;
     QUrl m_downloadUrl;
+    bool m_verbose;
 };
 
 #endif

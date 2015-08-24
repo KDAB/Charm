@@ -43,7 +43,7 @@ static void setLastAuthenticationFailed(bool failed)
     settings.setValue(QLatin1String("lastAuthenticationFailed"), failed);
 }
 
-static bool lastAuthenticationFailed()
+bool HttpJob::lastAuthenticationFailed()
 {
     QSettings settings;
     settings.beginGroup("httpconfig");

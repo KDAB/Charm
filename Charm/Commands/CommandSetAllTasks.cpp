@@ -49,11 +49,6 @@ bool CommandSetAllTasks::execute( ControllerInterface* controller )
 
 bool CommandSetAllTasks::finalize()
 {
-    if ( m_success ) {
-        showInformation( tr( "New Tasks Imported" ), tr( "The new tasks have been successfully imported." ) );
-    } else {
-        showInformation( tr( "Failure setting new tasks" ), tr( "Setting the new tasks failed." ) );
-    }
     return m_success;
 }
 

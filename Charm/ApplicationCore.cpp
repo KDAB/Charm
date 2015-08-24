@@ -35,6 +35,7 @@
 #include "HttpClient/HttpJob.h"
 #include "Idle/IdleDetector.h"
 #include "Widgets/ConfigurationDialog.h"
+#include "Widgets/NotificationPopup.h"
 
 #include <QDir>
 #include <QTimer>
@@ -135,7 +136,10 @@ ApplicationCore::ApplicationCore( QObject* parent )
                      &mainView(), SLOT(sendCommand(CharmCommand*)) );
             connect( window, SIGNAL(emitCommandRollback(CharmCommand*)),
                      &mainView(), SLOT(sendCommandRollback(CharmCommand*)) );
-        }
+        } else
+            connect( window, SIGNAL(showNotification(QString, QString)),
+                    SLOT(slotShowNotification(QString, QString)) );
+
         // save the configuration (configuration is managed by the application)
         connect( window, SIGNAL(saveConfiguration()),
                  SLOT(slotSaveConfiguration()) );
@@ -203,7 +207,7 @@ ApplicationCore::ApplicationCore( QObject* parent )
     m_actionExportToXml.setText( tr( "Export Database..." ) );
     connect( &m_actionExportToXml, SIGNAL(triggered()),
              &mainView(),  SLOT(slotExportToXml()) );
-    m_actionSyncTasks.setText( tr( "Download Task Definitions..." ) );
+    m_actionSyncTasks.setText( tr( "Update Task Definitions..." ) );
     connect( &m_actionSyncTasks, SIGNAL(triggered()),
              &mainView(),  SLOT(slotSyncTasks()) );
     m_actionImportTasks.setText( tr( "Import and Merge Task Definitions..." ) );
@@ -820,6 +824,16 @@ void ApplicationCore::commitData( QSessionManager & manager )
         m_tasksWindow.saveGuiState();
         m_eventWindow.saveGuiState();
         m_timeTracker.saveGuiState();
+    }
+}
+
+void ApplicationCore::slotShowNotification( const QString& title, const QString& message )
+{
+    if ( m_trayIcon.isSystemTrayAvailable() && m_trayIcon.supportsMessages() )
+        m_trayIcon.showMessage( title, message );
+    else {
+        NotificationPopup* popup = new NotificationPopup( nullptr );
+        popup->showNotification( title, message );
     }
 }
 

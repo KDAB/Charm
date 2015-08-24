@@ -30,6 +30,7 @@
 
 GetProjectCodesJob::GetProjectCodesJob(QObject* parent)
     : HttpJob(parent)
+    , m_verbose( true )
 {
     QSettings s;
     s.beginGroup(QLatin1String("httpconfig"));
@@ -82,6 +83,16 @@ QUrl GetProjectCodesJob::downloadUrl() const
 void GetProjectCodesJob::setDownloadUrl(const QUrl& url)
 {
     m_downloadUrl = url;
+}
+
+void GetProjectCodesJob::setVerbose( bool verbose )
+{
+    m_verbose = verbose;
+}
+
+bool GetProjectCodesJob::isVerbose() const
+{
+    return m_verbose;
 }
 
 #include "moc_GetProjectCodesJob.cpp"

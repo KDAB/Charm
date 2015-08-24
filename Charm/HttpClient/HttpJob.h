@@ -42,6 +42,7 @@ class HttpJob : public QObject
 public:
 
     static bool credentialsAvailable();
+    static bool lastAuthenticationFailed();
 
     enum Error {
         NoError=0,
