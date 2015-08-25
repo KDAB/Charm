@@ -41,6 +41,7 @@ public:
     static const QIcon& editTaskIcon();
     static const QIcon& deleteTaskIcon();
     static const QIcon& editEventIcon();
+    static const QIcon& searchIcon();
     static const QIcon& previousEventIcon();
     static const QIcon& nextEventIcon();
     static const QIcon& createReportIcon();

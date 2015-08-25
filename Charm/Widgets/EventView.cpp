@@ -27,6 +27,7 @@
 #include "EventEditor.h"
 #include "EventEditorDelegate.h"
 #include "EventModelFilter.h"
+#include "FindAndReplaceEventsDialog.h"
 #include "MessageBox.h"
 #include "SelectTaskDialog.h"
 #include "TasksView.h"
@@ -53,7 +54,7 @@
 #include <QToolBar>
 #include <QVBoxLayout>
 
-EventView::EventView( QToolBar* toolBar, QWidget* parent )
+EventView::EventView( QToolBar* toolBar, QWidget* (parent) )
     : QWidget( parent )
     , m_model( nullptr )
     , m_actionUndo( this )
@@ -62,6 +63,7 @@ EventView::EventView( QToolBar* toolBar, QWidget* parent )
     , m_actionEditEvent( this )
     , m_actionDeleteEvent( this )
     , m_actionCreateTimeSheet( this )
+    , m_actionFindAndReplace( this )
     , m_comboBox( new QComboBox( this ) )
     , m_labelTotal( new QLabel( this ) )
     , m_listView( new QListView( this ) )
@@ -117,6 +119,13 @@ EventView::EventView( QToolBar* toolBar, QWidget* parent )
     m_actionEditEvent.setShortcut( Qt::CTRL + Qt::Key_E );
     m_actionEditEvent.setIcon( Data::editEventIcon() );
     toolBar->addAction( &m_actionEditEvent );
+
+    m_actionFindAndReplace.setText( tr( "Search/Replace Events..." ) );
+    m_actionFindAndReplace.setToolTip( tr( "Change the task events belong to" ) );
+    m_actionFindAndReplace.setIcon( Data::searchIcon() );
+    toolBar->addAction( &m_actionFindAndReplace );
+
+    connect( &m_actionFindAndReplace, SIGNAL(triggered()), SLOT(slotFindAndReplace()) );
 
     m_actionDeleteEvent.setText( tr( "Delete Event..." ) );
     QList<QKeySequence> deleteShortcuts;
@@ -426,6 +435,23 @@ void EventView::slotUpdateTotal()
     }
 }
 
+void EventView::slotFindAndReplace()
+{
+    FindAndReplaceEventsDialog findAndReplace( this );
+
+    if ( findAndReplace.exec() != QDialog::Accepted )
+        return;
+
+    QList<Event> events = findAndReplace.modifiedEvents();
+    for ( int i = 0; i < events.count(); ++i )
+        slotEventChangesCompleted( events[i] );
+}
+
+void EventView::slotReset()
+{
+    timeFrameChanged( m_comboBox->currentIndex() );
+}
+
 // ViewModeInterface:
 void EventView::saveGuiState() {}
 void EventView::restoreGuiState() {}
@@ -495,7 +521,7 @@ void EventView::slotEditEvent( const Event& event )
             auto command =
                 new CommandMakeEvent( newEvent, this );
             connect( command, SIGNAL(finishedOk(Event)),
-                     this, SLOT(slotEditNewEventCompleted(Event)),
+                     this, SLOT(slotEventChangesCompleted(Event)),
                      Qt::QueuedConnection );
             stageCommand( command );
             return;
@@ -506,7 +532,7 @@ void EventView::slotEditEvent( const Event& event )
     }
 }
 
-void EventView::slotEditNewEventCompleted( const Event& event )
+void EventView::slotEventChangesCompleted( const Event& event )
 {
     // make event editor finished, bypass the undo stack to set its contents
     // undo will just target CommandMakeEvent instead

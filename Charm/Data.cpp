@@ -124,6 +124,14 @@ const QIcon& Data::deleteTaskIcon()
     return icon;
 }
 
+const QIcon& Data::searchIcon()
+{
+    Q_ASSERT_X(!QPixmap(":/Charm/search.png").isNull(),
+               Q_FUNC_INFO, "Required resource not available");
+    static QIcon icon(QPixmap(":/Charm/search.png"));
+    return icon;
+}
+
 const QIcon& Data::editEventIcon()
 {
     Q_ASSERT_X(!QPixmap(":/Charm/edit.png").isNull(), Q_FUNC_INFO,

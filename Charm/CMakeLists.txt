@@ -72,6 +72,7 @@ SET(
     Widgets/Timesheet.cpp
     Widgets/WeeklyTimesheet.cpp
     Widgets/NotificationPopup.cpp
+    Widgets/FindAndReplaceEventsDialog.cpp
 )
 
 SET(CharmApplication_LIBS)
@@ -152,6 +153,7 @@ QT_WRAP_UI(
     Widgets/MonthlyTimesheetConfigurationDialog.ui
     Widgets/ReportPreviewWindow.ui
     Widgets/NotificationPopup.ui
+    Widgets/FindAndReplaceEventsDialog.ui
 )
 
 QT_ADD_RESOURCES( Resources_SRCS CharmResources.qrc )

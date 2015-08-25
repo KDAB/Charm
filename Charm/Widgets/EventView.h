@@ -85,7 +85,7 @@ private slots:
     void slotEventDoubleClicked( const QModelIndex& );
     void slotEditEvent();
     void slotEditEvent( const Event& );
-    void slotEditNewEventCompleted( const Event& );
+    void slotEventChangesCompleted( const Event& );
     void slotCurrentItemChanged( const QModelIndex&, const QModelIndex& );
     void slotContextMenuRequested( const QPoint& );
     void slotNextEvent();
@@ -99,6 +99,8 @@ private slots:
     void slotUndoTextChanged(const QString&);
     void slotRedoTextChanged(const QString&);
     void slotEventIdChanged(int oldId, int newId);
+    void slotFindAndReplace();
+    void slotReset();
 
 private:
     Event newSettings();
@@ -115,6 +117,7 @@ private:
     QAction m_actionEditEvent;
     QAction m_actionDeleteEvent;
     QAction m_actionCreateTimeSheet;
+    QAction m_actionFindAndReplace;
     QComboBox* m_comboBox;
     QLabel* m_labelTotal;
     QListView* m_listView;

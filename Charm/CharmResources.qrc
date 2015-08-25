@@ -20,5 +20,6 @@
         <file alias="charmtray22.png">Icons/tray/charmtray22.png</file>
         <file alias="charmtrayactive22.png">Icons/tray/charmtrayactive22.png</file>
         <file alias="createreport.png">Icons/document-export.png</file>
+        <file alias="search.png">Icons/edit-find-replace.png</file>
     </qresource>
 </RCC>

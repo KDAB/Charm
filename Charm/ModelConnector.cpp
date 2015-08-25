@@ -37,6 +37,7 @@ ModelConnector::ModelConnector()
     , m_dataModel()
     , m_viewFilter( &m_dataModel )
     , m_eventModelFilter( &m_dataModel )
+    , m_findEventModelFilter( &m_dataModel )
 {
     connect( &m_dataModel, SIGNAL(makeAndActivateEvent(Task)),
              SLOT(slotMakeAndActivateEvent(Task)) );
@@ -59,6 +60,11 @@ ViewFilter* ModelConnector::taskModel()
 EventModelFilter* ModelConnector::eventModel()
 {
     return &m_eventModelFilter;
+}
+
+EventModelFilter* ModelConnector::findEventModel()
+{
+    return &m_findEventModelFilter;
 }
 
 void ModelConnector::commitCommand( CharmCommand* command )

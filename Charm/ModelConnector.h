@@ -45,6 +45,8 @@ public:
     /** The item model the event view uses. */
     EventModelFilter* eventModel();
 
+    EventModelFilter* findEventModel();
+
     // implement CommandEmitterInterface
     void commitCommand( CharmCommand* ) override;
 
@@ -59,6 +61,8 @@ private:
     ViewFilter m_viewFilter; // this is the filtered task model adapter
 
     EventModelFilter m_eventModelFilter; // owns the event model adapter
+
+    EventModelFilter m_findEventModelFilter;
 };
 
 #endif

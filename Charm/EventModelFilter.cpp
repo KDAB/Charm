@@ -131,5 +131,18 @@ int EventModelFilter::totalDuration() const
     return total;
 }
 
+QList<Event> EventModelFilter::events() const
+{
+    QList<Event> events;
+    for ( int i = 0; i < rowCount(); ++i )
+    {
+        QModelIndex hit = index( i, 0, QModelIndex() );
+        const Event& event = eventForIndex( hit );
+        events << event;
+    }
+    return events;
+}
+
+
 #include "moc_EventModelFilter.cpp"
 

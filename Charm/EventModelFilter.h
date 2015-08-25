@@ -64,6 +64,8 @@ public:
     // implement to sort by event start datetime
     bool lessThan( const QModelIndex& left, const QModelIndex& right ) const override;
 
+    QList<Event> events() const;
+
 signals:
     void eventActivationNotice( EventId id );
     void eventDeactivationNotice( EventId id );
