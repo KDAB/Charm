@@ -137,8 +137,8 @@ ApplicationCore::ApplicationCore( QObject* parent )
             connect( window, SIGNAL(emitCommandRollback(CharmCommand*)),
                      &mainView(), SLOT(sendCommandRollback(CharmCommand*)) );
         } else
-            connect( window, SIGNAL(showNotification(QString, QString)),
-                    SLOT(slotShowNotification(QString, QString)) );
+            connect( window, SIGNAL(showNotification(QString,QString)),
+                    SLOT(slotShowNotification(QString,QString)) );
 
         // save the configuration (configuration is managed by the application)
         connect( window, SIGNAL(saveConfiguration()),
