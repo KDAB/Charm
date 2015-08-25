@@ -21,8 +21,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CHARM_CI_CHARMTCPSERVER_H
-#define CHARM_CI_CHARMTCPSERVER_H
+#ifndef CHARM_CI_CHARMTCPCOMMANDSERVER_H
+#define CHARM_CI_CHARMTCPCOMMANDSERVER_H
 
 #include "CharmCommandServer.h"
 
