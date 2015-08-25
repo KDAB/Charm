@@ -68,6 +68,7 @@ void CharmDataModel::stateChanged( State previous, State next )
 void CharmDataModel::registerAdapter( CharmDataModelAdapterInterface* adapter )
 {
     m_adapters.append( adapter );
+    adapter->resetEvents();
 }
 
 void CharmDataModel::unregisterAdapter( CharmDataModelAdapterInterface* adapter )
