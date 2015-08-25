@@ -56,6 +56,7 @@ public:
 
     void setFilterStartDate( const QDate& date );
     void setFilterEndDate( const QDate& date );
+    void setFilterTaskId( TaskId id );
 
     // implement CommandEmitterInterface:
     void commitCommand( CharmCommand* ) override;
@@ -71,6 +72,7 @@ private:
     EventModelAdapter m_model;
     QDate m_start;
     QDate m_end;
+    TaskId m_filterId;
 };
 
 #endif

@@ -27,6 +27,7 @@
 EventModelFilter::EventModelFilter( CharmDataModel* model, QObject* parent )
     : QSortFilterProxyModel( parent )
     , m_model( model )
+    , m_filterId()
 {
     setSourceModel( &m_model );
     setDynamicSortFilter( true );
@@ -73,21 +74,49 @@ QModelIndex EventModelFilter::indexForEvent( const Event& event ) const
 
 bool EventModelFilter::filterAcceptsRow( int srow, const QModelIndex& sparent ) const
 {
+    if ( QSortFilterProxyModel::filterAcceptsRow( srow, sparent ) == false ) {
+        return false;
+    }
+
     const Event& event = m_model.eventForIndex( m_model.index( srow, 0, sparent ) );
-    return ( event.startDateTime().date() >= m_start
-             && event.startDateTime().date() < m_end );
+
+    if ( m_filterId != TaskId() && event.taskId() != m_filterId ) {
+        return false;
+    }
+
+    if ( m_start.isValid() && event.startDateTime().date() < m_start ) {
+        return false;
+    }
+
+    if ( m_end.isValid() && event.endDateTime().date() >= m_end ) {
+        return false;
+    }
+
+    return true;
 }
 
 void EventModelFilter::setFilterStartDate( const QDate& date )
 {
+    if ( m_start == date )
+        return;
     m_start = date;
-    filterChanged();
+    invalidateFilter();
 }
 
 void EventModelFilter::setFilterEndDate( const QDate& date )
 {
+    if ( m_end == date )
+        return;
     m_end = date;
-    filterChanged();
+    invalidateFilter();
+}
+
+void EventModelFilter::setFilterTaskId( TaskId id )
+{
+    if ( m_filterId == id )
+        return;
+    m_filterId = id;
+    invalidateFilter();
 }
 
 int EventModelFilter::totalDuration() const
