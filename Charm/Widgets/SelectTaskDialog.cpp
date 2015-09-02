@@ -145,12 +145,22 @@ TaskId SelectTaskDialog::selectedTask() const
 void SelectTaskDialog::slotCurrentItemChanged( const QModelIndex& first,
                                                const QModelIndex& )
 {
+    const Task task = m_proxy.taskForIndex( first );
     if ( isValidAndTrackable( first ) ) {
-        const Task task = m_proxy.taskForIndex( first );
         m_selectedTask = task.id();
+        m_ui->taskStatusLB->clear();
     } else {
         m_selectedTask = 0;
+        const bool expired = !task.isCurrentlyValid();
+        const bool trackable = task.trackable();
+        const bool notTrackableAndExpired = ( !trackable && expired );
+        const QString expirationDate = QLocale::system().toString( task.validUntil(), QLocale::ShortFormat );
+        const QString info = notTrackableAndExpired ? tr( "The selected task is not trackable and expired since %1" ).arg( expirationDate ) :
+                                                      expired ? tr( "The selected task is expired since %1" ).arg( expirationDate ) :
+                                                                tr( "The selected task is not trackable" );
+        m_ui->taskStatusLB->setText( info );
     }
+
     m_ui->buttonBox->button( QDialogButtonBox::Ok )->setEnabled( m_selectedTask != 0 );
 }
 
@@ -161,10 +171,12 @@ bool SelectTaskDialog::isValidAndTrackable( const QModelIndex& index ) const
         return false;
     const Task task = m_proxy.taskForIndex( index );
 
-    if ( m_nonTrackableSelectable )
-        return task.isValid();
+    const bool taskValid = task.isValid() && task.isCurrentlyValid();
 
-    return task.isValid() && task.trackable();
+    if ( m_nonTrackableSelectable ) {
+        return taskValid;
+    }
+    return taskValid && task.trackable();
 }
 
 void SelectTaskDialog::slotDoubleClicked ( const QModelIndex & index )
