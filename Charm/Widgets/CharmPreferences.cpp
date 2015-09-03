@@ -42,7 +42,10 @@ CharmPreferences::CharmPreferences( const Configuration& config,
     m_ui.setupUi( this );
     const bool haveIdleDetection = ApplicationCore::instance().idleDetector()->available();
     const bool haveCommandInterface = (ApplicationCore::instance().commandInterface() != nullptr);
+    const bool httpJobPossible = HttpJob::credentialsAvailable();
 
+    m_ui.lbWarnUnuploadedTimesheets->setVisible( httpJobPossible );
+    m_ui.cbWarnUnuploadedTimesheets->setVisible( httpJobPossible );
     m_ui.cbIdleDetection->setEnabled( haveIdleDetection );
     m_ui.lbIdleDetection->setEnabled( haveIdleDetection );
     m_ui.cbIdleDetection->setChecked( config.detectIdling && m_ui.cbIdleDetection->isEnabled() );
@@ -182,6 +185,9 @@ Qt::ToolButtonStyle CharmPreferences::toolButtonStyle() const
 
 void CharmPreferences::slotWarnUnuploadedChanged( bool enabled )
 {
+    if (!HttpJob::credentialsAvailable())
+        return;
+
     if (!enabled)
     {
         const int response = MessageBox::question(this,
