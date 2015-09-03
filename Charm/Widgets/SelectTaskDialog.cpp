@@ -90,6 +90,8 @@ SelectTaskDialog::SelectTaskDialog( QWidget* parent )
              SLOT(slotPrefilteringChanged()) );
     connect( this, SIGNAL(accepted()),
              SLOT(slotAccepted()) );
+    connect( MODEL.charmDataModel(), SIGNAL(resetGUIState()),
+             SLOT(slotResetState()) );
 
     QSettings settings;
     settings.beginGroup( staticMetaObject.className() );
@@ -105,7 +107,7 @@ SelectTaskDialog::~SelectTaskDialog()
 {
 }
 
-void SelectTaskDialog::showEvent ( QShowEvent * event )
+void SelectTaskDialog::slotResetState()
 {
     QSettings settings;
     settings.beginGroup( staticMetaObject.className() );
@@ -125,7 +127,11 @@ void SelectTaskDialog::showEvent ( QShowEvent * event )
 
     m_ui->showExpired->setChecked( state.showExpired() );
     m_ui->showSelected->setChecked( state.showCurrents() );
+}
 
+void SelectTaskDialog::showEvent ( QShowEvent * event )
+{
+    slotResetState();
     QDialog::showEvent( event );
 }
 

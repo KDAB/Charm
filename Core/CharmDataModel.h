@@ -138,6 +138,7 @@ signals:
     void makeAndActivateEvent( const Task& );
     void requestEventModification( const Event&, const Event& );
     void sysTrayUpdate( const QString&, bool );
+    void resetGUIState();
 
 public slots:
     void setAllTasks( const TaskList& tasks );

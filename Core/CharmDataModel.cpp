@@ -108,6 +108,8 @@ void CharmDataModel::setAllTasks( const TaskList& tasks )
     // notify adapters of changes
     for_each( m_adapters.begin(), m_adapters.end(),
               std::mem_fun( &CharmDataModelAdapterInterface::resetTasks ) );
+
+    emit resetGUIState();
 }
 
 void CharmDataModel::addTask( const Task& task )

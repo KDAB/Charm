@@ -75,6 +75,7 @@ private slots:
     void slotFilterTextChanged( const QString& );
     void slotAccepted();
     void slotPrefilteringChanged();
+    void slotResetState();
 
 private:
     bool isValidAndTrackable( const QModelIndex& index ) const;
