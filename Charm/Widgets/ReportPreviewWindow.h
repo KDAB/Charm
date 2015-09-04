@@ -28,6 +28,7 @@
 #include <QDomDocument>
 #include <QScopedPointer>
 #include <QTextDocument>
+#include <QTimer>
 
 namespace Ui {
     class ReportPreviewWindow;
@@ -52,6 +53,8 @@ protected:
     QPushButton* saveToXmlButton() const;
     QPushButton* saveToTextButton() const;
     QPushButton* uploadButton() const;
+
+    QTimer m_updateTimer;
 
 private slots:
     virtual void slotSaveToXml();

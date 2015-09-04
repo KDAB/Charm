@@ -389,7 +389,7 @@ void TimeTrackingWindow::slotActivityReportPreview( int result )
 void TimeTrackingWindow::showPreview( ReportConfigurationDialog* dialog, int result )
 {
     if ( result == QDialog::Accepted )
-        dialog->showReportPreviewDialog( this );
+        dialog->showReportPreviewDialog();
 }
 
 void TimeTrackingWindow::slotExportToXml()

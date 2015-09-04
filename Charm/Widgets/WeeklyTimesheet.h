@@ -53,7 +53,7 @@ public:
     explicit WeeklyTimesheetConfigurationDialog( QWidget* parent );
     ~WeeklyTimesheetConfigurationDialog();
 
-    void showReportPreviewDialog( QWidget* parent ) override;
+    void showReportPreviewDialog() override;
     void showEvent( QShowEvent* ) override;
     void setDefaultWeek( int yearOfWeek, int week );
 

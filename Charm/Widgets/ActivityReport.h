@@ -46,7 +46,7 @@ public:
     explicit ActivityReportConfigurationDialog( QWidget* parent );
     ~ActivityReportConfigurationDialog();
 
-    void showReportPreviewDialog( QWidget* parent ) override;
+    void showReportPreviewDialog() override;
 
 public Q_SLOTS:
     void accept() override;

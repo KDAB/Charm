@@ -41,7 +41,7 @@ public:
     explicit MonthlyTimesheetConfigurationDialog( QWidget* parent );
     virtual ~MonthlyTimesheetConfigurationDialog();
 
-    void showReportPreviewDialog( QWidget* parent ) override;
+    void showReportPreviewDialog() override;
     void showEvent( QShowEvent* ) override;
     void setDefaultMonth( int yearOfMonth, int month );
 

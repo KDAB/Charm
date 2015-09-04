@@ -54,6 +54,12 @@ ReportPreviewWindow::ReportPreviewWindow( QWidget* parent )
 #else
     m_ui->pushButtonPrint->setEnabled(false);
 #endif
+
+    m_updateTimer.setInterval(60 * 1000);
+    m_updateTimer.start();
+    connect( &m_updateTimer, SIGNAL(timeout()),
+             SLOT(slotUpdate()) );
+
     resize(850, 600);
 }
 

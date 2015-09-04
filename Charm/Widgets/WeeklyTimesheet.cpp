@@ -166,7 +166,7 @@ void WeeklyTimesheetConfigurationDialog::accept()
     QDialog::accept();
 }
 
-void WeeklyTimesheetConfigurationDialog::showReportPreviewDialog( QWidget* parent )
+void WeeklyTimesheetConfigurationDialog::showReportPreviewDialog()
 {
     QDate start, end;
     int index = m_ui->comboBoxWeek->currentIndex();
@@ -180,7 +180,7 @@ void WeeklyTimesheetConfigurationDialog::showReportPreviewDialog( QWidget* paren
         end = m_weekInfo[index].timespan.second;
     }
     bool activeOnly = m_ui->checkBoxActiveOnly->isChecked();
-    auto report = new WeeklyTimeSheetReport( parent );
+    auto report = new WeeklyTimeSheetReport();
     report->setReportProperties( start, end, m_rootTask, activeOnly );
     report->show();
 }
@@ -271,6 +271,7 @@ WeeklyTimeSheetReport::WeeklyTimeSheetReport( QWidget* parent )
     QPushButton* upload = uploadButton();
     connect( upload, SIGNAL(clicked()), SLOT(slotUploadTimesheet()) );
     connect( this, SIGNAL(anchorClicked(QUrl)), SLOT(slotLinkClicked(QUrl)) );
+
     if (!HttpJob::credentialsAvailable())
         upload->hide();
 }

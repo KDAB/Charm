@@ -95,7 +95,7 @@ void MonthlyTimesheetConfigurationDialog::accept()
     QDialog::accept();
 }
 
-void MonthlyTimesheetConfigurationDialog::showReportPreviewDialog( QWidget* parent )
+void MonthlyTimesheetConfigurationDialog::showReportPreviewDialog()
 {
     QDate start, end;
     int index = m_ui->comboBoxMonth->currentIndex();
@@ -108,7 +108,7 @@ void MonthlyTimesheetConfigurationDialog::showReportPreviewDialog( QWidget* pare
         end = m_monthInfo[index].timespan.second;
     }
     bool activeOnly = m_ui->checkBoxActiveOnly->isChecked();
-    auto report = new MonthlyTimeSheetReport( parent );
+    auto report = new MonthlyTimeSheetReport();
     report->setReportProperties( start, end, m_rootTask, activeOnly );
     report->show();
 }

@@ -186,7 +186,7 @@ void ActivityReportConfigurationDialog::accept()
     QDialog::accept();
 }
 
-void ActivityReportConfigurationDialog::showReportPreviewDialog( QWidget* parent )
+void ActivityReportConfigurationDialog::showReportPreviewDialog()
 {
     QDate start, end;
     const int index = m_ui->comboBox->currentIndex();
@@ -198,7 +198,7 @@ void ActivityReportConfigurationDialog::showReportPreviewDialog( QWidget* parent
         end = m_timespans[index].timespan.second;
     }
 
-    auto report = new ActivityReport( parent );
+    auto report = new ActivityReport();
     report->timeSpanSelection(  m_timespans[index] );
     report->setReportProperties( start, end, m_rootTask, m_rootExcludeTask );
     report->show();
