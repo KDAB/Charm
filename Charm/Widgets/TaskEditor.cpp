@@ -139,6 +139,7 @@ bool parentTreeIsTree( TaskId newParent, TaskId task )
 void TaskEditor::slotSelectParent()
 {
     SelectTaskDialog dialog( this );
+    dialog.setNonTrackableSelectable();
     Q_FOREVER {
         if ( dialog.exec() ) {
             TaskId newParentId = dialog.selectedTask();
