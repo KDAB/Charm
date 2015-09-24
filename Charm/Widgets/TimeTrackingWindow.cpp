@@ -741,6 +741,9 @@ void TimeTrackingWindow::importTasksFromDeviceOrFile( QIODevice* device, const Q
 
 void  TimeTrackingWindow::getUserInfo()
 {
+    if (!HttpJob::credentialsAvailable())
+            return;
+
     QSettings settings;
     settings.beginGroup( "httpconfig" );
     m_user = settings.value("username").toString();
