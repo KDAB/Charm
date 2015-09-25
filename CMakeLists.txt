@@ -56,6 +56,7 @@ IF(Qt5Core_FOUND)
     find_package(Qt5Network REQUIRED)
     find_package(Qt5Sql REQUIRED)
     find_package(Qt5Test REQUIRED)
+    find_package(Qt5Script REQUIRED)
 
     find_package(Qt5PrintSupport)
     IF(Qt5PrintSupport_FOUND)
@@ -112,6 +113,7 @@ IF(Qt5Core_FOUND)
         ${Qt5Widgets_LIBRARIES}
         ${Qt5Xml_LIBRARIES}
         ${Qt5Network_LIBRARIES}
+        ${Qt5Script_LIBRARIES}
         ${Qt5Sql_LIBRARIES}
         ${QTPRINT_LIBRARIES}
         ${QTDBUS_LIBRARIES}
@@ -123,13 +125,14 @@ IF(Qt5Core_FOUND)
         ${Qt5Widgets_INCLUDE_DIRS}
         ${Qt5Xml_INCLUDE_DIRS}
         ${Qt5Network_INCLUDE_DIRS}
+        ${Qt5Script_INCLUDE_DIRS}
         ${Qt5Sql_INCLUDE_DIRS}
     )
 
     SET( CMAKE_CXX_FLAGS "${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS} ${CMAKE_CXX_FLAGS}" )
 ELSE()
     # No Qt5 found, try Qt4
-    find_package(Qt4 COMPONENTS QtMain QtCore QtGui QtSql QtXml QtNetwork REQUIRED)
+    find_package(Qt4 COMPONENTS QtMain QtCore QtGui QtSql QtXml QtNetwork QtScript REQUIRED)
     INCLUDE( UseQt4 )
 
     SET(CHARM_MAC_HIGHRES_SUPPORT_ENABLED OFF)

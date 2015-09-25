@@ -116,6 +116,7 @@ private slots:
     void slotCheckForUpdatesAutomatic();
     void slotCheckForUpdates( CheckForUpdatesJob::JobData );
     void slotSyncTasksAutomatic();
+    void slotGetUserInfo();
 
     void configurationChanged() override;
 
@@ -130,7 +131,6 @@ private:
     void showPreview( ReportConfigurationDialog*, int result );
     //ugly but private:
     void importTasksFromDeviceOrFile( QIODevice* device, const QString& filename, bool verbose = true );
-    void getUserInfo();
     void startCheckForUpdates( VerboseMode mode = Silent );
     void informUserAboutNewRelease( const QString& releaseVersion, const QUrl& link , const QString& releaseInfoLink );
 
@@ -141,7 +141,7 @@ private:
     QVector<WeeklySummary> m_summaries;
     QTimer m_checkUploadedSheetsTimer;
     QTimer m_checkCharmReleaseVersionTimer;
-    QTimer m_updateTasksDefinitionsTimer;
+    QTimer m_updateUserInfoAndTasksDefinitionsTimer;
     BillDialog *m_billDialog;
     CheckForUpdatesJob* m_checkForUpdatesJob;
     QString m_user;

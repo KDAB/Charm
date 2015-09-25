@@ -64,6 +64,8 @@
 #include <QFileInfo>
 #include <QMenuBar>
 #include <QMessageBox>
+#include <QScriptEngine>
+#include <QScriptValue>
 #include <QSettings>
 #include <QToolBar>
 #include <QtAlgorithms>
@@ -92,8 +94,8 @@ TimeTrackingWindow::TimeTrackingWindow( QWidget* parent )
              SLOT(slotBillGone(int)) );
     connect( &m_checkCharmReleaseVersionTimer, SIGNAL(timeout()),
              SLOT(slotCheckForUpdatesAutomatic()) );
-    connect( &m_updateTasksDefinitionsTimer, SIGNAL(timeout()),
-             SLOT(slotSyncTasksAutomatic()) );
+    connect( &m_updateUserInfoAndTasksDefinitionsTimer, SIGNAL(timeout()),
+             SLOT(slotGetUserInfo()) );
 
     //Check every 60 minutes if there are timesheets due
     if (CONFIGURATION.warnUnuploadedTimesheets)
@@ -107,9 +109,9 @@ TimeTrackingWindow::TimeTrackingWindow( QWidget* parent )
     }
 #endif
     //Update tasks definitions once every 24h
-    m_updateTasksDefinitionsTimer.setInterval(24 * 60 * 60 * 1000);
+    m_updateUserInfoAndTasksDefinitionsTimer.setInterval(24 * 60 * 60 * 1000);
     QTimer::singleShot( 1000, this, SLOT(slotSyncTasksAutomatic()) );
-    m_updateTasksDefinitionsTimer.start();
+    m_updateUserInfoAndTasksDefinitionsTimer.start();
 
     toolBar()->hide();
 }
@@ -708,24 +710,30 @@ void TimeTrackingWindow::importTasksFromDeviceOrFile( QIODevice* device, const Q
                 QMessageBox::information( this, title, detailsText );
             else
                 emit showNotification( title, detailsText );
-            getUserInfo();
         }
 
         QSettings settings;
         settings.beginGroup( "httpconfig" );
+        const QString userName = settings.value("username").toString();
         setValueIfNotNull( &settings, QLatin1String("username"), exporter.metadata( QLatin1String("username") ) );
+        const QString currentUserName = settings.value("username").toString();
         setValueIfNotNull( &settings, QLatin1String("portalUrl"), exporter.metadata( QLatin1String("portal-url") ) );
         setValueIfNotNull( &settings, QLatin1String("loginUrl"), exporter.metadata( QLatin1String("login-url") ) );
         setValueIfNotNull( &settings, QLatin1String("timesheetUploadUrl"), exporter.metadata( QLatin1String("timesheet-upload-url") ) );
         setValueIfNotNull( &settings, QLatin1String("projectCodeDownloadUrl"), exporter.metadata( QLatin1String("project-code-download-url") ) );
         settings.endGroup();
         settings.beginGroup( "users" );
-        settings.setValue( QLatin1String("portalUrl"), QLatin1String("https://lotsofcake.kdab.com:443/KdabHome/apps/portal/"));
-        settings.setValue( QLatin1String("loginUrl"), QLatin1String("https://lotsofcake.kdab.com:443/KdabHome/apps/portal/j_security_check"));
+        setValueIfNotNull( &settings, QLatin1String("portalUrl"), exporter.metadata( QLatin1String("portal-url") ) );
+        setValueIfNotNull( &settings, QLatin1String("loginUrl"), exporter.metadata( QLatin1String("login-url") ) );
         settings.setValue( QLatin1String("userInfoDownloadUrl"), QLatin1String("https://lotsofcake.kdab.com/KdabHome/rest/user"));
         settings.endGroup();
 
         ApplicationCore::instance().setHttpActionsVisible( true );
+
+        // update user info in case the user name has changed
+        if ( !currentUserName.isEmpty() && ( currentUserName != userName ) )
+            slotGetUserInfo();
+
     } catch( const CharmException& e ) {
         const QString title = tr( "Invalid Task Definitions" );
         const QString message = e.what().isEmpty()
@@ -739,47 +747,52 @@ void TimeTrackingWindow::importTasksFromDeviceOrFile( QIODevice* device, const Q
     }
 }
 
-void  TimeTrackingWindow::getUserInfo()
+void  TimeTrackingWindow::slotGetUserInfo()
 {
     QSettings settings;
     settings.beginGroup( "httpconfig" );
-    m_user = settings.value("username").toString();
+    const QString userName = settings.value( "username" ).toString();
     settings.endGroup();
 
     settings.beginGroup( "users" );
-    settings.setValue( QLatin1String("userInfoDownloadUrl"), QLatin1String("https://lotsofcake.kdab.com/KdabHome/rest/user?user=") + m_user );
+    settings.setValue( QLatin1String( "userInfoDownloadUrl" ), QLatin1String( "https://lotsofcake.kdab.com/KdabHome/rest/user?user=" ) + userName );
     settings.endGroup();
 
-    GetUserInfoJob *client = new GetUserInfoJob(this,"users");
-    client->schema() = m_user;
-    HttpJobProgressDialog* dialog = new HttpJobProgressDialog( client, this );
-    dialog->setWindowTitle( tr("Downloading weekly hours") );
+    GetUserInfoJob *client = new GetUserInfoJob( this, "users" );
+    client->setSchema( userName );
     connect( client, SIGNAL(finished(HttpJob*)), this, SLOT(slotUserInfoDownloaded(HttpJob*)) );
     client->start();
 }
 
 void TimeTrackingWindow::slotUserInfoDownloaded( HttpJob* job_ )
 {
+    // getUserInfo done -> sync task
+    slotSyncTasksAutomatic();
+
     GetUserInfoJob * job = qobject_cast<GetUserInfoJob *>( job_ );
     Q_ASSERT( job );
     if ( job->error() == HttpJob::Canceled )
         return;
 
     if ( job->error() ) {
-        QMessageBox::critical( this, tr("Error"), tr("Could not download weekly hours: %1").arg( job->errorString() ) );
+        QMessageBox::critical( this, tr( "Error" ), tr( "Could not download weekly hours: %1" ).arg( job->errorString() ) );
         return;
     }
 
     QByteArray readData = job->userInfo();
-    int index = readData.indexOf("weeklyHours");
-    index += 13;
-    QString weeklyH = readData.mid(index,2).trimmed();
-    if (weeklyH.length() != 2 )
-        weeklyH = "40";
+    const QString data = readData.constData();
+
+    QScriptEngine engine;
+    QScriptValue result = engine.evaluate( "(" + data + ")" );
+    QScriptValue entries = result.property( "hrInfo" ).property( "weeklyHours" );
+    QString weeklyHours = QString::number( entries.toVariant().toDouble(), 'g', 2 );
+
+    if ( weeklyHours.isEmpty() )
+        weeklyHours = "40";
+
     QSettings settings;
     settings.beginGroup( "users" );
-    settings.setValue( QLatin1String("weeklyhours"), weeklyH);
+    settings.setValue( QLatin1String( "weeklyhours" ), weeklyHours );
     settings.endGroup();
-
 }
 #include "moc_TimeTrackingWindow.cpp"
