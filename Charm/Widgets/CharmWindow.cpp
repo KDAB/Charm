@@ -278,17 +278,19 @@ void CharmWindow::saveGuiState()
 
 void CharmWindow::restoreGuiState()
 {
-    Q_ASSERT( !windowIdentifier().isEmpty() );
+    const QString identifier = windowIdentifier();
+    Q_ASSERT( !identifier.isEmpty() );
     // restore geometry
     QSettings settings;
-    settings.beginGroup( windowIdentifier() );
+    settings.beginGroup( identifier );
     if ( settings.contains( MetaKey_MainWindowGeometry ) ) {
         restoreGeometry( settings.value( MetaKey_MainWindowGeometry ).toByteArray() );
     }
     // restore visibility
     if ( settings.contains( MetaKey_MainWindowVisible ) ) {
-        const bool visible = settings.value( MetaKey_MainWindowVisible ).toBool();
-        setVisible(visible);
+        // Time Tracking Window should always be visible
+        const bool visible = ( identifier == "window_tracking" ) ? true : settings.value( MetaKey_MainWindowVisible ).toBool();
+        setVisible( visible );
     }
 }
 
