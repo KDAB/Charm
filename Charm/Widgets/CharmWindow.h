@@ -46,7 +46,7 @@ public:
     QAction* openCharmAction();
 
     QString windowName() const;
-    QString windowIdentfier() const;
+    QString windowIdentifier() const;
     int windowNumber() const;
 
     virtual QToolBar* toolBar() const;

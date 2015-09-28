@@ -105,7 +105,7 @@ void CharmWindow::setWindowIdentifier( const QString& id )
     m_windowIdentifier = id;
 }
 
-QString CharmWindow::windowIdentfier() const
+QString CharmWindow::windowIdentifier() const
 {
     return m_windowIdentifier;
 }
@@ -268,9 +268,9 @@ void CharmWindow::configurationChanged()
 
 void CharmWindow::saveGuiState()
 {
-    Q_ASSERT( !windowIdentfier().isEmpty() );
+    Q_ASSERT( !windowIdentifier().isEmpty() );
     QSettings settings;
-    settings.beginGroup( windowIdentfier() );
+    settings.beginGroup( windowIdentifier() );
     // save geometry
     settings.setValue( MetaKey_MainWindowGeometry, saveGeometry() );
     settings.setValue( MetaKey_MainWindowVisible, isVisible() );
@@ -278,10 +278,10 @@ void CharmWindow::saveGuiState()
 
 void CharmWindow::restoreGuiState()
 {
-    Q_ASSERT( !windowIdentfier().isEmpty() );
+    Q_ASSERT( !windowIdentifier().isEmpty() );
     // restore geometry
     QSettings settings;
-    settings.beginGroup( windowIdentfier() );
+    settings.beginGroup( windowIdentifier() );
     if ( settings.contains( MetaKey_MainWindowGeometry ) ) {
         restoreGeometry( settings.value( MetaKey_MainWindowGeometry ).toByteArray() );
     }
