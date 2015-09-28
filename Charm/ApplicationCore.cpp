@@ -217,7 +217,12 @@ ApplicationCore::ApplicationCore( QObject* parent )
     connect( &m_actionExportTasks, SIGNAL(triggered()),
              &mainView(), SLOT(slotExportTasks()) );
     m_actionCheckForUpdates.setText( tr("Check for Updates...") );
+#if 0
+    // TODO this role should be set to have the action in the app menu, but that
+    // leads to duplicated entries, as each of the three main windows adds the action to the menu
+    // and Qt doesn't prevent duplicates (#222)
     m_actionCheckForUpdates.setMenuRole( QAction::ApplicationSpecificRole );
+#endif
     connect( &m_actionCheckForUpdates, SIGNAL(triggered()),
              &mainView(), SLOT(slotCheckForUpdatesManual()) );
     m_actionEnterVacation.setText( tr( "Enter Vacation...") );
@@ -326,9 +331,16 @@ void ApplicationCore::createFileMenu( QMenuBar *menuBar )
     menu->addAction( &m_actionSyncTasks );
     menu->addAction( &m_actionImportTasks );
     menu->addAction( &m_actionExportTasks );
-#ifndef Q_OS_OSX
-    menu->addSeparator();
+
+#ifdef Q_OS_OSX
+    if ( !QString::fromLatin1(UPDATE_CHECK_URL).isEmpty() ) {
+        menu->addSeparator();
+        menu->addAction( &m_actionCheckForUpdates );
+    }
+#else
+    menu->addSeparator(); // Separator before quit
 #endif
+
     menu->addAction( &m_actionQuit );
     menuBar->addMenu( menu );
 }
@@ -338,7 +350,7 @@ void ApplicationCore::createHelpMenu( QMenuBar *menuBar )
     auto menu = new QMenu( menuBar );
     menu->setTitle( tr( "Help" ) );
     menu->addAction( &m_actionAboutDialog );
-#if defined(Q_OS_OSX) || defined(Q_OS_WIN)
+#ifdef Q_OS_WIN
     if ( !QString::fromLatin1(UPDATE_CHECK_URL).isEmpty() ) {
         menu->addAction( &m_actionCheckForUpdates );
     }
