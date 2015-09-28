@@ -365,10 +365,10 @@ bool TaskModelAdapter::taskHasChildren( const Task& task ) const
     return item.childCount() > 0;
 }
 
-TaskIdList TaskModelAdapter::childrenIds( const Task& task ) const
+TaskList TaskModelAdapter::children( const Task& task ) const
 {
     const TaskTreeItem& item = m_dataModel->taskTreeItem( task.id() );
-    return item.childIds();
+    return item.children();
 }
 
 bool TaskModelAdapter::taskIdExists( TaskId taskId ) const

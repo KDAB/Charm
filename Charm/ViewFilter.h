@@ -66,7 +66,12 @@ signals:
     void eventDeactivationNotice( EventId id );
 
 private:
-    bool hasValidChildren(Task task) const;
+    enum CheckFor {
+        HaveValidChild,
+        HaveSubscribedChild
+    };
+
+    bool checkChildren( Task task, CheckFor checkFor ) const;
     TaskModelAdapter m_model;
 };
 

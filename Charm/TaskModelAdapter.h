@@ -100,7 +100,7 @@ public:
     bool taskIsActive( const Task& task ) const override;
     bool taskHasChildren( const Task& task ) const override;
     bool taskIdExists( TaskId taskId ) const override;
-    TaskIdList childrenIds( const Task& task ) const;
+    TaskList children( const Task& task ) const;
 
     // reimplement CommandEmitterInterface:
     void commitCommand( CharmCommand* ) override;

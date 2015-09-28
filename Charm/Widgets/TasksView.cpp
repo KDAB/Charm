@@ -269,6 +269,8 @@ void TasksView::configureUi()
                   SLOT(slotEventActivated(EventId)) );
          connect( filter, SIGNAL(eventDeactivationNotice(EventId)),
                   SLOT(slotEventDeactivated(EventId)) );
+         connect( MODEL.charmDataModel(), SIGNAL(resetGUIState()),
+                      SLOT(restoreGuiState()) );
      }
      break;
      case Connected:

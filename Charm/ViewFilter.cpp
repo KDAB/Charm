@@ -99,15 +99,17 @@ bool ViewFilter::filterAcceptsRow( int source_row, const QModelIndex& parent ) c
     case Configuration::TaskPrefilter_ShowAll:
         break;
     case Configuration::TaskPrefilter_CurrentOnly: {
-        const bool ok = ( task.isCurrentlyValid() || hasValidChildren( task ) );
+        const bool ok = ( task.isCurrentlyValid() || checkChildren( task, HaveValidChild ) );
         accepted &= ok;
         break;
     }
-    case Configuration::TaskPrefilter_SubscribedOnly:
-        accepted &= task.subscribed();
+    case Configuration::TaskPrefilter_SubscribedOnly: {
+        const bool ok = ( task.subscribed() || checkChildren( task, HaveSubscribedChild ) );
+        accepted &= ok;
         break;
+    }
     case Configuration::TaskPrefilter_SubscribedAndCurrentOnly:
-        accepted &= ( task.subscribed() && task.isCurrentlyValid() );
+        accepted &= ( (task.subscribed() || checkChildren( task, HaveSubscribedChild ) ) && ( task.isCurrentlyValid() || checkChildren( task, HaveValidChild ) ) );
         break;
     default:
         break;
@@ -126,15 +128,15 @@ bool ViewFilter::taskIdExists( TaskId taskId ) const
     return m_model.taskIdExists( taskId );
 }
 
-bool ViewFilter::hasValidChildren( Task task ) const
+bool ViewFilter::checkChildren( Task task, CheckFor checkFor ) const
 {
     if ( taskHasChildren( task ) ) {
-        const TaskIdList idList = m_model.childrenIds( task );
-        for ( int i = 0; i < idList.count(); ++i ) {
-            const Task childTask = DATAMODEL->getTask( idList[i] );
-            if ( childTask.isCurrentlyValid() ) {
+        const TaskList taskList = m_model.children( task );
+        for ( const Task taskChild : taskList ) {
+            if ( checkFor == HaveSubscribedChild && taskChild.subscribed() )
                 return true;
-            }
+            else if ( checkFor == HaveValidChild && taskChild.isCurrentlyValid() )
+                return true;
         }
     }
     return false;
