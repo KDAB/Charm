@@ -53,9 +53,9 @@ IdleDetector* IdleDetector::createIdleDetector( QObject* parent )
     return new WindowsIdleDetector( parent );
 #endif
 
-#ifdef CHARM_IDLE_DETECTION_AVAILABLE_X11
+#ifdef CHARM_IDLE_DETECTION_AVAILABLE
     X11IdleDetector* detector = new X11IdleDetector( parent );
-    detector->setAvailable( X11IdleDetector::idleCheckPossible() );
+    detector->setAvailable( detector->idleCheckPossible() );
     return detector;
 #endif
 #endif

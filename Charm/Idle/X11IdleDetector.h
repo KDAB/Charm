@@ -29,12 +29,18 @@
 
 #include <QTimer>
 
+#if defined(Q_OS_UNIX) && !defined(Q_OS_OSX)
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+#include <xcb/xcb.h>
+#endif
+#endif
+
 class X11IdleDetector : public IdleDetector
 {
     Q_OBJECT
 public:
     explicit X11IdleDetector( QObject* parent );
-    static bool idleCheckPossible();
+    bool idleCheckPossible();
 
 protected:
     void onIdlenessDurationChanged();
@@ -45,6 +51,12 @@ private slots:
 private:
     QDateTime m_heartbeat;
     QTimer m_timer;
+#if defined(Q_OS_UNIX) && !defined(Q_OS_OSX)
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+    xcb_connection_t* m_connection;
+    xcb_screen_t* m_screen;
+#endif
+#endif
 };
 
 
