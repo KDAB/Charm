@@ -73,18 +73,18 @@ public slots:
     void rollbackCommand ( CharmCommand* ) override;
 
 signals:
-    void eventAdded( const Event& event );
-    void eventModified( const Event& event );
-    void eventDeleted( const Event& event );
+    void eventAdded( const Event& event ) override;
+    void eventModified( const Event& event ) override;
+    void eventDeleted( const Event& event ) override;
     void allEvents( const EventList& );
-    void definedTasks( const TaskList& );
-    void taskAdded( const Task& );
-    void taskUpdated( const Task& );
-    void taskDeleted( const Task& );
-    void readyToQuit();
+    void definedTasks( const TaskList& ) override;
+    void taskAdded( const Task& ) override;
+    void taskUpdated( const Task& ) override;
+    void taskDeleted( const Task& ) override;
+    void readyToQuit() override;
     void currentBackendStatus( const QString& text );
 
-    void commandCompleted( CharmCommand* );
+    void commandCompleted( CharmCommand* ) override;
 
 private:
     void updateSubscriptionForTask( const Task& );

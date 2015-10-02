@@ -121,8 +121,8 @@ private slots:
     void configurationChanged() override;
 
 signals:
-    void emitCommand( CharmCommand* );
-    void emitCommandRollback( CharmCommand* );
+    void emitCommand( CharmCommand* ) override;
+    void emitCommandRollback( CharmCommand* ) override;
     void showNotification( const QString& title, const QString& message );
 
 private:

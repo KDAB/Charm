@@ -47,9 +47,9 @@ protected:
     void insertEditMenu() override;
 
 signals:
-    void emitCommand( CharmCommand* );
-    void emitCommandRollback( CharmCommand* );
-    void quit();
+    void emitCommand( CharmCommand* ) override;
+    void emitCommandRollback( CharmCommand* ) override;
+    void quit() override;
 
 private:
     EventView* m_eventView;

@@ -62,8 +62,8 @@ public:
     bool filterAcceptsRow( int row, const QModelIndex& parent ) const override;
 
 signals:
-    void eventActivationNotice( EventId id );
-    void eventDeactivationNotice( EventId id );
+    void eventActivationNotice( EventId id ) override;
+    void eventDeactivationNotice( EventId id ) override;
 
 private:
     enum CheckFor {
