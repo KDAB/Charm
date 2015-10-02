@@ -85,7 +85,11 @@ bool EventModelFilter::filterAcceptsRow( int srow, const QModelIndex& sparent ) 
     }
 
     const auto startDate = event.startDateTime().date();
-    if ( m_start.isValid() && startDate < m_start ) {
+    /*
+    * event.endDateTime().date() < m_start
+    * Show also Events that end within the time span.
+    */
+    if ( m_start.isValid() && ( startDate < m_start ) && ( event.endDateTime().date() < m_start ) ) {
         return false;
     }
 
