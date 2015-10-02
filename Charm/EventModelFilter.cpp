@@ -84,11 +84,12 @@ bool EventModelFilter::filterAcceptsRow( int srow, const QModelIndex& sparent ) 
         return false;
     }
 
-    if ( m_start.isValid() && event.startDateTime().date() < m_start ) {
+    const auto startDate = event.startDateTime().date();
+    if ( m_start.isValid() && startDate < m_start ) {
         return false;
     }
 
-    if ( m_end.isValid() && event.endDateTime().date() >= m_end ) {
+    if ( m_end.isValid() && startDate >= m_end ) {
         return false;
     }
 
