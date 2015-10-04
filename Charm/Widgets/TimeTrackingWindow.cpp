@@ -786,7 +786,7 @@ void TimeTrackingWindow::slotUserInfoDownloaded( HttpJob* job_ )
     const QString data = readData.constData();
 
     QScriptEngine engine;
-    QScriptValue result = engine.evaluate( "(" + data + ")" );
+    QScriptValue result = engine.evaluate( '(' + data + ')' );
     QScriptValue entries = result.property( "hrInfo" ).property( "weeklyHours" );
     QString weeklyHours = QString::number( entries.toVariant().toDouble(), 'g', 2 );
 
