@@ -1,10 +1,17 @@
+charmtimetracker (1.10.0) stable; urgency=low
+
+  * 1.10.0 release
+
+ -- Allen Winter <allen.winter@kdab.com>  Mon, 05 Oct 2015 13:30:00 -0500
+
+
 charmtimetracker (1.9.0) stable; urgency=low
 
   * 1.9.0 release
 
  -- Allen Winter <allen.winter@kdab.com>  Thu, 26 Mar 2015 10:30:00 -0500
 
-  
+
 charmtimetracker (1.8.0) stable; urgency=low
 
   * 1.8.0 release
