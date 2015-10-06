@@ -29,10 +29,10 @@
 #include "Core/ViewInterface.h"
 #include "Core/CharmDataModelAdapterInterface.h"
 
-#include "HttpClient/CheckForUpdatesJob.h"
+#include "Charm/HttpClient/CheckForUpdatesJob.h"
 
 #include "CharmWindow.h"
-#include "WeeklySummary.h"
+#include "Charm/WeeklySummary.h"
 #include "BillDialog.h"
 
 class HttpJob;

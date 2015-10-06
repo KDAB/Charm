@@ -25,6 +25,14 @@ ADD_EXECUTABLE( ControllerTests ${ControllerTests_SRCS} )
 TARGET_LINK_LIBRARIES( ControllerTests ${TEST_LIBRARIES} )
 ADD_TEST( NAME ControllerTests COMMAND ControllerTests )
 
+SET( EventModelFilterTests_SRCS
+     ${Charm_SOURCE_DIR}/Charm/EventModelAdapter.cpp
+     ${Charm_SOURCE_DIR}/Charm/EventModelFilter.cpp
+     EventModelFilterTests.cpp
+)
+ADD_EXECUTABLE( EventModelFilterTests ${EventModelFilterTests_SRCS} )
+TARGET_LINK_LIBRARIES( EventModelFilterTests ${TEST_LIBRARIES} )
+
 SET( DatesTests_SRCS DatesTests.cpp )
 ADD_EXECUTABLE( DatesTests ${DatesTests_SRCS} )
 TARGET_LINK_LIBRARIES( DatesTests ${TEST_LIBRARIES} )
