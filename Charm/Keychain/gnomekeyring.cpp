@@ -23,7 +23,7 @@
 
 #include "gnomekeyring_p.h"
 
-const char* GnomeKeyring::GNOME_KEYRING_DEFAULT = NULL;
+const char* GnomeKeyring::GNOME_KEYRING_DEFAULT = 0;
 
 bool GnomeKeyring::isAvailable()
 {
