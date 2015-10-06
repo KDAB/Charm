@@ -10,7 +10,7 @@ EXTRA kdabcopyright
 EXTRA camelcase,null,defines,crud
 
 #skip Keychain
-SKIP /Charm/Keychain/
+SKIP /Charm/Keychain/keychain
 #if you have a build subdir, skip it
 SKIP /build-
 

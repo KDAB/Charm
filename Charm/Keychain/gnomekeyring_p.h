@@ -21,8 +21,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef QTKEYCHAIN_GNOME_P_H
-#define QTKEYCHAIN_GNOME_P_H
+#ifndef GNOMEKEYRING_P_H
+#define GNOMEKEYRING_P_H
 
 #include <QLibrary>
 
