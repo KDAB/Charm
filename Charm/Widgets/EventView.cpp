@@ -273,18 +273,30 @@ void EventView::slotNewEvent()
 void EventView::slotDeleteEvent()
 {
     const TaskTreeItem& taskTreeItem =
-        MODEL.charmDataModel()->taskTreeItem( m_event.taskId() );
+            MODEL.charmDataModel()->taskTreeItem( m_event.taskId() );
     const QString name = MODEL.charmDataModel()->fullTaskName( taskTreeItem.task() );
-    const QDate date = m_event.startDateTime().date();
-    const QTime time = m_event.startDateTime().time();
-    const QString dateAndDuration = date.toString( Qt::SystemLocaleDate )
-           + ' ' + time.toString( Qt::SystemLocaleDate )
-           + ' ' + hoursAndMinutes( m_event.duration() );
-    const QString eventDescription = name + ' ' + dateAndDuration;
-    if ( MessageBox::question(
-             this, tr( "Delete Event?" ),
-             tr( "<html>Do you really want to delete the event <b>%1</b>?" ).arg(eventDescription),
-             tr( "Delete" ), tr("Cancel") )
+    const QDate startDate = m_event.startDateTime().date();
+    const QTime startTime = m_event.startDateTime().time();
+    const QDate endDate = m_event.endDateTime().date();
+    const QTime endTime = m_event.endDateTime().time();
+    const bool sameDates = ( startDate == endDate );
+    QString message;
+
+    if ( sameDates )
+            message = tr( "<html><b>%1</b>%2: %3 - %4 (Duration: %5)</html>" )
+                      .arg( name )
+                      .arg( QLocale::system().toString( startDate, QLocale::ShortFormat ) ).arg( QLocale::system().toString( startTime, QLocale::ShortFormat ) )
+                      .arg( QLocale::system().toString( endTime, QLocale::ShortFormat ) ).arg( hoursAndMinutes( m_event.duration() ) );
+    else
+            message = tr( "<html><b>%1</b><table><tr><td>Starting:</td><td>%2 at %3</td></tr>"
+                          "<tr><td>Ending:</td><td>%4 at %5</td></tr><tr><td>Duration:</td><td>%6.</td></tr></html>" )
+                      .arg( name )
+                      .arg( QLocale::system().toString( startDate, QLocale::ShortFormat ) ).arg( QLocale::system().toString( startTime, QLocale::ShortFormat ) )
+                      .arg( QLocale::system().toString( endDate, QLocale::ShortFormat ) ).arg( QLocale::system().toString( endTime, QLocale::ShortFormat ) )
+                      .arg( hoursAndMinutes( m_event.duration() ) );
+
+
+    if ( MessageBox::question( this, tr( "Delete Event?" ), message, tr( "Delete" ), tr("Cancel") )
          == QMessageBox::Yes ) {
         auto command = new CommandDeleteEvent( m_event, this );
         command->prepare();
