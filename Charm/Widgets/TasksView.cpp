@@ -364,6 +364,7 @@ void TasksView::configureUi()
 
      saveGuiState();
      filter->setFilterWildcard( filtertext );
+     filter->setFilterRole( TasksViewRole_Filter );
      if (!filtertextRaw.isEmpty())
         m_treeView->expandAll();
      else
