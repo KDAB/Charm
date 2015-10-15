@@ -41,12 +41,13 @@ class CheckForUpdatesJob : public QObject
 public:
 
     struct JobData {
+	JobData() : error(0), verbose(false) {}
         QUrl link;
         QString releaseInformationLink;
         QString releaseVersion;
         QString errorString;
-        int error = 0; // QNetworkReply::NetworkError or xml parsing error ( 999 )
-        bool verbose = false; // display error message or not ( default == not )
+        int error; // QNetworkReply::NetworkError or xml parsing error ( 999 )
+        bool verbose; // display error message or not ( default == not )
     };
 
     explicit CheckForUpdatesJob( QObject* parent=nullptr );
