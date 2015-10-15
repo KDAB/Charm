@@ -46,6 +46,8 @@ CharmPreferences::CharmPreferences( const Configuration& config,
 
     m_ui.lbWarnUnuploadedTimesheets->setVisible( httpJobPossible );
     m_ui.cbWarnUnuploadedTimesheets->setVisible( httpJobPossible );
+    m_ui.lbResetPassword.setVisible( httpJobPossible );
+    m_ui.pbResetPassword.setVisible( httpJobPossible );
     m_ui.cbIdleDetection->setEnabled( haveIdleDetection );
     m_ui.lbIdleDetection->setEnabled( haveIdleDetection );
     m_ui.cbIdleDetection->setChecked( config.detectIdling && m_ui.cbIdleDetection->isEnabled() );
