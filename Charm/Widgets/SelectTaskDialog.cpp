@@ -200,7 +200,10 @@ void SelectTaskDialog::slotFilterTextChanged( const QString& text )
 
     Charm::saveExpandStates( m_ui->treeView, &m_expansionStates );
     m_proxy.setFilterWildcard( filtertext );
-    Charm::restoreExpandStates( m_ui->treeView, &m_expansionStates );
+    if (!filtertext.isEmpty())
+        m_ui->treeView->expandAll();
+    else
+        Charm::restoreExpandStates( m_ui->treeView, &m_expansionStates );
 }
 
 void SelectTaskDialog::slotAccepted()
