@@ -1,3 +1,7 @@
+# Copyright (C) 2015 Klaralvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+
+# Redistribution and use is allowed according to the terms of the BSD license
+
 #
 # Try to find XCB library and include path.
 # Once done this will define
