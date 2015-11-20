@@ -122,7 +122,6 @@ QString TaskExport::reportType()
 void TaskExport::writeTo( const QString& filename, const TaskList& tasks )
 {
     QDomDocument document = XmlSerialization::createXmlTemplate( reportType() );
-    QDomElement metadata = XmlSerialization::metadataElement( document );
     QDomElement report = XmlSerialization::reportElement( document );
 
     // write tasks

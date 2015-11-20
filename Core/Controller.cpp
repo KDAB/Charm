@@ -398,7 +398,6 @@ QString Controller::importDatabaseFromXml( const QDomDocument& document )
         databaseSchemaVersion = rootElement.attribute( "version" ).toInt( &ok );
         if ( !ok ) throw XmlSerializationException( QObject::tr( "Syntax error, no version attribute found." ) );
 
-        QDomElement metadataElement = rootElement.firstChildElement( MetaDataElement );
         QDomElement tasksElement = rootElement.firstChildElement( TasksElement );
         for ( QDomElement element = tasksElement.firstChildElement( Task::tagName() );
               !element.isNull(); element = element.nextSiblingElement( Task::tagName() ) ) {
