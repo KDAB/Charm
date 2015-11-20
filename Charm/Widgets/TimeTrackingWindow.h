@@ -143,8 +143,6 @@ private:
     QTimer m_checkCharmReleaseVersionTimer;
     QTimer m_updateUserInfoAndTasksDefinitionsTimer;
     BillDialog *m_billDialog;
-    CheckForUpdatesJob* m_checkForUpdatesJob;
-    QString m_user;
 };
 
 #endif
