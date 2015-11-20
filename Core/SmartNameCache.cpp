@@ -60,7 +60,7 @@ void SmartNameCache::modifyTask( const Task& task )
 
 void SmartNameCache::deleteTask( const Task& task )
 {
-    const TaskList::Iterator it = qBinaryFind( m_tasks.begin(), m_tasks.end(), Task( task.id(), QString() ), IdLessThan() );
+    const auto it = qBinaryFind( m_tasks.begin(), m_tasks.end(), Task( task.id(), QString() ), IdLessThan() );
     if ( it != m_tasks.end() ) {
         m_tasks.erase( it );
         regenerateSmartNames();
@@ -75,7 +75,7 @@ void SmartNameCache::clearTasks()
 
 Task SmartNameCache::findTask( TaskId id ) const
 {
-    const TaskList::ConstIterator it = qBinaryFind( m_tasks.begin(), m_tasks.end(), Task( id, QString() ), IdLessThan() );
+    const auto it = qBinaryFind( m_tasks.begin(), m_tasks.end(), Task( id, QString() ), IdLessThan() );
     if ( it != m_tasks.constEnd() )
         return *it;
     else
@@ -124,7 +124,7 @@ void SmartNameCache::regenerateSmartNames()
               it != byName.constEnd();
               ++it ) {
             const QString currentName = it.key();
-            const QVector<TaskParentPair>& taskPairs = it.value();
+            const auto& taskPairs = it.value();
             Q_ASSERT( !taskPairs.isEmpty() );
             if ( taskPairs.size() == 1 || cannotMakeUnique.contains( currentName ) ) {
                 Q_FOREACH( const TaskParentPair& i, taskPairs )

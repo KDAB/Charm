@@ -57,7 +57,7 @@ QVector<WeeklySummary> WeeklySummary::summariesForTimespan( CharmDataModel* data
     // now add the times to the tasks:
     Q_FOREACH( const Event& event, events ) {
         // find the index for this event:
-        TaskIdList::iterator it = std::find( uniqueTaskIds.begin(), uniqueTaskIds.end(), event.taskId() );
+        auto it = std::find( uniqueTaskIds.begin(), uniqueTaskIds.end(), event.taskId() );
         if ( it != uniqueTaskIds.end() ) {
             const int index = std::distance( uniqueTaskIds.begin(), it );
             Q_ASSERT( index >= 0 && index < summaries.size() );
