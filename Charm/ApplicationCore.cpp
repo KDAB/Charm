@@ -65,11 +65,9 @@ ApplicationCore* ApplicationCore::m_instance = nullptr;
 
 ApplicationCore::ApplicationCore( QObject* parent )
     : QObject( parent )
-    , m_closedWindow( nullptr )
     , m_actionStopAllTasks( this )
     , m_windows( QList<CharmWindow*> () << &m_tasksWindow << &m_eventWindow << &m_timeTracker )
     , m_actionQuit( this )
-    , m_state(Constructed)
     , m_systrayContextMenuStartTask( m_timeTracker.menu()->title() )
     , m_actionAboutDialog( this )
     , m_actionPreferences( this )
@@ -83,11 +81,6 @@ ApplicationCore::ApplicationCore( QObject* parent )
     , m_actionActivityReport( this )
     , m_actionWeeklyTimesheetReport( this )
     , m_actionMonthlyTimesheetReport( this )
-    , m_idleDetector( nullptr )
-    , m_cmdInterface( nullptr )
-    , m_timeTrackerHiddenFromSystrayToggle( false )
-    , m_tasksWindowHiddenFromSystrayToggle( false )
-    , m_eventWindowHiddenFromSystrayToggle( false )
     , m_dateChangeWatcher( new DateChangeWatcher( this ) )
 {
     // QApplication setup

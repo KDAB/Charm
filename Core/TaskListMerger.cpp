@@ -25,7 +25,6 @@
 #include "CharmExceptions.h"
 
 TaskListMerger::TaskListMerger()
-    : m_resultsValid( false )
 {
 }
 

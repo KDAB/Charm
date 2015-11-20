@@ -40,8 +40,6 @@ EventEditor::EventEditor( const Event& event, QWidget* parent )
     : QDialog( parent )
     , m_ui( new Ui::EventEditor )
     , m_event( event )
-    , m_updating( false )
-    , m_endDateChanged( true )
 {
     m_ui->setupUi( this );
     m_ui->dateEditEnd->calendarWidget()->setFirstDayOfWeek( Qt::Monday );

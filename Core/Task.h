@@ -105,11 +105,11 @@ public:
     static bool lowerTaskId( const Task& left, const Task& right );
 
 private:
-    int m_id;
-    int m_parent;
+    int m_id = 0;
+    int m_parent = 0;
     QString m_name;
-    bool m_subscribed;
-    bool m_trackable;
+    bool m_subscribed = false;
+    bool m_trackable = true;
     /** The timestamp from which the task is valid. */
     QDateTime m_validFrom;
     /** The timestamp after which the task becomes invalid. */

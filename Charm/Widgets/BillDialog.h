@@ -48,8 +48,8 @@ private:
     QPushButton *m_asYouWish;
     QPushButton *m_alreadyDone;
     QPushButton *m_later;
-    int m_year;
-    int m_week;
+    int m_year = 0;
+    int m_week = 0;
 };
 
 #endif

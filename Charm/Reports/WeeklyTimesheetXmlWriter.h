@@ -44,10 +44,10 @@ public:
     void setEvents( const EventList& events );
     void setRootTask( TaskId rootTask );
 private:
-    const CharmDataModel* m_dataModel;
-    int m_year;
-    int m_weekNumber;
-    TaskId m_rootTask;
+    const CharmDataModel* m_dataModel = nullptr;
+    int m_year = 0;
+    int m_weekNumber = 0;
+    TaskId m_rootTask = {};
     EventList m_events;
 };
 

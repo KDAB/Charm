@@ -31,7 +31,6 @@
 CommandDeleteTask::CommandDeleteTask( const Task& task, QObject* parent )
     : CharmCommand( tr("Delete Task"), parent )
     , m_task( task )
-    , m_success( false )
 {
 }
 

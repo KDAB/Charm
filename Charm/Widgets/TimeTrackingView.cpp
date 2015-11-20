@@ -43,7 +43,6 @@ const int Margin = 2;
 TimeTrackingView::TimeTrackingView( QWidget* parent )
     : QWidget( parent )
     , m_taskSelector( new TimeTrackingTaskSelector( this ) )
-    , m_dayOfWeek( 0 )
 {
     setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
     // plumbing

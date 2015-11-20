@@ -31,7 +31,6 @@
 
 TasksViewDelegate::TasksViewDelegate( QObject* parent )
     : QItemDelegate( parent )
-    , m_editing( false )
 {
     connect( this, SIGNAL(closeEditor(QWidget*,QAbstractItemDelegate::EndEditHint)),
              SLOT(slotCloseEditor(QWidget*,QAbstractItemDelegate::EndEditHint)) );

@@ -39,11 +39,10 @@ class TimeTrackingView : public QWidget
     Q_OBJECT
 private:
     struct DataField {
-        DataField() : hasHighlight( false ), storeAsActive( false ) {}
         QString text;
         QBrush background;
-        bool hasHighlight; // QBrush does not have isValid()
-        bool storeAsActive;
+        bool hasHighlight = false; // QBrush does not have isValid()
+        bool storeAsActive = false;
         QBrush highlight;
         QFont font;
     };
@@ -112,7 +111,7 @@ private:
     PaintAttributes m_paintAttributes;
     DataField m_defaultField;
     /** Stored for performance reasons, QDate::currentDate() is expensive. */
-    int m_dayOfWeek;
+    int m_dayOfWeek = 0;
     /** Stored for performance reasons, QDate::shortDayName() is slow on Mac. */
     QString m_shortDayNames[7];
     /** Stored for performance reasons, QFontMetrics::elidedText is slow if called many times. */

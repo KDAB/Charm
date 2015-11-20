@@ -54,9 +54,9 @@ private:
 
 private:
     // properties of the report:
-    int m_numberOfWeeks;
-    int m_monthNumber;
-    int m_yearOfMonth;
+    int m_numberOfWeeks = 0;
+    int m_monthNumber = 0;
+    int m_yearOfMonth = 0;
     QString m_weeklyhours;
     float m_dailyhours;
 };

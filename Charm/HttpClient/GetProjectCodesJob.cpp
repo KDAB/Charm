@@ -30,7 +30,6 @@
 
 GetProjectCodesJob::GetProjectCodesJob(QObject* parent)
     : HttpJob(parent)
-    , m_verbose( true )
 {
     QSettings s;
     s.beginGroup(QLatin1String("httpconfig"));

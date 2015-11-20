@@ -33,8 +33,6 @@
 
 TimeSheetReport::TimeSheetReport( QWidget* parent )
     : ReportPreviewWindow( parent )
-    , m_rootTask( 0 )
-    , m_activeTasksOnly( false )
 {
 }
 

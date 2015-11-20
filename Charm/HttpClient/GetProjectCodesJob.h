@@ -57,7 +57,7 @@ protected:
 private:
     QByteArray m_payload;
     QUrl m_downloadUrl;
-    bool m_verbose;
+    bool m_verbose = true;
 };
 
 #endif

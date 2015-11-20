@@ -35,11 +35,9 @@
 #include <QCalendarWidget>
 #include <QMessageBox>
 
-FindAndReplaceEventsDialog::FindAndReplaceEventsDialog( QWidget* parent ) :
-    QDialog( parent )
-   ,m_taskToSearch( 0 )
-   ,m_taskToReplaceWith( 0 )
-   ,m_ui( new Ui::FindAndReplaceEventsDialog )
+FindAndReplaceEventsDialog::FindAndReplaceEventsDialog( QWidget* parent )
+    : QDialog( parent )
+    , m_ui( new Ui::FindAndReplaceEventsDialog )
 {
     m_ui->setupUi(this);
 

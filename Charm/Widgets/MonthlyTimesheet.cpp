@@ -43,9 +43,6 @@ namespace {
 
 MonthlyTimeSheetReport::MonthlyTimeSheetReport( QWidget* parent )
     : TimeSheetReport( parent )
-    , m_numberOfWeeks( 0 )
-    , m_monthNumber( 0 )
-    , m_yearOfMonth( 0 )
 {
     QSettings settings;
     settings.beginGroup("users");

@@ -53,9 +53,6 @@ TimeTrackingTaskSelector::TimeTrackingTaskSelector(QWidget *parent)
     , m_taskSelectorButton( new QToolButton( this ) )
     , m_startOtherTaskAction( new QAction( tr( "Start Other Task..." ), this ) )
     , m_menu( new QMenu( tr( "Start Task" ), this ) )
-    , m_selectedTask( 0 )
-    , m_manuallySelectedTask( 0 )
-    , m_taskManuallySelected( false )
 {
     connect( m_menu, SIGNAL(triggered(QAction*)),
              SLOT(slotActionSelected(QAction*)) );

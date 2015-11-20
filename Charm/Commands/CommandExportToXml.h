@@ -40,7 +40,7 @@ public:
     bool finalize() override;
 
 private:
-    bool m_error;
+    bool m_error = true;
     QString m_errorString;
     QString m_filename;
 };

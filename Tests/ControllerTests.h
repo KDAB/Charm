@@ -68,13 +68,13 @@ private slots:
 
 private:
 
-    ControllerInterface* m_controller;
+    ControllerInterface* m_controller = nullptr;
     Configuration& m_configuration;
     QString m_localPath;
     EventList m_currentEvents;
-    bool m_eventListReceived;
+    bool m_eventListReceived = false;
     TaskList m_definedTasks;
-    bool m_taskListReceived;
+    bool m_taskListReceived = false;
 };
 
 #endif

@@ -265,8 +265,6 @@ void WeeklyTimesheetConfigurationDialog::slotSelectTask()
 
 WeeklyTimeSheetReport::WeeklyTimeSheetReport( QWidget* parent )
     : TimeSheetReport( parent )
-    , m_weekNumber( 0 )
-    , m_yearOfWeek( 0 )
 {
     QPushButton* upload = uploadButton();
     connect( upload, SIGNAL(clicked()), SLOT(slotUploadTimesheet()) );

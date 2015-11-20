@@ -47,7 +47,7 @@ public:
     bool finalize() override;
 
 private:
-    CharmCommand* m_payload;
+    CharmCommand* m_payload = nullptr;
 };
 
 #endif

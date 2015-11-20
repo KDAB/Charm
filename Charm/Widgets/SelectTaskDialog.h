@@ -82,10 +82,10 @@ private:
 
 private:
     QScopedPointer<Ui::SelectTaskDialog> m_ui;
-    TaskId m_selectedTask;
+    TaskId m_selectedTask = {};
     SelectTaskDialogProxy m_proxy;
     QHash<TaskId,bool> m_expansionStates;
-    bool m_nonTrackableSelectable;
+    bool m_nonTrackableSelectable = false;
 };
 
 #endif

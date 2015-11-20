@@ -28,11 +28,6 @@
 #include <QDomText>
 
 Event::Event()
-    : m_userid()
-    , m_reportid()
-    , m_installationId()
-    , m_id()
-    , m_taskId()
 {
 }
 

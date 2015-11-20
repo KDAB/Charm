@@ -65,8 +65,8 @@ private:
 
     QScopedPointer<Ui::ActivityReportConfigurationDialog> m_ui;
     QList<NamedTimeSpan> m_timespans;
-    TaskId m_rootTask;
-    TaskId m_rootExcludeTask;
+    TaskId m_rootTask = {};
+    TaskId m_rootExcludeTask = {};
 };
 
 class ActivityReport : public ReportPreviewWindow
@@ -90,8 +90,8 @@ private:
 private:
     QDate m_start;
     QDate m_end;
-    TaskId m_rootTask;
-    TaskId m_rootExcludeTask;
+    TaskId m_rootTask = {};
+    TaskId m_rootExcludeTask = {};
     NamedTimeSpan m_timeSpanSelection;
 };
 

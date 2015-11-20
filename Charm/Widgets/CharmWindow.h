@@ -97,9 +97,9 @@ private:
     QAction* m_openCharmAction;
     QAction* m_showAction;
     QAction* m_showHideAction;
-    int m_windowNumber; // Mac numerical window number, used for shortcut etc
+    int m_windowNumber = -1; // Mac numerical window number, used for shortcut etc
     QString m_windowIdentifier;
-    QShortcut* m_shortcut;
+    QShortcut* m_shortcut = nullptr;
     QToolBar* m_toolBar;
 };
 

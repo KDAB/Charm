@@ -77,13 +77,6 @@ QString HttpJob::extractErrorMessageFromReply(const QByteArray& xml)
 HttpJob::HttpJob(QObject* parent)
     : QObject(parent)
     , m_networkManager(new QNetworkAccessManager(this))
-    , m_username()
-    , m_password()
-    , m_currentState(Ready)
-    , m_errorCode(NoError)
-    , m_lastAuthenticationFailed(true)
-    , m_authenticationDoneAlready(false)
-    , m_passwordReadError(false)
 {
     connect(m_networkManager, SIGNAL(finished(QNetworkReply*)), SLOT(handle(QNetworkReply*)));
     connect(m_networkManager, SIGNAL(authenticationRequired(QNetworkReply*,QAuthenticator*)), SLOT(authenticationRequired(QNetworkReply*,QAuthenticator*)));

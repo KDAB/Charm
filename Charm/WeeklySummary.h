@@ -39,7 +39,7 @@ public:
 
     WeeklySummary();
 
-    TaskId task;
+    TaskId task = {};
     QString taskname;
     QVector<int> durations;
 };

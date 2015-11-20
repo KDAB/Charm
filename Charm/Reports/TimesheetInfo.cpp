@@ -26,10 +26,7 @@
 #include "Core/CharmDataModel.h"
 
 TimeSheetInfo::TimeSheetInfo(int segments)
-  : indentation( 0 )
-  , seconds( segments )
-  , taskId( 0 )
-  , aggregated( false )
+    : seconds( segments )
 {
     seconds.fill( 0 );
 }

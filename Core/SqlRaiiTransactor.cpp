@@ -30,8 +30,7 @@
 #include <QSqlError>
 
 SqlRaiiTransactor::SqlRaiiTransactor( QSqlDatabase& database )
-    : m_active( false ),
-      m_database ( database )
+    : m_database ( database )
 {
     if ( ! database.driver()->hasFeature( QSqlDriver::Transactions ) ) {
         throw TransactionException( QObject::tr( "Database driver does not support transactions." ) );

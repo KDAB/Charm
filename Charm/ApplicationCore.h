@@ -118,7 +118,7 @@ signals:
 protected:
     void openAWindow( bool raise = false );
 
-    CharmWindow* m_closedWindow;
+    CharmWindow* m_closedWindow = nullptr;
     QAction m_actionStopAllTasks;
     const QList<CharmWindow*> m_windows;
     TimeTrackingWindow m_timeTracker;
@@ -142,7 +142,7 @@ private:
     void enterShuttingDownState();
     void leaveShuttingDownState();
 
-    State m_state;
+    State m_state = Constructed;
     ModelConnector m_model;
     Controller m_controller;
     TrayIcon m_trayIcon;
@@ -162,11 +162,11 @@ private:
     QAction m_actionMonthlyTimesheetReport;
     TasksWindow m_tasksWindow;
     EventWindow m_eventWindow;
-    IdleDetector* m_idleDetector;
-    CharmCommandInterface* m_cmdInterface;
-    bool m_timeTrackerHiddenFromSystrayToggle;
-    bool m_tasksWindowHiddenFromSystrayToggle;
-    bool m_eventWindowHiddenFromSystrayToggle;
+    IdleDetector* m_idleDetector = nullptr;
+    CharmCommandInterface* m_cmdInterface = nullptr;
+    bool m_timeTrackerHiddenFromSystrayToggle = false;
+    bool m_tasksWindowHiddenFromSystrayToggle = false;
+    bool m_eventWindowHiddenFromSystrayToggle = false;
     QLocalServer m_uniqueApplicationServer;
 
     // All statics are created as members of Application. This is

@@ -34,7 +34,6 @@
 ReportPreviewWindow::ReportPreviewWindow( QWidget* parent )
     : QDialog( parent )
     , m_ui( new Ui::ReportPreviewWindow )
-    , m_document()
 {
     m_ui->setupUi( this );
     setAttribute( Qt::WA_DeleteOnClose );

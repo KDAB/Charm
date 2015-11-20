@@ -49,8 +49,8 @@ protected:
     QString databasePath() const;
 
 private:
-    Controller* m_controller;
-    CharmDataModel* m_model;
+    Controller* m_controller = nullptr;
+    CharmDataModel* m_model = nullptr;
     Configuration* m_configuration;
     QString m_localPath;
 };

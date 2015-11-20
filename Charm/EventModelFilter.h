@@ -74,7 +74,7 @@ private:
     EventModelAdapter m_model;
     QDate m_start;
     QDate m_end;
-    TaskId m_filterId;
+    TaskId m_filterId = {};
 };
 
 #endif

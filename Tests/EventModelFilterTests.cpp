@@ -32,7 +32,6 @@
 
 EventModelFilterTests::EventModelFilterTests()
     : QObject()
-    , m_referenceModel( nullptr )
 {
 }
 

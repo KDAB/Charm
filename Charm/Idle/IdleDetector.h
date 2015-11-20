@@ -82,8 +82,8 @@ protected:
 
 private:
     IdlePeriods m_idlePeriods;
-    int m_idlenessDuration;
-    bool m_available;
+    int m_idlenessDuration = 0;
+    bool m_available = true;
 };
 
 #endif

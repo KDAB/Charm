@@ -28,7 +28,6 @@
 CommandModifyTask::CommandModifyTask( const Task& task, QObject* parent )
     : CharmCommand( tr("Edit Task"), parent )
     , m_task( task )
-    , m_success( false )
 {
 }
 

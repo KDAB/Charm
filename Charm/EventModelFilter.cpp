@@ -27,7 +27,6 @@
 EventModelFilter::EventModelFilter( CharmDataModel* model, QObject* parent )
     : QSortFilterProxyModel( parent )
     , m_model( model )
-    , m_filterId()
 {
     setSourceModel( &m_model );
     setDynamicSortFilter( true );

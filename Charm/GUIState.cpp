@@ -30,9 +30,6 @@
 #include <QSettings>
 
 GUIState::GUIState()
-    : m_selectedTask( 0 )
-    , m_showExpired( false )
-    , m_showCurrents( false )
 {
 }
 

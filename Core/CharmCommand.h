@@ -95,7 +95,7 @@ protected:
 private:
     CharmCommand( const CharmCommand& ); // disallow copying
 
-    CommandEmitterInterface* m_owner;
+    CommandEmitterInterface* m_owner = nullptr;
     const QString m_description;
 };
 

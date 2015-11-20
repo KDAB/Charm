@@ -40,7 +40,6 @@
 Controller::Controller( QObject* parent_ )
     : QObject( parent_ )
     , ControllerInterface()
-    , m_storage( nullptr )
 {
 }
 

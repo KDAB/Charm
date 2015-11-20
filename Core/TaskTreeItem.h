@@ -76,7 +76,7 @@ public:
     TaskIdList childIds() const;
 
 private:
-    TaskTreeItem* m_parent;
+    TaskTreeItem* m_parent = nullptr;
     ConstPointerList m_children;
     Task m_task;
 };

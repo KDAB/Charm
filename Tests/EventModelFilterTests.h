@@ -48,7 +48,7 @@ private slots:
     void checkEventSpanOver2Days();
 
 private:
-    CharmDataModel* m_referenceModel;
+    CharmDataModel* m_referenceModel = nullptr;
     EventModelFilter* m_eventModelFilter;
 
     NamedTimeSpan m_thisYearSpan;

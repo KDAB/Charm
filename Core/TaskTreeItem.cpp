@@ -27,7 +27,6 @@
 #include <QtDebug>
 
 TaskTreeItem::TaskTreeItem()
-    : m_parent( 0 )
 {
 }
 

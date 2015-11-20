@@ -48,8 +48,6 @@ CharmWindow::CharmWindow( const QString& name, QWidget* parent )
     , m_openCharmAction( new QAction( tr( "Open Charm" ), this ) )
     , m_showAction( new QAction( this ) )
     , m_showHideAction( new QAction( this ) )
-    , m_windowNumber( -1 )
-    , m_shortcut( 0 )
 {
     setWindowName( name );
     handleOpenCharm( false );

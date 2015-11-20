@@ -94,16 +94,16 @@ public:
 
 private:
     /** The id of the user who owns the event. */
-    int m_userid;
+    int m_userid = {};
     /** The report id. This field is only useful
      * if the event is imported from a report.
      */
-    int m_reportid;
+    int m_reportid = {};
     /** The installation-unique id of the event. */
-    int m_installationId;
-    int m_id;
+    int m_installationId = {};
+    int m_id = {};
     /** The task this event belongs to. */
-    TaskId m_taskId;
+    TaskId m_taskId = {};
     /** A possible user comment.
         May be empty. */
     QString m_comment;

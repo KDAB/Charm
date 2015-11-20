@@ -59,7 +59,7 @@ private:
     void verifyTaskList( const TaskList& tasks );
     void calculateResults() const;
 
-    mutable bool m_resultsValid;
+    mutable bool m_resultsValid = false;
     TaskList m_oldTasks;
     TaskList m_newTasks;
     mutable TaskList m_results;

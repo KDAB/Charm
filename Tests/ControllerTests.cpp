@@ -37,11 +37,8 @@
 
 ControllerTests::ControllerTests()
     : QObject()
-    , m_controller( nullptr )
     , m_configuration( Configuration::instance() )
     , m_localPath( "./ControllerTestDatabase.db" )
-    , m_eventListReceived( false )
-    , m_taskListReceived( false )
 {
 }
 

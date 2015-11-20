@@ -27,7 +27,7 @@
 #include <QDialogButtonBox>
 
 BillDialog::BillDialog( QWidget* parent, Qt::WindowFlags f )
-: QDialog(parent, f), m_year( 0 ), m_week( 0 )
+    : QDialog(parent, f)
 {
     setResult(Later);
     QPalette p = palette();

@@ -28,7 +28,6 @@ class MakeTemporarilyVisible {
 public:
     explicit MakeTemporarilyVisible( QWidget* widget )
         : m_widget( widget )
-        , m_wasVisible( false )
     {
         Q_ASSERT( m_widget );
         m_wasVisible = m_widget->isVisible();
@@ -43,8 +42,8 @@ public:
         }
     }
 private:
-    QWidget* m_widget;
-    bool m_wasVisible;
+    QWidget* m_widget = {};
+    bool m_wasVisible = false;
 };
 
 #endif

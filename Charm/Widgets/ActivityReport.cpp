@@ -45,7 +45,6 @@
 ActivityReportConfigurationDialog::ActivityReportConfigurationDialog( QWidget* parent )
     : ReportConfigurationDialog( parent )
     , m_ui( new Ui::ActivityReportConfigurationDialog )
-    , m_rootTask( 0 )
 {
     setWindowTitle( tr( "Activity Report" ) );
 
@@ -205,8 +204,6 @@ void ActivityReportConfigurationDialog::showReportPreviewDialog()
 
 ActivityReport::ActivityReport( QWidget* parent )
     : ReportPreviewWindow( parent )
-    , m_rootTask( 0 )
-    , m_rootExcludeTask( 0 )
 {
     saveToXmlButton()->hide();
     saveToTextButton()->hide();

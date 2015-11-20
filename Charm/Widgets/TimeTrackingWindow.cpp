@@ -74,9 +74,6 @@
 
 TimeTrackingWindow::TimeTrackingWindow( QWidget* parent )
     : CharmWindow( tr( "Time Tracker" ), parent )
-    , m_weeklyTimesheetDialog( nullptr )
-    , m_monthlyTimesheetDialog( nullptr )
-    , m_activityReportDialog( nullptr )
     , m_summaryWidget( new TimeTrackingView( this ) )
     , m_billDialog( new BillDialog( this ) )
 {

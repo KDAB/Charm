@@ -56,7 +56,6 @@
 
 EventView::EventView( QToolBar* toolBar, QWidget* (parent) )
     : QWidget( parent )
-    , m_model( nullptr )
     , m_actionUndo( this )
     , m_actionRedo( this )
     , m_actionNewEvent( this )

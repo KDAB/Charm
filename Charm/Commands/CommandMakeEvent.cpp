@@ -31,7 +31,6 @@
 CommandMakeEvent::CommandMakeEvent( const Task& task,
                                     QObject* parent )
     : CharmCommand( tr("Create Event"), parent )
-    , m_rollback( false )
     , m_task( task )
 {
 }
@@ -39,7 +38,6 @@ CommandMakeEvent::CommandMakeEvent( const Task& task,
 CommandMakeEvent::CommandMakeEvent( const Event& event,
                                     QObject* parent )
     : CharmCommand( tr("Create Event"), parent )
-    , m_rollback( false )
     , m_event( event )
 {
 }

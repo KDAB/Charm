@@ -66,9 +66,7 @@ QVariant SelectTaskDialogProxy::data( const QModelIndex& index, int role ) const
 SelectTaskDialog::SelectTaskDialog( QWidget* parent )
     : QDialog( parent )
     , m_ui( new Ui::SelectTaskDialog() )
-    , m_selectedTask( 0 )
     , m_proxy( MODEL.charmDataModel() )
-    , m_nonTrackableSelectable( false )
 {
     m_ui->setupUi( this );
     m_ui->treeView->setModel( &m_proxy );

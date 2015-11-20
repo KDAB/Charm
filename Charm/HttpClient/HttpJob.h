@@ -124,14 +124,14 @@ private:
     QNetworkAccessManager *m_networkManager;
     QString m_username;
     QString m_password;
-    int m_currentState;
-    int m_errorCode;
+    int m_currentState = Ready;
+    int m_errorCode = NoError;
     QString m_errorString;
     QUrl m_loginUrl;
     QUrl m_portalUrl;
-    bool m_lastAuthenticationFailed;
-    bool m_authenticationDoneAlready;
-    bool m_passwordReadError;
+    bool m_lastAuthenticationFailed = true;
+    bool m_authenticationDoneAlready = false;
+    bool m_passwordReadError = false;
 };
 
 #endif

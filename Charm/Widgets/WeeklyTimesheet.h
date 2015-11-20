@@ -69,7 +69,7 @@ private slots:
 private:
     QScopedPointer<Ui::WeeklyTimesheetConfigurationDialog> m_ui;
     QList<NamedTimeSpan> m_weekInfo;
-    TaskId m_rootTask;
+    TaskId m_rootTask = {};
 };
 
 class WeeklyTimeSheetReport : public TimeSheetReport
@@ -98,8 +98,8 @@ private:
 
 private:
     // properties of the report:
-    int m_weekNumber;
-    int m_yearOfWeek;
+    int m_weekNumber = 0;
+    int m_yearOfWeek = 0;
 };
 
 #endif

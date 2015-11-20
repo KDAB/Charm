@@ -41,7 +41,7 @@ public:
 
 private:
     TaskList m_tasks;
-    bool m_success;
+    bool m_success = false;
 };
 
 #endif

@@ -42,20 +42,7 @@ Configuration& Configuration::instance()
 }
 
 Configuration::Configuration()
-    : taskPrefilteringMode( TaskPrefilter_ShowAll )
-    , timeTrackerFontSize( TimeTrackerFont_Regular )
-    , durationFormat( Minutes )
-    , toolButtonStyle( Qt::ToolButtonFollowStyle )
-    , showStatusBar( true )
-    , detectIdling( true )
-    , warnUnuploadedTimesheets( true )
-    , requestEventComment( false )
-    , enableCommandInterface( false )
-    , configurationName( DEFAULT_CONFIG_GROUP )
-    , installationId( 0 )
-    , newDatabase( false )
-    , failure( false )
-    , taskPaddingLength( 6 ) // arbitrary
+    : configurationName( DEFAULT_CONFIG_GROUP )
 {
 }
 
@@ -75,10 +62,6 @@ Configuration::Configuration( TaskPrefilteringMode _taskPrefilteringMode,
     , requestEventComment( _requestEventComment )
     , enableCommandInterface( _enableCommandInterface )
     , configurationName( DEFAULT_CONFIG_GROUP )
-    , installationId( 0 )
-    , newDatabase( false )
-    , failure( false )
-    , taskPaddingLength( 6 ) // arbitrary
 {
 }
 

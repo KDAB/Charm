@@ -94,7 +94,6 @@ static EventList createEventList( const QDate& start, const QDate& end, int minu
 EnterVacationDialog::EnterVacationDialog( QWidget* parent )
     : QDialog( parent )
     , m_ui( new Ui::EnterVacationDialog )
-    , m_selectedTaskId( -1 )
 {
     setWindowTitle( tr( "Enter Vacation" ) );
 

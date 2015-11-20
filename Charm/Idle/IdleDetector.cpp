@@ -38,7 +38,6 @@
 IdleDetector::IdleDetector( QObject* parent )
     : QObject( parent )
     , m_idlenessDuration( CHARM_IDLE_TIME ) // from CharmCMake.h
-    , m_available( true )
 {
 }
 

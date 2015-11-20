@@ -40,8 +40,6 @@ const int InstallationId = 1;
 
 TestApplication::TestApplication(const QString &databasePath, QObject *parent)
     : QObject(parent)
-    , m_controller( nullptr )
-    , m_model( nullptr )
     , m_configuration( &Configuration::instance() )
     , m_localPath( databasePath )
 {

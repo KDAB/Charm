@@ -69,27 +69,27 @@ public:
     void dump( const QString& why = QString::null );
 
     User user;  // this user's id
-    TaskPrefilteringMode taskPrefilteringMode;
-    TimeTrackerFontSize timeTrackerFontSize;
-    DurationFormat durationFormat;
-    Qt::ToolButtonStyle toolButtonStyle;
-    bool showStatusBar;
-    bool detectIdling;
-    bool warnUnuploadedTimesheets;
-    bool requestEventComment;
-    bool enableCommandInterface;
+    TaskPrefilteringMode taskPrefilteringMode = TaskPrefilter_ShowAll;
+    TimeTrackerFontSize timeTrackerFontSize = TimeTrackerFont_Regular;
+    DurationFormat durationFormat = Minutes;
+    Qt::ToolButtonStyle toolButtonStyle = Qt::ToolButtonFollowStyle;
+    bool showStatusBar = true;
+    bool detectIdling = true;
+    bool warnUnuploadedTimesheets = true;
+    bool requestEventComment = false;
+    bool enableCommandInterface = false;
 
     // these are stored in QSettings, since we need this information to locate and open the database:
     QString configurationName;
-    int installationId;
+    int installationId = 0;
     QString localStorageType; // SqLite, MySql, ...
     QString localStorageDatabase; // database name (path, with sqlite)
-    bool newDatabase; // true if the configuration has just been created
-    bool failure; // used to reconfigure on failures
+    bool newDatabase = false; // true if the configuration has just been created
+    bool failure = false; // used to reconfigure on failures
     QString failureMessage; // a message to show the user if something is wrong with the configuration
 
     // appearance properties
-    int taskPaddingLength; // auto-determined
+    int taskPaddingLength = 6; // arbitrary
 private:
     // allow test classes to create configuration objects (tests are
     // the only  application that can have (test) multiple

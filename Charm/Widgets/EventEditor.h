@@ -66,8 +66,8 @@ private:
 
     QScopedPointer<Ui::EventEditor> m_ui;
     Event m_event;
-    bool m_updating;
-    bool m_endDateChanged;
+    bool m_updating = false;
+    bool m_endDateChanged = true;
 };
 
 #endif /* EVENTEDITOR_H */

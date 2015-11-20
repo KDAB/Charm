@@ -33,10 +33,6 @@
 #include <algorithm>
 
 Task::Task()
-    : m_id(0)
-    , m_parent(0)
-    , m_subscribed(false)
-    , m_trackable(true)
 {
 }
 
@@ -45,7 +41,6 @@ Task::Task(TaskId id, const QString& name, TaskId parent, bool subscribed)
     , m_parent(parent)
     , m_name(name)
     , m_subscribed(subscribed)
-    , m_trackable(true)
 {
 }
 

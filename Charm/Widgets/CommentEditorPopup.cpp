@@ -34,7 +34,6 @@
 CommentEditorPopup::CommentEditorPopup( QWidget *parent )
     : QDialog( parent )
     , ui( new Ui::CommentEditorPopup )
-    , m_id()
 {
     ui->setupUi( this );
     ui->buttonBox->button( QDialogButtonBox::Ok )->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_Return ) );

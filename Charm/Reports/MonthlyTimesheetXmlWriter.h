@@ -46,11 +46,11 @@ public:
     void setRootTask( TaskId rootTask );
 
 private:
-    const CharmDataModel* m_dataModel;
-    int m_yearOfMonth;
-    int m_monthNumber;
-    int m_numberOfWeeks;
-    TaskId m_rootTask;
+    const CharmDataModel* m_dataModel = nullptr;
+    int m_yearOfMonth = 0;
+    int m_monthNumber = 0;
+    int m_numberOfWeeks = 0;
+    TaskId m_rootTask = {};
     EventList m_events;
 };
 

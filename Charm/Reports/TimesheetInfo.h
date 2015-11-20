@@ -51,11 +51,11 @@ public:
     QString formattedTaskIdAndName( int taskPaddingLength ) const;
 
     // the level of indentation, >0 means the numbers are aggregated for the subtasks:
-    int indentation;
+    int indentation = 0;
     QString taskName;
     QVector<int> seconds;
-    TaskId taskId;
-    bool aggregated;
+    TaskId taskId = {};
+    bool aggregated = false;
 };
 
 #endif

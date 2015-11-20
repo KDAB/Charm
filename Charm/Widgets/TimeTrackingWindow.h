@@ -134,9 +134,9 @@ private:
     void startCheckForUpdates( VerboseMode mode = Silent );
     void informUserAboutNewRelease( const QString& releaseVersion, const QUrl& link , const QString& releaseInfoLink );
 
-    WeeklyTimesheetConfigurationDialog* m_weeklyTimesheetDialog;
-    MonthlyTimesheetConfigurationDialog* m_monthlyTimesheetDialog;
-    ActivityReportConfigurationDialog *m_activityReportDialog;
+    WeeklyTimesheetConfigurationDialog* m_weeklyTimesheetDialog = nullptr;
+    MonthlyTimesheetConfigurationDialog* m_monthlyTimesheetDialog = nullptr;
+    ActivityReportConfigurationDialog *m_activityReportDialog = nullptr;
     TimeTrackingView* m_summaryWidget;
     QVector<WeeklySummary> m_summaries;
     QTimer m_checkUploadedSheetsTimer;

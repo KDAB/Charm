@@ -46,7 +46,7 @@ public Q_SLOTS:
 
 private:
     Ui::CommentEditorPopup *ui;
-    EventId m_id;
+    EventId m_id = {};
 };
 
 #endif // COMMENTEDITORPOPUP_H

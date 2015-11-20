@@ -42,7 +42,7 @@ public:
 
 private:
     Task m_task;
-    bool m_success;
+    bool m_success = false;
 };
 
 #endif

@@ -66,8 +66,8 @@ private:
     void selectTask( SelectTaskType type );
     void eventChangesCompleted( const Event& event );
 
-    TaskId m_taskToSearch;
-    TaskId m_taskToReplaceWith;
+    TaskId m_taskToSearch = {};
+    TaskId m_taskToReplaceWith = {};
     TimeSpan m_timeSpan;
     QPushButton* m_replace;
     QPushButton* m_cancel;

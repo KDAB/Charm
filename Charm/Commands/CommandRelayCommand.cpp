@@ -29,7 +29,6 @@
 
 CommandRelayCommand::CommandRelayCommand( QObject* parent )
     : CharmCommand( tr("Relay"), parent )
-    , m_payload( 0 )
 {   // as long as Charm is single-threaded, this does not do anything,
     // because there will be no repaint
     QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ) );

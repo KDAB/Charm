@@ -79,8 +79,8 @@ private:
     // properties of the report:
     QDate m_start;
     QDate m_end;
-    TaskId m_rootTask;
-    bool m_activeTasksOnly;
+    TaskId m_rootTask = {};
+    bool m_activeTasksOnly = false;
 };
 
 #endif

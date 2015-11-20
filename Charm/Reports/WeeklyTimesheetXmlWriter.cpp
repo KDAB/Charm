@@ -33,10 +33,6 @@
 static const int DaysInWeek = 7;
 
 WeeklyTimesheetXmlWriter::WeeklyTimesheetXmlWriter()
-    : m_dataModel( nullptr )
-    , m_year( 0 )
-    , m_weekNumber( 0 )
-    , m_rootTask()
 {
 }
 

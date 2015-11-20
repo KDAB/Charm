@@ -70,6 +70,6 @@ private:
     };
     Layout doLayout( const QStyleOptionViewItem& option,
                      const QModelIndex& index ) const;
-    mutable bool m_editing;
+    mutable bool m_editing = false;
 };
 #endif

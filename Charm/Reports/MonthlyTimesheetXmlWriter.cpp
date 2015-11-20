@@ -32,11 +32,6 @@
 #include <QDomDocument>
 
 MonthlyTimesheetXmlWriter::MonthlyTimesheetXmlWriter()
-    : m_dataModel( nullptr )
-    , m_yearOfMonth ( 0 )
-    , m_monthNumber( 0 )
-    , m_numberOfWeeks( 0 )
-    , m_rootTask()
 {}
 
 void MonthlyTimesheetXmlWriter::setDataModel( const CharmDataModel* dataModel )

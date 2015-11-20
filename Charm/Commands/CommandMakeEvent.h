@@ -51,7 +51,7 @@ Q_SIGNALS:
     void finishedOk( const Event& );
 
 private:
-    bool m_rollback; //don't show the event in finalize
+    bool m_rollback = false; //don't show the event in finalize
     Task m_task; // the task the new event should be assigned to
     Event m_event; // the result, only valid after the event has been created
 };

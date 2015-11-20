@@ -54,7 +54,7 @@ private slots:
 
 private:
     QScopedPointer<Ui::EnterVacationDialog> m_ui;
-    TaskId m_selectedTaskId;
+    TaskId m_selectedTaskId = -1;
     EventList m_events;
 };
 

@@ -33,7 +33,6 @@
 
 CommandExportToXml::CommandExportToXml( QString filename, QObject* parent )
     : CharmCommand( tr("Export to XML"), parent )
-    , m_error( false )
     , m_filename( filename )
 {
 }

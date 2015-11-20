@@ -110,7 +110,7 @@ private:
     QUndoStack* m_undoStack;
     QList<NamedTimeSpan> m_timeSpans;
     Event m_event;
-    EventModelFilter* m_model;
+    EventModelFilter* m_model = nullptr;
     QAction m_actionUndo;
     QAction m_actionRedo;
     QAction m_actionNewEvent;

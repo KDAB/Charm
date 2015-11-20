@@ -53,7 +53,7 @@ protected:
 
 private:
     QSqlDatabase m_database;
-    int m_installationId;
+    int m_installationId = 0;
 };
 
 #endif

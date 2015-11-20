@@ -33,7 +33,6 @@
 
 CharmDataModelTests::CharmDataModelTests()
     : QObject()
-    , m_referenceModel( nullptr )
 {
 }
 

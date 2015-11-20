@@ -29,7 +29,6 @@
 class User {
 public:
     User()
-        : m_id( 0 )
     {}
 
     User( const QString& name, int id )
@@ -64,7 +63,7 @@ public:
 
 private:
     QString m_name;
-    int m_id;
+    int m_id = 0;
 };
 
 #endif
