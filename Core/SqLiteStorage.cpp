@@ -191,10 +191,6 @@ bool SqLiteStorage::connect( Configuration& configuration )
         return false;
     }
 
-    // connect:
-//     qDebug() << "SqLiteStorage::connect: creating or opening local sqlite database at "
-//              << fileInfo.absoluteFilePath();
-
     const QDir oldDatabaseDirectory( QDir::homePath() + QDir::separator() + ".Charm" );
     if ( oldDatabaseDirectory.exists() )
         migrateDatabaseDirectory( oldDatabaseDirectory, fileInfo.dir() );
@@ -224,10 +220,8 @@ bool SqLiteStorage::connect( Configuration& configuration )
         return false;
     }
 
-//         qDebug() << "SqLiteStorage::connect: SUCCESS - connected to database";
     if ( ! verifyDatabase() )
     {
-//             qDebug() << "SqLiteStorage::connect: empty database, filling in the blanks";
         if ( !createDatabase( configuration ) )
         {
             configuration.failureMessage = QObject::tr( "SqLiteStorage::connect: error creating default database contents" );
@@ -239,8 +233,6 @@ bool SqLiteStorage::connect( Configuration& configuration )
     {
         const int userid = configuration.user.id();
         const User user = getUser( userid );
-//         qDebug() << "SqLiteStorage::connect: found user" << user.name()
-//                  << "for id" << userid << ( user.isValid() ? "(valid)" : "(invalid)");
         if ( !user.isValid() )
             return false;
 

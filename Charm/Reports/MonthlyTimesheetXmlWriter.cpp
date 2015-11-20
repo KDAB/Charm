@@ -168,10 +168,5 @@ QByteArray MonthlyTimesheetXmlWriter::saveToXml() const
         }
     }
 
-#if 0
-   qDebug() << "MonthlyTimeSheetReport::slotSaveToXml: generated XML:" << endl
-            << document.toString( 4 );
-#endif
-
    return document.toByteArray( 4 );
 }

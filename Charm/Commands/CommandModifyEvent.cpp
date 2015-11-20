@@ -44,8 +44,6 @@ bool CommandModifyEvent::prepare()
 
 bool CommandModifyEvent::execute( ControllerInterface* controller )
 {
-//     qDebug() << "CommandModifyEvent::execute: committing:";
-//     m_event.dump();
     return controller->modifyEvent( m_event );
 }
 

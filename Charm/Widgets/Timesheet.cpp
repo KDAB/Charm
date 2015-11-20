@@ -60,7 +60,6 @@ void TimeSheetReport::slotUpdate()
 
 void TimeSheetReport::slotSaveToXml()
 {
-    qDebug() << "TimeSheet::slotSaveToXml: creating XML time sheet";
     // first, ask for a file name:
     QString filename = getFileName( tr("Charm reports (*.charmreport)") );
     if (filename.isEmpty())
@@ -86,7 +85,6 @@ void TimeSheetReport::slotSaveToXml()
 
 void TimeSheetReport::slotSaveToText()
 {
-    qDebug() << "TimeSheet::slotSaveToText: creating text file with totals";
     // first, ask for a file name:
     const QString filename = getFileName( "Text files (*.txt)" );
     if (filename.isEmpty())

@@ -101,8 +101,6 @@ bool Controller::deleteEvent( const Event& e )
 
 bool Controller::addTask( const Task& task )
 {
-    qDebug() << Q_FUNC_INFO << "adding task" << task.id()
-             << "to parent" << task.parent();
     if ( m_storage->addTask( task ) ) {
         updateSubscriptionForTask( task );
         emit taskAdded( task );
@@ -116,14 +114,11 @@ bool Controller::addTask( const Task& task )
 
 bool Controller::modifyTask( const Task& task )
 {
-    // find it
-    qDebug() << Q_FUNC_INFO << "committing changes to task"
-             << task.id();
     // modify the task itself:
     bool result = m_storage->modifyTask( task );
     Q_ASSERT( result );
     if ( ! result ) {
-        qDebug() << Q_FUNC_INFO << "modifyTask failed!";
+        qCritical() << Q_FUNC_INFO << "modifyTask failed!";
         return result;
     }
 
@@ -135,7 +130,6 @@ bool Controller::modifyTask( const Task& task )
 
 bool Controller::deleteTask( const Task& task )
 {
-    qDebug() << Q_FUNC_INFO << "deleting task" << task.id();
     if ( m_storage->deleteTask( task ) ) {
         m_storage->deleteSubscription( CONFIGURATION.user, task );
         emit taskDeleted( task );
@@ -148,7 +142,6 @@ bool Controller::deleteTask( const Task& task )
 
 bool Controller::setAllTasks( const TaskList& tasks )
 {
-    qDebug() << Q_FUNC_INFO << "replacing all tasks";
     if ( m_storage->setAllTasks( CONFIGURATION.user, tasks ) ) {
         const TaskList newTasks = m_storage->getAllTasks();
         // tell the view about the existing tasks;
@@ -197,7 +190,6 @@ void Controller::stateChanged( State previous, State next )
         emit readyToQuit();
         if ( m_storage ) {
 // this will still leave Qt complaining about a repeated connection
-//         qDebug() << "Application::enterConnectingState: closing existing storage interface";
             m_storage->disconnect();
             delete m_storage;
             m_storage = nullptr;
@@ -370,7 +362,6 @@ QDomDocument Controller::exportDatabasetoXml() const
         eventsElement.appendChild( element );
     }
     root.appendChild( eventsElement );
-    // qDebug() << document.toString( 4 );
     return document;
 }
 

@@ -39,7 +39,6 @@
 #include <QTimer>
 #include <QtAlgorithms>
 #include <QUrl>
-#include <QDebug>
 
 #include "ui_ActivityReportConfigurationDialog.h"
 

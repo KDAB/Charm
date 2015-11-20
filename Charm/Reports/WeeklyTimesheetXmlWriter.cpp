@@ -175,8 +175,5 @@ QByteArray WeeklyTimesheetXmlWriter::saveToXml() const
         }
     }
 
-//     qDebug() << "WeeklyTimeSheetReport::slotSaveToXml: generated XML:" << endl
-//              << document.toString( 4 );
-//
     return document.toByteArray( 4 );
 }

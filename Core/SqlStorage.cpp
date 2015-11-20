@@ -459,9 +459,8 @@ bool SqlStorage::runQuery(QSqlQuery& query)
 
 void SqlStorage::stateChanged(State previous)
 {
-    Q_UNUSED(previous);
+    Q_UNUSED(previous)
     // atm, SqlStorage does not care about state
-    // qDebug() << "SqlStorage::stateChanged: NOT IMPLEMENTED"
 }
 
 User SqlStorage::getUser(int userid)
@@ -487,7 +486,7 @@ User SqlStorage::getUser(int userid)
         }
         else
         {
-            qDebug() << "SqlStorage::getUser: no user with id" << userid;
+            qCritical() << "SqlStorage::getUser: no user with id" << userid;
         }
     }
 
@@ -533,7 +532,7 @@ User SqlStorage::makeUser(const QString& name)
         }
         else
         {
-            qDebug()
+            qCritical()
                     << "SqlStorage::makeUser: FAILED to find newly created user";
             return user;
         }

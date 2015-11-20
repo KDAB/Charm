@@ -95,10 +95,10 @@ QString Charm::reportStylesheet( const QPalette& palette )
         style.replace(QLatin1String("@alternate_row_background_color@"), palette.alternateBase().color().name());
         style.replace(QLatin1String("@event_attributes_row_background_color@"), palette.midlight().color().name());
         if ( style.isEmpty() ) {
-            qDebug() << "reportStylesheet: default style sheet is empty, too bad";
+            qWarning() << "reportStylesheet: default style sheet is empty, too bad";
         }
     } else {
-        qDebug() << "reportStylesheet: cannot load report style sheet:" << stylesheet.errorString();
+        qCritical() << "reportStylesheet: cannot load report style sheet:" << stylesheet.errorString();
     }
     return style;
 }

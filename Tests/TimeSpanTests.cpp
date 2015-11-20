@@ -25,8 +25,6 @@
 #include "Core/TimeSpans.h"
 #include <QtTest/QtTest>
 
-#include <QDebug>
-
 void TimeSpanTests::testTimeSpans()
 {
     const QDate dec31 = QDate( 2012, 2, 1 );

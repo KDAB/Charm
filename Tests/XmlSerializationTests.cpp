@@ -75,10 +75,7 @@ void XmlSerializationTests::testEventSerialization()
     QDomDocument document( "testdocument" );
     Q_FOREACH( const Event& event, eventsToTest ) {
         QDomElement element = event.toXml( document );
-//         // temp:
-//         document.appendChild( element );
-//         qDebug() << document.toString( 4 );
-//         // ^^^
+
         try {
             Event readEvent = Event::fromXml( element );
             // the extra tests are mostly to immidiately see what is wrong:
@@ -177,7 +174,7 @@ void XmlSerializationTests::testTaskListSerialization()
         }
         QVERIFY( tasks == result );
     } catch( const XmlSerializationException& e ) {
-        qDebug() << "Failure reading tasks:" << e.what();
+        qCritical() << "Failure reading tasks:" << e.what();
         QFAIL( "Read tasks are not equal to the written ones" );
     }
 

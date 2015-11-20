@@ -26,7 +26,6 @@
 
 #include "HttpJob.h"
 #include <QUrl>
-#include <QDebug>
 #include <QVariant>
 #include <QVariantMap>
 

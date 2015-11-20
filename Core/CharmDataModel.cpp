@@ -139,8 +139,8 @@ void CharmDataModel::addTask( const Task& task )
         Q_FOREACH( auto adapter, m_adapters )
             adapter->taskAdded( task.id() );
     } else {
-        qDebug() << "CharmDataModel::addTask: duplicate task id"
-                 << task.id() << "ignored. THIS IS A BUG";
+        qCritical() << "CharmDataModel::addTask: duplicate task id"
+                    << task.id() << "ignored. THIS IS A BUG";
     }
 }
 
@@ -222,8 +222,8 @@ void CharmDataModel::setAllEvents( const EventList& events )
         if ( ! eventExists( events[i].id() ) ) {
             m_events[ events[i].id() ] = events[i];
         } else {
-            qDebug() << "CharmDataModel::addTask: duplicate task id"
-                     << m_tasks[i].task().id() << "ignored. THIS IS A BUG";
+            qCritical() << "CharmDataModel::addTask: duplicate task id"
+                        << m_tasks[i].task().id() << "ignored. THIS IS A BUG";
         }
     }
 

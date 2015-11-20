@@ -70,9 +70,9 @@ EventModelFilter* ModelConnector::findEventModel()
 void ModelConnector::commitCommand( CharmCommand* command )
 {
     if ( ! command->finalize() ) {
-        qDebug() << "CharmDataModel::commitCommand:"
-                 << command->metaObject()->className()
-                 << "command has failed";
+        qWarning() << "CharmDataModel::commitCommand:"
+                   << command->metaObject()->className()
+                   << "command has failed";
     }
 }
 

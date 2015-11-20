@@ -41,8 +41,6 @@ bool CommandDeleteEvent::prepare()
 
 bool CommandDeleteEvent::execute( ControllerInterface* controller )
 {
-    qDebug() << "CommandDeleteEvent::execute: deleting:";
-    m_event.dump();
     return controller->deleteEvent( m_event );
 }
 
