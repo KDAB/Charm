@@ -59,8 +59,7 @@ Configuration::Configuration()
 {
 }
 
-Configuration::Configuration( bool _eventsInLeafsOnly, bool _oneEventAtATime, User _user,
-                              TaskPrefilteringMode _taskPrefilteringMode,
+Configuration::Configuration( TaskPrefilteringMode _taskPrefilteringMode,
                               TimeTrackerFontSize _timeTrackerFontSize,
                               DurationFormat _durationFormat, bool _detectIdling,
                               Qt::ToolButtonStyle _buttonstyle, bool _showStatusBar,

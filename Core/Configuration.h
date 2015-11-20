@@ -97,8 +97,7 @@ private:
     friend class SqLiteStorageTests;
     friend class ControllerTests;
     // these are all the persisted metadata settings, and the constructor is only used during test runs:
-    Configuration( bool eventsInLeafsOnly, bool oneEventAtATime, User user,
-                   TaskPrefilteringMode taskPrefilteringMode, TimeTrackerFontSize,
+    Configuration( TaskPrefilteringMode taskPrefilteringMode, TimeTrackerFontSize,
                    DurationFormat durationFormat, bool detectIdling, Qt::ToolButtonStyle buttonstyle,
                    bool showStatusBar, bool warnUnuploadedTimesheets, bool _requestEventComment,
                    bool enableCommandInterface );
