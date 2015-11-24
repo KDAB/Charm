@@ -16,3 +16,5 @@
 /* Defined if local socket command interface is enabled */
 #cmakedefine CHARM_CI_LOCALSERVER
 #endif
+/* Defined if systemwide keychain is used */
+#cmakedefine QTKEYCHAIN_SYSTEM
