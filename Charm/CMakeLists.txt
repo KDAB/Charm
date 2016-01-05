@@ -264,5 +264,7 @@ IF( NOT "${CMAKE_VERSION}" VERSION_LESS "2.8.4" )
         # Deploy qsqlite plugin
         GET_TARGET_PROPERTY( _loc Qt5::QSQLiteDriverPlugin LOCATION )
         INSTALL( FILES ${_loc} DESTINATION plugins/sqldrivers )
+        # Install qt.conf (prevents plugins from the built-in Qt path to be used)
+        INSTALL(FILES qt.conf.in.windows RENAME qt.conf DESTINATION .)
     ENDIF()
 ENDIF()
