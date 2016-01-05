@@ -53,6 +53,8 @@ IF( NOT CHARM_FORCE_QT4 )
     find_package( Qt5Core QUIET )
 ENDIF()
 
+set(QTKEYCHAIN_SYSTEM OFF)
+
 IF(Qt5Core_FOUND)
     find_package(Qt5Widgets REQUIRED)
     find_package(Qt5Xml REQUIRED)
@@ -65,6 +67,12 @@ IF(Qt5Core_FOUND)
     IF(Qt5PrintSupport_FOUND)
         include_directories(${Qt5PrintSupport_INCLUDE_DIRS})
         set(QTPRINT_LIBRARIES ${Qt5PrintSupport_LIBRARIES})
+    ENDIF()
+
+    find_package(Qt5Keychain)
+
+    IF(Qt5Keychain_FOUND)
+	set(QTKEYCHAIN_SYSTEM ON)
     ENDIF()
 
     SET(CHARM_MAC_HIGHRES_SUPPORT_ENABLED ON)
@@ -120,6 +128,7 @@ IF(Qt5Core_FOUND)
         ${Qt5Sql_LIBRARIES}
         ${QTPRINT_LIBRARIES}
         ${QTDBUS_LIBRARIES}
+        ${QTKEYCHAIN_LIBRARIES}
         ${QT_PLATFORM_SPECIFIC_LIBRARIES}
     )
 
@@ -130,6 +139,7 @@ IF(Qt5Core_FOUND)
         ${Qt5Network_INCLUDE_DIRS}
         ${Qt5Script_INCLUDE_DIRS}
         ${Qt5Sql_INCLUDE_DIRS}
+        ${QTKEYCHAIN_INCLUDE_DIRS}
     )
 
     IF (NOT MSVC)
@@ -139,6 +149,13 @@ ELSE()
     # No Qt5 found, try Qt4
     find_package(Qt4 COMPONENTS QtMain QtCore QtGui QtSql QtXml QtNetwork QtScript REQUIRED)
     INCLUDE( UseQt4 )
+
+    find_package(QtKeychain)
+    LIST(APPEND QT_LIBRARIES ${QTKEYCHAIN_LIBRARIES})
+
+    IF(QtKeychain_FOUND)
+        set(QTKEYCHAIN_SYSTEM ON)
+    ENDIF()
 
     SET(CHARM_MAC_HIGHRES_SUPPORT_ENABLED OFF)
 
@@ -160,7 +177,7 @@ ELSE()
         endmacro()
     ENDIF()
 
-    include_directories(${QT_INCLUDES})
+    include_directories(${QT_INCLUDES} ${QTKEYCHAIN_INCLUDE_DIRS})
     #set(QTCORE_LIBRARIES ${QT_QTCORE_LIBRARY})
 
     macro(qt_wrap_cpp)
