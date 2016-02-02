@@ -64,6 +64,8 @@ protected:
     /** Insert the Edit menu. Empty by default. */
     virtual void insertEditMenu() {}
 
+    void checkVisibility();
+
 public:
     void stateChanged( State previous ) override;
     void showEvent( QShowEvent* ) override;
@@ -89,10 +91,12 @@ public slots:
     void showHideView();
     void configurationChanged() override;
 
-private:
+private slots:
     void handleOpenCharm( bool visible );
     void handleShow( bool visible );
     void handleShowHide( bool visible );
+
+private:
     QString m_windowName;
     QAction* m_openCharmAction;
     QAction* m_showAction;
@@ -101,6 +105,7 @@ private:
     QString m_windowIdentifier;
     QShortcut* m_shortcut = nullptr;
     QToolBar* m_toolBar;
+    bool m_isVisibility = false;
 };
 
 #endif

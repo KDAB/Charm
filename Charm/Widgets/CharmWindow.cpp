@@ -50,14 +50,16 @@ CharmWindow::CharmWindow( const QString& name, QWidget* parent )
     , m_showHideAction( new QAction( this ) )
 {
     setWindowName( name );
-    handleOpenCharm( false );
-    handleShow( false );
-    handleShowHide( false );
     connect( m_openCharmAction, SIGNAL(triggered(bool)), SLOT(showView()) );
     connect( m_showAction, SIGNAL(triggered(bool)), SLOT(showView()) );
     connect( m_showHideAction, SIGNAL(triggered(bool)), SLOT(showHideView()) );
+    connect( this, SIGNAL(visibilityChanged(bool)), SLOT(handleOpenCharm(bool)) );
+    connect( this, SIGNAL(visibilityChanged(bool)), SLOT(handleShow(bool)) );
+    connect( this, SIGNAL(visibilityChanged(bool)), SLOT(handleShowHide(bool)) );
     m_toolBar = addToolBar( "Toolbar" );
     m_toolBar->setMovable( false );
+
+    emit visibilityChanged( false );
 }
 
 void CharmWindow::stateChanged( State )
@@ -154,19 +156,25 @@ void CharmWindow::restore()
     show();
 }
 
+void CharmWindow::checkVisibility()
+{
+    const auto visibility = isVisible();
+
+    if (m_isVisibility != visibility) {
+        m_isVisibility = visibility;
+        emit visibilityChanged( m_isVisibility );
+    }
+}
+
 void CharmWindow::showEvent( QShowEvent* e )
 {
-    handleOpenCharm( true );
-    handleShow( true );
-    handleShowHide( true );
+    checkVisibility();
     QMainWindow::showEvent( e );
 }
 
 void CharmWindow::hideEvent( QHideEvent* e )
 {
-    handleOpenCharm( false );
-    handleShow( false );
-    handleShowHide( false );
+    checkVisibility();
     QMainWindow::hideEvent( e );
 }
 
@@ -204,7 +212,6 @@ void CharmWindow::handleShowHide( bool visible )
     const QString text = visible ?  tr( "Hide %1 Window" ).arg( m_windowName )
         :  tr( "Show %1 Window" ).arg( m_windowName );
     m_showHideAction->setText( text );
-    emit visibilityChanged( visible );
 }
 
 void CharmWindow::commitCommand( CharmCommand* command )
