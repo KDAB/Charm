@@ -48,7 +48,7 @@
 #include <QFile>
 #include <QApplication>
 
-#if QT_VERSION < 0x050000
+#if QT_VERSION < QT_VERSION_CHECK(5,0,0)
 #include <QDesktopServices>
 #else
 #include <QStandardPaths>
@@ -593,7 +593,7 @@ static QString charmDataDir() {
     const QByteArray charmHome = qgetenv("CHARM_HOME");
     if ( !charmHome.isEmpty() )
         return QFile::decodeName( charmHome ) + QLatin1String("/data/");
-#if QT_VERSION < 0x050000
+#if QT_VERSION < QT_VERSION_CHECK(5,0,0)
     return QDesktopServices::storageLocation(QDesktopServices::DataLocation) + QLatin1Char('/');
 #else
     return QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1Char('/');

@@ -43,7 +43,7 @@ static bool isWorkDay( const QDate& date )
 
 static QString toHtmlEscaped( const QString& s )
 {
-#if QT_VERSION < 0x050000
+#if QT_VERSION < QT_VERSION_CHECK(5,0,0)
     return Qt::escape( s );
 #else
     return s.toHtmlEscaped();
@@ -71,7 +71,7 @@ static EventList createEventList( const QDate& start, const QDate& end, int minu
     EventList events;
 
     const int days = start.daysTo( end );
-#if QT_VERSION >= 0x040700
+#if QT_VERSION >= QT_VERSION_CHECK(4,7,0)
     events.reserve( days );
 #endif
     for ( int i = 0; i < days; ++i ) {
