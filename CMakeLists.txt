@@ -142,7 +142,7 @@ IF(Qt5Core_FOUND)
         ${QTKEYCHAIN_INCLUDE_DIRS}
     )
 
-    IF (NOT MSVC)
+    IF (NOT WIN32)
         SET( CMAKE_CXX_FLAGS "${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS} ${CMAKE_CXX_FLAGS}" )
     ENDIF()
 ELSE()
@@ -214,15 +214,17 @@ SET( CMAKE_INCLUDE_DIRECTORIES_PROJECT_BEFORE ON )
 
 IF( CMAKE_COMPILER_IS_GNUCXX )
     # Add additional GCC options.
-    ADD_DEFINITIONS(
-        -Wall -Wundef -Wcast-align -Wchar-subscripts -Wpointer-arith
-        -Wwrite-strings -Wpacked -Wformat-security
-        -Wmissing-format-attribute -Wold-style-cast
-    )
-    ADD_DEFINITIONS( -fvisibility=hidden )
+    SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wundef -Wcast-align -Wchar-subscripts -Wpointer-arith")
+    SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wwrite-strings -Wpacked -Wformat-security")
+    SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wmissing-format-attribute -Wold-style-cast")
+    IF(NOT WIN32)
+        SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden ")
+    ENDIF()
 ELSEIF( CMAKE_CXX_COMPILER MATCHES "clang" )
-    ADD_DEFINITIONS( -Wall -Wextra -Wno-unused-parameter )
-    ADD_DEFINITIONS( -fvisibility=hidden )
+    SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wno-unused-parameter" )
+    IF(NOT WIN32)
+        SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden" )
+    ENDIF()
 ENDIF()
 
 

@@ -202,7 +202,7 @@ IF( APPLE )
     FILE( COPY ${ICON} DESTINATION ${RESOURCES} )
 ENDIF()
 
-IF( MSVC )
+IF(WIN32)
     SET( Resources_SRCS ${Resources_SRCS} Charm.rc )
 ENDIF()
 
