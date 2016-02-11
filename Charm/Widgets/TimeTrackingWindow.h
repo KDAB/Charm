@@ -99,13 +99,13 @@ public slots:
     void slotTasksDownloaded( HttpJob* );
     void slotUserInfoDownloaded( HttpJob* );
     void slotCheckForUpdatesManual();
+    void slotStartEvent( TaskId );
 
 protected:
 
     void insertEditMenu() override;
 
 private slots:
-    void slotStartEvent( TaskId );
     void slotStopEvent();
     void slotSelectTasksToShow();
     void slotWeeklyTimesheetPreview( int result );

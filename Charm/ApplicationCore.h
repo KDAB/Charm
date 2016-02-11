@@ -57,7 +57,7 @@ class ApplicationCore : public QObject
     Q_OBJECT
 
 public:
-    explicit ApplicationCore( QObject* parent = nullptr );
+    explicit ApplicationCore( TaskId startupTask, QObject* parent = nullptr );
     ~ApplicationCore();
 
     static ApplicationCore& instance();
@@ -168,6 +168,7 @@ private:
     bool m_tasksWindowHiddenFromSystrayToggle = false;
     bool m_eventWindowHiddenFromSystrayToggle = false;
     QLocalServer m_uniqueApplicationServer;
+    TaskId m_startupTask;
 
     // All statics are created as members of Application. This is
     // supposed to help on Windows, where constructors for statics

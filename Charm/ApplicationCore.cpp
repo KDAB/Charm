@@ -56,6 +56,7 @@
 
 #include <algorithm>
 #include <functional>
+#include <iostream>
 
 #ifdef CHARM_CI_SUPPORT
 #  include "CI/CharmCommandInterface.h"
@@ -63,7 +64,7 @@
 
 ApplicationCore* ApplicationCore::m_instance = nullptr;
 
-ApplicationCore::ApplicationCore( QObject* parent )
+ApplicationCore::ApplicationCore(TaskId startupTask, QObject* parent )
     : QObject( parent )
     , m_actionStopAllTasks( this )
     , m_windows( QList<CharmWindow*> () << &m_tasksWindow << &m_eventWindow << &m_timeTracker )
@@ -81,6 +82,7 @@ ApplicationCore::ApplicationCore( QObject* parent )
     , m_actionActivityReport( this )
     , m_actionWeeklyTimesheetReport( this )
     , m_actionMonthlyTimesheetReport( this )
+    , m_startupTask( startupTask )
     , m_dateChangeWatcher( new DateChangeWatcher( this ) )
 {
     // QApplication setup
@@ -97,9 +99,18 @@ ApplicationCore::ApplicationCore( QObject* parent )
 #ifndef NDEBUG
     serverName.append( "_debug" );
 #endif
-    uniqueApplicationSocket.connectToServer(serverName, QIODevice::ReadOnly);
-    if (uniqueApplicationSocket.waitForConnected(1000))
+    uniqueApplicationSocket.connectToServer(serverName, QIODevice::ReadWrite);
+    if (uniqueApplicationSocket.waitForConnected(1000)) {
+        if ( startupTask != -1 ) {
+            QByteArray data( QStringLiteral( "start-task: %1" ).arg( startupTask ).toLatin1().constData() );
+            qint64 written = uniqueApplicationSocket.write( data );
+            if (  written == -1 || written != data.length() ) {
+                std::cerr << "Failed to pass " << qPrintable( data ) << " to running charm instance, error: "
+                          << qPrintable( uniqueApplicationSocket.errorString() ) << std::endl;
+            }
+        }
         throw AlreadyRunningException();
+    }
 
     connect(&m_uniqueApplicationServer, SIGNAL(newConnection()),
             this, SLOT(slotHandleUniqueApplicationConnection()));
@@ -270,6 +281,17 @@ void ApplicationCore::slotStartTaskMenuAboutToShow()
 void ApplicationCore::slotHandleUniqueApplicationConnection()
 {
     QLocalSocket* socket = m_uniqueApplicationServer.nextPendingConnection();
+    socket->waitForReadyRead();
+    QByteArray data = socket->readAll();
+    if ( data.startsWith( "start-task: " ) ) {
+        bool ok = true;
+        TaskId id = data.mid( QStringLiteral( "start-task: " ).length() ).toInt( &ok );
+        if ( ok ) {
+            m_timeTracker.slotStartEvent( id );
+        } else {
+            qDebug() << "Received invalid argument:" << data;
+        }
+    }
     delete socket;
     openAWindow( true );
 }
@@ -549,6 +571,9 @@ void ApplicationCore::leaveConnectingState()
 
 void ApplicationCore::enterConnectedState()
 {
+    if ( m_startupTask != -1) {
+        m_timeTracker.slotStartEvent( m_startupTask );
+    }
 #ifdef CHARM_CI_SUPPORT
     m_cmdInterface->start();
 #endif

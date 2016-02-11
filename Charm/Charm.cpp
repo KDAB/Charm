@@ -37,12 +37,12 @@
 #include "Core/CharmExceptions.h"
 #include "CharmCMake.h"
 
-static std::shared_ptr<ApplicationCore> createApplicationCore()
+static std::shared_ptr<ApplicationCore> createApplicationCore( TaskId startupTask )
 {
 #ifdef Q_OS_OSX
-    return std::make_shared<MacApplicationCore>();
+    return std::make_shared<MacApplicationCore>( startupTask );
 #else
-    return std::make_shared<ApplicationCore>();
+    return std::make_shared<ApplicationCore>( startupTask );
 #endif
 }
 
@@ -54,10 +54,20 @@ void showCriticalError( const QString& msg ) {
 
 int main ( int argc, char** argv )
 {
-    if (argc == 2 && qstrcmp(argv[1], "--version") == 0) {
-        using namespace std;
-        cout << "Charm version " << CHARM_VERSION << endl;
-        return 0;
+    TaskId startupTask = -1;
+    if (argc >= 2) {
+        if ( qstrcmp(argv[1], "--version") == 0) {
+            using namespace std;
+            cout << "Charm version " << CHARM_VERSION << endl;
+            return 0;
+        } else if ( argc == 3 && qstrcmp(argv[1], "--start-task") == 0 ) {
+            bool ok = true;
+            startupTask = QString::fromLocal8Bit( argv[2] ).toInt( &ok );
+            if ( !ok || startupTask < 0 ) {
+                std::cerr << "Invalid task id passed: " << argv[2];
+                return 1;
+            }
+        }
     }
 
     const QByteArray charmHomeEnv = qgetenv("CHARM_HOME");
@@ -73,7 +83,7 @@ int main ( int argc, char** argv )
 
     try {
         QApplication app( argc, argv );
-        const std::shared_ptr<ApplicationCore> core( createApplicationCore() );
+        const std::shared_ptr<ApplicationCore> core( createApplicationCore( startupTask ) );
         QObject::connect( &app, SIGNAL(commitDataRequest(QSessionManager&)), core.get(), SLOT(commitData(QSessionManager&)) );
         QObject::connect( &app, SIGNAL(saveStateRequest(QSessionManager&)), core.get(), SLOT(saveState(QSessionManager&)) );
         return app.exec();
