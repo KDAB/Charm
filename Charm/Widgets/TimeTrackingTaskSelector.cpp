@@ -42,6 +42,10 @@
 #include <QToolButton>
 #include <QVBoxLayout>
 
+#ifdef Q_OS_WIN
+#include <QtWinExtras/QtWinExtras>
+#endif
+
 #define CUSTOM_TASK_PROPERTY_NAME "CUSTOM_TASK_PROPERTY"
 
 TimeTrackingTaskSelector::TimeTrackingTaskSelector(QWidget *parent)
@@ -223,6 +227,7 @@ void TimeTrackingTaskSelector::handleActiveEvents()
         m_stopGoAction->setChecked( false );
         m_editCommentAction->setEnabled( false );
     }
+    updateThumbBar();
 }
 
 void TimeTrackingTaskSelector::slotActionSelected( QAction* action )
@@ -259,6 +264,32 @@ void TimeTrackingTaskSelector::slotActionSelected( QAction* action )
     }
 }
 
+void TimeTrackingTaskSelector::updateThumbBar()
+{
+#ifdef Q_OS_WIN
+    if ( !m_stopGoThumbButton && window()->windowHandle() ) {
+        QWinThumbnailToolBar *toolBar = new QWinThumbnailToolBar( this );
+        toolBar->setWindow( window()->windowHandle() );
+
+        m_stopGoThumbButton = new QWinThumbnailToolButton( toolBar );
+        toolBar->addButton( m_stopGoThumbButton );
+        connect(m_stopGoThumbButton, &QWinThumbnailToolButton::clicked, [this](){
+            slotGoStopToggled( !m_stopGoButton->isChecked() );
+        });
+    }
+    if ( m_stopGoThumbButton ) {
+        if ( m_stopGoButton->isChecked() ) {
+            m_stopGoThumbButton->setToolTip( tr( "Stop Task" ) );
+            m_stopGoThumbButton->setIcon( Data::stopIcon() );
+        } else {
+            m_stopGoThumbButton->setToolTip( tr( "Start Task" ) );
+            m_stopGoThumbButton->setIcon( Data::goIcon() );
+        }
+        m_stopGoThumbButton->setEnabled( m_stopGoButton->isEnabled() );
+    }
+#endif
+}
+
 void TimeTrackingTaskSelector::taskSelected( const QString& taskname, TaskId id )
 {
     m_selectedTask = id;
@@ -292,6 +323,12 @@ void TimeTrackingTaskSelector::slotManuallySelectTask()
     m_taskManuallySelected = true;
     handleActiveEvents();
     emit updateSummariesPlease();
+}
+
+void TimeTrackingTaskSelector::showEvent(QShowEvent* e)
+{
+    updateThumbBar();
+    QWidget::showEvent( e );
 }
 
 

@@ -38,6 +38,7 @@ class QMenu;
 class QToolButton;
 class QTextEdit;
 class QToolBar;
+class QWinThumbnailToolButton;
 
 class TimeTrackingTaskSelector : public QWidget
 {
@@ -66,7 +67,11 @@ private slots:
     void slotEditCommentClicked();
     void slotManuallySelectTask();
 
+protected:
+    void showEvent( QShowEvent* ) override;
+
 private:
+    void updateThumbBar();
     void taskSelected( const QString& taskname, TaskId id );
     QToolButton* m_stopGoButton;
     QAction* m_stopGoAction;
@@ -83,6 +88,10 @@ private:
     /** Temporarily store that a task has been manually selected, so that it can be
       activated in the menu once after selection. */
     bool m_taskManuallySelected = false;
+
+#ifdef Q_OS_WIN
+    QWinThumbnailToolButton* m_stopGoThumbButton = nullptr;
+#endif
 };
 
 #endif // TIMETRACKINGTASKSELECTOR_H
