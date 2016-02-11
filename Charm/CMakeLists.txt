@@ -232,7 +232,7 @@ EXECUTE_PROCESS(
 )
 
 # Only support CPack packaging on newer versions of CMake.
-IF( NOT "${CMAKE_VERSION}" VERSION_LESS "2.8.4" )
+IF( NOT "${CMAKE_VERSION}" VERSION_LESS "2.8.4" AND CHARM_PREPARE_DEPLOY )
     IF( CMAKE_BUILD_TYPE MATCHES "^([Dd][Ee][Bb][Uu][Gg])" )
         SET( CMAKE_INSTALL_DEBUG_LIBRARIES_ONLY TRUE )
     ENDIF()

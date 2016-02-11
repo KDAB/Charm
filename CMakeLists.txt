@@ -230,14 +230,18 @@ ENDIF()
 
 IF( UNIX AND NOT APPLE )
     set( Charm_EXECUTABLE charmtimetracker )
-    SET( BIN_INSTALL_DIR bin )
-    SET( DOC_INSTALL_DIR share/doc/${Charm_EXECUTABLE} )
 ELSE()
     set( Charm_EXECUTABLE Charm )
-    SET( BIN_INSTALL_DIR . )
+ENDIF()
+
+SET( BIN_INSTALL_DIR bin )
+SET( DOC_INSTALL_DIR share/doc/${Charm_EXECUTABLE} )
+SET( ICONS_DIR "${CMAKE_SOURCE_DIR}/Charm/Icons" )
+
+IF( CHARM_PREPARE_DEPLOY AND WIN32 OR APPLE)
+SET( BIN_INSTALL_DIR . )
     SET( DOC_INSTALL_DIR . )
 ENDIF()
-SET( ICONS_DIR "${CMAKE_SOURCE_DIR}/Charm/Icons" )
 
 OPTION( CHARM_IDLE_DETECTION "Build the Charm idle detector" ON )
 OPTION( CHARM_TIMESHEET_TOOLS "Build the Charm timesheet tools" OFF )
@@ -248,6 +252,8 @@ IF( CHARM_CI_SUPPORT )
     OPTION( CHARM_CI_TCPSERVER "Build Charm with TCP command interface support" ON )
     OPTION( CHARM_CI_LOCALSERVER "Build Charm with local socket command interface support" ON )
 ENDIF()
+
+OPTION(CHARM_PREPARE_DEPLOY "Deploy dependencies with install target(Windows, Apple)" ON)
 
 ADD_SUBDIRECTORY( Core )
 ADD_SUBDIRECTORY( Charm )
