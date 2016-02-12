@@ -48,6 +48,10 @@
 #include <QFile>
 #include <QApplication>
 
+#ifdef Q_OS_WIN
+#include <QtWinExtras/QtWinExtras>
+#endif
+
 #if QT_VERSION < QT_VERSION_CHECK(5,0,0)
 #include <QDesktopServices>
 #else
@@ -88,6 +92,9 @@ ApplicationCore::ApplicationCore(TaskId startupTask, QObject* parent )
     , m_actionWeeklyTimesheetReport( this )
     , m_actionMonthlyTimesheetReport( this )
     , m_startupTask( startupTask )
+#ifdef Q_OS_WIN
+    , m_windowsJumpList( new QWinJumpList( this ) )
+#endif
     , m_dateChangeWatcher( new DateChangeWatcher( this ) )
 {
     // QApplication setup
@@ -596,6 +603,9 @@ void ApplicationCore::enterConnectedState()
     if ( m_startupTask != -1) {
         m_timeTracker.slotStartEvent( m_startupTask );
     }
+#ifdef Q_OS_WIN
+    updateTaskList();
+#endif
 #ifdef CHARM_CI_SUPPORT
     m_cmdInterface->start();
 #endif
@@ -854,6 +864,22 @@ CharmWindow& ApplicationCore::mainView()
 TrayIcon& ApplicationCore::trayIcon()
 {
     return m_trayIcon;
+}
+
+void ApplicationCore::updateTaskList()
+{
+#ifdef Q_OS_WIN
+    auto addJumpListEntry = []( QWinJumpListCategory* category, const TaskIdList &source ) {
+        category->clear();
+        for ( TaskId id : source ) {
+            category->addLink( Data::goIcon(), DATAMODEL->getTask( id ).name(), qApp->applicationFilePath(),
+            { QStringLiteral( "--start-task" ), QString::number( id ) } );
+        }
+        category->setVisible( true );
+    };
+    addJumpListEntry( m_windowsJumpList->recent(), DATAMODEL->mostRecentlyUsedTasks() );
+    addJumpListEntry( m_windowsJumpList->frequent(), DATAMODEL->mostFrequentlyUsedTasks() );
+#endif
 }
 
 void ApplicationCore::slotCharmWindowVisibilityChanged( bool visible )

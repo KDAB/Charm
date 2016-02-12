@@ -51,6 +51,7 @@
 class CharmCommandInterface;
 class IdleDetector;
 class QSessionManager;
+class QWinJumpList;
 
 class ApplicationCore : public QObject
 {
@@ -89,6 +90,8 @@ public:
     CharmWindow& mainView();
 
     TrayIcon& trayIcon();
+
+    void updateTaskList();
 
 public slots:
     void setState( State state );
@@ -169,6 +172,9 @@ private:
     bool m_eventWindowHiddenFromSystrayToggle = false;
     QLocalServer m_uniqueApplicationServer;
     TaskId m_startupTask;
+#ifdef Q_OS_WIN
+    QWinJumpList* m_windowsJumpList = nullptr;
+#endif
 
     // All statics are created as members of Application. This is
     // supposed to help on Windows, where constructors for statics
