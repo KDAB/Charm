@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>500</width>
-    <height>397</height>
+    <height>600</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -182,6 +182,19 @@
     </widget>
    </item>
    <item>
+    <spacer>
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item>
     <widget class="QGroupBox" name="groupBox_2">
      <property name="title">
       <string>Included tasks</string>
@@ -259,91 +272,42 @@
        </layout>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="_5">
-        <item>
-         <widget class="QCheckBox" name="checkBoxExcludeTasks">
-          <property name="text">
-           <string>Exclude...</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="labelExcludeTaskName">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="text">
-           <string>(task name)</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
-       </layout>
+       <widget class="QLabel" name="label_6">
+        <property name="text">
+         <string>Exclude tasks and subtasks (no tasks, otherwise).</string>
+        </property>
+       </widget>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="_6">
+       <widget class="QListWidget" name="listWidgetExclude">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_3">
         <item>
-         <widget class="QLabel" name="label_6">
+         <widget class="QToolButton" name="toolButtonAddExcludeTask">
           <property name="text">
-           <string>... and subtasks</string>
+           <string>Add Exclude Task</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QToolButton" name="toolButtonExcludeTask">
+         <widget class="QToolButton" name="toolButtonRemoveExcludeTask">
           <property name="enabled">
            <bool>false</bool>
           </property>
           <property name="text">
-           <string>Select Task...</string>
+           <string>Remove Selected Task</string>
           </property>
          </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="label_7">
-          <property name="text">
-           <string>(no tasks, otherwise).</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <spacer>
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
         </item>
        </layout>
       </item>
      </layout>
     </widget>
-   </item>
-   <item>
-    <spacer>
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
-     </property>
-    </spacer>
    </item>
    <item>
     <layout class="QHBoxLayout">
@@ -389,38 +353,6 @@
     <hint type="destinationlabel">
      <x>169</x>
      <y>197</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>checkBoxExcludeTasks</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>labelExcludeTaskName</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>69</x>
-     <y>225</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>262</x>
-     <y>225</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>checkBoxExcludeTasks</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>toolButtonExcludeTask</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>69</x>
-     <y>225</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>177</x>
-     <y>260</y>
     </hint>
    </hints>
   </connection>

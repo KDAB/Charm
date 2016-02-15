@@ -56,9 +56,9 @@ private slots:
     void slotStandardTimeSpansChanged();
     void slotTimeSpanSelected( int );
     void slotCheckboxSubtasksOnlyChecked( bool );
-    void slotCheckBoxExcludeTasksChecked( bool );
     void slotSelectTask();
     void slotExcludeTask();
+    void slotRemoveExcludedTask();
 
 private:
     bool selectTask(TaskId& task);
@@ -66,7 +66,7 @@ private:
     QScopedPointer<Ui::ActivityReportConfigurationDialog> m_ui;
     QList<NamedTimeSpan> m_timespans;
     TaskId m_rootTask = {};
-    TaskId m_rootExcludeTask = {};
+    QSet<TaskId> m_rootExcludeTasks;
 };
 
 class ActivityReport : public ReportPreviewWindow
@@ -77,8 +77,8 @@ public:
     explicit ActivityReport( QWidget* parent = nullptr );
     ~ActivityReport();
 
-    void setReportProperties( const QDate& start, const QDate& end,
-        TaskId rootTask, TaskId rootExcludeTask );
+    void setReportProperties(const QDate& start, const QDate& end,
+        TaskId rootTask, QSet<TaskId> rootExcludeTasks );
     void timeSpanSelection( NamedTimeSpan timeSpanSelection );
 
 private slots:
@@ -91,7 +91,7 @@ private:
     QDate m_start;
     QDate m_end;
     TaskId m_rootTask = {};
-    TaskId m_rootExcludeTask = {};
+    QSet<TaskId> m_rootExcludeTasks;
     NamedTimeSpan m_timeSpanSelection;
 };
 
