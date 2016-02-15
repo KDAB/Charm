@@ -54,6 +54,11 @@
 #include <QStandardPaths>
 #endif
 
+#ifdef Q_OS_WIN
+#include <windows.h>
+#include <winuser.h>
+#endif
+
 #include <algorithm>
 #include <functional>
 #include <iostream>
@@ -315,8 +320,19 @@ void ApplicationCore::openAWindow( bool raise ) {
         windowToOpen = &mainView();
 
     windowToOpen->show();
-    if ( raise )
+    if ( raise ) {
         windowToOpen->raise();
+#ifdef Q_OS_WIN
+        int idActive = GetWindowThreadProcessId( GetForegroundWindow(), NULL );
+        int threadId = GetCurrentThreadId();
+        if ( AttachThreadInput( threadId, idActive, TRUE ) != 0 ) {
+            HWND wid = reinterpret_cast<HWND>( windowToOpen->winId() );
+            SetForegroundWindow( wid );
+            SetFocus( wid );
+            AttachThreadInput( threadId, idActive, FALSE );
+        }
+#endif
+    }
 
     if( windowToOpen == m_closedWindow )
         m_closedWindow = nullptr;
