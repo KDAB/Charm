@@ -79,6 +79,10 @@ int main ( int argc, char** argv )
         QSettings::setPath( QSettings::IniFormat, QSettings::UserScope, user );
         QSettings::setPath( QSettings::NativeFormat, QSettings::SystemScope, sys );
         QSettings::setPath( QSettings::IniFormat, QSettings::SystemScope, sys );
+#ifdef Q_OS_WIN
+        // Use ini for storing settings as the registry path is not affected by CHARM_HOME.
+        QSettings::setDefaultFormat( QSettings::IniFormat );
+#endif
     }
 
     try {
