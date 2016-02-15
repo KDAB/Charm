@@ -231,10 +231,6 @@ void ActivityReport::timeSpanSelection( NamedTimeSpan timeSpanSelection )
 
 void ActivityReport::slotUpdate()
 {
-    const QString DateFormat( "yyyy/MM/dd" );
-    const QString TimeFormat( "HH:mm" );
-    const QString DateTimeFormat( "yyyy/MM/dd HH:mm" );
-
     // retrieve matching events:
     EventIdList matchingEvents = DATAMODEL->eventsThatStartInTimeFrame( m_start, m_end );
     matchingEvents = Charm::eventIdsSortedByStartTime( matchingEvents );
