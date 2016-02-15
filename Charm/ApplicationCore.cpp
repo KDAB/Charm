@@ -96,6 +96,12 @@ ApplicationCore::ApplicationCore(TaskId startupTask, QObject* parent )
 
     QLocalSocket uniqueApplicationSocket;
     QString serverName( "com.kdab.charm" );
+    QString charmHomeEnv( QString::fromLocal8Bit( qgetenv( "CHARM_HOME" ) ) );
+    if ( !charmHomeEnv.isEmpty() ) {
+        serverName.append( QStringLiteral( "_%1" ).arg(
+                               charmHomeEnv.replace( QRegExp( QStringLiteral( ":?/|:?\\\\" ) ),
+                                                     QStringLiteral( "_" ) ) ) );
+    }
 #ifndef NDEBUG
     serverName.append( "_debug" );
 #endif
