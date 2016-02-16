@@ -59,15 +59,14 @@ ActivityReportConfigurationDialog::ActivityReportConfigurationDialog( QWidget* p
     connect( m_ui->buttonBox, SIGNAL(rejected()), this, SLOT(reject()) );
     connect( m_ui->comboBox, SIGNAL(currentIndexChanged(int)),
              SLOT(slotTimeSpanSelected(int)) );
-    connect( m_ui->checkBoxSubTasksOnly, SIGNAL(toggled(bool)),
-             SLOT(slotCheckboxSubtasksOnlyChecked(bool)) );
     connect( m_ui->toolButtonAddExcludeTask, SIGNAL(clicked()),
              SLOT(slotExcludeTask()) );
     connect( m_ui->toolButtonRemoveExcludeTask, SIGNAL(clicked()),
              SLOT(slotRemoveExcludedTask()) );
-    connect( m_ui->toolButtonSelectTask, SIGNAL(clicked()),
+    connect( m_ui->toolButtonAddIncludeTask, SIGNAL(clicked()),
              SLOT(slotSelectTask()) );
-    slotCheckboxSubtasksOnlyChecked( m_ui->checkBoxSubTasksOnly->isChecked() );
+    connect( m_ui->toolButtonRemoveIncludeTask, SIGNAL(clicked()),
+             SLOT(slotRemoveIncludeTask()) );
 
     new DateEntrySyncer(m_ui->spinBoxStartWeek, m_ui->spinBoxStartYear, m_ui->dateEditStart, 1,  this );
     new DateEntrySyncer(m_ui->spinBoxEndWeek, m_ui->spinBoxEndYear, m_ui->dateEditEnd, 7, this );
@@ -122,27 +121,20 @@ void ActivityReportConfigurationDialog::slotTimeSpanSelected( int index )
     }
 }
 
-void ActivityReportConfigurationDialog::slotCheckboxSubtasksOnlyChecked( bool checked )
-{
-    if ( checked && m_rootTask == 0 ) {
-        slotSelectTask();
-    }
-
-    if ( ! checked ) {
-        m_rootTask = 0;
-        m_ui->labelTaskName->setText( tr( "(All Tasks)" ) );
-    }
-}
-
 void ActivityReportConfigurationDialog::slotSelectTask()
 {
-    if ( selectTask( m_rootTask ) ) {
-        const TaskTreeItem& item = DATAMODEL->taskTreeItem( m_rootTask );
-        m_ui->labelTaskName->setText( DATAMODEL->fullTaskName( item.task() ) );
-    } else {
-        if ( m_rootTask == 0 )
-            m_ui->checkBoxSubTasksOnly->setChecked( false );
+    TaskId taskId;
+    if ( selectTask( taskId ) && !m_rootTasks.contains(taskId)) {
+        const TaskTreeItem& item = DATAMODEL->taskTreeItem( taskId );
+        QListWidgetItem* listItem = new QListWidgetItem( Data::charmIcon(),
+                                                         DATAMODEL->fullTaskName( item.task() ),
+                                                         m_ui->listWidgetIncludeTask );
+        listItem->setData( Qt::UserRole, taskId );
+        m_rootTasks << taskId;
     }
+    m_ui->toolButtonRemoveIncludeTask->setEnabled( !m_rootTasks.isEmpty() );
+    m_ui->listWidgetIncludeTask->setEnabled( !m_rootTasks.isEmpty() );
+
 }
 
 void ActivityReportConfigurationDialog::slotExcludeTask()
@@ -169,6 +161,17 @@ void ActivityReportConfigurationDialog::slotRemoveExcludedTask()
     }
     m_ui->toolButtonRemoveExcludeTask->setEnabled( !m_rootExcludeTasks.isEmpty() );
     m_ui->listWidgetExclude->setEnabled( !m_rootExcludeTasks.isEmpty() );
+}
+
+void ActivityReportConfigurationDialog::slotRemoveIncludeTask()
+{
+    QListWidgetItem* item = m_ui->listWidgetIncludeTask->currentItem();
+    if ( item ) {
+        m_rootTasks.remove( item->data( Qt::UserRole ).toInt() );
+        delete item;
+    }
+    m_ui->toolButtonRemoveIncludeTask->setEnabled( !m_rootTasks.isEmpty() );
+    m_ui->listWidgetIncludeTask->setEnabled( !m_rootTasks.isEmpty() );
 }
 
 bool ActivityReportConfigurationDialog::selectTask(TaskId& task)
@@ -201,7 +204,7 @@ void ActivityReportConfigurationDialog::showReportPreviewDialog()
 
     auto report = new ActivityReport();
     report->timeSpanSelection(  m_timespans[index] );
-    report->setReportProperties( start, end, m_rootTask, m_rootExcludeTasks );
+    report->setReportProperties( start, end, m_rootTasks, m_rootExcludeTasks );
     report->show();
 }
 
@@ -218,11 +221,11 @@ ActivityReport::~ActivityReport()
 {
 }
 
-void ActivityReport::setReportProperties( const QDate& start, const QDate& end, TaskId rootTask, QSet<TaskId> rootExcludeTasks )
+void ActivityReport::setReportProperties( const QDate& start, const QDate& end, QSet<TaskId> rootTasks, QSet<TaskId> rootExcludeTasks )
 {
     m_start = start;
     m_end = end;
-    m_rootTask = rootTask;
+    m_rootTasks = rootTasks;
     m_rootExcludeTasks = rootExcludeTasks;
     slotUpdate();
 }
@@ -236,10 +239,15 @@ void ActivityReport::slotUpdate()
 {
     // retrieve matching events:
     EventIdList matchingEvents = DATAMODEL->eventsThatStartInTimeFrame( m_start, m_end );
-    matchingEvents = Charm::eventIdsSortedByStartTime( matchingEvents );
-    if ( m_rootTask != 0 ) {
-        matchingEvents = Charm::filteredBySubtree( matchingEvents, m_rootTask );
+    
+    if( !m_rootTasks.isEmpty() ) {
+        QSet<EventId> filteredEvents;
+        Q_FOREACH( TaskId include,  m_rootTasks ) {
+           filteredEvents |= Charm::filteredBySubtree( matchingEvents, include ).toSet();
+        }
+        matchingEvents = filteredEvents.toList();
     }
+    matchingEvents = Charm::eventIdsSortedByStartTime( matchingEvents );
 
     // filter unproductive events:
     Q_FOREACH( TaskId exclude,  m_rootExcludeTasks ) {
@@ -314,10 +322,15 @@ void ActivityReport::slotUpdate()
             paragraph.appendChild( totalsElement );
             body.appendChild( paragraph );
         }
-        if ( m_rootTask != 0 ) {
+        if ( !m_rootTasks.isEmpty() ) {
             QDomElement paragraph = doc.createElement( "p" );
-            const Task& task = DATAMODEL->getTask( m_rootTask );
-            QString rootTaskText = tr( "Activity under task %1" ).arg( DATAMODEL->fullTaskName( task ) );
+            QString rootTaskText = tr( "Activity under tasks:" );
+
+            Q_FOREACH( TaskId taskId, m_rootTasks ) {
+                const Task& task = DATAMODEL->getTask( taskId );
+                rootTaskText.append( QStringLiteral( " ( %1 ),").arg( DATAMODEL->fullTaskName( task ) ) );
+            }
+            rootTaskText = rootTaskText.mid(0, rootTaskText.length() - 1 );
             QDomText rootText = doc.createTextNode( rootTaskText );
             paragraph.appendChild( rootText );
             body.appendChild( paragraph );
@@ -437,6 +450,6 @@ void ActivityReport::slotLinkClicked( const QUrl& which )
     default:
         Q_ASSERT( false ); // should not happen
     }
-    setReportProperties( start, end, m_rootTask, m_rootExcludeTasks );
+    setReportProperties( start, end, m_rootTasks, m_rootExcludeTasks );
 }
 #include "moc_ActivityReport.cpp"

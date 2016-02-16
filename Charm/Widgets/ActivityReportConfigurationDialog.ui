@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>500</width>
-    <height>600</height>
+    <height>637</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -201,76 +201,49 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
-       <layout class="QHBoxLayout" name="_3">
-        <item>
-         <widget class="QCheckBox" name="checkBoxSubTasksOnly">
-          <property name="text">
-           <string>Show...</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="labelTaskName">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="text">
-           <string>(task name)</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
-       </layout>
+       <widget class="QLabel" name="label_5">
+        <property name="text">
+         <string>Include tasks and subtasks (all tasks, otherwise).</string>
+        </property>
+       </widget>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="_4">
+       <widget class="QListWidget" name="listWidgetIncludeTask">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_4">
         <item>
-         <widget class="QLabel" name="label_5">
+         <widget class="QToolButton" name="toolButtonAddIncludeTask">
           <property name="text">
-           <string>... and subtasks</string>
+           <string>Add Include Task</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QToolButton" name="toolButtonSelectTask">
+         <widget class="QToolButton" name="toolButtonRemoveIncludeTask">
           <property name="enabled">
            <bool>false</bool>
           </property>
           <property name="text">
-           <string>Select Task...</string>
+           <string>Remove Selected Task</string>
           </property>
          </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="label_4">
-          <property name="text">
-           <string>(all tasks, otherwise).</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <spacer>
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
         </item>
        </layout>
       </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBox_3">
+     <property name="title">
+      <string>Exclude tasks</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_6">
       <item>
        <widget class="QLabel" name="label_6">
         <property name="text">
@@ -307,6 +280,10 @@
        </layout>
       </item>
      </layout>
+     <zorder>label_6</zorder>
+     <zorder>label_6</zorder>
+     <zorder>listWidgetExclude</zorder>
+     <zorder></zorder>
     </widget>
    </item>
    <item>
@@ -323,38 +300,5 @@
   </layout>
  </widget>
  <resources/>
- <connections>
-  <connection>
-   <sender>checkBoxSubTasksOnly</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>labelTaskName</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>52</x>
-     <y>160</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>201</x>
-     <y>165</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>checkBoxSubTasksOnly</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>toolButtonSelectTask</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>64</x>
-     <y>161</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>169</x>
-     <y>197</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>
