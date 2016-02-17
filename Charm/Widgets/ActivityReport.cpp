@@ -328,7 +328,7 @@ void ActivityReport::slotUpdate()
 
             Q_FOREACH( TaskId taskId, m_rootTasks ) {
                 const Task& task = DATAMODEL->getTask( taskId );
-                rootTaskText.append( QStringLiteral( " ( %1 ),").arg( DATAMODEL->fullTaskName( task ) ) );
+                rootTaskText.append( QString::fromLatin1( " ( %1 ),").arg( DATAMODEL->fullTaskName( task ) ) );
             }
             rootTaskText = rootTaskText.mid(0, rootTaskText.length() - 1 );
             QDomText rootText = doc.createTextNode( rootTaskText );

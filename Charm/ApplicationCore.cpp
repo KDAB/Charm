@@ -110,9 +110,9 @@ ApplicationCore::ApplicationCore(TaskId startupTask, QObject* parent )
     QString serverName( "com.kdab.charm" );
     QString charmHomeEnv( QString::fromLocal8Bit( qgetenv( "CHARM_HOME" ) ) );
     if ( !charmHomeEnv.isEmpty() ) {
-        serverName.append( QStringLiteral( "_%1" ).arg(
-                               charmHomeEnv.replace( QRegExp( QStringLiteral( ":?/|:?\\\\" ) ),
-                                                     QStringLiteral( "_" ) ) ) );
+        serverName.append( QString::fromLatin1( "_%1" ).arg(
+                               charmHomeEnv.replace( QRegExp( QLatin1String( ":?/|:?\\\\" ) ),
+                                                     QLatin1String( "_" ) ) ) );
     }
 #ifndef NDEBUG
     serverName.append( "_debug" );
@@ -120,7 +120,7 @@ ApplicationCore::ApplicationCore(TaskId startupTask, QObject* parent )
     uniqueApplicationSocket.connectToServer(serverName, QIODevice::ReadWrite);
     if (uniqueApplicationSocket.waitForConnected(1000)) {
         if ( startupTask != -1 ) {
-            QByteArray data( QStringLiteral( "start-task: %1" ).arg( startupTask ).toLatin1().constData() );
+            QByteArray data( QString::fromLatin1( "start-task: %1" ).arg( startupTask ).toLatin1().constData() );
             qint64 written = uniqueApplicationSocket.write( data );
             if (  written == -1 || written != data.length() ) {
                 std::cerr << "Failed to pass " << qPrintable( data ) << " to running charm instance, error: "
@@ -303,7 +303,7 @@ void ApplicationCore::slotHandleUniqueApplicationConnection()
     QByteArray data = socket->readAll();
     if ( data.startsWith( "start-task: " ) ) {
         bool ok = true;
-        TaskId id = data.mid( QStringLiteral( "start-task: " ).length() ).toInt( &ok );
+        TaskId id = data.mid( QString::fromLatin1( "start-task: " ).length() ).toInt( &ok );
         if ( ok ) {
             m_timeTracker.slotStartEvent( id );
         } else {
@@ -873,7 +873,7 @@ void ApplicationCore::updateTaskList()
         category->clear();
         for ( TaskId id : source ) {
             category->addLink( Data::goIcon(), DATAMODEL->getTask( id ).name(), qApp->applicationFilePath(),
-            { QStringLiteral( "--start-task" ), QString::number( id ) } );
+            { QLatin1String( "--start-task" ), QString::number( id ) } );
         }
         category->setVisible( true );
     };
