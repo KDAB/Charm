@@ -61,6 +61,7 @@ public:
 
     TaskId selectedTask() const;
     void setNonTrackableSelectable();
+    void setNonValidSelectable();
 
 signals:
     void saveConfiguration();
@@ -86,6 +87,7 @@ private:
     SelectTaskDialogProxy m_proxy;
     QHash<TaskId,bool> m_expansionStates;
     bool m_nonTrackableSelectable = false;
+    bool m_nonValidSelectable = false;
 };
 
 #endif

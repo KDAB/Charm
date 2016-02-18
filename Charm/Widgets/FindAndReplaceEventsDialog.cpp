@@ -137,6 +137,9 @@ void FindAndReplaceEventsDialog::slotSelectTaskToReplaceWith()
 void FindAndReplaceEventsDialog::selectTask( SelectTaskType type )
 {
     SelectTaskDialog dialog( this );
+    if ( type == TaskToSearch ) {
+        dialog.setNonValidSelectable();
+    }
     if( !dialog.exec() )
         return;
 

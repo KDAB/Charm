@@ -175,7 +175,7 @@ bool SelectTaskDialog::isValidAndTrackable( const QModelIndex& index ) const
         return false;
     const Task task = m_proxy.taskForIndex( index );
 
-    const bool taskValid = task.isValid() && task.isCurrentlyValid();
+    const bool taskValid = m_nonValidSelectable || (task.isValid() && task.isCurrentlyValid());
 
     if ( m_nonTrackableSelectable ) {
         return taskValid;
@@ -257,6 +257,11 @@ void SelectTaskDialog::slotPrefilteringChanged()
 void SelectTaskDialog::setNonTrackableSelectable()
 {
     m_nonTrackableSelectable = true;
+}
+
+void SelectTaskDialog::setNonValidSelectable()
+{
+    m_nonValidSelectable = true;
 }
 
 #include "moc_SelectTaskDialog.cpp"
