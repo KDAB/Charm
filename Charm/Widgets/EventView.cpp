@@ -54,8 +54,9 @@
 #include <QToolBar>
 #include <QVBoxLayout>
 
-EventView::EventView( QToolBar* toolBar, QWidget* (parent) )
-    : QWidget( parent )
+EventView::EventView( QWidget* parent )
+    : QDialog( parent )
+    , m_toolBar( new QToolBar( this ) )
     , m_actionUndo( this )
     , m_actionRedo( this )
     , m_actionNewEvent( this )
@@ -67,8 +68,9 @@ EventView::EventView( QToolBar* toolBar, QWidget* (parent) )
     , m_labelTotal( new QLabel( this ) )
     , m_listView( new QListView( this ) )
 {
+    setWindowTitle( tr( "Event Editor" ) );
     auto layout = new QVBoxLayout( this );
-    layout->setContentsMargins( 0, 0, 0, 0 );
+    layout->addWidget( m_toolBar );
     layout->addWidget( m_listView );
 
     m_listView->setAlternatingRowColors( true );
@@ -112,17 +114,17 @@ EventView::EventView( QToolBar* toolBar, QWidget* (parent) )
     m_actionNewEvent.setToolTip( tr( "Create a new Event" ) );
     m_actionNewEvent.setIcon( Data::newTaskIcon() );
     m_actionNewEvent.setShortcut( QKeySequence::New );
-    toolBar->addAction( &m_actionNewEvent );
+    m_toolBar->addAction( &m_actionNewEvent );
 
     m_actionEditEvent.setText( tr( "Edit Event...") );
     m_actionEditEvent.setShortcut( Qt::CTRL + Qt::Key_E );
     m_actionEditEvent.setIcon( Data::editEventIcon() );
-    toolBar->addAction( &m_actionEditEvent );
+    m_toolBar->addAction( &m_actionEditEvent );
 
     m_actionFindAndReplace.setText( tr( "Search/Replace Events..." ) );
     m_actionFindAndReplace.setToolTip( tr( "Change the task events belong to" ) );
     m_actionFindAndReplace.setIcon( Data::searchIcon() );
-    toolBar->addAction( &m_actionFindAndReplace );
+    m_toolBar->addAction( &m_actionFindAndReplace );
 
     connect( &m_actionFindAndReplace, SIGNAL(triggered()), SLOT(slotFindAndReplace()) );
 
@@ -134,7 +136,7 @@ EventView::EventView( QToolBar* toolBar, QWidget* (parent) )
 #endif
     m_actionDeleteEvent.setShortcuts(deleteShortcuts);
     m_actionDeleteEvent.setIcon( Data::deleteTaskIcon() );
-    toolBar->addAction( &m_actionDeleteEvent );
+    m_toolBar->addAction( &m_actionDeleteEvent );
 
     // disable all actions, action state will be set when the current
     // item changes:
@@ -142,7 +144,7 @@ EventView::EventView( QToolBar* toolBar, QWidget* (parent) )
     m_actionEditEvent.setEnabled( false );
     m_actionDeleteEvent.setEnabled( false );
 
-    toolBar->addWidget( m_comboBox );
+    m_toolBar->addWidget( m_comboBox );
     connect( m_comboBox, SIGNAL(currentIndexChanged(int)),
              SLOT(timeFrameChanged(int)) );
 
@@ -150,9 +152,9 @@ EventView::EventView( QToolBar* toolBar, QWidget* (parent) )
     QSizePolicy spacerSizePolicy = spacer->sizePolicy();
     spacerSizePolicy.setHorizontalPolicy( QSizePolicy::Expanding );
     spacer->setSizePolicy( spacerSizePolicy );
-    toolBar->addWidget( spacer );
+    m_toolBar->addWidget( spacer );
 
-    toolBar->addWidget( m_labelTotal );
+    m_toolBar->addWidget( m_labelTotal );
 
     QTimer::singleShot( 0, this, SLOT(delayedInitialization()) );
 
@@ -205,17 +207,6 @@ void EventView::timeSpansChanged()
     } else {
         m_comboBox->setCurrentIndex( 0 );
     }
-}
-
-void EventView::closeEvent( QCloseEvent* e )
-{
-    e->setAccepted( false );
-    reject();
-}
-
-void EventView::reject()
-{
-    emit visible( false );
 }
 
 void EventView::commitCommand( CharmCommand* command )
@@ -331,13 +322,6 @@ void EventView::slotContextMenuRequested( const QPoint& point )
 
     // all actions are handled in their own slots:
     menu.exec( m_listView->mapToGlobal( point ) );
-}
-
-// FIXME obsolete
-Event EventView::newSettings()
-{
-    Event event( m_event );
-    return event;
 }
 
 void EventView::makeVisibleAndCurrent( const Event& event )
@@ -463,10 +447,12 @@ void EventView::slotReset()
     timeFrameChanged( m_comboBox->currentIndex() );
 }
 
-// ViewModeInterface:
-void EventView::saveGuiState() {}
-void EventView::restoreGuiState() {}
-void EventView::stateChanged( State previous ) {}
+void EventView::stateChanged( State previous )
+{
+    if ( ApplicationCore::instance().state() == Connecting ) {
+        setModel( & ApplicationCore::instance().model() );
+    }
+}
 
 void EventView::configurationChanged()
 {

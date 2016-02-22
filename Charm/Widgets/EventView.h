@@ -27,13 +27,14 @@
 #include <QWidget>
 #include <QAction>
 #include <QUndoStack>
+#include <QDialog>
 
 #include "Core/Event.h"
 #include "Core/TimeSpans.h"
 #include "Core/CommandEmitterInterface.h"
 
-#include "ViewModeInterface.h"
-#include "UndoCharmCommandWrapper.h"
+#include "Charm/ModelConnector.h"
+#include "Charm/UndoCharmCommandWrapper.h"
 
 class QModelIndex;
 
@@ -44,33 +45,24 @@ class QComboBox;
 class QLabel;
 class QListView;
 
-class EventView : public QWidget,
-                  public ViewModeInterface,
+class EventView : public QDialog,
                   public CommandEmitterInterface
 {
     Q_OBJECT
 
 public:
-    explicit EventView( QToolBar* toolBar, QWidget* parent );
+    explicit EventView( QWidget* parent = nullptr );
     ~EventView();
-
-    void closeEvent( QCloseEvent* ) override;
-
-    void reject();
 
     void makeVisibleAndCurrent( const Event& );
 
-    // implement ViewModeInterface:
-    void saveGuiState() override;
-    void restoreGuiState() override;
-    void stateChanged( State previous ) override;
-    void configurationChanged() override;
-    void setModel( ModelConnector* ) override;
+    void stateChanged( State previous );
+    void configurationChanged();
+    void setModel( ModelConnector* ) ;
 
     void populateEditMenu( QMenu* );
 
 signals:
-    void visible( bool );
     void emitCommand( CharmCommand* );
     void emitCommandRollback( CharmCommand* );
 
@@ -103,10 +95,10 @@ private slots:
     void slotReset();
 
 private:
-    Event newSettings();
     void setCurrentEvent( const Event& );
     void stageCommand( CharmCommand* );
 
+    QToolBar* m_toolBar;
     QUndoStack* m_undoStack;
     QList<NamedTimeSpan> m_timeSpans;
     Event m_event;

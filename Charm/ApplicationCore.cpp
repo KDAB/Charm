@@ -36,6 +36,7 @@
 #include "Idle/IdleDetector.h"
 #include "Widgets/ConfigurationDialog.h"
 #include "Widgets/NotificationPopup.h"
+#include "Widgets/TasksView.h"
 
 #include <QDir>
 #include <QTimer>
@@ -76,7 +77,6 @@ ApplicationCore* ApplicationCore::m_instance = nullptr;
 ApplicationCore::ApplicationCore(TaskId startupTask, QObject* parent )
     : QObject( parent )
     , m_actionStopAllTasks( this )
-    , m_windows( QList<CharmWindow*> () << &m_tasksWindow << &m_eventWindow << &m_timeTracker )
     , m_actionQuit( this )
     , m_systrayContextMenuStartTask( m_timeTracker.menu()->title() )
     , m_actionAboutDialog( this )
@@ -151,24 +151,26 @@ ApplicationCore::ApplicationCore(TaskId startupTask, QObject* parent )
                 slotControllerReadyToQuit()));
 
     connectControllerAndModel(&m_controller, m_model.charmDataModel());
-    Charm::connectControllerAndView(&m_controller, &mainView());
-    Q_FOREACH( auto window, m_windows ) {
-        if ( window != &mainView() ) { // main view acts as the main relay
-            connect( window, SIGNAL(emitCommand(CharmCommand*)),
-                     &mainView(), SLOT(sendCommand(CharmCommand*)) );
-            connect( window, SIGNAL(emitCommandRollback(CharmCommand*)),
-                     &mainView(), SLOT(sendCommandRollback(CharmCommand*)) );
-        } else
-            connect( window, SIGNAL(showNotification(QString,QString)),
-                    SLOT(slotShowNotification(QString,QString)) );
+    Charm::connectControllerAndView(&m_controller, &m_timeTracker);
 
-        // save the configuration (configuration is managed by the application)
-        connect( window, SIGNAL(saveConfiguration()),
-                 SLOT(slotSaveConfiguration()) );
+    // save the configuration (configuration is managed by the application)
+    connect( &m_timeTracker, SIGNAL(saveConfiguration()),
+             SLOT(slotSaveConfiguration()) );
+    connect( &m_timeTracker, SIGNAL(showNotification(QString,QString)),
+            SLOT(slotShowNotification(QString,QString)) );
 
-        connect( window, SIGNAL(visibilityChanged(bool)),
-                 this,   SLOT(slotCharmWindowVisibilityChanged(bool)) );
-    }
+    // save the configuration (configuration is managed by the application)
+    connect( &m_tasksView, SIGNAL(saveConfiguration()),
+             SLOT(slotSaveConfiguration()) );
+    connect( &m_tasksView, SIGNAL(emitCommand(CharmCommand*)),
+             &m_timeTracker, SLOT(sendCommand(CharmCommand*)) );
+    connect( &m_tasksView, SIGNAL(emitCommandRollback(CharmCommand*)),
+             &m_timeTracker, SLOT(sendCommandRollback(CharmCommand*)) );
+    connect( &m_eventView, SIGNAL(emitCommand(CharmCommand*)),
+             &m_timeTracker, SLOT(sendCommand(CharmCommand*)) );
+    connect( &m_eventView, SIGNAL(emitCommandRollback(CharmCommand*)),
+             &m_timeTracker, SLOT(sendCommandRollback(CharmCommand*)) );
+
     // my own signals:
     connect(this, SIGNAL(goToState(State)), SLOT(setState(State)),
             Qt::QueuedConnection);
@@ -179,9 +181,7 @@ ApplicationCore::ApplicationCore(TaskId startupTask, QObject* parent )
     m_actionStopAllTasks.setShortcutContext( Qt::ApplicationShortcut );
     mainView().addAction(&m_actionStopAllTasks); // for the shortcut to work
     connect( &m_actionStopAllTasks, SIGNAL(triggered()), SLOT(slotStopAllTasks()) );
-    int index = m_windows.indexOf( &m_timeTracker );
-    auto window = m_windows[index];
-    m_systrayContextMenu.addAction( window->openCharmAction() );
+    m_systrayContextMenu.addAction( m_timeTracker.openCharmAction() );
     m_systrayContextMenu.addSeparator();
     m_systrayContextMenu.addAction( &m_actionStopAllTasks );
     m_systrayContextMenu.addSeparator();
@@ -193,10 +193,11 @@ ApplicationCore::ApplicationCore(TaskId startupTask, QObject* parent )
 
     QApplication::setWindowIcon( Data::charmIcon() );
 
-    Q_FOREACH( auto window, m_windows ) {
-        if ( window != &m_timeTracker )
-            m_systrayContextMenu.addAction( window->showAction() );
-    }
+    m_systrayContextMenu.addAction( tr( "Show Tasks Editor" ), this,
+                                    SLOT(slotShowTasksEditor()), QKeySequence( tr("Ctrl+1") ) );
+    m_systrayContextMenu.addAction( tr( "Show Event Editor" ), this,
+                                    SLOT(slotShowEventEditor()), QKeySequence( tr("Ctrl+2") ) );
+
 
     m_systrayContextMenu.addSeparator();
     m_systrayContextMenu.addMenu( &m_systrayContextMenuStartTask );
@@ -315,43 +316,32 @@ void ApplicationCore::slotHandleUniqueApplicationConnection()
 }
 
 void ApplicationCore::openAWindow( bool raise ) {
-    CharmWindow* windowToOpen = 0;
-    foreach( CharmWindow* window, m_windows )
-        if ( !window->isHidden() )
-            windowToOpen = window;
 
-    if ( !windowToOpen && m_closedWindow )
-        windowToOpen = m_closedWindow;
-
-    if ( !windowToOpen )
-        windowToOpen = &mainView();
-
-    windowToOpen->show();
+    m_timeTracker.show();
     if ( raise ) {
-        windowToOpen->raise();
+        m_timeTracker.raise();
 #ifdef Q_OS_WIN
         int idActive = GetWindowThreadProcessId( GetForegroundWindow(), NULL );
         int threadId = GetCurrentThreadId();
         if ( AttachThreadInput( threadId, idActive, TRUE ) != 0 ) {
-            HWND wid = reinterpret_cast<HWND>( windowToOpen->winId() );
+            HWND wid = reinterpret_cast<HWND>( m_timeTracker.winId() );
             SetForegroundWindow( wid );
             SetFocus( wid );
             AttachThreadInput( threadId, idActive, FALSE );
         }
 #endif
     }
-
-    if( windowToOpen == m_closedWindow )
-        m_closedWindow = nullptr;
 }
 
 void ApplicationCore::createWindowMenu( QMenuBar *menuBar )
 {
     auto menu = new QMenu( menuBar );
     menu->setTitle( tr( "Window" ) );
-    Q_FOREACH( CharmWindow* window, m_windows ) {
-        menu->addAction( window->showHideAction() );
-    }
+    menu->addAction( tr( "Show Tasks Editor Window" ), this,
+                     SLOT(slotShowTasksEditor()), QKeySequence( tr("Ctrl+1") ) );
+    menu->addAction( tr( "Show Event Editor Window" ), this,
+                     SLOT(slotShowEventEditor()), QKeySequence( tr("Ctrl+2") ) );
+    menu->addAction( m_timeTracker.showHideAction() );
     menu->addSeparator();
     menu->addAction( &m_actionEnterVacation );
     menu->addSeparator();
@@ -402,6 +392,11 @@ void ApplicationCore::createHelpMenu( QMenuBar *menuBar )
     menuBar->addMenu( menu );
 }
 
+CharmWindow &ApplicationCore::mainView()
+{
+    return m_timeTracker;
+}
+
 void ApplicationCore::setState(State state)
 {
     if (m_state == state)
@@ -440,9 +435,10 @@ void ApplicationCore::setState(State state)
     };
 
     m_state = state;
+    m_timeTracker.stateChanged( m_state );
+    m_tasksView.stateChanged( m_state );
+    m_eventView.stateChanged( m_state );
 
-    std::for_each( m_windows.begin(), m_windows.end(),
-                   std::bind2nd( std::mem_fun( &CharmWindow::stateChanged ), m_state ) );
 
     switch (m_state)
     {
@@ -718,16 +714,11 @@ bool ApplicationCore::configure()
 
 void ApplicationCore::toggleShowHide()
 {
-    if ( m_timeTracker.isHidden() && m_tasksWindow.isHidden() && m_eventWindow.isHidden() ) {
+    if ( m_timeTracker.isHidden() && m_eventView.isHidden() ) {
         int raised = 0;
         if ( m_eventWindowHiddenFromSystrayToggle ) {
-            CharmWindow::showHideView( &m_eventWindow );
+            CharmWindow::showHideView( &m_eventView );
             m_eventWindowHiddenFromSystrayToggle = false;
-            ++raised;
-        }
-        if ( m_tasksWindowHiddenFromSystrayToggle ) {
-            CharmWindow::showHideView( &m_tasksWindow );
-            m_tasksWindowHiddenFromSystrayToggle = false;
             ++raised;
         }
         if ( m_timeTrackerHiddenFromSystrayToggle || raised == 0 ) { // if no view was visible and the user did not toggle other views before, raise the timetracker
@@ -739,12 +730,8 @@ void ApplicationCore::toggleShowHide()
             m_timeTracker.hide();
             m_timeTrackerHiddenFromSystrayToggle = true;
         }
-        if ( m_tasksWindow.isVisible() ) {
-            m_tasksWindow.hide();
-            m_tasksWindowHiddenFromSystrayToggle = true;
-        }
-        if ( m_eventWindow.isVisible() ) {
-            m_eventWindow.hide();
+        if ( m_eventView.isVisible() ) {
+            m_eventView.hide();
             m_eventWindowHiddenFromSystrayToggle = true;
         }
     }
@@ -807,8 +794,9 @@ void ApplicationCore::slotSaveConfiguration()
         m_cmdInterface->configurationChanged();
 #endif
     }
-    std::for_each( m_windows.begin(), m_windows.end(),
-                   std::mem_fun( &CharmWindow::configurationChanged ) );
+    m_timeTracker.configurationChanged();
+    m_tasksView.configurationChanged();
+    m_eventView.configurationChanged();
 }
 
 ModelConnector& ApplicationCore::model()
@@ -856,11 +844,6 @@ void ApplicationCore::slotMaybeIdle()
     // it
 }
 
-CharmWindow& ApplicationCore::mainView()
-{
-    return m_timeTracker;
-}
-
 TrayIcon& ApplicationCore::trayIcon()
 {
     return m_trayIcon;
@@ -882,12 +865,6 @@ void ApplicationCore::updateTaskList()
 #endif
 }
 
-void ApplicationCore::slotCharmWindowVisibilityChanged( bool visible )
-{
-    if( !visible )
-        m_closedWindow = dynamic_cast< CharmWindow* >( sender() );
-}
-
 void ApplicationCore::saveState( QSessionManager & manager )
 {
     Q_UNUSED( manager )
@@ -899,9 +876,8 @@ void ApplicationCore::commitData( QSessionManager & manager )
     // Before QApplication closes all windows, save their state.
     // Doing this in saveState is too late because then we would store that they are all hidden.
     if (m_state == Connected) {
-        m_tasksWindow.saveGuiState();
-        m_eventWindow.saveGuiState();
         m_timeTracker.saveGuiState();
+        m_tasksView.saveGuiState();
     }
 }
 
@@ -913,6 +889,16 @@ void ApplicationCore::slotShowNotification( const QString& title, const QString&
         NotificationPopup* popup = new NotificationPopup( nullptr );
         popup->showNotification( title, message );
     }
+}
+
+void ApplicationCore::slotShowTasksEditor()
+{
+    m_tasksView.show();
+}
+
+void ApplicationCore::slotShowEventEditor()
+{
+    m_eventView.show();
 }
 
 #include "moc_ApplicationCore.cpp"

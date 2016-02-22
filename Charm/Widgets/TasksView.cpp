@@ -52,9 +52,9 @@
 #include <QToolBar>
 #include <QTreeView>
 
-TasksView::TasksView( QToolBar* toolBar, QWidget* parent )
-    : QWidget( parent )
-    // , ViewInterface()
+TasksView::TasksView( QWidget* parent )
+    : QDialog( parent )
+    , m_toolBar( new QToolBar( this ) )
     , m_delegate( new TasksViewDelegate( this ) )
     , m_actionNewTask( this )
     , m_actionNewSubTask( this )
@@ -62,12 +62,13 @@ TasksView::TasksView( QToolBar* toolBar, QWidget* parent )
     , m_actionDeleteTask( this )
     , m_actionExpandTree( this )
     , m_actionCollapseTree( this )
-    , m_showCurrentOnly( new QAction( toolBar ) )
-    , m_showSubscribedOnly( new QAction( toolBar ) )
+    , m_showCurrentOnly( new QAction( m_toolBar ) )
+    , m_showSubscribedOnly( new QAction( m_toolBar ) )
     , m_treeView( new QTreeView( this ) )
 {
+    setWindowTitle( tr( "Tasks View" ) );
     auto layout = new QVBoxLayout( this );
-    layout->setContentsMargins( 0, 0, 0, 0 );
+    layout->addWidget( m_toolBar );
     layout->addWidget( m_treeView );
 
     m_treeView->setItemDelegate( m_delegate );
@@ -78,21 +79,21 @@ TasksView::TasksView( QToolBar* toolBar, QWidget* parent )
     m_actionNewTask.setText( tr( "New &Task" ) );
     m_actionNewTask.setShortcut( QKeySequence::New );
     m_actionNewTask.setIcon( Data::newTaskIcon() );
-    toolBar->addAction( &m_actionNewTask );
+    m_toolBar->addAction( &m_actionNewTask );
     connect( &m_actionNewTask, SIGNAL(triggered(bool)),
              SLOT(actionNewTask()) );
 
     m_actionNewSubTask.setText( tr( "New &Subtask" ) );
     m_actionNewSubTask.setShortcut( Qt::META + Qt::Key_N );
     m_actionNewSubTask.setIcon( Data::newSubtaskIcon() );
-    toolBar->addAction( &m_actionNewSubTask );
+    m_toolBar->addAction( &m_actionNewSubTask );
     connect( &m_actionNewSubTask, SIGNAL(triggered(bool)),
              SLOT(actionNewSubTask()) );
 
     m_actionEditTask.setText( tr( "Edit Task" ) );
     m_actionEditTask.setShortcut( Qt::CTRL + Qt::Key_E );
     m_actionEditTask.setIcon( Data::editTaskIcon() );
-    toolBar->addAction( &m_actionEditTask );
+    m_toolBar->addAction( &m_actionEditTask );
     connect( &m_actionEditTask, SIGNAL(triggered(bool)),
              SLOT(actionEditTask()) );
 
@@ -104,7 +105,7 @@ TasksView::TasksView( QToolBar* toolBar, QWidget* parent )
 #endif
     m_actionDeleteTask.setShortcuts(deleteShortcuts);
     m_actionDeleteTask.setIcon( Data::deleteTaskIcon() );
-    toolBar->addAction( &m_actionDeleteTask );
+    m_toolBar->addAction( &m_actionDeleteTask );
     connect( &m_actionDeleteTask, SIGNAL(triggered(bool)),
              SLOT(actionDeleteTask()) );
 
@@ -120,14 +121,14 @@ TasksView::TasksView( QToolBar* toolBar, QWidget* parent )
     m_showCurrentOnly->setText( tr( "Current" ) );
     m_showCurrentOnly->setCheckable( true );
 
-    toolBar->addAction( m_showCurrentOnly );
+    m_toolBar->addAction( m_showCurrentOnly );
     connect( m_showCurrentOnly, SIGNAL(triggered(bool)),
              SLOT(taskPrefilteringChanged()) );
 
     m_showSubscribedOnly->setText( tr( "Selected" ) );
     m_showSubscribedOnly->setCheckable( true );
 
-    toolBar->addAction( m_showSubscribedOnly );
+    m_toolBar->addAction( m_showSubscribedOnly );
     connect( m_showSubscribedOnly, SIGNAL(triggered(bool)),
              SLOT(taskPrefilteringChanged()) );
 
@@ -135,7 +136,7 @@ TasksView::TasksView( QToolBar* toolBar, QWidget* parent )
 
     connect( searchField, SIGNAL(textChanged(QString)),
              SLOT(slotFiltertextChanged(QString)) );
-    toolBar->addWidget( searchField );
+    m_toolBar->addWidget( searchField );
 
     m_treeView->setEditTriggers(QAbstractItemView::EditKeyPressed);
     m_treeView->setExpandsOnDoubleClick(false);
@@ -146,9 +147,6 @@ TasksView::TasksView( QToolBar* toolBar, QWidget* parent )
     m_treeView->setContextMenuPolicy( Qt::CustomContextMenu );
     connect( m_treeView, SIGNAL(customContextMenuRequested(QPoint)),
              SLOT(slotContextMenuRequested(QPoint)) );
-
-    // I hate doing this but the stupid default view sizeHints suck badly.
-    setMinimumHeight( 200 );
 
     // A reasonable default depth.
     m_treeView->expandToDepth( 0 );
@@ -271,11 +269,13 @@ void TasksView::configureUi()
                   SLOT(slotEventDeactivated(EventId)) );
          connect( MODEL.charmDataModel(), SIGNAL(resetGUIState()),
                       SLOT(restoreGuiState()) );
+         configurationChanged();
      }
      break;
      case Connected:
          //the model is populated when entering Connected, so delay state restore
          QMetaObject::invokeMethod( this, "restoreGuiState", Qt::QueuedConnection );
+         configurationChanged();
          break;
      case Disconnecting:
          saveGuiState();
@@ -348,12 +348,6 @@ void TasksView::configureUi()
 
      m_treeView->header()->hide();
      configureUi();
- }
-
- void TasksView::setModel( ModelConnector* connector )
- {
-     m_treeView->setModel( connector->taskModel() );
-     restoreGuiState();
  }
 
  void TasksView::slotFiltertextChanged( const QString& filtertextRaw )

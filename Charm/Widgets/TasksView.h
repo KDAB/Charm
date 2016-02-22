@@ -30,33 +30,36 @@
 #include <Core/Event.h>
 #include <Core/State.h>
 #include <Core/CommandEmitterInterface.h>
+#include <Core/ViewInterface.h>
 
-#include "ViewModeInterface.h"
+#include <QDialog>
 
 class QMenu;
 class TasksViewDelegate;
 class QToolBar;
 class QTreeView;
 
-class TasksView : public QWidget,
-             public ViewModeInterface,
-             public CommandEmitterInterface
+class TasksView : public QDialog,
+                  public CommandEmitterInterface
 {
     Q_OBJECT
 
 public:
-    explicit TasksView ( QToolBar* toolBar, QWidget* parent = nullptr );
+    explicit TasksView (QWidget* parent = nullptr );
     ~TasksView();
-
-    // implement ViewModeInterface:
-    void stateChanged( State previous ) override;
-    void configurationChanged() override;
-    void setModel( ModelConnector* ) override;
 
     void populateEditMenu( QMenu* );
 
+
+
 public Q_SLOTS:
     void commitCommand( CharmCommand* ) override;
+
+    void stateChanged( State previous );
+    void configurationChanged();
+
+    void restoreGuiState();
+    void saveGuiState();
 
 signals:
     // FIXME connect to MainWindow
@@ -78,15 +81,14 @@ private slots:
     // this method is called every time the UI actions need update, for
     // example when the current index changes:
     void configureUi();
-    void restoreGuiState() override;
 
 private:
-    void saveGuiState() override;
 
     // helper to retrieve selected task:
     Task selectedTask();
     void addTaskHelper( const Task& parent );
 
+    QToolBar* m_toolBar;
     TasksViewDelegate* m_delegate;
     QAction m_actionNewTask;
     QAction m_actionNewSubTask;

@@ -133,8 +133,7 @@ MacApplicationCore::MacApplicationCore( TaskId startupTask, QObject* parent )
     m_dockMenu.addAction( &m_actionStopAllTasks );
     m_dockMenu.addSeparator();
 
-    Q_FOREACH( CharmWindow* window, m_windows )
-        m_dockMenu.addAction( window->showHideAction() );
+    m_dockMenu.addAction( m_timeTracker.showHideAction() );
 
     m_dockMenu.addSeparator();
     m_dockMenu.addMenu( m_timeTracker.menu() );
@@ -142,8 +141,7 @@ MacApplicationCore::MacApplicationCore( TaskId startupTask, QObject* parent )
 
     // OSX doesn't use icons in menus
     QApplication::setWindowIcon( QIcon() );
-    Q_FOREACH( CharmWindow* window, m_windows )
-        window->setWindowIcon( QIcon() );
+    m_timeTracker.setWindowIcon( QIcon() );
     m_actionQuit.setIcon( QIcon() );
     QCoreApplication::setAttribute( Qt::AA_DontShowIconsInMenus );
 }

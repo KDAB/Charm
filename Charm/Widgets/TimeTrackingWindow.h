@@ -100,9 +100,9 @@ public slots:
     void slotUserInfoDownloaded( HttpJob* );
     void slotCheckForUpdatesManual();
     void slotStartEvent( TaskId );
+    void configurationChanged() override;
 
 protected:
-
     void insertEditMenu() override;
 
 private slots:
@@ -118,7 +118,6 @@ private slots:
     void slotSyncTasksAutomatic();
     void slotGetUserInfo();
 
-    void configurationChanged() override;
 
 signals:
     void emitCommand( CharmCommand* ) override;

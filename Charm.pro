@@ -58,7 +58,6 @@ SOURCES += \
     Charm/Widgets/EventEditor.cpp \
     Charm/Widgets/EventEditorDelegate.cpp \
     Charm/Widgets/EventView.cpp \
-    Charm/Widgets/EventWindow.cpp \
     Charm/Widgets/ExpandStatesHelper.cpp \
     Charm/Widgets/IdleCorrectionDialog.cpp \
     Charm/Widgets/MessageBox.cpp \
@@ -71,7 +70,6 @@ SOURCES += \
     Charm/Widgets/TaskEditor.cpp \
     Charm/Widgets/TasksView.cpp \
     Charm/Widgets/TasksViewDelegate.cpp \
-    Charm/Widgets/TasksWindow.cpp \
     Charm/Widgets/TimeTrackingView.cpp \
     Charm/Widgets/TimeTrackingWindow.cpp \
     Charm/Widgets/TimeTrackingTaskSelector.cpp \
@@ -104,7 +102,6 @@ HEADERS += \
     Charm/Widgets/IdleCorrectionDialog.h \
     Charm/Widgets/Timesheet.h \
     Charm/Widgets/WeeklyTimesheet.h \
-    Charm/Widgets/TasksWindow.h \
     Charm/Widgets/CharmWindow.h \
     Charm/Widgets/DateEntrySyncer.h \
     Charm/Widgets/MonthlyTimesheetConfigurationDialog.h \
@@ -125,7 +122,6 @@ HEADERS += \
     Charm/Widgets/ExpandStatesHelper.h \
     Charm/Widgets/SelectTaskDialog.h \
     Charm/Widgets/MonthlyTimesheet.h \
-    Charm/Widgets/EventWindow.h \
     Charm/Widgets/EventView.h \
     Charm/Widgets/ConfigurationDialog.h \
     Charm/Widgets/HttpJobProgressDialog.h \

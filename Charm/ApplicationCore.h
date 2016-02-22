@@ -37,11 +37,12 @@
 #include "Core/Controller.h"
 #include "Core/Configuration.h"
 #include "Core/StorageInterface.h"
+#include "Core/ViewInterface.h"
 
 #include "Widgets/CharmWindow.h"
-#include "Widgets/TasksWindow.h"
-#include "Widgets/EventWindow.h"
+#include "Widgets/EventView.h"
 #include "Widgets//TimeTrackingWindow.h"
+#include "Widgets/TasksView.h"
 #include "Widgets/TrayIcon.h"
 
 #include "ModelConnector.h"
@@ -106,24 +107,20 @@ public slots:
     void commitData( QSessionManager & manager );
 
 private slots:
-//     void slotMainWindowVisibilityChanged( bool );
-//     void slotTimeTrackerVisibilityChanged( bool );
     void slotCurrentBackendStatusChanged( const QString& text );
     void slotMaybeIdle();
-    void slotCharmWindowVisibilityChanged( bool visibility );
     void slotHandleUniqueApplicationConnection();
     void slotStartTaskMenuAboutToShow();
     void slotShowNotification( const QString& title, const QString& message );
+    void slotShowTasksEditor();
+    void slotShowEventEditor();
 
 signals:
     void goToState( State state );
 
 protected:
     void openAWindow( bool raise = false );
-
-    CharmWindow* m_closedWindow = nullptr;
     QAction m_actionStopAllTasks;
-    const QList<CharmWindow*> m_windows;
     TimeTrackingWindow m_timeTracker;
     QAction m_actionQuit;
 
@@ -163,12 +160,11 @@ private:
     QAction m_actionActivityReport;
     QAction m_actionWeeklyTimesheetReport;
     QAction m_actionMonthlyTimesheetReport;
-    TasksWindow m_tasksWindow;
-    EventWindow m_eventWindow;
+    EventView m_eventView;
+    TasksView m_tasksView;
     IdleDetector* m_idleDetector = nullptr;
     CharmCommandInterface* m_cmdInterface = nullptr;
     bool m_timeTrackerHiddenFromSystrayToggle = false;
-    bool m_tasksWindowHiddenFromSystrayToggle = false;
     bool m_eventWindowHiddenFromSystrayToggle = false;
     QLocalServer m_uniqueApplicationServer;
     TaskId m_startupTask;

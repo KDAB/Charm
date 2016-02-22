@@ -50,7 +50,6 @@ SET(
     Widgets/EventEditor.cpp
     Widgets/EventEditorDelegate.cpp
     Widgets/EventView.cpp
-    Widgets/EventWindow.cpp
     Widgets/ExpandStatesHelper.cpp
     Widgets/HttpJobProgressDialog.cpp
     Widgets/IdleCorrectionDialog.cpp
@@ -64,7 +63,6 @@ SET(
     Widgets/TaskEditor.cpp
     Widgets/TasksView.cpp
     Widgets/TasksViewDelegate.cpp
-    Widgets/TasksWindow.cpp
     Widgets/TimeTrackingView.cpp
     Widgets/TimeTrackingWindow.cpp
     Widgets/TimeTrackingTaskSelector.cpp
