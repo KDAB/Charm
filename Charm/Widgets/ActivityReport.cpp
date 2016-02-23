@@ -59,13 +59,13 @@ ActivityReportConfigurationDialog::ActivityReportConfigurationDialog( QWidget* p
     connect( m_ui->buttonBox, SIGNAL(rejected()), this, SLOT(reject()) );
     connect( m_ui->comboBox, SIGNAL(currentIndexChanged(int)),
              SLOT(slotTimeSpanSelected(int)) );
-    connect( m_ui->toolButtonAddExcludeTask, SIGNAL(clicked()),
+    connect( m_ui->addExcludeTaskButton, SIGNAL(clicked()),
              SLOT(slotExcludeTask()) );
-    connect( m_ui->toolButtonRemoveExcludeTask, SIGNAL(clicked()),
+    connect( m_ui->removeExcludeTaskButton, SIGNAL(clicked()),
              SLOT(slotRemoveExcludedTask()) );
-    connect( m_ui->toolButtonAddIncludeTask, SIGNAL(clicked()),
+    connect( m_ui->addIncludeTaskButton, SIGNAL(clicked()),
              SLOT(slotSelectTask()) );
-    connect( m_ui->toolButtonRemoveIncludeTask, SIGNAL(clicked()),
+    connect( m_ui->removeIncludeTaskButton, SIGNAL(clicked()),
              SLOT(slotRemoveIncludeTask()) );
 
     new DateEntrySyncer(m_ui->spinBoxStartWeek, m_ui->spinBoxStartYear, m_ui->dateEditStart, 1,  this );
@@ -132,7 +132,7 @@ void ActivityReportConfigurationDialog::slotSelectTask()
         listItem->setData( Qt::UserRole, taskId );
         m_rootTasks << taskId;
     }
-    m_ui->toolButtonRemoveIncludeTask->setEnabled( !m_rootTasks.isEmpty() );
+    m_ui->removeIncludeTaskButton->setEnabled( !m_rootTasks.isEmpty() );
     m_ui->listWidgetIncludeTask->setEnabled( !m_rootTasks.isEmpty() );
 
 }
@@ -148,7 +148,7 @@ void ActivityReportConfigurationDialog::slotExcludeTask()
         listItem->setData( Qt::UserRole, taskId );
         m_rootExcludeTasks << taskId;
     }
-    m_ui->toolButtonRemoveExcludeTask->setEnabled( !m_rootExcludeTasks.isEmpty() );
+    m_ui->removeExcludeTaskButton->setEnabled( !m_rootExcludeTasks.isEmpty() );
     m_ui->listWidgetExclude->setEnabled( !m_rootExcludeTasks.isEmpty() );
 }
 
@@ -159,7 +159,7 @@ void ActivityReportConfigurationDialog::slotRemoveExcludedTask()
         m_rootExcludeTasks.remove( item->data( Qt::UserRole ).toInt() );
         delete item;
     }
-    m_ui->toolButtonRemoveExcludeTask->setEnabled( !m_rootExcludeTasks.isEmpty() );
+    m_ui->removeExcludeTaskButton->setEnabled( !m_rootExcludeTasks.isEmpty() );
     m_ui->listWidgetExclude->setEnabled( !m_rootExcludeTasks.isEmpty() );
 }
 
@@ -170,7 +170,7 @@ void ActivityReportConfigurationDialog::slotRemoveIncludeTask()
         m_rootTasks.remove( item->data( Qt::UserRole ).toInt() );
         delete item;
     }
-    m_ui->toolButtonRemoveIncludeTask->setEnabled( !m_rootTasks.isEmpty() );
+    m_ui->removeIncludeTaskButton->setEnabled( !m_rootTasks.isEmpty() );
     m_ui->listWidgetIncludeTask->setEnabled( !m_rootTasks.isEmpty() );
 }
 

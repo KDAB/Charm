@@ -217,21 +217,31 @@
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_4">
         <item>
-         <widget class="QToolButton" name="toolButtonAddIncludeTask">
+         <widget class="QPushButton" name="addIncludeTaskButton">
           <property name="text">
-           <string>Add Include Task</string>
+           <string>Add Task</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QToolButton" name="toolButtonRemoveIncludeTask">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
+         <widget class="QPushButton" name="removeIncludeTaskButton">
           <property name="text">
            <string>Remove Selected Task</string>
           </property>
          </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
         </item>
        </layout>
       </item>
@@ -261,28 +271,35 @@
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_3">
         <item>
-         <widget class="QToolButton" name="toolButtonAddExcludeTask">
+         <widget class="QPushButton" name="addExcludeTaskButton">
           <property name="text">
-           <string>Add Exclude Task</string>
+           <string>Add Task</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QToolButton" name="toolButtonRemoveExcludeTask">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
+         <widget class="QPushButton" name="removeExcludeTaskButton">
           <property name="text">
            <string>Remove Selected Task</string>
           </property>
          </widget>
         </item>
+        <item>
+         <spacer name="horizontalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
        </layout>
       </item>
      </layout>
-     <zorder>label_6</zorder>
-     <zorder>label_6</zorder>
-     <zorder>listWidgetExclude</zorder>
     </widget>
    </item>
    <item>
