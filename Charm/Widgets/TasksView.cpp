@@ -68,6 +68,8 @@ TasksView::TasksView( QWidget* parent )
 {
     setWindowTitle( tr( "Tasks View" ) );
     auto layout = new QVBoxLayout( this );
+    layout->setMargin( 0 );
+    layout->setSpacing( 0 );
     layout->addWidget( m_toolBar );
     layout->addWidget( m_treeView );
 
