@@ -49,7 +49,8 @@ public:
         Canceled,
         NotConfigured,
         AuthenticationFailed,
-        SomethingWentWrong
+        SomethingWentWrong,
+        HostNotFound
     };
 
     explicit HttpJob(QObject* parent=nullptr);
@@ -106,6 +107,7 @@ protected:
     void emitFinished();
     void setErrorAndEmitFinished(int code, const QString& errorString);
     void delayedNext();
+    void setErrorFromReplyAndEmitFinished(QNetworkReply *reply);
 
     static QString extractErrorMessageFromReply(const QByteArray& xml);
 

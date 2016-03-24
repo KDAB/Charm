@@ -264,7 +264,7 @@ bool HttpJob::execute(int state, QNetworkAccessManager *manager)
         QNetworkReply *reply = manager->get(request);
 
         if (reply->error() != QNetworkReply::NoError)
-            setErrorAndEmitFinished(SomethingWentWrong, reply->errorString());
+            setErrorFromReplyAndEmitFinished(reply);
     } return true;
 
     case Login:
@@ -289,7 +289,7 @@ bool HttpJob::execute(int state, QNetworkAccessManager *manager)
         QNetworkReply *reply = manager->post(request, encodedQueryPlusPlus);
 
         if (reply->error() != QNetworkReply::NoError)
-            setErrorAndEmitFinished(SomethingWentWrong, reply->errorString());
+            setErrorFromReplyAndEmitFinished(reply);
 
     } return true;
 
@@ -303,7 +303,7 @@ bool HttpJob::handle(QNetworkReply *reply)
 {
     // check for failure
     if (reply->error() != QNetworkReply::NoError) {
-        setErrorAndEmitFinished(SomethingWentWrong, reply->errorString());
+        setErrorFromReplyAndEmitFinished(reply);
         return false;
     }
 
@@ -353,6 +353,14 @@ void HttpJob::setErrorAndEmitFinished(int code, const QString& errorString)
     m_errorCode = code;
     m_errorString = errorString;
     emitFinished();
+}
+
+void HttpJob::setErrorFromReplyAndEmitFinished(QNetworkReply *reply)
+{
+    if (reply->error() == QNetworkReply::HostNotFoundError)
+        setErrorAndEmitFinished(HostNotFound, reply->errorString());
+    else
+        setErrorAndEmitFinished(SomethingWentWrong, reply->errorString());
 }
 
 #include "moc_HttpJob.cpp"

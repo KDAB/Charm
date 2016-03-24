@@ -54,7 +54,7 @@ bool GetProjectCodesJob::execute(int state, QNetworkAccessManager *manager)
     QNetworkReply *reply = manager->get(request);
 
     if (reply->error() != QNetworkReply::NoError)
-        setErrorAndEmitFinished(SomethingWentWrong, reply->errorString());
+        setErrorFromReplyAndEmitFinished(reply);
     return true;
 }
 
@@ -62,7 +62,7 @@ bool GetProjectCodesJob::handle(QNetworkReply *reply)
 {
     /* check for failure */
     if (reply->error() != QNetworkReply::NoError) {
-        setErrorAndEmitFinished(SomethingWentWrong, reply->errorString());
+        setErrorFromReplyAndEmitFinished(reply);
         return false;
     }
 

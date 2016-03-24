@@ -110,15 +110,15 @@ bool UploadTimesheetJob::execute(int state, QNetworkAccessManager *manager)
     QNetworkReply *reply = manager->post(request, data);
 
     if (reply->error() != QNetworkReply::NoError)
-        setErrorAndEmitFinished(SomethingWentWrong, reply->errorString());
-     return true;
+        setErrorFromReplyAndEmitFinished(reply);
+    return true;
 }
 
 bool UploadTimesheetJob::handle(QNetworkReply *reply)
 {
     /* check for failure */
     if (reply->error() != QNetworkReply::NoError) {
-        setErrorAndEmitFinished(SomethingWentWrong, reply->errorString());
+        setErrorFromReplyAndEmitFinished(reply);
         return false;
     }
 
