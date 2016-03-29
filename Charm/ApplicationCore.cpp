@@ -341,7 +341,6 @@ void ApplicationCore::createWindowMenu( QMenuBar *menuBar )
                      SLOT(slotShowTasksEditor()), QKeySequence( tr("Ctrl+1") ) );
     menu->addAction( tr( "Show Event Editor Window" ), this,
                      SLOT(slotShowEventEditor()), QKeySequence( tr("Ctrl+2") ) );
-    menu->addAction( m_timeTracker.showHideAction() );
     menu->addSeparator();
     menu->addAction( &m_actionEnterVacation );
     menu->addSeparator();

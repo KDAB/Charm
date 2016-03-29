@@ -131,9 +131,6 @@ MacApplicationCore::MacApplicationCore( TaskId startupTask, QObject* parent )
             this, SLOT(handleStateChange(State)));
 
     m_dockMenu.addAction( &m_actionStopAllTasks );
-    m_dockMenu.addSeparator();
-
-    m_dockMenu.addAction( m_timeTracker.showHideAction() );
 
     m_dockMenu.addSeparator();
     m_dockMenu.addMenu( m_timeTracker.menu() );

@@ -41,7 +41,6 @@ class CharmWindow : public QMainWindow,
 public:
     explicit CharmWindow( const QString& name, QWidget* parent = nullptr );
 
-    QAction* showHideAction();
     QAction* showAction();
     QAction* openCharmAction();
 
@@ -94,13 +93,11 @@ public slots:
 private slots:
     void handleOpenCharm( bool visible );
     void handleShow( bool visible );
-    void handleShowHide( bool visible );
 
 private:
     QString m_windowName;
     QAction* m_openCharmAction;
     QAction* m_showAction;
-    QAction* m_showHideAction;
     int m_windowNumber = -1; // Mac numerical window number, used for shortcut etc
     QString m_windowIdentifier;
     QShortcut* m_shortcut = nullptr;

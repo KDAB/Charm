@@ -47,15 +47,12 @@ CharmWindow::CharmWindow( const QString& name, QWidget* parent )
     : QMainWindow( parent )
     , m_openCharmAction( new QAction( tr( "Open Charm" ), this ) )
     , m_showAction( new QAction( this ) )
-    , m_showHideAction( new QAction( this ) )
 {
     setWindowName( name );
     connect( m_openCharmAction, SIGNAL(triggered(bool)), SLOT(showView()) );
     connect( m_showAction, SIGNAL(triggered(bool)), SLOT(showView()) );
-    connect( m_showHideAction, SIGNAL(triggered(bool)), SLOT(showHideView()) );
     connect( this, SIGNAL(visibilityChanged(bool)), SLOT(handleOpenCharm(bool)) );
     connect( this, SIGNAL(visibilityChanged(bool)), SLOT(handleShow(bool)) );
-    connect( this, SIGNAL(visibilityChanged(bool)), SLOT(handleShowHide(bool)) );
     m_toolBar = addToolBar( "Toolbar" );
     m_toolBar->setMovable( false );
 
@@ -120,7 +117,6 @@ void CharmWindow::setWindowNumber( int number )
     m_shortcut->setKey( sequence );
 #endif
     m_shortcut->setContext( Qt::ApplicationShortcut );
-    m_showHideAction->setShortcut( sequence );
     m_showAction->setShortcut( sequence );
     connect( m_shortcut, SIGNAL(activated()), SLOT(showHideView()) );
     connect( m_shortcut, SIGNAL(activated()), SLOT(showView()) );
@@ -144,11 +140,6 @@ QAction* CharmWindow::openCharmAction()
 QAction* CharmWindow::showAction()
 {
     return m_showAction;
-}
-
-QAction* CharmWindow::showHideAction()
-{
-    return m_showHideAction;
 }
 
 void CharmWindow::restore()
@@ -205,13 +196,6 @@ void CharmWindow::handleShow( bool visible )
     const QString text = tr( "Show %1" ).arg( m_windowName );
     m_showAction->setText( text );
     m_showAction->setEnabled( !visible );
-}
-
-void CharmWindow::handleShowHide( bool visible )
-{
-    const QString text = visible ?  tr( "Hide %1 Window" ).arg( m_windowName )
-        :  tr( "Show %1 Window" ).arg( m_windowName );
-    m_showHideAction->setText( text );
 }
 
 void CharmWindow::commitCommand( CharmCommand* command )
