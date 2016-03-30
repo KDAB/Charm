@@ -156,7 +156,7 @@ void MacApplicationCore::handleStateChange(State state) const
 
 void MacApplicationCore::dockIconClickEvent()
 {
-    openAWindow();
+    showMainWindow();
 }
 
 QList< QShortcut* > MacApplicationCore::shortcuts( QWidget* parent )

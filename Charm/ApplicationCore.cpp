@@ -312,13 +312,13 @@ void ApplicationCore::slotHandleUniqueApplicationConnection()
         }
     }
     delete socket;
-    openAWindow( true );
+    showMainWindow( ApplicationCore::ShowMode::ShowAndRaise );
 }
 
-void ApplicationCore::openAWindow( bool raise ) {
-
+void ApplicationCore::showMainWindow(ShowMode mode )
+{
     m_timeTracker.show();
-    if ( raise ) {
+    if ( mode == ShowMode::ShowAndRaise ) {
         m_timeTracker.raise();
 #ifdef Q_OS_WIN
         int idActive = GetWindowThreadProcessId( GetForegroundWindow(), NULL );
@@ -709,31 +709,6 @@ bool ApplicationCore::configure()
     }
 
     return true;
-}
-
-void ApplicationCore::toggleShowHide()
-{
-    if ( m_timeTracker.isHidden() && m_eventView.isHidden() ) {
-        int raised = 0;
-        if ( m_eventWindowHiddenFromSystrayToggle ) {
-            CharmWindow::showHideView( &m_eventView );
-            m_eventWindowHiddenFromSystrayToggle = false;
-            ++raised;
-        }
-        if ( m_timeTrackerHiddenFromSystrayToggle || raised == 0 ) { // if no view was visible and the user did not toggle other views before, raise the timetracker
-            m_timeTracker.showHideView();
-            m_timeTrackerHiddenFromSystrayToggle = false;
-        }
-    } else {
-        if ( m_timeTracker.isVisible() ) {
-            m_timeTracker.hide();
-            m_timeTrackerHiddenFromSystrayToggle = true;
-        }
-        if ( m_eventView.isVisible() ) {
-            m_eventView.hide();
-            m_eventWindowHiddenFromSystrayToggle = true;
-        }
-    }
 }
 
 QString ApplicationCore::titleString( const QString& text ) const

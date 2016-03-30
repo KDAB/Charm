@@ -49,7 +49,7 @@ void TrayIcon::slotActivated(QSystemTrayIcon::ActivationReason reason)
     case QSystemTrayIcon::Trigger: //(single click)
     case QSystemTrayIcon::DoubleClick:
 #ifndef Q_OS_OSX
-        ApplicationCore::instance().toggleShowHide();
+        ApplicationCore::instance().showMainWindow( ApplicationCore::ShowMode::ShowAndRaise );
 #endif
         break;
     case QSystemTrayIcon::MiddleClick:

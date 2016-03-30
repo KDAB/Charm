@@ -59,6 +59,10 @@ class ApplicationCore : public QObject
     Q_OBJECT
 
 public:
+    enum class ShowMode{
+        Show,
+        ShowAndRaise
+    };
     explicit ApplicationCore( TaskId startupTask, QObject* parent = nullptr );
     ~ApplicationCore();
 
@@ -95,13 +99,14 @@ public:
     void updateTaskList();
 
 public slots:
+    void showMainWindow( ShowMode mode = ShowMode::Show );
+
     void setState( State state );
     void slotStopAllTasks();
     void slotQuitApplication();
     void slotControllerReadyToQuit();
     void slotSaveConfiguration();
     void slotGoToConnectedState();
-    void toggleShowHide();
     void setHttpActionsVisible( bool visible );
     void saveState( QSessionManager & manager );
     void commitData( QSessionManager & manager );
@@ -119,7 +124,6 @@ signals:
     void goToState( State state );
 
 protected:
-    void openAWindow( bool raise = false );
     QAction m_actionStopAllTasks;
     TimeTrackingWindow m_timeTracker;
     QAction m_actionQuit;
@@ -164,8 +168,6 @@ private:
     TasksView m_tasksView;
     IdleDetector* m_idleDetector = nullptr;
     CharmCommandInterface* m_cmdInterface = nullptr;
-    bool m_timeTrackerHiddenFromSystrayToggle = false;
-    bool m_eventWindowHiddenFromSystrayToggle = false;
     QLocalServer m_uniqueApplicationServer;
     TaskId m_startupTask;
 #ifdef Q_OS_WIN
