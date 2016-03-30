@@ -41,7 +41,6 @@ class QToolBar;
 class QTreeView;
 
 class TasksView : public QDialog,
-                  public CommandEmitterInterface,
                   public UIStateInterface
 {
     Q_OBJECT

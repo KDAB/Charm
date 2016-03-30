@@ -91,6 +91,7 @@ ApplicationCore::ApplicationCore(TaskId startupTask, QObject* parent )
     , m_actionActivityReport( this )
     , m_actionWeeklyTimesheetReport( this )
     , m_actionMonthlyTimesheetReport( this )
+    , m_uiElements( { &m_timeTracker, &m_tasksView, &m_eventView } )
     , m_startupTask( startupTask )
 #ifdef Q_OS_WIN
     , m_windowsJumpList( new QWinJumpList( this ) )
@@ -434,10 +435,9 @@ void ApplicationCore::setState(State state)
     };
 
     m_state = state;
-    m_timeTracker.stateChanged( m_state );
-    m_tasksView.stateChanged( m_state );
-    m_eventView.stateChanged( m_state );
-
+    for ( auto e : m_uiElements ) {
+        e->stateChanged( m_state );
+    }
 
     switch (m_state)
     {
@@ -768,9 +768,9 @@ void ApplicationCore::slotSaveConfiguration()
         m_cmdInterface->configurationChanged();
 #endif
     }
-    m_timeTracker.configurationChanged();
-    m_tasksView.configurationChanged();
-    m_eventView.configurationChanged();
+    for ( auto e :  m_uiElements ) {
+         e->configurationChanged();
+    }
 }
 
 ModelConnector& ApplicationCore::model()
@@ -850,9 +850,9 @@ void ApplicationCore::commitData( QSessionManager & manager )
     // Before QApplication closes all windows, save their state.
     // Doing this in saveState is too late because then we would store that they are all hidden.
     if (m_state == Connected) {
-        m_timeTracker.saveGuiState();
-        m_tasksView.saveGuiState();
-        m_eventView.saveGuiState();
+        for ( auto e : m_uiElements ) {
+            e->saveGuiState();
+        }
     }
 }
 

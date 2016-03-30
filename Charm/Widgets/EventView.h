@@ -47,7 +47,6 @@ class QLabel;
 class QListView;
 
 class EventView : public QDialog,
-                  public CommandEmitterInterface,
                   public UIStateInterface
 {
     Q_OBJECT
@@ -63,8 +62,8 @@ public:
     void populateEditMenu( QMenu* );
 
 signals:
-    void emitCommand( CharmCommand* );
-    void emitCommandRollback( CharmCommand* );
+    void emitCommand( CharmCommand* ) override;
+    void emitCommandRollback( CharmCommand* ) override;
 
 public slots:
     void commitCommand( CharmCommand* ) override;

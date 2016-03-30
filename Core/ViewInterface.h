@@ -35,24 +35,32 @@ class ViewInterface :
         public UIStateInterface
 {
 public:
-    virtual ~ViewInterface() {} // keep compiler happy
+    virtual ~ViewInterface() = default;
 
     // application:
     virtual void saveConfiguration() = 0;
 
-    virtual void visibilityChanged( bool ) = 0; // implement as signal and emit from show and hide events
-
-    virtual void emitCommand( CharmCommand* ) = 0;
-    virtual void emitCommandRollback( CharmCommand* ) = 0;
     virtual void sendCommand( CharmCommand* ) = 0;
     virtual void sendCommandRollback( CharmCommand* ) = 0;
-    virtual void commitCommand( CharmCommand* ) = 0;
+
+    virtual void visibilityChanged( bool ) = 0; // implement as signal and emit from show and hide events
 
     // restore the view
     virtual void restore() = 0;
     // quit the application
     virtual void quit() = 0;
 
+    // CommandEmitterInterface
+    virtual void commitCommand( CharmCommand* ) override = 0;
+
+    // UIStateInterface interface
+    virtual void saveGuiState() override = 0;
+    virtual void restoreGuiState() override = 0;
+    virtual void stateChanged(State previous) override = 0;
+    virtual void configurationChanged() override = 0;
+
+    virtual void emitCommand( CharmCommand* ) override  = 0;
+    virtual void emitCommandRollback( CharmCommand* ) override = 0;
 };
 
 #endif

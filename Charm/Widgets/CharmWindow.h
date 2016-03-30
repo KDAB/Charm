@@ -33,8 +33,7 @@ class QAction;
 class QShortcut;
 
 class CharmWindow : public QMainWindow,
-                    public ViewInterface,
-                    public CommandEmitterInterface
+                    public ViewInterface
 {
     Q_OBJECT
 
