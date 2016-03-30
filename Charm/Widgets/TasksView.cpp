@@ -353,6 +353,7 @@ void TasksView::configureUi()
 
      m_treeView->header()->hide();
      configureUi();
+     WidgetUtils::updateToolButtonStyle( this );
  }
 
  void TasksView::slotFiltertextChanged( const QString& filtertextRaw )

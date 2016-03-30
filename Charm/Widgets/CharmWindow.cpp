@@ -41,9 +41,6 @@
 #include <QToolBar>
 #include <QToolButton>
 
-#include <algorithm>
-#include <functional>
-
 CharmWindow::CharmWindow( const QString& name, QWidget* parent )
     : QMainWindow( parent )
     , m_openCharmAction( new QAction( tr( "Open Charm" ), this ) )
@@ -249,9 +246,7 @@ void CharmWindow::showHideView()
 
 void CharmWindow::configurationChanged()
 {
-    const QList<QToolButton*> buttons = findChildren<QToolButton *>();
-    std::for_each( buttons.begin(), buttons.end(),
-                   std::bind2nd( std::mem_fun( &QToolButton::setToolButtonStyle ), CONFIGURATION.toolButtonStyle ) );
+    WidgetUtils::updateToolButtonStyle( this );
 }
 
 void CharmWindow::saveGuiState()

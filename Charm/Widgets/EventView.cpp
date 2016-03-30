@@ -471,6 +471,7 @@ void EventView::stateChanged( State previous )
 
 void EventView::configurationChanged()
 {
+    WidgetUtils::updateToolButtonStyle( this );
     slotConfigureUi();
 }
 

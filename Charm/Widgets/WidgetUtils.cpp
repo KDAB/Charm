@@ -23,7 +23,10 @@
 
 #include "WidgetUtils.h"
 
+#include <Core/CharmConstants.h>
+
 #include <QSettings>
+#include <QToolButton>
 #include <QWidget>
 
 void WidgetUtils::restoreGeometry( QWidget *widget, const QString &metaKey )
@@ -40,4 +43,12 @@ void WidgetUtils::saveGeometry( QWidget *widget, const QString &metaKey )
     QSettings settings;
     settings.beginGroup( QString::fromLatin1( "WindowStates" ) );
     settings.setValue( metaKey, widget->saveGeometry() );
+}
+
+void WidgetUtils::updateToolButtonStyle( QWidget *widget )
+{
+    const QList<QToolButton*> buttons = widget->findChildren<QToolButton *>();
+    Q_FOREACH ( auto button, buttons ) {
+        button->setToolButtonStyle( CONFIGURATION.toolButtonStyle );
+    }
 }
