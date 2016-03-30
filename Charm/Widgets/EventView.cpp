@@ -33,6 +33,7 @@
 #include "TasksView.h"
 #include "ViewHelpers.h"
 #include "WeeklyTimesheet.h"
+#include "WidgetUtils.h"
 
 #include "Commands/CommandDeleteEvent.h"
 #include "Commands/CommandMakeEvent.h"
@@ -451,14 +452,36 @@ void EventView::slotReset()
 
 void EventView::stateChanged( State previous )
 {
-    if ( ApplicationCore::instance().state() == Connecting ) {
-        setModel( & ApplicationCore::instance().model() );
+    switch ( ApplicationCore::instance().state() ) {
+    case Connecting:
+        setModel( &MODEL );
+        connect( MODEL.charmDataModel(), SIGNAL(resetGUIState()),
+                 SLOT(restoreGuiState()) );
+        break;
+    case Connected:
+        //the model is populated when entering Connected, so delay state restore
+        QMetaObject::invokeMethod( this, "restoreGuiState", Qt::QueuedConnection );
+        configurationChanged();
+        break;
+    case Disconnecting:
+        saveGuiState();
+        break;
     }
 }
 
 void EventView::configurationChanged()
 {
     slotConfigureUi();
+}
+
+void EventView::saveGuiState()
+{
+    WidgetUtils::saveGeometry( this, MetaKey_EventEditorGeometry );
+}
+
+void EventView::restoreGuiState()
+{
+    WidgetUtils::restoreGeometry( this, MetaKey_EventEditorGeometry );
 }
 
 void EventView::setModel( ModelConnector* connector )

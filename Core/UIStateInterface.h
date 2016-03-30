@@ -21,23 +21,19 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CHARM_VIEWMODEINTERFACE_H
-#define CHARM_VIEWMODEINTERFACE_H
+#ifndef CHARM_UISTATEINTERFACE_H
+#define CHARM_UISTATEINTERFACE_H
 
 #include <Core/State.h>
 
-class ModelConnector;
-
-// FIXME obsolete, merge into CharmWindow
-class ViewModeInterface
+class UIStateInterface
 {
 public:
-    virtual ~ViewModeInterface() {}
+    virtual ~UIStateInterface() = default;
     virtual void saveGuiState() = 0;
     virtual void restoreGuiState() = 0;
     virtual void stateChanged( State previous ) = 0;
     virtual void configurationChanged() = 0;
-    virtual void setModel( ModelConnector* ) = 0;
 };
 
 #endif

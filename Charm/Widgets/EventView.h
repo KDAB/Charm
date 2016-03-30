@@ -29,6 +29,7 @@
 #include <QUndoStack>
 #include <QDialog>
 
+#include "Core/UIStateInterface.h"
 #include "Core/Event.h"
 #include "Core/TimeSpans.h"
 #include "Core/CommandEmitterInterface.h"
@@ -46,7 +47,8 @@ class QLabel;
 class QListView;
 
 class EventView : public QDialog,
-                  public CommandEmitterInterface
+                  public CommandEmitterInterface,
+                  public UIStateInterface
 {
     Q_OBJECT
 
@@ -56,8 +58,6 @@ public:
 
     void makeVisibleAndCurrent( const Event& );
 
-    void stateChanged( State previous );
-    void configurationChanged();
     void setModel( ModelConnector* ) ;
 
     void populateEditMenu( QMenu* );
@@ -72,6 +72,11 @@ public slots:
     void timeSpansChanged();
     void timeFrameChanged(int );
     void slotConfigureUi();
+
+    void saveGuiState() override;
+    void restoreGuiState() override;
+    void stateChanged( State previous ) override;
+    void configurationChanged() override;
 
 private slots:
     void slotEventDoubleClicked( const QModelIndex& );

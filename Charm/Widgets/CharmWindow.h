@@ -71,8 +71,8 @@ public:
     void hideEvent( QHideEvent* ) override;
     void keyPressEvent( QKeyEvent* event ) override;
 
-    virtual void saveGuiState();
-    virtual void restoreGuiState();
+    virtual void saveGuiState() override;
+    virtual void restoreGuiState() override;
 
     static void showView( QWidget* w );
     static bool showHideView( QWidget* w );

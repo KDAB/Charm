@@ -31,6 +31,7 @@
 #include <Core/State.h>
 #include <Core/CommandEmitterInterface.h>
 #include <Core/ViewInterface.h>
+#include <Core/UIStateInterface.h>
 
 #include <QDialog>
 
@@ -40,7 +41,8 @@ class QToolBar;
 class QTreeView;
 
 class TasksView : public QDialog,
-                  public CommandEmitterInterface
+                  public CommandEmitterInterface,
+                  public UIStateInterface
 {
     Q_OBJECT
 
@@ -55,11 +57,11 @@ public:
 public Q_SLOTS:
     void commitCommand( CharmCommand* ) override;
 
-    void stateChanged( State previous );
-    void configurationChanged();
+    void stateChanged( State previous ) override;
+    void configurationChanged() override;
 
-    void restoreGuiState();
-    void saveGuiState();
+    void restoreGuiState() override;
+    void saveGuiState() override;
 
 signals:
     // FIXME connect to MainWindow

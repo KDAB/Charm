@@ -71,6 +71,7 @@ SET(
     Widgets/WeeklyTimesheet.cpp
     Widgets/NotificationPopup.cpp
     Widgets/FindAndReplaceEventsDialog.cpp
+    Widgets/WidgetUtils.cpp
 )
 
 SET(CharmApplication_LIBS)

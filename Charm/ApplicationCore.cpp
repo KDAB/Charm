@@ -877,6 +877,7 @@ void ApplicationCore::commitData( QSessionManager & manager )
     if (m_state == Connected) {
         m_timeTracker.saveGuiState();
         m_tasksView.saveGuiState();
+        m_eventView.saveGuiState();
     }
 }
 

@@ -27,19 +27,20 @@
 #include "Task.h"
 #include "State.h"
 #include "Event.h"
+#include "UIStateInterface.h"
 
 class CharmCommand;
 
-class ViewInterface
+class ViewInterface :
+        public UIStateInterface
 {
 public:
     virtual ~ViewInterface() {} // keep compiler happy
 
     // application:
-    virtual void stateChanged( State previous ) = 0;
-    virtual void visibilityChanged( bool ) = 0; // implement as signal and emit from show and hide events
-    virtual void configurationChanged() = 0;
     virtual void saveConfiguration() = 0;
+
+    virtual void visibilityChanged( bool ) = 0; // implement as signal and emit from show and hide events
 
     virtual void emitCommand( CharmCommand* ) = 0;
     virtual void emitCommandRollback( CharmCommand* ) = 0;

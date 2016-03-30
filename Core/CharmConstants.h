@@ -51,6 +51,8 @@ extern const QString MetaKey_MainWindowGUIStateShowExpiredTasks;
 extern const QString MetaKey_MainWindowGUIStateShowCurrentTasks;
 extern const QString MetaKey_TimeTrackerGeometry;
 extern const QString MetaKey_TimeTrackerVisible;
+extern const QString MetaKey_EventEditorGeometry;
+extern const QString MetaKey_TaskEditorGeometry;
 extern const QString MetaKey_ReportsRecentSavePath;
 extern const QString MetaKey_ExportToXmlRecentSavePath;
 extern const QString MetaKey_TimesheetActiveOnly;

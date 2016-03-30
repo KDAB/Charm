@@ -31,6 +31,7 @@
 #include "TasksViewDelegate.h"
 #include "ViewFilter.h"
 #include "ViewHelpers.h"
+#include "WidgetUtils.h"
 
 #include "Commands/CommandAddTask.h"
 #include "Commands/CommandDeleteTask.h"
@@ -291,6 +292,7 @@ void TasksView::configureUi()
 
  void TasksView::saveGuiState()
  {
+     WidgetUtils::saveGeometry( this, MetaKey_TaskEditorGeometry );
      Q_ASSERT( m_treeView );
      ViewFilter* filter = ApplicationCore::instance().model().taskModel();
      Q_ASSERT( filter );
@@ -317,6 +319,7 @@ void TasksView::configureUi()
 
  void TasksView::restoreGuiState()
  {
+     WidgetUtils::restoreGeometry( this, MetaKey_TaskEditorGeometry );
      Q_ASSERT( m_treeView );
      ViewFilter* filter = ApplicationCore::instance().model().taskModel();
      Q_ASSERT( filter );

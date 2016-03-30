@@ -25,6 +25,7 @@
 #include "ApplicationCore.h"
 #include "Data.h"
 #include "ViewHelpers.h"
+#include "WidgetUtils.h"
 
 #include "Commands/CommandRelayCommand.h"
 
@@ -259,7 +260,7 @@ void CharmWindow::saveGuiState()
     QSettings settings;
     settings.beginGroup( windowIdentifier() );
     // save geometry
-    settings.setValue( MetaKey_MainWindowGeometry, saveGeometry() );
+    WidgetUtils::saveGeometry( this, MetaKey_MainWindowGeometry );
     settings.setValue( MetaKey_MainWindowVisible, isVisible() );
 }
 
@@ -270,9 +271,7 @@ void CharmWindow::restoreGuiState()
     // restore geometry
     QSettings settings;
     settings.beginGroup( identifier );
-    if ( settings.contains( MetaKey_MainWindowGeometry ) ) {
-        restoreGeometry( settings.value( MetaKey_MainWindowGeometry ).toByteArray() );
-    }
+    WidgetUtils::restoreGeometry( this, MetaKey_MainWindowGeometry );
     // restore visibility
     if ( settings.contains( MetaKey_MainWindowVisible ) ) {
         // Time Tracking Window should always be visible
