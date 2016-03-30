@@ -72,7 +72,7 @@ IF(Qt5Core_FOUND)
         set(QTPRINT_LIBRARIES ${Qt5PrintSupport_LIBRARIES})
     ENDIF()
 
-    find_package(Qt5Keychain)
+    find_package(Qt5Keychain QUIET)
 
     IF(Qt5Keychain_FOUND)
 	set(QTKEYCHAIN_SYSTEM ON)
@@ -153,7 +153,7 @@ ELSE()
     find_package(Qt4 COMPONENTS QtMain QtCore QtGui QtSql QtXml QtNetwork QtScript REQUIRED)
     INCLUDE( UseQt4 )
 
-    find_package(QtKeychain)
+    find_package(QtKeychain QUIET)
     LIST(APPEND QT_LIBRARIES ${QTKEYCHAIN_LIBRARIES})
 
     IF(QtKeychain_FOUND)
