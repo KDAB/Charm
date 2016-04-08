@@ -53,7 +53,7 @@ class EventView : public QDialog,
 
 public:
     explicit EventView( QWidget* parent = nullptr );
-    ~EventView();
+    ~EventView() override;
 
     void makeVisibleAndCurrent( const Event& );
 

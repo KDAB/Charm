@@ -40,7 +40,7 @@ class EventEditor: public QDialog
 
 public:
     explicit EventEditor( const Event& event, QWidget* parent = nullptr );
-    virtual ~EventEditor();
+    ~EventEditor() override;
 
     // return the result after the dialog has been accepted
     Event eventResult() const;

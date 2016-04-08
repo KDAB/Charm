@@ -44,7 +44,7 @@ class ActivityReportConfigurationDialog : public ReportConfigurationDialog
 
 public:
     explicit ActivityReportConfigurationDialog( QWidget* parent );
-    ~ActivityReportConfigurationDialog();
+    ~ActivityReportConfigurationDialog() override;
 
     void showReportPreviewDialog() override;
 
@@ -75,7 +75,7 @@ class ActivityReport : public ReportPreviewWindow
 
 public:
     explicit ActivityReport( QWidget* parent = nullptr );
-    ~ActivityReport();
+    ~ActivityReport() override;
 
     void setReportProperties(const QDate& start, const QDate& end,
         QSet<TaskId> rootTasks, QSet<TaskId> rootExcludeTasks );

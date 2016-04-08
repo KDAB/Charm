@@ -51,7 +51,7 @@ class WeeklyTimesheetConfigurationDialog : public ReportConfigurationDialog
 
 public:
     explicit WeeklyTimesheetConfigurationDialog( QWidget* parent );
-    ~WeeklyTimesheetConfigurationDialog();
+    ~WeeklyTimesheetConfigurationDialog() override;
 
     void showReportPreviewDialog() override;
     void showEvent( QShowEvent* ) override;
@@ -78,7 +78,7 @@ class WeeklyTimeSheetReport : public TimeSheetReport
 
 public:
     explicit WeeklyTimeSheetReport( QWidget* parent = nullptr );
-    virtual ~WeeklyTimeSheetReport();
+    ~WeeklyTimeSheetReport() override;
 
     void setReportProperties( const QDate& start,
                               const QDate& end,

@@ -42,7 +42,7 @@ class ReportPreviewWindow : public QDialog
 
 public:
     explicit ReportPreviewWindow( QWidget* parent = nullptr );
-    virtual ~ReportPreviewWindow();
+    ~ReportPreviewWindow() override;
 
 signals:
     void anchorClicked(const QUrl& which);

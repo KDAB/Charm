@@ -44,7 +44,7 @@ class EventModelAdapter : public QAbstractListModel,
 
 public:
     explicit EventModelAdapter( CharmDataModel* parent );
-    virtual ~EventModelAdapter();
+    ~EventModelAdapter() override;
 
     int rowCount( const QModelIndex& parent = QModelIndex() ) const override;
 

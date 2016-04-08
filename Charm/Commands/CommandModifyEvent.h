@@ -34,7 +34,7 @@ class CommandModifyEvent : public CharmCommand
 
 public:
     explicit CommandModifyEvent( const Event&, const Event&, QObject* parent = nullptr );
-    ~CommandModifyEvent();
+    ~CommandModifyEvent() override;
 
     bool prepare() override;
     bool execute( ControllerInterface* ) override;

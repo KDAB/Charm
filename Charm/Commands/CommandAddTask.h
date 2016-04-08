@@ -34,7 +34,7 @@ class CommandAddTask : public CharmCommand
 
 public:
     explicit CommandAddTask( const Task&, QObject* parent = nullptr );
-    ~CommandAddTask();
+    ~CommandAddTask() override;
 
     bool prepare() override;
     bool execute( ControllerInterface* ) override;

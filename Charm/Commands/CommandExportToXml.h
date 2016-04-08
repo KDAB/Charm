@@ -33,7 +33,7 @@ class CommandExportToXml : public CharmCommand
     Q_OBJECT
 public:
     explicit CommandExportToXml( QString filename, QObject* parent );
-    ~CommandExportToXml();
+    ~CommandExportToXml() override;
 
     bool prepare() override;
     bool execute( ControllerInterface* ) override;

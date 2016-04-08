@@ -37,7 +37,7 @@ class NotificationPopup : public QDialog
 
 public:
     explicit NotificationPopup( QWidget *parent = nullptr );
-    ~NotificationPopup();
+    ~NotificationPopup() override;
 
     void showNotification( const QString& title, const QString& message );
 

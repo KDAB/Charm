@@ -34,7 +34,7 @@ class CommandDeleteEvent : public CharmCommand
 
 public:
     explicit CommandDeleteEvent( const Event&, QObject* parent = nullptr );
-    ~CommandDeleteEvent();
+    ~CommandDeleteEvent() override;
 
     bool prepare() override;
     bool execute( ControllerInterface* ) override;

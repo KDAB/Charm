@@ -37,7 +37,7 @@ class CommandRelayCommand : public CharmCommand
 
 public:
     explicit CommandRelayCommand( QObject* parent );
-    ~CommandRelayCommand();
+    ~CommandRelayCommand() override;
 
     void setCommand( CharmCommand* command );
 

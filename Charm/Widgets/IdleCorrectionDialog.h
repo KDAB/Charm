@@ -43,7 +43,7 @@ public:
     };
 
     explicit IdleCorrectionDialog( QWidget* parent = nullptr );
-    ~IdleCorrectionDialog();
+    ~IdleCorrectionDialog() override;
 
     Result result() const;
 
