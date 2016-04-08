@@ -130,10 +130,12 @@ IF(Qt5Core_FOUND)
         Qt5::Script
         Qt5::Sql
         Qt5::PrintSupport
-        Qt5::DBus
         ${QTKEYCHAIN_LIBRARIES}
         ${QT_PLATFORM_SPECIFIC_LIBRARIES}
     )
+    if (TARGET Qt5::DBus)
+        list(APPEND QT_LIBRARIES Qt5::DBus)
+    endif()
 ELSE()
     # No Qt5 found, try Qt4
     find_package(Qt4 COMPONENTS QtMain QtCore QtGui QtSql QtXml QtNetwork QtScript REQUIRED)
