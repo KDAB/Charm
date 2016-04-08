@@ -64,7 +64,7 @@ public:
         ShowAndRaise
     };
     explicit ApplicationCore( TaskId startupTask, QObject* parent = nullptr );
-    ~ApplicationCore();
+    ~ApplicationCore() override;
 
     static ApplicationCore& instance();
     static bool hasInstance();

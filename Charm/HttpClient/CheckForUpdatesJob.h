@@ -50,7 +50,7 @@ public:
     };
 
     explicit CheckForUpdatesJob( QObject* parent=nullptr );
-    ~CheckForUpdatesJob();
+    ~CheckForUpdatesJob() override;
 
     void start();
     void setUrl( const QUrl& url );

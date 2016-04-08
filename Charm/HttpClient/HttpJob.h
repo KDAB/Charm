@@ -54,7 +54,7 @@ public:
     };
 
     explicit HttpJob(QObject* parent=nullptr);
-    ~HttpJob();
+    ~HttpJob() override;
 
     QString username() const;
     void setUsername(const QString &value);

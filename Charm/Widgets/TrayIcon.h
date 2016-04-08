@@ -32,7 +32,7 @@ class TrayIcon : public QSystemTrayIcon
 
 public:
     explicit TrayIcon(QObject* parent = nullptr);
-    virtual ~TrayIcon();
+    ~TrayIcon() override;
 
 private Q_SLOTS:
     void slotActivated(QSystemTrayIcon::ActivationReason);

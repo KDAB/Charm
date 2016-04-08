@@ -63,7 +63,7 @@ class CharmCommand : public QObject
 
 public:
     explicit CharmCommand( const QString& description, QObject* parent = nullptr );
-    virtual ~CharmCommand();
+    ~CharmCommand() override;
 
     QString description() const;
 

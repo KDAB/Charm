@@ -33,7 +33,7 @@ class CommandSetAllTasks : public CharmCommand
 
 public:
     explicit CommandSetAllTasks( const TaskList&, QObject* parent );
-    ~CommandSetAllTasks();
+    ~CommandSetAllTasks() override;
 
     bool prepare() override;
     bool execute( ControllerInterface* ) override;

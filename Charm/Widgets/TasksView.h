@@ -47,7 +47,7 @@ class TasksView : public QDialog,
 
 public:
     explicit TasksView (QWidget* parent = nullptr );
-    ~TasksView();
+    ~TasksView() override;
 
     void populateEditMenu( QMenu* );
 
@@ -65,8 +65,8 @@ public Q_SLOTS:
 signals:
     // FIXME connect to MainWindow
     void saveConfiguration();
-    void emitCommand( CharmCommand* );
-    void emitCommandRollback( CharmCommand* );
+    void emitCommand( CharmCommand* ) override;
+    void emitCommandRollback( CharmCommand* ) override;
 
 private slots:
     void actionNewTask();

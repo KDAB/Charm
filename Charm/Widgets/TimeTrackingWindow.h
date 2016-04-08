@@ -51,7 +51,7 @@ class TimeTrackingWindow : public CharmWindow,
     Q_OBJECT
 public:
     explicit TimeTrackingWindow( QWidget* parent = nullptr );
-    ~TimeTrackingWindow();
+    ~TimeTrackingWindow() override;
 
     enum VerboseMode {
         Verbose = 0,

@@ -57,7 +57,7 @@ class SelectTaskDialog : public QDialog
 
 public:
     explicit SelectTaskDialog( QWidget* parent=nullptr );
-    ~SelectTaskDialog();
+    ~SelectTaskDialog() override;
 
     TaskId selectedTask() const;
     void setNonTrackableSelectable();

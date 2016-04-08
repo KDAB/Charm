@@ -55,7 +55,7 @@ class CharmDataModel : public QObject
 
 public:
     CharmDataModel();
-    ~CharmDataModel();
+    ~CharmDataModel() override;
 
     void stateChanged( State previous, State next );
     /** Register a CharmDataModelAdapterInterface. */

@@ -36,7 +36,7 @@ class CommandMakeAndActivateEvent : public CharmCommand
 
 public:
     explicit CommandMakeAndActivateEvent( const Task&, QObject* parent );
-    ~CommandMakeAndActivateEvent();
+    ~CommandMakeAndActivateEvent() override;
 
     bool prepare() override;
     bool execute( ControllerInterface* ) override;

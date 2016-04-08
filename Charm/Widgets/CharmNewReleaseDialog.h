@@ -38,7 +38,7 @@ class CharmNewReleaseDialog : public QDialog
 
 public:
     explicit CharmNewReleaseDialog( QWidget* parent = nullptr );
-    ~CharmNewReleaseDialog();
+    ~CharmNewReleaseDialog() override;
 
     void setVersion( const QString& newVersion , const QString& localVersion );
     void setDownloadLink( const QUrl& link );

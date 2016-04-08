@@ -39,7 +39,7 @@ class MonthlyTimesheetConfigurationDialog : public ReportConfigurationDialog
 
 public:
     explicit MonthlyTimesheetConfigurationDialog( QWidget* parent );
-    virtual ~MonthlyTimesheetConfigurationDialog();
+    ~MonthlyTimesheetConfigurationDialog() override;
 
     void showReportPreviewDialog() override;
     void showEvent( QShowEvent* ) override;

@@ -63,7 +63,7 @@ class TaskModelAdapter :  public QAbstractItemModel,
 
 public:
     explicit TaskModelAdapter( CharmDataModel* parent );
-    ~TaskModelAdapter();
+    ~TaskModelAdapter() override;
 
     // reimplement QAbstractItemModel:
     int columnCount( const QModelIndex& parent = QModelIndex() ) const override;

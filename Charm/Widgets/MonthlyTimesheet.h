@@ -36,7 +36,7 @@ class MonthlyTimeSheetReport : public TimeSheetReport
 
 public:
     explicit MonthlyTimeSheetReport( QWidget* parent = nullptr );
-    virtual ~MonthlyTimeSheetReport();
+    ~MonthlyTimeSheetReport() override;
 
     void setReportProperties( const QDate& start,
                               const QDate& end,

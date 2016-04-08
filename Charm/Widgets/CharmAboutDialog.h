@@ -37,7 +37,7 @@ class CharmAboutDialog : public QDialog
 
 public:
     explicit CharmAboutDialog( QWidget* parent = nullptr );
-    ~CharmAboutDialog();
+    ~CharmAboutDialog() override;
 
 private:
     QScopedPointer<Ui::CharmAboutDialog> m_ui;

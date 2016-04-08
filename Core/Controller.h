@@ -41,7 +41,7 @@ class Controller : public QObject,
 
 public:
     explicit Controller( QObject* parent = nullptr );
-    ~Controller();
+    ~Controller() override;
 
     void stateChanged( State previous, State next ) override;
     void persistMetaData( Configuration& ) override;

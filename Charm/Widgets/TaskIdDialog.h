@@ -39,7 +39,7 @@ class TaskIdDialog : public QDialog
 
 public:
     explicit TaskIdDialog( TaskModelInterface* model, TasksView* parent );
-    ~TaskIdDialog();
+    ~TaskIdDialog() override;
 
     void setSuggestedId( int );
     int selectedId() const;

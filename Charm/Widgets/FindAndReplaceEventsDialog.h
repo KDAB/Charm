@@ -45,7 +45,7 @@ class FindAndReplaceEventsDialog : public QDialog
 
 public:
     explicit FindAndReplaceEventsDialog( QWidget* parent = nullptr );
-    ~FindAndReplaceEventsDialog();
+    ~FindAndReplaceEventsDialog() override;
 
     QList<Event> modifiedEvents() const;
 

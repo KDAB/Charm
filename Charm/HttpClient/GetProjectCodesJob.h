@@ -34,7 +34,7 @@ class GetProjectCodesJob : public HttpJob
 public:
 
     explicit GetProjectCodesJob(QObject* parent=nullptr);
-    ~GetProjectCodesJob();
+    ~GetProjectCodesJob() override;
 
     QByteArray payload() const;
 

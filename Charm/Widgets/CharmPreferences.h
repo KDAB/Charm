@@ -36,7 +36,7 @@ class CharmPreferences : public QDialog
 public:
     explicit CharmPreferences( const Configuration& config,
                                QWidget* parent = nullptr );
-    ~CharmPreferences();
+    ~CharmPreferences() override;
 
     Configuration::DurationFormat durationFormat() const;
     bool detectIdling() const;
