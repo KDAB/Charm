@@ -123,31 +123,17 @@ IF(Qt5Core_FOUND)
     set(QT_QTTEST_LIBRARY ${Qt5Test_LIBRARIES})
 
     set(QT_LIBRARIES
-        ${Qt5Core_LIBRARIES}
-        ${Qt5Widgets_LIBRARIES}
-        ${Qt5Xml_LIBRARIES}
-        ${Qt5Network_LIBRARIES}
-        ${Qt5Script_LIBRARIES}
-        ${Qt5Sql_LIBRARIES}
-        ${QTPRINT_LIBRARIES}
-        ${QTDBUS_LIBRARIES}
+        Qt5::Core
+        Qt5::Widgets
+        Qt5::Xml
+        Qt5::Network
+        Qt5::Script
+        Qt5::Sql
+        Qt5::PrintSupport
+        Qt5::DBus
         ${QTKEYCHAIN_LIBRARIES}
         ${QT_PLATFORM_SPECIFIC_LIBRARIES}
     )
-
-    include_directories(
-        ${Qt5Core_INCLUDE_DIRS}
-        ${Qt5Widgets_INCLUDE_DIRS}
-        ${Qt5Xml_INCLUDE_DIRS}
-        ${Qt5Network_INCLUDE_DIRS}
-        ${Qt5Script_INCLUDE_DIRS}
-        ${Qt5Sql_INCLUDE_DIRS}
-        ${QTKEYCHAIN_INCLUDE_DIRS}
-    )
-
-    IF (NOT WIN32)
-        SET( CMAKE_CXX_FLAGS "${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS} ${CMAKE_CXX_FLAGS}" )
-    ENDIF()
 ELSE()
     # No Qt5 found, try Qt4
     find_package(Qt4 COMPONENTS QtMain QtCore QtGui QtSql QtXml QtNetwork QtScript REQUIRED)

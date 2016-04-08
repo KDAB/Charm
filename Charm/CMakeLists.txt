@@ -176,7 +176,7 @@ ADD_LIBRARY(
     CharmApplication STATIC
     ${CharmApplication_SRCS} ${UiGenerated_SRCS}
 )
-TARGET_LINK_LIBRARIES(CharmApplication ${CharmApplication_LIBS})
+TARGET_LINK_LIBRARIES(CharmApplication ${CharmApplication_LIBS} ${QT_LIBRARIES})
 
 SET( Charm_SRCS Charm.cpp )
 
