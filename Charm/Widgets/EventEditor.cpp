@@ -217,7 +217,6 @@ void EventEditor::updateValues( bool all )
     bool active = MODEL.charmDataModel()->isEventActive( m_event.id() );
     m_ui->dateEditEnd->setEnabled( !active );
     m_ui->timeEditEnd->setEnabled( !active );
-    m_ui->textEditComment->setEnabled( !active );
     m_ui->spinBoxHours->setEnabled( !active );
     m_ui->spinBoxMinutes->setEnabled( !active );
     m_ui->pushButtonSelectTask->setEnabled( !active );
