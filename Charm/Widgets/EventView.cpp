@@ -466,6 +466,8 @@ void EventView::stateChanged( State previous )
     case Disconnecting:
         saveGuiState();
         break;
+    default:
+        break;
     }
 }
 
