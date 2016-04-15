@@ -72,7 +72,7 @@ protected:
 
 private:
     void updateThumbBar();
-    void taskSelected( const QString& taskname, TaskId id );
+    void taskSelected( TaskId id );
     QToolButton* m_stopGoButton;
     QAction* m_stopGoAction;
     QToolButton* m_editCommentButton;

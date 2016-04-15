@@ -253,7 +253,7 @@ void TimeTrackingTaskSelector::slotActionSelected( QAction* action )
     }
 
     if( taskId > 0 ) {
-        taskSelected( action->text(), taskId );
+        taskSelected( taskId );
         handleActiveEvents();
 
         if ( !DATAMODEL->isTaskActive( taskId ) ) {
@@ -290,10 +290,11 @@ void TimeTrackingTaskSelector::updateThumbBar()
 #endif
 }
 
-void TimeTrackingTaskSelector::taskSelected( const QString& taskname, TaskId id )
+void TimeTrackingTaskSelector::taskSelected( TaskId id )
 {
     m_selectedTask = id;
     m_stopGoAction->setEnabled( true );
+    const auto taskname = DATAMODEL->taskIdAndSmartNameString( id );
     m_taskSelectorButton->setText( escapeAmpersands( taskname ) );
 }
 
@@ -309,7 +310,7 @@ void TimeTrackingTaskSelector::slotGoStopToggled( bool on )
 
 void TimeTrackingTaskSelector::taskSelected( const WeeklySummary& summary )
 {
-    taskSelected( summary.taskname, summary.task );
+    taskSelected( summary.task );
 }
 
 void TimeTrackingTaskSelector::slotManuallySelectTask()
