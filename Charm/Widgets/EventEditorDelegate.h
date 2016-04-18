@@ -31,6 +31,8 @@ class QPainter;
 class QStyleOptionViewItem;
 class QModelIndex;
 class EventModelFilter;
+class TaskTreeItem;
+class Event;
 
 class EventEditorDelegate : public QItemDelegate
 {
@@ -53,10 +55,9 @@ private:
     EventModelFilter* m_model;
     mutable QSize m_cachedSizeHint;
 
-    // paint the values into the painter at the given rectangle, return the
-    // bounding rectangle
-    // (factored out to use the same implementation for the size hint
-    // and the painting during paintEvent)
+    QString taskName( const TaskTreeItem& item ) const;
+    QString dateAndDuration( const Event& event ) const;
+
     QRect paint( QPainter*, const QStyleOptionViewItem& option,
                  const QString& taskName, const QString& timespan,
                  double logDuration, EventState state ) const;
