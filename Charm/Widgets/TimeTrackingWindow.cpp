@@ -485,7 +485,7 @@ void TimeTrackingWindow::slotTasksDownloaded(HttpJob* job_)
         const QString message = tr("Could not download the task list: %1").arg( job->errorString() );
         if ( verbose )
             QMessageBox::critical( this, title, message );
-        else
+        else if ( job->error() != HttpJob::HostNotFound )
             emit showNotification( title, message );
 
         return;
@@ -706,7 +706,7 @@ void TimeTrackingWindow::importTasksFromDeviceOrFile( QIODevice* device, const Q
             const QString title = success ? tr( "Tasks Import" ) : tr( "Failure setting new tasks" );
             if ( verbose )
                 QMessageBox::information( this, title, detailsText );
-            else
+            else if ( !success )
                 emit showNotification( title, detailsText );
         }
 
