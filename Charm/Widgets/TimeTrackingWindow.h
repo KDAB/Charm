@@ -142,6 +142,7 @@ private:
     QTimer m_checkCharmReleaseVersionTimer;
     QTimer m_updateUserInfoAndTasksDefinitionsTimer;
     BillDialog *m_billDialog;
+    bool m_idleCorrectionDialogVisible = false;
 };
 
 #endif

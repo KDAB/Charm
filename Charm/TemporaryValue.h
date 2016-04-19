@@ -1,11 +1,9 @@
 /*
-  Uniquifier.h
-
   This file is part of Charm, a task-based time tracking application.
 
   Copyright (C) 2009-2016 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
 
-  Author: Mirko Boehm <mirko.boehm@kdab.com>
+  Author: Frank Osterfeld <frank.osterfeld@kdab.com>
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -21,28 +19,25 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef UNIQUIFIER_H
-#define UNIQUIFIER_H
+#ifndef TEMPORARYVALUE_H
+#define TEMPORARYVALUE_H
 
-// Usage:
-// void blurb() {
-//     static bool inProgress = false;
-//     if ( inProgress == true ) return;
-//     Uniquifier u( &inProgress );
-// // ... this code will be called only once
-// }
+template <typename T>
+struct TemporaryValue {
+    explicit TemporaryValue(T& x, const T& value)
+        : m_oldValue(x)
+        , m_x(x)
+    {
+        m_x = value;
+    }
 
-class Uniquifier {
-public:
-    explicit Uniquifier( bool* guard ) {
-        m_guard = guard;
-        *m_guard = true;
+    ~TemporaryValue() {
+        m_x = m_oldValue;
     }
-    ~Uniquifier() {
-        *m_guard = false;
-    }
-private:
-    bool *m_guard;
+
+    T& m_x;
+    const T m_oldValue;
 };
 
 #endif
+

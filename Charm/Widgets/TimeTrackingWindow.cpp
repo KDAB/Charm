@@ -36,8 +36,8 @@
 #include "MessageBox.h"
 #include "MonthlyTimesheet.h"
 #include "MonthlyTimesheetConfigurationDialog.h"
+#include "TemporaryValue.h"
 #include "TimeTrackingView.h"
-#include "Uniquifier.h"
 #include "ViewHelpers.h"
 #include "WeeklyTimesheet.h"
 
@@ -621,16 +621,12 @@ void TimeTrackingWindow::informUserAboutNewRelease( const QString& releaseVersio
 void TimeTrackingWindow::maybeIdle( IdleDetector* detector )
 {
     Q_ASSERT( detector );
-    static bool inProgress = false;
+    Q_ASSERT( !detector->idlePeriods().isEmpty() );
 
-    if ( inProgress == true ) return;
-    Uniquifier u( &inProgress );
+    if ( m_idleCorrectionDialogVisible )
+        return;
 
-    Q_FOREACH( const IdleDetector::IdlePeriod& p, detector->idlePeriods() ) {
-        qDebug() << "ApplicationCore::slotMaybeIdle: computer might be have been idle from"
-                 << p.first
-                 << "to" << p.second;
-    }
+    const TemporaryValue<bool> tempValue( m_idleCorrectionDialogVisible, true );
 
     // handle idle merging:
     IdleCorrectionDialog dialog( this );
@@ -646,7 +642,6 @@ void TimeTrackingWindow::maybeIdle( IdleDetector* detector )
         // FIXME with this option, we can only change the events to
         // the start time of one idle period, I chose to use the last
         // one:
-        Q_ASSERT( !detector->idlePeriods().isEmpty() );
         const IdleDetector::IdlePeriod period = detector->idlePeriods().last();
 
         Q_FOREACH ( EventId eventId, activeEvents ) {

@@ -26,7 +26,6 @@
 #include "CharmCMake.h"
 #include "Data.h"
 #include "ViewHelpers.h"
-#include "Uniquifier.h"
 
 #include "Core/CharmConstants.h"
 #include "Core/CharmExceptions.h"
@@ -803,9 +802,7 @@ void ApplicationCore::setHttpActionsVisible( bool visible )
 void ApplicationCore::slotMaybeIdle()
 {
     if ( DATAMODEL->activeEventCount() > 0 ) {
-        if ( idleDetector()->idlePeriods().count() == 1 ) {
-            m_timeTracker.maybeIdle( idleDetector() );
-        } // otherwise, the dialog will be showing already
+        m_timeTracker.maybeIdle( idleDetector() );
     }
     // there are four parameters to the idle property:
     // - the initial start time of the currently active event(s)
