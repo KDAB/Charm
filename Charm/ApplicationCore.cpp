@@ -303,7 +303,7 @@ void ApplicationCore::slotHandleUniqueApplicationConnection()
     QLocalSocket* socket = m_uniqueApplicationServer.nextPendingConnection();
     socket->waitForReadyRead();
     QByteArray data = socket->readAll();
-    if ( data.startsWith( "start-task: " ) ) {
+    if ( data.startsWith( "start-task: " ) ) { //krazy:exclude=strings
         bool ok = true;
         TaskId id = data.mid( QString::fromLatin1( "start-task: " ).length() ).toInt( &ok );
         if ( ok ) {
@@ -322,6 +322,7 @@ void ApplicationCore::showMainWindow(ShowMode mode )
     if ( mode == ShowMode::ShowAndRaise ) {
         m_timeTracker.raise();
 #ifdef Q_OS_WIN
+        //krazy:cond=captruefalse,null
         int idActive = GetWindowThreadProcessId( GetForegroundWindow(), NULL );
         int threadId = GetCurrentThreadId();
         if ( AttachThreadInput( threadId, idActive, TRUE ) != 0 ) {
@@ -330,6 +331,7 @@ void ApplicationCore::showMainWindow(ShowMode mode )
             SetFocus( wid );
             AttachThreadInput( threadId, idActive, FALSE );
         }
+        //krazy:endcond=captruefalse,null
 #endif
     }
 }
