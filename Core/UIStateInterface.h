@@ -31,7 +31,7 @@ class UIStateInterface :
         public CommandEmitterInterface
 {
 public:
-    virtual ~UIStateInterface() = default;
+    virtual ~UIStateInterface() {};
     virtual void saveGuiState() = 0;
     virtual void restoreGuiState() = 0;
     virtual void stateChanged( State previous ) = 0;

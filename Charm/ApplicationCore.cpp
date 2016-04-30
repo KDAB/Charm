@@ -825,16 +825,17 @@ TrayIcon& ApplicationCore::trayIcon()
 void ApplicationCore::updateTaskList()
 {
 #ifdef Q_OS_WIN
-    auto addJumpListEntry = []( QWinJumpListCategory* category, const TaskIdList &source ) {
-        category->clear();
-        for ( TaskId id : source ) {
-            category->addLink( Data::goIcon(), DATAMODEL->getTask( id ).name(), qApp->applicationFilePath(),
-            { QLatin1String( "--start-task" ), QString::number( id ) } );
-        }
-        category->setVisible( true );
-    };
-    addJumpListEntry( m_windowsJumpList->recent(), DATAMODEL->mostRecentlyUsedTasks() );
-    addJumpListEntry( m_windowsJumpList->frequent(), DATAMODEL->mostFrequentlyUsedTasks() );
+    const auto recentData = DATAMODEL->mostRecentlyUsedTasks();
+    auto recentJumpList = m_windowsJumpList->recent();
+    recentJumpList->clear();
+    int count = 0;
+    Q_FOREACH (const auto &id, recentData) {
+        if (count++ > 5)
+            break;
+        recentJumpList->addLink( Data::goIcon(), DATAMODEL->getTask( id ).name(), qApp->applicationFilePath(),
+        { QLatin1String( "--start-task" ), QString::number( id ) } );
+    }
+    recentJumpList->setVisible( true );
 #endif
 }
 

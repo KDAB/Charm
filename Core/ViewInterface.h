@@ -35,7 +35,7 @@ class ViewInterface :
         public UIStateInterface
 {
 public:
-    virtual ~ViewInterface() = default;
+    virtual ~ViewInterface() {};
 
     // application:
     virtual void saveConfiguration() = 0;
