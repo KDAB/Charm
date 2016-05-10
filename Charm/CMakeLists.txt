@@ -263,6 +263,9 @@ IF( NOT "${CMAKE_VERSION}" VERSION_LESS "2.8.4" AND CHARM_PREPARE_DEPLOY )
         # Deploy qsqlite plugin
         GET_TARGET_PROPERTY( _loc Qt5::QSQLiteDriverPlugin LOCATION )
         INSTALL( FILES ${_loc} DESTINATION plugins/sqldrivers )
+        # Deploy windowsprintersupport plugin
+        GET_TARGET_PROPERTY( _loc Qt5::QWindowsPrinterSupportPlugin LOCATION )
+        INSTALL( FILES ${_loc} DESTINATION plugins/printsupport )
         # Install qt.conf (prevents plugins from the built-in Qt path to be used)
         INSTALL(FILES qt.conf.in.windows RENAME qt.conf DESTINATION .)
     ENDIF()
