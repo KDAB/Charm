@@ -160,7 +160,7 @@ void TaskEditor::slotSelectParent()
             QMessageBox::information( this, tr( "Please choose another task" ),
                     tr( "The task \"%1\" cannot be selected as the parent task for \"%2\","
                         " because they are the same, or \"%3\" is a direct or indirect subtask of \"%4\".")
-                        .arg( parent ).arg( name ).arg( parent ).arg( name ) );
+                        .arg( parent, name, parent, name ) );
         } else {
             break;
         }

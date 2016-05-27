@@ -252,10 +252,10 @@ void ControllerTests::toAndFromXmlTest()
         if( tasksBefore != tasksAfter ) {
                 qDebug() << "XML Document created during failed test:" << endl
                                 << document.toString();
-                        Q_FOREACH( Task task, tasksBefore ) {
+                        Q_FOREACH( const Task& task, tasksBefore ) {
                                 task.dump();
                         }
-                        Q_FOREACH( Task task, tasksAfter ) {
+                        Q_FOREACH( const Task& task, tasksAfter ) {
                                 task.dump();
                         }
         }

@@ -132,7 +132,7 @@ bool ViewFilter::checkChildren( Task task, CheckFor checkFor ) const
 {
     if ( taskHasChildren( task ) ) {
         const TaskList taskList = m_model.children( task );
-        for ( const Task taskChild : taskList ) {
+        for ( const Task& taskChild : taskList ) {
             if ( checkFor == HaveSubscribedChild && taskChild.subscribed() )
                 return true;
             else if ( checkFor == HaveValidChild && taskChild.isCurrentlyValid() )

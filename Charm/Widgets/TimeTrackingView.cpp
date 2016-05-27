@@ -422,14 +422,14 @@ bool TimeTrackingView::taskIsValidAndTrackable( int taskId )
     bool expired = !task.isCurrentlyValid();
     bool trackable = task.trackable();
     bool notTrackableAndExpired = ( !trackable && expired );
-    int id = task.id();
+    const auto id = QString::number( task.id() );
     const QString name = task.name();
     QString expirationDate = QLocale::system().toString(task.validUntil(), QLocale::ShortFormat);
 
     if ( !trackable || expired ) {
-        QString message = notTrackableAndExpired ? tr( "The task %1 (%2) is not trackable and expired since %3").arg( id ).arg( name ).arg( expirationDate ) :
-                                                   expired ? tr( "The task %1 (%2) is expired since %3").arg( id ).arg( name ).arg( expirationDate ) :
-                                                             tr( "The task %1 (%2) is not trackable").arg( id ).arg( name );
+        QString message = notTrackableAndExpired ? tr( "The task %1 (%2) is not trackable and expired since %3").arg( id, name, expirationDate ) :
+                                                   expired ? tr( "The task %1 (%2) is expired since %3").arg( id, name, expirationDate ) :
+                                                             tr( "The task %1 (%2) is not trackable").arg( id, name );
 
         QMessageBox::information( this, tr( "Please choose another task" ), message );
         return false;

@@ -436,7 +436,7 @@ void ApplicationCore::setState(State state)
     };
 
     m_state = state;
-    for ( auto e : m_uiElements ) {
+    Q_FOREACH ( auto e, m_uiElements ) {
         e->stateChanged( m_state );
     }
 
@@ -769,7 +769,7 @@ void ApplicationCore::slotSaveConfiguration()
         m_cmdInterface->configurationChanged();
 #endif
     }
-    for ( auto e :  m_uiElements ) {
+    Q_FOREACH ( auto e, m_uiElements ) {
          e->configurationChanged();
     }
 }
@@ -850,7 +850,7 @@ void ApplicationCore::commitData( QSessionManager & manager )
     // Before QApplication closes all windows, save their state.
     // Doing this in saveState is too late because then we would store that they are all hidden.
     if (m_state == Connected) {
-        for ( auto e : m_uiElements ) {
+        Q_FOREACH ( auto e, m_uiElements ) {
             e->saveGuiState();
         }
     }

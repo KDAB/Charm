@@ -642,7 +642,8 @@ void TimeTrackingWindow::maybeIdle( IdleDetector* detector )
         // FIXME with this option, we can only change the events to
         // the start time of one idle period, I chose to use the last
         // one:
-        const IdleDetector::IdlePeriod period = detector->idlePeriods().last();
+        const auto periods = detector->idlePeriods();
+        const IdleDetector::IdlePeriod period = periods.last();
 
         Q_FOREACH ( EventId eventId, activeEvents ) {
             Event event = DATAMODEL->eventForId( eventId );

@@ -299,9 +299,9 @@ void ActivityReport::slotUpdate()
     {
         QDomElement headline = doc.createElement( "h3" );
         QString content = tr( "Report for %1, from %2 to %3" )
-                          .arg( CONFIGURATION.user.name() )
-                          .arg( m_start.toString( Qt::TextDate ) )
-                          .arg( m_end.toString( Qt::TextDate ) );
+                          .arg( CONFIGURATION.user.name(),
+                                m_start.toString( Qt::TextDate ),
+                                m_end.toString( Qt::TextDate ) );
         QDomText text = doc.createTextNode( content );
         headline.appendChild( text );
         body.appendChild( headline );
@@ -376,14 +376,16 @@ void ActivityReport::slotUpdate()
             const Task& task = item.task();
             Q_ASSERT( task.isValid() );
 
+            const auto paddedId = QString::fromLatin1("%1").arg( QString::number( task.id() ).trimmed(), Configuration::instance().taskPaddingLength, '0' );
+
             const QString row1Texts[] = {
                 tr( "%1 %2-%3 (%4) -- [%5] %6" )
-                .arg( event.startDateTime().date().toString( Qt::SystemLocaleShortDate ).trimmed() )
-                .arg( event.startDateTime().time().toString( Qt::SystemLocaleShortDate ).trimmed() )
-                .arg( event.endDateTime().time().toString( Qt::SystemLocaleShortDate ).trimmed() )
-                .arg( hoursAndMinutes( event.duration() ) )
-                .arg( QString().setNum( task.id() ).trimmed(), Configuration::instance().taskPaddingLength, '0' )
-                .arg( task.name().trimmed() )
+                .arg( event.startDateTime().date().toString( Qt::SystemLocaleShortDate ).trimmed(),
+                      event.startDateTime().time().toString( Qt::SystemLocaleShortDate ).trimmed(),
+                      event.endDateTime().time().toString( Qt::SystemLocaleShortDate ).trimmed(),
+                      hoursAndMinutes( event.duration() ),
+                      paddedId,
+                      task.name().trimmed() )
             };
 
             QDomElement row1 = doc.createElement( "tr" );

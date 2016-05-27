@@ -348,7 +348,7 @@ QDomDocument Controller::exportDatabasetoXml() const
     QDomElement tasksElement = document.createElement( TasksElement );
     // FIXME there are generic methods for that now, in Task.h
     TaskList tasks = m_storage->getAllTasks();
-    Q_FOREACH( Task task, tasks ) {
+    Q_FOREACH( const Task& task, tasks ) {
         QDomElement element = task.toXml( document );
         tasksElement.appendChild( element );
     }
@@ -356,7 +356,7 @@ QDomDocument Controller::exportDatabasetoXml() const
     // events element:
     QDomElement eventsElement = document.createElement( EventsElement );
     EventList events = m_storage->getAllEvents();
-    Q_FOREACH( Event event, events ) {
+    Q_FOREACH( const Event& event, events ) {
         QDomElement element = event.toXml( document );
         eventsElement.appendChild( element );
     }

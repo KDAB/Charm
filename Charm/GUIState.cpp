@@ -95,7 +95,7 @@ void GUIState::loadFrom( const QSettings& settings )
         // workaround for not getting QVariant serialization of TaskIdLists to work:
         QList<QVariant> values( settings.value( MetaKey_MainWindowGUIStateExpandedTasks ).value<QList<QVariant> >() );
         TaskIdList ids;
-        Q_FOREACH( QVariant variant, values ) {
+        Q_FOREACH( const QVariant& variant, values ) {
             ids << variant.value<TaskId>();
         }
         setExpandedTasks( ids );

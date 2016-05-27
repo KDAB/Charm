@@ -277,16 +277,20 @@ void EventView::slotDeleteEvent()
 
     if ( sameDates )
             message = tr( "<html><b>%1</b>%2: %3 - %4 (Duration: %5)</html>" )
-                      .arg( name )
-                      .arg( QLocale::system().toString( startDate, QLocale::ShortFormat ) ).arg( QLocale::system().toString( startTime, QLocale::ShortFormat ) )
-                      .arg( QLocale::system().toString( endTime, QLocale::ShortFormat ) ).arg( hoursAndMinutes( m_event.duration() ) );
+                      .arg( name,
+                            QLocale::system().toString( startDate, QLocale::ShortFormat ),
+                            QLocale::system().toString( startTime, QLocale::ShortFormat ),
+                            QLocale::system().toString( endTime, QLocale::ShortFormat ),
+                            hoursAndMinutes( m_event.duration() ) );
     else
             message = tr( "<html><b>%1</b><table><tr><td>Starting:</td><td>%2 at %3</td></tr>"
                           "<tr><td>Ending:</td><td>%4 at %5</td></tr><tr><td>Duration:</td><td>%6.</td></tr></html>" )
-                      .arg( name )
-                      .arg( QLocale::system().toString( startDate, QLocale::ShortFormat ) ).arg( QLocale::system().toString( startTime, QLocale::ShortFormat ) )
-                      .arg( QLocale::system().toString( endDate, QLocale::ShortFormat ) ).arg( QLocale::system().toString( endTime, QLocale::ShortFormat ) )
-                      .arg( hoursAndMinutes( m_event.duration() ) );
+                      .arg( name,
+                            QLocale::system().toString( startDate, QLocale::ShortFormat ),
+                            QLocale::system().toString( startTime, QLocale::ShortFormat ),
+                            QLocale::system().toString( endDate, QLocale::ShortFormat ),
+                            QLocale::system().toString( endTime, QLocale::ShortFormat ),
+                            hoursAndMinutes( m_event.duration() ) );
 
 
     if ( MessageBox::question( this, tr( "Delete Event?" ), message, tr( "Delete" ), tr("Cancel") )

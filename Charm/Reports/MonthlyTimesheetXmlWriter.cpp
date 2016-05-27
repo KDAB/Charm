@@ -101,7 +101,7 @@ QByteArray MonthlyTimesheetXmlWriter::saveToXml() const
     {   // tasks
         QDomElement tasks = document.createElement( "tasks" );
         report.appendChild( tasks );
-        Q_FOREACH ( TimeSheetInfo info, timeSheetInfo ) {
+        Q_FOREACH ( const TimeSheetInfo& info, timeSheetInfo ) {
             if ( info.taskId == 0 ) // the root task
                 continue;
             const Task& modelTask = m_dataModel->getTask( info.taskId );

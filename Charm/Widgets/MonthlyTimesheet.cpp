@@ -83,11 +83,11 @@ QByteArray MonthlyTimeSheetReport::saveToText()
     QByteArray output;
     QTextStream stream( &output );
     QString content = tr( "Report for %1, %2 %3 (%4 to %5)" )
-                      .arg( CONFIGURATION.user.name() )
-                      .arg( QDate::longMonthName( m_monthNumber ) )
-                      .arg( startDate().year() )
-                      .arg( startDate().toString( Qt::TextDate ) )
-                      .arg( endDate().addDays( -1 ).toString( Qt::TextDate ) );
+                      .arg( CONFIGURATION.user.name(),
+                            QDate::longMonthName( m_monthNumber ),
+                            QString::number( startDate().year() ),
+                            startDate().toString( Qt::TextDate ),
+                            endDate().addDays( -1 ).toString( Qt::TextDate ) );
     stream << content << '\n';
     stream << '\n';
     TimeSheetInfoList timeSheetInfo = TimeSheetInfo::filteredTaskWithSubTasks(
@@ -196,11 +196,11 @@ void MonthlyTimeSheetReport::update()
     {
         QDomElement headline = doc.createElement( "h3" );
         QString content = tr( "Report for %1, %2 %3 (%4 to %5)" )
-                          .arg( CONFIGURATION.user.name() )
-                          .arg( QDate::longMonthName( m_monthNumber ) )
-                          .arg( startDate().year() )
-                          .arg( startDate().toString( Qt::TextDate ) )
-                          .arg( endDate().addDays( -1 ).toString( Qt::TextDate ) );
+                          .arg( CONFIGURATION.user.name(),
+                                QDate::longMonthName( m_monthNumber ),
+                                QString::number( startDate().year() ),
+                                startDate().toString( Qt::TextDate ),
+                                endDate().addDays( -1 ).toString( Qt::TextDate ) );
         QDomText text = doc.createTextNode( content );
         headline.appendChild( text );
         body.appendChild( headline );

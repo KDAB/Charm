@@ -72,7 +72,7 @@ void CheckForUpdatesJob::start()
 void CheckForUpdatesJob::jobFinished( QNetworkReply* reply )
 {
     if ( reply->error() ) {
-        const QString errorString = tr( "Could not download update information from %1: %2" ).arg( m_url.toString() ).arg( reply->errorString() );
+        const QString errorString = tr( "Could not download update information from %1: %2" ).arg( m_url.toString(), reply->errorString() );
         m_jobData.errorString = errorString;
         m_jobData.error = reply->error();
     } else {

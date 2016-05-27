@@ -72,7 +72,7 @@ namespace XmlSerialization {
             QDomElement creationTime = doc.createElement( "creation-time" );
             metadata.appendChild( creationTime );
             QDomText time = doc.createTextNode(
-                QDateTime::currentDateTime().toUTC().toString( Qt::ISODate ) );
+                QDateTime::currentDateTimeUtc().toString( Qt::ISODate ) );
             creationTime.appendChild( time );
             // FIXME installation id and stuff are probably necessary
         }

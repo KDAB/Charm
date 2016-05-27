@@ -217,7 +217,7 @@ void SelectTaskDialog::slotAccepted()
         // expanded tasks
         TaskList tasks = MODEL.charmDataModel()->getAllTasks();
         TaskIdList expandedTasks;
-        Q_FOREACH( Task task, tasks ) {
+        Q_FOREACH( const Task& task, tasks ) {
             QModelIndex index( m_proxy.indexForTaskId( task.id() ) );
             if ( m_ui->treeView->isExpanded( index ) ) {
                 expandedTasks << task.id();

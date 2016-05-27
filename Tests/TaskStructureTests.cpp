@@ -41,7 +41,7 @@ void TaskStructureTests::checkForUniqueTaskIdsTest_data()
     QTest::addColumn<TaskList>( "tasks" );
     QTest::addColumn<bool>( "unique" );
 
-    Q_FOREACH( QDomElement testcase,
+    Q_FOREACH( const QDomElement& testcase,
                TestHelpers::retrieveTestCases( ":/checkForUniqueTaskIdsTest/Data", "checkForUniqueTaskIdsTest" ) ) {
         QString name = testcase.attribute( "name" );
         bool expectedResult = TestHelpers::attribute( "expectedResult", testcase );

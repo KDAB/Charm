@@ -258,12 +258,12 @@ Event SqlStorage::makeEventFromRecord(const QSqlRecord& record)
     if ( ! record.field( startField ).isNull() )
     {
         event.setStartDateTime
-        ( record.field( startField ).value().value<QDateTime>() );
+        ( record.field( startField ).value().toDateTime() );
     }
     if ( !record.field( endField ).isNull() )
     {
         event.setEndDateTime
-        ( record.field( endField ).value().value<QDateTime>() );
+        ( record.field( endField ).value().toDateTime() );
     }
 
     return event;
@@ -811,13 +811,13 @@ Task SqlStorage::makeTaskFromRecord( const QSqlRecord& record )
     if ( ! from.isEmpty() )
     {
         task.setValidFrom
-        ( record.field(validfromField).value().value<QDateTime>() );
+        ( record.field(validfromField).value().toDateTime() );
     }
     QString until = record.field(validuntilField).value().toString();
     if ( ! until.isEmpty() )
     {
         task.setValidUntil
-        ( record.field( validuntilField ).value().value<QDateTime>() );
+        ( record.field( validuntilField ).value().toDateTime() );
     }
     const QVariant trackableValue = record.field( trackableField ).value();
     if ( !trackableValue.isNull() && trackableValue.isValid() ) {
@@ -841,7 +841,7 @@ QString SqlStorage::setAllTasksAndEvents( const User& user, const TaskList& task
     Q_ASSERT( getAllTasks().isEmpty() );
 
     // now import Events and Tasks from the XML document:
-    Q_FOREACH( Task task, tasks ) {
+    Q_FOREACH( const Task& task, tasks ) {
         // don't use our own addTask method, it emits signals and that
         // confuses the model, because the task tree is not inserted depth-first:
         if ( addTask( task, transactor ) ) {
@@ -856,7 +856,7 @@ QString SqlStorage::setAllTasksAndEvents( const User& user, const TaskList& task
             return QObject::tr( "Cannot add imported tasks." );
         }
     }
-    Q_FOREACH( Event event, events ) {
+    Q_FOREACH( const Event& event, events ) {
         if ( ! event.isValid() ) continue;
         Task task = getTask( event.taskId() );
         if ( !task.isValid() ) {

@@ -45,7 +45,7 @@ namespace TestHelpers {
         QFileInfoList dataSets = dataDir.entryInfoList( filenamePatterns, QDir::Files, QDir::Name );
 
         QList<QDomElement> result;
-        Q_FOREACH( QFileInfo fileinfo, dataSets ) {
+        Q_FOREACH( const QFileInfo& fileinfo, dataSets ) {
             QDomDocument doc( "charmtests" );
             QFile file( fileinfo.filePath() );
             if ( ! file.open( QIODevice::ReadOnly ) ) {
