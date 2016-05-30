@@ -52,7 +52,8 @@ bool EventModelFilter::lessThan( const QModelIndex& left, const QModelIndex& rig
     if ( left.column() == 0 && right.column() == 0 ) {
         const Event& leftEvent = m_model.eventForIndex( left );
         const Event& rightEvent = m_model.eventForIndex( right );
-        return leftEvent.startDateTime() < rightEvent.startDateTime();
+        // date comparison in UTC is much faster and just as correct
+        return leftEvent.startDateTime(Qt::UTC) < rightEvent.startDateTime(Qt::UTC);
     } else {
         return QSortFilterProxyModel::lessThan( left, right );
     }
