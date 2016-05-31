@@ -626,12 +626,16 @@ int CharmDataModel::activeEventCount() const
 EventIdList CharmDataModel::eventsThatStartInTimeFrame( const QDate& start,
                                                         const QDate& end ) const
 {
+    // do the comparisons in UTC, which is much faster as we only need to convert
+    // start and end date then
+    const QDateTime startUTC = QDateTime(start, QTime(0, 0, 0)).toUTC();
+    const QDateTime endUTC = QDateTime(end, QTime(0, 0, 0)).toUTC();
     EventIdList events;
     EventMap::const_iterator it;
     for ( it = m_events.begin();
           it != m_events.end(); ++it ) {
         const Event& event( it->second );
-        if ( event.startDateTime().date() >= start && event.startDateTime().date() < end ) {
+        if ( event.startDateTime(Qt::UTC) >= startUTC && event.startDateTime(Qt::UTC) < endUTC ) {
             events << event.id();
         }
     }
@@ -717,7 +721,8 @@ TaskIdList CharmDataModel::mostRecentlyUsedTasks() const
     for( EventMap::const_iterator it = events.begin(); it != events.end(); ++it ) {
         const TaskId id = it->second.taskId();
         // process use date
-        const QDateTime date = it->second.startDateTime();
+        // Note: for a relative order, the UTC time is sufficient and much faster
+        const QDateTime date = it->second.startDateTime(Qt::UTC);
         mruMap[id]= qMax( mruMap[id], date );
     }
     std::priority_queue<TaskWithLastUseDate> mruTasks;
