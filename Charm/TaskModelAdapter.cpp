@@ -113,6 +113,8 @@ QVariant TaskModelAdapter::data( const QModelIndex& index, int role ) const
             return Qt::Unchecked;
         }
         break;
+    case TasksViewRole_TaskDescription:
+        return item->task().comment();
     case TasksViewRole_Name: // now unused
         return item->task().name();
     case TasksViewRole_RunningTime:
@@ -120,7 +122,7 @@ QVariant TaskModelAdapter::data( const QModelIndex& index, int role ) const
     case TasksViewRole_TaskId:
         return id;
     case Qt::EditRole: // we edit the comment
-    case TasksViewRole_Comment:
+    case TasksViewRole_UserComment:
         return activeEvent.comment();
     case TasksViewRole_Filter:
         return DATAMODEL->taskIdAndFullNameString( item->task().id() );

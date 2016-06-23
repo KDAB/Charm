@@ -177,6 +177,7 @@ const QString TaskIdElement("taskid");
 const QString TaskParentId("parentid");
 const QString TaskSubscribed("subscribed");
 const QString TaskTrackable("trackable");
+const QString TaskComment("comment");
 const QString TaskValidFrom("validfrom");
 const QString TaskValidUntil("validuntil");
 
@@ -240,6 +241,8 @@ Task Task::fromXml(const QDomElement& element, int databaseSchemaVersion)
         if (!ok)
             throw XmlSerializationException( QObject::tr( "Task::fromXml: invalid trackable settings") );
     }
+    if ( element.hasAttribute( TaskComment ) )
+        task.setComment( element.attribute( TaskComment ) );
     return task;
 }
 
@@ -274,6 +277,16 @@ QDomElement Task::makeTasksElement( QDomDocument document, const TaskList& tasks
 bool Task::lowerTaskId( const Task& left,  const Task& right )
 {
     return left.id() < right.id();
+}
+
+QString Task::comment() const
+{
+    return m_comment;
+}
+
+void Task::setComment( const QString &comment )
+{
+    m_comment = comment;
 }
 
 bool Task::checkForUniqueTaskIds( const TaskList& tasks )

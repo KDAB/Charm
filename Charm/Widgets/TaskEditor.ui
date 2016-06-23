@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>483</width>
-    <height>267</height>
+    <height>316</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -468,7 +468,16 @@
    </item>
    <item>
     <layout class="QVBoxLayout" name="verticalLayout">
-     <property name="margin">
+     <property name="leftMargin">
+      <number>12</number>
+     </property>
+     <property name="topMargin">
+      <number>12</number>
+     </property>
+     <property name="rightMargin">
+      <number>12</number>
+     </property>
+     <property name="bottomMargin">
       <number>12</number>
      </property>
      <item>
@@ -510,6 +519,20 @@
          </property>
         </widget>
        </item>
+       <item row="3" column="1">
+        <widget class="QDateEdit" name="dateEditTo">
+         <property name="maximumTime">
+          <time>
+           <hour>18</hour>
+           <minute>59</minute>
+           <second>59</second>
+          </time>
+         </property>
+         <property name="calendarPopup">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
        <item row="2" column="1">
         <widget class="QDateEdit" name="dateEditFrom">
          <property name="maximumTime">
@@ -531,20 +554,6 @@
          </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="1">
-        <widget class="QDateEdit" name="dateEditTo">
-         <property name="maximumTime">
-          <time>
-           <hour>18</hour>
-           <minute>59</minute>
-           <second>59</second>
-          </time>
-         </property>
-         <property name="calendarPopup">
-          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -571,6 +580,19 @@
           <string>No until date</string>
          </property>
         </widget>
+       </item>
+       <item row="4" column="0">
+        <widget class="QLabel" name="label_3">
+         <property name="text">
+          <string>Comment:</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1" colspan="2">
+        <widget class="QLineEdit" name="lineEditComment"/>
        </item>
       </layout>
      </item>

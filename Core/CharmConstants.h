@@ -35,7 +35,8 @@
 #define CHARM_DATABASE_VERSION_DESCRIPTOR "CharmDatabaseSchemaVersion"
 #define CHARM_DATABASE_VERSION_BEFORE_TASK_EXPIRY 2
 #define CHARM_DATABASE_VERSION_BEFORE_TRACKABLE 3
-#define CHARM_DATABASE_VERSION 4
+#define CHARM_DATABASE_VERSION_BEFORE_COMMENT 4
+#define CHARM_DATABASE_VERSION 5
 #define REQUIRED_CHARM_DATABASE_VERSION CHARM_DATABASE_VERSION
 // FIXME this may have to go into some plugin configuration later:
 // FIXME also, we may need some verbose descriptors for configuration

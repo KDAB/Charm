@@ -85,6 +85,9 @@ public:
     void setTrackable( bool trackable );
     bool trackable() const;
 
+    QString comment() const;
+    void setComment(const QString &comment);
+
     void dump() const;
 
     static QString tagName();
@@ -114,6 +117,7 @@ private:
     QDateTime m_validFrom;
     /** The timestamp after which the task becomes invalid. */
     QDateTime m_validUntil;
+    QString m_comment;
 };
 
 Q_DECLARE_METATYPE( TaskIdList )

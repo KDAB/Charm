@@ -100,6 +100,7 @@ void TaskEditor::setTask( const Task& task )
         m_ui->checkBoxUntil->setChecked( true );
         m_ui->dateEditTo->setDate( QDate::currentDate() );
     }
+    m_ui->lineEditComment->setText(task.comment());
     checkInvariants();
 }
 
@@ -121,6 +122,7 @@ Task TaskEditor::getTask() const
     } else {
         newTask.setValidUntil( m_ui->dateEditTo->dateTime() );
     }
+    newTask.setComment(m_ui->lineEditComment->text());
     return newTask;
 }
 

@@ -103,6 +103,7 @@ protected:
     virtual QString lastInsertRowFunction() const = 0;
 
 private:
+    bool migrateDB( const QString &queryString, int oldVersion );
     Event makeEventFromRecord( const QSqlRecord& );
     Task makeTaskFromRecord( const QSqlRecord& );
 };

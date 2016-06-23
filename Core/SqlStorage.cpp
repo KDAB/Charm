@@ -78,17 +78,9 @@ bool SqlStorage::verifyDatabase()
         throw UnsupportedDatabaseVersionException( QObject::tr( "Database version is too new." ) );
 
     if ( version == CHARM_DATABASE_VERSION_BEFORE_TRACKABLE ) {
-        SqlRaiiTransactor transactor( database() );
-        QSqlQuery query( database() );
-        query.prepare( QLatin1String("ALTER TABLE Tasks ADD trackable INTEGER") );
-        if ( !runQuery( query ) )
-            throw UnsupportedDatabaseVersionException( QObject::tr("Could not upgrade database from version %1 to version %2: %3").arg( QString::number( CHARM_DATABASE_VERSION_BEFORE_TRACKABLE ),
-                                                                                                                                        QString::number( CHARM_DATABASE_VERSION ),
-                                                                                                                                        query.lastError().text() ) );
-        version = CHARM_DATABASE_VERSION;
-        setMetaData( CHARM_DATABASE_VERSION_DESCRIPTOR, QString::number ( version ), transactor );
-        transactor.commit();
-        return true;
+        return migrateDB( QLatin1String("ALTER TABLE Tasks ADD trackable INTEGER"), CHARM_DATABASE_VERSION_BEFORE_TRACKABLE );
+    } else  if ( version == CHARM_DATABASE_VERSION_BEFORE_COMMENT ) {
+        return migrateDB( QLatin1String("ALTER TABLE Tasks ADD comment varchar(256)"), CHARM_DATABASE_VERSION_BEFORE_COMMENT );
     }
 
     throw UnsupportedDatabaseVersionException( QObject::tr( "Database version is not supported." ) );
@@ -154,14 +146,15 @@ bool SqlStorage::addTask(const Task& task)
 bool SqlStorage::addTask(const Task& task, const SqlRaiiTransactor& )
 {
     QSqlQuery query(database());
-    query.prepare("INSERT into Tasks (task_id, name, parent, validfrom, validuntil, trackable) "
-                  "values ( :task_id, :name, :parent, :validfrom, :validuntil, :trackable);");
+    query.prepare("INSERT into Tasks (task_id, name, parent, validfrom, validuntil, trackable, comment) "
+                  "values ( :task_id, :name, :parent, :validfrom, :validuntil, :trackable, :comment);");
     query.bindValue(":task_id", task.id());
     query.bindValue(":name", task.name());
     query.bindValue(":parent", task.parent());
     query.bindValue(":validfrom", task.validFrom() );
     query.bindValue(":validuntil", task.validUntil() );
     query.bindValue(":trackable", task.trackable() ? 1 : 0 );
+    query.bindValue(":comment", task.comment());
     return runQuery(query);
 }
 
@@ -455,6 +448,20 @@ bool SqlStorage::runQuery(QSqlQuery& query)
         }
     }
     return result;
+}
+
+bool SqlStorage::migrateDB(const QString &queryString, int oldVersion)
+{
+    SqlRaiiTransactor transactor( database() );
+    QSqlQuery query( database() );
+    query.prepare( queryString );
+    if ( !runQuery( query ) )
+        throw UnsupportedDatabaseVersionException( QObject::tr("Could not upgrade database from version %1 to version %2: %3").arg( QString::number( oldVersion ),
+                                                                                                                                    QString::number( oldVersion + 1 ),
+                                                                                                                                    query.lastError().text() ) );
+    setMetaData( CHARM_DATABASE_VERSION_DESCRIPTOR, QString::number ( oldVersion + 1 ), transactor );
+    transactor.commit();
+    return verifyDatabase();
 }
 
 void SqlStorage::stateChanged(State previous)
@@ -802,6 +809,7 @@ Task SqlStorage::makeTaskFromRecord( const QSqlRecord& record )
     int validfromField = record.indexOf("validfrom");
     int validuntilField = record.indexOf("validuntil");
     int trackableField = record.indexOf("trackable");
+    int commentField = record.indexOf("comment");
 
     task.setId(record.field(idField).value().toInt());
     task.setName(record.field(nameField).value().toString());
@@ -822,6 +830,10 @@ Task SqlStorage::makeTaskFromRecord( const QSqlRecord& record )
     const QVariant trackableValue = record.field( trackableField ).value();
     if ( !trackableValue.isNull() && trackableValue.isValid() ) {
         task.setTrackable( trackableValue.toInt() == 1 );
+    }
+    const QVariant commentValue = record.field( commentField ).value();
+    if ( !commentValue.isNull() && commentValue.isValid() ) {
+        task.setComment( commentValue.toString() );
     }
     return task;
 }

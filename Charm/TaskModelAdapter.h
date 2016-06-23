@@ -41,9 +41,10 @@ enum ViewColumns {
 enum TasksViewRoles {
     TasksViewRole_Name = 0x1045F132,
     TasksViewRole_RunningTime,
-    TasksViewRole_Comment,
+    TasksViewRole_UserComment,
     TasksViewRole_TaskId,
-    TasksViewRole_Filter ///< Role for search/filter
+    TasksViewRole_Filter, ///< Role for search/filter
+    TasksViewRole_TaskDescription = Qt::ToolTipRole
 };
 
 typedef ViewColumns ViewColumn;
