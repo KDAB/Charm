@@ -25,8 +25,8 @@
 template <typename T>
 struct TemporaryValue {
     explicit TemporaryValue(T& x, const T& value)
-        : m_oldValue(x)
-        , m_x(x)
+        : m_x(x)
+        , m_oldValue(x)
     {
         m_x = value;
     }
