@@ -291,7 +291,6 @@ IF( NOT "${CMAKE_VERSION}" VERSION_LESS "2.8.4" )
             "${LICENSE_FILE}" "License"
             "${README_FILE}" "Readme"
         )
-        SET( CPACK_NSIS_MUI_FINISHPAGE_RUN "${CPACK_NSIS_INSTALLED_ICON_NAME}" )
     ELSEIF( APPLE )
         SET( CPACK_GENERATOR "DragNDrop" )
         SET( CPACK_DMG_FORMAT "UDBZ" )
