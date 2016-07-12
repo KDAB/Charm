@@ -177,6 +177,9 @@ ADD_LIBRARY(
     ${CharmApplication_SRCS} ${UiGenerated_SRCS}
 )
 TARGET_LINK_LIBRARIES(CharmApplication ${CharmApplication_LIBS} ${QT_LIBRARIES})
+IF(QTKEYCHAIN_SYSTEM)
+    TARGET_INCLUDE_DIRECTORIES(CharmApplication PRIVATE ${QTKEYCHAIN_INCLUDE_DIRS})
+ENDIF()
 
 SET( Charm_SRCS Charm.cpp )
 
