@@ -67,7 +67,6 @@ FindAndReplaceEventsDialog::FindAndReplaceEventsDialog( QWidget* parent )
              SIGNAL(dateChanged()),
              SLOT(slotTimeSpansChanged()) );
 
-    m_ui->selectReplaceWithTaskPB->setEnabled( false );
     connect ( m_ui->selectSearchTaskPB, SIGNAL(clicked()), SLOT(slotSelectTaskToSearch()) );
     connect ( m_ui->selectReplaceWithTaskPB, SIGNAL(clicked()), SLOT(slotSelectTaskToReplaceWith()) );
 
@@ -88,9 +87,6 @@ FindAndReplaceEventsDialog::~FindAndReplaceEventsDialog()
 void FindAndReplaceEventsDialog::searchProjectCode()
 {
     m_foundEvents = m_model->events();
-
-    if ( m_foundEvents.count() > 0 )
-        m_ui->selectReplaceWithTaskPB->setEnabled( true );
 }
 
 void FindAndReplaceEventsDialog::slotReplaceProjectCode()
