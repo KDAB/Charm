@@ -9,12 +9,12 @@
         <file alias="newsubtask.png">Icons/document-properties.png</file>
         <file alias="quitcharm.png">Icons/application-exit.png</file>
         <file alias="editor_dirty.png">Icons/favorites.png</file>
-        <file alias="charmicon.png">Icons/Charm-256x256.png</file>
+        <file alias="charmicon.png">Icons/256-apps-Charm.png</file>
         <file alias="deletetask.png">Icons/document-close.png</file>
         <file alias="edit.png">Icons/document-edit.png</file>
         <file alias="go.png">Icons/media-playback-start.png</file>
         <file alias="stop.png">Icons/media-playback-stop.png</file>
-        <file alias="charmabout.png">Icons/Charm-128x128.png</file>
+        <file alias="charmabout.png">Icons/128-apps-Charm.png</file>
         <file alias="charmtray_mac.png">Icons/tray/charmtray_mac.png</file>
         <file alias="charmtrayactive_mac.png">Icons/tray/charmtrayactive_mac.png</file>
         <file alias="charmtray22.png">Icons/tray/charmtray22.png</file>

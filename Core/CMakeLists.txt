@@ -27,4 +27,6 @@ SET(
 
 ADD_LIBRARY( CharmCore STATIC ${CharmCore_SRCS} )
 
-TARGET_LINK_LIBRARIES( CharmCore ${QT_LIBRARIES} )
+kde_target_enable_exceptions( CharmCore PUBLIC )
+
+TARGET_LINK_LIBRARIES( CharmCore Qt5::Core Qt5::Widgets Qt5::Sql Qt5::Xml)

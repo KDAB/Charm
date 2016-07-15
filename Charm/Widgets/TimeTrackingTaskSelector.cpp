@@ -43,7 +43,10 @@
 #include <QVBoxLayout>
 
 #ifdef Q_OS_WIN
-#include <QtWinExtras/QtWinExtras>
+#include <QtWinExtras/QWinJumpList>
+#include <QtWinExtras/QWinJumpListCategory>
+#include <QtWinExtras/QWinThumbnailToolBar>
+#include <QtWinExtras/QWinThumbnailToolButton>
 #endif
 
 #define CUSTOM_TASK_PROPERTY_NAME "CUSTOM_TASK_PROPERTY"

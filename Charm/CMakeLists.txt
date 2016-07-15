@@ -1,9 +1,5 @@
 INCLUDE_DIRECTORIES( ${Charm_SOURCE_DIR} ${Charm_BINARY_DIR} )
 
-if(POLICY CMP0020)
-    CMAKE_POLICY(SET CMP0020 NEW)
-endif()
-
 SET(
     CharmApplication_SRCS
     ApplicationCore.cpp
@@ -141,15 +137,15 @@ IF (NOT QTKEYCHAIN_SYSTEM)
 	ELSEIF ( UNIX )
 	    IF (HAVE_DBUS)
 		LIST( APPEND CharmApplication_SRCS Keychain/gnomekeyring.cpp Keychain/keychain_unix.cpp )
-		QT_ADD_DBUS_INTERFACE( CharmApplication_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/Keychain/org.kde.KWallet.xml kwallet_interface KWalletInterface )
-		LIST( APPEND CharmApplication_LIBS ${QT_QTDBUS_LIBRARY} )
+                QT5_ADD_DBUS_INTERFACE( CharmApplication_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/Keychain/org.kde.KWallet.xml kwallet_interface KWalletInterface )
+                LIST( APPEND CharmApplication_LIBS Qt5::DBus )
 	    ELSE()
 		LIST( APPEND CharmApplication_SRCS Keychain/keychain_unsecure.cpp )
 	    ENDIF()
 	ENDIF()
 ENDIF()
 
-QT_WRAP_UI(
+QT5_WRAP_UI(
     UiGenerated_SRCS
     Widgets/CommentEditorPopup.ui
     Widgets/ConfigurationDialog.ui
@@ -170,18 +166,36 @@ QT_WRAP_UI(
     Widgets/FindAndReplaceEventsDialog.ui
 )
 
-QT_ADD_RESOURCES( Resources_SRCS CharmResources.qrc )
+QT5_ADD_RESOURCES( Resources_SRCS CharmResources.qrc )
 
 ADD_LIBRARY(
     CharmApplication STATIC
     ${CharmApplication_SRCS} ${UiGenerated_SRCS}
 )
-TARGET_LINK_LIBRARIES(CharmApplication ${CharmApplication_LIBS} ${QT_LIBRARIES})
-IF(QTKEYCHAIN_SYSTEM)
-    TARGET_INCLUDE_DIRECTORIES(CharmApplication PRIVATE ${QTKEYCHAIN_INCLUDE_DIRS})
+
+kde_target_enable_exceptions( CharmApplication PUBLIC )
+TARGET_LINK_LIBRARIES(CharmApplication ${CharmApplication_LIBS}
+    Qt5::Core
+    Qt5::Widgets
+    Qt5::Xml
+    Qt5::Network
+    Qt5::Script
+    Qt5::Sql
+    Qt5::PrintSupport)
+
+IF (WIN32)
+    TARGET_LINK_LIBRARIES(CharmApplication
+        Qt5::WinExtras Crypt32)
+ENDIF()
+
+IF (QTKEYCHAIN_SYSTEM)
+    TARGET_LINK_LIBRARIES(CharmApplication qt5keychain)
 ENDIF()
 
 SET( Charm_SRCS Charm.cpp )
+
+ecm_add_app_icon(Charm_SRCS ICONS Icons/128-apps-Charm.png)
+
 
 IF( APPLE )
     IF( CHARM_MAC_HIGHRES_SUPPORT_ENABLED )
@@ -204,24 +218,26 @@ IF( APPLE )
     FILE( COPY ${ICON} DESTINATION ${RESOURCES} )
 ENDIF()
 
-IF(WIN32)
-    SET( Resources_SRCS ${Resources_SRCS} Charm.rc )
-ENDIF()
+ADD_EXECUTABLE( ${Charm_EXECUTABLE} ${Charm_SRCS} ${Resources_SRCS} )
+kde_target_enable_exceptions( ${Charm_EXECUTABLE} PUBLIC )
+TARGET_LINK_LIBRARIES( ${Charm_EXECUTABLE} CharmApplication CharmCore)
 
-ADD_EXECUTABLE( ${Charm_EXECUTABLE} WIN32 MACOSX_BUNDLE ${Charm_SRCS} ${Resources_SRCS} )
-TARGET_LINK_LIBRARIES( ${Charm_EXECUTABLE} CharmApplication CharmCore ${QT_LIBRARIES} )
-IF( WIN32 )
-    TARGET_LINK_LIBRARIES( ${Charm_EXECUTABLE} Crypt32 )
-ENDIF()
 MESSAGE( STATUS "Charm will be installed to ${CMAKE_INSTALL_PREFIX}" )
 
 IF( UNIX AND NOT APPLE )
-    SET( XDG_APPS_INSTALL_DIR share/applications )
-    INSTALL( FILES charmtimetracker.desktop DESTINATION ${XDG_APPS_INSTALL_DIR} )
-    INSTALL( FILES Icons/Charm-128x128.png DESTINATION share/icons/hicolor/128x128/apps )
+    INSTALL( FILES charmtimetracker.desktop DESTINATION ${CMAKE_INSTALL_APPDIR})
+
+    ecm_install_icons( ICONS Icons/16-apps-Charm.png
+                             Icons/32-apps-Charm.png
+                             Icons/48-apps-Charm.png
+                             Icons/64-apps-Charm.png
+                             Icons/128-apps-Charm.png
+                             Icons/256-apps-Charm.png
+                       DESTINATION
+                            ${CMAKE_INSTALL_ICONDIR})
 ENDIF()
 
-INSTALL( TARGETS ${Charm_EXECUTABLE} DESTINATION ${BIN_INSTALL_DIR} )
+INSTALL( TARGETS ${Charm_EXECUTABLE} ${KDE_INSTALL_TARGETS_DEFAULT_ARGS} )
 IF( APPLE )
     SET( EXECUTABLE ${Charm_EXECUTABLE}.app )
     set_target_properties( ${Charm_EXECUTABLE} PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/MacOSXBundleInfo.plist.in )
@@ -229,12 +245,14 @@ ELSE()
     SET( EXECUTABLE ${Charm_EXECUTABLE}${CMAKE_EXECUTABLE_SUFFIX} )
 ENDIF()
 
-EXECUTE_PROCESS(
-    COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_CURRENT_BINARY_DIR}/${EXECUTABLE} ${Charm_BINARY_DIR}/${EXECUTABLE}
-)
+IF(NOT WIN32)
+    EXECUTE_PROCESS(
+        COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_CURRENT_BINARY_DIR}/${EXECUTABLE} ${Charm_BINARY_DIR}/${EXECUTABLE}
+    )
+ENDIF()
 
 # Only support CPack packaging on newer versions of CMake.
-IF( NOT "${CMAKE_VERSION}" VERSION_LESS "2.8.4" AND CHARM_PREPARE_DEPLOY )
+IF( CHARM_PREPARE_DEPLOY )
     IF( CMAKE_BUILD_TYPE MATCHES "^([Dd][Ee][Bb][Uu][Gg])" )
         SET( CMAKE_INSTALL_DEBUG_LIBRARIES_ONLY TRUE )
     ENDIF()
@@ -252,13 +270,8 @@ IF( NOT "${CMAKE_VERSION}" VERSION_LESS "2.8.4" AND CHARM_PREPARE_DEPLOY )
                  DESTINATION ${BIN_INSTALL_DIR} )
     ENDIF()
 
-    IF( APPLE OR WIN32 )
-        INCLUDE( DeployQt4 )
-        INSTALL_QT4_EXECUTABLE( "${EXECUTABLE}" "qsqlite" )
-    ENDIF()
-
-    # Plugin deployment for Windows/Qt5
-    IF( WIN32 AND Qt5Core_FOUND )
+    # Plugin deployment for Windows
+    IF( WIN32)
         # Deploy platform plugin to platforms/ (plugins/platforms isn't found, for whatever reason)
         GET_TARGET_PROPERTY(_qmake_executable Qt5::qmake IMPORTED_LOCATION)
         EXEC_PROGRAM( ${_qmake_executable} ARGS -query QT_INSTALL_PLUGINS OUTPUT_VARIABLE _loc )

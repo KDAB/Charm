@@ -49,7 +49,9 @@
 #include <QApplication>
 
 #ifdef Q_OS_WIN
-#include <QtWinExtras/QtWinExtras>
+#include <QtWinExtras/QWinJumpList>
+#include <QtWinExtras/QWinJumpListCategory>
+#include <QtWinExtras/QWinThumbnailToolBar>
 #endif
 
 #if QT_VERSION < QT_VERSION_CHECK(5,0,0)

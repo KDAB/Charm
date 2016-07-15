@@ -6,9 +6,9 @@ endif()
 
 SET( TestApplication_SRCS TestApplication.cpp )
 
-SET( TEST_LIBRARIES CharmCore ${QT_QTTEST_LIBRARY} ${QT_LIBRARIES} )
+SET( TEST_LIBRARIES CharmCore Qt5::Test Qt5::Network)
 
-QT_ADD_RESOURCES( TestDataResources_SRCS TestData.qrc )
+QT5_ADD_RESOURCES( TestDataResources_SRCS TestData.qrc )
 
 IF( APPLE )
     FIND_LIBRARY( SECURITY_FRAMEWORK FRAMEWORK required NAMES Security )

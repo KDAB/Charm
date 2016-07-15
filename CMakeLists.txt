@@ -1,4 +1,19 @@
 PROJECT( Charm )
+CMAKE_MINIMUM_REQUIRED( VERSION 2.8.12 )
+
+include(FeatureSummary)
+
+set(ECM_MODULE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/cmake/ECM/modules/")
+set(CMAKE_MODULE_PATH ${ECM_MODULE_DIR} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/ECM/kde-modules" )
+
+include(KDEInstallDirs)
+include(KDECMakeSettings)
+include(KDECompilerSettings NO_POLICY_SCOPE)
+
+include(ECMInstallIcons)
+include(ECMAddAppIcon)
+
+
 IF( NOT Charm_VERSION )
     FIND_PACKAGE( Git QUIET )
     IF( EXISTS ${GIT_EXECUTABLE} )
@@ -24,200 +39,47 @@ IF( NOT ( DEFINED Charm_VERSION_MAJOR AND DEFINED Charm_VERSION_MINOR AND DEFINE
     "Please pass a version to CMake e.g. cmake -DCharm_VERSION=1.0.0" )
 ENDIF()
 
-IF( NOT CMAKE_BUILD_TYPE )
-    SET( CMAKE_BUILD_TYPE "Release" CACHE STRING "" FORCE )
-ENDIF()
-
-IF( APPLE AND CMAKE_INSTALL_PREFIX STREQUAL "/usr/local" )
-    SET( CMAKE_INSTALL_PREFIX "/Applications" )
-ENDIF()
-
 MESSAGE( STATUS "Building Charm ${Charm_VERSION} in ${CMAKE_BUILD_TYPE} mode" )
 
-CMAKE_MINIMUM_REQUIRED( VERSION 2.6.0 )
-SET( CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMake" )
-
-IF(CMAKE_COMPILER_IS_GNUCXX OR ${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
-    SET(CMAKE_CXX_FLAGS "-std=c++0x ${CMAKE_CXX_FLAGS}")
-ENDIF()
-IF(MSVC)
-    SET(CMAKE_CXX_FLAGS "-D_USING_V110_SDK71_=1 ${CMAKE_CXX_FLAGS}")
-ENDIF()
-
-SET( CMAKE_AUTOMOC ON )
-
-OPTION( CHARM_FORCE_QT4 "Force building Charm with Qt4" OFF )
-
-# try Qt5 first, and prefer that if found
-IF( NOT CHARM_FORCE_QT4 )
-    find_package( Qt5Core QUIET )
-ENDIF()
+find_package( Qt5Core REQUIRED)
 
 set(QTKEYCHAIN_SYSTEM OFF)
 
-IF(Qt5Core_FOUND)
-    find_package(Qt5Widgets REQUIRED)
-    find_package(Qt5Xml REQUIRED)
-    find_package(Qt5Network REQUIRED)
-    find_package(Qt5Sql REQUIRED)
-    find_package(Qt5Test REQUIRED)
-    find_package(Qt5Script REQUIRED)
-    if(WIN32)
-        find_package(Qt5WinExtras REQUIRED)
-    endif()
+find_package(Qt5Widgets REQUIRED)
+find_package(Qt5Xml REQUIRED)
+find_package(Qt5Network REQUIRED)
+find_package(Qt5Sql REQUIRED)
+find_package(Qt5Test REQUIRED)
+find_package(Qt5Script REQUIRED)
+if(WIN32)
+    find_package(Qt5WinExtras REQUIRED)
+endif()
 
-    find_package(Qt5PrintSupport)
-    IF(Qt5PrintSupport_FOUND)
-        include_directories(${Qt5PrintSupport_INCLUDE_DIRS})
-        set(QTPRINT_LIBRARIES ${Qt5PrintSupport_LIBRARIES})
-    ENDIF()
+find_package(Qt5PrintSupport)
 
-    find_package(Qt5Keychain QUIET)
+find_package(Qt5Keychain QUIET)
 
-    IF(Qt5Keychain_FOUND)
-	set(QTKEYCHAIN_SYSTEM ON)
-    ENDIF()
-
-    SET(CHARM_MAC_HIGHRES_SUPPORT_ENABLED ON)
-
-    IF(WIN32)
-        SET(QT_PLATFORM_SPECIFIC_LIBRARIES Qt5::WinMain Qt5::WinExtras)
-    ELSE()
-        SET(QT_PLATFORM_SPECIFIC_LIBRARIES)
-    ENDIF()
-
-    IF(APPLE)
-        find_package(Qt5MacExtras REQUIRED)
-        include_directories(${Qt5MacExtras_INCLUDE_DIRS})
-        set(QT_PLATFORM_SPECIFIC_LIBRARIES ${Qt5MacExtras_LIBRARIES})
-    ENDIF()
-
-    IF(UNIX AND NOT APPLE)
-        find_package(Qt5DBus)
-        IF(Qt5DBus_FOUND)
-            set(HAVE_DBUS ON)
-            include_directories(${Qt5DBus_INCLUDE_DIRS})
-            set(QTDBUS_LIBRARIES ${Qt5DBus_LIBRARIES})
-            macro(qt_add_dbus_interface)
-                qt5_add_dbus_interface(${ARGN})
-            endmacro()
-        ELSE()
-            set(QTDBUS_LIBRARIES "")
-            macro(qt_add_dbus_interface)
-                # do nothing
-            endmacro()
-        ENDIF()
-    ENDIF()
-
-    macro(qt_wrap_cpp)
-        qt5_wrap_cpp(${ARGN})
-    endmacro()
-    macro(qt_wrap_ui)
-        qt5_wrap_ui(${ARGN})
-    endmacro()
-    macro(qt_add_resources)
-        qt5_add_resources(${ARGN})
-    endmacro()
-
-    #set(QTCORE_LIBRARIES ${Qt5Core_LIBRARIES})
-    set(QT_QTTEST_LIBRARY ${Qt5Test_LIBRARIES})
-
-    set(QT_LIBRARIES
-        Qt5::Core
-        Qt5::Widgets
-        Qt5::Xml
-        Qt5::Network
-        Qt5::Script
-        Qt5::Sql
-        Qt5::PrintSupport
-        ${QTKEYCHAIN_LIBRARIES}
-        ${QT_PLATFORM_SPECIFIC_LIBRARIES}
-    )
-    if (TARGET Qt5::DBus)
-        list(APPEND QT_LIBRARIES Qt5::DBus)
-    endif()
-ELSE()
-    # No Qt5 found, try Qt4
-    find_package(Qt4 COMPONENTS QtMain QtCore QtGui QtSql QtXml QtNetwork QtScript REQUIRED)
-    INCLUDE( UseQt4 )
-
-    find_package(QtKeychain QUIET)
-    LIST(APPEND QT_LIBRARIES ${QTKEYCHAIN_LIBRARIES})
-
-    IF(QtKeychain_FOUND)
-        set(QTKEYCHAIN_SYSTEM ON)
-    ENDIF()
-
-    SET(CHARM_MAC_HIGHRES_SUPPORT_ENABLED OFF)
-
-    IF(UNIX AND NOT APPLE)
-        find_package(Qt4 COMPONENTS QtDBus)
-        IF (QT_QTDBUS_FOUND)
-            set(HAVE_DBUS ON)
-            set(QTDBUS_LIBRARIES ${QT_QTDBUS_LIBRARY})
-            macro(qt_add_dbus_interface)
-                qt4_add_dbus_interface(${ARGN})
-            endmacro()
-        ENDIF()
-    ENDIF()
-
-    IF (NOT QT_QTDBUS_FOUND)
-        set(QTDBUS_LIBRARIES "")
-        macro(qt_add_dbus_interface)
-            # do nothing
-        endmacro()
-    ENDIF()
-
-    include_directories(${QT_INCLUDES} ${QTKEYCHAIN_INCLUDE_DIRS})
-    #set(QTCORE_LIBRARIES ${QT_QTCORE_LIBRARY})
-
-    macro(qt_wrap_cpp)
-        qt4_wrap_cpp(${ARGN})
-    endmacro()
-    macro(qt_wrap_ui)
-        qt4_wrap_ui(${ARGN})
-    endmacro()
-    macro(qt_add_resources)
-        qt4_add_resources(${ARGN})
-    endmacro()
+IF(Qt5Keychain_FOUND)
+    set(QTKEYCHAIN_SYSTEM ON)
 ENDIF()
+
+SET(CHARM_MAC_HIGHRES_SUPPORT_ENABLED ON)
+
+IF(APPLE)
+    find_package(Qt5MacExtras REQUIRED)
+    include_directories(${Qt5MacExtras_INCLUDE_DIRS})
+    set(QT_PLATFORM_SPECIFIC_LIBRARIES ${Qt5MacExtras_LIBRARIES})
+ENDIF()
+
+IF(UNIX AND NOT APPLE)
+    find_package(Qt5DBus QUIET)
+    IF(TARGET Qt5::DBus)
+        set(HAVE_DBUS ON)
+    ENDIF()
+ENDIF()
+
 
 ENABLE_TESTING()
-
-IF( APPLE AND "${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}.${QT_VERSION_PATCH}" VERSION_EQUAL "4.8.0" )
-    MESSAGE( WARNING "Qt 4.8.0 is rather broken on OSX.\n"
-                     "Known bugs in Charm include global keyboard shortcuts.\n"
-                     "Qt 4.7.4 is the current recommended version on OSX." )
-ENDIF()
-
-IF( CMAKE_BUILD_TYPE MATCHES "^[Rr]elease$" )
-    ADD_DEFINITIONS( -DQT_NO_DEBUG_OUTPUT )
-ENDIF()
-
-# Always include the source and build directories in the include path
-# to save doing so manually in every subdirectory.
-SET( CMAKE_INCLUDE_CURRENT_DIR ON )
-
-# Put the include directories which are in the source or build tree
-# before all other include directories so they are preferred over
-# any installed Charm headers.
-SET( CMAKE_INCLUDE_DIRECTORIES_PROJECT_BEFORE ON )
-
-IF( CMAKE_COMPILER_IS_GNUCXX )
-    # Add additional GCC options.
-    SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wundef -Wcast-align -Wchar-subscripts -Wpointer-arith")
-    SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wwrite-strings -Wpacked -Wformat-security")
-    SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wmissing-format-attribute -Wold-style-cast")
-    IF(NOT WIN32)
-        SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden ")
-    ENDIF()
-ELSEIF( CMAKE_CXX_COMPILER MATCHES "clang" )
-    SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wno-unused-parameter" )
-    IF(NOT WIN32)
-        SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden" )
-    ENDIF()
-ENDIF()
-
 
 IF( UNIX AND NOT APPLE )
     set( Charm_EXECUTABLE charmtimetracker )
@@ -226,7 +88,7 @@ ELSE()
 ENDIF()
 
 SET( BIN_INSTALL_DIR bin )
-SET( DOC_INSTALL_DIR share/doc/${Charm_EXECUTABLE} )
+SET( DOC_INSTALL_DIR ${CMAKE_INSTALL_DOCBUNDLEDIR}/${Charm_EXECUTABLE} )
 SET( ICONS_DIR "${CMAKE_SOURCE_DIR}/Charm/Icons" )
 
 IF( CHARM_PREPARE_DEPLOY AND WIN32 OR APPLE)
