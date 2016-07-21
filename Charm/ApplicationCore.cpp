@@ -98,29 +98,29 @@ ApplicationCore::ApplicationCore(TaskId startupTask, QObject* parent )
     QApplication::setQuitOnLastWindowClosed(false);
     // application metadata setup
     // note that this modifies the behaviour of QSettings:
-    QCoreApplication::setOrganizationName("KDAB");
-    QCoreApplication::setOrganizationDomain("kdab.com");
-    QCoreApplication::setApplicationName("Charm");
-    QCoreApplication::setApplicationVersion(CHARM_VERSION);
+    QCoreApplication::setOrganizationName(QStringLiteral("KDAB"));
+    QCoreApplication::setOrganizationDomain(QStringLiteral("kdab.com"));
+    QCoreApplication::setApplicationName(QStringLiteral("Charm"));
+    QCoreApplication::setApplicationVersion(QStringLiteral(CHARM_VERSION));
 
     QLocalSocket uniqueApplicationSocket;
-    QString serverName( "com.kdab.charm" );
+    QString serverName( QStringLiteral("com.kdab.charm") );
     QString charmHomeEnv( QString::fromLocal8Bit( qgetenv( "CHARM_HOME" ) ) );
     if ( !charmHomeEnv.isEmpty() ) {
-        serverName.append( QString::fromLatin1( "_%1" ).arg(
+        serverName.append( QStringLiteral( "_%1" ).arg(
                                charmHomeEnv.replace( QRegExp( QLatin1String( ":?/|:?\\\\" ) ),
-                                                     QLatin1String( "_" ) ) ) );
+                                                     QStringLiteral( "_" ) ) ) );
     }
 #ifndef NDEBUG
-    serverName.append( "_debug" );
+    serverName.append( QStringLiteral("_debug") );
 #endif
     uniqueApplicationSocket.connectToServer(serverName, QIODevice::ReadWrite);
     if (uniqueApplicationSocket.waitForConnected(1000)) {
         if ( startupTask != -1 ) {
-            QByteArray data( QString::fromLatin1( "start-task: %1" ).arg( startupTask ).toLatin1().constData() );
+            QByteArray data( QStringLiteral( "start-task: %1" ).arg( startupTask ).toLatin1().constData() );
             qint64 written = uniqueApplicationSocket.write( data );
             if (  written == -1 || written != data.length() ) {
-                std::cerr << "Failed to pass " << qPrintable( data ) << " to running charm instance, error: "
+                std::cerr << "Failed to pass " << data.constData() << " to running charm instance, error: "
                           << qPrintable( uniqueApplicationSocket.errorString() ) << std::endl;
             }
         }
@@ -130,7 +130,7 @@ ApplicationCore::ApplicationCore(TaskId startupTask, QObject* parent )
     connect(&m_uniqueApplicationServer, SIGNAL(newConnection()),
             this, SLOT(slotHandleUniqueApplicationConnection()));
 
-    QFile::remove(QDir::tempPath() + '/' + serverName);
+    QFile::remove(QDir::tempPath() + QLatin1Char('/') + serverName);
     bool listening = m_uniqueApplicationServer.listen(serverName);
     if (!listening)
         qDebug() << "Failed to create QLocalServer for unique application support:"
@@ -268,10 +268,10 @@ ApplicationCore::ApplicationCore(TaskId startupTask, QObject* parent )
 
     setHttpActionsVisible(HttpJob::credentialsAvailable());
     // add default plugin path for deployment
-    QCoreApplication::addLibraryPath( QCoreApplication::applicationDirPath() + "/plugins" );
+    QCoreApplication::addLibraryPath( QCoreApplication::applicationDirPath() + QStringLiteral("/plugins") );
 
     if ( QCoreApplication::applicationDirPath().endsWith(QLatin1String("MacOS") ))
-        QCoreApplication::addLibraryPath( QCoreApplication::applicationDirPath() + "/../plugins");
+        QCoreApplication::addLibraryPath( QCoreApplication::applicationDirPath() + QStringLiteral("/../plugins"));
 
     // set up command interface
 #ifdef CHARM_CI_SUPPORT
@@ -301,7 +301,7 @@ void ApplicationCore::slotHandleUniqueApplicationConnection()
     QByteArray data = socket->readAll();
     if ( data.startsWith( "start-task: " ) ) { //krazy:exclude=strings
         bool ok = true;
-        TaskId id = data.mid( QString::fromLatin1( "start-task: " ).length() ).toInt( &ok );
+        TaskId id = data.mid( QStringLiteral( "start-task: " ).length() ).toInt( &ok );
         if ( ok ) {
             m_timeTracker.slotStartEvent( id );
         } else {
@@ -673,8 +673,8 @@ bool ApplicationCore::configure()
         // FIXME maybe move to Configuration::loadDefaults
 
         const QString storageDatabaseDirectory = charmDataDir();
-        const QString storageDatabaseFileRelease = "Charm.db";
-        const QString storageDatabaseFileDebug = "Charm_debug.db";
+        const QString storageDatabaseFileRelease = QStringLiteral("Charm.db");
+        const QString storageDatabaseFileDebug = QStringLiteral("Charm_debug.db");
         const QString storageDatabaseRelease = storageDatabaseDirectory + storageDatabaseFileRelease;
         const QString storageDatabaseDebug = storageDatabaseDirectory + storageDatabaseFileDebug;
         QString storageDatabase;
@@ -711,7 +711,7 @@ QString ApplicationCore::titleString( const QString& text ) const
     const QString userName = CONFIGURATION.user.name();
     if ( !text.isEmpty() ) {
         if ( !userName.isEmpty()) {
-            dbInfo = QString("%1 - %2").arg(userName, text);
+            dbInfo = QStringLiteral("%1 - %2").arg(userName, text);
         } else {
             dbInfo = text;
         }

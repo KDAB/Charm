@@ -43,7 +43,7 @@ public:
     QUrl uploadUrl() const;
     void setUploadUrl(const QUrl& url);
 
-public slots:
+public Q_SLOTS:
 
     bool execute(int state, QNetworkAccessManager *manager) override;
     bool handle(QNetworkReply *reply) override;

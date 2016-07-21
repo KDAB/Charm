@@ -515,7 +515,7 @@ QString CharmDataModel::fullTaskName( const Task& task ) const
         if ( task.parent() != 0 ) {
             const Task& parent = getTask( task.parent() );
             if ( parent.isValid() ) {
-                name = fullTaskName( parent ) + '/' + name;
+                name = fullTaskName( parent ) + QLatin1Char('/') + name;
             }
         }
         return name;
@@ -542,32 +542,32 @@ QString CharmDataModel::eventsString() const
             eStrList <<
                 tr( "%1 - %2 %3" )
                 .arg( hoursAndMinutes( event.duration() ) )
-                .arg( task.id(), taskIdLength, 10, QChar( '0' ) )
+                .arg( task.id(), taskIdLength, 10, QLatin1Char( '0' ) )
                 .arg( fullTaskName( task ) );
         }
     }
-    return eStrList.join( "\n" );
+    return eStrList.join( QLatin1Char('\n') );
 }
 
 QString CharmDataModel::taskIdAndFullNameString(TaskId id) const
 {
-    return QString("%1 %2")
-            .arg( id, CONFIGURATION.taskPaddingLength, 10, QChar( '0' ) )
+    return QStringLiteral("%1 %2")
+            .arg( id, CONFIGURATION.taskPaddingLength, 10, QLatin1Char( '0' ) )
             .arg( fullTaskName( getTask( id ) ) );
 }
 
 QString CharmDataModel::taskIdAndSmartNameString(TaskId id) const
 {
-    return QString("%1 %2")
-            .arg( id, CONFIGURATION.taskPaddingLength, 10, QChar( '0' ) )
+    return QStringLiteral("%1 %2")
+            .arg( id, CONFIGURATION.taskPaddingLength, 10, QLatin1Char( '0' ) )
             .arg( smartTaskName( getTask( id ) ) );
 }
 
 
 QString CharmDataModel::taskIdAndNameString(TaskId id) const
 {
-    return QString("%1 %2")
-            .arg( id, CONFIGURATION.taskPaddingLength, 10, QChar( '0' ) )
+    return QStringLiteral("%1 %2")
+            .arg( id, CONFIGURATION.taskPaddingLength, 10, QLatin1Char( '0' ) )
             .arg( getTask( id ).name() );
 }
 

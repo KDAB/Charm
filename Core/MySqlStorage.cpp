@@ -31,7 +31,7 @@
 
 // DATABASE STRUCTURE DEFINITION FOR MYSQL
 static const QString Tables[] =
-{ "MetaData", "Installations", "Tasks", "Events", "Subscriptions", "Users" };
+{ QStringLiteral("MetaData"), QStringLiteral("Installations"), QStringLiteral("Tasks"), QStringLiteral("Events"), QStringLiteral("Subscriptions"), QStringLiteral("Users") };
 
 static const int NumberOfTables = sizeof Tables / sizeof Tables[0];
 
@@ -47,60 +47,60 @@ const Field LastField =
 
 static const Fields MetaData_Fields[] =
 {
-{ "id", "INTEGER AUTO_INCREMENT PRIMARY KEY" },
-{ "key", "VARCHAR( 128 ) NOT NULL" },
-{ "value", "VARCHAR( 128 )" }, LastField };
+{ QStringLiteral("id"), QStringLiteral("INTEGER AUTO_INCREMENT PRIMARY KEY") },
+{ QStringLiteral("key"), QStringLiteral("VARCHAR( 128 ) NOT NULL") },
+{ QStringLiteral("value"), QStringLiteral("VARCHAR( 128 )") }, LastField };
 
 static const Fields Installations_Fields[] =
 {
-{ "id", "INTEGER AUTO_INCREMENT PRIMARY KEY" },
-{ "inst_id", "INTEGER" },
-{ "user_id", "INTEGER" },
-{ "name", "varchar(256)" }, LastField };
+{ QStringLiteral("id"), QStringLiteral("INTEGER AUTO_INCREMENT PRIMARY KEY") },
+{ QStringLiteral("inst_id"), QStringLiteral("INTEGER") },
+{ QStringLiteral("user_id"), QStringLiteral("INTEGER") },
+{ QStringLiteral("name"), QStringLiteral("varchar(256)") }, LastField };
 
 static const Fields Tasks_Fields[] =
 {
-{ "id", "INTEGER AUTO_INCREMENT PRIMARY KEY" },
-{ "task_id", "INTEGER UNIQUE" },
-{ "parent", "INTEGER" },
-{ "validfrom", "timestamp" },
-{ "validuntil", "timestamp" },
-{ "trackable", "INTEGER" },
-{ "comment", "varchar(256)" },
-{ "name", "varchar(256)" }, LastField };
+{ QStringLiteral("id"), QStringLiteral("INTEGER AUTO_INCREMENT PRIMARY KEY") },
+{ QStringLiteral("task_id"), QStringLiteral("INTEGER UNIQUE") },
+{ QStringLiteral("parent"), QStringLiteral("INTEGER") },
+{ QStringLiteral("validfrom"), QStringLiteral("timestamp") },
+{ QStringLiteral("validuntil"), QStringLiteral("timestamp") },
+{ QStringLiteral("trackable"), QStringLiteral("INTEGER") },
+{ QStringLiteral("comment"), QStringLiteral("varchar(256)") },
+{ QStringLiteral("name"), QStringLiteral("varchar(256)") }, LastField };
 
 static const Fields Event_Fields[] =
 {
-{ "id", "INTEGER AUTO_INCREMENT PRIMARY KEY" },
-{ "user_id", "INTEGER" },
-{ "event_id", "INTEGER" },
-{ "installation_id", "INTEGER" },
-{ "report_id", "INTEGER NULL" },
-{ "task", "INTEGER" },
-{ "comment", "varchar(256)" },
-{ "start", "timestamp" },
-{ "end", "timestamp" }, LastField };
+{ QStringLiteral("id"), QStringLiteral("INTEGER AUTO_INCREMENT PRIMARY KEY") },
+{ QStringLiteral("user_id"), QStringLiteral("INTEGER") },
+{ QStringLiteral("event_id"), QStringLiteral("INTEGER") },
+{ QStringLiteral("installation_id"), QStringLiteral("INTEGER") },
+{ QStringLiteral("report_id"), QStringLiteral("INTEGER NULL") },
+{ QStringLiteral("task"), QStringLiteral("INTEGER") },
+{ QStringLiteral("comment"), QStringLiteral("varchar(256)") },
+{ QStringLiteral("start"), QStringLiteral("timestamp") },
+{ QStringLiteral("end"), QStringLiteral("timestamp") }, LastField };
 
 static const Fields Subscriptions_Fields[] =
 {
-{ "id", "INTEGER AUTO_INCREMENT PRIMARY KEY" },
-{ "user_id", "INTEGER" },
-{ "task", "INTEGER" }, LastField };
+{ QStringLiteral("id"), QStringLiteral("INTEGER AUTO_INCREMENT PRIMARY KEY") },
+{ QStringLiteral("user_id"), QStringLiteral("INTEGER") },
+{ QStringLiteral("task"), QStringLiteral("INTEGER") }, LastField };
 
 static const Fields Users_Fields[] =
 {
-{ "id", "INTEGER AUTO_INCREMENT PRIMARY KEY" },
-{ "user_id", "INTEGER UNIQUE" },
-{ "name", "varchar(256)" }, LastField };
+{ QStringLiteral("id"), QStringLiteral("INTEGER AUTO_INCREMENT PRIMARY KEY") },
+{ QStringLiteral("user_id"), QStringLiteral("INTEGER UNIQUE") },
+{ QStringLiteral("name"), QStringLiteral("varchar(256)") }, LastField };
 
 static const Fields* Database_Fields[NumberOfTables] =
 { MetaData_Fields, Installations_Fields, Tasks_Fields, Event_Fields,
                 Subscriptions_Fields, Users_Fields };
 
-const char DatabaseName[] = "mysql.charm.kdab.com";
+const QString DatabaseName = QStringLiteral("mysql.charm.kdab.com");
 
 MySqlStorage::MySqlStorage() :
-        SqlStorage(), m_database(QSqlDatabase::addDatabase("QMYSQL", DatabaseName))
+        SqlStorage(), m_database(QSqlDatabase::addDatabase(QStringLiteral("QMYSQL"), DatabaseName))
 {
 }
 
@@ -191,7 +191,7 @@ MySqlStorage::Parameters MySqlStorage::parseParameterEnvironmentVariable()
         Parameters p;
         // the string is supposed to be of the format "hostname;port;username;password"
         // if port is 0 or empty, the default port is used
-        QStringList elements = QString::fromLocal8Bit( databaseConfigurationString ).split( ';' );
+        QStringList elements = QString::fromLocal8Bit( databaseConfigurationString ).split( QLatin1Char(';') );
         if ( elements.count() != 4 ) {
             throw ParseError( QObject::tr( "Bad database configuration string format" ) );
         } else {

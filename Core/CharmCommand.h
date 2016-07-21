@@ -83,7 +83,7 @@ public:
     //notify CharmCommands in a QUndoStack that an event ID has changed
     virtual void eventIdChanged(int,int){}
 
-signals:
+Q_SIGNALS:
     void emitExecute(CharmCommand*);
     void emitRollback(CharmCommand*);
     void emitSlotEventIdChanged(int,int);

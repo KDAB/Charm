@@ -327,15 +327,15 @@ StorageInterface* Controller::storage()
     return m_storage;
 }
 
-const QString MetaDataElement ( "metadata" );
-const QString ExportRootElement( "charmdatabase" );
-const QString VersionElement( "version" );
-const QString TasksElement( "tasks" );
-const QString EventsElement( "events" );
+const QString MetaDataElement ( QStringLiteral("metadata") );
+const QString ExportRootElement( QStringLiteral("charmdatabase") );
+const QString VersionElement( QStringLiteral("version") );
+const QString TasksElement( QStringLiteral("tasks") );
+const QString EventsElement( QStringLiteral("events") );
 
 QDomDocument Controller::exportDatabasetoXml() const
 {
-    QDomDocument document( "charmdatabase" );
+    QDomDocument document( QStringLiteral("charmdatabase") );
     // root element:
     QDomElement root = document.createElement( ExportRootElement );
     root.setAttribute( VersionElement, CHARM_DATABASE_VERSION );
@@ -394,7 +394,7 @@ QString Controller::importDatabaseFromXml( const QDomDocument& document )
     try {
         QDomElement rootElement = document.documentElement();
         bool ok;
-        databaseSchemaVersion = rootElement.attribute( "version" ).toInt( &ok );
+        databaseSchemaVersion = rootElement.attribute( QStringLiteral("version") ).toInt( &ok );
         if ( !ok ) throw XmlSerializationException( QObject::tr( "Syntax error, no version attribute found." ) );
 
         QDomElement tasksElement = rootElement.firstChildElement( TasksElement );

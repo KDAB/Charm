@@ -36,7 +36,7 @@
 SqLiteStorageTests::SqLiteStorageTests()
     : QObject()
     , m_storage( new SqLiteStorage )
-    , m_localPath( "./SqLiteStorageTestDatabase.db" )
+    , m_localPath( QStringLiteral("./SqLiteStorageTestDatabase.db") )
 {
 }
 
@@ -71,18 +71,18 @@ void SqLiteStorageTests::makeModifyDeleteInstallationTest()
 {
     int userId = 42;
     // make two installation ids:
-    QString name1 = "Installation-1";
+    QString name1 = QStringLiteral("Installation-1");
     Installation installation1 = m_storage->createInstallation( name1 );
     installation1.setUserId( userId );
     QVERIFY( installation1.isValid() );
     QVERIFY( installation1.name() == name1 );
-    QString name2 = "Installation-2";
+    QString name2 = QStringLiteral("Installation-2");
     Installation installation2 = m_storage->createInstallation( name2 );
     installation1.setUserId( userId );
     QVERIFY( installation2.isValid() );
     QVERIFY( installation2.name() == name2 );
     // modify installation 1:
-    QString newName = "1-Installation";
+    QString newName = QStringLiteral("1-Installation");
     installation1.setName( newName );
     QVERIFY( m_storage->modifyInstallation( installation1 ) );
 
@@ -105,15 +105,15 @@ void SqLiteStorageTests::makeModifyDeleteInstallationTest()
 void SqLiteStorageTests::makeModifyDeleteUserTest()
 {
     // make two user accounts
-    QString name1 = "Test-User-1";
+    QString name1 = QStringLiteral("Test-User-1");
     User user1 = m_storage->makeUser( name1 );
     QVERIFY( user1.name() == name1 );
-    QString name2 = "Test-User-2";
+    QString name2 = QStringLiteral("Test-User-2");
     User user2 = m_storage->makeUser( name2 );
     QVERIFY( user2.name() == name2 );
 
     // modify the user
-    QString newName = "User-Test-1";
+    QString newName = QStringLiteral("User-Test-1");
     user1.setName( newName );
     QVERIFY( m_storage->modifyUser( user1 ) );
 
@@ -138,9 +138,9 @@ void SqLiteStorageTests::makeModifyDeleteTasksTest()
 {
     // make two tasks
     const int Task1Id = 1;
-    const QString Task1Name( "Task-1-Name" );
+    const QString Task1Name( QStringLiteral("Task-1-Name") );
     const int Task2Id = 2;
-    const QString Task2Name( "Task-2-Name" );
+    const QString Task2Name( QStringLiteral("Task-2-Name") );
     Task task1;
     task1.setId( Task1Id );
     task1.setName( Task1Name );
@@ -165,7 +165,7 @@ void SqLiteStorageTests::makeModifyDeleteTasksTest()
     QVERIFY( task2 == task2_1 );
 
     // modify the tasks
-    const QString Task1NewName( "Name-1-Task" );
+    const QString Task1NewName( QStringLiteral("Name-1-Task") );
     task1.setName( Task1NewName );
     task1.setParent( task2.id() );
     QVERIFY( m_storage->modifyTask( task1 ) );
@@ -201,14 +201,14 @@ void SqLiteStorageTests::makeModifyDeleteEventsTest()
     event1.setTaskId( task.id() );
     event1.setUserId( user.id() );
     event1.setReportId( 42 );
-    const QString Event1Comment( "Event-1-Comment" );
+    const QString Event1Comment( QStringLiteral("Event-1-Comment") );
     event1.setComment( Event1Comment );
 
     Event event2 = m_storage->makeEvent();
     QVERIFY( event2.isValid() );
     event2.setTaskId( task.id() );
     event2.setUserId( user.id() );
-    const QString Event2Comment( "Event-2-Comment" );
+    const QString Event2Comment( QStringLiteral("Event-2-Comment") );
     event2.setComment( Event2Comment );
 
     QVERIFY( event1.id() != event2.id() );
@@ -264,7 +264,7 @@ void SqLiteStorageTests::deleteTaskWithEventsTest()
 {
     // make a task
     const int TaskId = 1;
-    const QString Task1Name( "Task-Name" );
+    const QString Task1Name( QStringLiteral("Task-Name") );
     Task task;
     task.setId( TaskId );
     task.setName( Task1Name );
@@ -276,7 +276,7 @@ void SqLiteStorageTests::deleteTaskWithEventsTest()
     QVERIFY( m_storage->getAllTasks().size() == 1 );
     Task task2;
     task2.setId( 2 );
-    task2.setName( "Task-2-Name" );
+    task2.setName( QStringLiteral("Task-2-Name") );
     QVERIFY( m_storage->addTask( task2 ) );
     QVERIFY( m_storage->getAllTasks().size() == 2 );
 
@@ -287,7 +287,7 @@ void SqLiteStorageTests::deleteTaskWithEventsTest()
         event.setTaskId( task.id() );
         event.setUserId( 1 );
         event.setReportId( 42 );
-        const QString EventComment( "Event-Comment" );
+        const QString EventComment( QStringLiteral("Event-Comment") );
         event.setComment( EventComment );
         QVERIFY( m_storage->modifyEvent( event ) );
     }
@@ -297,7 +297,7 @@ void SqLiteStorageTests::deleteTaskWithEventsTest()
         event.setTaskId( task.id() );
         event.setUserId( 1 );
         event.setReportId( 43 );
-        const QString EventComment( "Event-Comment 2" );
+        const QString EventComment( QStringLiteral("Event-Comment 2") );
         event.setComment( EventComment );
         QVERIFY( m_storage->modifyEvent( event ) );
     }
@@ -307,7 +307,7 @@ void SqLiteStorageTests::deleteTaskWithEventsTest()
     event.setTaskId( task2.id() );
     event.setUserId( 1 );
     event.setReportId( 43 );
-    const QString EventComment( "Event-Comment 2" );
+    const QString EventComment( QStringLiteral("Event-Comment 2") );
     event.setComment( EventComment );
     QVERIFY( m_storage->modifyEvent( event ) );
 
@@ -320,11 +320,11 @@ void SqLiteStorageTests::deleteTaskWithEventsTest()
 
 void SqLiteStorageTests::setGetMetaDataTest()
 {
-    const QString Key1( "Key1" );
-    const QString Key2( "Key2" );
-    const QString Value1( "Value1" );
-    const QString Value2( "Value2" );
-    const QString Value1_1( "Value1_1" );
+    const QString Key1( QStringLiteral("Key1") );
+    const QString Key2( QStringLiteral("Key2") );
+    const QString Value1( QStringLiteral("Value1") );
+    const QString Value2( QStringLiteral("Value2") );
+    const QString Value1_1( QStringLiteral("Value1_1") );
 
     // check that all the keys are not there:
     QVERIFY( m_storage->getMetaData( Key1 ).isEmpty() );

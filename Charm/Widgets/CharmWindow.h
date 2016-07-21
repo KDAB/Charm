@@ -76,11 +76,11 @@ public:
     static void showView( QWidget* w );
     static bool showHideView( QWidget* w );
 
-signals:
+Q_SIGNALS:
     void visibilityChanged( bool ) override;
     void saveConfiguration() override;
 
-public slots:
+public Q_SLOTS:
     void sendCommandRollback( CharmCommand* ) override;
     void sendCommand( CharmCommand* ) override;
     void commitCommand( CharmCommand* ) override;
@@ -89,7 +89,7 @@ public slots:
     void showHideView();
     void configurationChanged() override;
 
-private slots:
+private Q_SLOTS:
     void handleOpenCharm( bool visible );
     void handleShow( bool visible );
 

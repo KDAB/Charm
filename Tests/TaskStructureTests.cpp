@@ -42,13 +42,13 @@ void TaskStructureTests::checkForUniqueTaskIdsTest_data()
     QTest::addColumn<bool>( "unique" );
 
     Q_FOREACH( const QDomElement& testcase,
-               TestHelpers::retrieveTestCases( ":/checkForUniqueTaskIdsTest/Data", "checkForUniqueTaskIdsTest" ) ) {
-        QString name = testcase.attribute( "name" );
-        bool expectedResult = TestHelpers::attribute( "expectedResult", testcase );
+               TestHelpers::retrieveTestCases( QLatin1String(":/checkForUniqueTaskIdsTest/Data"), QLatin1String("checkForUniqueTaskIdsTest") ) ) {
+        QString name = testcase.attribute( QStringLiteral("name") );
+        bool expectedResult = TestHelpers::attribute( QStringLiteral("expectedResult"), testcase );
         QDomElement element = testcase.firstChildElement( Task::taskListTagName() );
         QVERIFY( !element.isNull() );
         TaskList tasks = Task::readTasksElement( element, CHARM_DATABASE_VERSION );
-        QTest::newRow( name.toLocal8Bit() ) << tasks << expectedResult;
+        QTest::newRow( name.toLocal8Bit().constData() ) << tasks << expectedResult;
         QVERIFY( element.nextSiblingElement( Task::taskListTagName() ).isNull() );
         qDebug() << "Added test case" << name;
     }
@@ -68,13 +68,13 @@ void TaskStructureTests::checkForTreenessTest_data()
     QTest::addColumn<bool>( "directed" );
 
     Q_FOREACH( const QDomElement& testcase,
-               TestHelpers::retrieveTestCases( ":/checkForTreenessTest/Data", "checkForTreenessTest" ) ) {
-        QString name = testcase.attribute( "name" );
-        bool expectedResult = TestHelpers::attribute( "expectedResult", testcase );
+               TestHelpers::retrieveTestCases( QLatin1String(":/checkForTreenessTest/Data"), QLatin1String("checkForTreenessTest") ) ) {
+        QString name = testcase.attribute( QStringLiteral("name") );
+        bool expectedResult = TestHelpers::attribute( QStringLiteral("expectedResult"), testcase );
         QDomElement element = testcase.firstChildElement( Task::taskListTagName() );
         QVERIFY( !element.isNull() );
         TaskList tasks = Task::readTasksElement( element, CHARM_DATABASE_VERSION );
-        QTest::newRow( name.toLocal8Bit() ) << tasks << expectedResult;
+        QTest::newRow( name.toLocal8Bit().constData() ) << tasks << expectedResult;
         QVERIFY( element.nextSiblingElement( Task::taskListTagName() ).isNull() );
         qDebug() << "Added test case" << name;
     }
@@ -95,8 +95,8 @@ void TaskStructureTests::mergeTaskListsTest_data()
     QTest::addColumn<TaskList>( "merged" );
 
     Q_FOREACH( const QDomElement& testcase,
-               TestHelpers::retrieveTestCases( ":/mergeTaskListsTest/Data", "mergeTaskListsTest" ) ) {
-        QString name = testcase.attribute( "name" );
+               TestHelpers::retrieveTestCases( QLatin1String(":/mergeTaskListsTest/Data"), QLatin1String("mergeTaskListsTest") ) ) {
+        QString name = testcase.attribute( QStringLiteral("name") );
 
         QList<QDomElement> elements;
         elements << testcase.firstChildElement( Task::taskListTagName() );
@@ -105,15 +105,15 @@ void TaskStructureTests::mergeTaskListsTest_data()
         bool oldFound = false, newFound = false, mergedFound = false;
         TaskList old, newTasks, merged;
         Q_FOREACH( const QDomElement& element, elements ) {
-            QString arg = element.attribute( "arg" );
+            QString arg = element.attribute( QStringLiteral("arg") );
             TaskList tasks = Task::readTasksElement( element, CHARM_DATABASE_VERSION );
-            if ( arg == "old" ) {
+            if ( arg == QLatin1String("old") ) {
                 old = tasks;
                 oldFound = true;
-            } else if ( arg == "new" ) {
+            } else if ( arg == QLatin1String("new") ) {
                 newTasks = tasks;
                 newFound = true;
-            } else if ( arg == "merged" ) {
+            } else if ( arg == QLatin1String("merged") ) {
                 merged = tasks;
                 qSort( merged.begin(), merged.end(), Task::lowerTaskId );
                 mergedFound = true;
@@ -125,7 +125,7 @@ void TaskStructureTests::mergeTaskListsTest_data()
         QVERIFY( newFound );
         QVERIFY( mergedFound );
 
-        QTest::newRow( name.toLocal8Bit() ) << old << newTasks << merged;
+        QTest::newRow( name.toLocal8Bit().constData() ) << old << newTasks << merged;
         qDebug() << "Added test case" << name;
     }
 }

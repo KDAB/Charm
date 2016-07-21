@@ -108,13 +108,13 @@ void CheckForUpdatesJob::parseXmlData( const QByteArray& data )
     }
 
     QDomElement element = document.documentElement();
-    QDomElement versionElement = element.firstChildElement( QLatin1String( "version" ) );
-    QDomElement linkElement = versionElement.nextSiblingElement( QLatin1String( "link" ) );
+    QDomElement versionElement = element.firstChildElement( QStringLiteral( "version" ) );
+    QDomElement linkElement = versionElement.nextSiblingElement( QStringLiteral( "link" ) );
     const QString releaseVersion = versionElement.text();
     m_jobData.releaseVersion = releaseVersion;
     QUrl link( linkElement.text() );
     m_jobData.link = link;
-    QString releaseInfoLink( linkElement.nextSiblingElement( QLatin1String( "releaseinfolink" ) ).text() );
+    QString releaseInfoLink( linkElement.nextSiblingElement( QStringLiteral( "releaseinfolink" ) ).text() );
     m_jobData.releaseInformationLink = releaseInfoLink;
 
 }

@@ -44,7 +44,7 @@ public:
     explicit ReportPreviewWindow( QWidget* parent = nullptr );
     ~ReportPreviewWindow() override;
 
-signals:
+Q_SIGNALS:
     void anchorClicked(const QUrl& which);
 
 protected:
@@ -56,7 +56,7 @@ protected:
 
     QTimer m_updateTimer;
 
-private slots:
+private Q_SLOTS:
     virtual void slotSaveToXml();
     virtual void slotSaveToText();
     virtual void slotPrint();

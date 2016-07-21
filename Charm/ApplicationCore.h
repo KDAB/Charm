@@ -98,7 +98,7 @@ public:
 
     void updateTaskList();
 
-public slots:
+public Q_SLOTS:
     void showMainWindow( ShowMode mode = ShowMode::Show );
 
     void setState( State state );
@@ -111,7 +111,7 @@ public slots:
     void saveState( QSessionManager & manager );
     void commitData( QSessionManager & manager );
 
-private slots:
+private Q_SLOTS:
     void slotCurrentBackendStatusChanged( const QString& text );
     void slotMaybeIdle();
     void slotHandleUniqueApplicationConnection();
@@ -120,7 +120,7 @@ private slots:
     void slotShowTasksEditor();
     void slotShowEventEditor();
 
-signals:
+Q_SIGNALS:
     void goToState( State state );
 
 protected:

@@ -63,14 +63,14 @@ public:
     void setNonTrackableSelectable();
     void setNonValidSelectable();
 
-signals:
+Q_SIGNALS:
     void saveConfiguration();
 
 protected:
     void showEvent( QShowEvent * event ) override;
     void hideEvent( QHideEvent* event ) override;
 
-private slots:
+private Q_SLOTS:
     void slotCurrentItemChanged( const QModelIndex&, const QModelIndex& );
     void slotDoubleClicked ( const QModelIndex & );
     void slotFilterTextChanged( const QString& );

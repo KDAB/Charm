@@ -44,13 +44,13 @@ TaskList XmlSerializationTests::tasksToTest() const
     // set up test candidates:
     TaskList tasks;
     Task task;
-    task.setName( "A task" );
+    task.setName( QStringLiteral("A task") );
     task.setId( 42 );
     task.setParent( 4711 );
     task.setSubscribed( true );
     task.setValidFrom( QDateTime::currentDateTime() );
     Task task2;
-    task2.setName( "Another task" );
+    task2.setName( QStringLiteral("Another task") );
     task2.setId( -1 );
     task2.setParent( 1000000000 );
     task2.setSubscribed( false );
@@ -66,13 +66,13 @@ void XmlSerializationTests::testEventSerialization()
     // set up test candidates:
     EventList eventsToTest;
     Event testEvent;
-    testEvent.setComment( "A comment" );
+    testEvent.setComment( QStringLiteral("A comment") );
     testEvent.setStartDateTime( QDateTime::currentDateTime() );
     testEvent.setEndDateTime( QDateTime::currentDateTime().addDays( 1 ) );
     // add one default-constructed one, plus the other candidates:
     eventsToTest << Event() << testEvent;
 
-    QDomDocument document( "testdocument" );
+    QDomDocument document( QStringLiteral("testdocument") );
     Q_FOREACH( const Event& event, eventsToTest ) {
         QDomElement element = event.toXml( document );
 
@@ -93,7 +93,7 @@ void XmlSerializationTests::testEventSerialization()
 
 void XmlSerializationTests::testTaskSerialization()
 {
-    QDomDocument document( "testdocument" );
+    QDomDocument document( QStringLiteral("testdocument") );
     Q_FOREACH( Task task, tasksToTest() ) {
         QDomElement element = task.toXml( document );
         try {
@@ -161,7 +161,7 @@ void XmlSerializationTests::testTaskListSerialization()
     // parent they have assigned does not exist)
     QVERIFY( ! Task::checkForTreeness( tasks ) );
 
-    QDomDocument document( "testdocument" );
+    QDomDocument document( QStringLiteral("testdocument") );
     QDomElement element = Task::makeTasksElement( document, tasks );
     try {
         TaskList result = Task::readTasksElement( element, CHARM_DATABASE_VERSION );
@@ -183,7 +183,7 @@ void XmlSerializationTests::testTaskListSerialization()
 void XmlSerializationTests::testTaskExportImport()
 {
     TaskExport importer;
-    importer.readFrom( ":/testTaskExportImport/Data/test-tasklistexport.xml" );
+    importer.readFrom( QStringLiteral(":/testTaskExportImport/Data/test-tasklistexport.xml") );
     QVERIFY( !importer.tasks().isEmpty() );
     QVERIFY( importer.exportTime().isValid() );
 }

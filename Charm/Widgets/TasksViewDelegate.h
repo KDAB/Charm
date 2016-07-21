@@ -55,10 +55,10 @@ public:
 
     bool isEditing() const;
 
-signals:
+Q_SIGNALS:
     void editingStateChanged() const;
 
-private slots:
+private Q_SLOTS:
     void slotCloseEditor( QWidget* editor, QAbstractItemDelegate::EndEditHint );
 
 private:

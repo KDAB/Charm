@@ -64,13 +64,13 @@ void WeeklyTimesheetXmlWriter::setRootTask( TaskId rootTask )
 QByteArray WeeklyTimesheetXmlWriter::saveToXml() const
 {
     // now create the report:
-    QDomDocument document = XmlSerialization::createXmlTemplate( "weekly-timesheet" );
+    QDomDocument document = XmlSerialization::createXmlTemplate( QStringLiteral("weekly-timesheet") );
 
     // find metadata and report element:
     QDomElement root = document.documentElement();
     QDomElement metadata = XmlSerialization::metadataElement( document );
-    QDomElement charmVersion = document.createElement( "charmversion" );
-    QDomText charmVersionString = document.createTextNode( CHARM_VERSION );
+    QDomElement charmVersion = document.createElement( QStringLiteral("charmversion") );
+    QDomText charmVersionString = document.createTextNode( QStringLiteral(CHARM_VERSION) );
     charmVersion.appendChild( charmVersionString );
     metadata.appendChild( charmVersion );
     QDomElement report = XmlSerialization::reportElement( document );
@@ -78,12 +78,12 @@ QByteArray WeeklyTimesheetXmlWriter::saveToXml() const
 
     // extend metadata tag: add year, and serial (week) number:
     {
-        QDomElement yearElement = document.createElement( "year" );
+        QDomElement yearElement = document.createElement( QStringLiteral("year") );
         metadata.appendChild( yearElement );
         QDomText text = document.createTextNode( QString::number( m_year ) );
         yearElement.appendChild( text );
-        QDomElement weekElement = document.createElement( "serial-number" );
-        weekElement.setAttribute( "semantics", "week-number" );
+        QDomElement weekElement = document.createElement( QStringLiteral("serial-number") );
+        weekElement.setAttribute( QStringLiteral("semantics"), QStringLiteral("week-number") );
         metadata.appendChild( weekElement );
         QDomText weektext = document.createTextNode( QString::number( m_weekNumber ) );
         weekElement.appendChild( weektext );
@@ -98,7 +98,7 @@ QByteArray WeeklyTimesheetXmlWriter::saveToXml() const
 
     // extend report tag: add tasks and effort structure
     {   // tasks
-        QDomElement tasks = document.createElement( "tasks" );
+        QDomElement tasks = document.createElement( QStringLiteral("tasks") );
         report.appendChild( tasks );
         Q_FOREACH ( const TimeSheetInfo& info, timeSheetInfo ) {
             if ( info.taskId == 0 ) // the root task
@@ -118,7 +118,7 @@ QByteArray WeeklyTimesheetXmlWriter::saveToXml() const
     }
     {   // effort
         // make effort element:
-        QDomElement effort = document.createElement( "effort" );
+        QDomElement effort = document.createElement( QStringLiteral("effort") );
         report.appendChild( effort );
 
         // aggregate (group by task and day):
@@ -145,7 +145,7 @@ QByteArray WeeklyTimesheetXmlWriter::saveToXml() const
                 QString comment = oldEvent.comment();
                 if ( ! event.comment().isEmpty() ) {
                     if ( !comment.isEmpty() ) { // make separator
-                        comment += " / ";
+                        comment += QLatin1String(" / ");
                     }
                     comment += event.comment();
                     newEvent.setComment( comment );

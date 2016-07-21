@@ -30,16 +30,16 @@
 void SmartNameCacheTests::testCache()
 {
     SmartNameCache cache;
-    Task projects( 1, QLatin1String("Projects") );
-    Task charm( 2, QLatin1String("Charm") );
+    Task projects( 1, QStringLiteral("Projects") );
+    Task charm( 2, QStringLiteral("Charm") );
     charm.setParent( projects.id() );
-    Task charmDevelopment( 3, QLatin1String("Development") );
+    Task charmDevelopment( 3, QStringLiteral("Development") );
     charmDevelopment.setParent( charm.id() );
-    Task charmOverhead( 4, QLatin1String("Overhead") );
+    Task charmOverhead( 4, QStringLiteral("Overhead") );
     charmOverhead.setParent( charm.id() );
-    Task lotsofcake( 5, QLatin1String("Lotsofcake") );
+    Task lotsofcake( 5, QStringLiteral("Lotsofcake") );
     lotsofcake.setParent( projects.id() );
-    Task lotsofcakeDevelopment( 6, QLatin1String("Development") );
+    Task lotsofcakeDevelopment( 6, QStringLiteral("Development") );
     lotsofcakeDevelopment.setParent( lotsofcake.id() );
     const TaskList tasks = TaskList() << projects << charm << charmDevelopment << charmOverhead << lotsofcake << lotsofcakeDevelopment;
     cache.setAllTasks( tasks );

@@ -47,7 +47,7 @@ public:
     Qt::ToolButtonStyle toolButtonStyle() const;
 
     Configuration::TimeTrackerFontSize timeTrackerFontSize() const;
-private slots:
+private Q_SLOTS:
     void slotWarnUnuploadedChanged(bool);
     void slotResetPassword();
 

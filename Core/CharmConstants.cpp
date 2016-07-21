@@ -30,42 +30,42 @@
 #include <QObject>
 #include <QTextStream>
 
-const QString MetaKey_EventsInLeafsOnly = "EventsInLeafsOnly";
-const QString MetaKey_OneEventAtATime = "OneEventAtATime";
-const QString MetaKey_MainWindowGeometry = "MainWindowGeometry";
-const QString MetaKey_MainWindowVisible = "MainWindowVisible";
-const QString MetaKey_MainWindowGUIStateSelectedTask = "MainWindowGUIStateSelectedTask";
-const QString MetaKey_MainWindowGUIStateExpandedTasks = "MainWindowGUIStateExpandedTasks";
-const QString MetaKey_MainWindowGUIStateShowExpiredTasks = "MainWindowGUIStateShowExpiredTasks";
-const QString MetaKey_MainWindowGUIStateShowCurrentTasks = "MainWindowGUIStateShowCurrentTasks";
-const QString MetaKey_TimeTrackerGeometry = "TimeTrackerGeometry";
-const QString MetaKey_TimeTrackerVisible = "TimeTrackerVisible";
-const QString MetaKey_EventEditorGeometry = "EventEditorGeometry";
-const QString MetaKey_TaskEditorGeometry = "TaskEditorGeometry";
-const QString MetaKey_ReportsRecentSavePath = "ReportsRecentSavePath";
-const QString MetaKey_ExportToXmlRecentSavePath = "ExportToXmlSavePath";
-const QString MetaKey_TimesheetSubscribedOnly = "TimesheetSubscribedOnly";
-const QString MetaKey_TimesheetActiveOnly = "TimesheetActiveOnly";
-const QString MetaKey_TimesheetRootTask = "TimesheetRootTask";
-const QString MetaKey_LastEventEditorDateTime= "LastEventEditorDateTime";
-const QString MetaKey_Key_InstallationId = "InstallationId";
-const QString MetaKey_Key_UserName = "UserName";
-const QString MetaKey_Key_UserId = "UserId";
-const QString MetaKey_Key_LocalStorageDatabase = "LocalStorageDatabase";
-const QString MetaKey_Key_LocalStorageType = "LocalStorageType";
-const QString MetaKey_Key_SubscribedTasksOnly = "SubscribedTasksOnly";
-const QString MetaKey_Key_TimeTrackerFontSize = "TimeTrackerFontSize";
-const QString MetaKey_Key_24hEditing = "Key24hEditing";
-const QString MetaKey_Key_DurationFormat = "DurationFormat";
-const QString MetaKey_Key_IdleDetection = "IdleDetection";
-const QString MetaKey_Key_WarnUnuploadedTimesheets = "WarnUnuploadedTimesheets";
-const QString MetaKey_Key_RequestEventComment = "RequestEventComment";
-const QString MetaKey_Key_ToolButtonStyle = "ToolButtonStyle";
-const QString MetaKey_Key_ShowStatusBar = "ShowStatusBar";
-const QString MetaKey_Key_EnableCommandInterface = "EnableCommandInterface";
+const QString MetaKey_EventsInLeafsOnly = QStringLiteral("EventsInLeafsOnly");
+const QString MetaKey_OneEventAtATime = QStringLiteral("OneEventAtATime");
+const QString MetaKey_MainWindowGeometry = QStringLiteral("MainWindowGeometry");
+const QString MetaKey_MainWindowVisible = QStringLiteral("MainWindowVisible");
+const QString MetaKey_MainWindowGUIStateSelectedTask = QStringLiteral("MainWindowGUIStateSelectedTask");
+const QString MetaKey_MainWindowGUIStateExpandedTasks = QStringLiteral("MainWindowGUIStateExpandedTasks");
+const QString MetaKey_MainWindowGUIStateShowExpiredTasks = QStringLiteral("MainWindowGUIStateShowExpiredTasks");
+const QString MetaKey_MainWindowGUIStateShowCurrentTasks = QStringLiteral("MainWindowGUIStateShowCurrentTasks");
+const QString MetaKey_TimeTrackerGeometry = QStringLiteral("TimeTrackerGeometry");
+const QString MetaKey_TimeTrackerVisible = QStringLiteral("TimeTrackerVisible");
+const QString MetaKey_EventEditorGeometry = QStringLiteral("EventEditorGeometry");
+const QString MetaKey_TaskEditorGeometry = QStringLiteral("TaskEditorGeometry");
+const QString MetaKey_ReportsRecentSavePath = QStringLiteral("ReportsRecentSavePath");
+const QString MetaKey_ExportToXmlRecentSavePath = QStringLiteral("ExportToXmlSavePath");
+const QString MetaKey_TimesheetSubscribedOnly = QStringLiteral("TimesheetSubscribedOnly");
+const QString MetaKey_TimesheetActiveOnly = QStringLiteral("TimesheetActiveOnly");
+const QString MetaKey_TimesheetRootTask = QStringLiteral("TimesheetRootTask");
+const QString MetaKey_LastEventEditorDateTime= QStringLiteral("LastEventEditorDateTime");
+const QString MetaKey_Key_InstallationId = QStringLiteral("InstallationId");
+const QString MetaKey_Key_UserName = QStringLiteral("UserName");
+const QString MetaKey_Key_UserId = QStringLiteral("UserId");
+const QString MetaKey_Key_LocalStorageDatabase = QStringLiteral("LocalStorageDatabase");
+const QString MetaKey_Key_LocalStorageType = QStringLiteral("LocalStorageType");
+const QString MetaKey_Key_SubscribedTasksOnly = QStringLiteral("SubscribedTasksOnly");
+const QString MetaKey_Key_TimeTrackerFontSize = QStringLiteral("TimeTrackerFontSize");
+const QString MetaKey_Key_24hEditing = QStringLiteral("Key24hEditing");
+const QString MetaKey_Key_DurationFormat = QStringLiteral("DurationFormat");
+const QString MetaKey_Key_IdleDetection = QStringLiteral("IdleDetection");
+const QString MetaKey_Key_WarnUnuploadedTimesheets = QStringLiteral("WarnUnuploadedTimesheets");
+const QString MetaKey_Key_RequestEventComment = QStringLiteral("RequestEventComment");
+const QString MetaKey_Key_ToolButtonStyle = QStringLiteral("ToolButtonStyle");
+const QString MetaKey_Key_ShowStatusBar = QStringLiteral("ShowStatusBar");
+const QString MetaKey_Key_EnableCommandInterface = QStringLiteral("EnableCommandInterface");
 
-const QString TrueString( "true" );
-const QString FalseString( "false" );
+const QString TrueString( QStringLiteral("true") );
+const QString FalseString( QStringLiteral("false") );
 
 const QString& stringForBool( bool val )
 {
@@ -95,7 +95,7 @@ void connectControllerAndModel( Controller* controller, CharmDataModel* model )
 static QString formatDecimal( double d ) {
     const QString s = QLocale::system().toString( d, 'f', 2 );
     if ( d > -10 && d < 10 ) //hack to get the hours always have two decimals: e.g. 00.50 instead of 0.50
-        return QLatin1String("0") + s;
+        return QStringLiteral("0") + s;
     else
         return s;
 }
@@ -115,7 +115,7 @@ QString hoursAndMinutes( int duration )
     if ( CONFIGURATION.durationFormat == Configuration::Minutes ) {
         QString text;
         QTextStream stream( &text );
-        stream << qSetFieldWidth( 2 ) << qSetPadChar( QChar( '0' ) )
+        stream << qSetFieldWidth( 2 ) << qSetPadChar( QLatin1Char('0' ) )
                 << hours << qSetFieldWidth( 0 ) << ":" << qSetFieldWidth( 2 ) << minutes;
         return text;
     } else { //Decimal

@@ -38,16 +38,16 @@ SqlTransactionTests::SqlTransactionTests()
 
 void SqlTransactionTests::testMySqlDriverRequirements()
 {
-    const char DriverName[] = "QMYSQL";
+    const auto DriverName = QStringLiteral("QMYSQL");
     QVERIFY( QSqlDatabase::isDriverAvailable( DriverName ) );
-    QSqlDatabase db = QSqlDatabase::addDatabase( DriverName, "test-mysql.charm.kdab.com" );
+    QSqlDatabase db = QSqlDatabase::addDatabase( DriverName, QStringLiteral("test-mysql.charm.kdab.com") );
 }
 
 void SqlTransactionTests::testSqLiteDriverRequirements()
 {
-    const char DriverName[] = "QSQLITE";
+    const auto DriverName = QStringLiteral("QSQLITE");
     QVERIFY( QSqlDatabase::isDriverAvailable( DriverName ) );
-    QSqlDatabase db = QSqlDatabase::addDatabase( DriverName, "test-sqlite.charm.kdab.com" );
+    QSqlDatabase db = QSqlDatabase::addDatabase( DriverName, QStringLiteral("test-sqlite.charm.kdab.com") );
     QSqlDriver* driver  = db.driver();
     QVERIFY( driver->hasFeature( QSqlDriver::Transactions ) );
 }

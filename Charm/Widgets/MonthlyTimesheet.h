@@ -43,7 +43,7 @@ public:
                               TaskId rootTask,
                               bool activeTasksOnly ) override;
 
-private slots:
+private Q_SLOTS:
     void slotLinkClicked( const QUrl& which );
 
 private:

@@ -43,7 +43,7 @@ public:
     void setVerbose(bool verbose);
     bool isVerbose() const;
 
-public slots:
+public Q_SLOTS:
 
     bool execute(int state, QNetworkAccessManager *manager) override;
      bool handle(QNetworkReply *reply) override;

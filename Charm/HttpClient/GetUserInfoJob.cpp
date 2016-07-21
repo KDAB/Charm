@@ -33,7 +33,7 @@ GetUserInfoJob::GetUserInfoJob(QObject* parent, const QString &schema)
 {
     QSettings s;
     s.beginGroup(m_schema);
-    setDownloadUrl(s.value(QLatin1String("userInfoDownloadUrl")).toUrl());
+    setDownloadUrl(s.value(QStringLiteral("userInfoDownloadUrl")).toUrl());
 }
 
 GetUserInfoJob::~GetUserInfoJob()

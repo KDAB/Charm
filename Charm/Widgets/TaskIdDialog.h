@@ -46,7 +46,7 @@ public:
 
     QString taskName() const;
 
-private slots:
+private Q_SLOTS:
     void on_spinBox_valueChanged( int );
 
 private:

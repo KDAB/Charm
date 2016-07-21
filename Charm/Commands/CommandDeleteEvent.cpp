@@ -50,7 +50,7 @@ bool CommandDeleteEvent::rollback(ControllerInterface *controller)
     m_event = controller->cloneEvent(m_event);
     int newId = m_event.id();
     if(oldId != newId)
-        emit emitSlotEventIdChanged(oldId, newId);
+        Q_EMIT emitSlotEventIdChanged(oldId, newId);
     return m_event.isValid();
 }
 

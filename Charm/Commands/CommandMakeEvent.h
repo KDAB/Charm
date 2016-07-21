@@ -44,7 +44,7 @@ public:
     bool rollback( ControllerInterface* ) override;
     bool finalize() override;
 
-public slots:
+public Q_SLOTS:
     void eventIdChanged(int,int) override;
 
 Q_SIGNALS:

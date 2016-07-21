@@ -31,20 +31,20 @@ BillDialog::BillDialog( QWidget* parent, Qt::WindowFlags f )
 {
     setResult(Later);
     QPalette p = palette();
-    QImage billImage(":/Charm/bill.jpg");
+    QImage billImage(QStringLiteral(":/Charm/bill.jpg"));
     QBrush billBrush(billImage);
     p.setBrush(QPalette::Window, billBrush);
     setPalette(p);
     setAutoFillBackground(true);
     setMinimumSize(billImage.size());
     setMaximumSize(billImage.size());
-    setWindowTitle("Yeah... about those timesheets...");
+    setWindowTitle(QStringLiteral("Yeah... about those timesheets..."));
 
-    m_asYouWish = new QPushButton("As you wish");
+    m_asYouWish = new QPushButton(QStringLiteral("As you wish"));
     connect(m_asYouWish, SIGNAL(clicked()), SLOT(slotAsYouWish()));
-    m_alreadyDone = new QPushButton("Already done");
+    m_alreadyDone = new QPushButton(QStringLiteral("Already done"));
     connect(m_alreadyDone, SIGNAL(clicked()), SLOT(slotAlreadyDone()));
-    m_later = new QPushButton("Later");
+    m_later = new QPushButton(QStringLiteral("Later"));
     connect(m_later, SIGNAL(clicked()), SLOT(slotLater()));
 
     auto layout = new QVBoxLayout(this);
@@ -59,7 +59,7 @@ void BillDialog::setReport(int year, int week)
 {
     m_year = year;
     m_week = week;
-    m_alreadyDone->setText(QString("Already sent Week %1 (%2)").arg(week).arg(year));
+    m_alreadyDone->setText(QStringLiteral("Already sent Week %1 (%2)").arg(week).arg(year));
 }
 
 int BillDialog::year() const

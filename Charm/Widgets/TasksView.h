@@ -62,13 +62,13 @@ public Q_SLOTS:
     void restoreGuiState() override;
     void saveGuiState() override;
 
-signals:
+Q_SIGNALS:
     // FIXME connect to MainWindow
     void saveConfiguration();
     void emitCommand( CharmCommand* ) override;
     void emitCommandRollback( CharmCommand* ) override;
 
-private slots:
+private Q_SLOTS:
     void actionNewTask();
     void actionNewSubTask();
     void actionEditTask();

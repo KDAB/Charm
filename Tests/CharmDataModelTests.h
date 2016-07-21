@@ -35,7 +35,7 @@ class CharmDataModelTests : public QObject
 public:
     CharmDataModelTests();
 
-private slots:
+private Q_SLOTS:
     void initTestCase();
     void createAndDestroyTest();
     void addAndRemoveTasksTest();

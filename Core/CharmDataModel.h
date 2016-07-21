@@ -132,7 +132,7 @@ public:
 
     bool operator==( const CharmDataModel& other ) const;
 
-signals:
+Q_SIGNALS:
     // these need to be implemented in the respective application to
     // be able to track time:
     void makeAndActivateEvent( const Task& );
@@ -140,7 +140,7 @@ signals:
     void sysTrayUpdate( const QString&, bool );
     void resetGUIState();
 
-public slots:
+public Q_SLOTS:
     void setAllTasks( const TaskList& tasks );
     void addTask( const Task& );
     void modifyTask( const Task& );
@@ -177,7 +177,7 @@ private:
     QTimer m_timer;
     SmartNameCache m_nameCache;
 
-private slots:
+private Q_SLOTS:
     void eventUpdateTimerEvent();
 
 private:

@@ -32,7 +32,7 @@
 void WidgetUtils::restoreGeometry( QWidget *widget, const QString &metaKey )
 {
     QSettings settings;
-    settings.beginGroup( QString::fromLatin1( "WindowStates" ) );
+    settings.beginGroup( QStringLiteral( "WindowStates" ) );
     if ( settings.contains( metaKey ) ) {
         widget->restoreGeometry( settings.value( metaKey ).toByteArray() );
     }
@@ -41,7 +41,7 @@ void WidgetUtils::restoreGeometry( QWidget *widget, const QString &metaKey )
 void WidgetUtils::saveGeometry( QWidget *widget, const QString &metaKey )
 {
     QSettings settings;
-    settings.beginGroup( QString::fromLatin1( "WindowStates" ) );
+    settings.beginGroup( QStringLiteral( "WindowStates" ) );
     settings.setValue( metaKey, widget->saveGeometry() );
 }
 

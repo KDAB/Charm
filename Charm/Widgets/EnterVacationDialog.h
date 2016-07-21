@@ -47,7 +47,7 @@ private:
     void updateTaskLabel();
     void createEvents();
 
-private slots:
+private Q_SLOTS:
     void selectTask();
     void okClicked();
     void updateButtonStates();

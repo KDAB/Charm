@@ -67,12 +67,12 @@ public:
 
     void updateModelEventsAndTasks();
 
-public slots:
+public Q_SLOTS:
 
     void executeCommand( CharmCommand* ) override;
     void rollbackCommand ( CharmCommand* ) override;
 
-signals:
+Q_SIGNALS:
     void eventAdded( const Event& event ) override;
     void eventModified( const Event& event ) override;
     void eventDeleted( const Event& event ) override;

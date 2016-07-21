@@ -48,7 +48,7 @@ public:
 public Q_SLOTS:
     void accept() override;
 
-private slots:
+private Q_SLOTS:
     void slotCheckboxSubtasksOnlyChecked( bool );
     void slotStandardTimeSpansChanged();
     void slotMonthComboItemSelected( int );

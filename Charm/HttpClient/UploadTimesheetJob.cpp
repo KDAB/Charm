@@ -31,11 +31,11 @@
 #include <QSettings>
 
 UploadTimesheetJob::UploadTimesheetJob(QObject* parent)
-    : HttpJob(parent), m_fileName("payload")
+    : HttpJob(parent), m_fileName(QStringLiteral("payload"))
 {
     QSettings s;
-    s.beginGroup(QLatin1String("httpconfig"));
-    setUploadUrl(s.value(QLatin1String("timesheetUploadUrl")).toUrl());
+    s.beginGroup(QStringLiteral("httpconfig"));
+    setUploadUrl(s.value(QStringLiteral("timesheetUploadUrl")).toUrl());
 }
 
 UploadTimesheetJob::~UploadTimesheetJob()
@@ -81,7 +81,7 @@ bool UploadTimesheetJob::execute(int state, QNetworkAccessManager *manager)
     QByteArray uploadName;
 
     /* validate filename */
-    if (!m_fileName.contains(QRegExp("^WeeklyTimeSheet-\\d\\d\\d\\d-\\d\\d$"))) {
+    if (!m_fileName.contains(QRegExp(QStringLiteral("^WeeklyTimeSheet-\\d\\d\\d\\d-\\d\\d$")))) {
         qDebug("Invalid filename encountered, using default (\"payload\").");
         uploadName = "payload";
     }
@@ -104,7 +104,7 @@ bool UploadTimesheetJob::execute(int state, QNetworkAccessManager *manager)
     data += "--KDAB--\r\n";
 
     QNetworkRequest request(m_uploadUrl);
-    request.setHeader(QNetworkRequest::ContentTypeHeader, "multipart/form-data; boundary=KDAB");
+    request.setHeader(QNetworkRequest::ContentTypeHeader, QStringLiteral("multipart/form-data; boundary=KDAB"));
     request.setHeader(QNetworkRequest::ContentLengthHeader, data.size());
 
     QNetworkReply *reply = manager->post(request, data);

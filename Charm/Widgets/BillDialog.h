@@ -40,7 +40,7 @@ public:
     void setReport(int year, int week);
     int year() const;
     int week() const;
-private slots:
+private Q_SLOTS:
     void slotAsYouWish();
     void slotAlreadyDone();
     void slotLater();

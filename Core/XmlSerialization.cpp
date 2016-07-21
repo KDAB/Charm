@@ -45,11 +45,11 @@ static QHash<QString,QString> readMetadata( const QDomElement& metadata ) {
 namespace XmlSerialization {
 
     QString reportTagName() {
-        return "charmreport";
+        return QStringLiteral("charmreport");
     }
 
     QString reportTypeAttribute() {
-        return "type";
+        return QStringLiteral("type");
     }
 
     QDomDocument createXmlTemplate( const QString &docClass )
@@ -63,13 +63,13 @@ namespace XmlSerialization {
 
         // metadata:
         {
-            QDomElement metadata = doc.createElement( "metadata" );
+            QDomElement metadata = doc.createElement( QStringLiteral("metadata") );
             root.appendChild( metadata );
-            QDomElement username = doc.createElement( "username" );
+            QDomElement username = doc.createElement( QStringLiteral("username") );
             metadata.appendChild( username );
             QDomText text = doc.createTextNode( Configuration::instance().user.name() );
             username.appendChild( text );
-            QDomElement creationTime = doc.createElement( "creation-time" );
+            QDomElement creationTime = doc.createElement( QStringLiteral("creation-time") );
             metadata.appendChild( creationTime );
             QDomText time = doc.createTextNode(
                 QDateTime::currentDateTimeUtc().toString( Qt::ISODate ) );
@@ -77,7 +77,7 @@ namespace XmlSerialization {
             // FIXME installation id and stuff are probably necessary
         }
 
-        QDomElement report = doc.createElement( "report" );
+        QDomElement report = doc.createElement( QStringLiteral("report") );
         root.appendChild( report );
 
         return doc;
@@ -86,19 +86,19 @@ namespace XmlSerialization {
     QDomElement reportElement( const QDomDocument& document )
     {
         QDomElement root = document.documentElement();
-        return root.firstChildElement( "report" );
+        return root.firstChildElement( QStringLiteral("report") );
 
     }
 
     QDomElement metadataElement( const QDomDocument& document )
     {
         QDomElement root = document.documentElement();
-        return root.firstChildElement( "metadata" );
+        return root.firstChildElement( QStringLiteral("metadata") );
     }
 
     QDateTime creationTime( const QDomElement& metaDataElement )
     {
-        QDomElement creationTimeElement = metaDataElement.firstChildElement( "creation-time" );
+        QDomElement creationTimeElement = metaDataElement.firstChildElement( QStringLiteral("creation-time") );
         if ( ! creationTimeElement.isNull() ) {
             return QDateTime::fromString( creationTimeElement.text(), Qt::ISODate );
         } else {
@@ -108,7 +108,7 @@ namespace XmlSerialization {
 
     QString userName( const QDomElement& metaDataElement )
     {
-        QDomElement usernameElement = metaDataElement.firstChildElement( "username" );
+        QDomElement usernameElement = metaDataElement.firstChildElement( QStringLiteral("username") );
         return usernameElement.text();
     }
 
@@ -116,7 +116,7 @@ namespace XmlSerialization {
 
 QString TaskExport::reportType()
 {
-    return "taskdefinitions";
+    return QStringLiteral("taskdefinitions");
 }
 
 void TaskExport::writeTo( const QString& filename, const TaskList& tasks )

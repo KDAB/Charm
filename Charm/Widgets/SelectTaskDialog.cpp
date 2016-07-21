@@ -92,7 +92,7 @@ SelectTaskDialog::SelectTaskDialog( QWidget* parent )
              SLOT(slotResetState()) );
 
     QSettings settings;
-    settings.beginGroup( staticMetaObject.className() );
+    settings.beginGroup( QString::fromUtf8(staticMetaObject.className()) );
     if ( settings.contains( MetaKey_MainWindowGeometry ) ) {
         resize( settings.value( MetaKey_MainWindowGeometry ).toSize() );
     }
@@ -108,7 +108,7 @@ SelectTaskDialog::~SelectTaskDialog()
 void SelectTaskDialog::slotResetState()
 {
     QSettings settings;
-    settings.beginGroup( staticMetaObject.className() );
+    settings.beginGroup( QString::fromUtf8( staticMetaObject.className() ) );
     GUIState state;
     state.loadFrom( settings );
     QModelIndex index( m_proxy.indexForTaskId( state.selectedTask() ) );
@@ -136,7 +136,7 @@ void SelectTaskDialog::showEvent ( QShowEvent * event )
 void SelectTaskDialog::hideEvent( QHideEvent* event )
 {
     QSettings settings;
-    settings.beginGroup( staticMetaObject.className() );
+    settings.beginGroup( QString::fromUtf8( staticMetaObject.className() ) );
     settings.setValue( MetaKey_MainWindowGeometry, size() );
     QDialog::hideEvent( event );
 }
@@ -194,7 +194,7 @@ void SelectTaskDialog::slotDoubleClicked ( const QModelIndex & index )
 void SelectTaskDialog::slotFilterTextChanged( const QString& text )
 {
     QString filtertext = text.simplified();
-    filtertext.replace( ' ', '*' );
+    filtertext.replace( QLatin1Char(' '), QLatin1Char('*') );
 
     Charm::saveExpandStates( m_ui->treeView, &m_expansionStates );
     m_proxy.setFilterWildcard( filtertext );
@@ -226,7 +226,7 @@ void SelectTaskDialog::slotAccepted()
         state.setExpandedTasks( expandedTasks );
         state.setShowExpired( m_ui->showExpired->isChecked() );
         state.setShowCurrents( m_ui->showSelected->isChecked() );
-        settings.beginGroup( staticMetaObject.className() );
+        settings.beginGroup( QString::fromUtf8( staticMetaObject.className() ) );
         state.saveTo( settings );
     }
 }

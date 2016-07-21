@@ -51,8 +51,8 @@ CharmNewReleaseDialog::CharmNewReleaseDialog( QWidget* parent )
 void CharmNewReleaseDialog::setVersion( const QString& newVersion, const QString& localVersion )
 {
     QString versionText = m_ui->infoLB->text();
-    versionText.replace( "NEW", newVersion );
-    versionText.replace( "CURRENT", localVersion );
+    versionText.replace( QLatin1String("NEW"), newVersion );
+    versionText.replace( QLatin1String("CURRENT"), localVersion );
     m_ui->infoLB->setText( versionText );
     m_version = newVersion;
 }
@@ -65,7 +65,7 @@ void CharmNewReleaseDialog::setDownloadLink( const QUrl& link )
 void CharmNewReleaseDialog::setReleaseInformationLink( const QString& link )
 {
     QString hyperlink = m_ui->releaseInfoLabel->text();
-    hyperlink.replace( "LINK", link );
+    hyperlink.replace( QLatin1String("LINK"), link );
     m_ui->releaseInfoLabel->setText( hyperlink );
 }
 
@@ -80,8 +80,8 @@ void CharmNewReleaseDialog::slotLaunchBrowser()
 void CharmNewReleaseDialog::slotSkipVersion()
 {
     QSettings settings;
-    settings.beginGroup( QLatin1String( "UpdateChecker" ) );
-    settings.setValue( QLatin1String( "skip-version" ), m_version );
+    settings.beginGroup( QStringLiteral( "UpdateChecker" ) );
+    settings.setValue( QStringLiteral( "skip-version" ), m_version );
     settings.endGroup();
     accept();
 }

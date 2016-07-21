@@ -29,23 +29,22 @@
 
 void UpdateCheckerTests::testVersionComparison()
 {
-    QVERIFY( Charm::versionLessThan( QLatin1String("0.1"), QLatin1String("0.2") ) );
-    QVERIFY( Charm::versionLessThan( QLatin1String("1.9.0"), QLatin1String("1.10.0") ) );
-    QVERIFY( Charm::versionLessThan( QLatin1String("0.1"), QLatin1String("0.1.1") ) );
-    QVERIFY( ! Charm::versionLessThan( QLatin1String("1.9.0"), QLatin1String("1.9.0") ) );
-    QVERIFY( ! Charm::versionLessThan( QLatin1String("1.10.0"), QLatin1String("1.9.0") ) );
-    QVERIFY( Charm::versionLessThan( QLatin1String("1.9.0"), QLatin1String("1.9.0.1") ) );
-    QVERIFY( ! Charm::versionLessThan( QLatin1String("1.9.0"), QLatin1String("1.9.abc") ) );
-    QVERIFY( ! Charm::versionLessThan( QLatin1String("2.0.1"), QLatin1String("1.20.0") ) );
-    QVERIFY( ! Charm::versionLessThan( QLatin1String("1.9.0.1"), QLatin1String("1.9.0.0.1") ) );
-    QVERIFY( Charm::versionLessThan( QString(), QLatin1String("0.2") ) );
-    QVERIFY( ! Charm::versionLessThan( QLatin1String("0.2"), QString() ) );
+    QVERIFY( Charm::versionLessThan( QStringLiteral("0.1"), QStringLiteral("0.2") ) );
+    QVERIFY( Charm::versionLessThan( QStringLiteral("1.9.0"), QStringLiteral("1.10.0") ) );
+    QVERIFY( Charm::versionLessThan( QStringLiteral("0.1"), QStringLiteral("0.1.1") ) );
+    QVERIFY( ! Charm::versionLessThan( QStringLiteral("1.9.0"), QStringLiteral("1.9.0") ) );
+    QVERIFY( ! Charm::versionLessThan( QStringLiteral("1.10.0"), QStringLiteral("1.9.0") ) );
+    QVERIFY( Charm::versionLessThan( QStringLiteral("1.9.0"), QStringLiteral("1.9.0.1") ) );
+    QVERIFY( ! Charm::versionLessThan( QStringLiteral("1.9.0"), QStringLiteral("1.9.abc") ) );
+    QVERIFY( ! Charm::versionLessThan( QStringLiteral("2.0.1"), QStringLiteral("1.20.0") ) );
+    QVERIFY( ! Charm::versionLessThan( QStringLiteral("1.9.0.1"), QStringLiteral("1.9.0.0.1") ) );
+    QVERIFY( Charm::versionLessThan( QString(), QStringLiteral("0.2") ) );
+    QVERIFY( ! Charm::versionLessThan( QStringLiteral("0.2"), QString() ) );
     QVERIFY( ! Charm::versionLessThan( QString(), QString() ) );
-    QVERIFY( ! Charm::versionLessThan( QLatin1String(" "), QLatin1String(".") ) );
-    QVERIFY( ! Charm::versionLessThan( QLatin1String(" ."), QLatin1String("....") ) );
-    QVERIFY( ! Charm::versionLessThan( QLatin1String(".1."), QLatin1String(" ") ) );
+    QVERIFY( ! Charm::versionLessThan( QStringLiteral(" "), QStringLiteral(".") ) );
+    QVERIFY( ! Charm::versionLessThan( QStringLiteral(" ."), QStringLiteral("....") ) );
+    QVERIFY( ! Charm::versionLessThan( QStringLiteral(".1."), QStringLiteral(" ") ) );
 }
-
 
 QTEST_MAIN( UpdateCheckerTests )
 

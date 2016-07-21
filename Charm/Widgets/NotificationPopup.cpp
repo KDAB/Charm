@@ -45,9 +45,9 @@ NotificationPopup::~NotificationPopup()
 void NotificationPopup::showNotification( const QString& title, const QString& message )
 {
     QString titleText = m_ui->titleLB->text();
-    m_ui->titleLB->setText( titleText.replace( "TITLE", title ) );
+    m_ui->titleLB->setText( titleText.replace( QLatin1String("TITLE"), title ) );
     QString messageText = m_ui->messageLB->text();
-    m_ui->messageLB->setText( messageText.replace( "MESSAGE", message ) );
+    m_ui->messageLB->setText( messageText.replace( QLatin1String("MESSAGE"), message ) );
 
     setGeometry( QStyle::alignedRect ( Qt::RightToLeft, Qt::AlignBottom, size(), qApp->desktop()->availableGeometry() ) );
     show();

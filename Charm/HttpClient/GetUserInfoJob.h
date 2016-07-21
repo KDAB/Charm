@@ -34,7 +34,7 @@ class GetUserInfoJob : public HttpJob
     Q_OBJECT
 public:
 
-    explicit GetUserInfoJob(QObject* parent=nullptr, const QString &schema = " ");
+    explicit GetUserInfoJob(QObject* parent=nullptr, const QString &schema = QStringLiteral(" "));
     ~GetUserInfoJob() override;
 
     QByteArray userInfo() const;
@@ -44,7 +44,7 @@ public:
     QString schema() const;
     void setSchema(const QString &schema);
 
-public slots:
+public Q_SLOTS:
 
     bool execute(int state, QNetworkAccessManager *manager) override;
     bool handle(QNetworkReply *reply) override;

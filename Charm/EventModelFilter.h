@@ -66,7 +66,7 @@ public:
 
     QList<Event> events() const;
 
-signals:
+Q_SIGNALS:
     void eventActivationNotice( EventId id );
     void eventDeactivationNotice( EventId id );
 

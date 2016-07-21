@@ -35,7 +35,7 @@ class XmlSerializationTests : public QObject
 public:
     XmlSerializationTests();
 
-private slots:
+private Q_SLOTS:
     void testEventSerialization();
     void testTaskSerialization();
     void testTaskListSerialization();

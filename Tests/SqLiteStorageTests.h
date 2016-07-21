@@ -41,7 +41,7 @@ private:
     Configuration m_configuration;
     QString m_localPath;
 
-private slots:
+private Q_SLOTS:
     void initTestCase ();
 
     void connectAndCreateDatabaseTest();

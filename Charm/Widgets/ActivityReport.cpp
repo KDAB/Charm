@@ -287,17 +287,17 @@ void ActivityReport::slotUpdate()
     auto report = new QTextDocument( this );
     QDomDocument doc = createReportTemplate();
     QDomElement root = doc.documentElement();
-    QDomElement body = root.firstChildElement( "body" );
+    QDomElement body = root.firstChildElement( QStringLiteral("body") );
 
     // create the caption:
     {
-        QDomElement headline = doc.createElement( "h1" );
+        QDomElement headline = doc.createElement( QStringLiteral("h1") );
         QDomText text = doc.createTextNode( tr( "Activity Report" ) );
         headline.appendChild( text );
         body.appendChild( headline );
     }
     {
-        QDomElement headline = doc.createElement( "h3" );
+        QDomElement headline = doc.createElement( QStringLiteral("h3") );
         QString content = tr( "Report for %1, from %2 to %3" )
                           .arg( CONFIGURATION.user.name(),
                                 m_start.toString( Qt::TextDate ),
@@ -305,30 +305,30 @@ void ActivityReport::slotUpdate()
         QDomText text = doc.createTextNode( content );
         headline.appendChild( text );
         body.appendChild( headline );
-        QDomElement previousLink = doc.createElement( "a" );
-        previousLink.setAttribute( "href" , "Previous" );
+        QDomElement previousLink = doc.createElement( QStringLiteral("a") );
+        previousLink.setAttribute( QStringLiteral("href") , QStringLiteral("Previous") );
         QDomText previousLinkText = doc.createTextNode( tr( "<Previous %1>" ).arg( timeSpanTypeName ) );
         previousLink.appendChild( previousLinkText );
         body.appendChild( previousLink );
-        QDomElement nextLink = doc.createElement( "a" );
-        nextLink.setAttribute( "href" , "Next" );
+        QDomElement nextLink = doc.createElement( QStringLiteral("a") );
+        nextLink.setAttribute( QStringLiteral("href") , QStringLiteral("Next") );
         QDomText nextLinkText = doc.createTextNode( tr( "<Next %1>" ).arg( timeSpanTypeName ) );
         nextLink.appendChild( nextLinkText );
         body.appendChild( nextLink );
         {
-            QDomElement paragraph = doc.createElement( "h4" );
+            QDomElement paragraph = doc.createElement( QStringLiteral("h4") );
             QString totalsText = tr( "Total: %1" ).arg( hoursAndMinutes( totalSeconds ) );
             QDomText totalsElement = doc.createTextNode( totalsText );
             paragraph.appendChild( totalsElement );
             body.appendChild( paragraph );
         }
         if ( !m_rootTasks.isEmpty() ) {
-            QDomElement paragraph = doc.createElement( "p" );
+            QDomElement paragraph = doc.createElement( QStringLiteral("p") );
             QString rootTaskText = tr( "Activity under tasks:" );
 
             Q_FOREACH( TaskId taskId, m_rootTasks ) {
                 const Task& task = DATAMODEL->getTask( taskId );
-                rootTaskText.append( QString::fromLatin1( " ( %1 ),").arg( DATAMODEL->fullTaskName( task ) ) );
+                rootTaskText.append( QStringLiteral( " ( %1 ),").arg( DATAMODEL->fullTaskName( task ) ) );
             }
             rootTaskText = rootTaskText.mid(0, rootTaskText.length() - 1 );
             QDomText rootText = doc.createTextNode( rootTaskText );
@@ -336,7 +336,7 @@ void ActivityReport::slotUpdate()
             body.appendChild( paragraph );
         }
 
-        QDomElement paragraph = doc.createElement( "br" );
+        QDomElement paragraph = doc.createElement( QStringLiteral("br") );
         body.appendChild( paragraph );
     }
     {
@@ -346,27 +346,27 @@ void ActivityReport::slotUpdate()
         const int NumberOfColumns = sizeof Headlines / sizeof Headlines[0];
 
         // now for a table
-        QDomElement table = doc.createElement( "table" );
-        table.setAttribute( "width", "100%" );
-        table.setAttribute( "align", "left" );
-        table.setAttribute( "cellpadding", "3" );
-        table.setAttribute( "cellspacing", "0" );
+        QDomElement table = doc.createElement( QStringLiteral("table") );
+        table.setAttribute( QStringLiteral("width"), QStringLiteral("100%") );
+        table.setAttribute( QStringLiteral("align"), QStringLiteral("left") );
+        table.setAttribute( QStringLiteral("cellpadding"), QStringLiteral("3") );
+        table.setAttribute( QStringLiteral("cellspacing"), QStringLiteral("0") );
         body.appendChild( table );
         // table header
-        QDomElement tableHead = doc.createElement( "thead" );
+        QDomElement tableHead = doc.createElement( QStringLiteral("thead") );
         table.appendChild( tableHead );
-        QDomElement headerRow = doc.createElement( "tr" );
-        headerRow.setAttribute( "class", "header_row" );
+        QDomElement headerRow = doc.createElement( QStringLiteral("tr") );
+        headerRow.setAttribute( QStringLiteral("class"), QStringLiteral("header_row") );
         tableHead.appendChild( headerRow );
         // column headers
         for ( int i = 0; i < NumberOfColumns; ++i )
         {
-            QDomElement header = doc.createElement( "th" );
+            QDomElement header = doc.createElement( QStringLiteral("th") );
             QDomText text = doc.createTextNode( Headlines[i] );
             header.appendChild( text );
             headerRow.appendChild( header );
         }
-        QDomElement tableBody = doc.createElement( "tbody" );
+        QDomElement tableBody = doc.createElement( QStringLiteral("tbody") );
         table.appendChild( tableBody );
         // rows
         Q_FOREACH( EventId id, matchingEvents ) {
@@ -376,7 +376,7 @@ void ActivityReport::slotUpdate()
             const Task& task = item.task();
             Q_ASSERT( task.isValid() );
 
-            const auto paddedId = QString::fromLatin1("%1").arg( QString::number( task.id() ).trimmed(), Configuration::instance().taskPaddingLength, '0' );
+            const auto paddedId = QStringLiteral("%1").arg( QString::number( task.id() ).trimmed(), Configuration::instance().taskPaddingLength, QLatin1Char('0') );
 
             const QString row1Texts[] = {
                 tr( "%1 %2-%3 (%4) -- [%5] %6" )
@@ -388,20 +388,20 @@ void ActivityReport::slotUpdate()
                       task.name().trimmed() )
             };
 
-            QDomElement row1 = doc.createElement( "tr" );
-            row1.setAttribute( "class", "event_attributes_row" );
-            QDomElement row2 = doc.createElement( "tr" );
+            QDomElement row1 = doc.createElement( QStringLiteral("tr") );
+            row1.setAttribute( QStringLiteral("class"), QStringLiteral("event_attributes_row") );
+            QDomElement row2 = doc.createElement( QStringLiteral("tr") );
             for ( int index = 0; index < NumberOfColumns; ++index ) {
-                QDomElement cell = doc.createElement( "td" );
-                cell.setAttribute( "class", "event_attributes" );
+                QDomElement cell = doc.createElement( QStringLiteral("td") );
+                cell.setAttribute( QStringLiteral("class"), QStringLiteral("event_attributes") );
                 QDomText text = doc.createTextNode( row1Texts[index] );
                 cell.appendChild( text );
                 row1.appendChild( cell );
             }
-            QDomElement cell2 = doc.createElement( "td" );
-            cell2.setAttribute( "class", "event_description" );
-            cell2.setAttribute( "align", "left" );
-            QDomElement preElement = doc.createElement( "pre" );
+            QDomElement cell2 = doc.createElement( QStringLiteral("td") );
+            cell2.setAttribute( QStringLiteral("class"), QStringLiteral("event_description") );
+            cell2.setAttribute( QStringLiteral("align"), QStringLiteral("left") );
+            QDomElement preElement = doc.createElement( QStringLiteral("pre") );
             QDomText preText = doc.createTextNode( event.comment() );
             preElement.appendChild( preText );
             cell2.appendChild( preElement );
@@ -425,28 +425,28 @@ void ActivityReport::slotLinkClicked( const QUrl& which )
     QDate start, end;
     switch( m_timeSpanSelection.timeSpanType ) {
     case Day: {
-        start = which.toString() == "Previous" ? m_start.addDays( -1 ) : m_start.addDays( 1 );
-        end = which.toString() == "Previous" ? m_end.addDays( -1 ) : m_end.addDays( 1 );
+        start = which.toString() == QLatin1String("Previous") ? m_start.addDays( -1 ) : m_start.addDays( 1 );
+        end = which.toString() == QLatin1String("Previous") ? m_end.addDays( -1 ) : m_end.addDays( 1 );
     }
     break;
     case Week: {
-        start = which.toString() == "Previous" ? m_start.addDays( -7 ) : m_start.addDays( 7 );
-        end = which.toString() == "Previous" ? m_end.addDays( -7 ) : m_end.addDays( 7 );
+        start = which.toString() == QLatin1String("Previous") ? m_start.addDays( -7 ) : m_start.addDays( 7 );
+        end = which.toString() == QLatin1String("Previous") ? m_end.addDays( -7 ) : m_end.addDays( 7 );
     }
     break;
     case Month: {
-        start = which.toString() == "Previous" ? m_start.addMonths( -1 ) : m_start.addMonths( 1 );
-        end = which.toString() == "Previous" ? m_end.addMonths( -1 ) : m_end.addMonths( 1 );
+        start = which.toString() == QLatin1String("Previous") ? m_start.addMonths( -1 ) : m_start.addMonths( 1 );
+        end = which.toString() == QLatin1String("Previous") ? m_end.addMonths( -1 ) : m_end.addMonths( 1 );
     }
     case Year: {
-        start = which.toString() == "Previous" ? m_start.addYears( -1 ) : m_start.addYears( 1 );
-        end = which.toString() == "Previous" ? m_end.addYears( -1 ) : m_end.addYears( 1 );
+        start = which.toString() == QLatin1String("Previous") ? m_start.addYears( -1 ) : m_start.addYears( 1 );
+        end = which.toString() == QLatin1String("Previous") ? m_end.addYears( -1 ) : m_end.addYears( 1 );
     }
     break;
     case Range: {
         int spanRange = m_start.daysTo(m_end);
-        start = which.toString() == "Previous" ? m_start.addDays( -spanRange ) : m_start.addDays( spanRange );
-        end = which.toString() == "Previous" ? m_end.addDays( -spanRange ) : m_end.addDays( spanRange );
+        start = which.toString() == QLatin1String("Previous") ? m_start.addDays( -spanRange ) : m_start.addDays( spanRange );
+        end = which.toString() == QLatin1String("Previous") ? m_end.addDays( -spanRange ) : m_end.addDays( spanRange );
     }
     break;
     default:

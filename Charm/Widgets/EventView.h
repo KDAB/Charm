@@ -61,11 +61,11 @@ public:
 
     void populateEditMenu( QMenu* );
 
-signals:
+Q_SIGNALS:
     void emitCommand( CharmCommand* ) override;
     void emitCommandRollback( CharmCommand* ) override;
 
-public slots:
+public Q_SLOTS:
     void commitCommand( CharmCommand* ) override;
     void delayedInitialization();
     void timeSpansChanged();
@@ -77,7 +77,7 @@ public slots:
     void stateChanged( State previous ) override;
     void configurationChanged() override;
 
-private slots:
+private Q_SLOTS:
     void slotEventDoubleClicked( const QModelIndex& );
     void slotEditEvent();
     void slotEditEvent( const Event& );

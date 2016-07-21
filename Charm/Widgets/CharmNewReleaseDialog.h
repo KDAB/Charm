@@ -44,7 +44,7 @@ public:
     void setDownloadLink( const QUrl& link );
     void setReleaseInformationLink( const QString& link );
 
-private slots:
+private Q_SLOTS:
     void slotLaunchBrowser();
     void slotSkipVersion();
     void slotRemindMe();

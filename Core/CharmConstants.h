@@ -32,7 +32,7 @@
 #include "Configuration.h"
 
 // increment when SQL DB format changes:
-#define CHARM_DATABASE_VERSION_DESCRIPTOR "CharmDatabaseSchemaVersion"
+#define CHARM_DATABASE_VERSION_DESCRIPTOR QStringLiteral("CharmDatabaseSchemaVersion")
 #define CHARM_DATABASE_VERSION_BEFORE_TASK_EXPIRY 2
 #define CHARM_DATABASE_VERSION_BEFORE_TRACKABLE 3
 #define CHARM_DATABASE_VERSION_BEFORE_COMMENT 4
@@ -40,8 +40,8 @@
 #define REQUIRED_CHARM_DATABASE_VERSION CHARM_DATABASE_VERSION
 // FIXME this may have to go into some plugin configuration later:
 // FIXME also, we may need some verbose descriptors for configuration
-#define CHARM_SQLITE_BACKEND_DESCRIPTOR "sqlite"
-#define CHARM_MYSQL_BACKEND_DESCRIPTOR "mysql"
+#define CHARM_SQLITE_BACKEND_DESCRIPTOR QStringLiteral("sqlite")
+#define CHARM_MYSQL_BACKEND_DESCRIPTOR QStringLiteral("mysql")
 
 // Metadata and QSettings Keys:
 extern const QString MetaKey_MainWindowGeometry;

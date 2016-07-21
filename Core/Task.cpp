@@ -51,13 +51,13 @@ bool Task::isValid() const
 
 QString Task::tagName()
 {
-    static const QString tag( QString::fromLatin1( "task" ) );
+    static const QString tag( QStringLiteral( "task" ) );
     return tag;
 }
 
 QString Task::taskListTagName()
 {
-    static const QString tag( QString::fromLatin1( "tasks" ) );
+    static const QString tag( QStringLiteral( "tasks" ) );
     return tag;
 }
 
@@ -173,13 +173,13 @@ void dumpTaskList(const TaskList& tasks)
 }
 
 // FIXME make XmlSerializable interface, with tagName/toXml/fromXml:
-const QString TaskIdElement("taskid");
-const QString TaskParentId("parentid");
-const QString TaskSubscribed("subscribed");
-const QString TaskTrackable("trackable");
-const QString TaskComment("comment");
-const QString TaskValidFrom("validfrom");
-const QString TaskValidUntil("validuntil");
+const QString TaskIdElement(QStringLiteral("taskid"));
+const QString TaskParentId(QStringLiteral("parentid"));
+const QString TaskSubscribed(QStringLiteral("subscribed"));
+const QString TaskTrackable(QStringLiteral("trackable"));
+const QString TaskComment(QStringLiteral("comment"));
+const QString TaskValidFrom(QStringLiteral("validfrom"));
+const QString TaskValidUntil(QStringLiteral("validuntil"));
 
 QDomElement Task::toXml(QDomDocument document) const
 {
@@ -237,7 +237,7 @@ Task Task::fromXml(const QDomElement& element, int databaseSchemaVersion)
         }
     }
     if ( databaseSchemaVersion > CHARM_DATABASE_VERSION_BEFORE_TRACKABLE ) {
-        task.setTrackable(element.attribute(TaskTrackable, QLatin1String("1")).toInt(&ok) == 1);
+        task.setTrackable(element.attribute(TaskTrackable, QStringLiteral("1")).toInt(&ok) == 1);
         if (!ok)
             throw XmlSerializationException( QObject::tr( "Task::fromXml: invalid trackable settings") );
     }

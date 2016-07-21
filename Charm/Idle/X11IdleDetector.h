@@ -43,7 +43,7 @@ public:
 protected:
     void onIdlenessDurationChanged();
 
-private slots:
+private Q_SLOTS:
     void checkIdleness();
 
 private:

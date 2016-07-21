@@ -32,7 +32,7 @@ CharmAboutDialog::CharmAboutDialog( QWidget* parent )
 {
     m_ui->setupUi( this );
     QString versionText = m_ui->versionLabel->text();
-    versionText.replace( "CHARM_VERSION", CHARM_VERSION );
+    versionText.replace( QLatin1String("CHARM_VERSION"), QStringLiteral(CHARM_VERSION) );
     m_ui->versionLabel->setText( versionText );
 }
 

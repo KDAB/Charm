@@ -42,9 +42,9 @@
 #include "ui_WeeklyTimesheetConfigurationDialog.h"
 
 namespace {
-    static const char * SETTING_GRP_TIMESHEETS = "timesheets";
-    static const char * SETTING_VAL_FIRSTYEAR = "firstYear";
-    static const char * SETTING_VAL_FIRSTWEEK = "firstWeek";
+    static QString SETTING_GRP_TIMESHEETS = QStringLiteral("timesheets");
+    static QString SETTING_VAL_FIRSTYEAR = QStringLiteral("firstYear");
+    static QString SETTING_VAL_FIRSTWEEK = QStringLiteral("firstWeek");
     static const int MAX_WEEK = 53;
     static const int MIN_YEAR = 1990;
     static const int DaysInWeek = 7;
@@ -317,7 +317,7 @@ void WeeklyTimeSheetReport::slotTimesheetUploaded(HttpJob* client)
 
 QString WeeklyTimeSheetReport::suggestedFileName() const
 {
-    return tr( "WeeklyTimeSheet-%1-%2" ).arg( m_yearOfWeek ).arg( m_weekNumber, 2, 10, QChar('0') );
+    return tr( "WeeklyTimeSheet-%1-%2" ).arg( m_yearOfWeek ).arg( m_weekNumber, 2, 10, QLatin1Char('0') );
 }
 
 void WeeklyTimeSheetReport::update()
@@ -348,36 +348,36 @@ void WeeklyTimeSheetReport::update()
     QTextDocument report;
     QDomDocument doc = createReportTemplate();
     QDomElement root = doc.documentElement();
-    QDomElement body = root.firstChildElement( "body" );
+    QDomElement body = root.firstChildElement( QStringLiteral("body") );
 
     // create the caption:
     {
-        QDomElement headline = doc.createElement( "h1" );
+        QDomElement headline = doc.createElement( QStringLiteral("h1") );
         QDomText text = doc.createTextNode( tr( "Weekly Time Sheet" ) );
         headline.appendChild( text );
         body.appendChild( headline );
     }
     {
-        QDomElement headline = doc.createElement( "h3" );
+        QDomElement headline = doc.createElement( QStringLiteral("h3") );
         QString content = tr( "Report for %1, Week %2 (%3 to %4)" )
                           .arg( CONFIGURATION.user.name() )
-                          .arg( m_weekNumber, 2, 10, QChar('0') )
+                          .arg( m_weekNumber, 2, 10, QLatin1Char('0') )
                           .arg( startDate().toString( Qt::TextDate ) )
                           .arg( endDate().addDays( -1 ).toString( Qt::TextDate ) );
         QDomText text = doc.createTextNode( content );
         headline.appendChild( text );
         body.appendChild( headline );
-        QDomElement previousLink = doc.createElement( "a" );
-        previousLink.setAttribute( "href" , "Previous" );
+        QDomElement previousLink = doc.createElement( QStringLiteral("a") );
+        previousLink.setAttribute( QStringLiteral("href") , QStringLiteral("Previous") );
         QDomText previousLinkText = doc.createTextNode( tr( "<Previous Week>" ) );
         previousLink.appendChild( previousLinkText );
         body.appendChild( previousLink );
-        QDomElement nextLink = doc.createElement( "a" );
-        nextLink.setAttribute( "href" , "Next" );
+        QDomElement nextLink = doc.createElement( QStringLiteral("a") );
+        nextLink.setAttribute( QStringLiteral("href") , QStringLiteral("Next") );
         QDomText nextLinkText = doc.createTextNode( tr( "<Next Week>" ) );
         nextLink.appendChild( nextLinkText );
         body.appendChild( nextLink );
-        QDomElement paragraph = doc.createElement( "br" );
+        QDomElement paragraph = doc.createElement( QStringLiteral("br") );
         body.appendChild( paragraph );
     }
     {
@@ -388,11 +388,11 @@ void WeeklyTimeSheetReport::update()
             TimeSheetInfo::taskWithSubTasks( DATAMODEL, DaysInWeek, rootTask(), secondsMap() ),
             activeTasksOnly() );
 
-        QDomElement table = doc.createElement( "table" );
-        table.setAttribute( "width", "100%" );
-        table.setAttribute( "align", "left" );
-        table.setAttribute( "cellpadding", "3" );
-        table.setAttribute( "cellspacing", "0" );
+        QDomElement table = doc.createElement( QStringLiteral("table") );
+        table.setAttribute( QStringLiteral("width"), QStringLiteral("100%") );
+        table.setAttribute( QStringLiteral("align"), QStringLiteral("left") );
+        table.setAttribute( QStringLiteral("cellpadding"), QStringLiteral("3") );
+        table.setAttribute( QStringLiteral("cellspacing"), QStringLiteral("0") );
         body.appendChild( table );
 
         TimeSheetInfo totalsLine(DaysInWeek);
@@ -403,11 +403,11 @@ void WeeklyTimeSheetReport::update()
             }
         }
 
-        QDomElement headerRow = doc.createElement( "tr" );
-        headerRow.setAttribute( "class", "header_row" );
+        QDomElement headerRow = doc.createElement( QStringLiteral("tr") );
+        headerRow.setAttribute( QStringLiteral("class"), QStringLiteral("header_row") );
         table.appendChild( headerRow );
-        QDomElement headerDayRow = doc.createElement( "tr" );
-        headerDayRow.setAttribute( "class", "header_row" );
+        QDomElement headerDayRow = doc.createElement( QStringLiteral("tr") );
+        headerDayRow.setAttribute( QStringLiteral("class"), QStringLiteral("header_row") );
         table.appendChild( headerDayRow );
 
         const QString Headlines[NumberOfColumns] = {
@@ -435,11 +435,11 @@ void WeeklyTimeSheetReport::update()
 
         for ( int i = 0; i < NumberOfColumns; ++i )
         {
-            QDomElement header = doc.createElement( "th" );
+            QDomElement header = doc.createElement( QStringLiteral("th") );
             QDomText text = doc.createTextNode( Headlines[i] );
             header.appendChild( text );
             headerRow.appendChild( header );
-            QDomElement dayHeader = doc.createElement( "th" );
+            QDomElement dayHeader = doc.createElement( QStringLiteral("th") );
             QDomText dayText = doc.createTextNode( DayHeadlines[i] );
             dayHeader.appendChild( dayText );
             headerDayRow.appendChild( dayHeader );
@@ -447,9 +447,9 @@ void WeeklyTimeSheetReport::update()
 
         for ( int i = 0; i < timeSheetInfo.size(); ++i )
         {
-            QDomElement row = doc.createElement( "tr" );
+            QDomElement row = doc.createElement( QStringLiteral("tr") );
             if (i % 2)
-                row.setAttribute( "class", "alternate_row" );
+                row.setAttribute( QStringLiteral("class"), QStringLiteral("alternate_row") );
             table.appendChild( row );
 
             QString texts[NumberOfColumns];
@@ -465,13 +465,13 @@ void WeeklyTimeSheetReport::update()
 
             for ( int column = 0; column < NumberOfColumns; ++column )
             {
-                QDomElement cell = doc.createElement( "td" );
-                cell.setAttribute( "align", column == Column_Task ? "left" : "center" );
+                QDomElement cell = doc.createElement( QStringLiteral("td") );
+                cell.setAttribute( QStringLiteral("align"), column == Column_Task ? QStringLiteral("left") : QStringLiteral("center") );
 
                 if ( column == Column_Task ) {
-                    QString style = QString( "text-indent: %1px;" )
+                    QString style = QStringLiteral( "text-indent: %1px;" )
                             .arg( 9 * timeSheetInfo[i].indentation );
-                    cell.setAttribute( "style", style );
+                    cell.setAttribute( QStringLiteral("style"), style );
                 }
 
 
@@ -492,12 +492,12 @@ void WeeklyTimeSheetReport::update()
             hoursAndMinutes( totalsLine.seconds[6] ),
             hoursAndMinutes( totalsLine.total() )
         };
-        QDomElement totals = doc.createElement( "tr" );
-        totals.setAttribute( "class", "header_row" );
+        QDomElement totals = doc.createElement( QStringLiteral("tr") );
+        totals.setAttribute( QStringLiteral("class"), QStringLiteral("header_row") );
         table.appendChild( totals );
         for ( int i = 0; i < NumberOfColumns; ++i )
         {
-            QDomElement cell = doc.createElement( "th" );
+            QDomElement cell = doc.createElement( QStringLiteral("th") );
             QDomText text = doc.createTextNode( TotalsTexts[i] );
             cell.appendChild( text );
             totals.appendChild( cell );
@@ -542,7 +542,7 @@ QByteArray WeeklyTimeSheetReport::saveToText()
     QTextStream stream( &output );
     QString content = tr( "Report for %1, Week %2 (%3 to %4)" )
                       .arg( CONFIGURATION.user.name() )
-                      .arg( m_weekNumber, 2, 10, QChar('0') )
+                      .arg( m_weekNumber, 2, 10, QLatin1Char('0') )
                       .arg( startDate().toString( Qt::TextDate ) )
                       .arg( endDate().addDays( -1 ).toString( Qt::TextDate ) );
     stream << content << '\n';
@@ -571,7 +571,7 @@ QByteArray WeeklyTimeSheetReport::saveToText()
 
 void WeeklyTimeSheetReport::slotLinkClicked( const QUrl& which )
 {
-    QDate start = which.toString() == "Previous" ? startDate().addDays( -7 ) : startDate().addDays( 7 );
-    QDate end = which.toString() == "Previous" ? endDate().addDays( -7 ) : endDate().addDays( 7 );
+    QDate start = which.toString() == QLatin1String("Previous") ? startDate().addDays( -7 ) : startDate().addDays( 7 );
+    QDate end = which.toString() == QLatin1String("Previous") ? endDate().addDays( -7 ) : endDate().addDays( 7 );
     setReportProperties( start, end, rootTask(), activeTasksOnly() );
 }

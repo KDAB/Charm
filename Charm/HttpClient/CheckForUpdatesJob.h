@@ -56,10 +56,10 @@ public:
     void setUrl( const QUrl& url );
     void setVerbose( bool verbose );
 
-signals:
+Q_SIGNALS:
     void finished( CheckForUpdatesJob::JobData data );
 
-private slots:
+private Q_SLOTS:
     void jobFinished( QNetworkReply* reply );
 
 private:

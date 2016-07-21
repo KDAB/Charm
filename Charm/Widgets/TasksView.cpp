@@ -360,7 +360,7 @@ void TasksView::configureUi()
  {
      ViewFilter* filter = ApplicationCore::instance().model().taskModel();
      QString filtertext = filtertextRaw.simplified();
-     filtertext.replace( ' ', '*' );
+     filtertext.replace( QLatin1Char(' '), QLatin1Char('*') );
 
      saveGuiState();
      filter->setFilterWildcard( filtertext );

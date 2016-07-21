@@ -56,12 +56,12 @@ public:
 
     void populateEditMenu( QMenu* );
 
-signals:
+Q_SIGNALS:
     void startEvent( TaskId );
     void stopEvents();
     void updateSummariesPlease();
 
-private slots:
+private Q_SLOTS:
     void slotActionSelected( QAction* );
     void slotGoStopToggled( bool );
     void slotEditCommentClicked();

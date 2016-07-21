@@ -40,17 +40,17 @@ void CharmDataModelTests::initTestCase ()
 {
     // set up a model that the other tests can clone to use:
     m_referenceModel = new CharmDataModel;
-    Task task1( 1000, "Task 1" );
-    Task task1_1( 1001, "Task 1-1", task1.id() );
-    Task task1_2( 1002, "Task 1-2", task1.id() );
-    Task task1_3( 1003, "Task 1-3", task1.id() );
-    Task task2( 2000, "Task 2" );
-    Task task2_1( 2100, "Task 2-1", task2.id() );
-    Task task2_1_1( 2110, "Task 2-1-1", task2_1.id() );
-    Task task2_1_2( 2120, "Task 2-1-2", task2_1.id() );
-    Task task2_2( 2200, "Task 2-2", task2.id() );
-    Task task2_2_1( 2210, "Task 2-2-1", task2_2.id() );
-    Task task2_2_2( 2220, "Task 2-2-2", task2_2.id() );
+    Task task1( 1000, QStringLiteral("Task 1") );
+    Task task1_1( 1001, QStringLiteral("Task 1-1"), task1.id() );
+    Task task1_2( 1002, QStringLiteral("Task 1-2"), task1.id() );
+    Task task1_3( 1003, QStringLiteral("Task 1-3"), task1.id() );
+    Task task2( 2000, QStringLiteral("Task 2") );
+    Task task2_1( 2100, QStringLiteral("Task 2-1"), task2.id() );
+    Task task2_1_1( 2110, QStringLiteral("Task 2-1-1"), task2_1.id() );
+    Task task2_1_2( 2120, QStringLiteral("Task 2-1-2"), task2_1.id() );
+    Task task2_2( 2200, QStringLiteral("Task 2-2"), task2.id() );
+    Task task2_2_1( 2210, QStringLiteral("Task 2-2-1"), task2_2.id() );
+    Task task2_2_2( 2220, QStringLiteral("Task 2-2-2"), task2_2.id() );
     TaskList tasks;
     tasks << task1 << task1_1 << task1_2 << task1_3
           << task2 << task2_1 << task2_1_1 << task2_1_2
@@ -69,17 +69,17 @@ void CharmDataModelTests::createAndDestroyTest()
 
 void CharmDataModelTests::addAndRemoveTasksTest()
 {   // set up a structure of tasks:
-    Task task1( 1000, "Task 1" );
-    Task task1_1( 1001, "Task 1-1", task1.id() );
-    Task task1_2( 1002, "Task 1-2", task1.id() );
-    Task task1_3( 1003, "Task 1-3", task1.id() );
-    Task task2( 2000, "Task 2" );
-    Task task2_1( 2100, "Task 2-1", task2.id() );
-    Task task2_1_1( 2110, "Task 2-1-1", task2_1.id() );
-    Task task2_1_2( 2120, "Task 2-1-2", task2_1.id() );
-    Task task2_2( 2200, "Task 2-2", task2.id() );
-    Task task2_2_1( 2210, "Task 2-2-1", task2_2.id() );
-    Task task2_2_2( 2220, "Task 2-2-2", task2_2.id() );
+    Task task1( 1000, QStringLiteral("Task 1") );
+    Task task1_1( 1001, QStringLiteral("Task 1-1"), task1.id() );
+    Task task1_2( 1002, QStringLiteral("Task 1-2"), task1.id() );
+    Task task1_3( 1003, QStringLiteral("Task 1-3"), task1.id() );
+    Task task2( 2000, QStringLiteral("Task 2") );
+    Task task2_1( 2100, QStringLiteral("Task 2-1"), task2.id() );
+    Task task2_1_1( 2110, QStringLiteral("Task 2-1-1"), task2_1.id() );
+    Task task2_1_2( 2120, QStringLiteral("Task 2-1-2"), task2_1.id() );
+    Task task2_2( 2200, QStringLiteral("Task 2-2"), task2.id() );
+    Task task2_2_1( 2210, QStringLiteral("Task 2-2-1"), task2_2.id() );
+    Task task2_2_2( 2220, QStringLiteral("Task 2-2-2"), task2_2.id() );
 
     // set up a data model, and add all the tasks to it, step by step:
     CharmDataModel model;
@@ -145,10 +145,10 @@ void CharmDataModelTests::addAndRemoveTasksTest()
 void CharmDataModelTests::modifyTaskTest()
 {
     CharmDataModel model;
-    Task task1( 1000, "Task 1" );
-    Task task1_1( 1001, "Task 1-1", task1.id() );
-    Task task1_2( 1002, "Task 1-2", task1.id() );
-    Task task1_3( 1003, "Task 1-3", task1.id() );
+    Task task1( 1000, QStringLiteral("Task 1") );
+    Task task1_1( 1001, QStringLiteral("Task 1-1"), task1.id() );
+    Task task1_2( 1002, QStringLiteral("Task 1-2"), task1.id() );
+    Task task1_3( 1003, QStringLiteral("Task 1-3"), task1.id() );
     model.addTask( task1 );
     model.addTask( task1_3 );
     model.addTask( task1_1 );
@@ -158,7 +158,7 @@ void CharmDataModelTests::modifyTaskTest()
 
     // new values:
     Task task1b( task1 );
-    task1b.setName( "Task 1, modified" );
+    task1b.setName( QStringLiteral("Task 1, modified") );
     Task task1_1b( task1_1 );
     task1_1b.setParent( 0 );
 

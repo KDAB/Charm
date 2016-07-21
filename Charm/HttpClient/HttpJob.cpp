@@ -41,24 +41,24 @@
 static void setLastAuthenticationFailed(bool failed)
 {
     QSettings settings;
-    settings.beginGroup("httpconfig");
-    settings.setValue(QLatin1String("lastAuthenticationFailed"), failed);
+    settings.beginGroup(QStringLiteral("httpconfig"));
+    settings.setValue(QStringLiteral("lastAuthenticationFailed"), failed);
 }
 
 bool HttpJob::lastAuthenticationFailed()
 {
     QSettings settings;
-    settings.beginGroup("httpconfig");
-    return settings.value(QLatin1String("lastAuthenticationFailed"), false).toBool();
+    settings.beginGroup(QStringLiteral("httpconfig"));
+    return settings.value(QStringLiteral("lastAuthenticationFailed"), false).toBool();
 }
 
 bool HttpJob::credentialsAvailable()
 {
     QSettings settings;
-    settings.beginGroup("httpconfig");
-    return !settings.value(QLatin1String("username")).toString().isEmpty()
-        && settings.value(QLatin1String("portalUrl")).toUrl().isValid()
-        && settings.value(QLatin1String("loginUrl")).toUrl().isValid();
+    settings.beginGroup(QStringLiteral("httpconfig"));
+    return !settings.value(QStringLiteral("username")).toString().isEmpty()
+        && settings.value(QStringLiteral("portalUrl")).toUrl().isValid()
+        && settings.value(QStringLiteral("loginUrl")).toUrl().isValid();
 }
 
 QString HttpJob::extractErrorMessageFromReply(const QByteArray& xml)
@@ -83,11 +83,11 @@ HttpJob::HttpJob(QObject* parent)
     connect(m_networkManager, SIGNAL(finished(QNetworkReply*)), SLOT(handle(QNetworkReply*)));
     connect(m_networkManager, SIGNAL(authenticationRequired(QNetworkReply*,QAuthenticator*)), SLOT(authenticationRequired(QNetworkReply*,QAuthenticator*)));
     QSettings settings;
-    settings.beginGroup("httpconfig");
-    setUsername(settings.value(QLatin1String("username")).toString());
-    setPortalUrl(settings.value(QLatin1String("portalUrl")).toUrl());
-    setLoginUrl(settings.value(QLatin1String("loginUrl")).toUrl());
-    m_lastAuthenticationFailed = settings.value("lastAuthenticationFailed", false).toBool();
+    settings.beginGroup(QStringLiteral("httpconfig"));
+    setUsername(settings.value(QStringLiteral("username")).toString());
+    setPortalUrl(settings.value(QStringLiteral("portalUrl")).toUrl());
+    setLoginUrl(settings.value(QStringLiteral("loginUrl")).toUrl());
+    m_lastAuthenticationFailed = settings.value(QStringLiteral("lastAuthenticationFailed"), false).toBool();
 }
 
 HttpJob::~HttpJob()
@@ -163,9 +163,9 @@ void HttpJob::doStart()
         return;
     }
 
-    auto readJob = new ReadPasswordJob(QLatin1String("Charm"), this);
+    auto readJob = new ReadPasswordJob(QStringLiteral("Charm"), this);
     connect(readJob, SIGNAL(finished(QKeychain::Job*)), this, SLOT(passwordRead(QKeychain::Job*)));
-    readJob->setKey(QLatin1String("lotsofcake"));
+    readJob->setKey(QStringLiteral("lotsofcake"));
     readJob->start();
 }
 
@@ -193,9 +193,9 @@ void HttpJob::provideRequestedPassword(const QString &password)
     m_password = password;
 
     if (oldpass != m_password && !m_passwordReadError) {
-        auto writeJob = new WritePasswordJob(QLatin1String("Charm"), this);
+        auto writeJob = new WritePasswordJob(QStringLiteral("Charm"), this);
         connect(writeJob, SIGNAL(finished(QKeychain::Job*)), this, SLOT(passwordWritten()));
-        writeJob->setKey(QLatin1String("lotsofcake"));
+        writeJob->setKey(QStringLiteral("lotsofcake"));
         writeJob->setTextData(m_password);
         writeJob->start();
     } else {
@@ -263,13 +263,13 @@ bool HttpJob::execute(int state, QNetworkAccessManager *manager)
     case Login:
     {
         QUrlQuery urlQuery;
-        urlQuery.addQueryItem("j_username", m_username);
-        urlQuery.addQueryItem("j_password", m_password);
+        urlQuery.addQueryItem(QStringLiteral("j_username"), m_username);
+        urlQuery.addQueryItem(QStringLiteral("j_password"), m_password);
         QByteArray encodedQueryPlusPlus = urlQuery.query(QUrl::FullyEncoded).toUtf8().replace('+', "%2b");
 
         QNetworkRequest request(m_loginUrl);
 
-        request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
+        request.setHeader(QNetworkRequest::ContentTypeHeader, QStringLiteral("application/x-www-form-urlencoded"));
         request.setHeader(QNetworkRequest::ContentLengthHeader, encodedQueryPlusPlus.size());
 
         QNetworkReply *reply = manager->post(request, encodedQueryPlusPlus);

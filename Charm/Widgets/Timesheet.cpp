@@ -84,7 +84,7 @@ void TimeSheetReport::slotSaveToXml()
 void TimeSheetReport::slotSaveToText()
 {
     // first, ask for a file name:
-    const QString filename = getFileName( "Text files (*.txt)" );
+    const QString filename = getFileName( QStringLiteral("Text files (*.txt)") );
     if (filename.isEmpty())
         return;
 

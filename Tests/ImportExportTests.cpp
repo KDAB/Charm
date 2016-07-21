@@ -35,7 +35,7 @@
 #include <QDomDocument>
 
 ImportExportTests::ImportExportTests()
-    : TestApplication("./ImportExportTestDatabase.db")
+    : TestApplication(QStringLiteral("./ImportExportTestDatabase.db"))
 {
 }
 
@@ -46,8 +46,8 @@ void ImportExportTests::initTestCase()
 
 void ImportExportTests::importExportTest()
 {
-    const QString localFileName( "ImportExportTests-temp.charmdatabaseexport" );
-    const QString filename = ":/importExportTest/Data/test-database-export.charmdatabaseexport";
+    const QString localFileName( QStringLiteral("ImportExportTests-temp.charmdatabaseexport") );
+    const QString filename = QStringLiteral(":/importExportTest/Data/test-database-export.charmdatabaseexport");
     importDatabase( filename );
 
     QSharedPointer<CharmDataModel> databaseStep1( model()->clone() );
@@ -87,7 +87,7 @@ void ImportExportTests::importExportTest()
 
 void ImportExportTests::importBenchmark()
 {
-    const QString filename = ":/importExportTest/Data/test-database-export.charmdatabaseexport";
+    const QString filename = QStringLiteral(":/importExportTest/Data/test-database-export.charmdatabaseexport");
     QBENCHMARK {
         importDatabase( filename );
     }
@@ -95,8 +95,8 @@ void ImportExportTests::importBenchmark()
 
 void ImportExportTests::exportBenchmark()
 {
-    const QString filename = ":/importExportTest/Data/test-database-export.charmdatabaseexport";
-    const QString localFileName( "ImportExportTests-temp.charmdatabaseexport" );
+    const QString filename = QStringLiteral(":/importExportTest/Data/test-database-export.charmdatabaseexport");
+    const QString localFileName( QStringLiteral("ImportExportTests-temp.charmdatabaseexport") );
     importDatabase( filename );
     QBENCHMARK {
         QDomDocument exportDoc = controller()->exportDatabasetoXml();

@@ -31,7 +31,7 @@ class DatesTests : public QObject
 {
     Q_OBJECT
 
-private slots:
+private Q_SLOTS:
     void testDateByWeekNumberAndWorkDay();
     void testWeekDayInWeekOf();
     void testNumberOfWeeksInYear_data();

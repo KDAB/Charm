@@ -36,7 +36,7 @@
 #include <QtTest/QtTest>
 
 BackendIntegrationTests::BackendIntegrationTests()
-    : TestApplication("./BackendIntegrationTestDatabase.db")
+    : TestApplication(QStringLiteral("./BackendIntegrationTestDatabase.db"))
 {
 }
 
@@ -58,9 +58,9 @@ void BackendIntegrationTests::initialValuesTest()
 
 void BackendIntegrationTests::simpleCreateModifyDeleteTaskTest()
 {
-    Task task1( 1000, "Task 1" );
+    Task task1( 1000, QStringLiteral("Task 1") );
     Task task1b( task1 );
-    task1b.setName( "Task 1, modified" );
+    task1b.setName( QStringLiteral("Task 1, modified") );
     // add:
     controller()->addTask( task1 );
     QVERIFY( controller()->storage()->getAllTasks().size() == 1 );
@@ -97,7 +97,7 @@ void BackendIntegrationTests::biggerCreateModifyDeleteTaskTest()
     // modify the tasks:
     for ( int i = 0; i < currentTasks.size(); ++i )
     {
-        currentTasks[i].setName( currentTasks[i].name() + " - modified" );
+        currentTasks[i].setName( currentTasks[i].name() + QStringLiteral(" - modified") );
         controller()->modifyTask( currentTasks[i] );
         QVERIFY( contentsEqual( controller()->storage()->getAllTasks(), currentTasks ) );
         QVERIFY( contentsEqual( model()->getAllTasks(), currentTasks ) );
@@ -125,17 +125,17 @@ const TaskList& BackendIntegrationTests::referenceTasks()
 {
     static TaskList Tasks;
     if ( Tasks.isEmpty() ) {
-        Task task1( 1000, "Task 1" );
-        Task task1_1( 1001, "Task 1-1", task1.id() );
-        Task task1_2( 1002, "Task 1-2", task1.id() );
-        Task task1_3( 1003, "Task 1-3", task1.id() );
-        Task task2( 2000, "Task 2" );
-        Task task2_1( 2100, "Task 2-1", task2.id() );
-        Task task2_1_1( 2110, "Task 2-1-1", task2_1.id() );
-        Task task2_1_2( 2120, "Task 2-1-2", task2_1.id() );
-        Task task2_2( 2200, "Task 2-2", task2.id() );
-        Task task2_2_1( 2210, "Task 2-2-1", task2_2.id() );
-        Task task2_2_2( 2220, "Task 2-2-2", task2_2.id() );
+        Task task1( 1000, QStringLiteral("Task 1") );
+        Task task1_1( 1001, QStringLiteral("Task 1-1"), task1.id() );
+        Task task1_2( 1002, QStringLiteral("Task 1-2"), task1.id() );
+        Task task1_3( 1003, QStringLiteral("Task 1-3"), task1.id() );
+        Task task2( 2000, QStringLiteral("Task 2") );
+        Task task2_1( 2100, QStringLiteral("Task 2-1"), task2.id() );
+        Task task2_1_1( 2110, QStringLiteral("Task 2-1-1"), task2_1.id() );
+        Task task2_1_2( 2120, QStringLiteral("Task 2-1-2"), task2_1.id() );
+        Task task2_2( 2200, QStringLiteral("Task 2-2"), task2.id() );
+        Task task2_2_1( 2210, QStringLiteral("Task 2-2-1"), task2_2.id() );
+        Task task2_2_2( 2220, QStringLiteral("Task 2-2-2"), task2_2.id() );
         Tasks << task1 << task1_1 << task1_2 << task1_3
               << task2 << task2_1 << task2_1_1 << task2_1_2
               << task2_2 << task2_2_1 << task2_2_2;

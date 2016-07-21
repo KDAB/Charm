@@ -50,7 +50,7 @@ public:
     // implement CommandEmitterInterface
     void commitCommand( CharmCommand* ) override;
 
-public slots:
+public Q_SLOTS:
     void slotMakeAndActivateEvent( const Task& );
     void slotRequestEventModification(const Event&newEvent, const Event& oldEvent);
     void slotSysTrayUpdate(const QString& toolTip, bool active);

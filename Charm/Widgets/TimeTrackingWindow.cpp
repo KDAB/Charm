@@ -79,7 +79,7 @@ TimeTrackingWindow::TimeTrackingWindow( QWidget* parent )
 {
     setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
     setWindowNumber( 3 );
-    setWindowIdentifier( QLatin1String( "window_tracking" ) );
+    setWindowIdentifier( QStringLiteral( "window_tracking" ) );
     setCentralWidget( m_summaryWidget );
     connect( m_summaryWidget, SIGNAL(startEvent(TaskId)),
              SLOT(slotStartEvent(TaskId)) );
@@ -415,7 +415,7 @@ void TimeTrackingWindow::slotExportToXml()
     }
 
     if ( fileinfo.suffix().isEmpty() ) {
-        filename+=".charmdatabaseexport";
+        filename+=QLatin1String(".charmdatabaseexport");
     }
 
     // get a XML export:
@@ -499,7 +499,7 @@ void TimeTrackingWindow::slotTasksDownloaded(HttpJob* job_)
 
 void TimeTrackingWindow::slotImportTasks()
 {
-    const QString filename = QFileDialog::getOpenFileName( this, tr( "Please Select File" ), "",
+    const QString filename = QFileDialog::getOpenFileName( this, tr( "Please Select File" ), QLatin1String(""),
                                                            tr("Task definitions (*.xml);;All Files (*)") );
     if ( filename.isNull() )
         return;
@@ -509,7 +509,7 @@ void TimeTrackingWindow::slotImportTasks()
 void TimeTrackingWindow::slotExportTasks()
 {
     const MakeTemporarilyVisible m( this );
-    const QString filename = QFileDialog::getSaveFileName( this, tr( "Please select export filename" ), "",
+    const QString filename = QFileDialog::getSaveFileName( this, tr( "Please select export filename" ), QLatin1String(""),
                                                      tr("Task definitions (*.xml);;All Files (*)") );
     if ( filename.isNull() ) return;
 
@@ -576,7 +576,7 @@ void TimeTrackingWindow::startCheckForUpdates( VerboseMode mode )
 {
     CheckForUpdatesJob* checkForUpdates = new CheckForUpdatesJob( this );
     connect( checkForUpdates, SIGNAL(finished(CheckForUpdatesJob::JobData)), this, SLOT(slotCheckForUpdates(CheckForUpdatesJob::JobData)) );
-    const QString urlString = UPDATE_CHECK_URL;
+    const QString urlString = QStringLiteral(UPDATE_CHECK_URL);
     checkForUpdates->setUrl( QUrl( urlString ) );
     if ( mode == Verbose )
         checkForUpdates->setVerbose( true );
@@ -594,12 +594,12 @@ void TimeTrackingWindow::slotCheckForUpdates( CheckForUpdatesJob::JobData data )
     const QString releaseVersion = data.releaseVersion;
 
     QSettings settings;
-    settings.beginGroup( QLatin1String( "UpdateChecker" ) );
-    const QString skipVersion = settings.value( QLatin1String( "skip-version" ) ).toString();
+    settings.beginGroup( QStringLiteral( "UpdateChecker" ) );
+    const QString skipVersion = settings.value( QStringLiteral( "skip-version" ) ).toString();
     if ( ( skipVersion == releaseVersion ) && !data.verbose )
         return;
 
-    if ( Charm::versionLessThan( CHARM_VERSION, releaseVersion ) ) {
+    if ( Charm::versionLessThan( QStringLiteral(CHARM_VERSION), releaseVersion ) ) {
         informUserAboutNewRelease( releaseVersion, data.link, data.releaseInformationLink );
     } else {
         if ( data.verbose )
@@ -609,7 +609,7 @@ void TimeTrackingWindow::slotCheckForUpdates( CheckForUpdatesJob::JobData data )
 
 void TimeTrackingWindow::informUserAboutNewRelease( const QString& releaseVersion, const QUrl& link, const QString& releaseInfoLink )
 {
-    QString localVersion = CHARM_VERSION;
+    QString localVersion = QStringLiteral(CHARM_VERSION);
     localVersion.truncate( releaseVersion.length() );
     CharmNewReleaseDialog dialog( this );
     dialog.setVersion( releaseVersion, localVersion );
@@ -707,19 +707,19 @@ void TimeTrackingWindow::importTasksFromDeviceOrFile( QIODevice* device, const Q
         }
 
         QSettings settings;
-        settings.beginGroup( "httpconfig" );
-        const QString userName = settings.value("username").toString();
-        setValueIfNotNull( &settings, QLatin1String("username"), exporter.metadata( QLatin1String("username") ) );
-        const QString currentUserName = settings.value("username").toString();
-        setValueIfNotNull( &settings, QLatin1String("portalUrl"), exporter.metadata( QLatin1String("portal-url") ) );
-        setValueIfNotNull( &settings, QLatin1String("loginUrl"), exporter.metadata( QLatin1String("login-url") ) );
-        setValueIfNotNull( &settings, QLatin1String("timesheetUploadUrl"), exporter.metadata( QLatin1String("timesheet-upload-url") ) );
-        setValueIfNotNull( &settings, QLatin1String("projectCodeDownloadUrl"), exporter.metadata( QLatin1String("project-code-download-url") ) );
+        settings.beginGroup( QStringLiteral("httpconfig") );
+        const QString userName = settings.value(QStringLiteral("username")).toString();
+        setValueIfNotNull( &settings, QStringLiteral("username"), exporter.metadata( QStringLiteral("username") ) );
+        const QString currentUserName = settings.value(QStringLiteral("username")).toString();
+        setValueIfNotNull( &settings, QStringLiteral("portalUrl"), exporter.metadata( QStringLiteral("portal-url") ) );
+        setValueIfNotNull( &settings, QStringLiteral("loginUrl"), exporter.metadata( QStringLiteral("login-url") ) );
+        setValueIfNotNull( &settings, QStringLiteral("timesheetUploadUrl"), exporter.metadata( QStringLiteral("timesheet-upload-url") ) );
+        setValueIfNotNull( &settings, QStringLiteral("projectCodeDownloadUrl"), exporter.metadata( QStringLiteral("project-code-download-url") ) );
         settings.endGroup();
-        settings.beginGroup( "users" );
-        setValueIfNotNull( &settings, QLatin1String("portalUrl"), exporter.metadata( QLatin1String("portal-url") ) );
-        setValueIfNotNull( &settings, QLatin1String("loginUrl"), exporter.metadata( QLatin1String("login-url") ) );
-        settings.setValue( QLatin1String("userInfoDownloadUrl"), QLatin1String("https://lotsofcake.kdab.com/KdabHome/rest/user"));
+        settings.beginGroup( QStringLiteral("users") );
+        setValueIfNotNull( &settings, QStringLiteral("portalUrl"), exporter.metadata( QStringLiteral("portal-url") ) );
+        setValueIfNotNull( &settings, QStringLiteral("loginUrl"), exporter.metadata( QStringLiteral("login-url") ) );
+        settings.setValue( QStringLiteral("userInfoDownloadUrl"), QLatin1String("https://lotsofcake.kdab.com/KdabHome/rest/user"));
         settings.endGroup();
 
         ApplicationCore::instance().setHttpActionsVisible( true );
@@ -747,15 +747,15 @@ void  TimeTrackingWindow::slotGetUserInfo()
             return;
 
     QSettings settings;
-    settings.beginGroup( "httpconfig" );
-    const QString userName = settings.value( "username" ).toString();
+    settings.beginGroup( QStringLiteral("httpconfig") );
+    const QString userName = settings.value( QStringLiteral("username") ).toString();
     settings.endGroup();
 
-    settings.beginGroup( "users" );
-    settings.setValue( QLatin1String( "userInfoDownloadUrl" ), QLatin1String( "https://lotsofcake.kdab.com/KdabHome/rest/user?user=" ) + userName );
+    settings.beginGroup( QStringLiteral("users") );
+    settings.setValue( QStringLiteral( "userInfoDownloadUrl" ), QStringLiteral( "https://lotsofcake.kdab.com/KdabHome/rest/user?user=%1" ).arg( userName ));
     settings.endGroup();
 
-    GetUserInfoJob *client = new GetUserInfoJob( this, "users" );
+    GetUserInfoJob *client = new GetUserInfoJob( this, QStringLiteral("users") );
     client->setSchema( userName );
     connect( client, SIGNAL(finished(HttpJob*)), this, SLOT(slotUserInfoDownloaded(HttpJob*)) );
     client->start();
@@ -777,19 +777,19 @@ void TimeTrackingWindow::slotUserInfoDownloaded( HttpJob* job_ )
     }
 
     QByteArray readData = job->userInfo();
-    const QString data = readData.constData();
+    const QString data = QString::fromUtf8(readData);
 
     QScriptEngine engine;
-    QScriptValue result = engine.evaluate( '(' + data + ')' );
-    QScriptValue entries = result.property( "hrInfo" ).property( "weeklyHours" );
+    QScriptValue result = engine.evaluate( QLatin1Char('(') + data + QLatin1Char(')') );
+    QScriptValue entries = result.property( QStringLiteral("hrInfo") ).property( QStringLiteral("weeklyHours") );
     QString weeklyHours = QString::number( entries.toVariant().toDouble(), 'g', 2 );
 
     if ( weeklyHours.isEmpty() )
-        weeklyHours = "40";
+        weeklyHours = QStringLiteral("40");
 
     QSettings settings;
-    settings.beginGroup( "users" );
-    settings.setValue( QLatin1String( "weeklyhours" ), weeklyHours );
+    settings.beginGroup( QStringLiteral("users") );
+    settings.setValue( QStringLiteral( "weeklyhours" ), weeklyHours );
     settings.endGroup();
 }
 #include "moc_TimeTrackingWindow.cpp"

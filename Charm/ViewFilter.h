@@ -61,7 +61,7 @@ public:
     bool filterAcceptsColumn( int source_column, const QModelIndex& source_parent ) const override;
     bool filterAcceptsRow( int row, const QModelIndex& parent ) const override;
 
-signals:
+Q_SIGNALS:
     void eventActivationNotice( EventId id ) override;
     void eventDeactivationNotice( EventId id ) override;
 

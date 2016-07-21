@@ -30,9 +30,9 @@
 #include <QSettings>
 
 #ifdef NDEBUG
-#define DEFAULT_CONFIG_GROUP "default"
+#define DEFAULT_CONFIG_GROUP QStringLiteral("default")
 #else
-#define DEFAULT_CONFIG_GROUP "debug"
+#define DEFAULT_CONFIG_GROUP QStringLiteral("debug")
 #endif
 
 Configuration& Configuration::instance()
@@ -88,7 +88,7 @@ void Configuration::writeTo( QSettings& settings )
     settings.setValue( MetaKey_Key_UserId, user.id() );
     settings.setValue( MetaKey_Key_LocalStorageType, localStorageType );
     settings.setValue( MetaKey_Key_LocalStorageDatabase, localStorageDatabase );
-    dump( "(Configuration::writeTo stored configuration)" );
+    dump( QStringLiteral("(Configuration::writeTo stored configuration)") );
 }
 
 bool Configuration::readFrom( QSettings& settings )
@@ -114,7 +114,7 @@ bool Configuration::readFrom( QSettings& settings )
     } else {
         complete = false;
     }
-    dump( "(Configuration::readFrom loaded configuration)" );
+    dump( QStringLiteral("(Configuration::readFrom loaded configuration)") );
     return complete;
 }
 

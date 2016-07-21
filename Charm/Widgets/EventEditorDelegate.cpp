@@ -87,7 +87,7 @@ QString EventEditorDelegate::taskName( const TaskTreeItem& item ) const
     QTextStream taskStream( &taskName );
     // print leading zeroes for the TaskId
     const int taskIdLength = CONFIGURATION.taskPaddingLength;
-    taskStream << QString( "%1" ).arg( item.task().id(), taskIdLength, 10, QChar( '0' ) )
+    taskStream << QStringLiteral( "%1" ).arg( item.task().id(), taskIdLength, 10, QLatin1Char( '0' ) )
                << " " << DATAMODEL->smartTaskName( item.task() );
     return taskName;
 }
@@ -100,8 +100,8 @@ QString EventEditorDelegate::dateAndDuration( const Event &event ) const
     QTime time = event.startDateTime().time();
     QTime endTime = event.endDateTime().time();
     dateStream << date.toString( Qt::SystemLocaleDate )
-           << " " << time.toString( "h:mm" )
-           << " - " << endTime.toString( "h:mm" )
+           << " " << time.toString( QStringLiteral("h:mm") )
+           << " - " << endTime.toString( QStringLiteral("h:mm") )
            << " (" << hoursAndMinutes( event.duration() ) << ") Week "
            << date.weekNumber();
     return dateAndDuration;

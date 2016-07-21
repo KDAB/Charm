@@ -51,7 +51,7 @@ public:
 public Q_SLOTS:
     void accept() override;
 
-private slots:
+private Q_SLOTS:
     void slotDelayedInitialization();
     void slotStandardTimeSpansChanged();
     void slotTimeSpanSelected( int );
@@ -81,7 +81,7 @@ public:
         QSet<TaskId> rootTasks, QSet<TaskId> rootExcludeTasks );
     void timeSpanSelection( NamedTimeSpan timeSpanSelection );
 
-private slots:
+private Q_SLOTS:
     void slotLinkClicked( const QUrl& which );
 
 private:

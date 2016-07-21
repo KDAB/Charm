@@ -46,8 +46,8 @@ void TimeSheetInfo::dump()
 
 QString TimeSheetInfo::formattedTaskIdAndName( int taskPaddingLength ) const
 {
-    const QString formattedId = QString::fromLatin1( "%1" ).arg( taskId, taskPaddingLength, 10, QChar( '0' ) );
-    return QString::fromLatin1("%1: %2").arg( formattedId, taskName );
+    const QString formattedId = QStringLiteral( "%1" ).arg( taskId, taskPaddingLength, 10, QLatin1Char( '0' ) );
+    return QStringLiteral("%1: %2").arg( formattedId, taskName );
 }
 
 // make the list, aggregate the seconds in the subtask:

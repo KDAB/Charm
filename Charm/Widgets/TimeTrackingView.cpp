@@ -100,9 +100,9 @@ QSize TimeTrackingView::minimumSizeHint() const
         const QFontMetrics fixedFontMetrics( m_fixedFont );
         const QFontMetrics narrowFontMetrics( m_narrowFont );
         const QRect totalsColumnFieldRect(
-            fixedFontMetrics.boundingRect( "100:00" )
+            fixedFontMetrics.boundingRect( QStringLiteral("100:00") )
             .adjusted( 0, 0, 2 * Margin, 2 * Margin ) );
-        const int dayWidth = fixedFontMetrics.width( "00:00" ) + 2 * Margin;
+        const int dayWidth = fixedFontMetrics.width( QStringLiteral("00:00") ) + 2 * Margin;
         const int fieldHeight = qMax( fixedFontMetrics.lineSpacing(),
                                       narrowFontMetrics.lineSpacing() )
                                 + 2 * Margin;

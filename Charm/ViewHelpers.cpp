@@ -71,10 +71,10 @@ QString Charm::elidedTaskName( const QString& text, const QFont& font, int width
 {
     QFontMetrics metrics( font );
     const QString& projectCode =
-            text.section( ' ', 0, 0, QString::SectionIncludeTrailingSep );
+            text.section( QLatin1Char(' '), 0, 0, QString::SectionIncludeTrailingSep );
     const int projectCodeWidth = metrics.width( projectCode );
     if ( width > projectCodeWidth ) {
-        const QString& taskName = text.section( ' ', 1 );
+        const QString& taskName = text.section( QLatin1Char(' '), 1 );
         const int taskNameWidth = width - projectCodeWidth;
         const QString& taskNameElided =
                 metrics.elidedText( taskName, Qt::ElideLeft, taskNameWidth );
@@ -87,9 +87,9 @@ QString Charm::elidedTaskName( const QString& text, const QFont& font, int width
 QString Charm::reportStylesheet( const QPalette& palette )
 {
     QString style;
-    QFile stylesheet( ":/Charm/report_stylesheet.sty" );
+    QFile stylesheet( QStringLiteral(":/Charm/report_stylesheet.sty") );
     if ( stylesheet.open( QIODevice::ReadOnly | QIODevice::Text ) ) {
-        style = stylesheet.readAll();
+        style = QString::fromUtf8(stylesheet.readAll());
         style.replace(QLatin1String("@header_row_background_color@"), palette.highlight().color().name());
         style.replace(QLatin1String("@header_row_foreground_color@"), palette.highlightedText().color().name());
         style.replace(QLatin1String("@alternate_row_background_color@"), palette.alternateBase().color().name());

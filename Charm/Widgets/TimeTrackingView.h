@@ -82,12 +82,12 @@ public:
 
     void configurationChanged();
 
-signals:
+Q_SIGNALS:
     void maybeShrink();
     void startEvent( TaskId );
     void stopEvents();
 
-private slots:
+private Q_SLOTS:
     void slotUpdateSummaries();
 
 private:

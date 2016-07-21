@@ -51,7 +51,7 @@ CharmWindow::CharmWindow( const QString& name, QWidget* parent )
     connect( m_showAction, SIGNAL(triggered(bool)), SLOT(showView()) );
     connect( this, SIGNAL(visibilityChanged(bool)), SLOT(handleOpenCharm(bool)) );
     connect( this, SIGNAL(visibilityChanged(bool)), SLOT(handleShow(bool)) );
-    m_toolBar = addToolBar( "Toolbar" );
+    m_toolBar = addToolBar( QStringLiteral("Toolbar") );
     m_toolBar->setMovable( false );
 
     emit visibilityChanged( false );
@@ -270,7 +270,7 @@ void CharmWindow::restoreGuiState()
     // restore visibility
     if ( settings.contains( MetaKey_MainWindowVisible ) ) {
         // Time Tracking Window should always be visible
-        const bool visible = ( identifier == "window_tracking" ) ? true : settings.value( MetaKey_MainWindowVisible ).toBool();
+        const bool visible = ( identifier == QLatin1String("window_tracking") ) ? true : settings.value( MetaKey_MainWindowVisible ).toBool();
         setVisible( visible );
     }
 }

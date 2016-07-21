@@ -41,7 +41,7 @@ public:
 
     void showNotification( const QString& title, const QString& message );
 
-private slots:
+private Q_SLOTS:
     void slotCloseNotification();
 
 private:

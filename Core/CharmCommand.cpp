@@ -57,17 +57,17 @@ CommandEmitterInterface* CharmCommand::owner() const
 
 void CharmCommand::requestExecute()
 {
-    emit emitExecute(this);
+    Q_EMIT emitExecute(this);
 }
 
 void CharmCommand::requestRollback()
 {
-    emit emitRollback(this);
+    Q_EMIT emitRollback(this);
 }
 
 void CharmCommand::requestSlotEventIdChanged(int oldId, int newId)
 {
-    emit emitSlotEventIdChanged(oldId,newId);
+    Q_EMIT emitSlotEventIdChanged(oldId,newId);
 }
 
 void CharmCommand::showInformation(const QString& title, const QString& message)

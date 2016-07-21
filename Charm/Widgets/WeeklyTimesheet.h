@@ -60,7 +60,7 @@ public:
 public Q_SLOTS:
     void accept() override;
 
-private slots:
+private Q_SLOTS:
     void slotCheckboxSubtasksOnlyChecked( bool );
     void slotStandardTimeSpansChanged();
     void slotWeekComboItemSelected( int );
@@ -85,7 +85,7 @@ public:
                               TaskId rootTask,
                               bool activeTasksOnly ) override;
 
-private slots:
+private Q_SLOTS:
     void slotUploadTimesheet();
     void slotTimesheetUploaded( HttpJob* );
     void slotLinkClicked( const QUrl& which );

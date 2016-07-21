@@ -82,18 +82,18 @@ void ReportPreviewWindow::setDocument( const QTextDocument* document )
 QDomDocument ReportPreviewWindow::createReportTemplate() const
 {
     // create XHTML v1.0 structure:
-    QDomDocument doc( "html" );
+    QDomDocument doc( QStringLiteral("html") );
     // FIXME this is only a rudimentary subset of a valid xhtml 1 document
 
     // html element
-    QDomElement html = doc.createElement( "html" );
-    html.setAttribute( "xmlns", "http://www.w3.org/1999/xhtml" );
+    QDomElement html = doc.createElement( QStringLiteral("html") );
+    html.setAttribute( QStringLiteral("xmlns"), QStringLiteral("http://www.w3.org/1999/xhtml") );
     doc.appendChild( html );
 
     // head and body, children of html
-    QDomElement head = doc.createElement( "head" );
+    QDomElement head = doc.createElement( QStringLiteral("head") );
     html.appendChild( head );
-    QDomElement body = doc.createElement( "body" );
+    QDomElement body = doc.createElement( QStringLiteral("body") );
     html.appendChild( body );
 
     return doc;

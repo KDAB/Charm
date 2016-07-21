@@ -76,7 +76,7 @@ public:
     // reimplement CommandEmitterInterface:
     void commitCommand( CharmCommand* ) override;
 
-signals:
+Q_SIGNALS:
     void eventActivationNotice( EventId id );
     void eventDeactivationNotice( EventId id );
 

@@ -49,7 +49,7 @@ public:
 
     QList<Event> modifiedEvents() const;
 
-private slots:
+private Q_SLOTS:
     void slotSelectTaskToSearch();
     void slotSelectTaskToReplaceWith();
     void slotTimeSpansChanged();

@@ -31,41 +31,41 @@
 
 namespace TestHelpers {
 
-    QList<QDomElement> retrieveTestCases( QString path, QString type )
+    QList<QDomElement> retrieveTestCases( const QString &path, const QString &type )
     {
-        const QString tagName( "testcase" );
+        const QString tagName( QStringLiteral("testcase") );
         QStringList filenamePatterns;
-        filenamePatterns << "*.xml";
+        filenamePatterns << QStringLiteral("*.xml");
 
         QDir dataDir( path );
         if ( !dataDir.exists() ) {
-            throw CharmException( "path to test case data does not exist" );
+            throw CharmException( QStringLiteral("path to test case data does not exist") );
         }
 
         QFileInfoList dataSets = dataDir.entryInfoList( filenamePatterns, QDir::Files, QDir::Name );
 
         QList<QDomElement> result;
         Q_FOREACH( const QFileInfo& fileinfo, dataSets ) {
-            QDomDocument doc( "charmtests" );
+            QDomDocument doc( QStringLiteral("charmtests") );
             QFile file( fileinfo.filePath() );
             if ( ! file.open( QIODevice::ReadOnly ) ) {
-                throw CharmException( "unable to open input file" );
+                throw CharmException( QStringLiteral("unable to open input file") );
             }
 
             if ( !doc.setContent( &file ) ) {
-                throw CharmException( "invalid DOM document, cannot load" );
+                throw CharmException( QStringLiteral("invalid DOM document, cannot load") );
             }
 
             QDomElement root = doc.firstChildElement();
-            if ( root.tagName() != "testcases" ) {
-                throw CharmException( "root element (testcases) not found" );
+            if ( root.tagName() != QLatin1String("testcases") ) {
+                throw CharmException( QStringLiteral("root element (testcases) not found") );
             }
 
             qDebug() << "Loading test cases from" << file.fileName();
 
             for ( QDomElement child = root.firstChildElement( tagName ); !child.isNull();
                   child = child.nextSiblingElement( tagName ) ) {
-                if ( child.attribute( "type" ) == type ) {
+                if ( child.attribute( QStringLiteral("type") ) == type ) {
                     result << child;
                 }
             }
@@ -75,11 +75,11 @@ namespace TestHelpers {
 
     bool attribute( const QString& name, const QDomElement& element )
     {
-        QString text = element.attribute( "expectedResult" );
-        if ( text != "false" && text != "true" ) {
-            throw CharmException( "attribute does not represent a boolean" );
+        QString text = element.attribute( QStringLiteral("expectedResult") );
+        if ( text != QLatin1String("false") && text != QLatin1String("true") ) {
+            throw CharmException( QStringLiteral("attribute does not represent a boolean") );
         }
-        return ( text == "true" );
+        return ( text == QLatin1String("true") );
     }
 
 }

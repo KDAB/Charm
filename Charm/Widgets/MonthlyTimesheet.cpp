@@ -45,8 +45,8 @@ MonthlyTimeSheetReport::MonthlyTimeSheetReport( QWidget* parent )
     : TimeSheetReport( parent )
 {
     QSettings settings;
-    settings.beginGroup("users");
-    m_weeklyhours = settings.value("weeklyhours").toString().trimmed();
+    settings.beginGroup(QStringLiteral("users"));
+    m_weeklyhours = settings.value(QStringLiteral("weeklyhours")).toString().trimmed();
     settings.endGroup();
     m_dailyhours = m_weeklyhours.toInt() / 5;
     if (m_dailyhours>0 &&m_dailyhours<=8)
@@ -75,7 +75,7 @@ void MonthlyTimeSheetReport::setReportProperties(
 
 QString MonthlyTimeSheetReport::suggestedFileName() const
 {
-    return tr( "MonthlyTimeSheet-%1-%2" ).arg( m_yearOfMonth ).arg( m_monthNumber, 2, 10, QChar('0') );
+    return tr( "MonthlyTimeSheet-%1-%2" ).arg( m_yearOfMonth ).arg( m_monthNumber, 2, 10, QLatin1Char('0') );
 }
 
 QByteArray MonthlyTimeSheetReport::saveToText()
@@ -138,7 +138,7 @@ QByteArray MonthlyTimeSheetReport::saveToXml()
 
 static QDomElement addTblHdr( QDomElement &toRow, const QString &text )
 {
-    QDomElement header = toRow.ownerDocument().createElement( "th" );
+    QDomElement header = toRow.ownerDocument().createElement( QStringLiteral("th") );
     QDomText textNode = toRow.ownerDocument().createTextNode( text );
     header.appendChild( textNode );
     toRow.appendChild( header );
@@ -147,8 +147,8 @@ static QDomElement addTblHdr( QDomElement &toRow, const QString &text )
 
 static QDomElement addTblCell( QDomElement &toRow, const QString &text )
 {
-    QDomElement cell = toRow.ownerDocument().createElement( "td" );
-    cell.setAttribute( "align", "center" );
+    QDomElement cell = toRow.ownerDocument().createElement( QStringLiteral("td") );
+    cell.setAttribute( QStringLiteral("align"), QStringLiteral("center") );
     QDomText textNode = toRow.ownerDocument().createTextNode( text );
     cell.appendChild( textNode );
     toRow.appendChild( cell );
@@ -183,18 +183,18 @@ void MonthlyTimeSheetReport::update()
     QTextDocument report;
     QDomDocument doc = createReportTemplate();
     QDomElement root = doc.documentElement();
-    QDomElement body = root.firstChildElement( "body" );
+    QDomElement body = root.firstChildElement( QStringLiteral("body") );
 
 //     QTextCursor cursor( m_report );
     // create the caption:
     {
-        QDomElement headline = doc.createElement( "h1" );
+        QDomElement headline = doc.createElement( QStringLiteral("h1") );
         QDomText text = doc.createTextNode( tr( "Monthly Time Sheet" ) );
         headline.appendChild( text );
         body.appendChild( headline );
     }
     {
-        QDomElement headline = doc.createElement( "h3" );
+        QDomElement headline = doc.createElement( QStringLiteral("h3") );
         QString content = tr( "Report for %1, %2 %3 (%4 to %5)" )
                           .arg( CONFIGURATION.user.name(),
                                 QDate::longMonthName( m_monthNumber ),
@@ -204,17 +204,17 @@ void MonthlyTimeSheetReport::update()
         QDomText text = doc.createTextNode( content );
         headline.appendChild( text );
         body.appendChild( headline );
-        QDomElement previousLink = doc.createElement( "a" );
-        previousLink.setAttribute( "href" , "Previous" );
+        QDomElement previousLink = doc.createElement( QStringLiteral("a") );
+        previousLink.setAttribute( QStringLiteral("href") , QStringLiteral("Previous") );
         QDomText previousLinkText = doc.createTextNode( tr( "<Previous Month>" ) );
         previousLink.appendChild( previousLinkText );
         body.appendChild( previousLink );
-        QDomElement nextLink = doc.createElement( "a" );
-        nextLink.setAttribute( "href" , "Next" );
+        QDomElement nextLink = doc.createElement( QStringLiteral("a") );
+        nextLink.setAttribute( QStringLiteral("href") , QStringLiteral("Next") );
         QDomText nextLinkText = doc.createTextNode( tr( "<Next Month>" ) );
         nextLink.appendChild( nextLinkText );
         body.appendChild( nextLink );
-        QDomElement paragraph = doc.createElement( "br" );
+        QDomElement paragraph = doc.createElement( QStringLiteral("br") );
         body.appendChild( paragraph );
     }
     {
@@ -225,11 +225,11 @@ void MonthlyTimeSheetReport::update()
             TimeSheetInfo::taskWithSubTasks( DATAMODEL, m_numberOfWeeks, rootTask(), secondsMap() ),
             activeTasksOnly() );
 
-        QDomElement table = doc.createElement( "table" );
-        table.setAttribute( "width", "100%" );
-        table.setAttribute( "align", "left" );
-        table.setAttribute( "cellpadding", "3" );
-        table.setAttribute( "cellspacing", "0" );
+        QDomElement table = doc.createElement( QStringLiteral("table") );
+        table.setAttribute( QStringLiteral("width"), QStringLiteral("100%") );
+        table.setAttribute( QStringLiteral("align"), QStringLiteral("left") );
+        table.setAttribute( QStringLiteral("cellpadding"), QStringLiteral("3") );
+        table.setAttribute( QStringLiteral("cellspacing"), QStringLiteral("0") );
         body.appendChild( table );
 
         TimeSheetInfo totalsLine( m_numberOfWeeks );
@@ -241,8 +241,8 @@ void MonthlyTimeSheetReport::update()
         }
 
         {   //Header Row
-            QDomElement headerRow = doc.createElement( "tr" );
-            headerRow.setAttribute( "class", "header_row" );
+            QDomElement headerRow = doc.createElement( QStringLiteral("tr") );
+            headerRow.setAttribute( QStringLiteral("class"), QStringLiteral("header_row") );
             table.appendChild( headerRow );
             addTblHdr( headerRow, tr( "Task" ) );
             for ( int i = 0; i < m_numberOfWeeks; ++i )
@@ -252,8 +252,8 @@ void MonthlyTimeSheetReport::update()
         }
 
         {   //Header day row
-            QDomElement headerDayRow = doc.createElement( "tr" );
-            headerDayRow.setAttribute( "class", "header_row" );
+            QDomElement headerDayRow = doc.createElement( QStringLiteral("tr") );
+            headerDayRow.setAttribute( QStringLiteral("class"), QStringLiteral("header_row") );
             table.appendChild( headerDayRow );
             addTblHdr( headerDayRow, QString() );
             for ( int i = 0; i < m_numberOfWeeks; ++i ) {
@@ -266,14 +266,14 @@ void MonthlyTimeSheetReport::update()
 
         for ( int i = 0; i < timeSheetInfo.size(); ++i )
         {
-            QDomElement row = doc.createElement( "tr" );
+            QDomElement row = doc.createElement( QStringLiteral("tr") );
             if (i % 2)
-                row.setAttribute( "class", "alternate_row" );
+                row.setAttribute( QStringLiteral("class"), QStringLiteral("alternate_row") );
             table.appendChild( row );
 
             QDomElement taskCell = addTblCell( row, timeSheetInfo[i].formattedTaskIdAndName( CONFIGURATION.taskPaddingLength ) );
-            taskCell.setAttribute( "align", "left" );
-            taskCell.setAttribute( "style", QString( "text-indent: %1px;" )
+            taskCell.setAttribute( QStringLiteral("align"), QStringLiteral("left") );
+            taskCell.setAttribute( QStringLiteral("style"), QStringLiteral( "text-indent: %1px;" )
                                             .arg( 9 * timeSheetInfo[i].indentation ) );
             for ( int week = 0; week < m_numberOfWeeks; ++week )
                 addTblCell( row, hoursAndMinutes( timeSheetInfo[i].seconds[week] ) );
@@ -282,8 +282,8 @@ void MonthlyTimeSheetReport::update()
         }
 
         {   // Totals row
-            QDomElement totals = doc.createElement( "tr" );
-            totals.setAttribute( "class", "header_row" );
+            QDomElement totals = doc.createElement( QStringLiteral("tr") );
+            totals.setAttribute( QStringLiteral("class"), QStringLiteral("header_row") );
             table.appendChild( totals );
 
             addTblHdr( totals, tr( "Total:" ) );
@@ -306,7 +306,7 @@ void MonthlyTimeSheetReport::update()
 
 void MonthlyTimeSheetReport::slotLinkClicked( const QUrl& which )
 {
-    QDate start = which.toString() == "Previous" ? startDate().addMonths( -1 ) : startDate().addMonths( 1 );
-    QDate end = which.toString() == "Previous" ? endDate().addMonths( -1 ) : endDate().addMonths( 1 );
+    QDate start = which.toString() == QLatin1String("Previous") ? startDate().addMonths( -1 ) : startDate().addMonths( 1 );
+    QDate end = which.toString() == QLatin1String("Previous") ? endDate().addMonths( -1 ) : endDate().addMonths( 1 );
     setReportProperties( start, end, rootTask(), activeTasksOnly() );
 }

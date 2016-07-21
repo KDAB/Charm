@@ -41,7 +41,7 @@ void EventModelFilterTests::initTestCase()
     m_referenceModel = new CharmDataModel;
 
     // add tasks
-    Task task1( 1000, "Task 1" );
+    Task task1( 1000, QStringLiteral("Task 1") );
     TaskList task;
     task << task1;
     m_referenceModel->setAllTasks( task );
@@ -73,13 +73,13 @@ void EventModelFilterTests::checkYearsFilter()
     time.setDate( m_thisYearSpan.timespan.first  );
     // Last year
     event1.setId( 1 );
-    event1.setComment( "event1" );
+    event1.setComment( QStringLiteral("event1") );
     event1.setTaskId( 1000 );
     event1.setStartDateTime( time.addYears( -1 ) );
     event1.setEndDateTime( time.addYears( -1 ).addSecs( 3600 ) );
     // This year
     event2.setId( 2 );
-    event2.setComment( "event2" );
+    event2.setComment( QStringLiteral("event2") );
     event2.setTaskId( 1000 );
     event2.setStartDateTime( time );
     event2.setEndDateTime( time.addSecs( 3600 ) );
@@ -108,21 +108,21 @@ void EventModelFilterTests::checkMonthsFilter()
     QDateTime time = QDateTime::currentDateTime();
     time.setDate( m_theMonthBeforeLastSpan.timespan.first );
     event1.setId( 1 );
-    event1.setComment( "event1" );
+    event1.setComment( QStringLiteral("event1") );
     event1.setTaskId( 1000 );
     event1.setStartDateTime( time );
     event1.setEndDateTime( time.addSecs( 3600 ) );
 
     time.setDate( m_lastMonthSpan.timespan.first );
     event2.setId( 2 );
-    event2.setComment( "event2" );
+    event2.setComment( QStringLiteral("event2") );
     event2.setTaskId( 1000 );
     event2.setStartDateTime( time );
     event2.setEndDateTime( time.addSecs( 3600 ) );
 
     time.setDate( m_thisMonthSpan.timespan.first );
     event3.setId( 3 );
-    event3.setComment( "event3" );
+    event3.setComment( QStringLiteral("event3") );
     event3.setTaskId( 1000 );
     event3.setStartDateTime( time );
     event3.setEndDateTime( time.addSecs( 3600 ) );
@@ -156,21 +156,21 @@ void EventModelFilterTests::checkWeeksFilter()
     QDateTime time = QDateTime::currentDateTime();
     time.setDate( m_theWeekBeforeLastSpan.timespan.first );
     event1.setId( 1 );
-    event1.setComment( "event1" );
+    event1.setComment( QStringLiteral("event1") );
     event1.setTaskId( 1000 );
     event1.setStartDateTime( time );
     event1.setEndDateTime( time.addSecs( 3600 ) );
 
     time.setDate( m_lastWeekSpan.timespan.first );
     event2.setId( 2 );
-    event2.setComment( "event2" );
+    event2.setComment( QStringLiteral("event2") );
     event2.setTaskId( 1000 );
     event2.setStartDateTime( time );
     event2.setEndDateTime( time.addSecs( 3600 ) );
 
     time.setDate( m_thisWeekSpan.timespan.first );
     event3.setId( 3 );
-    event3.setComment( "event3" );
+    event3.setComment( QStringLiteral("event3") );
     event3.setTaskId( 1000 );
     event3.setStartDateTime( time );
     event3.setEndDateTime( time.addSecs( 3600 ) );
@@ -204,21 +204,21 @@ void EventModelFilterTests::checkDaysFilter()
     QDateTime time = QDateTime::currentDateTime();
     time.setDate( m_dayBeforeYesterdaySpan.timespan.first );
     event1.setId( 1 );
-    event1.setComment( "event1" );
+    event1.setComment( QStringLiteral("event1") );
     event1.setTaskId( 1000 );
     event1.setStartDateTime( time );
     event1.setEndDateTime( time.addSecs( 3600 ) );
 
     time.setDate( m_yesterdaySpan.timespan.first );
     event2.setId( 2 );
-    event2.setComment( "event2" );
+    event2.setComment( QStringLiteral("event2") );
     event2.setTaskId( 1000 );
     event2.setStartDateTime( time );
     event2.setEndDateTime( time.addSecs( 3600 ) );
 
     time.setDate( m_todaySpan.timespan.first );
     event3.setId( 3 );
-    event3.setComment( "event3" );
+    event3.setComment( QStringLiteral("event3") );
     event3.setTaskId( 1000 );
     event3.setStartDateTime( time );
     event3.setEndDateTime( time.addSecs( 3600 ) );
@@ -255,7 +255,7 @@ void EventModelFilterTests::checkEventSpanOver2Weeks()
     QDateTime time = QDateTime::currentDateTime();
     time.setDate( m_theWeekBeforeLastSpan.timespan.first );
     event1.setId( 1 );
-    event1.setComment( "event1" );
+    event1.setComment( QStringLiteral("event1") );
     event1.setTaskId( 1000 );
     event1.setStartDateTime( time );
     event1.setEndDateTime( time.addDays( 8 ) );
@@ -284,7 +284,7 @@ void EventModelFilterTests::checkEventSpanOver2Days()
     QDateTime time = QDateTime::currentDateTime();
     time.setDate( m_dayBeforeYesterdaySpan.timespan.first );
     event1.setId( 1 );
-    event1.setComment( "event1" );
+    event1.setComment( QStringLiteral("event1") );
     event1.setTaskId( 1000 );
     event1.setStartDateTime( time );
     event1.setEndDateTime( time.addDays( 1 ) );

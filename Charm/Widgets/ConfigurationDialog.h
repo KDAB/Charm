@@ -39,7 +39,7 @@ public:
     explicit ConfigurationDialog( const Configuration&, QWidget* parent );
     Configuration configuration() const;
 
-private slots:
+private Q_SLOTS:
     void on_databaseLocationButton_clicked();
     void on_databaseLocation_textChanged( const QString& text );
     void on_nameLineEdit_textChanged( const QString& text );

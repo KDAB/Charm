@@ -38,7 +38,7 @@ class EventModelFilterTests : public QObject
 public:
     EventModelFilterTests();
 
-private slots:
+private Q_SLOTS:
     void initTestCase();
     void checkYearsFilter();
     void checkMonthsFilter();

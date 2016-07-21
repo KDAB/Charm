@@ -208,7 +208,7 @@ void CharmPreferences::slotResetPassword()
     HttpJob* job = new HttpJob(this);
     bool ok;
     QPointer<QObject> that( this ); //guard against destruction while dialog is open
-    const QString newpass = QInputDialog::getText( this, tr("Password"), tr("Please enter your lotsofcake password"), QLineEdit::Password, "", &ok );
+    const QString newpass = QInputDialog::getText( this, tr("Password"), tr("Please enter your lotsofcake password"), QLineEdit::Password, QLatin1String(""), &ok );
     if ( !that )
         return;
     if ( ok ) {

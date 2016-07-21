@@ -39,7 +39,7 @@
 
 // DATABASE STRUCTURE DEFINITION
 static const QString Tables[] =
-{ "MetaData", "Installations", "Tasks", "Events", "Subscriptions", "Users" };
+{ QStringLiteral("MetaData"), QStringLiteral("Installations"), QStringLiteral("Tasks"), QStringLiteral("Events"), QStringLiteral("Subscriptions"), QStringLiteral("Users") };
 
 static const int NumberOfTables = sizeof Tables / sizeof Tables[0];
 
@@ -55,59 +55,59 @@ const Field LastField =
 
 static const Fields MetaData_Fields[] =
 {
-{ "id", "INTEGER PRIMARY KEY" },
-{ "key", "VARCHAR( 128 ) NOT NULL" },
-{ "value", "VARCHAR( 128 )" }, LastField };
+{ QStringLiteral("id"), QStringLiteral("INTEGER PRIMARY KEY") },
+{ QStringLiteral("key"), QStringLiteral("VARCHAR( 128 ) NOT NULL") },
+{ QStringLiteral("value"), QStringLiteral("VARCHAR( 128 )") }, LastField };
 
 static const Fields Installations_Fields[] =
 {
-{ "id", "INTEGER PRIMARY KEY" },
-{ "inst_id", "INTEGER" },
-{ "user_id", "INTEGER" },
-{ "name", "varchar(256)" }, LastField };
+{ QStringLiteral("id"), QStringLiteral("INTEGER PRIMARY KEY") },
+{ QStringLiteral("inst_id"), QStringLiteral("INTEGER") },
+{ QStringLiteral("user_id"), QStringLiteral("INTEGER") },
+{ QStringLiteral("name"), QStringLiteral("varchar(256)") }, LastField };
 
 static const Fields Tasks_Fields[] =
 {
-{ "id", "INTEGER PRIMARY KEY" },
-{ "task_id", "INTEGER UNIQUE" },
-{ "parent", "INTEGER" },
-{ "validfrom", "timestamp" },
-{ "validuntil", "timestamp" },
-{ "trackable", "INTEGER" },
-{ "comment", "varchar(256)"},
-{ "name", "varchar(256)" }, LastField };
+{ QStringLiteral("id"), QStringLiteral("INTEGER PRIMARY KEY") },
+{ QStringLiteral("task_id"), QStringLiteral("INTEGER UNIQUE") },
+{ QStringLiteral("parent"), QStringLiteral("INTEGER") },
+{ QStringLiteral("validfrom"), QStringLiteral("timestamp") },
+{ QStringLiteral("validuntil"), QStringLiteral("timestamp") },
+{ QStringLiteral("trackable"), QStringLiteral("INTEGER") },
+{ QStringLiteral("comment"), QStringLiteral("varchar(256)")},
+{ QStringLiteral("name"), QStringLiteral("varchar(256)") }, LastField };
 
 static const Fields Event_Fields[] =
 {
-{ "id", "INTEGER PRIMARY KEY" },
-{ "user_id", "INTEGER" },
-{ "event_id", "INTEGER" },
-{ "installation_id", "INTEGER" },
-{ "report_id", "INTEGER NULL" },
-{ "task", "INTEGER" },
-{ "comment", "varchar(256)" },
-{ "start", "date" },
-{ "end", "date" }, LastField };
+{ QStringLiteral("id"), QStringLiteral("INTEGER PRIMARY KEY") },
+{ QStringLiteral("user_id"), QStringLiteral("INTEGER") },
+{ QStringLiteral("event_id"), QStringLiteral("INTEGER") },
+{ QStringLiteral("installation_id"), QStringLiteral("INTEGER") },
+{ QStringLiteral("report_id"), QStringLiteral("INTEGER NULL") },
+{ QStringLiteral("task"), QStringLiteral("INTEGER") },
+{ QStringLiteral("comment"), QStringLiteral("varchar(256)") },
+{ QStringLiteral("start"), QStringLiteral("date") },
+{ QStringLiteral("end"), QStringLiteral("date") }, LastField };
 
 static const Fields Subscriptions_Fields[] =
 {
-{ "id", "INTEGER PRIMARY KEY" },
-{ "user_id", "INTEGER" },
-{ "task", "INTEGER" }, LastField };
+{ QStringLiteral("id"), QStringLiteral("INTEGER PRIMARY KEY") },
+{ QStringLiteral("user_id"), QStringLiteral("INTEGER") },
+{ QStringLiteral("task"), QStringLiteral("INTEGER") }, LastField };
 
 static const Fields Users_Fields[] =
 {
-{ "id", "INTEGER PRIMARY KEY" },
-{ "user_id", "INTEGER UNIQUE" },
-{ "name", "varchar(256)" }, LastField };
+{ QStringLiteral("id"), QStringLiteral("INTEGER PRIMARY KEY") },
+{ QStringLiteral("user_id"), QStringLiteral("INTEGER UNIQUE") },
+{ QStringLiteral("name"), QStringLiteral("varchar(256)") }, LastField };
 
 static const Fields* Database_Fields[NumberOfTables] =
 { MetaData_Fields, Installations_Fields, Tasks_Fields, Event_Fields,
     Subscriptions_Fields, Users_Fields };
 
 
-const char DatabaseName[] = "charm.kdab.com";
-const char DriverName[] = "QSQLITE";
+const QString DatabaseName = QStringLiteral("charm.kdab.com");
+const QString DriverName = QStringLiteral("QSQLITE");
 
 SqLiteStorage::SqLiteStorage()
     : SqlStorage()
@@ -124,7 +124,7 @@ SqLiteStorage::~SqLiteStorage()
 
 QString SqLiteStorage::lastInsertRowFunction() const
 {
-    return QString::fromLocal8Bit("last_insert_rowid");
+    return QStringLiteral("last_insert_rowid");
 }
 
 
@@ -191,11 +191,11 @@ bool SqLiteStorage::connect( Configuration& configuration )
         return false;
     }
 
-    const QDir oldDatabaseDirectory( QDir::homePath() + QDir::separator() + ".Charm" );
+    const QDir oldDatabaseDirectory( QDir::homePath() + QDir::separator() + QStringLiteral(".Charm") );
     if ( oldDatabaseDirectory.exists() )
         migrateDatabaseDirectory( oldDatabaseDirectory, fileInfo.dir() );
 
-    m_database.setHostName( "localhost" );
+    m_database.setHostName( QStringLiteral("localhost") );
     const QString databaseName = fileInfo.absoluteFilePath();
     m_database.setDatabaseName( databaseName );
 
@@ -295,7 +295,7 @@ bool SqLiteStorage::createDatabase( Configuration& configuration )
 
     // make an installation:
     // FIXME make a useful name for it
-    QString installationName = "Unnamed Installation";
+    QString installationName = QStringLiteral("Unnamed Installation");
     Installation installation = createInstallation( installationName );
     if ( ! installation.isValid() ) {
         qDebug() << "SqLiteStorage::createDatabase: cannot create default installation id";

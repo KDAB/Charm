@@ -38,7 +38,7 @@
 ControllerTests::ControllerTests()
     : QObject()
     , m_configuration( Configuration::instance() )
-    , m_localPath( "./ControllerTestDatabase.db" )
+    , m_localPath( QStringLiteral("./ControllerTestDatabase.db") )
 {
 }
 
@@ -167,14 +167,14 @@ void ControllerTests::addModifyDeleteTaskTest()
 {
     // make two tasks, add them, and verify the expected results:
     const int Task1Id = 1000;
-    const QString Task1Name( "Task-1-Name" );
+    const QString Task1Name( QStringLiteral("Task-1-Name") );
     Task task1;
     task1.setId( Task1Id );
     task1.setName( Task1Name );
     task1.setSubscribed( true );
     task1.setValidFrom( QDateTime::currentDateTime() );
     const int Task2Id = 2000;
-    const QString Task2Name( "Task-2-Name" );
+    const QString Task2Name( QStringLiteral("Task-2-Name") );
     Task task2;
     task2.setId( Task2Id );
     task2.setName( Task1Name );
@@ -198,14 +198,14 @@ void ControllerTests::addModifyDeleteTaskTest()
     QVERIFY( m_definedTasks[task1Position] == task1 );
     QVERIFY( m_definedTasks[task2Position] == task2 );
     // modify one of the tasks:
-    const QString Task1_1Name ( "Task-1-1-Name" );
+    const QString Task1_1Name ( QStringLiteral("Task-1-1-Name") );
     task1.setName( Task1_1Name );
     task1.setSubscribed( false );
     m_controller->modifyTask( task1 );
     QVERIFY( m_definedTasks.size() == 2 );
     QVERIFY( m_definedTasks[task1Position] == task1 );
     QVERIFY( m_definedTasks[task2Position] == task2 );
-    const QString Task2_1Name( "Task-2-1-Name" );
+    const QString Task2_1Name( QStringLiteral("Task-2-1-Name") );
     task2.setName( Task2_1Name );
     task2.setSubscribed( true );
     m_controller->modifyTask( task2 );
@@ -231,12 +231,12 @@ void ControllerTests::toAndFromXmlTest()
     QVERIFY( tasks.size() > 0 ); // just to be sure nobody fucks it up
     Event e1 = m_controller->storage()->makeEvent();
     e1.setTaskId( tasks[0].id() );
-    e1.setComment( "Event-1-Comment" );
+    e1.setComment( QStringLiteral("Event-1-Comment") );
     e1.setStartDateTime();
     m_controller->modifyEvent( e1 );
     Event e2 = m_controller->storage()->makeEvent();
     e2.setTaskId( tasks.last().id() );
-    e2.setComment( "Event-2-Comment" );
+    e2.setComment( QStringLiteral("Event-2-Comment") );
     e2.setStartDateTime();
     m_controller->modifyEvent( e2 );
 

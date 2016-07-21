@@ -101,10 +101,10 @@ EnterVacationDialog::EnterVacationDialog( QWidget* parent )
     connect( m_ui->buttonBox, SIGNAL(rejected()), this, SLOT(reject()) );
     connect( m_ui->selectTaskButton, SIGNAL(clicked()), this, SLOT(selectTask()) );
     QSettings settings;
-    settings.beginGroup( QLatin1String("EnterVacation") );
-    m_ui->hoursSpinBox->setValue( settings.value( QLatin1String("workHours"), 8 ).toInt() );
-    m_ui->minutesSpinBox->setValue( settings.value( QLatin1String("workMinutes"), 0 ).toInt() );
-    m_selectedTaskId = settings.value( QLatin1String("selectedTaskId"), -1 ).toInt();
+    settings.beginGroup( QStringLiteral("EnterVacation") );
+    m_ui->hoursSpinBox->setValue( settings.value( QStringLiteral("workHours"), 8 ).toInt() );
+    m_ui->minutesSpinBox->setValue( settings.value( QStringLiteral("workMinutes"), 0 ).toInt() );
+    m_selectedTaskId = settings.value( QStringLiteral("selectedTaskId"), -1 ).toInt();
     //reset stored ID if task does not exist anymore:
     if ( !DATAMODEL->taskExists( m_selectedTaskId ) )
         m_selectedTaskId = -1;
@@ -147,11 +147,11 @@ void EnterVacationDialog::createEvents()
     const QString htmlEndDate = endDate.toHtmlEscaped();
     const QString htmlTaskName = task.name().toHtmlEscaped();
 
-    QString html = "<html><body>";
-    html += QString::fromLatin1("<h1>%1</h1>").arg( tr("Vacation"));
-    html += QString::fromLatin1("<h3>%1</h3>").arg( tr("From %1 to %2").arg( htmlStartDate, htmlEndDate ) );
-    html += QString::fromLatin1("<h4>%1</h4>").arg( tr("Task used: %1").arg( htmlTaskName ) );
-    html += "<p>";
+    QString html = QStringLiteral("<html><body>");
+    html += QStringLiteral("<h1>%1</h1>").arg( tr("Vacation"));
+    html += QStringLiteral("<h3>%1</h3>").arg( tr("From %1 to %2").arg( htmlStartDate, htmlEndDate ) );
+    html += QStringLiteral("<h4>%1</h4>").arg( tr("Task used: %1").arg( htmlTaskName ) );
+    html += QLatin1String("<p>");
     Q_FOREACH ( const Event& event, events ) {
         const QDate eventStart = event.startDateTime().date();
         const QDate eventEnd = event.endDateTime().date();
@@ -163,11 +163,11 @@ void EnterVacationDialog::createEvents()
         const QString htmlShortDate = shortDate.toHtmlEscaped();
         const QString htmlDuration = duration.toHtmlEscaped();
 
-        html += QString::fromLatin1("%1").arg( tr( "%1: %3", "short date, duration" ).arg( htmlShortDate, htmlDuration ) );
-        html += "</p><p>";
+        html += QStringLiteral("%1").arg( tr( "%1: %3", "short date, duration" ).arg( htmlShortDate, htmlDuration ) );
+        html += QLatin1String("</p><p>");
     }
-    html += "</p>";
-    html += "</body></html>";
+    html += QLatin1String("</p>");
+    html += QLatin1String("</body></html>");
     textBrowser->setHtml( html );
     confirmationDialog.resize( 400, 600 );
     if ( confirmationDialog.exec() == QDialog::Accepted )
@@ -177,10 +177,10 @@ void EnterVacationDialog::createEvents()
 void EnterVacationDialog::okClicked()
 {
     QSettings settings;
-    settings.beginGroup( QLatin1String("EnterVacation") );
-    settings.setValue( QLatin1String("workHours"), m_ui->hoursSpinBox->value() );
-    settings.setValue( QLatin1String("workMinutes"), m_ui->minutesSpinBox->value() );
-    settings.setValue( QLatin1String("selectedTaskId"), m_selectedTaskId );
+    settings.beginGroup( QStringLiteral("EnterVacation") );
+    settings.setValue( QStringLiteral("workHours"), m_ui->hoursSpinBox->value() );
+    settings.setValue( QStringLiteral("workMinutes"), m_ui->minutesSpinBox->value() );
+    settings.setValue( QStringLiteral("selectedTaskId"), m_selectedTaskId );
 
     createEvents();
     QDialog::accept();

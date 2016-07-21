@@ -82,7 +82,7 @@ public:
     void eventActivated( EventId id ) override;
     void eventDeactivated( EventId id ) override;
 
-public slots:
+public Q_SLOTS:
     // slots migrated from the old main window:
     void slotEditPreferences( bool ); // show prefs dialog
     void slotAboutDialog();
@@ -105,7 +105,7 @@ public slots:
 protected:
     void insertEditMenu() override;
 
-private slots:
+private Q_SLOTS:
     void slotStopEvent();
     void slotSelectTasksToShow();
     void slotWeeklyTimesheetPreview( int result );
@@ -119,7 +119,7 @@ private slots:
     void slotGetUserInfo();
 
 
-signals:
+Q_SIGNALS:
     void emitCommand( CharmCommand* ) override;
     void emitCommandRollback( CharmCommand* ) override;
     void showNotification( const QString& title, const QString& message );
