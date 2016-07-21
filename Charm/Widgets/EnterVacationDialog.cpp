@@ -41,15 +41,6 @@ static bool isWorkDay( const QDate& date )
     return date.dayOfWeek() != Qt::Saturday && date.dayOfWeek() != Qt::Sunday;
 }
 
-static QString toHtmlEscaped( const QString& s )
-{
-#if QT_VERSION < QT_VERSION_CHECK(5,0,0)
-    return Qt::escape( s );
-#else
-    return s.toHtmlEscaped();
-#endif
-}
-
 static QString formatDuration( const QDateTime& start, const QDateTime& end )
 {
     Q_ASSERT( start <= end );
@@ -71,9 +62,7 @@ static EventList createEventList( const QDate& start, const QDate& end, int minu
     EventList events;
 
     const int days = start.daysTo( end );
-#if QT_VERSION >= QT_VERSION_CHECK(4,7,0)
     events.reserve( days );
-#endif
     for ( int i = 0; i < days; ++i ) {
         const QDate date = start.addDays( i );
         //for each work day, create an event starting at 8 am
@@ -154,9 +143,9 @@ void EnterVacationDialog::createEvents()
     const QString endDate = m_ui->endDate->date().toString( Qt::TextDate );
     const Task task = DATAMODEL->getTask( m_selectedTaskId );
 
-    const QString htmlStartDate = toHtmlEscaped( startDate );
-    const QString htmlEndDate = toHtmlEscaped( endDate );
-    const QString htmlTaskName = toHtmlEscaped( task.name() );
+    const QString htmlStartDate = startDate.toHtmlEscaped();
+    const QString htmlEndDate = endDate.toHtmlEscaped();
+    const QString htmlTaskName = task.name().toHtmlEscaped();
 
     QString html = "<html><body>";
     html += QString::fromLatin1("<h1>%1</h1>").arg( tr("Vacation"));
@@ -171,8 +160,8 @@ void EnterVacationDialog::createEvents()
         const QString shortDate = eventStart.toString( Qt::DefaultLocaleShortDate );
         const QString duration = formatDuration( event.startDateTime(), event.endDateTime() );
 
-        const QString htmlShortDate = toHtmlEscaped( shortDate );
-        const QString htmlDuration = toHtmlEscaped( duration );
+        const QString htmlShortDate = shortDate.toHtmlEscaped();
+        const QString htmlDuration = duration.toHtmlEscaped();
 
         html += QString::fromLatin1("%1").arg( tr( "%1: %3", "short date, duration" ).arg( htmlShortDate, htmlDuration ) );
         html += "</p><p>";

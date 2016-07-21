@@ -25,11 +25,7 @@
 #include "HttpJob.h"
 #include "CharmCMake.h"
 #ifdef QTKEYCHAIN_SYSTEM
-    #if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
-        #include <qt5keychain/keychain.h>
-    #else
-        #include <qtkeychain/keychain.h>
-    #endif
+    #include <qt5keychain/keychain.h>
 #else
     #include "Keychain/keychain.h"
 #endif
@@ -40,10 +36,7 @@
 #include <QAuthenticator>
 #include <QSettings>
 #include <QXmlStreamReader>
-
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
 #include <QUrlQuery>
-#endif
 
 static void setLastAuthenticationFailed(bool failed)
 {
@@ -269,17 +262,10 @@ bool HttpJob::execute(int state, QNetworkAccessManager *manager)
 
     case Login:
     {
-#if QT_VERSION < QT_VERSION_CHECK(5,0,0)
-        QUrl data;
-        data.addQueryItem("j_username", m_username);
-        data.addQueryItem("j_password", m_password);
-        QByteArray encodedQueryPlusPlus = data.encodedQuery().replace('+', "%2b").replace(' ', "+");
-#else
         QUrlQuery urlQuery;
         urlQuery.addQueryItem("j_username", m_username);
         urlQuery.addQueryItem("j_password", m_password);
         QByteArray encodedQueryPlusPlus = urlQuery.query(QUrl::FullyEncoded).toUtf8().replace('+', "%2b");
-#endif
 
         QNetworkRequest request(m_loginUrl);
 

@@ -47,17 +47,12 @@
 #include <QLocalSocket>
 #include <QFile>
 #include <QApplication>
+#include <QStandardPaths>
 
 #ifdef Q_OS_WIN
 #include <QtWinExtras/QWinJumpList>
 #include <QtWinExtras/QWinJumpListCategory>
 #include <QtWinExtras/QWinThumbnailToolBar>
-#endif
-
-#if QT_VERSION < QT_VERSION_CHECK(5,0,0)
-#include <QDesktopServices>
-#else
-#include <QStandardPaths>
 #endif
 
 #ifdef Q_OS_WIN
@@ -648,11 +643,7 @@ static QString charmDataDir() {
     const QByteArray charmHome = qgetenv("CHARM_HOME");
     if ( !charmHome.isEmpty() )
         return QFile::decodeName( charmHome ) + QLatin1String("/data/");
-#if QT_VERSION < QT_VERSION_CHECK(5,0,0)
-    return QDesktopServices::storageLocation(QDesktopServices::DataLocation) + QLatin1Char('/');
-#else
     return QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1Char('/');
-#endif
 }
 
 bool ApplicationCore::configure()

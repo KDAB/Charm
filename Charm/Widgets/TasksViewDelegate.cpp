@@ -148,11 +148,7 @@ QRect TasksViewDelegate::checkBoxRect( const QStyleOptionViewItem &option,
 {
     const QRect bounding = option.rect; // TODO adjust if recording
 
-#if QT_VERSION < QT_VERSION_CHECK(5,0,0)
-    const QRect cbRect = check(option, bounding, variant);
-#else
     const QRect cbRect = doCheck(option, bounding, variant);
-#endif
 
     // Position checkbox on the right, and vertically aligned
     return QStyle::alignedRect(option.direction, Qt::AlignRight | Qt::AlignVCenter,
