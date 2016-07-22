@@ -24,11 +24,8 @@
 
 #include "HttpJob.h"
 #include "CharmCMake.h"
-#ifdef QTKEYCHAIN_SYSTEM
-    #include <qt5keychain/keychain.h>
-#else
-    #include "Keychain/keychain.h"
-#endif
+
+#include <qt5keychain/keychain.h>
 
 #include <QNetworkAccessManager>
 #include <QNetworkReply>

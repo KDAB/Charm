@@ -119,32 +119,6 @@ IF( CHARM_IDLE_DETECTION )
     ENDIF()
 ENDIF()
 
-IF (NOT QTKEYCHAIN_SYSTEM)
-	LIST( APPEND CharmApplication_SRCS Keychain/keychain.cpp )
-	IF (APPLE)
-	    LIST( APPEND CharmApplication_SRCS Keychain/keychain_mac.cpp MacApplicationCore.mm )
-
-	    FIND_LIBRARY( COREFOUNDATION_LIBRARY CoreFoundation )
-	    LIST( APPEND CharmApplication_LIBS ${COREFOUNDATION_LIBRARY} )
-
-	    FIND_LIBRARY( SECURITY_LIBRARY Security )
-	    LIST( APPEND CharmApplication_LIBS ${SECURITY_LIBRARY} )
-
-	    FIND_LIBRARY( APPKIT_LIBRARY AppKit )
-	    LIST( APPEND CharmApplication_LIBS ${APPKIT_LIBRARY} )
-	ELSEIF ( WIN32 )
-	    LIST( APPEND CharmApplication_SRCS Keychain/keychain_win.cpp )
-	ELSEIF ( UNIX )
-	    IF (HAVE_DBUS)
-		LIST( APPEND CharmApplication_SRCS Keychain/gnomekeyring.cpp Keychain/keychain_unix.cpp )
-                QT5_ADD_DBUS_INTERFACE( CharmApplication_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/Keychain/org.kde.KWallet.xml kwallet_interface KWalletInterface )
-                LIST( APPEND CharmApplication_LIBS Qt5::DBus )
-	    ELSE()
-		LIST( APPEND CharmApplication_SRCS Keychain/keychain_unsecure.cpp )
-	    ENDIF()
-	ENDIF()
-ENDIF()
-
 QT5_WRAP_UI(
     UiGenerated_SRCS
     Widgets/CommentEditorPopup.ui
@@ -181,7 +155,8 @@ TARGET_LINK_LIBRARIES(CharmApplication ${CharmApplication_LIBS}
     Qt5::Network
     Qt5::Script
     Qt5::Sql
-    Qt5::PrintSupport)
+    Qt5::PrintSupport
+    qt5keychain)
 
 IF (WIN32)
     TARGET_LINK_LIBRARIES(CharmApplication
@@ -194,9 +169,7 @@ IF (APPLE)
         Qt5::MacExtras)
 ENDIF()
 
-IF (QTKEYCHAIN_SYSTEM)
-    TARGET_LINK_LIBRARIES(CharmApplication qt5keychain)
-ENDIF()
+TARGET_INCLUDE_DIRECTORIES(CharmApplication PRIVATE ${QTKEYCHAIN_INCLUDE_DIRS})
 
 SET( Charm_SRCS Charm.cpp )
 

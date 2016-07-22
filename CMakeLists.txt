@@ -43,27 +43,17 @@ MESSAGE( STATUS "Building Charm ${Charm_VERSION} in ${CMAKE_BUILD_TYPE} mode" )
 
 find_package( Qt5Core REQUIRED)
 
-set(QTKEYCHAIN_SYSTEM OFF)
-
 find_package(Qt5Widgets REQUIRED)
 find_package(Qt5Xml REQUIRED)
 find_package(Qt5Network REQUIRED)
 find_package(Qt5Sql REQUIRED)
 find_package(Qt5Test REQUIRED)
 find_package(Qt5Script REQUIRED)
+find_package(Qt5PrintSupport)
+
 if(WIN32)
     find_package(Qt5WinExtras REQUIRED)
 endif()
-
-find_package(Qt5PrintSupport)
-
-find_package(Qt5Keychain QUIET)
-
-IF(Qt5Keychain_FOUND)
-    set(QTKEYCHAIN_SYSTEM ON)
-ENDIF()
-
-SET(CHARM_MAC_HIGHRES_SUPPORT_ENABLED ON)
 
 IF(APPLE)
     find_package(Qt5MacExtras REQUIRED)
@@ -75,6 +65,16 @@ IF(UNIX AND NOT APPLE)
         set(HAVE_DBUS ON)
     ENDIF()
 ENDIF()
+
+
+
+find_package(Qt5Keychain REQUIRED)
+set_package_properties(Qt5Keychain PROPERTIES
+                                   DESCRIPTION "Provides support for secure credentials storage"
+                                   URL "https://github.com/frankosterfeld/qtkeychain"
+                                   TYPE REQUIRED)
+
+SET(CHARM_MAC_HIGHRES_SUPPORT_ENABLED ON)
 
 
 ENABLE_TESTING()
@@ -168,3 +168,5 @@ IF( NOT "${CMAKE_VERSION}" VERSION_LESS "2.8.4" )
 
     INCLUDE( CPack )
 ENDIF()
+
+feature_summary(WHAT ALL INCLUDE_QUIET_PACKAGES)
