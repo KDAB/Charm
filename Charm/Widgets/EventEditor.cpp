@@ -111,13 +111,13 @@ Event EventEditor::eventResult() const
     return m_event;
 }
 
-void EventEditor::durationHoursEdited( int value )
+void EventEditor::durationHoursEdited( int )
 {
     updateEndTime();
     updateValues();
 }
 
-void EventEditor::durationMinutesEdited( int value )
+void EventEditor::durationMinutesEdited( int )
 {
     updateEndTime();
     updateValues();

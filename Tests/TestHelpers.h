@@ -73,7 +73,7 @@ namespace TestHelpers {
         return result;
     }
 
-    bool attribute( const QString& name, const QDomElement& element )
+    bool attribute( const QString&, const QDomElement& element )
     {
         QString text = element.attribute( QStringLiteral("expectedResult") );
         if ( text != QLatin1String("false") && text != QLatin1String("true") ) {

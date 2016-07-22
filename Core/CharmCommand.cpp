@@ -50,6 +50,11 @@ QString CharmCommand::description() const
     return m_description;
 }
 
+bool CharmCommand::rollback(ControllerInterface *)
+{
+    return false;
+}
+
 CommandEmitterInterface* CharmCommand::owner() const
 {
     return m_owner;

@@ -85,7 +85,7 @@ void EventModelAdapter::resetEvents()
     endResetModel();
 }
 
-void EventModelAdapter::eventAboutToBeAdded( EventId id )
+void EventModelAdapter::eventAboutToBeAdded( EventId )
 {
     int position = m_events.size();
     beginInsertRows( QModelIndex(), position, position );

@@ -69,7 +69,7 @@ public:
 
     virtual bool prepare() = 0;
     virtual bool execute( ControllerInterface* controller ) = 0;
-    virtual bool rollback( ControllerInterface* controller ) { return false; }
+    virtual bool rollback( ControllerInterface* controller );
     virtual bool finalize() = 0;
 
     CommandEmitterInterface* owner() const;

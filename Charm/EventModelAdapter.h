@@ -52,12 +52,12 @@ public:
 
     // reimplement CharmDataModelAdapterInterface:
     void resetTasks() override {}
-    void taskAboutToBeAdded( TaskId parentTask, int pos ) override {}
-    void taskAdded( TaskId id ) override {}
-    void taskModified( TaskId id ) override {}
+    void taskAboutToBeAdded( TaskId, int) override {}
+    void taskAdded( TaskId ) override {}
+    void taskModified( TaskId ) override {}
     void taskParentChanged( TaskId, TaskId, TaskId ) override {}
     void taskAboutToBeDeleted( TaskId ) override {}
-    void taskDeleted( TaskId id ) override {}
+    void taskDeleted( TaskId ) override {}
 
     void resetEvents() override;
     void eventAboutToBeAdded( EventId id ) override;

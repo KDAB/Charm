@@ -27,6 +27,7 @@
 
 
 TrayIcon::TrayIcon(QObject* parent)
+    : QSystemTrayIcon(parent)
 {
     connect(this,
             SIGNAL(activated(QSystemTrayIcon::ActivationReason)),

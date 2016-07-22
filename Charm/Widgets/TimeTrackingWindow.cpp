@@ -171,21 +171,21 @@ void TimeTrackingWindow::resetTasks()
     slotSelectTasksToShow();
 }
 
-void TimeTrackingWindow::taskAboutToBeAdded( TaskId parent, int pos )
+void TimeTrackingWindow::taskAboutToBeAdded( TaskId, int )
 {
 }
 
-void TimeTrackingWindow::taskAdded( TaskId id )
-{
-    slotSelectTasksToShow();
-}
-
-void TimeTrackingWindow::taskModified( TaskId id )
+void TimeTrackingWindow::taskAdded( TaskId )
 {
     slotSelectTasksToShow();
 }
 
-void TimeTrackingWindow::taskParentChanged( TaskId task, TaskId oldParent, TaskId newParent )
+void TimeTrackingWindow::taskModified( TaskId )
+{
+    slotSelectTasksToShow();
+}
+
+void TimeTrackingWindow::taskParentChanged( TaskId, TaskId, TaskId )
 {
     slotSelectTasksToShow();
 }
@@ -194,7 +194,7 @@ void TimeTrackingWindow::taskAboutToBeDeleted( TaskId )
 {
 }
 
-void TimeTrackingWindow::taskDeleted( TaskId id )
+void TimeTrackingWindow::taskDeleted( TaskId )
 {
     slotSelectTasksToShow();
 }
@@ -204,30 +204,30 @@ void TimeTrackingWindow::resetEvents()
     slotSelectTasksToShow();
 }
 
-void TimeTrackingWindow::eventAboutToBeAdded( EventId id )
+void TimeTrackingWindow::eventAboutToBeAdded( EventId )
 {
 }
 
-void TimeTrackingWindow::eventAdded( EventId id )
-{
-    slotSelectTasksToShow();
-}
-
-void TimeTrackingWindow::eventModified( EventId id, Event discardedEvent )
+void TimeTrackingWindow::eventAdded( EventId )
 {
     slotSelectTasksToShow();
 }
 
-void TimeTrackingWindow::eventAboutToBeDeleted( EventId id )
-{
-}
-
-void TimeTrackingWindow::eventDeleted( EventId id )
+void TimeTrackingWindow::eventModified( EventId , Event )
 {
     slotSelectTasksToShow();
 }
 
-void TimeTrackingWindow::eventActivated( EventId id )
+void TimeTrackingWindow::eventAboutToBeDeleted( EventId )
+{
+}
+
+void TimeTrackingWindow::eventDeleted( EventId )
+{
+    slotSelectTasksToShow();
+}
+
+void TimeTrackingWindow::eventActivated( EventId )
 {
     m_summaryWidget->handleActiveEvents();
 }

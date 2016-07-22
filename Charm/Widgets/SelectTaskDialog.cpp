@@ -41,7 +41,7 @@ SelectTaskDialogProxy::SelectTaskDialogProxy( CharmDataModel* model, QObject* pa
     prefilteringModeChanged();
 }
 
-bool SelectTaskDialogProxy::filterAcceptsColumn( int column, const QModelIndex& parent ) const
+bool SelectTaskDialogProxy::filterAcceptsColumn( int column, const QModelIndex& ) const
 {
     return column == Column_TaskId;
 }

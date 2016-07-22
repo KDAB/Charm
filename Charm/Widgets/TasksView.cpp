@@ -254,7 +254,7 @@ void TasksView::configureUi()
     m_actionNewSubTask.setEnabled( selected );
 }
 
- void TasksView::stateChanged( State previous )
+ void TasksView::stateChanged( State )
  {
      switch( ApplicationCore::instance().state() ) {
      case Connecting:

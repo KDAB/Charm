@@ -51,7 +51,7 @@ TaskModelAdapter::~TaskModelAdapter()
 }
 
 // reimplement QAbstractItemModel:
-int TaskModelAdapter::columnCount( const QModelIndex& parent ) const
+int TaskModelAdapter::columnCount( const QModelIndex& ) const
 {
     return Column_TaskColumnCount;
 }
@@ -225,7 +225,7 @@ void TaskModelAdapter::taskAboutToBeAdded( TaskId parentId, int pos )
     beginInsertRows( indexForTaskTreeItem( parent, 0 ), pos, pos );
 }
 
-void TaskModelAdapter::taskAdded( TaskId id )
+void TaskModelAdapter::taskAdded( TaskId )
 {
     endInsertRows();
 }
@@ -268,7 +268,7 @@ void TaskModelAdapter::taskAboutToBeDeleted( TaskId id )
     beginRemoveRows( indexForTaskTreeItem( parent, 0 ), row, row );
 }
 
-void TaskModelAdapter::taskDeleted( TaskId id )
+void TaskModelAdapter::taskDeleted( TaskId )
 {
     endRemoveRows();
 }
@@ -279,7 +279,7 @@ void TaskModelAdapter::eventAdded( EventId id )
     taskModified( event.taskId() );
 }
 
-void TaskModelAdapter::eventModified( EventId id, Event oldEvent )
+void TaskModelAdapter::eventModified( EventId id, Event )
 {
     const Event& event = m_dataModel->eventForId( id );
     const TaskTreeItem& item = m_dataModel->taskTreeItem( event.taskId() );

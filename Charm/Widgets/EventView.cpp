@@ -218,7 +218,7 @@ void EventView::commitCommand( CharmCommand* command )
 }
 
 void EventView::slotCurrentItemChanged( const QModelIndex& start,
-                                          const QModelIndex& end )
+                                          const QModelIndex& )
 {
     if ( ! start.isValid() ) {
         m_event = Event();
@@ -454,7 +454,7 @@ void EventView::slotReset()
     timeFrameChanged( m_comboBox->currentIndex() );
 }
 
-void EventView::stateChanged( State previous )
+void EventView::stateChanged( State )
 {
     switch ( ApplicationCore::instance().state() ) {
     case Connecting:

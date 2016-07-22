@@ -118,7 +118,7 @@ bool ViewFilter::filterAcceptsRow( int source_row, const QModelIndex& parent ) c
     return accepted;
 }
 
-bool ViewFilter::filterAcceptsColumn( int source_column, const QModelIndex& ) const
+bool ViewFilter::filterAcceptsColumn( int, const QModelIndex& ) const
 {
     return true;
 }

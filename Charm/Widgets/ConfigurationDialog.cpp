@@ -46,7 +46,7 @@ Configuration ConfigurationDialog::configuration() const
     return m_config;
 }
 
-void ConfigurationDialog::on_databaseLocation_textChanged( const QString& text )
+void ConfigurationDialog::on_databaseLocation_textChanged( const QString& )
 {
     checkInput();
 }
@@ -72,7 +72,7 @@ void ConfigurationDialog::on_databaseLocationButton_clicked()
     }
 }
 
-void ConfigurationDialog::on_nameLineEdit_textChanged( const QString& text )
+void ConfigurationDialog::on_nameLineEdit_textChanged( const QString& )
 {
     checkInput();
 }

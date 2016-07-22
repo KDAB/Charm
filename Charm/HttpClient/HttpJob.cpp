@@ -313,7 +313,7 @@ bool HttpJob::handle(QNetworkReply *reply)
     return false;
 }
 
-void HttpJob::authenticationRequired(QNetworkReply *reply , QAuthenticator *authenticator)
+void HttpJob::authenticationRequired(QNetworkReply *, QAuthenticator *authenticator)
 {
     authenticator->setUser(m_username);
     authenticator->setPassword(m_password);

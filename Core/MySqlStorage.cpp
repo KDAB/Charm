@@ -177,7 +177,7 @@ int MySqlStorage::installationId() const
         return -1; // not implemented
 }
 
-bool MySqlStorage::createDatabase(Configuration& conf)
+bool MySqlStorage::createDatabase(Configuration& )
 {
         return createDatabaseTables();
 }
