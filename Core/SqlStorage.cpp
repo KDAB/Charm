@@ -144,7 +144,7 @@ bool SqlStorage::addTask(const Task& task)
 bool SqlStorage::addTask(const Task& task, const SqlRaiiTransactor& )
 {
     QSqlQuery query(database());
-    query.prepare(QStringLiteral("INSERT into Tasks (task_id, name, parent, validfrom, validuntil, trackable, comment) "
+    query.prepare(QLatin1String("INSERT into Tasks (task_id, name, parent, validfrom, validuntil, trackable, comment) "
                                 "values ( :task_id, :name, :parent, :validfrom, :validuntil, :trackable, :comment);"));
     query.bindValue(QStringLiteral(":task_id"), task.id());
     query.bindValue(QStringLiteral(":name"), task.name());
@@ -176,7 +176,7 @@ Task SqlStorage::getTask( int taskid )
 bool SqlStorage::modifyTask(const Task& task)
 {
     QSqlQuery query(database());
-    query.prepare(QStringLiteral("UPDATE Tasks set name = :name, parent = :parent, "
+    query.prepare(QLatin1String("UPDATE Tasks set name = :name, parent = :parent, "
                                  "validfrom = :validfrom, validuntil = :validuntil, trackable = :trackable "
                                  "where task_id = :task_id;"));
     query.bindValue(QStringLiteral(":task_id"), task.id());
@@ -291,7 +291,7 @@ Event SqlStorage::makeEvent( const SqlRaiiTransactor& )
 
     { // insert a new record in the database
         QSqlQuery query(database());
-        query.prepare(QStringLiteral("INSERT into Events values "
+        query.prepare(QLatin1String("INSERT into Events values "
                       "( NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL );"));
         result = runQuery(query);
         Q_ASSERT(result); // this has to suceed
@@ -322,7 +322,7 @@ Event SqlStorage::makeEvent( const SqlRaiiTransactor& )
         // modify the created record to make sure event_id is unique
         // within the installation:
         QSqlQuery query(database());
-        query.prepare(QStringLiteral("UPDATE Events SET event_id = :event_id, "
+        query.prepare(QLatin1String("UPDATE Events SET event_id = :event_id, "
                       "installation_id = :installation_id, report_id = :report_id WHERE id = :id;"));
         query.bindValue(QStringLiteral(":event_id"), event.id());
         query.bindValue(QStringLiteral(":installation_id"), event.installationId());
@@ -376,7 +376,7 @@ bool SqlStorage:: modifyEvent( const Event& event )
 bool SqlStorage::modifyEvent(const Event& event, const SqlRaiiTransactor& )
 {
     QSqlQuery query(database());
-    query.prepare(QStringLiteral("UPDATE Events set task = :task, comment = :comment, "
+    query.prepare(QLatin1String("UPDATE Events set task = :task, comment = :comment, "
                   "start = :start, end = :end, user_id = :user, report_id = :report "
                   "where event_id = :id;"));
     query.bindValue(QStringLiteral(":id"), event.id());
