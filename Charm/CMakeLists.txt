@@ -185,7 +185,13 @@ TARGET_LINK_LIBRARIES(CharmApplication ${CharmApplication_LIBS}
 
 IF (WIN32)
     TARGET_LINK_LIBRARIES(CharmApplication
-        Qt5::WinExtras Crypt32)
+        Qt5::WinExtras
+        Crypt32)
+ENDIF()
+
+IF (APPLE)
+    TARGET_LINK_LIBRARIES(CharmApplication
+        Qt5::MacExtras)
 ENDIF()
 
 IF (QTKEYCHAIN_SYSTEM)

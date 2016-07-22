@@ -366,7 +366,7 @@ void TimeTrackingView::configurationChanged()
 {
     m_fixedFont = font();
 #ifdef Q_OS_OSX
-    m_fixedFont.setFamily( "Andale Mono" );
+    m_fixedFont.setFamily( QStringLiteral("Andale Mono") );
     m_fixedFont.setPointSize( 11 );
 #endif
 
