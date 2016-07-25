@@ -44,7 +44,7 @@ enum DesktopEnvironment {
 // licensed under BSD, see base/nix/xdg_util.cc
 
 static DesktopEnvironment getKdeVersion() {
-    QString value = qgetenv("KDE_SESSION_VERSION");
+    const QByteArray value = qgetenv("KDE_SESSION_VERSION");
     if ( value == "5" ) {
         return DesktopEnv_Plasma5;
     } else if (value == "4" ) {

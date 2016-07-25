@@ -72,7 +72,7 @@ GnomeKeyring::gpointer GnomeKeyring::delete_network_password( const gchar* user,
 }
 
 GnomeKeyring::GnomeKeyring()
-    : QLibrary("gnome-keyring", 0)
+    : QLibrary(QStringLiteral("gnome-keyring"), 0)
 {
     static const PasswordSchema schema = {
         ITEM_NETWORK_PASSWORD,
