@@ -179,8 +179,9 @@ TARGET_INCLUDE_DIRECTORIES(CharmApplication PRIVATE ${QTKEYCHAIN_INCLUDE_DIRS})
 
 SET( Charm_SRCS Charm.cpp )
 
-ecm_add_app_icon(Charm_SRCS ICONS Icons/128-apps-Charm.png)
-
+IF(WIN32)
+    LIST(APPEND Resources_SRCS Charm.rc )
+ENDIF()
 
 IF( APPLE )
     IF( CHARM_MAC_HIGHRES_SUPPORT_ENABLED )

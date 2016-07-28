@@ -11,7 +11,6 @@ include(KDECMakeSettings)
 include(KDEFrameworkCompilerSettings NO_POLICY_SCOPE)
 
 include(ECMInstallIcons)
-include(ECMAddAppIcon)
 
 
 IF( NOT Charm_VERSION )
