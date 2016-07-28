@@ -195,7 +195,8 @@ void EventView::timeSpansChanged()
     NamedTimeSpan allEvents = {
         tr( "Ever" ),
         TimeSpan( QDate::currentDate().addYears( -200 ),
-                  QDate::currentDate().addYears( +200 ) )
+                  QDate::currentDate().addYears( +200 ) ),
+        Range
     };
     m_timeSpans << allEvents;
 

@@ -220,7 +220,8 @@ void WeeklyTimesheetConfigurationDialog::slotStandardTimeSpansChanged()
     m_weekInfo = timeSpans.last4Weeks();
     NamedTimeSpan custom = {
         tr( "Manual Selection" ),
-        timeSpans.thisWeek().timespan
+        timeSpans.thisWeek().timespan,
+        Range
     };
     m_weekInfo << custom;
     m_ui->comboBoxWeek->clear();

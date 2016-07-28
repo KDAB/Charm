@@ -148,7 +148,8 @@ void MonthlyTimesheetConfigurationDialog::slotStandardTimeSpansChanged()
     m_monthInfo = timeSpans.last4Months();
     NamedTimeSpan custom = {
         tr( "Manual Selection" ),
-        timeSpans.thisMonth().timespan
+        timeSpans.thisMonth().timespan,
+        Range
     };
     m_monthInfo << custom;
     m_ui->comboBoxMonth->clear();
