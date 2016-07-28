@@ -70,6 +70,10 @@ SET(
     Widgets/WidgetUtils.cpp
 )
 
+IF (APPLE)
+    LIST(APPEND CharmApplication_SRCS MacApplicationCore.mm)
+ENDIF()
+
 SET(CharmApplication_LIBS)
 
 IF( CHARM_CI_SUPPORT )
@@ -165,8 +169,10 @@ IF (WIN32)
 ENDIF()
 
 IF (APPLE)
+    FIND_LIBRARY(COREFOUNDATION_LIBRARY CoreFoundation)
+    FIND_LIBRARY(APPKIT_LIBRARY AppKit)
     TARGET_LINK_LIBRARIES(CharmApplication
-        Qt5::MacExtras)
+        Qt5::MacExtras ${APPKIT_LIBRARY} ${COREFOUNDATION_LIBRARY})
 ENDIF()
 
 TARGET_INCLUDE_DIRECTORIES(CharmApplication PRIVATE ${QTKEYCHAIN_INCLUDE_DIRS})
