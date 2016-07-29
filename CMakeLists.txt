@@ -123,46 +123,46 @@ IF( NOT APPLE )
     INSTALL( FILES "${LICENSE_FILE}" "${README_FILE}" DESTINATION ${DOC_INSTALL_DIR} )
 ENDIF()
 
-    # Only support CPack packaging on newer versions of CMake.
-IF( NOT "${CMAKE_VERSION}" VERSION_LESS "2.8.4" )
-    SET( CPACK_GENERATOR "TBZ2" )
-    SET( CPACK_PACKAGE_VERSION_MAJOR "${Charm_VERSION_MAJOR}" )
-    SET( CPACK_PACKAGE_VERSION_MINOR "${Charm_VERSION_MINOR}" )
-    SET( CPACK_PACKAGE_VERSION_PATCH "${Charm_VERSION_PATCH}" )
-    SET( CPACK_PACKAGE_VERSION "${Charm_VERSION}" )
-    SET( CPACK_PACKAGE_VENDOR "KDAB" )
-    SET( CPACK_RESOURCE_FILE_README "${CMAKE_SOURCE_DIR}/${README_FILE}" )
-    IF( WIN32 )
-        SET( CPACK_GENERATOR "NSIS" "ZIP" )
-        SET( CPACK_PACKAGE_EXECUTABLES "Charm" "Charm" )
-        SET( CPACK_PACKAGE_INSTALL_DIRECTORY "Charm" )
-        SET( CPACK_PACKAGE_FILE_NAME "Charm ${Charm_VERSION}" )
-        SET( CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/${LICENSE_FILE}" )
-        SET( CPACK_NSIS_EXECUTABLES_DIRECTORY "${BIN_INSTALL_DIR}" )
-        SET( CPACK_NSIS_MUI_ICON "${ICONS_DIR}/Charm.ico" )
-        SET( CPACK_PACKAGE_ICON "${ICONS_DIR}\\\\CharmNSISHeader.bmp" )
-        SET( CPACK_NSIS_URL_INFO_ABOUT "http://www.kdab.com/" )
-        SET( CPACK_NSIS_INSTALLED_ICON_NAME "Charm${CMAKE_EXECUTABLE_SUFFIX}" )
-        SET( CPACK_NSIS_MENU_LINKS
-            "${LICENSE_FILE}" "License"
-            "${README_FILE}" "Readme"
-        )
-    ELSEIF( APPLE )
-        SET( CPACK_GENERATOR "DragNDrop" )
-        SET( CPACK_DMG_FORMAT "UDBZ" )
-        SET( CPACK_DMG_VOLUME_NAME "Charm" )
-        SET( CPACK_SYSTEM_NAME "OSX" )
-        SET( CPACK_PACKAGE_FILE_NAME "Charm-${Charm_VERSION}" )
-        SET( CPACK_PACKAGE_ICON "${ICONS_DIR}/CharmDMG.icns" )
-        SET( CPACK_DMG_DS_STORE "${ICONS_DIR}/CharmDSStore" )
-        SET( CPACK_DMG_BACKGROUND_IMAGE "${ICONS_DIR}/CharmDMGBackground.png" )
-    ELSEIF( UNIX )
-        SET( CPACK_SYSTEM_NAME
-            "${CMAKE_SYSTEM_NAME}-${CMAKE_SYSTEM_PROCESSOR}"
-        )
-    ENDIF()
+IF (WIN32)
+    FIND_PACKAGE( PythonInterp 3.5 QUIET)
+    set_package_properties(PythonInterp PROPERTIES
+                                        PURPOSE "Used to create Windows installer"
+                                        TYPE OPTIONAL)
 
-    INCLUDE( CPack )
+
+    IF(PYTHONINTERP_FOUND)
+        SET(EXTRA_PACKAGE_COMMANDS )
+        FIND_PACKAGE( OpenSSL QUIET)
+        set_package_properties(OpenSSL PROPERTIES
+                                       PURPOSE "Deployment of openssl libraries."
+                                       TYPE OPTIONAL)
+
+        IF (OPENSSL_FOUND)
+            SET(EXTRA_PACKAGE_COMMANDS ${EXTRA_PACKAGE_COMMANDS} --deployOpenSSL "${OPENSSL_INCLUDE_DIR}/../")
+        ENDIF()
+        IF( CMAKE_BUILD_TYPE MATCHES "^([Dd][Ee][Bb][Uu][Gg])" )
+            SET(EXTRA_PACKAGE_COMMANDS ${EXTRA_PACKAGE_COMMANDS} --buildType debug)
+        ENDIF()
+        ADD_CUSTOM_TARGET(package
+            COMMAND
+                ${PYTHON_EXECUTABLE}
+                "${CMAKE_CURRENT_SOURCE_DIR}/scripts/create-win-installer.py"
+                --installerName "Charm-${Charm_VERSION}.exe"
+                --applicationFileName "bin/Charm.exe"
+                --buildDir "${CMAKE_CURRENT_BINARY_DIR}"
+                --productName Charm
+                --productVersion "${Charm_VERSION}"
+                --companyName KDAB
+                --applicationIcon "${CMAKE_CURRENT_SOURCE_DIR}/Charm/Icons/Charm.ico"
+                --productLicence "${CMAKE_CURRENT_SOURCE_DIR}/License.txt"
+                # TODO: detect
+                --architecture x86
+                ${EXTRA_PACKAGE_COMMANDS}
+                --sign
+            DEPENDS
+                ${Charm_EXECUTABLE}
+            VERBATIM)
+    ENDIF()
 ENDIF()
 
 feature_summary(WHAT ALL INCLUDE_QUIET_PACKAGES)

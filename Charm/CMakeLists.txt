@@ -246,39 +246,3 @@ IF(NOT WIN32)
         COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_CURRENT_BINARY_DIR}/${EXECUTABLE} ${Charm_BINARY_DIR}/${EXECUTABLE}
     )
 ENDIF()
-
-# Only support CPack packaging on newer versions of CMake.
-IF( CHARM_PREPARE_DEPLOY )
-    IF( CMAKE_BUILD_TYPE MATCHES "^([Dd][Ee][Bb][Uu][Gg])" )
-        SET( CMAKE_INSTALL_DEBUG_LIBRARIES_ONLY TRUE )
-    ENDIF()
-
-    SET( CMAKE_INSTALL_SYSTEM_RUNTIME_DESTINATION "${BIN_INSTALL_DIR}" )
-    INCLUDE( InstallRequiredSystemLibraries )
-
-    IF( NOT BIN_INSTALL_DIR STREQUAL "." )
-        SET( EXECUTABLE ${BIN_INSTALL_DIR}/${EXECUTABLE} )
-    ENDIF()
-
-    IF( WIN32 )
-        FIND_PACKAGE( OpenSSL REQUIRED )
-        INSTALL( FILES ${OPENSSL_INCLUDE_DIR}/../libeay32.dll ${OPENSSL_INCLUDE_DIR}/../ssleay32.dll
-                 DESTINATION ${BIN_INSTALL_DIR} )
-    ENDIF()
-
-    # Plugin deployment for Windows
-    IF( WIN32)
-        # Deploy platform plugin to platforms/ (plugins/platforms isn't found, for whatever reason)
-        GET_TARGET_PROPERTY(_qmake_executable Qt5::qmake IMPORTED_LOCATION)
-        EXEC_PROGRAM( ${_qmake_executable} ARGS -query QT_INSTALL_PLUGINS OUTPUT_VARIABLE _loc )
-        INSTALL( FILES ${_loc}/platforms/qwindows.dll DESTINATION platforms )
-        # Deploy qsqlite plugin
-        GET_TARGET_PROPERTY( _loc Qt5::QSQLiteDriverPlugin LOCATION )
-        INSTALL( FILES ${_loc} DESTINATION plugins/sqldrivers )
-        # Deploy windowsprintersupport plugin
-        GET_TARGET_PROPERTY( _loc Qt5::QWindowsPrinterSupportPlugin LOCATION )
-        INSTALL( FILES ${_loc} DESTINATION plugins/printsupport )
-        # Install qt.conf (prevents plugins from the built-in Qt path to be used)
-        INSTALL(FILES qt.conf.in.windows RENAME qt.conf DESTINATION .)
-    ENDIF()
-ENDIF()
