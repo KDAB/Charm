@@ -87,7 +87,9 @@ int main ( int argc, char** argv )
 
     try {
 #if QT_VERSION >= QT_VERSION_CHECK(5,6,0)
+        // High DPI support
         QGuiApplication::setAttribute( Qt::AA_EnableHighDpiScaling );
+        QGuiApplication::setAttribute( Qt::AA_UseHighDpiPixmaps, true );
 #endif
         QApplication app( argc, argv );
         const std::shared_ptr<ApplicationCore> core( createApplicationCore( startupTask ) );
