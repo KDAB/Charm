@@ -150,10 +150,32 @@ ADD_LIBRARY(
     CharmApplication STATIC
     ${CharmApplication_SRCS} ${UiGenerated_SRCS}
 )
-TARGET_LINK_LIBRARIES(CharmApplication ${CharmApplication_LIBS} ${QT_LIBRARIES})
-IF(QTKEYCHAIN_SYSTEM)
-    TARGET_INCLUDE_DIRECTORIES(CharmApplication PRIVATE ${QTKEYCHAIN_INCLUDE_DIRS})
+
+kde_target_enable_exceptions( CharmApplication PUBLIC )
+TARGET_LINK_LIBRARIES(CharmApplication ${CharmApplication_LIBS}
+    Qt5::Core
+    Qt5::Widgets
+    Qt5::Xml
+    Qt5::Network
+    Qt5::Script
+    Qt5::Sql
+    Qt5::PrintSupport
+    qt5keychain)
+
+IF (WIN32)
+    TARGET_LINK_LIBRARIES(CharmApplication
+        Qt5::WinExtras
+        Crypt32)
 ENDIF()
+
+IF (APPLE)
+    FIND_LIBRARY(COREFOUNDATION_LIBRARY CoreFoundation)
+    FIND_LIBRARY(APPKIT_LIBRARY AppKit)
+    TARGET_LINK_LIBRARIES(CharmApplication
+        Qt5::MacExtras ${APPKIT_LIBRARY} ${COREFOUNDATION_LIBRARY})
+ENDIF()
+
+TARGET_INCLUDE_DIRECTORIES(CharmApplication PRIVATE ${QTKEYCHAIN_INCLUDE_DIRS})
 
 SET( Charm_SRCS Charm.cpp )
 
