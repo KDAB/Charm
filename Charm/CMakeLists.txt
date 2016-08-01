@@ -99,7 +99,11 @@ IF( CHARM_IDLE_DETECTION )
         SET( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/CMake/Modules/ )
         IF( Qt5Core_FOUND )
             FIND_PACKAGE( XCB )
-            IF( XCB_INCLUDE_PATH_FOUND AND XCB_LIBRARIES_FOUND AND XCB_SCREENSAVER_LIBRARIES_FOUND  )
+            SET_PACKAGE_PROPERTIES(XCB PROPERTIES
+                                   DESCRIPTION "Provides idle detection support for X11"
+                                   URL "http://xcb.freedesktop.org"
+                                   TYPE RECOMMENDED)
+            IF( XCB_FOUND)
                 INCLUDE_DIRECTORIES( ${XCB_INCLUDE_DIRS} )
                 LIST( APPEND CharmApplication_LIBS ${XCB_LIBRARIES} ${XCB_SCREENSAVER_LIBRARIES} )
                 LIST( APPEND CharmApplication_SRCS Idle/X11IdleDetector.cpp )
@@ -204,7 +208,7 @@ IF( APPLE )
     SET( MACOSX_BUNDLE_GUI_IDENTIFIER "com.kdab" )
     SET( MACOSX_BUNDLE_BUNDLE_NAME "Charm" )
 
-    SET( RESOURCES "${CMAKE_CURRENT_BINARY_DIR}/Charm.app/Contents/Resources"	)
+    SET( RESOURCES "${CMAKE_CURRENT_BINARY_DIR}/Charm.app/Contents/Resources" )
     SET( ICON "${ICONS_DIR}/${MACOSX_BUNDLE_ICON_FILE}" )
     FILE( MAKE_DIRECTORY ${RESOURCES} )
     FILE( COPY ${ICON} DESTINATION ${RESOURCES} )

@@ -18,52 +18,36 @@
 # Try to find XCB library and include path.
 # Once done this will define
 #
+# XCB_FOUND
 # XCB_INCLUDE_PATH
-# XCB_INCLUDE_PATH_FOUND
 # XCB_LIBRARIES
-# XCB_LIBRARIES_FOUND
 # XCB_SCREENSAVER_LIBRARIES
-# XCB_SCREENSAVER_LIBRARIES_FOUND
 
-IF ( UNIX AND NOT APPLE )
+if(UNIX AND NOT APPLE)
+    find_path(XCB_INCLUDE_PATH xcb/xcb.h
+        /usr/include
+        DOC "The directory where xcb/xcb.h resides"
+    )
 
-FIND_PATH( XCB_INCLUDE_PATH xcb/xcb.h
-/usr/include
-DOC "The directory where xcb/xcb.h resides")
+    find_library(XCB_LIBRARIES
+        NAMES xcb
+        PATHS
+        /usr/lib
+        DOC "The xcb library"
+    )
 
-FIND_LIBRARY( XCB_LIBRARY
-NAMES xcb
-PATHS
-/usr/lib
-DOC "The xcb library")
+    find_library(XCB_SCREENSAVER_LIBRARIES
+        NAMES xcb-screensaver
+        PATHS
+        /usr/lib
+        DOC "The xcb-screensaver library"
+    )
+endif()
 
-FIND_LIBRARY( XCB_SCREENSAVER_LIBRARY
-NAMES xcb-screensaver
-PATHS
-/usr/lib
-DOC "The xcb-screensaver library")
+if(XCB_INCLUDE_PATH AND XCB_LIBRARIES AND XCB_SCREENSAVER_LIBRARIES)
+    set(XCB_FOUND 1)
+else()
+    set(XCB_FOUND 0)
+endif()
 
-SET( XCB_INCLUDE_PATH ${XCB_INCLUDE_PATH} )
-SET( XCB_LIBRARIES ${XCB_LIBRARY} )
-SET( XCB_SCREENSAVER_LIBRARIES ${XCB_SCREENSAVER_LIBRARY} )
-ENDIF ( UNIX AND NOT APPLE )
-
-IF ( XCB_INCLUDE_PATH )
-SET( XCB_INCLUDE_PATH_FOUND 1 CACHE STRING "Set to 1 if XCB INCLUDE PATH IS FOUND is found, 0 otherwise" )
-ELSE ( XCB_INCLUDE_PATH )
-SET( XCB_INCLUDE_PATH_FOUND 0 CACHE STRING "Set to 1 if XCB is found, 0 otherwise" )
-ENDIF ( XCB_INCLUDE_PATH  )
-
-IF ( XCB_LIBRARIES )
-SET( XCB_LIBRARIES_FOUND 1 CACHE STRING "Set to 1 if XCB LIBRARIES are found, 0 otherwise" )
-ELSE ( XCB_LIBRARIES )
-SET( XCB_LIBRARIES_FOUND 0 CACHE STRING "Set to 1 if XCB LIBRARIES are found, 0 otherwise" )
-ENDIF ( XCB_LIBRARIES  )
-
-IF ( XCB_SCREENSAVER_LIBRARIES )
-SET( XCB_SCREENSAVER_LIBRARIES_FOUND 1 CACHE STRING "Set to 1 if XCB screensaver library is found, 0 otherwise" )
-ELSE ( XCB_SCREENSAVER_LIBRARIES )
-SET( XCB_SCREENSAVER_LIBRARIES_FOUND 0 CACHE STRING "Set to 1 if XCB screensaver library is found, 0 otherwise" )
-ENDIF ( XCB_SCREENSAVER_LIBRARIES  )
-
-MARK_AS_ADVANCED( XCB_INCLUDE_PATH_FOUND XCB_LIBRARIES_FOUND  XCB_SCREENSAVER_LIBRARIES_FOUND )
+mark_as_advanced(XCB_INCLUDE_PATH XCB_LIBRARIES XCB_SCREENSAVER_LIBRARIES)
