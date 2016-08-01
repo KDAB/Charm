@@ -33,6 +33,6 @@ namespace WidgetUtils
     void saveGeometry( QWidget *widget, const QString &metaKey );
 
     void updateToolButtonStyle(QWidget *widget);
-};
+}
 
 #endif // WIDGETUTILS_H
