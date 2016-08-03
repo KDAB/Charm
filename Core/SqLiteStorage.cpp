@@ -106,7 +106,7 @@ static const Fields* Database_Fields[NumberOfTables] =
     Subscriptions_Fields, Users_Fields };
 
 
-const QString DatabaseName = QStringLiteral("charm.kdab.com");
+const QString DatabaseName = QStringLiteral("charme.kdab.com");
 const QString DriverName = QStringLiteral("QSQLITE");
 
 SqLiteStorage::SqLiteStorage()
@@ -191,7 +191,7 @@ bool SqLiteStorage::connect( Configuration& configuration )
         return false;
     }
 
-    const QDir oldDatabaseDirectory( QDir::homePath() + QDir::separator() + QStringLiteral(".Charm") );
+    const QDir oldDatabaseDirectory( QDir::homePath() + QDir::separator() + QStringLiteral(".Charme") );
     if ( oldDatabaseDirectory.exists() )
         migrateDatabaseDirectory( oldDatabaseDirectory, fileInfo.dir() );
 
@@ -251,7 +251,7 @@ bool SqLiteStorage::migrateDatabaseDirectory( QDir oldDirectory, const QDir &new
 {
     if ( oldDirectory == newDirectory )
         return true;
-    qDebug() << "Application::configure: migrating Charm database directory contents from"
+    qDebug() << "Application::configure: migrating Charme database directory contents from"
              << oldDirectory.absolutePath() << "to" << newDirectory.absolutePath();
 
     oldDirectory.setFilter( QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot );

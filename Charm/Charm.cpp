@@ -58,7 +58,7 @@ int main ( int argc, char** argv )
     if (argc >= 2) {
         if ( qstrcmp(argv[1], "--version") == 0) {
             using namespace std;
-            cout << "Charm version " << CHARM_VERSION << endl;
+            cout << "Charme version " << CHARM_VERSION << endl;
             return 0;
         } else if ( argc == 3 && qstrcmp(argv[1], "--start-task") == 0 ) {
             bool ok = true;
@@ -70,7 +70,7 @@ int main ( int argc, char** argv )
         }
     }
 
-    const QByteArray charmHomeEnv = qgetenv("CHARM_HOME");
+    const QByteArray charmHomeEnv = qgetenv("CHARME_HOME");
     if ( !charmHomeEnv.isEmpty() ) {
         const QString charmHome = QFile::decodeName( charmHomeEnv );
         const QString user = charmHome + QLatin1String("/userConfig");
@@ -80,7 +80,7 @@ int main ( int argc, char** argv )
         QSettings::setPath( QSettings::NativeFormat, QSettings::SystemScope, sys );
         QSettings::setPath( QSettings::IniFormat, QSettings::SystemScope, sys );
 #ifdef Q_OS_WIN
-        // Use ini for storing settings as the registry path is not affected by CHARM_HOME.
+        // Use ini for storing settings as the registry path is not affected by CHARME_HOME.
         QSettings::setDefaultFormat( QSettings::IniFormat );
 #endif
     }
@@ -102,10 +102,10 @@ int main ( int argc, char** argv )
         return app.exec();
     } catch( const AlreadyRunningException& ) {
         using namespace std;
-        cout << "Charm already running, exiting..." << endl;
+        cout << "Charme already running, exiting..." << endl;
         return 0;
     } catch( const CharmException& e ) {
-        const QString msg( QObject::tr( "An application exception has occurred. Charm will be terminated. The error message was:\n"
+        const QString msg( QObject::tr( "An application exception has occurred. Charme will be terminated. The error message was:\n"
                                        "%1\n"
                                        "Please report this as a bug at https://quality.kdab.com/browse/CHM." ).arg( e.what() ) );
         showCriticalError( msg );

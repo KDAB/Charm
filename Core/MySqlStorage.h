@@ -32,7 +32,7 @@ class MySqlStorage: public SqlStorage
 {
 public:
     struct Parameters {
-        Parameters() : port( 3309), database( QStringLiteral("Charm") ) {}
+        Parameters() : port( 3309), database( QStringLiteral("Charme") ) {}
         unsigned int port;
         QString database;
         QString name;

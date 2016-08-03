@@ -173,7 +173,7 @@ void TaskExport::readFrom( QIODevice* device )
     const QString tagName = rootElement.tagName();
     const QString typeAttribute = rootElement.attribute( XmlSerialization::reportTypeAttribute() );
     if( tagName != XmlSerialization::reportTagName() || typeAttribute != reportType() ) {
-        throw XmlSerializationException( QObject::tr( "This file is not a Charm task definition file. Please double-check." ) );
+        throw XmlSerializationException( QObject::tr( "This file is not a Charme task definition file. Please double-check." ) );
     }
 
     QDomElement metadata = XmlSerialization::metadataElement( document );

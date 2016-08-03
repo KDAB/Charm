@@ -172,11 +172,11 @@ void Controller::stateChanged( State previous, State next )
         TaskList tasks = m_storage->getAllTasks();
         // tell the view about the existing tasks;
         if ( ! Task::checkForUniqueTaskIds( tasks ) ) {
-            throw CharmException( tr( "The Charm database is corrupted, it contains duplicate task ids. "
+            throw CharmException( tr( "The Charme database is corrupted, it contains duplicate task ids. "
                                       "Please have it looked after by a professional." ) );
         }
         if ( ! Task::checkForTreeness( tasks ) ) {
-            throw CharmException( tr( "The Charm database is corrupted, the tasks do not form a tree. "
+            throw CharmException( tr( "The Charme database is corrupted, the tasks do not form a tree. "
                                       "Please have it looked after by a professional." ) );
         }
         emit definedTasks( tasks );

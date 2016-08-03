@@ -47,7 +47,7 @@ CharmLocalCommandServer::~CharmLocalCommandServer()
 
 bool CharmLocalCommandServer::listen()
 {
-    const QString name(QDir::tempPath() + '/' + "charm.sock");
+    const QString name(QDir::tempPath() + '/' + "charme.sock");
 
 #ifdef Q_OS_UNIX
     QFile::remove(name); // Try to clean up stale socket if possible
