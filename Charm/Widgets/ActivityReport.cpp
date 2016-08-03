@@ -124,54 +124,54 @@ void ActivityReportConfigurationDialog::slotTimeSpanSelected( int index )
 void ActivityReportConfigurationDialog::slotSelectTask()
 {
     TaskId taskId;
-    if ( selectTask( taskId ) && !m_rootTasks.contains(taskId)) {
+    if ( selectTask( taskId ) && !m_properties.rootTasks.contains(taskId)) {
         const TaskTreeItem& item = DATAMODEL->taskTreeItem( taskId );
         QListWidgetItem* listItem = new QListWidgetItem( Data::charmIcon(),
                                                          DATAMODEL->fullTaskName( item.task() ),
                                                          m_ui->listWidgetIncludeTask );
         listItem->setData( Qt::UserRole, taskId );
-        m_rootTasks << taskId;
+        m_properties.rootTasks << taskId;
     }
-    m_ui->removeIncludeTaskButton->setEnabled( !m_rootTasks.isEmpty() );
-    m_ui->listWidgetIncludeTask->setEnabled( !m_rootTasks.isEmpty() );
+    m_ui->removeIncludeTaskButton->setEnabled( !m_properties.rootTasks.isEmpty() );
+    m_ui->listWidgetIncludeTask->setEnabled( !m_properties.rootTasks.isEmpty() );
 
 }
 
 void ActivityReportConfigurationDialog::slotExcludeTask()
 {
     TaskId taskId;
-    if ( selectTask( taskId ) && !m_rootExcludeTasks.contains( taskId ) ) {
+    if ( selectTask( taskId ) && !m_properties.rootExcludeTasks.contains( taskId ) ) {
         const TaskTreeItem& item = DATAMODEL->taskTreeItem( taskId );
         QListWidgetItem* listItem = new QListWidgetItem( Data::charmIcon(),
                                                          DATAMODEL->fullTaskName( item.task() ),
                                                          m_ui->listWidgetExclude );
         listItem->setData( Qt::UserRole, taskId );
-        m_rootExcludeTasks << taskId;
+        m_properties.rootExcludeTasks << taskId;
     }
-    m_ui->removeExcludeTaskButton->setEnabled( !m_rootExcludeTasks.isEmpty() );
-    m_ui->listWidgetExclude->setEnabled( !m_rootExcludeTasks.isEmpty() );
+    m_ui->removeExcludeTaskButton->setEnabled( !m_properties.rootExcludeTasks.isEmpty() );
+    m_ui->listWidgetExclude->setEnabled( !m_properties.rootExcludeTasks.isEmpty() );
 }
 
 void ActivityReportConfigurationDialog::slotRemoveExcludedTask()
 {
     QListWidgetItem* item = m_ui->listWidgetExclude->currentItem();
     if ( item ) {
-        m_rootExcludeTasks.remove( item->data( Qt::UserRole ).toInt() );
+        m_properties.rootExcludeTasks.remove( item->data( Qt::UserRole ).toInt() );
         delete item;
     }
-    m_ui->removeExcludeTaskButton->setEnabled( !m_rootExcludeTasks.isEmpty() );
-    m_ui->listWidgetExclude->setEnabled( !m_rootExcludeTasks.isEmpty() );
+    m_ui->removeExcludeTaskButton->setEnabled( !m_properties.rootExcludeTasks.isEmpty() );
+    m_ui->listWidgetExclude->setEnabled( !m_properties.rootExcludeTasks.isEmpty() );
 }
 
 void ActivityReportConfigurationDialog::slotRemoveIncludeTask()
 {
     QListWidgetItem* item = m_ui->listWidgetIncludeTask->currentItem();
     if ( item ) {
-        m_rootTasks.remove( item->data( Qt::UserRole ).toInt() );
+        m_properties.rootTasks.remove( item->data( Qt::UserRole ).toInt() );
         delete item;
     }
-    m_ui->removeIncludeTaskButton->setEnabled( !m_rootTasks.isEmpty() );
-    m_ui->listWidgetIncludeTask->setEnabled( !m_rootTasks.isEmpty() );
+    m_ui->removeIncludeTaskButton->setEnabled( !m_properties.rootTasks.isEmpty() );
+    m_ui->listWidgetIncludeTask->setEnabled( !m_properties.rootTasks.isEmpty() );
 }
 
 bool ActivityReportConfigurationDialog::selectTask(TaskId& task)
@@ -192,19 +192,18 @@ void ActivityReportConfigurationDialog::accept()
 
 void ActivityReportConfigurationDialog::showReportPreviewDialog()
 {
-    QDate start, end;
     const int index = m_ui->comboBox->currentIndex();
+    m_properties.timeSpanSelection = m_timespans[index];
     if ( index == m_timespans.size() - 1 ) { //Range
-        start = m_ui->dateEditStart->date();
-        end = m_ui->dateEditEnd->date().addDays( 1 );
+        m_properties.start = m_ui->dateEditStart->date();
+        m_properties.end = m_ui->dateEditEnd->date().addDays( 1 );
     } else {
-        start = m_timespans[index].timespan.first;
-        end = m_timespans[index].timespan.second;
+        m_properties.start = m_timespans[index].timespan.first;
+        m_properties.end = m_timespans[index].timespan.second;
     }
 
     auto report = new ActivityReport();
-    report->timeSpanSelection(  m_timespans[index] );
-    report->setReportProperties( start, end, m_rootTasks, m_rootExcludeTasks );
+    report->setReportProperties( m_properties );
     report->show();
 }
 
@@ -221,28 +220,20 @@ ActivityReport::~ActivityReport()
 {
 }
 
-void ActivityReport::setReportProperties( const QDate& start, const QDate& end, QSet<TaskId> rootTasks, QSet<TaskId> rootExcludeTasks )
+void ActivityReport::setReportProperties(const ActivityReportConfigurationDialog::Properties &properties)
 {
-    m_start = start;
-    m_end = end;
-    m_rootTasks = rootTasks;
-    m_rootExcludeTasks = rootExcludeTasks;
+    m_properties = properties;
     slotUpdate();
-}
-
-void ActivityReport::timeSpanSelection( NamedTimeSpan timeSpanSelection )
-{
-    m_timeSpanSelection = timeSpanSelection;
 }
 
 void ActivityReport::slotUpdate()
 {
     // retrieve matching events:
-    EventIdList matchingEvents = DATAMODEL->eventsThatStartInTimeFrame( m_start, m_end );
-    
-    if( !m_rootTasks.isEmpty() ) {
+    EventIdList matchingEvents = DATAMODEL->eventsThatStartInTimeFrame( m_properties.start, m_properties.end );
+
+    if( !m_properties.rootTasks.isEmpty() ) {
         QSet<EventId> filteredEvents;
-        Q_FOREACH( TaskId include,  m_rootTasks ) {
+        Q_FOREACH( TaskId include,  m_properties.rootTasks ) {
            filteredEvents |= Charm::filteredBySubtree( matchingEvents, include ).toSet();
         }
         matchingEvents = filteredEvents.toList();
@@ -250,7 +241,7 @@ void ActivityReport::slotUpdate()
     matchingEvents = Charm::eventIdsSortedByStartTime( matchingEvents );
 
     // filter unproductive events:
-    Q_FOREACH( TaskId exclude,  m_rootExcludeTasks ) {
+    Q_FOREACH( TaskId exclude,  m_properties.rootExcludeTasks ) {
         matchingEvents = Charm::filteredBySubtree( matchingEvents, exclude, true );
     }
 
@@ -264,7 +255,7 @@ void ActivityReport::slotUpdate()
 
     // which TimeSpan type
     QString timeSpanTypeName;
-    switch( m_timeSpanSelection.timeSpanType ) {
+    switch( m_properties.timeSpanSelection.timeSpanType ) {
     case Day:
         timeSpanTypeName = tr ( "Day");
         break;
@@ -300,8 +291,8 @@ void ActivityReport::slotUpdate()
         QDomElement headline = doc.createElement( QStringLiteral("h3") );
         QString content = tr( "Report for %1, from %2 to %3" )
                           .arg( CONFIGURATION.user.name(),
-                                m_start.toString( Qt::TextDate ),
-                                m_end.toString( Qt::TextDate ) );
+                                m_properties.start.toString( Qt::TextDate ),
+                                m_properties.end.toString( Qt::TextDate ) );
         QDomText text = doc.createTextNode( content );
         headline.appendChild( text );
         body.appendChild( headline );
@@ -322,11 +313,11 @@ void ActivityReport::slotUpdate()
             paragraph.appendChild( totalsElement );
             body.appendChild( paragraph );
         }
-        if ( !m_rootTasks.isEmpty() ) {
+        if ( !m_properties.rootTasks.isEmpty() ) {
             QDomElement paragraph = doc.createElement( QStringLiteral("p") );
             QString rootTaskText = tr( "Activity under tasks:" );
 
-            Q_FOREACH( TaskId taskId, m_rootTasks ) {
+            Q_FOREACH( TaskId taskId, m_properties.rootTasks ) {
                 const Task& task = DATAMODEL->getTask( taskId );
                 rootTaskText.append( QStringLiteral( " ( %1 ),").arg( DATAMODEL->fullTaskName( task ) ) );
             }
@@ -422,36 +413,35 @@ void ActivityReport::slotUpdate()
 
 void ActivityReport::slotLinkClicked( const QUrl& which )
 {
-    QDate start, end;
-    switch( m_timeSpanSelection.timeSpanType ) {
+    switch( m_properties.timeSpanSelection.timeSpanType ) {
     case Day: {
-        start = which.toString() == QLatin1String("Previous") ? m_start.addDays( -1 ) : m_start.addDays( 1 );
-        end = which.toString() == QLatin1String("Previous") ? m_end.addDays( -1 ) : m_end.addDays( 1 );
+        m_properties.start = which.toString() == QLatin1String("Previous") ? m_properties.start.addDays( -1 ) : m_properties.start.addDays( 1 );
+        m_properties.end = which.toString() == QLatin1String("Previous") ? m_properties.end.addDays( -1 ) : m_properties.end.addDays( 1 );
     }
     break;
     case Week: {
-        start = which.toString() == QLatin1String("Previous") ? m_start.addDays( -7 ) : m_start.addDays( 7 );
-        end = which.toString() == QLatin1String("Previous") ? m_end.addDays( -7 ) : m_end.addDays( 7 );
+        m_properties.start = which.toString() == QLatin1String("Previous") ? m_properties.start.addDays( -7 ) : m_properties.start.addDays( 7 );
+        m_properties.end = which.toString() == QLatin1String("Previous") ? m_properties.end.addDays( -7 ) : m_properties.end.addDays( 7 );
     }
     break;
     case Month: {
-        start = which.toString() == QLatin1String("Previous") ? m_start.addMonths( -1 ) : m_start.addMonths( 1 );
-        end = which.toString() == QLatin1String("Previous") ? m_end.addMonths( -1 ) : m_end.addMonths( 1 );
+        m_properties.start = which.toString() == QLatin1String("Previous") ? m_properties.start.addMonths( -1 ) : m_properties.start.addMonths( 1 );
+        m_properties.end = which.toString() == QLatin1String("Previous") ? m_properties.end.addMonths( -1 ) : m_properties.end.addMonths( 1 );
     }
     case Year: {
-        start = which.toString() == QLatin1String("Previous") ? m_start.addYears( -1 ) : m_start.addYears( 1 );
-        end = which.toString() == QLatin1String("Previous") ? m_end.addYears( -1 ) : m_end.addYears( 1 );
+        m_properties.start = which.toString() == QLatin1String("Previous") ? m_properties.start.addYears( -1 ) : m_properties.start.addYears( 1 );
+        m_properties.end = which.toString() == QLatin1String("Previous") ? m_properties.end.addYears( -1 ) : m_properties.end.addYears( 1 );
     }
     break;
     case Range: {
-        int spanRange = m_start.daysTo(m_end);
-        start = which.toString() == QLatin1String("Previous") ? m_start.addDays( -spanRange ) : m_start.addDays( spanRange );
-        end = which.toString() == QLatin1String("Previous") ? m_end.addDays( -spanRange ) : m_end.addDays( spanRange );
+        int spanRange = m_properties.start.daysTo(m_properties.end);
+        m_properties.start = which.toString() == QLatin1String("Previous") ? m_properties.start.addDays( -spanRange ) : m_properties.start.addDays( spanRange );
+        m_properties.end = which.toString() == QLatin1String("Previous") ? m_properties.end.addDays( -spanRange ) : m_properties.end.addDays( spanRange );
     }
     break;
     default:
         Q_ASSERT( false ); // should not happen
     }
-    setReportProperties( start, end, m_rootTasks, m_rootExcludeTasks );
+    setReportProperties( m_properties );
 }
 #include "moc_ActivityReport.cpp"

@@ -43,6 +43,14 @@ class ActivityReportConfigurationDialog : public ReportConfigurationDialog
     Q_OBJECT
 
 public:
+    struct Properties {
+        NamedTimeSpan timeSpanSelection;
+        QDate start;
+        QDate end;
+        QSet<TaskId> rootTasks;
+        QSet<TaskId> rootExcludeTasks;
+    };
+
     explicit ActivityReportConfigurationDialog( QWidget* parent );
     ~ActivityReportConfigurationDialog() override;
 
@@ -65,8 +73,7 @@ private:
 
     QScopedPointer<Ui::ActivityReportConfigurationDialog> m_ui;
     QList<NamedTimeSpan> m_timespans;
-    QSet<TaskId> m_rootTasks;
-    QSet<TaskId> m_rootExcludeTasks;
+    ActivityReportConfigurationDialog::Properties m_properties;
 };
 
 class ActivityReport : public ReportPreviewWindow
@@ -77,9 +84,7 @@ public:
     explicit ActivityReport( QWidget* parent = nullptr );
     ~ActivityReport() override;
 
-    void setReportProperties(const QDate& start, const QDate& end,
-        QSet<TaskId> rootTasks, QSet<TaskId> rootExcludeTasks );
-    void timeSpanSelection( NamedTimeSpan timeSpanSelection );
+    void setReportProperties(const ActivityReportConfigurationDialog::Properties &properties);
 
 private Q_SLOTS:
     void slotLinkClicked( const QUrl& which );
@@ -88,11 +93,7 @@ private:
     void slotUpdate() override;
 
 private:
-    QDate m_start;
-    QDate m_end;
-    QSet<TaskId> m_rootTasks;
-    QSet<TaskId> m_rootExcludeTasks;
-    NamedTimeSpan m_timeSpanSelection;
+    ActivityReportConfigurationDialog::Properties m_properties;
 };
 
 #endif
