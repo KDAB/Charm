@@ -25,6 +25,17 @@
 
 #include <QtAlgorithms>
 #include <QFile>
+#include <QCollator>
+
+namespace {
+    static QCollator collator()
+    {
+        QCollator c;
+        c.setCaseSensitivity( Qt::CaseInsensitive );
+        c.setNumericMode( true );
+        return c;
+    }
+}
 
 void Charm::connectControllerAndView( Controller* controller, CharmWindow* view )
 {
@@ -39,18 +50,87 @@ void Charm::connectControllerAndView( Controller* controller, CharmWindow* view 
                       view, SLOT(commitCommand(CharmCommand*)) );
 }
 
-struct StartsEarlier {
-    bool operator()( const EventId& leftId, const EventId& rightId ) const {
+class EventSorter
+{
+public:
+    EventSorter( const Charm::SortOrderList &orders )
+        : m_orders( orders )
+    {
+        Q_ASSERT( !m_orders.contains( Charm::SortOrder::None ) );
+        Q_ASSERT( !m_orders.isEmpty() );
+    }
+
+    template <typename T>
+    int compare( const T &left, const T &right ) const
+    {
+        if ( left < right )
+            return -1;
+        else if ( left > right )
+            return 1;
+        return 0;
+    }
+
+    bool operator()( const EventId &leftId, const EventId &rightId ) const
+    {
         const Event& left = DATAMODEL->eventForId( leftId );
         const Event& right = DATAMODEL->eventForId( rightId );
-        return left.startDateTime() < right.startDateTime();
+        int result = -1;
+
+        foreach ( const auto order, m_orders ) {
+            switch ( order ) {
+                case Charm::SortOrder::None:
+                    Q_UNREACHABLE();
+
+                case Charm::SortOrder::StartTime:
+                    result = compare( left.startDateTime(), right.startDateTime() );
+                    break;
+
+                case Charm::SortOrder::EndTime:
+                    result = compare( left.endDateTime(), right.endDateTime() );
+                    break;
+
+                case Charm::SortOrder::TaskId:
+                    result = compare( left.taskId(), right.taskId() );
+                    break;
+
+                case Charm::SortOrder::Comment: {
+                    result = Charm::collatorCompare( left.comment(), right.comment() );
+                    break;
+                }
+            }
+
+            if ( result != 0 ) {
+                break;
+            }
+
+            result = -1;
+        }
+
+        return result < 0;
     }
+
+private:
+    const Charm::SortOrderList &m_orders;
 };
 
-EventIdList Charm::eventIdsSortedByStartTime( EventIdList ids )
+int Charm::collatorCompare( const QString &left, const QString &right )
 {
-    qStableSort( ids.begin(), ids.end(), StartsEarlier() );
+    static const auto collator( ::collator() );
+    return collator.compare( left, right );
+}
+
+EventIdList Charm::eventIdsSortedBy( EventIdList ids, const Charm::SortOrderList &orders )
+{
+    if ( !orders.isEmpty() ) {
+        qStableSort( ids.begin(), ids.end(), EventSorter( orders ) );
+    }
+
     return ids;
+}
+
+EventIdList Charm::eventIdsSortedBy( EventIdList ids, SortOrder order )
+{
+    return eventIdsSortedBy( ids, SortOrderList(1) << order );
 }
 
 EventIdList Charm::filteredBySubtree( EventIdList ids, TaskId parent, bool exclude )

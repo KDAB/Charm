@@ -27,7 +27,6 @@
 #include "DateEntrySyncer.h"
 #include "Data.h"
 #include "SelectTaskDialog.h"
-#include "ViewHelpers.h"
 
 #include "Core/Configuration.h"
 #include "Core/Dates.h"
@@ -54,6 +53,7 @@ ActivityReportConfigurationDialog::ActivityReportConfigurationDialog( QWidget* p
     m_ui->dateEditEnd->calendarWidget()->setVerticalHeaderFormat( QCalendarWidget::ISOWeekNumbers );
     m_ui->dateEditStart->calendarWidget()->setFirstDayOfWeek( Qt::Monday );
     m_ui->dateEditStart->calendarWidget()->setVerticalHeaderFormat( QCalendarWidget::ISOWeekNumbers );
+    m_ui->groupBoxAdvanced->setFixedHeight( 0 ); // make sure it does not make the height grow at first show
 
     connect( m_ui->buttonBox, SIGNAL(accepted()), this, SLOT(accept()) );
     connect( m_ui->buttonBox, SIGNAL(rejected()), this, SLOT(reject()) );
@@ -67,6 +67,12 @@ ActivityReportConfigurationDialog::ActivityReportConfigurationDialog( QWidget* p
              SLOT(slotSelectTask()) );
     connect( m_ui->removeIncludeTaskButton, SIGNAL(clicked()),
              SLOT(slotRemoveIncludeTask()) );
+    connect( m_ui->groupBoxAdvanced, SIGNAL(toggled(bool)),
+             SLOT(slotAdvancedToggled(bool)) );
+    connect( m_ui->checkBoxGroupTasks, SIGNAL(clicked(bool)),
+             SLOT(slotGroupTasks(bool)) );
+    connect( m_ui->checkBoxGroupTasksComments, SIGNAL(clicked(bool)),
+             SLOT(slotGroupTasksComments(bool)) );
 
     new DateEntrySyncer(m_ui->spinBoxStartWeek, m_ui->spinBoxStartYear, m_ui->dateEditStart, 1,  this );
     new DateEntrySyncer(m_ui->spinBoxEndWeek, m_ui->spinBoxEndYear, m_ui->dateEditEnd, 7, this );
@@ -81,6 +87,7 @@ ActivityReportConfigurationDialog::~ActivityReportConfigurationDialog()
 void ActivityReportConfigurationDialog::slotDelayedInitialization()
 {
     slotStandardTimeSpansChanged();
+    slotAdvancedToggled( m_ui->groupBoxAdvanced->isChecked() );
     connect( ApplicationCore::instance().dateChangeWatcher(),
              SIGNAL(dateChanged()),
              SLOT(slotStandardTimeSpansChanged()) );
@@ -174,6 +181,26 @@ void ActivityReportConfigurationDialog::slotRemoveIncludeTask()
     m_ui->listWidgetIncludeTask->setEnabled( !m_properties.rootTasks.isEmpty() );
 }
 
+void ActivityReportConfigurationDialog::slotAdvancedToggled(bool checked)
+{
+    if ( checked ) {
+        m_ui->groupBoxAdvanced->setFixedHeight( m_ui->groupBoxAdvanced->sizeHint().height() );
+    }
+    else {
+        m_ui->groupBoxAdvanced->setFixedHeight( m_ui->groupBoxAdvanced->font().pointSize() * 2 );
+    }
+}
+
+void ActivityReportConfigurationDialog::slotGroupTasks(bool checked)
+{
+    m_ui->checkBoxGroupTasksComments->setEnabled( !checked );
+}
+
+void ActivityReportConfigurationDialog::slotGroupTasksComments(bool checked)
+{
+    m_ui->checkBoxGroupTasks->setEnabled( !checked );
+}
+
 bool ActivityReportConfigurationDialog::selectTask(TaskId& task)
 {
     SelectTaskDialog dialog( this );
@@ -201,6 +228,9 @@ void ActivityReportConfigurationDialog::showReportPreviewDialog()
         m_properties.start = m_timespans[index].timespan.first;
         m_properties.end = m_timespans[index].timespan.second;
     }
+    m_properties.showFullDescription = m_ui->checkBoxFullDescription->isChecked();
+    m_properties.groupByTaskId = m_ui->checkBoxGroupTasks->isChecked();
+    m_properties.groupByTaskIdAndComments = m_ui->checkBoxGroupTasksComments->isChecked();
 
     auto report = new ActivityReport();
     report->setReportProperties( m_properties );
@@ -238,7 +268,16 @@ void ActivityReport::slotUpdate()
         }
         matchingEvents = filteredEvents.toList();
     }
-    matchingEvents = Charm::eventIdsSortedByStartTime( matchingEvents );
+
+    if ( m_properties.groupByTaskId )
+        matchingEvents = Charm::eventIdsSortedBy( matchingEvents, Charm::SortOrderList { Charm::SortOrder::TaskId,
+                                                                                         Charm::SortOrder::StartTime } );
+    else if ( m_properties.groupByTaskIdAndComments )
+        matchingEvents = Charm::eventIdsSortedBy( matchingEvents, Charm::SortOrderList { Charm::SortOrder::TaskId,
+                                                                                         Charm::SortOrder::Comment,
+                                                                                         Charm::SortOrder::StartTime } );
+    else
+        matchingEvents = Charm::eventIdsSortedBy( matchingEvents, Charm::SortOrderList { Charm::SortOrder::StartTime } );
 
     // filter unproductive events:
     Q_FOREACH( TaskId exclude,  m_properties.rootExcludeTasks ) {
@@ -360,24 +399,59 @@ void ActivityReport::slotUpdate()
         QDomElement tableBody = doc.createElement( QStringLiteral("tbody") );
         table.appendChild( tableBody );
         // rows
-        Q_FOREACH( EventId id, matchingEvents ) {
+        const bool groupTasks = m_properties.groupByTaskId || m_properties.groupByTaskIdAndComments;
+        int groupTotalSeconds = 0;
+        for ( auto it = matchingEvents.constBegin(), end = matchingEvents.constEnd(); it != end; ++it ) {
+            const EventId id( *it );
             const Event& event = DATAMODEL->eventForId( id );
             Q_ASSERT( event.isValid() );
+            bool nextMatch = false;
+
+            if ( groupTasks ) {
+                const auto next( it + 1 );
+                const EventId nextId( next != end ? *next : 0 );
+                const Event& nextEvent( DATAMODEL->eventForId( nextId ) );
+
+                nextMatch = event.taskId() == nextEvent.taskId();
+
+                if ( nextMatch && m_properties.groupByTaskIdAndComments ) {
+                    nextMatch = Charm::collatorCompare( event.comment(), nextEvent.comment() ) == 0;
+                }
+
+                groupTotalSeconds += event.duration();
+
+                if ( nextMatch ) {
+                    continue;
+                }
+            }
+
             const TaskTreeItem& item = DATAMODEL->taskTreeItem( event.taskId() );
             const Task& task = item.task();
             Q_ASSERT( task.isValid() );
 
             const auto paddedId = QStringLiteral("%1").arg( QString::number( task.id() ).trimmed(), Configuration::instance().taskPaddingLength, QLatin1Char('0') );
 
-            const QString row1Texts[] = {
-                tr( "%1 %2-%3 (%4) -- [%5] %6" )
-                .arg( event.startDateTime().date().toString( Qt::SystemLocaleShortDate ).trimmed(),
-                      event.startDateTime().time().toString( Qt::SystemLocaleShortDate ).trimmed(),
-                      event.endDateTime().time().toString( Qt::SystemLocaleShortDate ).trimmed(),
-                      hoursAndMinutes( event.duration() ),
-                      paddedId,
-                      task.name().trimmed() )
-            };
+            QStringList row1Texts;
+
+            if ( groupTasks ) {
+                row1Texts = QStringList {
+                    tr( "%1 -- [%2] %3" )
+                    .arg( hoursAndMinutes( groupTotalSeconds ),
+                          paddedId,
+                          m_properties.showFullDescription ? DATAMODEL->fullTaskName( task ) : task.name().trimmed() )
+                };
+            }
+            else {
+                row1Texts = QStringList {
+                    tr( "%1 %2-%3 (%4) -- [%5] %6" )
+                    .arg( event.startDateTime().date().toString( Qt::SystemLocaleShortDate ).trimmed(),
+                          event.startDateTime().time().toString( Qt::SystemLocaleShortDate ).trimmed(),
+                          event.endDateTime().time().toString( Qt::SystemLocaleShortDate ).trimmed(),
+                          hoursAndMinutes( event.duration() ),
+                          paddedId,
+                          m_properties.showFullDescription ? DATAMODEL->fullTaskName( task ) : task.name().trimmed() )
+                };
+            }
 
             QDomElement row1 = doc.createElement( QStringLiteral("tr") );
             row1.setAttribute( QStringLiteral("class"), QStringLiteral("event_attributes_row") );
@@ -393,13 +467,19 @@ void ActivityReport::slotUpdate()
             cell2.setAttribute( QStringLiteral("class"), QStringLiteral("event_description") );
             cell2.setAttribute( QStringLiteral("align"), QStringLiteral("left") );
             QDomElement preElement = doc.createElement( QStringLiteral("pre") );
-            QDomText preText = doc.createTextNode( event.comment() );
+            QDomText preText = doc.createTextNode( m_properties.groupByTaskId ? QString() : event.comment() );
             preElement.appendChild( preText );
             cell2.appendChild( preElement );
             row2.appendChild( cell2 );
 
             tableBody.appendChild( row1 );
             tableBody.appendChild( row2 );
+
+            if ( groupTasks ) {
+                if ( !nextMatch ) {
+                    groupTotalSeconds = 0;
+                }
+            }
         }
     }
 

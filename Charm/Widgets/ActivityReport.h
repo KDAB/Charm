@@ -29,6 +29,7 @@
 
 #include "ReportConfigurationDialog.h"
 #include "ReportPreviewWindow.h"
+#include "ViewHelpers.h"
 
 #include <QScopedPointer>
 
@@ -49,6 +50,9 @@ public:
         QDate end;
         QSet<TaskId> rootTasks;
         QSet<TaskId> rootExcludeTasks;
+        bool showFullDescription = false;
+        bool groupByTaskId = false;
+        bool groupByTaskIdAndComments = false;
     };
 
     explicit ActivityReportConfigurationDialog( QWidget* parent );
@@ -67,6 +71,9 @@ private Q_SLOTS:
     void slotExcludeTask();
     void slotRemoveExcludedTask();
     void slotRemoveIncludeTask();
+    void slotAdvancedToggled(bool checked);
+    void slotGroupTasks(bool checked);
+    void slotGroupTasksComments(bool checked);
 
 private:
     bool selectTask(TaskId& task);
