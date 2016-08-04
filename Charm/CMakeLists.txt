@@ -168,6 +168,11 @@ IF (WIN32)
         Crypt32)
 ENDIF()
 
+IF(TARGET Qt5::DBus)
+    TARGET_LINK_LIBRARIES(CharmApplication
+        Qt5::DBus)
+ENDIF()
+
 IF (APPLE)
     FIND_LIBRARY(COREFOUNDATION_LIBRARY CoreFoundation)
     FIND_LIBRARY(APPKIT_LIBRARY AppKit)

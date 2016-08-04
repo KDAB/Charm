@@ -60,9 +60,6 @@ ENDIF()
 
 IF(UNIX AND NOT APPLE)
     find_package(Qt5DBus QUIET)
-    IF(TARGET Qt5::DBus)
-        set(HAVE_DBUS ON)
-    ENDIF()
 ENDIF()
 
 
