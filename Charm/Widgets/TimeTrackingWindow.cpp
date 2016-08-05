@@ -629,7 +629,7 @@ void TimeTrackingWindow::maybeIdle( IdleDetector* detector )
     const TemporaryValue<bool> tempValue( m_idleCorrectionDialogVisible, true );
 
     // handle idle merging:
-    IdleCorrectionDialog dialog( this );
+    IdleCorrectionDialog dialog( detector->idlePeriods().first(), this );
     MakeTemporarilyVisible m( this );
 
     dialog.exec();

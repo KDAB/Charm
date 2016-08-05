@@ -24,6 +24,8 @@
 #ifndef IDLECORRECTIONDIALOG_H
 #define IDLECORRECTIONDIALOG_H
 
+#include "Idle/IdleDetector.h"
+
 #include <QDialog>
 #include <QScopedPointer>
 
@@ -42,13 +44,16 @@ public:
         Idle_EndEvent
     };
 
-    explicit IdleCorrectionDialog( QWidget* parent = nullptr );
+    explicit IdleCorrectionDialog(const IdleDetector::IdlePeriod &idlePeriod, QWidget* parent = nullptr );
     ~IdleCorrectionDialog() override;
 
     Result result() const;
 
 private:
+    void updateDuration();
+
     QScopedPointer<Ui::IdleCorrectionDialog> m_ui;
+    QDateTime m_start;
 };
 
 #endif

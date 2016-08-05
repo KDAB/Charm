@@ -15,7 +15,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QLabel" name="label">
+    <widget class="QLabel" name="idleLabel">
      <property name="text">
       <string>Charm detected that the computer became idle while an event was in progress.</string>
      </property>

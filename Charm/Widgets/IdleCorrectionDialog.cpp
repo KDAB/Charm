@@ -24,11 +24,24 @@
 #include "IdleCorrectionDialog.h"
 #include "ui_IdleCorrectionDialog.h"
 
-IdleCorrectionDialog::IdleCorrectionDialog( QWidget* parent )
+#include <Core/CharmConstants.h>
+
+#include <QTimer>
+
+IdleCorrectionDialog::IdleCorrectionDialog(const IdleDetector::IdlePeriod &idlePeriod, QWidget* parent )
     : QDialog( parent )
     , m_ui( new Ui::IdleCorrectionDialog )
+    , m_start( idlePeriod.first )
 {
     m_ui->setupUi( this );
+
+    updateDuration();
+
+    auto timer = new QTimer( this );
+    timer->setInterval( 60000 );
+
+    connect(timer, &QTimer::timeout, this, &IdleCorrectionDialog::updateDuration );
+    timer->start();
 }
 
 IdleCorrectionDialog::~IdleCorrectionDialog()
@@ -46,6 +59,14 @@ IdleCorrectionDialog::Result IdleCorrectionDialog::result() const
     }
 
     return Idle_NoResult;
+}
+
+void IdleCorrectionDialog::updateDuration()
+{
+    const auto secs = m_start.secsTo( QDateTime::currentDateTime() );
+    m_ui->idleLabel->setText(
+                tr("Charm detected that the computer became idle for %1 hours, while an event was in progress.")
+                .arg( hoursAndMinutes( secs ) ) );
 }
 
 #include "moc_IdleCorrectionDialog.cpp"
