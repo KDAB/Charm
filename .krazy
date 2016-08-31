@@ -16,3 +16,6 @@ SKIP /build-
 
 #other skips
 SKIP /CharmCMake.h.cmake
+
+#skip the borrowed code in the cmake subdir
+SKIP /cmake/ECM/
