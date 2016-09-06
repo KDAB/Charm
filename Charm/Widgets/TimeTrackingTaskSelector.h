@@ -50,8 +50,6 @@ public:
     void handleActiveEvents();
     void taskSelected( const WeeklySummary& );
 
-    void resizeEvent( QResizeEvent* ) override;
-    QSize sizeHint() const override;
     QMenu* menu() const;
 
     void populateEditMenu( QMenu* );

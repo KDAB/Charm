@@ -33,6 +33,7 @@
 
 #include <QAction>
 #include <QDialogButtonBox>
+#include <QHBoxLayout>
 #include <QMap>
 #include <QMenu>
 #include <QMessageBox>
@@ -40,7 +41,6 @@
 #include <QPushButton>
 #include <QTextEdit>
 #include <QToolButton>
-#include <QVBoxLayout>
 
 #ifdef Q_OS_WIN
 #include <QtWinExtras/QWinJumpList>
@@ -61,6 +61,14 @@ TimeTrackingTaskSelector::TimeTrackingTaskSelector(QWidget *parent)
     , m_startOtherTaskAction( new QAction( tr( "Start Other Task..." ), this ) )
     , m_menu( new QMenu( tr( "Start Task" ), this ) )
 {
+    QLayout *hbox = new QHBoxLayout( this );
+    hbox->addWidget( m_stopGoButton );
+    hbox->addWidget( m_editCommentButton );
+    hbox->addWidget( m_taskSelectorButton );
+    hbox->setSpacing( 1 );
+    hbox->setContentsMargins( 0, 0, 0, 0 );
+    m_taskSelectorButton->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Preferred );
+
     connect( m_menu, SIGNAL(triggered(QAction*)),
              SLOT(slotActionSelected(QAction*)) );
 
@@ -93,23 +101,6 @@ void TimeTrackingTaskSelector::populateEditMenu( QMenu* menu )
     menu->addAction( m_stopGoAction );
     menu->addAction( m_editCommentAction );
     menu->addAction( m_startOtherTaskAction );
-}
-
-QSize TimeTrackingTaskSelector::sizeHint() const
-{
-    const QSize stopGoButtonSizeHint = m_stopGoButton->sizeHint();
-    return QSize( 200, stopGoButtonSizeHint.height() ); // width is ignored anyway
-}
-
-void TimeTrackingTaskSelector::resizeEvent( QResizeEvent* )
-{
-    m_stopGoButton->resize( m_stopGoButton->sizeHint() );
-    m_stopGoButton->move( 0, 0 );
-    m_editCommentButton->resize( m_editCommentButton->sizeHint() );
-    m_editCommentButton->move( m_stopGoButton->width(), 0 );
-    const QSize space( width() - m_stopGoButton->width() - m_editCommentButton->width(), height() );
-    m_taskSelectorButton->resize( space );
-    m_taskSelectorButton->move( m_stopGoButton->width() + m_editCommentButton->width(), 0 );
 }
 
 QMenu* TimeTrackingTaskSelector::menu() const
