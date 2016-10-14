@@ -603,7 +603,7 @@ void TimeTrackingWindow::slotCheckForUpdates( CheckForUpdatesJob::JobData data )
         informUserAboutNewRelease( releaseVersion, data.link, data.releaseInformationLink );
     } else {
         if ( data.verbose )
-            QMessageBox::information( this, tr( "Charme Release" ), tr( "There is no newer Charme version available!" ) );
+            QMessageBox::information( this, tr( "Charm Release" ), tr( "There is no newer Charm version available!" ) );
     }
 }
 

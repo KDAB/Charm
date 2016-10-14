@@ -100,12 +100,12 @@ ApplicationCore::ApplicationCore(TaskId startupTask, QObject* parent )
     // note that this modifies the behaviour of QSettings:
     QCoreApplication::setOrganizationName(QStringLiteral("KDAB"));
     QCoreApplication::setOrganizationDomain(QStringLiteral("kdab.com"));
-    QCoreApplication::setApplicationName(QStringLiteral("Charme"));
+    QCoreApplication::setApplicationName(QStringLiteral("Charm"));
     QCoreApplication::setApplicationVersion(QStringLiteral(CHARM_VERSION));
 
     QLocalSocket uniqueApplicationSocket;
-    QString serverName( QStringLiteral("com.kdab.charme") );
-    QString charmHomeEnv( QString::fromLocal8Bit( qgetenv( "CHARME_HOME" ) ) );
+    QString serverName( QStringLiteral("com.kdab.charm") );
+    QString charmHomeEnv( QString::fromLocal8Bit( qgetenv( "CHARM_HOME" ) ) );
     if ( !charmHomeEnv.isEmpty() ) {
         serverName.append( QStringLiteral( "_%1" ).arg(
                                charmHomeEnv.replace( QRegExp( QLatin1String( ":?/|:?\\\\" ) ),
@@ -120,7 +120,7 @@ ApplicationCore::ApplicationCore(TaskId startupTask, QObject* parent )
             QByteArray data( QStringLiteral( "start-task: %1" ).arg( startupTask ).toLatin1().constData() );
             qint64 written = uniqueApplicationSocket.write( data );
             if (  written == -1 || written != data.length() ) {
-                std::cerr << "Failed to pass " << data.constData() << " to running charme instance, error: "
+                std::cerr << "Failed to pass " << data.constData() << " to running charm instance, error: "
                           << qPrintable( uniqueApplicationSocket.errorString() ) << std::endl;
             }
         }
@@ -716,9 +716,9 @@ QString ApplicationCore::titleString( const QString& text ) const
         } else {
             dbInfo = text;
         }
-        return tr( "Charme (%1)" ).arg( dbInfo );
+        return tr( "Charm (%1)" ).arg( dbInfo );
     } else {
-        return tr( "Charme" );
+        return tr( "Charm" );
     }
 }
 

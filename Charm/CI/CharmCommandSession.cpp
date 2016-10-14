@@ -177,7 +177,7 @@ void CharmCommandSession::sendComment(const QString &comment)
 
 void CharmCommandSession::startHandshake()
 {
-    sendComment("Charme Command Line Interface");
+    sendComment("Charm Command Line Interface");
 
     m_device->write(QString("%1 %2\n")
         .arg(CHARM_CI_HANDSHAKE_SEND)

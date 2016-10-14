@@ -43,7 +43,7 @@
 
 CharmWindow::CharmWindow( const QString& name, QWidget* parent )
     : QMainWindow( parent )
-    , m_openCharmAction( new QAction( tr( "Open Charme" ), this ) )
+    , m_openCharmAction( new QAction( tr( "Open Charm" ), this ) )
     , m_showAction( new QAction( this ) )
 {
     setWindowName( name );

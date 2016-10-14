@@ -31,7 +31,7 @@ void SmartNameCacheTests::testCache()
 {
     SmartNameCache cache;
     Task projects( 1, QStringLiteral("Projects") );
-    Task charm( 2, QStringLiteral("Charme") );
+    Task charm( 2, QStringLiteral("Charm") );
     charm.setParent( projects.id() );
     Task charmDevelopment( 3, QStringLiteral("Development") );
     charmDevelopment.setParent( charm.id() );
@@ -43,8 +43,8 @@ void SmartNameCacheTests::testCache()
     lotsofcakeDevelopment.setParent( lotsofcake.id() );
     const TaskList tasks = TaskList() << projects << charm << charmDevelopment << charmOverhead << lotsofcake << lotsofcakeDevelopment;
     cache.setAllTasks( tasks );
-    QCOMPARE( cache.smartName( charmDevelopment.id() ), QLatin1String("Charme/Development") );
-    QCOMPARE( cache.smartName( charmOverhead.id() ), QLatin1String("Charme/Overhead") );
+    QCOMPARE( cache.smartName( charmDevelopment.id() ), QLatin1String("Charm/Development") );
+    QCOMPARE( cache.smartName( charmOverhead.id() ), QLatin1String("Charm/Overhead") );
     QCOMPARE( cache.smartName( projects.id() ), QLatin1String("Projects") );
     QCOMPARE( cache.smartName( lotsofcakeDevelopment.id() ), QLatin1String("Lotsofcake/Development") );
 }

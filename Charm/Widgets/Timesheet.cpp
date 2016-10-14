@@ -59,7 +59,7 @@ void TimeSheetReport::slotUpdate()
 void TimeSheetReport::slotSaveToXml()
 {
     // first, ask for a file name:
-    QString filename = getFileName( tr("Charme reports (*.charmreport)") );
+    QString filename = getFileName( tr("Charm reports (*.charmreport)") );
     if (filename.isEmpty())
         return;
 

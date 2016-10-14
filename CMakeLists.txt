@@ -78,7 +78,7 @@ ENABLE_TESTING()
 IF( UNIX AND NOT APPLE )
     set( Charm_EXECUTABLE charmtimetracker )
 ELSE()
-    set( Charm_EXECUTABLE Charme )
+    set( Charm_EXECUTABLE Charm )
 ENDIF()
 
 SET( BIN_INSTALL_DIR bin )
@@ -148,9 +148,9 @@ IF (WIN32)
                 ${PYTHON_EXECUTABLE}
                 "${CMAKE_CURRENT_SOURCE_DIR}/scripts/create-win-installer.py"
                 --installerName "Charm-${Charm_VERSION}.exe"
-                --applicationFileName "bin/Charme.exe"
+                --applicationFileName "bin/Charm.exe"
                 --buildDir "${CMAKE_CURRENT_BINARY_DIR}"
-                --productName Charme
+                --productName Charm
                 --productVersion "${Charm_VERSION}"
                 --companyName KDAB
                 --applicationIcon "${CMAKE_CURRENT_SOURCE_DIR}/Charm/Icons/Charm.ico"
