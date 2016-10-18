@@ -143,6 +143,13 @@ IF (WIN32)
         IF( CMAKE_BUILD_TYPE MATCHES "^([Dd][Ee][Bb][Uu][Gg])" )
             SET(EXTRA_PACKAGE_COMMANDS ${EXTRA_PACKAGE_COMMANDS} --buildType debug)
         ENDIF()
+
+        IF (CMAKE_SIZEOF_VOID_P EQUAL 8)
+            set(EXTRA_PACKAGE_COMMANDS ${EXTRA_PACKAGE_COMMANDS} --architecture x64)
+        ELSE()
+            set(EXTRA_PACKAGE_COMMANDS ${EXTRA_PACKAGE_COMMANDS} --architecture x86)
+        ENDIF()
+
         ADD_CUSTOM_TARGET(package
             COMMAND
                 ${PYTHON_EXECUTABLE}
@@ -155,8 +162,6 @@ IF (WIN32)
                 --companyName KDAB
                 --applicationIcon "${CMAKE_CURRENT_SOURCE_DIR}/Charm/Icons/Charm.ico"
                 --productLicence "${CMAKE_CURRENT_SOURCE_DIR}/License.txt"
-                # TODO: detect
-                --architecture x86
                 ${EXTRA_PACKAGE_COMMANDS}
                 --sign
             DEPENDS
