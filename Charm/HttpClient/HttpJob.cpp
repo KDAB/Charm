@@ -332,9 +332,11 @@ bool HttpJob::handle(QNetworkReply *reply)
 
 void HttpJob::authenticationRequired(QNetworkReply *reply , QAuthenticator *authenticator)
 {
-    authenticator->setUser(m_username);
-    authenticator->setPassword(m_password);
-    m_authenticationDoneAlready = true;
+    if (!m_authenticationDoneAlready) {
+        authenticator->setUser(m_username);
+        authenticator->setPassword(m_password);
+        m_authenticationDoneAlready = true;
+    }
 }
 
 void HttpJob::emitFinished()
@@ -357,10 +359,18 @@ void HttpJob::setErrorAndEmitFinished(int code, const QString& errorString)
 
 void HttpJob::setErrorFromReplyAndEmitFinished(QNetworkReply *reply)
 {
-    if (reply->error() == QNetworkReply::HostNotFoundError)
-        setErrorAndEmitFinished(HostNotFound, reply->errorString());
-    else
-        setErrorAndEmitFinished(SomethingWentWrong, reply->errorString());
+    m_authenticationDoneAlready = false;
+    switch (reply->error()) {
+        case QNetworkReply::HostNotFoundError:
+            setErrorAndEmitFinished(HostNotFound, reply->errorString());
+            break;
+        case QNetworkReply::AuthenticationRequiredError:
+            setErrorAndEmitFinished(AuthenticationFailed, reply->errorString());
+            break;
+        default:
+            setErrorAndEmitFinished(SomethingWentWrong, reply->errorString());
+            break;
+    }
 }
 
 #include "moc_HttpJob.cpp"
