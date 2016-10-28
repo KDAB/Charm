@@ -33,6 +33,7 @@
 #include <QAuthenticator>
 #include <QSettings>
 #include <QXmlStreamReader>
+#include <QXmlStreamEntityResolver>
 #include <QUrlQuery>
 
 static void setLastAuthenticationFailed(bool failed)
@@ -60,7 +61,18 @@ bool HttpJob::credentialsAvailable()
 
 QString HttpJob::extractErrorMessageFromReply(const QByteArray& xml)
 {
+    class XmlStreamEntityResolver : public QXmlStreamEntityResolver {
+    public:
+        XmlStreamEntityResolver() : QXmlStreamEntityResolver() {}
+        QString resolveUndeclaredEntity(const QString &name) override {
+            Q_UNUSED(name)
+            return QLatin1String(" "); // replace undeclared entities with a whitespace just to not abort parsing
+        }
+    };
+    XmlStreamEntityResolver resolver;
     QXmlStreamReader reader(xml);
+    reader.setEntityResolver(&resolver);
+
     while (!reader.atEnd() && !reader.hasError()) {
         reader.readNext();
         if (reader.isStartElement() && reader.name() == QLatin1String("div")
@@ -68,6 +80,9 @@ QString HttpJob::extractErrorMessageFromReply(const QByteArray& xml)
         {
             return reader.readElementText();
         }
+    }
+    if (reader.hasError()) {
+        return QStringLiteral("Error parsing response: %1").arg(reader.errorString());
     }
 
     return QString();
