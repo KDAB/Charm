@@ -2,11 +2,13 @@ Source: charmtimetracker
 Section: Miscellaneous
 Priority: optional
 Maintainer: Frank Osterfeld <frank.osterfeld@kdab.com>
-Build-Depends: debhelper (>= 4.1.16), cdbs, cmake, libqt4-dev, libxss-dev, libqt4-sql-sqlite
+Build-Depends: debhelper (>=9), cdbs, cmake, libqt4-dev, libxss-dev, libqt4-sql-sqlite
+Standards-Version: 3.9.6
+Homepage: https://github.com/KDAB/Charm
 
 Package: charmtimetracker
 Architecture: any
-Depends: ${shlibs:Depends}, libqt4-sql-sqlite
+Depends: ${misc:Depends}, ${shlibs:Depends}, libqt4-sql-sqlite
 Description: The Cross-Platform Time Tracker.
  Charm is a program for OS X, Linux and Windows that helps to keep
  track of time. It is built around two major ideas - tasks, and
