@@ -76,6 +76,19 @@ SET(
 
 SET(CharmApplication_LIBS)
 
+IF (APPLE)
+    LIST(APPEND CharmApplication_SRCS MacApplicationCore.mm)
+
+    FIND_LIBRARY( COREFOUNDATION_LIBRARY CoreFoundation )
+    LIST( APPEND CharmApplication_LIBS ${COREFOUNDATION_LIBRARY} )
+
+    FIND_LIBRARY( SECURITY_LIBRARY Security )
+    LIST( APPEND CharmApplication_LIBS ${SECURITY_LIBRARY} )
+
+    FIND_LIBRARY( APPKIT_LIBRARY AppKit )
+    LIST( APPEND CharmApplication_LIBS ${APPKIT_LIBRARY} )
+ENDIF()
+
 IF( CHARM_CI_SUPPORT )
     LIST( APPEND CharmApplication_SRCS
         CI/CharmCommandInterface.cpp
@@ -126,7 +139,7 @@ ENDIF()
 IF (NOT QTKEYCHAIN_SYSTEM)
 	LIST( APPEND CharmApplication_SRCS Keychain/keychain.cpp )
 	IF (APPLE)
-	    LIST( APPEND CharmApplication_SRCS Keychain/keychain_mac.cpp MacApplicationCore.mm )
+	    LIST( APPEND CharmApplication_SRCS Keychain/keychain_mac.cpp )
 
 	    FIND_LIBRARY( COREFOUNDATION_LIBRARY CoreFoundation )
 	    LIST( APPEND CharmApplication_LIBS ${COREFOUNDATION_LIBRARY} )
