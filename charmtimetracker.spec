@@ -1,5 +1,5 @@
 Name:           charmtimetracker
-Version:        1.11.3
+Version:        1.12.0
 Release:        0
 Summary:        Time Tracking Application
 Source:         %{name}-%{version}.tar.gz

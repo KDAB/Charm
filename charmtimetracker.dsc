@@ -1,6 +1,6 @@
 Format: 1.0
 Source: charmtimetracker
-Version: 1.11.3
+Version: 1.12.0
 Binary: charmtimetracker
 Maintainer: Frank Osterfeld <frank.osterfeld@kdab.com>
 Architecture: any
