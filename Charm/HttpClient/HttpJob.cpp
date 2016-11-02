@@ -92,7 +92,7 @@ QString HttpJob::extractErrorMessageFromReply(const QByteArray& xml)
         }
     }
     if (reader.hasError()) {
-        return QStringLiteral("Error parsing response: %1").arg(reader.errorString());
+        return tr("Error parsing response: %1").arg(reader.errorString());
     }
 
     return QString();
