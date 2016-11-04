@@ -270,14 +270,14 @@ void ActivityReport::slotUpdate()
     }
 
     if ( m_properties.groupByTaskId )
-        matchingEvents = Charm::eventIdsSortedBy( matchingEvents, Charm::SortOrderList { Charm::SortOrder::TaskId,
-                                                                                         Charm::SortOrder::StartTime } );
+        matchingEvents = Charm::eventIdsSortedBy( matchingEvents, Charm::SortOrderList() << Charm::SortOrder::TaskId
+                                                                                         << Charm::SortOrder::StartTime );
     else if ( m_properties.groupByTaskIdAndComments )
-        matchingEvents = Charm::eventIdsSortedBy( matchingEvents, Charm::SortOrderList { Charm::SortOrder::TaskId,
-                                                                                         Charm::SortOrder::Comment,
-                                                                                         Charm::SortOrder::StartTime } );
+        matchingEvents = Charm::eventIdsSortedBy( matchingEvents, Charm::SortOrderList() << Charm::SortOrder::TaskId
+                                                                                         << Charm::SortOrder::Comment
+                                                                                         << Charm::SortOrder::StartTime );
     else
-        matchingEvents = Charm::eventIdsSortedBy( matchingEvents, Charm::SortOrderList { Charm::SortOrder::StartTime } );
+        matchingEvents = Charm::eventIdsSortedBy( matchingEvents, Charm::SortOrderList() << Charm::SortOrder::StartTime );
 
     // filter unproductive events:
     Q_FOREACH( TaskId exclude,  m_properties.rootExcludeTasks ) {
