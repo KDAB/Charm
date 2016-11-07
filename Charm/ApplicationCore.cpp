@@ -863,11 +863,15 @@ void ApplicationCore::slotShowNotification( const QString& title, const QString&
 void ApplicationCore::slotShowTasksEditor()
 {
     m_tasksView.show();
+    m_tasksView.raise();
+    m_tasksView.activateWindow();
 }
 
 void ApplicationCore::slotShowEventEditor()
 {
     m_eventView.show();
+    m_eventView.raise();
+    m_eventView.activateWindow();
 }
 
 #include "moc_ApplicationCore.cpp"
