@@ -67,6 +67,8 @@ cmake . -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DCharm_VERSION=%
 %{_prefix}/bin/charmtimetracker
 
 %changelog
+* Wed Nov 01 2016 Steffen Hansen <steffen.hansen@kdab.com> 1.11.4
+- 1.11.4 release
 * Wed Nov 01 2016 Steffen Hansen <steffen.hansen@kdab.com> 1.11.3
 - 1.11.3 release
 * Sat Apr 30 2016 Allen Winter <allen.winter@kdab.com> 1.11.1
