@@ -65,12 +65,12 @@ class DeployHelper(object):
             shutil.rmtree(self.deployImage)
         os.makedirs(self.deployImage)
 
-    def _locateDll(self, dllName):
+    def _locateDll(self, dllName, fatal=True):
         pathext = os.environ.get("PATHEXT")
         os.environ["PATHEXT"] = ".dll"
         found = shutil.which(dllName, path=os.pathsep.join([self.deployImage, os.environ.get("PATH")]))
         os.environ["PATHEXT"] = pathext
-        if not found:
+        if not found and fatal:
             self._die("Unable to locate %s" % dllName)
         return found
 
@@ -88,9 +88,17 @@ class DeployHelper(object):
                 self._copyToImage(f)
 
         if self.args.deployOpenSSL:
-            self._copyToImage(os.path.join(self.args.deployOpenSSL, "libeay32.dll" ), deploy=False)
-            self._copyToImage(os.path.join(self.args.deployOpenSSL, "libssl32.dll" ), deploy=False)
-            self._copyToImage(os.path.join(self.args.deployOpenSSL, "ssleay32.dll" ), deploy=False)
+            foundSomething = False
+            for dll in ["libeay32.dll", "libssl32.dll", "ssleay32.dll" ]:
+                src = os.path.join(self.args.deployOpenSSL, dll )
+                if not os.path.exists(src):
+                    src = self._locateDll(dll, fatal=False)
+                if src:
+                    foundSomething = True
+                    print(src)
+                    self._copyToImage(src, deploy=False)
+            if not foundSomething:
+                self._die("Failed to deploy openssl")
 
         if self.args.sign:
             for f in glob.glob(os.path.join(self.deployImage, "**/*.exe"), recursive=True):
@@ -126,7 +134,7 @@ class DeployHelper(object):
         for key in defines:
             definestring += " /D%s=\"%s\"" % (key, defines[key])
 
-        command = "makensis.exe /NOCD %s %s" %\
+        command = "makensis /NOCD %s %s" %\
                   (definestring, os.path.join(os.path.dirname(__file__), "NullsoftInstaller.nsi"))
         self._logExec(command)
         installer = os.path.realpath(self.args.installerName)
