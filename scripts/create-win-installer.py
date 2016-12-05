@@ -158,7 +158,7 @@ if __name__ == "__main__":
     parser.add_argument("--deployDlls", action = "store" )
     parser.add_argument("--deployOpenSSL", action = "store" )
 
-    parser.add_argument("--sign", action = "store_true", default="False")
+    parser.add_argument("--sign", action = "store_true", default=False)
 
 
     args = parser.parse_args()
