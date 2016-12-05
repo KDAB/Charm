@@ -130,6 +130,8 @@ IF (WIN32)
 
 
     IF(PYTHONINTERP_FOUND)
+        OPTION(CHARM_SIGN_INSTALLER "Sign the installer and the contained files" ON)
+
         SET(EXTRA_PACKAGE_COMMANDS )
         FIND_PACKAGE( OpenSSL QUIET)
         set_package_properties(OpenSSL PROPERTIES
@@ -149,6 +151,11 @@ IF (WIN32)
             set(EXTRA_PACKAGE_COMMANDS ${EXTRA_PACKAGE_COMMANDS} --architecture x86)
         ENDIF()
 
+        IF(CHARM_SIGN_INSTALLER)
+            set(EXTRA_PACKAGE_COMMANDS ${EXTRA_PACKAGE_COMMANDS} --sign)
+        ENDIF()
+
+
         ADD_CUSTOM_TARGET(package
             COMMAND
                 ${PYTHON_EXECUTABLE}
@@ -162,7 +169,6 @@ IF (WIN32)
                 --applicationIcon "${CMAKE_CURRENT_SOURCE_DIR}/Charm/Icons/Charm.ico"
                 --productLicence "${CMAKE_CURRENT_SOURCE_DIR}/License.txt"
                 ${EXTRA_PACKAGE_COMMANDS}
-                --sign
             DEPENDS
                 ${Charm_EXECUTABLE}
             VERBATIM)
