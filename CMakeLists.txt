@@ -47,7 +47,6 @@ find_package(Qt5Xml REQUIRED)
 find_package(Qt5Network REQUIRED)
 find_package(Qt5Sql REQUIRED)
 find_package(Qt5Test REQUIRED)
-find_package(Qt5Script REQUIRED)
 find_package(Qt5PrintSupport)
 
 if(WIN32)

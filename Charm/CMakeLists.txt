@@ -174,7 +174,6 @@ TARGET_LINK_LIBRARIES(CharmApplication ${CharmApplication_LIBS}
     Qt5::Widgets
     Qt5::Xml
     Qt5::Network
-    Qt5::Script
     Qt5::Sql
     Qt5::PrintSupport
     qt5keychain)

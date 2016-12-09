@@ -62,10 +62,10 @@
 #include <QDir>
 #include <QFileDialog>
 #include <QFileInfo>
+#include <QJsonDocument>
+#include <QJsonObject>
 #include <QMenuBar>
 #include <QMessageBox>
-#include <QScriptEngine>
-#include <QScriptValue>
 #include <QSettings>
 #include <QToolBar>
 #include <QtAlgorithms>
@@ -766,7 +766,7 @@ void TimeTrackingWindow::slotUserInfoDownloaded( HttpJob* job_ )
     // getUserInfo done -> sync task
     slotSyncTasksAutomatic();
 
-    GetUserInfoJob * job = qobject_cast<GetUserInfoJob *>( job_ );
+    auto job = qobject_cast<GetUserInfoJob *>( job_ );
     Q_ASSERT( job );
     if ( job->error() == HttpJob::Canceled )
         return;
@@ -776,16 +776,18 @@ void TimeTrackingWindow::slotUserInfoDownloaded( HttpJob* job_ )
         return;
     }
 
-    QByteArray readData = job->userInfo();
-    const QString data = QString::fromUtf8(readData);
+    const auto readData = job->userInfo();
 
-    QScriptEngine engine;
-    QScriptValue result = engine.evaluate( QLatin1Char('(') + data + QLatin1Char(')') );
-    QScriptValue entries = result.property( QStringLiteral("hrInfo") ).property( QStringLiteral("weeklyHours") );
-    QString weeklyHours = QString::number( entries.toVariant().toDouble(), 'g', 2 );
+    QJsonParseError parseError;
+    const auto doc = QJsonDocument::fromJson( readData, &parseError );
 
-    if ( weeklyHours.isEmpty() )
-        weeklyHours = QStringLiteral("40");
+    if ( parseError.error != QJsonParseError::NoError ) {
+        QMessageBox::critical( this, tr( "Error" ), tr( "Could not parse weekly hours: %1" ).arg( parseError.errorString() ) );
+        return;
+    }
+
+    const auto weeklyHoursValue = doc.object().value( QLatin1String("hrInfo") ).toObject().value( QLatin1String("weeklyHours") );
+    const auto weeklyHours = weeklyHoursValue.isDouble() ? weeklyHoursValue.toDouble() : 40;
 
     QSettings settings;
     settings.beginGroup( QStringLiteral("users") );
