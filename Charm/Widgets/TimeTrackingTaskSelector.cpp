@@ -51,6 +51,14 @@
 
 #define CUSTOM_TASK_PROPERTY_NAME "CUSTOM_TASK_PROPERTY"
 
+namespace {
+static QString escapeAmpersands( QString text )
+{
+    text.replace( QLatin1String("&"), QLatin1String("&&") );
+    return text;
+}
+}
+
 TimeTrackingTaskSelector::TimeTrackingTaskSelector(QWidget *parent)
     : QWidget(parent)
     , m_stopGoButton( new QToolButton( this ) )
@@ -106,12 +114,6 @@ void TimeTrackingTaskSelector::populateEditMenu( QMenu* menu )
 QMenu* TimeTrackingTaskSelector::menu() const
 {
     return m_menu;
-}
-
-static QString escapeAmpersands( QString text )
-{
-    text.replace( QLatin1String("&"), QLatin1String("&&") );
-    return text;
 }
 
 void TimeTrackingTaskSelector::populate( const QVector<WeeklySummary>& summaries )
@@ -209,6 +211,10 @@ void TimeTrackingTaskSelector::handleActiveEvents()
         m_stopGoAction->setEnabled( true );
         m_stopGoAction->setChecked( true );
         m_editCommentAction->setEnabled( true );
+
+        const Event& event = DATAMODEL->eventForId( DATAMODEL->activeEvents().first() );
+        const Task& task =  DATAMODEL->getTask( event.taskId() );
+        m_taskSelectorButton->setText( escapeAmpersands( DATAMODEL->taskIdAndSmartNameString( task.id() ) ) );
     } else {
         m_stopGoAction->setIcon( Data::goIcon() );
         m_stopGoAction->setText( tr( "Start Task" ) );
@@ -221,6 +227,7 @@ void TimeTrackingTaskSelector::handleActiveEvents()
         m_stopGoAction->setChecked( false );
         m_editCommentAction->setEnabled( false );
     }
+
     updateThumbBar();
 }
 
