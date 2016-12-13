@@ -417,31 +417,30 @@ bool SqlStorage::deleteAllEvents( const SqlRaiiTransactor& )
     return runQuery(query);
 }
 
-#define MARKER "============================================================"
 
 bool SqlStorage::runQuery(QSqlQuery& query)
 {
-    static const bool DoChitChat = false;
-    if (DoChitChat)
-        qDebug() << MARKER << endl << "SqlStorage::runQuery: executing query:"
-                 << endl << query.executedQuery();
+#if 0
+    const auto MARKER = "============================================================";
+    qDebug() << MARKER << endl << "SqlStorage::runQuery: executing query:"
+             << endl << query.executedQuery();
     bool result = query.exec();
-    if ( DoChitChat )
+    if ( result )
     {
-        if ( result )
-        {
 
-            qDebug() << "SqlStorage::runQuery: SUCCESS" << endl << MARKER;
-        }
-        else
-        {
-            qDebug() << "SqlStorage::runQuery: FAILURE" << endl
-                     << "Database says: " << query.lastError().databaseText() << endl
-                     << "Driver says:   " << query.lastError().driverText() << endl
-                     << MARKER;
-        }
+        qDebug() << "SqlStorage::runQuery: SUCCESS" << endl << MARKER;
+    }
+    else
+    {
+        qDebug() << "SqlStorage::runQuery: FAILURE" << endl
+                 << "Database says: " << query.lastError().databaseText() << endl
+                 << "Driver says:   " << query.lastError().driverText() << endl
+                 << MARKER;
     }
     return result;
+#else
+    return query.exec();
+#endif
 }
 
 bool SqlStorage::migrateDB(const QString &queryString, int oldVersion)
