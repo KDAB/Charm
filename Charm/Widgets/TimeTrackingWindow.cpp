@@ -453,6 +453,9 @@ void TimeTrackingWindow::slotImportFromXml()
 
 void TimeTrackingWindow::slotSyncTasks( VerboseMode mode )
 {
+    if ( ApplicationCore::instance().state() != Connected ) {
+        return;
+    }
     GetProjectCodesJob* client = new GetProjectCodesJob( this );
     if ( mode == Verbose ) {
         HttpJobProgressDialog* dialog = new HttpJobProgressDialog( client, this );
