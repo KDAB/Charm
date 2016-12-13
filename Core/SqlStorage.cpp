@@ -32,6 +32,7 @@
 
 #include <QDateTime>
 #include <QFile>
+#include <QFileInfo>
 #include <QSqlDatabase>
 #include <QSqlError>
 #include <QSqlField>
@@ -65,7 +66,7 @@ bool SqlStorage::verifyDatabase()
         int value;
         bool ok;
         value = versionString.toInt( &ok );
-        if( ok)
+        if (ok)
         {
             version = value;
         }
@@ -445,6 +446,12 @@ bool SqlStorage::runQuery(QSqlQuery& query)
 
 bool SqlStorage::migrateDB(const QString &queryString, int oldVersion)
 {
+    const QFileInfo info( Configuration::instance().localStorageDatabase );
+    if ( info.exists() )
+    {
+        QFile::copy( info.fileName(), info.fileName().append( QStringLiteral("-backup-version-%1")
+                                                              .arg( oldVersion ) ) );
+    }
     SqlRaiiTransactor transactor( database() );
     QSqlQuery query( database() );
     query.prepare( queryString );
