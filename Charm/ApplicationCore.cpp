@@ -571,17 +571,18 @@ void ApplicationCore::enterConnectingState()
         }
     } catch (const UnsupportedDatabaseVersionException& e) {
         qDebug() << e.what();
+        QFileInfo info(Configuration::instance().localStorageDatabase);
         QString message = QObject::tr( "<html><body>"
                                        "<p>Your current Charm database is not supported by this version. "
                                        "The error message is: %1."
                                        "You have two options here:</p><ul>"
-                                       "<li>Start over with an empty database by moving or deleting your ~/.Charm folder "
+                                       "<li>Start over with an empty database by moving or deleting your %2 folder "
                                        "then re-running this version of Charm.</li>"
                                        "<li>Load an older version of Charm that supports your current database and select "
                                        "File->Export, and save that file somewhere. Then, either rename or delete your "
-                                       "~/.Charm folder and restart this version of Charm and select File->Import from "
+                                       "%2 folder and restart this version of Charm and select File->Import from "
                                        "previous export and select the file you saved in the previous step.</li>"
-                                       "</ul></body></html>").arg(e.what().toHtmlEscaped());
+                                       "</ul></body></html>").arg(e.what().toHtmlEscaped(), info.absoluteDir().path());
         showCritical( QObject::tr("Charm Database Error"), message );
         slotQuitApplication();
         return;
