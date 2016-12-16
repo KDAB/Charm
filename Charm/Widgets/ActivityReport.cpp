@@ -53,8 +53,7 @@ ActivityReportConfigurationDialog::ActivityReportConfigurationDialog( QWidget* p
     m_ui->dateEditEnd->calendarWidget()->setVerticalHeaderFormat( QCalendarWidget::ISOWeekNumbers );
     m_ui->dateEditStart->calendarWidget()->setFirstDayOfWeek( Qt::Monday );
     m_ui->dateEditStart->calendarWidget()->setVerticalHeaderFormat( QCalendarWidget::ISOWeekNumbers );
-    m_ui->groupBoxAdvanced->setFixedHeight( 0 ); // make sure it does not make the height grow at first show
-
+    m_ui->tabWidget->setCurrentIndex(0);
     connect( m_ui->buttonBox, SIGNAL(accepted()), this, SLOT(accept()) );
     connect( m_ui->buttonBox, SIGNAL(rejected()), this, SLOT(reject()) );
     connect( m_ui->comboBox, SIGNAL(currentIndexChanged(int)),
@@ -67,8 +66,6 @@ ActivityReportConfigurationDialog::ActivityReportConfigurationDialog( QWidget* p
              SLOT(slotSelectTask()) );
     connect( m_ui->removeIncludeTaskButton, SIGNAL(clicked()),
              SLOT(slotRemoveIncludeTask()) );
-    connect( m_ui->groupBoxAdvanced, SIGNAL(toggled(bool)),
-             SLOT(slotAdvancedToggled(bool)) );
     connect( m_ui->checkBoxGroupTasks, SIGNAL(clicked(bool)),
              SLOT(slotGroupTasks(bool)) );
     connect( m_ui->checkBoxGroupTasksComments, SIGNAL(clicked(bool)),
@@ -87,7 +84,6 @@ ActivityReportConfigurationDialog::~ActivityReportConfigurationDialog()
 void ActivityReportConfigurationDialog::slotDelayedInitialization()
 {
     slotStandardTimeSpansChanged();
-    slotAdvancedToggled( m_ui->groupBoxAdvanced->isChecked() );
     connect( ApplicationCore::instance().dateChangeWatcher(),
              SIGNAL(dateChanged()),
              SLOT(slotStandardTimeSpansChanged()) );
@@ -132,11 +128,7 @@ void ActivityReportConfigurationDialog::slotSelectTask()
 {
     TaskId taskId;
     if ( selectTask( taskId ) && !m_properties.rootTasks.contains(taskId)) {
-        const TaskTreeItem& item = DATAMODEL->taskTreeItem( taskId );
-        QListWidgetItem* listItem = new QListWidgetItem( Data::charmIcon(),
-                                                         DATAMODEL->fullTaskName( item.task() ),
-                                                         m_ui->listWidgetIncludeTask );
-        listItem->setData( Qt::UserRole, taskId );
+        addListItem( taskId, m_ui->listWidgetIncludeTask );
         m_properties.rootTasks << taskId;
     }
     m_ui->removeIncludeTaskButton->setEnabled( !m_properties.rootTasks.isEmpty() );
@@ -148,11 +140,7 @@ void ActivityReportConfigurationDialog::slotExcludeTask()
 {
     TaskId taskId;
     if ( selectTask( taskId ) && !m_properties.rootExcludeTasks.contains( taskId ) ) {
-        const TaskTreeItem& item = DATAMODEL->taskTreeItem( taskId );
-        QListWidgetItem* listItem = new QListWidgetItem( Data::charmIcon(),
-                                                         DATAMODEL->fullTaskName( item.task() ),
-                                                         m_ui->listWidgetExclude );
-        listItem->setData( Qt::UserRole, taskId );
+        addListItem( taskId, m_ui->listWidgetExclude );
         m_properties.rootExcludeTasks << taskId;
     }
     m_ui->removeExcludeTaskButton->setEnabled( !m_properties.rootExcludeTasks.isEmpty() );
@@ -181,16 +169,6 @@ void ActivityReportConfigurationDialog::slotRemoveIncludeTask()
     m_ui->listWidgetIncludeTask->setEnabled( !m_properties.rootTasks.isEmpty() );
 }
 
-void ActivityReportConfigurationDialog::slotAdvancedToggled(bool checked)
-{
-    if ( checked ) {
-        m_ui->groupBoxAdvanced->setFixedHeight( m_ui->groupBoxAdvanced->sizeHint().height() );
-    }
-    else {
-        m_ui->groupBoxAdvanced->setFixedHeight( m_ui->groupBoxAdvanced->font().pointSize() * 2 );
-    }
-}
-
 void ActivityReportConfigurationDialog::slotGroupTasks(bool checked)
 {
     m_ui->checkBoxGroupTasksComments->setEnabled( !checked );
@@ -209,6 +187,16 @@ bool ActivityReportConfigurationDialog::selectTask(TaskId& task)
     if ( taskSelected )
         task = dialog.selectedTask();
     return taskSelected;
+}
+
+QListWidgetItem *ActivityReportConfigurationDialog::addListItem(TaskId taskId, QListWidget *list) const
+{
+    const TaskTreeItem& item = DATAMODEL->taskTreeItem( taskId );
+    QListWidgetItem* listItem = new QListWidgetItem(  DATAMODEL->smartTaskName( item.task() ),
+                                                     list );
+    listItem->setToolTip( DATAMODEL->fullTaskName( item.task() ) );
+    listItem->setData( Qt::UserRole, taskId );
+    return listItem;
 }
 
 void ActivityReportConfigurationDialog::accept()

@@ -38,6 +38,8 @@ namespace Ui {
 }
 
 class QUrl;
+class QListWidgetItem;
+class QListWidget;
 
 class ActivityReportConfigurationDialog : public ReportConfigurationDialog
 {
@@ -71,12 +73,12 @@ private Q_SLOTS:
     void slotExcludeTask();
     void slotRemoveExcludedTask();
     void slotRemoveIncludeTask();
-    void slotAdvancedToggled(bool checked);
     void slotGroupTasks(bool checked);
     void slotGroupTasksComments(bool checked);
 
 private:
     bool selectTask(TaskId& task);
+    QListWidgetItem *addListItem(TaskId id, QListWidget *list) const;
 
     QScopedPointer<Ui::ActivityReportConfigurationDialog> m_ui;
     QList<NamedTimeSpan> m_timespans;
