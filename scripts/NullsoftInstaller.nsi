@@ -1,6 +1,6 @@
 ; basic script template for NullsoftInstallerPackager
 ;
-; Copyright 2016 Hannnah von Reth <hannah.vonreth@kdab.com>
+; Copyright 2016-2017 Hannnah von Reth <hannah.vonreth@kdab.com>
 ; Copyright 2010 Patrick Spendrin <ps_ml@gmx.de>
 
 
