@@ -68,6 +68,10 @@
 #  include "CI/CharmCommandInterface.h"
 #endif
 
+namespace {
+static const QByteArray StartTaskCommand = QByteArrayLiteral( "start-task: " );
+}
+
 ApplicationCore* ApplicationCore::m_instance = nullptr;
 
 ApplicationCore::ApplicationCore(TaskId startupTask, QObject* parent )
@@ -117,18 +121,20 @@ ApplicationCore::ApplicationCore(TaskId startupTask, QObject* parent )
     uniqueApplicationSocket.connectToServer(serverName, QIODevice::ReadWrite);
     if (uniqueApplicationSocket.waitForConnected(1000)) {
         if ( startupTask != -1 ) {
-            QByteArray data( QStringLiteral( "start-task: %1" ).arg( startupTask ).toLatin1().constData() );
+            QByteArray data( StartTaskCommand + QByteArray::number( startupTask ) + '\n' );
             qint64 written = uniqueApplicationSocket.write( data );
             if (  written == -1 || written != data.length() ) {
-                std::cerr << "Failed to pass " << data.constData() << " to running charm instance, error: "
-                          << qPrintable( uniqueApplicationSocket.errorString() ) << std::endl;
+                qWarning() << "Failed to pass " << data << " to running charm instance, error: "
+                           << uniqueApplicationSocket.errorString();
             }
+            uniqueApplicationSocket.flush();
+            uniqueApplicationSocket.waitForBytesWritten();
         }
         throw AlreadyRunningException();
     }
 
-    connect(&m_uniqueApplicationServer, SIGNAL(newConnection()),
-            this, SLOT(slotHandleUniqueApplicationConnection()));
+    connect(&m_uniqueApplicationServer, &QLocalServer::newConnection,
+            this, &ApplicationCore::slotHandleUniqueApplicationConnection, Qt::QueuedConnection);
 
     QFile::remove(QDir::tempPath() + QLatin1Char('/') + serverName);
     bool listening = m_uniqueApplicationServer.listen(serverName);
@@ -297,19 +303,24 @@ void ApplicationCore::slotStartTaskMenuAboutToShow()
 void ApplicationCore::slotHandleUniqueApplicationConnection()
 {
     QLocalSocket* socket = m_uniqueApplicationServer.nextPendingConnection();
-    socket->waitForReadyRead();
-    QByteArray data = socket->readAll();
-    if ( data.startsWith( "start-task: " ) ) { //krazy:exclude=strings
-        bool ok = true;
-        TaskId id = data.mid( QStringLiteral( "start-task: " ).length() ).toInt( &ok );
-        if ( ok ) {
-            m_timeTracker.slotStartEvent( id );
-        } else {
-            qDebug() << "Received invalid argument:" << data;
+    connect(socket, &QLocalSocket::readyRead, socket, [this, socket](){
+        if (!socket->canReadLine())
+            return;
+        while (socket->canReadLine()) {
+            QByteArray data = socket->readLine().trimmed();
+            if ( data.startsWith( StartTaskCommand ) ) {
+                bool ok = true;
+                TaskId id = data.mid( StartTaskCommand.length() ).toInt( &ok );
+                if ( ok ) {
+                    m_timeTracker.slotStartEvent( id );
+                } else {
+                    qWarning() << "Received invalid argument:" << data;
+                }
+            }
         }
-    }
-    delete socket;
-    showMainWindow( ApplicationCore::ShowMode::ShowAndRaise );
+        socket->deleteLater();
+        showMainWindow( ApplicationCore::ShowMode::ShowAndRaise );
+    });
 }
 
 void ApplicationCore::showMainWindow(ShowMode mode )
