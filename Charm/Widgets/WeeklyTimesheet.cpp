@@ -301,18 +301,20 @@ void WeeklyTimeSheetReport::slotUploadTimesheet()
 
 void WeeklyTimeSheetReport::slotTimesheetUploaded(HttpJob* client)
 {
-    if ( client->error() == HttpJob::Canceled ) {
-        uploadButton()->setEnabled(true);
-        return;
-    }
-    if ( client->error()  ) {
-        uploadButton()->setEnabled(true);
-        QMessageBox::critical(this, tr("Error"), tr("Could not upload timesheet: %1").arg( client->errorString() ) );
-    }
-    else
-    {
+    uploadButton()->setEnabled( true );
+    switch ( client->error() ) {
+    case HttpJob::NoError:
         addUploadedTimesheet(m_yearOfWeek, m_weekNumber);
-        QMessageBox::information(this, tr("Timesheet Uploaded"), tr("Your timesheet was successfully uploaded."));
+        QMessageBox::information( this, tr("Timesheet Uploaded"), tr("Your timesheet was successfully uploaded.") );
+        break;
+    case HttpJob::Canceled:
+        break;
+    case HttpJob::AuthenticationFailed:
+        uploadButton()->setEnabled( false );
+        slotUploadTimesheet();
+        break;
+    default:
+        QMessageBox::critical( this, tr("Error"), tr("Could not upload timesheet: %1").arg( client->errorString() ) );
     }
 }
 
