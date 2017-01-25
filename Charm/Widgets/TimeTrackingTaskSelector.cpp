@@ -122,69 +122,26 @@ void TimeTrackingTaskSelector::populate( const QVector<WeeklySummary>& summaries
     if (m_menu->isActiveWindow())
         return;
 
-    m_menu->clear();
-    QMap<TaskId, QAction*> addedTasks;
-    bool addedAction = false;
-    Q_FOREACH( const WeeklySummary& s, summaries ) {
-        auto action = new QAction( escapeAmpersands( DATAMODEL->taskIdAndSmartNameString( s.task ) ), m_menu );
-        addedTasks.insert( s.task, action );
-        action->setProperty( CUSTOM_TASK_PROPERTY_NAME, QVariant::fromValue( s.task ) );
-        Q_ASSERT( action->property( CUSTOM_TASK_PROPERTY_NAME ).value<TaskId>() == s.task );
-        m_menu->addAction( action );
-        addedAction = true;
-    }
-    // insert the manually selected task, if one is set:
-    if ( addedAction ) {
-        m_menu->addSeparator();
-        addedAction = false;
-    }
-    if( m_manuallySelectedTask > 0 && ! addedTasks.contains( m_manuallySelectedTask )) {
-        const Task& task = DATAMODEL->getTask( m_manuallySelectedTask );
-        auto action = new QAction( DATAMODEL->taskIdAndSmartNameString( task.id() ), m_menu );
-        addedTasks.insert( m_manuallySelectedTask, action );
-        action->setProperty( CUSTOM_TASK_PROPERTY_NAME, QVariant::fromValue( m_manuallySelectedTask ) );
-        m_menu->addAction( action );
-    }
-    // ... add action to select a task:
-    m_menu->addAction( m_startOtherTaskAction );
-
-    TaskIdList interestingTasks;
-    interestingTasks += DATAMODEL->mostRecentlyUsedTasks();
-    interestingTasks += DATAMODEL->mostFrequentlyUsedTasks();
-
-    TaskIdList interestingTasksToAdd;
-    while( interestingTasksToAdd.count() < 10 ) { // arbitrary hardcoded number warning
-        if( interestingTasks.isEmpty() )
-            break;
-
-        TaskId id = interestingTasks.takeFirst();
-        if( !addedTasks.contains( id ) && DATAMODEL->getTask(id).isCurrentlyValid() )
-            interestingTasksToAdd.append( id );
-    }
-
-    qSort( interestingTasksToAdd.begin(), interestingTasksToAdd.end() );
-    foreach( TaskId id, interestingTasksToAdd ) {
-        if( addedTasks.contains( id ) )
-            continue;
-        if( !addedAction ) {
-            m_menu->addSeparator();
-            addedAction = true;
-        }
+    const auto createTaskAction = [this]( TaskId id ) {
         auto action = new QAction( DATAMODEL->taskIdAndSmartNameString( id ), m_menu );
         action->setProperty( CUSTOM_TASK_PROPERTY_NAME, QVariant::fromValue( id ) );
-        m_menu->addAction( action );
-        addedTasks.insert( id, action );
+        return action;
+    };
+
+    if ( m_taskManuallySelected ) {
+        m_taskManuallySelected = false;
+        slotActionSelected( createTaskAction( m_manuallySelectedTask ) );
+        return;
     }
 
-    // finally, select the task that the user has just selected
-    if( m_taskManuallySelected ) {
-        m_taskManuallySelected = false;
-        auto action = addedTasks.value( m_manuallySelectedTask );
-        Q_ASSERT_X( action != 0, Q_FUNC_INFO, "the manually selected task should always be in the menu" );
-        // this sets the correct text on the button
-        slotActionSelected( action );
+    m_menu->clear();
+
+    const TaskIdList interestingTasksToAdd = DATAMODEL->mostRecentlyUsedTasks();
+
+    for( int i = 0; i < 5 && i < interestingTasksToAdd.size(); ++i ) {
+        m_menu->addAction( createTaskAction( interestingTasksToAdd.at( i ) ) );
     }
-    // enable the selector button if the menu is not empty
+    m_menu->addAction( m_startOtherTaskAction );
     m_taskSelectorButton->setDisabled( m_menu->actions().isEmpty() );
 }
 
