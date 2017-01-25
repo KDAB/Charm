@@ -39,6 +39,8 @@
 #include <algorithm>
 #include <functional>
 #include <queue>
+#include <unordered_map>
+#include <set>
 
 CharmDataModel::CharmDataModel()
     : QObject()
@@ -657,16 +659,6 @@ struct TaskWithCount {
     }
 };
 
-struct TaskWithLastUseDate {
-    TaskId id;
-    QDateTime lastUse;
-
-    bool operator<(const TaskWithLastUseDate &other) const
-    {
-        return lastUse < other.lastUse;
-    }
-};
-
 TaskIdList CharmDataModel::mostFrequentlyUsedTasks() const
 {
     QMap<TaskId, unsigned > mfuMap;
@@ -696,32 +688,36 @@ TaskIdList CharmDataModel::mostFrequentlyUsedTasks() const
 
 TaskIdList CharmDataModel::mostRecentlyUsedTasks() const
 {
-    QMap<TaskId, QDateTime> mruMap;
-    const EventMap &events = eventMap();
-    for (EventMap::const_iterator it = events.begin(); it != events.end(); ++it) {
-        const TaskId id = it->second.taskId();
+    std::unordered_map<TaskId, QDateTime> mruMap;
+    const EventMap& events = eventMap();
+    for( const auto &it : events ) {
+        const TaskId id = it.second.taskId();
+        if ( id == 0 )
+            continue;
         // process use date
         // Note: for a relative order, the UTC time is sufficient and much faster
-        const QDateTime date = it->second.startDateTime(Qt::UTC);
-        mruMap[id] = qMax(mruMap[id], date);
+        const QDateTime date = it.second.startDateTime( Qt::UTC );
+        const auto old = mruMap.find( id );
+        if ( old != mruMap.cend() ) {
+            mruMap[id]= qMax( old->second, date );
+        } else {
+            mruMap[id]= date;
+        }
     }
-    std::priority_queue<TaskWithLastUseDate> mruTasks;
-    for (QMap<TaskId, QDateTime>::const_iterator it = mruMap.constBegin(); it != mruMap.constEnd();
-         ++it) {
-        TaskWithLastUseDate t;
-        t.id = it.key();
-        t.lastUse = it.value();
-        if (t.id != 0) mruTasks.push(t);
+    const auto comp = [] ( const QDateTime &a, const QDateTime &b )
+    {
+        return a > b;
+    };
+    std::map<QDateTime, TaskId, decltype( comp )> mru( comp );
+    for ( const auto kv : mruMap ) {
+        mru[kv.second] = kv.first;
     }
-    TaskIdList mru;
-    while (!mruTasks.empty()) {
-        const TaskWithLastUseDate t = mruTasks.top();
-        mruTasks.pop();
-        Q_ASSERT(t.id != 0);
-        mru.append(t.id);
-    }
-
-    return mru;
+    TaskIdList out;
+    out.reserve( static_cast<int>( mru.size() ) );
+    std::transform( mru.cbegin(), mru.cend(), std::inserter( out, out.begin() ),  []( const std::pair<const QDateTime, TaskId> &in ) {
+        return in.second;
+    });
+    return out;
 }
 
 bool CharmDataModel::operator==(const CharmDataModel &other) const
