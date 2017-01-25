@@ -78,7 +78,6 @@ ApplicationCore::ApplicationCore(TaskId startupTask, QObject* parent )
     : QObject( parent )
     , m_actionStopAllTasks( this )
     , m_actionQuit( this )
-    , m_systrayContextMenuStartTask( m_timeTracker.menu()->title() )
     , m_actionAboutDialog( this )
     , m_actionPreferences( this )
     , m_actionExportToXml( this )
@@ -178,16 +177,20 @@ ApplicationCore::ApplicationCore(TaskId startupTask, QObject* parent )
     connect(this, SIGNAL(goToState(State)), SLOT(setState(State)),
             Qt::QueuedConnection);
 
+    connect(&m_systrayContextMenu, &QMenu::aboutToShow, this, &ApplicationCore::slotStartTaskMenuAboutToShow);
+
     // system tray icon:
-    m_actionStopAllTasks.setText( tr( "Stop &All Active Tasks" ) );
+    m_actionStopAllTasks.setText( tr( "Stop Current Task" ) );
     m_actionStopAllTasks.setShortcut( Qt::Key_Escape );
     m_actionStopAllTasks.setShortcutContext( Qt::ApplicationShortcut );
     mainView().addAction(&m_actionStopAllTasks); // for the shortcut to work
     connect( &m_actionStopAllTasks, SIGNAL(triggered()), SLOT(slotStopAllTasks()) );
-    m_systrayContextMenu.addAction( m_timeTracker.openCharmAction() );
-    m_systrayContextMenu.addSeparator();
+
     m_systrayContextMenu.addAction( &m_actionStopAllTasks );
     m_systrayContextMenu.addSeparator();
+
+    m_systrayContextMenu.addAction( m_timeTracker.openCharmAction() );
+    m_systrayContextMenu.addAction( &m_actionQuit );
 
     m_trayIcon.setContextMenu( &m_systrayContextMenu );
     m_trayIcon.setToolTip( tr( "No active events" ) );
@@ -196,21 +199,7 @@ ApplicationCore::ApplicationCore(TaskId startupTask, QObject* parent )
 
     QApplication::setWindowIcon( Data::charmIcon() );
 
-    m_systrayContextMenu.addAction( tr( "Show Tasks Editor" ), this,
-                                    SLOT(slotShowTasksEditor()), QKeySequence( tr("Ctrl+1") ) );
-    m_systrayContextMenu.addAction( tr( "Show Event Editor" ), this,
-                                    SLOT(slotShowEventEditor()), QKeySequence( tr("Ctrl+2") ) );
-
-
-    m_systrayContextMenu.addSeparator();
-    m_systrayContextMenu.addMenu( &m_systrayContextMenuStartTask );
-
-    m_systrayContextMenu.addSeparator();
-    m_systrayContextMenu.addAction( &m_actionQuit );
-
     // set up actions:
-    connect( &m_systrayContextMenuStartTask, SIGNAL(aboutToShow()),
-             SLOT(slotStartTaskMenuAboutToShow()) );
     m_actionQuit.setShortcut( Qt::CTRL + Qt::Key_Q );
     m_actionQuit.setText( tr( "Quit" ) );
     m_actionQuit.setIcon( Data::quitCharmIcon() );
@@ -296,8 +285,14 @@ ApplicationCore::~ApplicationCore()
 
 void ApplicationCore::slotStartTaskMenuAboutToShow()
 {
-    m_systrayContextMenuStartTask.clear();
-    m_systrayContextMenuStartTask.addActions( m_timeTracker.menu()->actions() );
+    const auto newActions = m_timeTracker.menu()->actions();
+    if ( m_taskActions == newActions )
+        return;
+    for ( const auto action : m_taskActions ) {
+        m_systrayContextMenu.removeAction(action);
+    }
+    m_taskActions = newActions;
+    m_systrayContextMenu.insertActions(m_systrayContextMenu.actions().first(), m_taskActions);
 }
 
 void ApplicationCore::slotHandleUniqueApplicationConnection()

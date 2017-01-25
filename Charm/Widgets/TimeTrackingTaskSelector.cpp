@@ -141,6 +141,7 @@ void TimeTrackingTaskSelector::populate( const QVector<WeeklySummary>& summaries
     for( int i = 0; i < 5 && i < interestingTasksToAdd.size(); ++i ) {
         m_menu->addAction( createTaskAction( interestingTasksToAdd.at( i ) ) );
     }
+    m_menu->addSeparator();
     m_menu->addAction( m_startOtherTaskAction );
     m_taskSelectorButton->setDisabled( m_menu->actions().isEmpty() );
 }

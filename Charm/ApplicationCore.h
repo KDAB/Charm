@@ -151,7 +151,6 @@ private:
     Controller m_controller;
     TrayIcon m_trayIcon;
     QMenu m_systrayContextMenu;
-    QMenu m_systrayContextMenuStartTask;
     QAction m_actionAboutDialog;
     QAction m_actionPreferences;
     QAction m_actionExportToXml;
@@ -164,6 +163,7 @@ private:
     QAction m_actionActivityReport;
     QAction m_actionWeeklyTimesheetReport;
     QAction m_actionMonthlyTimesheetReport;
+    QList<QAction*> m_taskActions;
     EventView m_eventView;
     TasksView m_tasksView;
     QVector<UIStateInterface*> m_uiElements;
