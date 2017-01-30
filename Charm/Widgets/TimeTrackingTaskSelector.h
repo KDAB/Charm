@@ -60,7 +60,7 @@ Q_SIGNALS:
     void updateSummariesPlease();
 
 private Q_SLOTS:
-    void slotActionSelected( QAction* );
+    void slotActionSelected();
     void slotGoStopToggled( bool );
     void slotEditCommentClicked();
     void slotManuallySelectTask();

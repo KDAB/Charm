@@ -49,9 +49,9 @@
 #include <QtWinExtras/QWinThumbnailToolButton>
 #endif
 
-#define CUSTOM_TASK_PROPERTY_NAME "CUSTOM_TASK_PROPERTY"
-
 namespace {
+const static char CUSTOM_TASK_PROPERTY_NAME[]  = "CUSTOM_TASK_PROPERTY";
+
 static QString escapeAmpersands( QString text )
 {
     text.replace( QLatin1String("&"), QLatin1String("&&") );
@@ -76,9 +76,6 @@ TimeTrackingTaskSelector::TimeTrackingTaskSelector(QWidget *parent)
     hbox->setSpacing( 1 );
     hbox->setContentsMargins( 0, 0, 0, 0 );
     m_taskSelectorButton->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Preferred );
-
-    connect( m_menu, SIGNAL(triggered(QAction*)),
-             SLOT(slotActionSelected(QAction*)) );
 
     m_stopGoAction->setText( tr("Start Task") );
     m_stopGoAction->setIcon( Data::goIcon() );
@@ -125,12 +122,13 @@ void TimeTrackingTaskSelector::populate( const QVector<WeeklySummary>& summaries
     const auto createTaskAction = [this]( TaskId id ) {
         auto action = new QAction( DATAMODEL->taskIdAndSmartNameString( id ), m_menu );
         action->setProperty( CUSTOM_TASK_PROPERTY_NAME, QVariant::fromValue( id ) );
+        connect(action, &QAction::triggered, this, &TimeTrackingTaskSelector::slotActionSelected);
         return action;
     };
 
     if ( m_taskManuallySelected ) {
         m_taskManuallySelected = false;
-        slotActionSelected( createTaskAction( m_manuallySelectedTask ) );
+        createTaskAction( m_manuallySelectedTask )->trigger();
         return;
     }
 
@@ -189,36 +187,37 @@ void TimeTrackingTaskSelector::handleActiveEvents()
     updateThumbBar();
 }
 
-void TimeTrackingTaskSelector::slotActionSelected( QAction* action )
+void TimeTrackingTaskSelector::slotActionSelected()
 {
-    TaskId taskId = action->property( CUSTOM_TASK_PROPERTY_NAME ).value<TaskId>();
+    auto action = qobject_cast<QAction*>( sender() );
+    const TaskId taskId = action->property( CUSTOM_TASK_PROPERTY_NAME ).value<TaskId>();
     const Task& task = DATAMODEL->getTask( taskId );
-    if ( task.isValid() ) {
-        const bool expired = !task.isCurrentlyValid();
-        const bool trackable = task.trackable();
-        if ( !trackable || expired ) {
-            const bool notTrackableAndExpired = ( !trackable && expired );
-            const auto id = QString::number( task.id() );
-            const QString name = task.name();
-            const QString expirationDate = QLocale::system().toString(task.validUntil(), QLocale::ShortFormat);
-            QString message = notTrackableAndExpired ? tr( "The task %1 (%2) is not trackable and expired since %3").arg( id, name, expirationDate ) :
-                                                       expired ? tr( "The task %1 (%2) is expired since %3").arg( id, name, expirationDate ) :
-                                                                 tr( "The task %1 (%2) is not trackable").arg( id, name );
 
-            QMessageBox::information( this, tr( "Please choose another task" ), message );
-            return;
-        }
+    Q_ASSERT(task.isValid());
+    if ( !task.isValid() )
+        return;
+
+    const bool expired = !task.isCurrentlyValid();
+    const bool trackable = task.trackable();
+    if ( !trackable || expired ) {
+        const bool notTrackableAndExpired = ( !trackable && expired );
+        const auto id = QString::number( task.id() );
+        const QString name = task.name();
+        const QString expirationDate = QLocale::system().toString(task.validUntil(), QLocale::ShortFormat);
+        QString message = notTrackableAndExpired ? tr( "The task %1 (%2) is not trackable and expired since %3").arg( id, name, expirationDate ) :
+                                                   expired ? tr( "The task %1 (%2) is expired since %3").arg( id, name, expirationDate ) :
+                                                             tr( "The task %1 (%2) is not trackable").arg( id, name );
+
+        QMessageBox::information( this, tr( "Please choose another task" ), message );
+        return;
     }
+    taskSelected( taskId );
+    handleActiveEvents();
 
-    if( taskId > 0 ) {
-        taskSelected( taskId );
-        handleActiveEvents();
-
-        if ( !DATAMODEL->isTaskActive( taskId ) ) {
-            if ( !DATAMODEL->activeEvents().isEmpty() )
-                emit stopEvents();
-            emit startEvent( taskId );
-        }
+    if ( !DATAMODEL->isTaskActive( taskId ) ) {
+        if ( !DATAMODEL->activeEvents().isEmpty() )
+            emit stopEvents();
+        emit startEvent( taskId );
     }
 }
 
