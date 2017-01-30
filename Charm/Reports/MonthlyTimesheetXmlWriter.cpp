@@ -75,7 +75,7 @@ QByteArray MonthlyTimesheetXmlWriter::saveToXml() const
     QDomElement root = document.documentElement();
     QDomElement metadata = XmlSerialization::metadataElement(document);
     QDomElement charmVersion = document.createElement(QStringLiteral("charmversion"));
-    QDomText charmVersionString = document.createTextNode(QStringLiteral(CHARM_VERSION));
+    QDomText charmVersionString = document.createTextNode(CharmVersion());
     charmVersion.appendChild(charmVersionString);
     metadata.appendChild(charmVersion);
     auto installationId = document.createElement(QStringLiteral("installation-id"));

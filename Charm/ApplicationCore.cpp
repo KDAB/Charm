@@ -109,7 +109,7 @@ ApplicationCore::ApplicationCore(TaskId startupTask, bool hideAtStart, QObject *
     QCoreApplication::setOrganizationName(QStringLiteral("KDAB"));
     QCoreApplication::setOrganizationDomain(QStringLiteral("kdab.com"));
     QCoreApplication::setApplicationName(QStringLiteral("Charm"));
-    QCoreApplication::setApplicationVersion(QStringLiteral(CHARM_VERSION));
+    QCoreApplication::setApplicationVersion(CharmVersion());
 
     QLocalSocket uniqueApplicationSocket;
     QString serverName(QStringLiteral("com.kdab.charm"));
@@ -398,7 +398,7 @@ void ApplicationCore::createHelpMenu(QMenuBar *menuBar)
     menu->setTitle(tr("Help"));
     menu->addAction(&m_actionAboutDialog);
 #ifdef Q_OS_WIN
-    if (!QString::fromLatin1(UPDATE_CHECK_URL).isEmpty())
+    if (!CharmUpdateCheckUrl().isEmpty())
         menu->addAction(&m_actionCheckForUpdates);
 
 #endif

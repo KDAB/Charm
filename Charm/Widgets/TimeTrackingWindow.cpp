@@ -103,7 +103,7 @@ TimeTrackingWindow::TimeTrackingWindow(QWidget *parent)
     m_checkUploadedSheetsTimer.setInterval(60 * 60 * 1000);
 #if defined(Q_OS_OSX) || defined(Q_OS_WIN)
     m_checkCharmReleaseVersionTimer.setInterval(24 * 60 * 60 * 1000);
-    if (!QString::fromLatin1(UPDATE_CHECK_URL).isEmpty()) {
+    if (!CharmUpdateCheckUrl().isEmpty()) {
         QTimer::singleShot(1000, this, SLOT(slotCheckForUpdatesAutomatic()));
         m_checkCharmReleaseVersionTimer.start();
     }
@@ -594,8 +594,7 @@ void TimeTrackingWindow::startCheckForUpdates(VerboseMode mode)
     CheckForUpdatesJob *checkForUpdates = new CheckForUpdatesJob(this);
     connect(checkForUpdates, &CheckForUpdatesJob::finished,
             this, &TimeTrackingWindow::slotCheckForUpdates);
-    const QString urlString = QStringLiteral(UPDATE_CHECK_URL);
-    checkForUpdates->setUrl(QUrl(urlString));
+    checkForUpdates->setUrl(QUrl(CharmUpdateCheckUrl()));
     if (mode == Verbose)
         checkForUpdates->setVerbose(true);
     checkForUpdates->start();
@@ -617,7 +616,7 @@ void TimeTrackingWindow::slotCheckForUpdates(CheckForUpdatesJob::JobData data)
     if ((skipVersion == releaseVersion) && !data.verbose)
         return;
 
-    if (Charm::versionLessThan(QStringLiteral(CHARM_VERSION), releaseVersion)) {
+    if (Charm::versionLessThan(CharmVersion(), releaseVersion)) {
         informUserAboutNewRelease(releaseVersion, data.link, data.releaseInformationLink);
     } else {
         if (data.verbose)
@@ -629,7 +628,7 @@ void TimeTrackingWindow::slotCheckForUpdates(CheckForUpdatesJob::JobData data)
 void TimeTrackingWindow::informUserAboutNewRelease(const QString &releaseVersion, const QUrl &link,
                                                    const QString &releaseInfoLink)
 {
-    QString localVersion = QStringLiteral(CHARM_VERSION);
+    QString localVersion = CharmVersion();
     localVersion.truncate(releaseVersion.length());
     CharmNewReleaseDialog dialog(this);
     dialog.setVersion(releaseVersion, localVersion);

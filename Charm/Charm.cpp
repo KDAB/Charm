@@ -64,7 +64,7 @@ int main(int argc, char **argv)
     if (argc >= 2) {
         if (qstrcmp(argv[1], "--version") == 0) {
             using namespace std;
-            cout << "Charm version " << CHARM_VERSION << endl;
+            cout << "Charm version " << qPrintable(CharmVersion()) << endl;
             return 0;
         } else if (argc == 3 && qstrcmp(argv[1], "--start-task") == 0) {
             bool ok = true;
