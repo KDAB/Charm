@@ -39,28 +39,31 @@ typedef int EventId;
 /** An event is a recorded time for a task.
     It records the according task, the duration and a possible
     comment. */
-class Event {
+class Event
+{
 public:
     Event();
 
-    bool operator == ( const Event& other ) const;
+    bool operator ==(const Event &other) const;
 
-    bool operator != ( const Event& other ) const
-    { return ! operator==( other ); }
+    bool operator !=(const Event &other) const
+    {
+        return !operator==(other);
+    }
 
     EventId id() const;
 
-    void setId( EventId id );
+    void setId(EventId id);
 
     int userId() const;
 
-    void setUserId( int userId );
+    void setUserId(int userId);
 
     int reportId() const;
 
-    void setReportId( int userId );
+    void setReportId(int userId);
 
-    void setInstallationId( int instId );
+    void setInstallationId(int instId);
 
     int installationId() const;
 
@@ -68,28 +71,28 @@ public:
 
     TaskId taskId() const;
 
-    void setTaskId( TaskId id);
+    void setTaskId(TaskId id);
 
     QString comment() const;
 
-    void setComment( const QString& );
+    void setComment(const QString &);
 
-    QDateTime startDateTime( Qt::TimeSpec timeSpec = Qt::LocalTime ) const;
+    QDateTime startDateTime(Qt::TimeSpec timeSpec = Qt::LocalTime) const;
 
-    void setStartDateTime( const QDateTime& start = QDateTime::currentDateTime() );
+    void setStartDateTime(const QDateTime &start = QDateTime::currentDateTime());
 
-    QDateTime endDateTime( Qt::TimeSpec timeSpec = Qt::LocalTime ) const;
+    QDateTime endDateTime(Qt::TimeSpec timeSpec = Qt::LocalTime) const;
 
-    void setEndDateTime( const QDateTime& end = QDateTime::currentDateTime() );
+    void setEndDateTime(const QDateTime &end = QDateTime::currentDateTime());
 
     /** Returns the duration of this event in seconds. */
-    int duration () const;
+    int duration() const;
 
     void dump() const;
 
-    QDomElement toXml( QDomDocument ) const;
+    QDomElement toXml(QDomDocument) const;
 
-    static Event fromXml( const QDomElement&,  int databaseSchemaVersion = 1 );
+    static Event fromXml(const QDomElement &, int databaseSchemaVersion = 1);
     static QString tagName();
 
 private:
@@ -122,6 +125,6 @@ typedef QList<EventId> EventIdList;
 /** A map of events. */
 typedef std::map<EventId, Event> EventMap;
 
-void dumpEvents( const EventList& events );
+void dumpEvents(const EventList &events);
 
 #endif

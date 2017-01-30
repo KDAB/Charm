@@ -48,5 +48,4 @@ private:
     MySqlStorage prepareMySqlStorage();
 };
 
-
 #endif // SQLTRANSACTIONTESTS_H

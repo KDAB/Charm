@@ -56,16 +56,21 @@ bool HttpJob::credentialsAvailable()
     QSettings settings;
     settings.beginGroup(QStringLiteral("httpconfig"));
     return !settings.value(QStringLiteral("username")).toString().isEmpty()
-        && settings.value(QStringLiteral("portalUrl")).toUrl().isValid()
-        && settings.value(QStringLiteral("loginUrl")).toUrl().isValid();
+           && settings.value(QStringLiteral("portalUrl")).toUrl().isValid()
+           && settings.value(QStringLiteral("loginUrl")).toUrl().isValid();
 }
 
-QString HttpJob::extractErrorMessageFromReply(const QByteArray& xml)
+QString HttpJob::extractErrorMessageFromReply(const QByteArray &xml)
 {
-    class XmlStreamEntityResolver : public QXmlStreamEntityResolver {
+    class XmlStreamEntityResolver : public QXmlStreamEntityResolver
+    {
     public:
-        XmlStreamEntityResolver() : QXmlStreamEntityResolver() {}
-        QString resolveUndeclaredEntity(const QString &name) override {
+        XmlStreamEntityResolver() : QXmlStreamEntityResolver()
+        {
+        }
+
+        QString resolveUndeclaredEntity(const QString &name) override
+        {
             Q_UNUSED(name)
             return QLatin1String(" "); // replace undeclared entities with a whitespace just to not abort parsing
         }
@@ -77,30 +82,31 @@ QString HttpJob::extractErrorMessageFromReply(const QByteArray& xml)
     while (!reader.atEnd() && !reader.hasError()) {
         reader.readNext();
         if (reader.isStartElement() && reader.name() == QLatin1String("div")
-                && reader.attributes().value(QLatin1String("class")) == QLatin1String("ErrorResultMessage"))
-        {
+            && reader.attributes().value(QLatin1String("class"))
+            == QLatin1String("ErrorResultMessage"))
             return reader.readElementText();
-        }
     }
-    if (reader.hasError()) {
+    if (reader.hasError())
         return tr("Error parsing response: %1").arg(reader.errorString());
-    }
 
     return QString();
 }
 
-HttpJob::HttpJob(QObject* parent)
+HttpJob::HttpJob(QObject *parent)
     : QObject(parent)
     , m_networkManager(new QNetworkAccessManager(this))
 {
     connect(m_networkManager, SIGNAL(finished(QNetworkReply*)), SLOT(handle(QNetworkReply*)));
-    connect(m_networkManager, SIGNAL(authenticationRequired(QNetworkReply*,QAuthenticator*)), SLOT(authenticationRequired(QNetworkReply*,QAuthenticator*)));
+    connect(m_networkManager, SIGNAL(authenticationRequired(QNetworkReply *,
+                                                            QAuthenticator *)),
+            SLOT(authenticationRequired(QNetworkReply*,QAuthenticator*)));
     QSettings settings;
     settings.beginGroup(QStringLiteral("httpconfig"));
     setUsername(settings.value(QStringLiteral("username")).toString());
     setPortalUrl(settings.value(QStringLiteral("portalUrl")).toUrl());
     setLoginUrl(settings.value(QStringLiteral("loginUrl")).toUrl());
-    m_lastAuthenticationFailed = settings.value(QStringLiteral("lastAuthenticationFailed"), false).toBool();
+    m_lastAuthenticationFailed
+        = settings.value(QStringLiteral("lastAuthenticationFailed"), false).toBool();
 }
 
 HttpJob::~HttpJob()
@@ -172,21 +178,26 @@ using namespace QKeychain;
 void HttpJob::doStart()
 {
     if (m_username.isEmpty() || m_loginUrl.isEmpty() || m_portalUrl.isEmpty()) {
-        setErrorAndEmitFinished(NotConfigured, tr("Timesheet upload and task list download not configured. Download and import the task list manually to configure them."));
+        setErrorAndEmitFinished(NotConfigured,
+                                tr(
+                                    "Timesheet upload and task list download not configured. Download and import the task list manually to configure them."));
         return;
     }
 
     auto readJob = new ReadPasswordJob(QStringLiteral("Charm"), this);
-    connect(readJob, SIGNAL(finished(QKeychain::Job*)), this, SLOT(passwordRead(QKeychain::Job*)));
+    connect(readJob, SIGNAL(finished(QKeychain::Job*)), this,
+            SLOT(passwordRead(QKeychain::Job*)));
     readJob->setKey(QStringLiteral("lotsofcake"));
     readJob->start();
 }
 
-void HttpJob::passwordRead(QKeychain::Job* j) {
-    ReadPasswordJob* job = qobject_cast<ReadPasswordJob*>(j);
+void HttpJob::passwordRead(QKeychain::Job *j)
+{
+    ReadPasswordJob *job = qobject_cast<ReadPasswordJob *>(j);
     Q_ASSERT(job);
 
-    m_passwordReadError = job->error() != QKeychain::NoError && job->error() != QKeychain::EntryNotFound;
+    m_passwordReadError = job->error() != QKeychain::NoError
+                          && job->error() != QKeychain::EntryNotFound;
 
     const QString oldpass = job->error() ? QString() : job->textData();
 
@@ -261,7 +272,6 @@ void HttpJob::delayedNext()
 bool HttpJob::execute(int state, QNetworkAccessManager *manager)
 {
     switch (state) {
-
     case Init:
     case Portal:
     {
@@ -278,21 +288,23 @@ bool HttpJob::execute(int state, QNetworkAccessManager *manager)
         QUrlQuery urlQuery;
         urlQuery.addQueryItem(QStringLiteral("j_username"), m_username);
         urlQuery.addQueryItem(QStringLiteral("j_password"), m_password);
-        QByteArray encodedQueryPlusPlus = urlQuery.query(QUrl::FullyEncoded).toUtf8().replace('+', "%2b");
+        QByteArray encodedQueryPlusPlus = urlQuery.query(QUrl::FullyEncoded).toUtf8().replace('+',
+                                                                                              "%2b");
 
         QNetworkRequest request(m_loginUrl);
 
-        request.setHeader(QNetworkRequest::ContentTypeHeader, QStringLiteral("application/x-www-form-urlencoded"));
+        request.setHeader(QNetworkRequest::ContentTypeHeader,
+                          QStringLiteral("application/x-www-form-urlencoded"));
         request.setHeader(QNetworkRequest::ContentLengthHeader, encodedQueryPlusPlus.size());
 
         QNetworkReply *reply = manager->post(request, encodedQueryPlusPlus);
 
         if (reply->error() != QNetworkReply::NoError)
             setErrorFromReplyAndEmitFinished(reply);
-
     } return true;
 
-    default: break;
+    default:
+        break;
     }
 
     return false;
@@ -309,19 +321,16 @@ bool HttpJob::handle(QNetworkReply *reply)
     switch (m_currentState) {
     case Init:
     case Portal:
-    {
         delayedNext();
         return true;
-    }
     case Login:
-    {
         if (reply->header(QNetworkRequest::LocationHeader).isNull()) {
-            setErrorAndEmitFinished(AuthenticationFailed, tr("Login failed. Wrong username or password."));
+            setErrorAndEmitFinished(AuthenticationFailed,
+                                    tr("Login failed. Wrong username or password."));
         } else {
             delayedNext();
         }
         return true;
-    }
     default:
         break;
     }
@@ -340,16 +349,17 @@ void HttpJob::authenticationRequired(QNetworkReply *, QAuthenticator *authentica
 
 void HttpJob::emitFinished()
 {
-    if (m_errorCode == AuthenticationFailed)
+    if (m_errorCode == AuthenticationFailed) {
         setLastAuthenticationFailed(true);
-    else if (m_errorCode == NoError)
+    } else if (m_errorCode == NoError) {
         setLastAuthenticationFailed(false);
+    }
     m_networkManager->disconnect(this);
     emit finished(this);
     deleteLater();
 }
 
-void HttpJob::setErrorAndEmitFinished(int code, const QString& errorString)
+void HttpJob::setErrorAndEmitFinished(int code, const QString &errorString)
 {
     m_errorCode = code;
     m_errorString = errorString;
@@ -360,15 +370,15 @@ void HttpJob::setErrorFromReplyAndEmitFinished(QNetworkReply *reply)
 {
     m_authenticationDoneAlready = false;
     switch (reply->error()) {
-        case QNetworkReply::HostNotFoundError:
-            setErrorAndEmitFinished(HostNotFound, reply->errorString());
-            break;
-        case QNetworkReply::AuthenticationRequiredError:
-            setErrorAndEmitFinished(AuthenticationFailed, reply->errorString());
-            break;
-        default:
-            setErrorAndEmitFinished(SomethingWentWrong, reply->errorString());
-            break;
+    case QNetworkReply::HostNotFoundError:
+        setErrorAndEmitFinished(HostNotFound, reply->errorString());
+        break;
+    case QNetworkReply::AuthenticationRequiredError:
+        setErrorAndEmitFinished(AuthenticationFailed, reply->errorString());
+        break;
+    default:
+        setErrorAndEmitFinished(SomethingWentWrong, reply->errorString());
+        break;
     }
 }
 

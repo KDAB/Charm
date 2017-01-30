@@ -34,7 +34,7 @@ class ViewFilter;
 class CharmDataModel;
 
 namespace Ui {
-    class SelectTaskDialog;
+class SelectTaskDialog;
 }
 
 class SelectTaskDialogProxy : public ViewFilter
@@ -42,13 +42,13 @@ class SelectTaskDialogProxy : public ViewFilter
     Q_OBJECT
 
 public:
-    explicit SelectTaskDialogProxy( CharmDataModel*, QObject* parent = nullptr );
+    explicit SelectTaskDialogProxy(CharmDataModel *, QObject *parent = nullptr);
 
-    Qt::ItemFlags flags( const QModelIndex & index ) const override;
-    QVariant data( const QModelIndex& index, int role = Qt::DisplayRole ) const override;
+    Qt::ItemFlags flags(const QModelIndex &index) const override;
+    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
 
 protected:
-    bool filterAcceptsColumn( int column, const QModelIndex& parent ) const override;
+    bool filterAcceptsColumn(int column, const QModelIndex &parent) const override;
 };
 
 class SelectTaskDialog : public QDialog
@@ -56,7 +56,7 @@ class SelectTaskDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit SelectTaskDialog( QWidget* parent=nullptr );
+    explicit SelectTaskDialog(QWidget *parent = nullptr);
     ~SelectTaskDialog() override;
 
     TaskId selectedTask() const;
@@ -67,25 +67,25 @@ Q_SIGNALS:
     void saveConfiguration();
 
 protected:
-    void showEvent( QShowEvent * event ) override;
-    void hideEvent( QHideEvent* event ) override;
+    void showEvent(QShowEvent *event) override;
+    void hideEvent(QHideEvent *event) override;
 
 private Q_SLOTS:
-    void slotCurrentItemChanged( const QModelIndex&, const QModelIndex& );
-    void slotDoubleClicked ( const QModelIndex & );
-    void slotFilterTextChanged( const QString& );
+    void slotCurrentItemChanged(const QModelIndex &, const QModelIndex &);
+    void slotDoubleClicked(const QModelIndex &);
+    void slotFilterTextChanged(const QString &);
     void slotAccepted();
     void slotPrefilteringChanged();
     void slotResetState();
 
 private:
-    bool isValidAndTrackable( const QModelIndex& index ) const;
+    bool isValidAndTrackable(const QModelIndex &index) const;
 
 private:
     QScopedPointer<Ui::SelectTaskDialog> m_ui;
     TaskId m_selectedTask = {};
     SelectTaskDialogProxy m_proxy;
-    QHash<TaskId,bool> m_expansionStates;
+    QHash<TaskId, bool> m_expansionStates;
     bool m_nonTrackableSelectable = false;
     bool m_nonValidSelectable = false;
 };

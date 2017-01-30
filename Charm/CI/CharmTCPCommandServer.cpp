@@ -39,7 +39,7 @@
 static const quint16 sCharmDefaultPort(5323);
 static const int sCharmDiscoveryBroadcastRate(5000);
 
-CharmTCPCommandServer::CharmTCPCommandServer(QObject* parent)
+CharmTCPCommandServer::CharmTCPCommandServer(QObject *parent)
     : CharmCommandServer(parent)
     , m_address(QHostAddress::Any)
     , m_port(sCharmDefaultPort)
@@ -53,7 +53,7 @@ CharmTCPCommandServer::~CharmTCPCommandServer()
 {
 }
 
-const QHostAddress & CharmTCPCommandServer::address() const
+const QHostAddress &CharmTCPCommandServer::address() const
 {
     return m_address;
 }
@@ -95,7 +95,7 @@ void CharmTCPCommandServer::close()
     m_server->close();
 }
 
-void CharmTCPCommandServer::timerEvent(QTimerEvent* event)
+void CharmTCPCommandServer::timerEvent(QTimerEvent *event)
 {
     if (event->timerId() != m_discoveryTimer)
         return;
@@ -103,17 +103,16 @@ void CharmTCPCommandServer::timerEvent(QTimerEvent* event)
     static const char sBroadcastIdentifier[] = "LUCKY"; // CHARMS
 
     m_discovery->writeDatagram(sBroadcastIdentifier, sizeof(sBroadcastIdentifier),
-       QHostAddress::Broadcast, m_port);
+                               QHostAddress::Broadcast, m_port);
 }
 
 void CharmTCPCommandServer::onNewConnection()
 {
     while (m_server->hasPendingConnections()) {
-        QTcpSocket* conn = m_server->nextPendingConnection();
+        QTcpSocket *conn = m_server->nextPendingConnection();
         Q_ASSERT(conn);
 
         qDebug("New TCP connection, creating command session...");
         spawnSession(conn);
     }
 }
-

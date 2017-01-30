@@ -28,19 +28,20 @@
 
 #include <QTimer>
 
-IdleCorrectionDialog::IdleCorrectionDialog(const IdleDetector::IdlePeriod &idlePeriod, QWidget* parent )
-    : QDialog( parent )
-    , m_ui( new Ui::IdleCorrectionDialog )
-    , m_start( idlePeriod.first )
+IdleCorrectionDialog::IdleCorrectionDialog(const IdleDetector::IdlePeriod &idlePeriod,
+                                           QWidget *parent)
+    : QDialog(parent)
+    , m_ui(new Ui::IdleCorrectionDialog)
+    , m_start(idlePeriod.first)
 {
-    m_ui->setupUi( this );
+    m_ui->setupUi(this);
 
     updateDuration();
 
-    auto timer = new QTimer( this );
-    timer->setInterval( 60000 );
+    auto timer = new QTimer(this);
+    timer->setInterval(60000);
 
-    connect(timer, &QTimer::timeout, this, &IdleCorrectionDialog::updateDuration );
+    connect(timer, &QTimer::timeout, this, &IdleCorrectionDialog::updateDuration);
     timer->start();
 }
 
@@ -50,12 +51,12 @@ IdleCorrectionDialog::~IdleCorrectionDialog()
 
 IdleCorrectionDialog::Result IdleCorrectionDialog::result() const
 {
-    if ( m_ui->ignore->isChecked() ) {
+    if (m_ui->ignore->isChecked()) {
         return Idle_Ignore;
-    } else if ( m_ui->endEvent->isChecked() ) {
+    } else if (m_ui->endEvent->isChecked()) {
         return Idle_EndEvent;
     } else {
-        Q_ASSERT( false ); // unhandled whatever?
+        Q_ASSERT(false);   // unhandled whatever?
     }
 
     return Idle_NoResult;
@@ -63,10 +64,11 @@ IdleCorrectionDialog::Result IdleCorrectionDialog::result() const
 
 void IdleCorrectionDialog::updateDuration()
 {
-    const auto secs = m_start.secsTo( QDateTime::currentDateTime() );
+    const auto secs = m_start.secsTo(QDateTime::currentDateTime());
     m_ui->idleLabel->setText(
-                tr("Charm detected that the computer became idle for %1 hours, while an event was in progress.")
-                .arg( hoursAndMinutes( secs ) ) );
+        tr(
+            "Charm detected that the computer became idle for %1 hours, while an event was in progress.")
+        .arg(hoursAndMinutes(secs)));
 }
 
 #include "moc_IdleCorrectionDialog.cpp"

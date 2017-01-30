@@ -33,20 +33,20 @@ class GetProjectCodesJob : public HttpJob
     Q_OBJECT
 public:
 
-    explicit GetProjectCodesJob(QObject* parent=nullptr);
+    explicit GetProjectCodesJob(QObject *parent = nullptr);
     ~GetProjectCodesJob() override;
 
     QByteArray payload() const;
 
     QUrl downloadUrl() const;
-    void setDownloadUrl(const QUrl& url);
+    void setDownloadUrl(const QUrl &url);
     void setVerbose(bool verbose);
     bool isVerbose() const;
 
 public Q_SLOTS:
 
     bool execute(int state, QNetworkAccessManager *manager) override;
-     bool handle(QNetworkReply *reply) override;
+    bool handle(QNetworkReply *reply) override;
 
 protected:
 

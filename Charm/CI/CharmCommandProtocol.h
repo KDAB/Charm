@@ -44,4 +44,3 @@
 #define CHARM_CI_SERVER_NAK                 "NAK"
 
 #endif // CHARM_CI_CHARMCOMMANDPROTOCOL_H
-

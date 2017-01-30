@@ -48,8 +48,8 @@ private Q_SLOTS:
     void checkEventSpanOver2Days();
 
 private:
-    CharmDataModel* m_referenceModel = nullptr;
-    EventModelFilter* m_eventModelFilter;
+    CharmDataModel *m_referenceModel = nullptr;
+    EventModelFilter *m_eventModelFilter;
 
     NamedTimeSpan m_thisYearSpan;
     NamedTimeSpan m_theMonthBeforeLastSpan;
@@ -65,4 +65,3 @@ private:
 };
 
 #endif // EVENTMODELFILTERTESTS
-

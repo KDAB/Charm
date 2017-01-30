@@ -23,8 +23,8 @@
 
 #include "ReportConfigurationDialog.h"
 
-ReportConfigurationDialog::ReportConfigurationDialog( QWidget* parent )
-    : QDialog( parent )
+ReportConfigurationDialog::ReportConfigurationDialog(QWidget *parent)
+    : QDialog(parent)
 {
 }
 

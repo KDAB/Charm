@@ -28,9 +28,9 @@
 #include "Core/CharmConstants.h"
 #include "Core/ControllerInterface.h"
 
-CommandDeleteTask::CommandDeleteTask( const Task& task, QObject* parent )
-    : CharmCommand( tr("Delete Task"), parent )
-    , m_task( task )
+CommandDeleteTask::CommandDeleteTask(const Task &task, QObject *parent)
+    : CharmCommand(tr("Delete Task"), parent)
+    , m_task(task)
 {
 }
 
@@ -43,17 +43,16 @@ bool CommandDeleteTask::prepare()
     return true;
 }
 
-bool CommandDeleteTask::execute( ControllerInterface* controller )
+bool CommandDeleteTask::execute(ControllerInterface *controller)
 {
-    m_success = controller->deleteTask( m_task );
+    m_success = controller->deleteTask(m_task);
     return m_success;
 }
 
 bool CommandDeleteTask::finalize()
 {
-    if ( !m_success ) {
-        showInformation( tr( "Unable to delete task" ), tr( "Deleting the task failed" ) );
-    }
+    if (!m_success)
+        showInformation(tr("Unable to delete task"), tr("Deleting the task failed"));
     return m_success;
 }
 

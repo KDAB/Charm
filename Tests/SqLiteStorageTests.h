@@ -37,12 +37,12 @@ public:
     ~SqLiteStorageTests() override;
 
 private:
-    StorageInterface* m_storage;
+    StorageInterface *m_storage;
     Configuration m_configuration;
     QString m_localPath;
 
 private Q_SLOTS:
-    void initTestCase ();
+    void initTestCase();
 
     void connectAndCreateDatabaseTest();
 

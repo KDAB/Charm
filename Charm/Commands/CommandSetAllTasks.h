@@ -32,11 +32,11 @@ class CommandSetAllTasks : public CharmCommand
     Q_OBJECT
 
 public:
-    explicit CommandSetAllTasks( const TaskList&, QObject* parent );
+    explicit CommandSetAllTasks(const TaskList &, QObject *parent);
     ~CommandSetAllTasks() override;
 
     bool prepare() override;
-    bool execute( ControllerInterface* ) override;
+    bool execute(ControllerInterface *) override;
     bool finalize() override;
 
 private:

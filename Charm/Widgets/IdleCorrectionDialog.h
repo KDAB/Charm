@@ -30,7 +30,7 @@
 #include <QScopedPointer>
 
 namespace Ui {
-    class IdleCorrectionDialog;
+class IdleCorrectionDialog;
 }
 
 class IdleCorrectionDialog : public QDialog
@@ -44,7 +44,8 @@ public:
         Idle_EndEvent
     };
 
-    explicit IdleCorrectionDialog(const IdleDetector::IdlePeriod &idlePeriod, QWidget* parent = nullptr );
+    explicit IdleCorrectionDialog(const IdleDetector::IdlePeriod &idlePeriod,
+                                  QWidget *parent = nullptr);
     ~IdleCorrectionDialog() override;
 
     Result result() const;

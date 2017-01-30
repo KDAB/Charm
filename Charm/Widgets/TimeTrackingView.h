@@ -59,22 +59,22 @@ private:
         QBrush halfHighlight;
         QColor runningTaskColor;
         float dim;
-        void initialize( const QPalette& palette );
+        void initialize(const QPalette &palette);
     };
 
 public:
-    explicit TimeTrackingView( QWidget* parent = nullptr );
-    void paintEvent( QPaintEvent* ) override;
-    void resizeEvent( QResizeEvent* ) override;
-    void mousePressEvent( QMouseEvent* event ) override;
-    void mouseDoubleClickEvent( QMouseEvent * event ) override;
+    explicit TimeTrackingView(QWidget *parent = nullptr);
+    void paintEvent(QPaintEvent *) override;
+    void resizeEvent(QResizeEvent *) override;
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseDoubleClickEvent(QMouseEvent *event) override;
 
-    void setSummaries( const QVector<WeeklySummary>& summaries );
+    void setSummaries(const QVector<WeeklySummary> &summaries);
     QSize sizeHint() const override;
     QSize minimumSizeHint() const override;
-    QMenu* menu() const;
+    QMenu *menu() const;
 
-    void populateEditMenu( QMenu* );
+    void populateEditMenu(QMenu *);
 
     void handleActiveEvents();
 
@@ -84,18 +84,26 @@ public:
 
 Q_SIGNALS:
     void maybeShrink();
-    void startEvent( TaskId );
+    void startEvent(TaskId);
     void stopEvents();
 
 private Q_SLOTS:
     void slotUpdateSummaries();
 
 private:
-    void data( DataField& out, int column, int row ) const;
-    int columnCount() const { return 9; }
-    int rowCount() const { return qMax( 6, m_summaries.count() ) + 3; }
-    int getSummaryAt( const QPoint& position );
-    bool taskIsValidAndTrackable( int taskId );
+    void data(DataField &out, int column, int row) const;
+    int columnCount() const
+    {
+        return 9;
+    }
+
+    int rowCount() const
+    {
+        return qMax(6, m_summaries.count()) + 3;
+    }
+
+    int getSummaryAt(const QPoint &position);
+    bool taskIsValidAndTrackable(int taskId);
 
     int taskColumnWidth() const;
 
@@ -106,7 +114,7 @@ private:
     mutable QRect m_cachedDayFieldRect;
     mutable QFont m_fixedFont;
     mutable QFont m_narrowFont;
-    TimeTrackingTaskSelector* m_taskSelector;
+    TimeTrackingTaskSelector *m_taskSelector;
     QList<QRect> m_activeFieldRects;
     PaintAttributes m_paintAttributes;
     DataField m_defaultField;
@@ -116,7 +124,7 @@ private:
     QString m_shortDayNames[7];
     /** Stored for performance reasons, QFontMetrics::elidedText is slow if called many times. */
     QMap<QString, QString> m_elidedTexts;
-    QString elidedText( const QString& text, const QFont& font, int width );
+    QString elidedText(const QString &text, const QFont &font, int width);
 };
 
 #endif

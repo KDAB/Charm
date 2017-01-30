@@ -35,50 +35,68 @@
 
 class CharmDataModel;
 
-class EventModelAdapter : public QAbstractListModel,
-                          public CharmDataModelAdapterInterface,
-                          public CommandEmitterInterface,
-                          public EventModelInterface
+class EventModelAdapter : public QAbstractListModel, public CharmDataModelAdapterInterface,
+    public CommandEmitterInterface, public EventModelInterface
 {
     Q_OBJECT
 
 public:
-    explicit EventModelAdapter( CharmDataModel* parent );
+    explicit EventModelAdapter(CharmDataModel *parent);
     ~EventModelAdapter() override;
 
-    int rowCount( const QModelIndex& parent = QModelIndex() ) const override;
+    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
 
-    QVariant data( const QModelIndex& index, int role = Qt::DisplayRole ) const override;
+    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
 
     // reimplement CharmDataModelAdapterInterface:
-    void resetTasks() override {}
-    void taskAboutToBeAdded( TaskId, int) override {}
-    void taskAdded( TaskId ) override {}
-    void taskModified( TaskId ) override {}
-    void taskParentChanged( TaskId, TaskId, TaskId ) override {}
-    void taskAboutToBeDeleted( TaskId ) override {}
-    void taskDeleted( TaskId ) override {}
+    void resetTasks() override
+    {
+    }
+
+    void taskAboutToBeAdded(TaskId, int) override
+    {
+    }
+
+    void taskAdded(TaskId) override
+    {
+    }
+
+    void taskModified(TaskId) override
+    {
+    }
+
+    void taskParentChanged(TaskId, TaskId, TaskId) override
+    {
+    }
+
+    void taskAboutToBeDeleted(TaskId) override
+    {
+    }
+
+    void taskDeleted(TaskId) override
+    {
+    }
 
     void resetEvents() override;
-    void eventAboutToBeAdded( EventId id ) override;
-    void eventAdded( EventId id ) override;
-    void eventModified( EventId id, Event ) override;
-    void eventAboutToBeDeleted( EventId id ) override;
-    void eventDeleted( EventId id ) override;
+    void eventAboutToBeAdded(EventId id) override;
+    void eventAdded(EventId id) override;
+    void eventModified(EventId id, Event) override;
+    void eventAboutToBeDeleted(EventId id) override;
+    void eventDeleted(EventId id) override;
 
-    void eventActivated( EventId id ) override;
-    void eventDeactivated( EventId id ) override;
+    void eventActivated(EventId id) override;
+    void eventDeactivated(EventId id) override;
 
     // reimplement EventModelInterface:
-    const Event& eventForIndex( const QModelIndex& index ) const override;
-    QModelIndex indexForEvent( const Event& ) const override;
+    const Event &eventForIndex(const QModelIndex &index) const override;
+    QModelIndex indexForEvent(const Event &) const override;
 
     // reimplement CommandEmitterInterface:
-    void commitCommand( CharmCommand* ) override;
+    void commitCommand(CharmCommand *) override;
 
 Q_SIGNALS:
-    void eventActivationNotice( EventId id );
-    void eventDeactivationNotice( EventId id );
+    void eventActivationNotice(EventId id);
+    void eventDeactivationNotice(EventId id);
 
 private:
     // if this is slow, we may want to store pointers here:

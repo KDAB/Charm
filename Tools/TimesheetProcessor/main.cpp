@@ -33,7 +33,7 @@
 #include "Operations.h"
 #include "CharmCMake.h"
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
     using namespace std;
 
@@ -41,8 +41,7 @@ int main(int argc, char** argv)
     {
         CommandLine cmd(argc, argv);
 
-        switch (cmd.mode())
-        {
+        switch (cmd.mode()) {
         case CommandLine::Mode_InitializeDatabase:
             initializeDatabase(cmd);
             break;
@@ -56,21 +55,21 @@ int main(int argc, char** argv)
             removeTimesheet(cmd);
             break;
         case CommandLine::Mode_ExportProjectcodes:
-            exportProjectcodes( cmd );
+            exportProjectcodes(cmd);
             break;
         case CommandLine::Mode_PrintVersion:
             cout << CHARM_VERSION << endl;
             break;
         case CommandLine::Mode_DescribeUsage:
         default:
-                CommandLine::usage();
-                return 0;
+            CommandLine::usage();
+            return 0;
         }
-    } catch (const UsageException& e) {
+    } catch (const UsageException &e) {
         cerr << e.what() << endl;
         CommandLine::usage();
         return 1;
-    } catch (const TimesheetProcessorException& e) {
+    } catch (const TimesheetProcessorException &e) {
         cerr << e.what() << endl;
         CommandLine::usage();
         return 1;

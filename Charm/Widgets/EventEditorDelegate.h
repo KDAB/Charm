@@ -45,25 +45,23 @@ public:
         EventState_Dirty
     };
 
-    explicit EventEditorDelegate( EventModelFilter* model,
-                                  QObject* parent = nullptr );
+    explicit EventEditorDelegate(EventModelFilter *model, QObject *parent = nullptr);
 
-    QSize sizeHint( const QStyleOptionViewItem&, const QModelIndex& ) const override;
-    void paint( QPainter*, const QStyleOptionViewItem&, const QModelIndex& ) const override;
+    QSize sizeHint(const QStyleOptionViewItem &, const QModelIndex &) const override;
+    void paint(QPainter *, const QStyleOptionViewItem &, const QModelIndex &) const override;
 
 private:
-    EventModelFilter* m_model;
+    EventModelFilter *m_model;
     mutable QSize m_cachedSizeHint;
 
-    QString taskName( const TaskTreeItem& item ) const;
-    QString dateAndDuration( const Event& event ) const;
+    QString taskName(const TaskTreeItem &item) const;
+    QString dateAndDuration(const Event &event) const;
 
-    QRect paint( QPainter*, const QStyleOptionViewItem& option,
-                 const QString& taskName, const QString& timespan,
-                 double logDuration, EventState state ) const;
+    QRect paint(QPainter *, const QStyleOptionViewItem &option, const QString &taskName,
+                const QString &timespan, double logDuration, EventState state) const;
 
     // calculate the length for a  visual representation of the event duration
-    double logDuration( int seconds ) const;
+    double logDuration(int seconds) const;
 };
 
 #endif

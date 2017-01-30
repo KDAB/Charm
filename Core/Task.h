@@ -35,7 +35,7 @@
 #include <QDateTime>
 
 typedef int TaskId;
-Q_DECLARE_METATYPE( TaskId )
+Q_DECLARE_METATYPE(TaskId)
 
 class Task;
 /** A task list is a list of tasks that belong together.
@@ -45,44 +45,48 @@ typedef QList<TaskId> TaskIdList;
 
 /** A task is a category under which events are filed.
     It has a unique identifier and a name. */
-class Task {
+class Task
+{
 public:
     Task();
     /** Convenience constructor. */
-    Task( TaskId id, const QString& name, TaskId parent = 0, bool subscribed = false );
+    Task(TaskId id, const QString &name, TaskId parent = 0, bool subscribed = false);
 
     bool isValid() const;
 
-    bool operator == ( const Task& other ) const;
-    bool operator != ( const Task& other ) const { return ! operator==( other ); }
+    bool operator ==(const Task &other) const;
+    bool operator !=(const Task &other) const
+    {
+        return !operator==(other);
+    }
 
-    TaskId id() const ;
+    TaskId id() const;
 
-    void setId( TaskId id );
+    void setId(TaskId id);
 
     QString name() const;
 
-    void setName( const QString& name );
+    void setName(const QString &name);
 
     TaskId parent() const;
 
-    void setParent( TaskId parent );
+    void setParent(TaskId parent);
 
     bool subscribed() const;
 
-    void setSubscribed( bool value );
+    void setSubscribed(bool value);
 
     QDateTime validFrom() const;
 
-    void setValidFrom( const QDateTime& );
+    void setValidFrom(const QDateTime &);
 
     QDateTime validUntil() const;
 
-    void setValidUntil( const QDateTime& );
+    void setValidUntil(const QDateTime &);
 
     bool isCurrentlyValid() const;
 
-    void setTrackable( bool trackable );
+    void setTrackable(bool trackable);
     bool trackable() const;
 
     QString comment() const;
@@ -93,19 +97,19 @@ public:
     static QString tagName();
     static QString taskListTagName();
 
-    QDomElement toXml( QDomDocument ) const;
+    QDomElement toXml(QDomDocument) const;
 
-    static Task fromXml( const QDomElement&, int databaseSchemaVersion = 1 );
+    static Task fromXml(const QDomElement &, int databaseSchemaVersion = 1);
 
-    static TaskList readTasksElement( const QDomElement&, int databaseSchemaVersion = 1 );
+    static TaskList readTasksElement(const QDomElement &, int databaseSchemaVersion = 1);
 
-    static QDomElement makeTasksElement( QDomDocument, const TaskList& );
+    static QDomElement makeTasksElement(QDomDocument, const TaskList &);
 
-    static bool checkForUniqueTaskIds( const TaskList& tasks );
+    static bool checkForUniqueTaskIds(const TaskList &tasks);
 
-    static bool checkForTreeness( const TaskList& tasks );
+    static bool checkForTreeness(const TaskList &tasks);
 
-    static bool lowerTaskId( const Task& left, const Task& right );
+    static bool lowerTaskId(const Task &left, const Task &right);
 
 private:
     int m_id = 0;
@@ -120,10 +124,10 @@ private:
     QString m_comment;
 };
 
-Q_DECLARE_METATYPE( TaskIdList )
-Q_DECLARE_METATYPE( TaskList )
-Q_DECLARE_METATYPE( Task )
+Q_DECLARE_METATYPE(TaskIdList)
+Q_DECLARE_METATYPE(TaskList)
+Q_DECLARE_METATYPE(Task)
 
-void dumpTaskList( const TaskList& tasks );
+void dumpTaskList(const TaskList &tasks);
 
 #endif

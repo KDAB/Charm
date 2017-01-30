@@ -33,16 +33,16 @@ class CommandModifyEvent : public CharmCommand
     Q_OBJECT
 
 public:
-    explicit CommandModifyEvent( const Event&, const Event&, QObject* parent = nullptr );
+    explicit CommandModifyEvent(const Event &, const Event &, QObject *parent = nullptr);
     ~CommandModifyEvent() override;
 
     bool prepare() override;
-    bool execute( ControllerInterface* ) override;
-    bool rollback( ControllerInterface* ) override;
+    bool execute(ControllerInterface *) override;
+    bool rollback(ControllerInterface *) override;
     bool finalize() override;
 
 public Q_SLOTS:
-    void eventIdChanged(int,int) override;
+    void eventIdChanged(int, int) override;
 
 private:
     Event m_event;

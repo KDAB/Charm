@@ -27,20 +27,22 @@
 #include <Core/State.h>
 #include <Core/CommandEmitterInterface.h>
 
-class UIStateInterface :
-        public CommandEmitterInterface
+class UIStateInterface : public CommandEmitterInterface
 {
 public:
-    virtual ~UIStateInterface() {};
+    virtual ~UIStateInterface()
+    {
+    }
+
     virtual void saveGuiState() = 0;
     virtual void restoreGuiState() = 0;
-    virtual void stateChanged( State previous ) = 0;
+    virtual void stateChanged(State previous) = 0;
     virtual void configurationChanged() = 0;
-    virtual void emitCommand( CharmCommand* ) = 0;
-    virtual void emitCommandRollback( CharmCommand* ) = 0;
+    virtual void emitCommand(CharmCommand *) = 0;
+    virtual void emitCommandRollback(CharmCommand *) = 0;
 
     // CommandEmitterInterface
-    virtual void commitCommand( CharmCommand* ) override = 0;
+    virtual void commitCommand(CharmCommand *) override = 0;
 };
 
 #endif

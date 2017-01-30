@@ -35,7 +35,7 @@ public:
     BackendIntegrationTests();
 
 private Q_SLOTS:
-    void initTestCase ();
+    void initTestCase();
 
     void initialValuesTest();
 
@@ -43,13 +43,13 @@ private Q_SLOTS:
 
     void biggerCreateModifyDeleteTaskTest();
 
-    void cleanupTestCase ();
+    void cleanupTestCase();
 
 private:
-    const TaskList& referenceTasks();
+    const TaskList &referenceTasks();
     // returns true if both lists contain the same tasks, even if not
     // in the same order:
-    bool contentsEqual( const TaskList& list1, const TaskList& list2 );
+    bool contentsEqual(const TaskList &list1, const TaskList &list2);
 };
 
 #endif

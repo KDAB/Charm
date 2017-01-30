@@ -48,15 +48,15 @@ class TaskListMerger
 public:
     TaskListMerger();
 
-    void setOldTasks( const TaskList& tasks );
-    void setNewTasks( const TaskList& tasks );
+    void setOldTasks(const TaskList &tasks);
+    void setNewTasks(const TaskList &tasks);
 
     TaskList mergedTaskList() const;
     TaskList addedTasks() const;
     TaskList modifiedTasks() const;
 
 private:
-    void verifyTaskList( const TaskList& tasks );
+    void verifyTaskList(const TaskList &tasks);
     void calculateResults() const;
 
     mutable bool m_resultsValid = false;

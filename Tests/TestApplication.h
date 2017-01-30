@@ -43,15 +43,15 @@ public:
     int testInstallationId() const;
 
 protected:
-    Controller* controller() const;
-    CharmDataModel* model() const;
-    Configuration* configuration() const;
+    Controller *controller() const;
+    CharmDataModel *model() const;
+    Configuration *configuration() const;
     QString databasePath() const;
 
 private:
-    Controller* m_controller = nullptr;
-    CharmDataModel* m_model = nullptr;
-    Configuration* m_configuration;
+    Controller *m_controller = nullptr;
+    CharmDataModel *m_model = nullptr;
+    Configuration *m_configuration;
     QString m_localPath;
 };
 

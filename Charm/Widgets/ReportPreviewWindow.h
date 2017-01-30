@@ -31,7 +31,7 @@
 #include <QTimer>
 
 namespace Ui {
-    class ReportPreviewWindow;
+class ReportPreviewWindow;
 }
 
 class QPushButton;
@@ -41,18 +41,18 @@ class ReportPreviewWindow : public QDialog
     Q_OBJECT
 
 public:
-    explicit ReportPreviewWindow( QWidget* parent = nullptr );
+    explicit ReportPreviewWindow(QWidget *parent = nullptr);
     ~ReportPreviewWindow() override;
 
 Q_SIGNALS:
-    void anchorClicked(const QUrl& which);
+    void anchorClicked(const QUrl &which);
 
 protected:
-    void setDocument( const QTextDocument* document );
+    void setDocument(const QTextDocument *document);
     QDomDocument createReportTemplate() const;
-    QPushButton* saveToXmlButton() const;
-    QPushButton* saveToTextButton() const;
-    QPushButton* uploadButton() const;
+    QPushButton *saveToXmlButton() const;
+    QPushButton *saveToTextButton() const;
+    QPushButton *uploadButton() const;
 
     QTimer m_updateTimer;
 

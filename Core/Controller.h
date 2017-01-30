@@ -34,63 +34,62 @@
 
 class StorageInterface;
 
-class Controller : public QObject,
-                   public ControllerInterface
+class Controller : public QObject, public ControllerInterface
 {
     Q_OBJECT
 
 public:
-    explicit Controller( QObject* parent = nullptr );
+    explicit Controller(QObject *parent = nullptr);
     ~Controller() override;
 
-    void stateChanged( State previous, State next ) override;
-    void persistMetaData( Configuration& ) override;
-    void provideMetaData( Configuration& ) override;
+    void stateChanged(State previous, State next) override;
+    void persistMetaData(Configuration &) override;
+    void provideMetaData(Configuration &) override;
 
-    bool initializeBackEnd( const QString& name ) override;
+    bool initializeBackEnd(const QString &name) override;
     bool connectToBackend() override;
     bool disconnectFromBackend() override;
-    StorageInterface* storage() override;
+    StorageInterface *storage() override;
 
     // FIXME add the add/modify/delete functions will not be slots anymore
-    Event makeEvent( const Task& ) override;
-    Event cloneEvent( const Event& ) override;
-    bool modifyEvent( const Event& ) override;
-    bool deleteEvent( const Event& ) override;
+    Event makeEvent(const Task &) override;
+    Event cloneEvent(const Event &) override;
+    bool modifyEvent(const Event &) override;
+    bool deleteEvent(const Event &) override;
 
-    bool addTask( const Task& parent ) override;
-    bool modifyTask( const Task& ) override;
-    bool deleteTask( const Task& ) override;
-    bool setAllTasks( const TaskList& ) override;
+    bool addTask(const Task &parent) override;
+    bool modifyTask(const Task &) override;
+    bool deleteTask(const Task &) override;
+    bool setAllTasks(const TaskList &) override;
     QDomDocument exportDatabasetoXml() const override;
-    QString importDatabaseFromXml( const QDomDocument& ) override;
+    QString importDatabaseFromXml(const QDomDocument &) override;
 
     void updateModelEventsAndTasks();
 
 public Q_SLOTS:
 
-    void executeCommand( CharmCommand* ) override;
-    void rollbackCommand ( CharmCommand* ) override;
+    void executeCommand(CharmCommand *) override;
+    void rollbackCommand(CharmCommand *) override;
 
 Q_SIGNALS:
-    void eventAdded( const Event& event ) override;
-    void eventModified( const Event& event ) override;
-    void eventDeleted( const Event& event ) override;
-    void allEvents( const EventList& );
-    void definedTasks( const TaskList& ) override;
-    void taskAdded( const Task& ) override;
-    void taskUpdated( const Task& ) override;
-    void taskDeleted( const Task& ) override;
+    void eventAdded(const Event &event) override;
+    void eventModified(const Event &event) override;
+    void eventDeleted(const Event &event) override;
+    void allEvents(const EventList &);
+    void definedTasks(const TaskList &) override;
+    void taskAdded(const Task &) override;
+    void taskUpdated(const Task &) override;
+    void taskDeleted(const Task &) override;
     void readyToQuit() override;
-    void currentBackendStatus( const QString& text );
+    void currentBackendStatus(const QString &text);
 
-    void commandCompleted( CharmCommand* ) override;
+    void commandCompleted(CharmCommand *) override;
 
 private:
-    void updateSubscriptionForTask( const Task& );
+    void updateSubscriptionForTask(const Task &);
 
-    template<class T> void loadConfigValue( const QString &key, T &configValue ) const;
-    StorageInterface* m_storage = nullptr;
+    template<class T> void loadConfigValue(const QString &key, T &configValue) const;
+    StorageInterface *m_storage = nullptr;
 };
 
 #endif

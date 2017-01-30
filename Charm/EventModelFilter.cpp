@@ -24,101 +24,97 @@
 
 #include "EventModelFilter.h"
 
-EventModelFilter::EventModelFilter( CharmDataModel* model, QObject* parent )
-    : QSortFilterProxyModel( parent )
-    , m_model( model )
+EventModelFilter::EventModelFilter(CharmDataModel *model, QObject *parent)
+    : QSortFilterProxyModel(parent)
+    , m_model(model)
 {
-    setSourceModel( &m_model );
-    setDynamicSortFilter( true );
-    sort( 0, Qt::AscendingOrder );
+    setSourceModel(&m_model);
+    setDynamicSortFilter(true);
+    sort(0, Qt::AscendingOrder);
 
-    connect( &m_model, SIGNAL(eventActivationNotice(EventId)),
-             SIGNAL(eventActivationNotice(EventId)) );
-    connect( &m_model, SIGNAL(eventDeactivationNotice(EventId)),
-             SIGNAL(eventDeactivationNotice(EventId)) );
+    connect(&m_model, SIGNAL(eventActivationNotice(EventId)),
+            SIGNAL(eventActivationNotice(EventId)));
+    connect(&m_model, SIGNAL(eventDeactivationNotice(EventId)),
+            SIGNAL(eventDeactivationNotice(EventId)));
 }
 
 EventModelFilter::~EventModelFilter()
 {
 }
 
-void EventModelFilter::commitCommand( CharmCommand* command )
+void EventModelFilter::commitCommand(CharmCommand *command)
 {
-    m_model.commitCommand( command );
+    m_model.commitCommand(command);
 }
 
-bool EventModelFilter::lessThan( const QModelIndex& left, const QModelIndex& right ) const
+bool EventModelFilter::lessThan(const QModelIndex &left, const QModelIndex &right) const
 {
-    if ( left.column() == 0 && right.column() == 0 ) {
-        const Event& leftEvent = m_model.eventForIndex( left );
-        const Event& rightEvent = m_model.eventForIndex( right );
+    if (left.column() == 0 && right.column() == 0) {
+        const Event &leftEvent = m_model.eventForIndex(left);
+        const Event &rightEvent = m_model.eventForIndex(right);
         // date comparison in UTC is much faster and just as correct
         return leftEvent.startDateTime(Qt::UTC) < rightEvent.startDateTime(Qt::UTC);
     } else {
-        return QSortFilterProxyModel::lessThan( left, right );
+        return QSortFilterProxyModel::lessThan(left, right);
     }
 }
 
-const Event& EventModelFilter::eventForIndex( const QModelIndex& index ) const
+const Event &EventModelFilter::eventForIndex(const QModelIndex &index) const
 {
-    return m_model.eventForIndex( mapToSource( index ) );
+    return m_model.eventForIndex(mapToSource(index));
 }
 
-QModelIndex EventModelFilter::indexForEvent( const Event& event ) const
+QModelIndex EventModelFilter::indexForEvent(const Event &event) const
 {
-    const QModelIndex& sourceIndex = m_model.indexForEvent( event );
-    const QModelIndex& proxyIndex( mapFromSource( sourceIndex ) );
+    const QModelIndex &sourceIndex = m_model.indexForEvent(event);
+    const QModelIndex &proxyIndex(mapFromSource(sourceIndex));
     // bool valid = proxyIndex.isValid();
     return proxyIndex;
 }
 
-bool EventModelFilter::filterAcceptsRow( int srow, const QModelIndex& sparent ) const
+bool EventModelFilter::filterAcceptsRow(int srow, const QModelIndex &sparent) const
 {
-    if ( QSortFilterProxyModel::filterAcceptsRow( srow, sparent ) == false ) {
+    if (QSortFilterProxyModel::filterAcceptsRow(srow, sparent) == false)
         return false;
-    }
 
-    const Event& event = m_model.eventForIndex( m_model.index( srow, 0, sparent ) );
+    const Event &event = m_model.eventForIndex(m_model.index(srow, 0, sparent));
 
-    if ( m_filterId != TaskId() && event.taskId() != m_filterId ) {
+    if (m_filterId != TaskId() && event.taskId() != m_filterId)
         return false;
-    }
 
     const auto startDate = event.startDateTime().date();
     /*
     * event.endDateTime().date() < m_start
     * Show also Events that end within the time span.
     */
-    if ( m_start.isValid() && ( startDate < m_start ) && ( event.endDateTime().date() < m_start ) ) {
+    if (m_start.isValid() && (startDate < m_start) && (event.endDateTime().date() < m_start))
         return false;
-    }
 
-    if ( m_end.isValid() && startDate >= m_end ) {
+    if (m_end.isValid() && startDate >= m_end)
         return false;
-    }
 
     return true;
 }
 
-void EventModelFilter::setFilterStartDate( const QDate& date )
+void EventModelFilter::setFilterStartDate(const QDate &date)
 {
-    if ( m_start == date )
+    if (m_start == date)
         return;
     m_start = date;
     invalidateFilter();
 }
 
-void EventModelFilter::setFilterEndDate( const QDate& date )
+void EventModelFilter::setFilterEndDate(const QDate &date)
 {
-    if ( m_end == date )
+    if (m_end == date)
         return;
     m_end = date;
     invalidateFilter();
 }
 
-void EventModelFilter::setFilterTaskId( TaskId id )
+void EventModelFilter::setFilterTaskId(TaskId id)
 {
-    if ( m_filterId == id )
+    if (m_filterId == id)
         return;
     m_filterId = id;
     invalidateFilter();
@@ -127,10 +123,9 @@ void EventModelFilter::setFilterTaskId( TaskId id )
 int EventModelFilter::totalDuration() const
 {
     int total = 0;
-    for ( int i = 0; i < rowCount(); ++i )
-    {
-        QModelIndex current = index( i, 0, QModelIndex() );
-        const Event& event = eventForIndex( current );
+    for (int i = 0; i < rowCount(); ++i) {
+        QModelIndex current = index(i, 0, QModelIndex());
+        const Event &event = eventForIndex(current);
         total += event.duration();
     }
     return total;
@@ -139,15 +134,12 @@ int EventModelFilter::totalDuration() const
 QList<Event> EventModelFilter::events() const
 {
     QList<Event> events;
-    for ( int i = 0; i < rowCount(); ++i )
-    {
-        QModelIndex hit = index( i, 0, QModelIndex() );
-        const Event& event = eventForIndex( hit );
+    for (int i = 0; i < rowCount(); ++i) {
+        QModelIndex hit = index(i, 0, QModelIndex());
+        const Event &event = eventForIndex(hit);
         events << event;
     }
     return events;
 }
 
-
 #include "moc_EventModelFilter.cpp"
-

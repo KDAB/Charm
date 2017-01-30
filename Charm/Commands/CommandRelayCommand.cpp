@@ -27,11 +27,11 @@
 
 #include <QApplication>
 
-CommandRelayCommand::CommandRelayCommand( QObject* parent )
-    : CharmCommand( tr("Relay"), parent )
+CommandRelayCommand::CommandRelayCommand(QObject *parent)
+    : CharmCommand(tr("Relay"), parent)
 {   // as long as Charm is single-threaded, this does not do anything,
     // because there will be no repaint
-    QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ) );
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 }
 
 CommandRelayCommand::~CommandRelayCommand()
@@ -39,32 +39,32 @@ CommandRelayCommand::~CommandRelayCommand()
     QApplication::restoreOverrideCursor();
 }
 
-void CommandRelayCommand::setCommand( CharmCommand* command )
+void CommandRelayCommand::setCommand(CharmCommand *command)
 {
     m_payload = command;
 }
 
 bool CommandRelayCommand::prepare()
 {
-    Q_ASSERT_X( false, Q_FUNC_INFO,
-                "Prepare should have been called by the owner instead." );
+    Q_ASSERT_X(false, Q_FUNC_INFO,
+               "Prepare should have been called by the owner instead.");
     return true;
 }
 
-bool CommandRelayCommand::execute( ControllerInterface* controller )
+bool CommandRelayCommand::execute(ControllerInterface *controller)
 {
-    return m_payload->execute( controller );
+    return m_payload->execute(controller);
 }
 
-bool CommandRelayCommand::rollback( ControllerInterface* controller )
+bool CommandRelayCommand::rollback(ControllerInterface *controller)
 {
-    return m_payload->rollback( controller );
+    return m_payload->rollback(controller);
 }
 
 bool CommandRelayCommand::finalize()
 {
     QApplication::restoreOverrideCursor();
-    m_payload->owner()->commitCommand( m_payload );
+    m_payload->owner()->commitCommand(m_payload);
     return true;
 }
 

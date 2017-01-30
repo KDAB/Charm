@@ -30,7 +30,8 @@
 class QByteArray;
 class CharmDataModel;
 
-class WeeklyTimesheetXmlWriter {
+class WeeklyTimesheetXmlWriter
+{
 public:
     WeeklyTimesheetXmlWriter();
     /**
@@ -38,13 +39,13 @@ public:
      */
     QByteArray saveToXml() const;
 
-    void setDataModel( const CharmDataModel* model);
-    void setYear( int year );
-    void setWeekNumber( int weekNumber );
-    void setEvents( const EventList& events );
-    void setRootTask( TaskId rootTask );
+    void setDataModel(const CharmDataModel *model);
+    void setYear(int year);
+    void setWeekNumber(int weekNumber);
+    void setEvents(const EventList &events);
+    void setRootTask(TaskId rootTask);
 private:
-    const CharmDataModel* m_dataModel = nullptr;
+    const CharmDataModel *m_dataModel = nullptr;
     int m_year = 0;
     int m_weekNumber = 0;
     TaskId m_rootTask = {};

@@ -26,48 +26,48 @@
 #include "Core/CharmDataModel.h"
 #include "ViewHelpers.h"
 
-ViewFilter::ViewFilter( CharmDataModel* model, QObject* parent )
-    : QSortFilterProxyModel( parent )
-    , m_model( model )
+ViewFilter::ViewFilter(CharmDataModel *model, QObject *parent)
+    : QSortFilterProxyModel(parent)
+    , m_model(model)
 {
-    setSourceModel( &m_model );
+    setSourceModel(&m_model);
 
     // we filter for the task name column
-    setFilterKeyColumn( Column_TaskId );
+    setFilterKeyColumn(Column_TaskId);
     // setFilterKeyColumn( -1 );
-    setFilterCaseSensitivity( Qt::CaseInsensitive );
+    setFilterCaseSensitivity(Qt::CaseInsensitive);
 
     // relay signals to the view:
-    connect( &m_model, SIGNAL(eventActivationNotice(EventId)),
-             SIGNAL(eventActivationNotice(EventId)) );
-    connect( &m_model, SIGNAL(eventDeactivationNotice(EventId)),
-             SIGNAL(eventDeactivationNotice(EventId)) );
+    connect(&m_model, SIGNAL(eventActivationNotice(EventId)),
+            SIGNAL(eventActivationNotice(EventId)));
+    connect(&m_model, SIGNAL(eventDeactivationNotice(EventId)),
+            SIGNAL(eventDeactivationNotice(EventId)));
 
-    sort( Column_TaskId );
+    sort(Column_TaskId);
 }
 
 ViewFilter::~ViewFilter()
 {
 }
 
-Task ViewFilter::taskForIndex( const QModelIndex& index ) const
+Task ViewFilter::taskForIndex(const QModelIndex &index) const
 {
-    return m_model.taskForIndex( mapToSource( index ) );
+    return m_model.taskForIndex(mapToSource(index));
 }
 
-QModelIndex ViewFilter::indexForTaskId( TaskId id ) const
+QModelIndex ViewFilter::indexForTaskId(TaskId id) const
 {
-    return mapFromSource( m_model.indexForTaskId( id ) );
+    return mapFromSource(m_model.indexForTaskId(id));
 }
 
-bool ViewFilter::taskIsActive( const Task& task ) const
+bool ViewFilter::taskIsActive(const Task &task) const
 {
-    return m_model.taskIsActive( task );
+    return m_model.taskIsActive(task);
 }
 
-bool ViewFilter::taskHasChildren( const Task& task ) const
+bool ViewFilter::taskHasChildren(const Task &task) const
 {
-    return m_model.taskHasChildren( task );
+    return m_model.taskHasChildren(task);
 }
 
 void ViewFilter::prefilteringModeChanged()
@@ -75,41 +75,47 @@ void ViewFilter::prefilteringModeChanged()
     invalidate();
 }
 
-bool ViewFilter::filterAcceptsRow( int source_row, const QModelIndex& parent ) const
+bool ViewFilter::filterAcceptsRow(int source_row, const QModelIndex &parent) const
 {
     // by default, QSortFilterProxyModel only accepts row where already the parents where accepted
-    bool acceptedByFilter = QSortFilterProxyModel::filterAcceptsRow( source_row, parent );
+    bool acceptedByFilter = QSortFilterProxyModel::filterAcceptsRow(source_row, parent);
     // in our case, this is not what we want, we want parents to be
     // accepted if any of their children are accepted (this is a
     // recursive call, and could possibly be slow):
-    const QModelIndex index( m_model.index( source_row, 0, parent ) );
-    if ( ! index.isValid() ) return acceptedByFilter;
+    const QModelIndex index(m_model.index(source_row, 0, parent));
+    if (!index.isValid()) return acceptedByFilter;
 
-    int rowCount = m_model.rowCount( index );
-    for ( int i = 0; i < rowCount; ++i ) {
-        if ( filterAcceptsRow( i, index ) ) {
+    int rowCount = m_model.rowCount(index);
+    for (int i = 0; i < rowCount; ++i) {
+        if (filterAcceptsRow(i, index)) {
             acceptedByFilter = true;
             break;
         }
     }
 
     bool accepted = acceptedByFilter;
-    const Task task = m_model.taskForIndex( index );
-    switch( Configuration::instance().taskPrefilteringMode ) {
+    const Task task = m_model.taskForIndex(index);
+    switch (Configuration::instance().taskPrefilteringMode) {
     case Configuration::TaskPrefilter_ShowAll:
         break;
-    case Configuration::TaskPrefilter_CurrentOnly: {
-        const bool ok = ( task.isCurrentlyValid() || checkChildren( task, HaveValidChild ) );
+    case Configuration::TaskPrefilter_CurrentOnly:
+    {
+        const bool ok = (task.isCurrentlyValid() || checkChildren(task, HaveValidChild));
         accepted &= ok;
         break;
     }
-    case Configuration::TaskPrefilter_SubscribedOnly: {
-        const bool ok = ( task.subscribed() || checkChildren( task, HaveSubscribedChild ) );
+    case Configuration::TaskPrefilter_SubscribedOnly:
+    {
+        const bool ok = (task.subscribed() || checkChildren(task, HaveSubscribedChild));
         accepted &= ok;
         break;
     }
     case Configuration::TaskPrefilter_SubscribedAndCurrentOnly:
-        accepted &= ( (task.subscribed() || checkChildren( task, HaveSubscribedChild ) ) && ( task.isCurrentlyValid() || checkChildren( task, HaveValidChild ) ) );
+        accepted
+            &= ((task.subscribed()
+                 || checkChildren(task,
+                                  HaveSubscribedChild))
+                && (task.isCurrentlyValid() || checkChildren(task, HaveValidChild)));
         break;
     default:
         break;
@@ -118,32 +124,34 @@ bool ViewFilter::filterAcceptsRow( int source_row, const QModelIndex& parent ) c
     return accepted;
 }
 
-bool ViewFilter::filterAcceptsColumn( int, const QModelIndex& ) const
+bool ViewFilter::filterAcceptsColumn(int, const QModelIndex &) const
 {
     return true;
 }
 
-bool ViewFilter::taskIdExists( TaskId taskId ) const
+bool ViewFilter::taskIdExists(TaskId taskId) const
 {
-    return m_model.taskIdExists( taskId );
+    return m_model.taskIdExists(taskId);
 }
 
-bool ViewFilter::checkChildren( Task task, CheckFor checkFor ) const
+bool ViewFilter::checkChildren(Task task, CheckFor checkFor) const
 {
-    if ( taskHasChildren( task ) ) {
-        const TaskList taskList = m_model.children( task );
-        for ( const Task& taskChild : taskList ) {
-            if ( checkFor == HaveSubscribedChild && taskChild.subscribed() )
+    if (taskHasChildren(task)) {
+        const TaskList taskList = m_model.children(task);
+        for (const Task &taskChild : taskList) {
+            if (checkFor == HaveSubscribedChild && taskChild.subscribed()) {
                 return true;
-            else if ( checkFor == HaveValidChild && taskChild.isCurrentlyValid() )
+            } else if (checkFor == HaveValidChild && taskChild.isCurrentlyValid()) {
                 return true;
+            }
         }
     }
     return false;
 }
 
-void ViewFilter::commitCommand( CharmCommand* command )
+void ViewFilter::commitCommand(CharmCommand *command)
 {   // we do not emit signals, we are the relay (since we are a proxy):
-    m_model.commitCommand( command );
+    m_model.commitCommand(command);
 }
+
 #include "moc_ViewFilter.cpp"

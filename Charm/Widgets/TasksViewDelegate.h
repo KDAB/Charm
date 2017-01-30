@@ -34,24 +34,19 @@ class TasksViewDelegate : public QItemDelegate
     Q_OBJECT
 
 public:
-    explicit TasksViewDelegate( QObject* parent = nullptr );
+    explicit TasksViewDelegate(QObject *parent = nullptr);
 
-    void paint( QPainter *painter,
-                const QStyleOptionViewItem &option,
-                const QModelIndex &index ) const override;
-    QSize sizeHint( const QStyleOptionViewItem &option,
-                    const QModelIndex &index ) const override;
+    void paint(QPainter *painter, const QStyleOptionViewItem &option,
+               const QModelIndex &index) const override;
+    QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const override;
 
-    QWidget* createEditor( QWidget* parent,
-                           const QStyleOptionViewItem& option,
-                           const QModelIndex& index ) const override;
-    bool editorEvent( QEvent *event, QAbstractItemModel *model,
-                      const QStyleOptionViewItem &option,
-                      const QModelIndex &index ) override;
-    void updateEditorGeometry( QWidget * editor,
-                               const QStyleOptionViewItem & option,
-                               const QModelIndex & index ) const override;
-    void setEditorData( QWidget * editor, const QModelIndex & index ) const override;
+    QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option,
+                          const QModelIndex &index) const override;
+    bool editorEvent(QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option,
+                     const QModelIndex &index) override;
+    void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option,
+                              const QModelIndex &index) const override;
+    void setEditorData(QWidget *editor, const QModelIndex &index) const override;
 
     bool isEditing() const;
 
@@ -59,17 +54,15 @@ Q_SIGNALS:
     void editingStateChanged() const;
 
 private Q_SLOTS:
-    void slotCloseEditor( QWidget* editor, QAbstractItemDelegate::EndEditHint );
+    void slotCloseEditor(QWidget *editor, QAbstractItemDelegate::EndEditHint);
 
 private:
-    QRect checkBoxRect( const QStyleOptionViewItem &option,
-                        const QVariant &variant ) const;
+    QRect checkBoxRect(const QStyleOptionViewItem &option, const QVariant &variant) const;
     struct Layout {
         int height;
         QRect cbRect;
     };
-    Layout doLayout( const QStyleOptionViewItem& option,
-                     const QModelIndex& index ) const;
+    Layout doLayout(const QStyleOptionViewItem &option, const QModelIndex &index) const;
     mutable bool m_editing = false;
 };
 #endif

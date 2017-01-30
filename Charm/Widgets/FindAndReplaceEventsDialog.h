@@ -21,7 +21,6 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 #ifndef FINDANDREPLACEEVENTSDIALOG_H
 #define FINDANDREPLACEEVENTSDIALOG_H
 
@@ -44,7 +43,7 @@ class FindAndReplaceEventsDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit FindAndReplaceEventsDialog( QWidget* parent = nullptr );
+    explicit FindAndReplaceEventsDialog(QWidget *parent = nullptr);
     ~FindAndReplaceEventsDialog() override;
 
     QList<Event> modifiedEvents() const;
@@ -58,19 +57,19 @@ private Q_SLOTS:
 private:
 
     enum SelectTaskType {
-         TaskToSearch,
-         TaskToReplaceWith
+        TaskToSearch,
+        TaskToReplaceWith
     };
 
     void searchProjectCode();
-    void selectTask( SelectTaskType type );
-    void eventChangesCompleted( const Event& event );
+    void selectTask(SelectTaskType type);
+    void eventChangesCompleted(const Event &event);
 
     TaskId m_taskToSearch = {};
     TaskId m_taskToReplaceWith = {};
     TimeSpan m_timeSpan;
-    QPushButton* m_replace;
-    QPushButton* m_cancel;
+    QPushButton *m_replace;
+    QPushButton *m_cancel;
     QList<Event> m_foundEvents;
     QList<Event> m_modifiedEvents;
     QScopedPointer<EventModelFilter> m_model;

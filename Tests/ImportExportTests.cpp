@@ -46,21 +46,21 @@ void ImportExportTests::initTestCase()
 
 void ImportExportTests::importExportTest()
 {
-    const QString localFileName( QStringLiteral("ImportExportTests-temp.charmdatabaseexport") );
-    const QString filename = QStringLiteral(":/importExportTest/Data/test-database-export.charmdatabaseexport");
-    importDatabase( filename );
+    const QString localFileName(QStringLiteral("ImportExportTests-temp.charmdatabaseexport"));
+    const QString filename = QStringLiteral(
+        ":/importExportTest/Data/test-database-export.charmdatabaseexport");
+    importDatabase(filename);
 
-    QSharedPointer<CharmDataModel> databaseStep1( model()->clone() );
+    QSharedPointer<CharmDataModel> databaseStep1(model()->clone());
 
     QDomDocument exportDoc = controller()->exportDatabasetoXml();
-    QFile outfile( localFileName );
-    QVERIFY( outfile.open( QIODevice::ReadWrite ) );
-    QTextStream stream( &outfile );
-    exportDoc.save( stream, 4 ); // FIXME save does no kind of error reporting?
+    QFile outfile(localFileName);
+    QVERIFY(outfile.open(QIODevice::ReadWrite));
+    QTextStream stream(&outfile);
+    exportDoc.save(stream, 4);   // FIXME save does no kind of error reporting?
 
-    importDatabase( filename );
-    QCOMPARE( *databaseStep1.data(), *model() );
-
+    importDatabase(filename);
+    QCOMPARE(*databaseStep1.data(), *model());
 
     // Code to load and anonymize a database:
 //    QBENCHMARK {
@@ -87,41 +87,42 @@ void ImportExportTests::importExportTest()
 
 void ImportExportTests::importBenchmark()
 {
-    const QString filename = QStringLiteral(":/importExportTest/Data/test-database-export.charmdatabaseexport");
+    const QString filename = QStringLiteral(
+        ":/importExportTest/Data/test-database-export.charmdatabaseexport");
     QBENCHMARK {
-        importDatabase( filename );
+        importDatabase(filename);
     }
 }
 
 void ImportExportTests::exportBenchmark()
 {
-    const QString filename = QStringLiteral(":/importExportTest/Data/test-database-export.charmdatabaseexport");
-    const QString localFileName( QStringLiteral("ImportExportTests-temp.charmdatabaseexport") );
-    importDatabase( filename );
+    const QString filename = QStringLiteral(
+        ":/importExportTest/Data/test-database-export.charmdatabaseexport");
+    const QString localFileName(QStringLiteral("ImportExportTests-temp.charmdatabaseexport"));
+    importDatabase(filename);
     QBENCHMARK {
         QDomDocument exportDoc = controller()->exportDatabasetoXml();
-        QFile outfile( localFileName );
-        QVERIFY( outfile.open( QIODevice::ReadWrite ) );
-        QTextStream stream( &outfile );
-        exportDoc.save( stream, 4 ); // FIXME save does no kind of error reporting?
+        QFile outfile(localFileName);
+        QVERIFY(outfile.open(QIODevice::ReadWrite));
+        QTextStream stream(&outfile);
+        exportDoc.save(stream, 4);   // FIXME save does no kind of error reporting?
     }
 }
 
-void ImportExportTests::cleanupTestCase ()
+void ImportExportTests::cleanupTestCase()
 {
     destroy();
 }
 
-void ImportExportTests::importDatabase( const QString& filename )
+void ImportExportTests::importDatabase(const QString &filename)
 {
-    QFile file( filename );
-    QVERIFY( file.open( QIODevice::ReadOnly ) );
+    QFile file(filename);
+    QVERIFY(file.open(QIODevice::ReadOnly));
     QDomDocument dom;
-    QVERIFY( dom.setContent( &file ) );
-    QVERIFY( controller()->importDatabaseFromXml( dom ).isEmpty() );
+    QVERIFY(dom.setContent(&file));
+    QVERIFY(controller()->importDatabaseFromXml(dom).isEmpty());
 }
 
-
-QTEST_MAIN( ImportExportTests )
+QTEST_MAIN(ImportExportTests)
 
 #include "moc_ImportExportTests.cpp"

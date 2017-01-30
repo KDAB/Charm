@@ -31,15 +31,15 @@
 #include <QIcon>
 #include <QPixmap>
 
-const QIcon& Data::charmIcon()
+const QIcon &Data::charmIcon()
 {
     static QIcon icon(QStringLiteral(":/Charm/charmicon.png"));
     Q_ASSERT_X(!icon.isNull(), Q_FUNC_INFO,
-            "Required resource not available");
+               "Required resource not available");
     return icon;
 }
 
-const QIcon& Data::charmTrayIcon()
+const QIcon &Data::charmTrayIcon()
 {
     // Mac and Windows: the system tray uses 16x16.
     // TODO: different icons though: white background on Windows
@@ -53,12 +53,12 @@ const QIcon& Data::charmTrayIcon()
 #endif
 
     Q_ASSERT_X(!QPixmap(iconPath).isNull(), Q_FUNC_INFO,
-                        "Required resource not available");
+               "Required resource not available");
     static QIcon icon = QPixmap(iconPath);
     return icon;
 }
 
-const QIcon& Data::charmTrayActiveIcon()
+const QIcon &Data::charmTrayActiveIcon()
 {
     // Mac and Windows: the system tray uses 16x16.
     // TODO: different icons though: white background on Windows
@@ -72,27 +72,28 @@ const QIcon& Data::charmTrayActiveIcon()
 #endif
 
     Q_ASSERT_X(!QPixmap(iconPath).isNull(), Q_FUNC_INFO,
-                        "Required resource not available");
+               "Required resource not available");
     static QIcon icon = QPixmap(iconPath);
     return icon;
 }
-const QIcon& Data::goIcon()
+
+const QIcon &Data::goIcon()
 {
     static QIcon icon(QStringLiteral(":/Charm/go.png"));
     Q_ASSERT_X(!icon.isNull(), Q_FUNC_INFO,
-              "Required resource not available");
+               "Required resource not available");
     return icon;
 }
 
-const QIcon& Data::stopIcon()
+const QIcon &Data::stopIcon()
 {
     static QIcon icon(QStringLiteral(":/Charm/stop.png"));
     Q_ASSERT_X(!icon.isNull(), Q_FUNC_INFO,
-            "Required resource not available");
+               "Required resource not available");
     return icon;
 }
 
-const QIcon& Data::newTaskIcon()
+const QIcon &Data::newTaskIcon()
 {
     static QIcon icon(QStringLiteral(":/Charm/newtask.png"));
     Q_ASSERT_X(!icon.isNull(), Q_FUNC_INFO,
@@ -100,7 +101,7 @@ const QIcon& Data::newTaskIcon()
     return icon;
 }
 
-const QIcon& Data::newSubtaskIcon()
+const QIcon &Data::newSubtaskIcon()
 {
     static QIcon icon(QStringLiteral(":/Charm/newsubtask.png"));
     Q_ASSERT_X(!icon.isNull(), Q_FUNC_INFO,
@@ -108,7 +109,7 @@ const QIcon& Data::newSubtaskIcon()
     return icon;
 }
 
-const QIcon& Data::editTaskIcon()
+const QIcon &Data::editTaskIcon()
 {   // FIXME same as edit-event icon
     static QIcon icon(QStringLiteral(":/Charm/edit.png"));
     Q_ASSERT_X(!icon.isNull(), Q_FUNC_INFO,
@@ -116,7 +117,7 @@ const QIcon& Data::editTaskIcon()
     return icon;
 }
 
-const QIcon& Data::deleteTaskIcon()
+const QIcon &Data::deleteTaskIcon()
 {
     static QIcon icon(QStringLiteral(":/Charm/deletetask.png"));
     Q_ASSERT_X(!icon.isNull(),
@@ -124,7 +125,7 @@ const QIcon& Data::deleteTaskIcon()
     return icon;
 }
 
-const QIcon& Data::searchIcon()
+const QIcon &Data::searchIcon()
 {
     static QIcon icon(QStringLiteral(":/Charm/search.png"));
     Q_ASSERT_X(!icon.isNull(),
@@ -132,7 +133,7 @@ const QIcon& Data::searchIcon()
     return icon;
 }
 
-const QIcon& Data::editEventIcon()
+const QIcon &Data::editEventIcon()
 {
     static QIcon icon(QStringLiteral(":/Charm/edit.png"));
     Q_ASSERT_X(!icon.isNull(), Q_FUNC_INFO,
@@ -140,7 +141,7 @@ const QIcon& Data::editEventIcon()
     return icon;
 }
 
-const QIcon& Data::createReportIcon()
+const QIcon &Data::createReportIcon()
 {
     static QIcon icon(QStringLiteral(":/Charm/createreport.png"));
     Q_ASSERT_X(!icon.isNull(), Q_FUNC_INFO,
@@ -148,7 +149,7 @@ const QIcon& Data::createReportIcon()
     return icon;
 }
 
-const QPixmap& Data::activePixmap()
+const QPixmap &Data::activePixmap()
 {
     static QPixmap pixmap(QStringLiteral(":/Charm/active.png"));
     Q_ASSERT_X(!pixmap.isNull(), Q_FUNC_INFO,
@@ -156,7 +157,7 @@ const QPixmap& Data::activePixmap()
     return pixmap;
 }
 
-const QIcon& Data::quitCharmIcon()
+const QIcon &Data::quitCharmIcon()
 {
     static QIcon icon(QStringLiteral(":/Charm/quitcharm.png"));
     Q_ASSERT_X(!icon.isNull(),
@@ -164,7 +165,7 @@ const QIcon& Data::quitCharmIcon()
     return icon;
 }
 
-const QIcon& Data::configureIcon()
+const QIcon &Data::configureIcon()
 {
     static QIcon icon(QStringLiteral(":/Charm/configure.png"));
     Q_ASSERT_X(!icon.isNull(),
@@ -172,7 +173,7 @@ const QIcon& Data::configureIcon()
     return icon;
 }
 
-const QPixmap& Data::editorLockedPixmap()
+const QPixmap &Data::editorLockedPixmap()
 {
     static QPixmap pixmap(QStringLiteral(":/Charm/editor_locked.png"));
     Q_ASSERT_X(!pixmap.isNull(), Q_FUNC_INFO,
@@ -180,7 +181,7 @@ const QPixmap& Data::editorLockedPixmap()
     return pixmap;
 }
 
-const QPixmap& Data::editorDirtyPixmap()
+const QPixmap &Data::editorDirtyPixmap()
 {
     static QPixmap pixmap(QStringLiteral(":/Charm/editor_dirty.png"));
     Q_ASSERT_X(!pixmap.isNull(), Q_FUNC_INFO,

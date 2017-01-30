@@ -25,8 +25,7 @@
 
 #include "ApplicationCore.h"
 
-
-TrayIcon::TrayIcon(QObject* parent)
+TrayIcon::TrayIcon(QObject *parent)
     : QSystemTrayIcon(parent)
 {
     connect(this,
@@ -36,13 +35,11 @@ TrayIcon::TrayIcon(QObject* parent)
 
 TrayIcon::~TrayIcon()
 {
-
 }
 
 void TrayIcon::slotActivated(QSystemTrayIcon::ActivationReason reason)
 {
-    switch(reason)
-    {
+    switch (reason) {
     case QSystemTrayIcon::Context:
         // show context menu
         // m_systrayContextMenu.show();
@@ -50,7 +47,7 @@ void TrayIcon::slotActivated(QSystemTrayIcon::ActivationReason reason)
     case QSystemTrayIcon::Trigger: //(single click)
     case QSystemTrayIcon::DoubleClick:
 #ifndef Q_OS_OSX
-        ApplicationCore::instance().showMainWindow( ApplicationCore::ShowMode::ShowAndRaise );
+        ApplicationCore::instance().showMainWindow(ApplicationCore::ShowMode::ShowAndRaise);
 #endif
         break;
     case QSystemTrayIcon::MiddleClick:

@@ -36,13 +36,13 @@
 class UndoCharmCommandWrapper : public QUndoCommand
 {
 public:
-    explicit UndoCharmCommandWrapper(CharmCommand* command);
+    explicit UndoCharmCommandWrapper(CharmCommand *command);
     ~UndoCharmCommandWrapper();
     void undo() override;
     void redo() override;
-    CharmCommand* command() const;
+    CharmCommand *command() const;
 private:
-    CharmCommand* m_command;
+    CharmCommand *m_command;
 };
 
 #endif

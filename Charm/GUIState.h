@@ -36,18 +36,18 @@ class GUIState
 public:
     GUIState();
 
-    const TaskIdList& expandedTasks() const;
+    const TaskIdList &expandedTasks() const;
     TaskId selectedTask() const;
     bool showExpired() const;
     bool showCurrents() const;
 
-    void setSelectedTask( TaskId );
-    void setExpandedTasks( const TaskIdList& );
-    void setShowExpired( bool show );
-    void setShowCurrents( bool show );
+    void setSelectedTask(TaskId);
+    void setExpandedTasks(const TaskIdList &);
+    void setShowExpired(bool show);
+    void setShowCurrents(bool show);
 
-    void saveTo( QSettings& settings );
-    void loadFrom( const QSettings& settings );
+    void saveTo(QSettings &settings);
+    void loadFrom(const QSettings &settings);
 
 private:
     TaskIdList m_expandedTasks;

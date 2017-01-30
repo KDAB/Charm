@@ -30,8 +30,7 @@
 #include "Core/CharmDataModel.h"
 #include "EventModelFilter.h"
 
-class ModelConnector : public QObject,
-                       public CommandEmitterInterface
+class ModelConnector : public QObject, public CommandEmitterInterface
 {
     Q_OBJECT
 
@@ -39,21 +38,21 @@ public:
     ModelConnector();
 
     /** The charm data model. */
-    CharmDataModel* charmDataModel();
+    CharmDataModel *charmDataModel();
     /** The item model the task view uses. */
-    ViewFilter* taskModel();
+    ViewFilter *taskModel();
     /** The item model the event view uses. */
-    EventModelFilter* eventModel();
+    EventModelFilter *eventModel();
 
-    EventModelFilter* findEventModel();
+    EventModelFilter *findEventModel();
 
     // implement CommandEmitterInterface
-    void commitCommand( CharmCommand* ) override;
+    void commitCommand(CharmCommand *) override;
 
 public Q_SLOTS:
-    void slotMakeAndActivateEvent( const Task& );
-    void slotRequestEventModification(const Event&newEvent, const Event& oldEvent);
-    void slotSysTrayUpdate(const QString& toolTip, bool active);
+    void slotMakeAndActivateEvent(const Task &);
+    void slotRequestEventModification(const Event &newEvent, const Event &oldEvent);
+    void slotSysTrayUpdate(const QString &toolTip, bool active);
 
 private:
     CharmDataModel m_dataModel;

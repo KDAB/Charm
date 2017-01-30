@@ -46,67 +46,66 @@ class QComboBox;
 class QLabel;
 class QListView;
 
-class EventView : public QDialog,
-                  public UIStateInterface
+class EventView : public QDialog, public UIStateInterface
 {
     Q_OBJECT
 
 public:
-    explicit EventView( QWidget* parent = nullptr );
+    explicit EventView(QWidget *parent = nullptr);
     ~EventView() override;
 
-    void makeVisibleAndCurrent( const Event& );
+    void makeVisibleAndCurrent(const Event &);
 
-    void setModel( ModelConnector* ) ;
+    void setModel(ModelConnector *);
 
-    void populateEditMenu( QMenu* );
+    void populateEditMenu(QMenu *);
 
 Q_SIGNALS:
-    void emitCommand( CharmCommand* ) override;
-    void emitCommandRollback( CharmCommand* ) override;
+    void emitCommand(CharmCommand *) override;
+    void emitCommandRollback(CharmCommand *) override;
 
 public Q_SLOTS:
-    void commitCommand( CharmCommand* ) override;
+    void commitCommand(CharmCommand *) override;
     void delayedInitialization();
     void timeSpansChanged();
-    void timeFrameChanged(int );
+    void timeFrameChanged(int);
     void slotConfigureUi();
 
     void saveGuiState() override;
     void restoreGuiState() override;
-    void stateChanged( State previous ) override;
+    void stateChanged(State previous) override;
     void configurationChanged() override;
 
 private Q_SLOTS:
-    void slotEventDoubleClicked( const QModelIndex& );
+    void slotEventDoubleClicked(const QModelIndex &);
     void slotEditEvent();
-    void slotEditEvent( const Event& );
-    void slotEventChangesCompleted( const Event& );
-    void slotCurrentItemChanged( const QModelIndex&, const QModelIndex& );
-    void slotContextMenuRequested( const QPoint& );
+    void slotEditEvent(const Event &);
+    void slotEventChangesCompleted(const Event &);
+    void slotCurrentItemChanged(const QModelIndex &, const QModelIndex &);
+    void slotContextMenuRequested(const QPoint &);
     void slotNextEvent();
     void slotPreviousEvent();
     void slotNewEvent();
     void slotDeleteEvent();
-    void slotEventActivated( EventId );
-    void slotEventDeactivated( EventId );
+    void slotEventActivated(EventId);
+    void slotEventDeactivated(EventId);
     void slotUpdateTotal();
     void slotUpdateCurrent();
-    void slotUndoTextChanged(const QString&);
-    void slotRedoTextChanged(const QString&);
+    void slotUndoTextChanged(const QString &);
+    void slotRedoTextChanged(const QString &);
     void slotEventIdChanged(int oldId, int newId);
     void slotFindAndReplace();
     void slotReset();
 
 private:
-    void setCurrentEvent( const Event& );
-    void stageCommand( CharmCommand* );
+    void setCurrentEvent(const Event &);
+    void stageCommand(CharmCommand *);
 
-    QToolBar* m_toolBar;
-    QUndoStack* m_undoStack;
+    QToolBar *m_toolBar;
+    QUndoStack *m_undoStack;
     QList<NamedTimeSpan> m_timeSpans;
     Event m_event;
-    EventModelFilter* m_model = nullptr;
+    EventModelFilter *m_model = nullptr;
     QAction m_actionUndo;
     QAction m_actionRedo;
     QAction m_actionNewEvent;
@@ -114,9 +113,9 @@ private:
     QAction m_actionDeleteEvent;
     QAction m_actionCreateTimeSheet;
     QAction m_actionFindAndReplace;
-    QComboBox* m_comboBox;
-    QLabel* m_labelTotal;
-    QListView* m_listView;
+    QComboBox *m_comboBox;
+    QLabel *m_labelTotal;
+    QListView *m_listView;
 };
 
 #endif

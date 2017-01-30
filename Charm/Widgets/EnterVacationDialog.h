@@ -32,13 +32,14 @@
 #include <QScopedPointer>
 
 namespace Ui {
-    class EnterVacationDialog;
+class EnterVacationDialog;
 }
 
-class EnterVacationDialog : public QDialog {
+class EnterVacationDialog : public QDialog
+{
     Q_OBJECT
 public:
-    explicit EnterVacationDialog( QWidget* parent=nullptr );
+    explicit EnterVacationDialog(QWidget *parent = nullptr);
     ~EnterVacationDialog() override;
 
     EventList events() const;

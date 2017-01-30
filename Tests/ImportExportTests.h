@@ -41,7 +41,7 @@ private Q_SLOTS:
     void cleanupTestCase();
 
 private:
-    void importDatabase( const QString& filename );
+    void importDatabase(const QString &filename);
 };
 
 #endif

@@ -29,7 +29,7 @@
 #include <QUrl>
 
 namespace Ui {
-    class CharmNewReleaseDialog;
+class CharmNewReleaseDialog;
 }
 
 class CharmNewReleaseDialog : public QDialog
@@ -37,12 +37,12 @@ class CharmNewReleaseDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit CharmNewReleaseDialog( QWidget* parent = nullptr );
+    explicit CharmNewReleaseDialog(QWidget *parent = nullptr);
     ~CharmNewReleaseDialog() override;
 
-    void setVersion( const QString& newVersion , const QString& localVersion );
-    void setDownloadLink( const QUrl& link );
-    void setReleaseInformationLink( const QString& link );
+    void setVersion(const QString &newVersion, const QString &localVersion);
+    void setDownloadLink(const QUrl &link);
+    void setReleaseInformationLink(const QString &link);
 
 private Q_SLOTS:
     void slotLaunchBrowser();
@@ -52,9 +52,9 @@ private Q_SLOTS:
 private:
     QUrl m_link;
     QString m_version;
-    QPushButton* m_skipUpdate;
-    QPushButton* m_remindMeLater;
-    QPushButton* m_update;
+    QPushButton *m_skipUpdate;
+    QPushButton *m_remindMeLater;
+    QPushButton *m_update;
     QScopedPointer<Ui::CharmNewReleaseDialog> m_ui;
 };
 

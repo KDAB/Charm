@@ -29,26 +29,24 @@
 #include <QToolButton>
 #include <QWidget>
 
-void WidgetUtils::restoreGeometry( QWidget *widget, const QString &metaKey )
+void WidgetUtils::restoreGeometry(QWidget *widget, const QString &metaKey)
 {
     QSettings settings;
-    settings.beginGroup( QStringLiteral( "WindowStates" ) );
-    if ( settings.contains( metaKey ) ) {
-        widget->restoreGeometry( settings.value( metaKey ).toByteArray() );
-    }
+    settings.beginGroup(QStringLiteral("WindowStates"));
+    if (settings.contains(metaKey))
+        widget->restoreGeometry(settings.value(metaKey).toByteArray());
 }
 
-void WidgetUtils::saveGeometry( QWidget *widget, const QString &metaKey )
+void WidgetUtils::saveGeometry(QWidget *widget, const QString &metaKey)
 {
     QSettings settings;
-    settings.beginGroup( QStringLiteral( "WindowStates" ) );
-    settings.setValue( metaKey, widget->saveGeometry() );
+    settings.beginGroup(QStringLiteral("WindowStates"));
+    settings.setValue(metaKey, widget->saveGeometry());
 }
 
-void WidgetUtils::updateToolButtonStyle( QWidget *widget )
+void WidgetUtils::updateToolButtonStyle(QWidget *widget)
 {
-    const QList<QToolButton*> buttons = widget->findChildren<QToolButton *>();
-    Q_FOREACH ( auto button, buttons ) {
-        button->setToolButtonStyle( CONFIGURATION.toolButtonStyle );
-    }
+    const QList<QToolButton *> buttons = widget->findChildren<QToolButton *>();
+    Q_FOREACH (auto button, buttons)
+        button->setToolButtonStyle(CONFIGURATION.toolButtonStyle);
 }

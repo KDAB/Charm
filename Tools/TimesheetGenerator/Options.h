@@ -28,19 +28,18 @@
 #include <QDate>
 
 namespace TimesheetGenerator {
+class Options
+{
+public:
+    explicit Options(int argc, char **argv);
 
-    class Options {
-    public:
-        explicit Options( int argc, char** argv );
+    QString file() const;
+    QDate date() const;
 
-        QString file() const;
-        QDate date() const;
-
-    private:
-        QString mFile;
-        QDate mDate;
-    };
-
+private:
+    QString mFile;
+    QDate mDate;
+};
 }
 
 #endif

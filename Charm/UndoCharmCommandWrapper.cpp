@@ -23,7 +23,7 @@
 
 #include "UndoCharmCommandWrapper.h"
 
-UndoCharmCommandWrapper::UndoCharmCommandWrapper(CharmCommand* command)
+UndoCharmCommandWrapper::UndoCharmCommandWrapper(CharmCommand *command)
     : m_command(command)
 {
     setText(command->description());

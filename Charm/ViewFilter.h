@@ -32,38 +32,36 @@
 #include "Core/TaskModelInterface.h"
 #include "Core/CommandEmitterInterface.h"
 
-
 class CharmDataModel;
 class CharmCommand;
 
 // ViewFilter is implemented as a decorator to avoid accidental direct
 // access to the task model with indexes of the proxy
-class ViewFilter : public QSortFilterProxyModel,
-                   public TaskModelInterface,
-                   public CommandEmitterInterface
+class ViewFilter : public QSortFilterProxyModel, public TaskModelInterface,
+    public CommandEmitterInterface
 {
     Q_OBJECT
 public:
-    explicit ViewFilter( CharmDataModel*, QObject* parent = nullptr );
+    explicit ViewFilter(CharmDataModel *, QObject *parent = nullptr);
     ~ViewFilter() override;
 
     // implement TaskModelInterface
-    Task taskForIndex( const QModelIndex& ) const override;
-    QModelIndex indexForTaskId( TaskId ) const override;
-    bool taskIsActive( const Task& task ) const override;
-    bool taskHasChildren( const Task& task ) const override;
+    Task taskForIndex(const QModelIndex &) const override;
+    QModelIndex indexForTaskId(TaskId) const override;
+    bool taskIsActive(const Task &task) const override;
+    bool taskHasChildren(const Task &task) const override;
 
     // filter for subscriptions:
     void prefilteringModeChanged();
 
-    bool taskIdExists( TaskId taskId ) const override;
-    void commitCommand( CharmCommand* ) override;
-    bool filterAcceptsColumn( int source_column, const QModelIndex& source_parent ) const override;
-    bool filterAcceptsRow( int row, const QModelIndex& parent ) const override;
+    bool taskIdExists(TaskId taskId) const override;
+    void commitCommand(CharmCommand *) override;
+    bool filterAcceptsColumn(int source_column, const QModelIndex &source_parent) const override;
+    bool filterAcceptsRow(int row, const QModelIndex &parent) const override;
 
 Q_SIGNALS:
-    void eventActivationNotice( EventId id ) override;
-    void eventDeactivationNotice( EventId id ) override;
+    void eventActivationNotice(EventId id) override;
+    void eventDeactivationNotice(EventId id) override;
 
 private:
     enum CheckFor {
@@ -71,7 +69,7 @@ private:
         HaveSubscribedChild
     };
 
-    bool checkChildren( Task task, CheckFor checkFor ) const;
+    bool checkChildren(Task task, CheckFor checkFor) const;
     TaskModelAdapter m_model;
 };
 

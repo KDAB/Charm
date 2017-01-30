@@ -32,7 +32,7 @@ class CharmCommandInterface : public QObject
 {
     Q_OBJECT
 public:
-    explicit CharmCommandInterface(QObject* parent = nullptr);
+    explicit CharmCommandInterface(QObject *parent = nullptr);
     ~CharmCommandInterface();
 
     bool isStarted() const;

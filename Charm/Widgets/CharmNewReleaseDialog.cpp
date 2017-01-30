@@ -29,59 +29,59 @@
 #include <QPushButton>
 #include <QSettings>
 
-
-CharmNewReleaseDialog::CharmNewReleaseDialog( QWidget* parent )
-    : QDialog( parent )
-    , m_ui( new Ui::CharmNewReleaseDialog )
+CharmNewReleaseDialog::CharmNewReleaseDialog(QWidget *parent)
+    : QDialog(parent)
+    , m_ui(new Ui::CharmNewReleaseDialog)
 {
-    m_ui->setupUi( this );
-    m_skipUpdate = new QPushButton( tr( "Skip Update" ) );
-    connect( m_skipUpdate, SIGNAL(clicked()), SLOT(slotSkipVersion()) );
-    m_remindMeLater = new QPushButton( tr( "Remind Me Later" ) );
-    connect( m_remindMeLater, SIGNAL(clicked()), SLOT(slotRemindMe()) );
-    m_update = new QPushButton( tr( "Update" ) );
-    connect( m_update, SIGNAL(clicked()), SLOT(slotLaunchBrowser()) );
+    m_ui->setupUi(this);
+    m_skipUpdate = new QPushButton(tr("Skip Update"));
+    connect(m_skipUpdate, SIGNAL(clicked()), SLOT(slotSkipVersion()));
+    m_remindMeLater = new QPushButton(tr("Remind Me Later"));
+    connect(m_remindMeLater, SIGNAL(clicked()), SLOT(slotRemindMe()));
+    m_update = new QPushButton(tr("Update"));
+    connect(m_update, SIGNAL(clicked()), SLOT(slotLaunchBrowser()));
 
-    m_ui->buttonBox->addButton( m_skipUpdate, QDialogButtonBox::NoRole );
-    m_ui->buttonBox->addButton( m_remindMeLater, QDialogButtonBox::RejectRole );
-    m_ui->buttonBox->addButton( m_update, QDialogButtonBox::AcceptRole );
-
+    m_ui->buttonBox->addButton(m_skipUpdate, QDialogButtonBox::NoRole);
+    m_ui->buttonBox->addButton(m_remindMeLater, QDialogButtonBox::RejectRole);
+    m_ui->buttonBox->addButton(m_update, QDialogButtonBox::AcceptRole);
 }
 
-void CharmNewReleaseDialog::setVersion( const QString& newVersion, const QString& localVersion )
+void CharmNewReleaseDialog::setVersion(const QString &newVersion, const QString &localVersion)
 {
     QString versionText = m_ui->infoLB->text();
-    versionText.replace( QLatin1String("NEW"), newVersion );
-    versionText.replace( QLatin1String("CURRENT"), localVersion );
-    m_ui->infoLB->setText( versionText );
+    versionText.replace(QLatin1String("NEW"), newVersion);
+    versionText.replace(QLatin1String("CURRENT"), localVersion);
+    m_ui->infoLB->setText(versionText);
     m_version = newVersion;
 }
 
-void CharmNewReleaseDialog::setDownloadLink( const QUrl& link )
+void CharmNewReleaseDialog::setDownloadLink(const QUrl &link)
 {
     m_link = link;
 }
 
-void CharmNewReleaseDialog::setReleaseInformationLink( const QString& link )
+void CharmNewReleaseDialog::setReleaseInformationLink(const QString &link)
 {
     QString hyperlink = m_ui->releaseInfoLabel->text();
-    hyperlink.replace( QLatin1String("LINK"), link );
-    m_ui->releaseInfoLabel->setText( hyperlink );
+    hyperlink.replace(QLatin1String("LINK"), link);
+    m_ui->releaseInfoLabel->setText(hyperlink);
 }
 
 void CharmNewReleaseDialog::slotLaunchBrowser()
 {
-    if ( !QDesktopServices::openUrl( m_link ) )
-        QMessageBox::warning( this, tr( "Warning" ), tr( "Could not open url: %1 in your browser, please go to the Charm download page manually!" ).arg( m_link.toString() ) );
+    if (!QDesktopServices::openUrl(m_link))
+        QMessageBox::warning(this, tr("Warning"),
+                             tr(
+                                 "Could not open url: %1 in your browser, please go to the Charm download page manually!").arg(
+                                 m_link.toString()));
     accept();
-
 }
 
 void CharmNewReleaseDialog::slotSkipVersion()
 {
     QSettings settings;
-    settings.beginGroup( QStringLiteral( "UpdateChecker" ) );
-    settings.setValue( QStringLiteral( "skip-version" ), m_version );
+    settings.beginGroup(QStringLiteral("UpdateChecker"));
+    settings.setValue(QStringLiteral("skip-version"), m_version);
     settings.endGroup();
     accept();
 }
@@ -93,7 +93,6 @@ void CharmNewReleaseDialog::slotRemindMe()
 
 CharmNewReleaseDialog::~CharmNewReleaseDialog()
 {
-
 }
 
 #include "moc_CharmNewReleaseDialog.cpp"

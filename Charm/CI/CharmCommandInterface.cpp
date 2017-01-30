@@ -40,7 +40,7 @@
 #  include "CharmLocalCommandServer.h"
 #endif
 
-CharmCommandInterface::CharmCommandInterface(QObject* parent)
+CharmCommandInterface::CharmCommandInterface(QObject *parent)
     : QObject(parent)
 {
 }
@@ -52,13 +52,13 @@ CharmCommandInterface::~CharmCommandInterface()
 
 bool CharmCommandInterface::isStarted() const
 {
-    return (!m_servers.isEmpty());
+    return !m_servers.isEmpty();
 }
 
 void CharmCommandInterface::start()
 {
-    if (!CONFIGURATION.enableCommandInterface ||
-        isStarted())
+    if (!CONFIGURATION.enableCommandInterface
+        || isStarted())
         return;
 
     // Create command line interface servers
@@ -96,8 +96,9 @@ void CharmCommandInterface::stop()
 
 void CharmCommandInterface::configurationChanged()
 {
-    if (CONFIGURATION.enableCommandInterface && !isStarted())
+    if (CONFIGURATION.enableCommandInterface && !isStarted()) {
         start();
-    else if (!CONFIGURATION.enableCommandInterface && isStarted())
+    } else if (!CONFIGURATION.enableCommandInterface && isStarted()) {
         stop();
+    }
 }

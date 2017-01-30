@@ -36,7 +36,7 @@ Task::Task()
 {
 }
 
-Task::Task(TaskId id, const QString& name, TaskId parent, bool subscribed)
+Task::Task(TaskId id, const QString &name, TaskId parent, bool subscribed)
     : m_id(id)
     , m_parent(parent)
     , m_name(name)
@@ -51,25 +51,25 @@ bool Task::isValid() const
 
 QString Task::tagName()
 {
-    static const QString tag( QStringLiteral( "task" ) );
+    static const QString tag(QStringLiteral("task"));
     return tag;
 }
 
 QString Task::taskListTagName()
 {
-    static const QString tag( QStringLiteral( "tasks" ) );
+    static const QString tag(QStringLiteral("tasks"));
     return tag;
 }
 
-bool Task::operator == ( const Task& other ) const
+bool Task::operator ==(const Task &other) const
 {
     return other.id() == id()
-        && other.parent() == parent()
-        && other.name() == name()
-        && other.subscribed() == subscribed()
-        && other.m_trackable == m_trackable
-        && other.validFrom() == validFrom()
-        && other.validUntil() == validUntil();
+           && other.parent() == parent()
+           && other.name() == name()
+           && other.subscribed() == subscribed()
+           && other.m_trackable == m_trackable
+           && other.validFrom() == validFrom()
+           && other.validUntil() == validUntil();
 }
 
 TaskId Task::id() const
@@ -87,7 +87,7 @@ QString Task::name() const
     return m_name;
 }
 
-void Task::setName(const QString& name)
+void Task::setName(const QString &name)
 {
     m_name = name;
 }
@@ -127,12 +127,12 @@ QDateTime Task::validFrom() const
     return m_validFrom;
 }
 
-void Task::setValidFrom(const QDateTime& stamp)
+void Task::setValidFrom(const QDateTime &stamp)
 {
     m_validFrom = stamp;
-    QTime time( m_validFrom.time() );
-    time.setHMS( time.hour(), time.minute(), time.second() );
-    m_validFrom.setTime( time );
+    QTime time(m_validFrom.time());
+    time.setHMS(time.hour(), time.minute(), time.second());
+    m_validFrom.setTime(time);
 }
 
 QDateTime Task::validUntil() const
@@ -140,19 +140,19 @@ QDateTime Task::validUntil() const
     return m_validUntil;
 }
 
-void Task::setValidUntil(const QDateTime& stamp)
+void Task::setValidUntil(const QDateTime &stamp)
 {
     m_validUntil = stamp;
-    QTime time( m_validUntil.time() );
-    time.setHMS( time.hour(), time.minute(), time.second() );
-    m_validUntil.setTime( time );
+    QTime time(m_validUntil.time());
+    time.setHMS(time.hour(), time.minute(), time.second());
+    m_validUntil.setTime(time);
 }
 
 bool Task::isCurrentlyValid() const
 {
     return isValid()
-        && ( ! validFrom().isValid() || validFrom() < QDateTime::currentDateTime() )
-        && ( ! validUntil().isValid() || validUntil() > QDateTime::currentDateTime() );
+           && (!validFrom().isValid() || validFrom() < QDateTime::currentDateTime())
+           && (!validUntil().isValid() || validUntil() > QDateTime::currentDateTime());
 }
 
 void Task::dump() const
@@ -163,13 +163,11 @@ void Task::dump() const
              << validUntil() << " - trackable:" << trackable();
 }
 
-void dumpTaskList(const TaskList& tasks)
+void dumpTaskList(const TaskList &tasks)
 {
     qDebug() << "dumpTaskList: task list of" << tasks.size() << "elements";
     for (int i = 0; i < tasks.size(); ++i)
-    {
         tasks[i].dump();
-    }
 }
 
 // FIXME make XmlSerializable interface, with tagName/toXml/fromXml:
@@ -183,98 +181,98 @@ const QString TaskValidUntil(QStringLiteral("validuntil"));
 
 QDomElement Task::toXml(QDomDocument document) const
 {
-    QDomElement element = document.createElement( tagName() );
+    QDomElement element = document.createElement(tagName());
     element.setAttribute(TaskIdElement, id());
     element.setAttribute(TaskParentId, parent());
     element.setAttribute(TaskSubscribed, (subscribed() ? 1 : 0));
-        element.setAttribute(TaskTrackable, (trackable() ? 1 : 0));
-        if (!name().isEmpty())
-    {
+    element.setAttribute(TaskTrackable, (trackable() ? 1 : 0));
+    if (!name().isEmpty()) {
         QDomText taskName = document.createTextNode(name());
         element.appendChild(taskName);
     }
     if (validFrom().isValid())
-    {
         element.setAttribute(TaskValidFrom, validFrom().toString(Qt::ISODate));
-    }
     if (validUntil().isValid())
-    {
         element.setAttribute(TaskValidUntil, validUntil().toString(Qt::ISODate));
-    }
     return element;
 }
 
-Task Task::fromXml(const QDomElement& element, int databaseSchemaVersion)
+Task Task::fromXml(const QDomElement &element, int databaseSchemaVersion)
 {   // in case any task object creates trouble with
     // serialization/deserialization, add an object of it to
     // void XmlSerializationTests::testTaskSerialization()
-    if ( element.tagName() != tagName() ) {
-        throw XmlSerializationException( QObject::tr( "Task::fromXml: judging from the tag name, this is not a task tag") );
-    }
+    if (element.tagName() != tagName())
+        throw XmlSerializationException(QObject::tr(
+                                            "Task::fromXml: judging from the tag name, this is not a task tag"));
 
     Task task;
     bool ok;
     task.setName(element.text());
     task.setId(element.attribute(TaskIdElement).toInt(&ok));
     if (!ok)
-        throw XmlSerializationException( QObject::tr( "Task::fromXml: invalid task id") );
+        throw XmlSerializationException(QObject::tr("Task::fromXml: invalid task id"));
     task.setParent(element.attribute(TaskParentId).toInt(&ok));
     if (!ok)
-        throw XmlSerializationException( QObject::tr( "Task::fromXml: invalid parent task id") );
+        throw XmlSerializationException(QObject::tr("Task::fromXml: invalid parent task id"));
     task.setSubscribed(element.attribute(TaskSubscribed).toInt(&ok) == 1);
     if (!ok)
-        throw XmlSerializationException( QObject::tr( "Task::fromXml: invalid subscription setting") );
-    if( databaseSchemaVersion > CHARM_DATABASE_VERSION_BEFORE_TASK_EXPIRY ) {
-        if ( element.hasAttribute( TaskValidFrom ) ) {
-            QDateTime start = QDateTime::fromString( element.attribute( TaskValidFrom ), Qt::ISODate );
-            if ( !start.isValid() ) throw XmlSerializationException( QObject::tr( "Task::fromXml: invalid valid-from date" ) );
-            task.setValidFrom( start );
+        throw XmlSerializationException(QObject::tr("Task::fromXml: invalid subscription setting"));
+
+    if (databaseSchemaVersion > CHARM_DATABASE_VERSION_BEFORE_TASK_EXPIRY) {
+        if (element.hasAttribute(TaskValidFrom)) {
+            QDateTime start = QDateTime::fromString(element.attribute(TaskValidFrom), Qt::ISODate);
+            if (!start.isValid()) throw XmlSerializationException(QObject::tr(
+                                                                      "Task::fromXml: invalid valid-from date"));
+
+            task.setValidFrom(start);
         }
-        if ( element.hasAttribute( TaskValidUntil ) ) {
-            QDateTime end = QDateTime::fromString( element.attribute( TaskValidUntil ), Qt::ISODate );
-            if ( !end.isValid() ) throw XmlSerializationException( QObject::tr( "Task::fromXml: invalid valid-until date" ) );
-            task.setValidUntil( end );
+        if (element.hasAttribute(TaskValidUntil)) {
+            QDateTime end = QDateTime::fromString(element.attribute(TaskValidUntil), Qt::ISODate);
+            if (!end.isValid()) throw XmlSerializationException(QObject::tr(
+                                                                    "Task::fromXml: invalid valid-until date"));
+
+            task.setValidUntil(end);
         }
     }
-    if ( databaseSchemaVersion > CHARM_DATABASE_VERSION_BEFORE_TRACKABLE ) {
+    if (databaseSchemaVersion > CHARM_DATABASE_VERSION_BEFORE_TRACKABLE) {
         task.setTrackable(element.attribute(TaskTrackable, QStringLiteral("1")).toInt(&ok) == 1);
         if (!ok)
-            throw XmlSerializationException( QObject::tr( "Task::fromXml: invalid trackable settings") );
+            throw XmlSerializationException(QObject::tr("Task::fromXml: invalid trackable settings"));
+
     }
-    if ( element.hasAttribute( TaskComment ) )
-        task.setComment( element.attribute( TaskComment ) );
+    if (element.hasAttribute(TaskComment))
+        task.setComment(element.attribute(TaskComment));
     return task;
 }
 
-TaskList Task::readTasksElement( const QDomElement& element, int databaseSchemaVersion )
+TaskList Task::readTasksElement(const QDomElement &element, int databaseSchemaVersion)
 {
-    if ( element.tagName() == taskListTagName() ) {
+    if (element.tagName() == taskListTagName()) {
         TaskList tasks;
-        for ( QDomElement child = element.firstChildElement(); !child.isNull();
-              child = child.nextSiblingElement( tagName() ) ) {
-            if ( child.tagName() != tagName() ) {
-                throw XmlSerializationException( QObject::tr( "Task::readTasksElement: parent-child mismatch" ) );
-            }
-            Task task = fromXml( child, databaseSchemaVersion );
+        for (QDomElement child = element.firstChildElement(); !child.isNull();
+             child = child.nextSiblingElement(tagName())) {
+            if (child.tagName() != tagName())
+                throw XmlSerializationException(QObject::tr(
+                                                    "Task::readTasksElement: parent-child mismatch"));
+            Task task = fromXml(child, databaseSchemaVersion);
             tasks << task;
         }
         return tasks;
     } else {
-        throw XmlSerializationException( QObject::tr( "Task::readTasksElement: judging by the tag name, this is not a tasks element" ) );
+        throw XmlSerializationException(QObject::tr(
+                                            "Task::readTasksElement: judging by the tag name, this is not a tasks element"));
     }
 }
 
-
-QDomElement Task::makeTasksElement( QDomDocument document, const TaskList& tasks )
+QDomElement Task::makeTasksElement(QDomDocument document, const TaskList &tasks)
 {
-    QDomElement element = document.createElement( taskListTagName() );
-    Q_FOREACH( const Task& task, tasks ) {
-        element.appendChild( task.toXml( document ) );
-    }
+    QDomElement element = document.createElement(taskListTagName());
+    Q_FOREACH (const Task &task, tasks)
+        element.appendChild(task.toXml(document));
     return element;
 }
 
-bool Task::lowerTaskId( const Task& left,  const Task& right )
+bool Task::lowerTaskId(const Task &left, const Task &right)
 {
     return left.id() < right.id();
 }
@@ -284,18 +282,17 @@ QString Task::comment() const
     return m_comment;
 }
 
-void Task::setComment( const QString &comment )
+void Task::setComment(const QString &comment)
 {
     m_comment = comment;
 }
 
-bool Task::checkForUniqueTaskIds( const TaskList& tasks )
+bool Task::checkForUniqueTaskIds(const TaskList &tasks)
 {
     std::set<TaskId> ids;
 
-    for ( TaskList::const_iterator it = tasks.begin(); it != tasks.end(); ++it ) {
-        ids.insert( ( *it ).id() );
-    }
+    for (TaskList::const_iterator it = tasks.begin(); it != tasks.end(); ++it)
+        ids.insert((*it).id());
 
     return static_cast<int>(ids.size()) == tasks.size();
 }
@@ -308,23 +305,22 @@ bool Task::checkForUniqueTaskIds( const TaskList& tasks )
  * visited task ids
  * @param tasks the tasklist to process
  */
-bool collectTaskIds( std::set<TaskId>& visitedIds, TaskId id, const TaskList& tasks )
+bool collectTaskIds(std::set<TaskId> &visitedIds, TaskId id, const TaskList &tasks)
 {
     bool foundSelf = false;
     TaskIdList children;
 
     // find children and the task itself (the parameter tasks is not sorted)
-    for ( TaskList::const_iterator it = tasks.begin(); it != tasks.end(); ++it ) {
-        if ( ( *it ).parent() == id ) {
-            children << ( *it ).id();
-        }
-        if ( ( *it ).id() == id ) {
+    for (TaskList::const_iterator it = tasks.begin(); it != tasks.end(); ++it) {
+        if ((*it).parent() == id)
+            children << (*it).id();
+        if ((*it).id() == id) {
             // just checking that it really exists...
-            if ( std::find( visitedIds.begin(), visitedIds.end(), id ) != visitedIds.end() ) {
+            if (std::find(visitedIds.begin(), visitedIds.end(), id) != visitedIds.end()) {
                 return false;
             } else {
-                if ( ( *it ).isValid() ) {
-                    visitedIds.insert( id );
+                if ((*it).isValid()) {
+                    visitedIds.insert(id);
                     foundSelf = true;
                 } else {
                     return false;
@@ -333,17 +329,14 @@ bool collectTaskIds( std::set<TaskId>& visitedIds, TaskId id, const TaskList& ta
         }
     }
 
-    if ( !foundSelf ) {
+    if (!foundSelf)
         return false;
-    }
 
-    Q_FOREACH( const TaskId i, children ) {
-        collectTaskIds( visitedIds, i, tasks );
-    }
+    Q_FOREACH (const TaskId i, children)
+        collectTaskIds(visitedIds, i, tasks);
 
     return true;
 }
-
 
 /** checkForTreeness checks a task list against cycles in the
  * parent-child relationship, and for orphans (tasks where the parent
@@ -353,28 +346,26 @@ bool collectTaskIds( std::set<TaskId>& visitedIds, TaskId id, const TaskList& ta
  * @return false, if cycles in the task tree or orphans have been found
  * @param tasks the tasklist to verify
  */
-bool Task::checkForTreeness( const TaskList& tasks )
+bool Task::checkForTreeness(const TaskList &tasks)
 {
     std::set<TaskId> ids;
 
-    for ( TaskList::const_iterator it = tasks.begin(); it != tasks.end(); ++it ) {
-        if ( ! ( *it ).isValid() ) {
+    for (TaskList::const_iterator it = tasks.begin(); it != tasks.end(); ++it) {
+        if (!(*it).isValid())
             return false;
-        }
-        if ( ( *it ).parent() == 0 ) {
-            if ( ! collectTaskIds( ids, ( *it ).id(), tasks ) ) {
+        if ((*it).parent() == 0) {
+            if (!collectTaskIds(ids, (*it).id(), tasks))
                 return false;
-            }
         }
     }
 
     // the count of ids now must be equal to the count of tasks,
     // otherwise tasks contains elements that are not in the subtrees
     // of toplevel elements
-    if ( ids.size() != static_cast<unsigned>( tasks.size() ) ) {
+    if (ids.size() != static_cast<unsigned>(tasks.size())) {
 #ifndef NDEBUG
-        Q_FOREACH( const Task& task, tasks ) {
-            if ( find( ids.begin(), ids.end(), task.id() ) == ids.end() ) {
+        Q_FOREACH (const Task &task, tasks) {
+            if (find(ids.begin(), ids.end(), task.id()) == ids.end()) {
                 qDebug() << "Orphan task:";
                 task.dump();
             }

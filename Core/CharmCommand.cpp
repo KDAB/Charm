@@ -27,17 +27,17 @@
 
 #include <QMessageBox>
 
-CharmCommand::CharmCommand( const QString& description, QObject *parent )
-    : QObject( parent ),
-      m_description(description)
+CharmCommand::CharmCommand(const QString &description, QObject *parent)
+    : QObject(parent)
+    , m_description(description)
 {
-    CommandEmitterInterface* emitter = dynamic_cast<CommandEmitterInterface*>( parent );
-    if ( emitter ) {
+    CommandEmitterInterface *emitter = dynamic_cast<CommandEmitterInterface *>(parent);
+    if (emitter) {
         m_owner = emitter;
     } else {
-        Q_ASSERT_X( false, Q_FUNC_INFO,
-                    "CharmCommand widget pointers have to implement the "
-                    "CommandEmitterInterface." );
+        Q_ASSERT_X(false, Q_FUNC_INFO,
+                   "CharmCommand widget pointers have to implement the "
+                   "CommandEmitterInterface.");
     }
 }
 
@@ -55,7 +55,7 @@ bool CharmCommand::rollback(ControllerInterface *)
     return false;
 }
 
-CommandEmitterInterface* CharmCommand::owner() const
+CommandEmitterInterface *CharmCommand::owner() const
 {
     return m_owner;
 }
@@ -72,21 +72,21 @@ void CharmCommand::requestRollback()
 
 void CharmCommand::requestSlotEventIdChanged(int oldId, int newId)
 {
-    Q_EMIT emitSlotEventIdChanged(oldId,newId);
+    Q_EMIT emitSlotEventIdChanged(oldId, newId);
 }
 
-void CharmCommand::showInformation(const QString& title, const QString& message)
+void CharmCommand::showInformation(const QString &title, const QString &message)
 {
-    QWidget* parent = dynamic_cast<QWidget*>( owner() );
-    Q_ASSERT( parent );
-    QMessageBox::information( parent, title, message );
+    QWidget *parent = dynamic_cast<QWidget *>(owner());
+    Q_ASSERT(parent);
+    QMessageBox::information(parent, title, message);
 }
 
-void CharmCommand::showCritical(const QString& title, const QString& message)
+void CharmCommand::showCritical(const QString &title, const QString &message)
 {
-    QWidget* parent = dynamic_cast<QWidget*>( owner() );
-    Q_ASSERT( parent );
-    QMessageBox::critical( parent, title, message );
+    QWidget *parent = dynamic_cast<QWidget *>(owner());
+    Q_ASSERT(parent);
+    QMessageBox::critical(parent, title, message);
 }
 
 #include "moc_CharmCommand.cpp"

@@ -33,7 +33,7 @@ GUIState::GUIState()
 {
 }
 
-const TaskIdList& GUIState::expandedTasks() const
+const TaskIdList &GUIState::expandedTasks() const
 {
     return m_expandedTasks;
 }
@@ -53,53 +53,52 @@ bool GUIState::showCurrents() const
     return m_showCurrents;
 }
 
-void GUIState::setSelectedTask( TaskId task )
+void GUIState::setSelectedTask(TaskId task)
 {
     m_selectedTask = task;
 }
 
-void GUIState::setExpandedTasks( const TaskIdList& tasks )
+void GUIState::setExpandedTasks(const TaskIdList &tasks)
 {
     m_expandedTasks = tasks;
 }
 
-void GUIState::setShowExpired( bool show )
+void GUIState::setShowExpired(bool show)
 {
     m_showExpired = show;
 }
 
-void GUIState::setShowCurrents( bool show )
+void GUIState::setShowCurrents(bool show)
 {
     m_showCurrents = show;
 }
 
-void GUIState::saveTo( QSettings& settings )
+void GUIState::saveTo(QSettings &settings)
 {
-    settings.setValue( MetaKey_MainWindowGUIStateSelectedTask, selectedTask() );
+    settings.setValue(MetaKey_MainWindowGUIStateSelectedTask, selectedTask());
     // workaround for not getting QVariant serialization of TaskIdLists to work:
     QList<QVariant> variants;
-    Q_FOREACH( TaskId v, expandedTasks() ) {
+    Q_FOREACH (TaskId v, expandedTasks())
         variants << v;
-    }
-    settings.setValue( MetaKey_MainWindowGUIStateExpandedTasks, variants );
-    settings.setValue( MetaKey_MainWindowGUIStateShowExpiredTasks, showExpired() );
-    settings.setValue( MetaKey_MainWindowGUIStateShowCurrentTasks, showCurrents() );
+    settings.setValue(MetaKey_MainWindowGUIStateExpandedTasks, variants);
+    settings.setValue(MetaKey_MainWindowGUIStateShowExpiredTasks, showExpired());
+    settings.setValue(MetaKey_MainWindowGUIStateShowCurrentTasks, showCurrents());
 }
 
-void GUIState::loadFrom( const QSettings& settings )
+void GUIState::loadFrom(const QSettings &settings)
 {
-    if ( settings.contains( MetaKey_MainWindowGUIStateSelectedTask ) ) {
-        setSelectedTask( settings.value( MetaKey_MainWindowGUIStateSelectedTask ).value<TaskId>() );;
+    if (settings.contains(MetaKey_MainWindowGUIStateSelectedTask)) {
+        setSelectedTask(settings.value(MetaKey_MainWindowGUIStateSelectedTask).value<TaskId>());
     }
-    if ( settings.contains( MetaKey_MainWindowGUIStateExpandedTasks ) ) {
+    if (settings.contains(MetaKey_MainWindowGUIStateExpandedTasks)) {
         // workaround for not getting QVariant serialization of TaskIdLists to work:
-        QList<QVariant> values( settings.value( MetaKey_MainWindowGUIStateExpandedTasks ).value<QList<QVariant> >() );
+        QList<QVariant> values(settings.value(
+                                   MetaKey_MainWindowGUIStateExpandedTasks).value<QList<QVariant> >());
         TaskIdList ids;
-        Q_FOREACH( const QVariant& variant, values ) {
+        Q_FOREACH (const QVariant &variant, values)
             ids << variant.value<TaskId>();
-        }
-        setExpandedTasks( ids );
-        setShowExpired( settings.value( MetaKey_MainWindowGUIStateShowExpiredTasks ).toBool() );
-        setShowCurrents( settings.value( MetaKey_MainWindowGUIStateShowCurrentTasks ).toBool() );
+        setExpandedTasks(ids);
+        setShowExpired(settings.value(MetaKey_MainWindowGUIStateShowExpiredTasks).toBool());
+        setShowCurrents(settings.value(MetaKey_MainWindowGUIStateShowCurrentTasks).toBool());
     }
 }

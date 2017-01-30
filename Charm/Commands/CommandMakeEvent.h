@@ -35,20 +35,20 @@ class CommandMakeEvent : public CharmCommand
     Q_OBJECT
 
 public:
-    explicit CommandMakeEvent( const Task& task, QObject* parent );
-    explicit CommandMakeEvent( const Event& event, QObject* parent );
+    explicit CommandMakeEvent(const Task &task, QObject *parent);
+    explicit CommandMakeEvent(const Event &event, QObject *parent);
     ~CommandMakeEvent() override;
 
     bool prepare() override;
-    bool execute( ControllerInterface* ) override;
-    bool rollback( ControllerInterface* ) override;
+    bool execute(ControllerInterface *) override;
+    bool rollback(ControllerInterface *) override;
     bool finalize() override;
 
 public Q_SLOTS:
-    void eventIdChanged(int,int) override;
+    void eventIdChanged(int, int) override;
 
 Q_SIGNALS:
-    void finishedOk( const Event& );
+    void finishedOk(const Event &);
 
 private:
     bool m_rollback = false; //don't show the event in finalize

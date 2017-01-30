@@ -31,33 +31,33 @@
 
 #include "ui_ReportPreviewWindow.h"
 
-ReportPreviewWindow::ReportPreviewWindow( QWidget* parent )
-    : QDialog( parent )
-    , m_ui( new Ui::ReportPreviewWindow )
+ReportPreviewWindow::ReportPreviewWindow(QWidget *parent)
+    : QDialog(parent)
+    , m_ui(new Ui::ReportPreviewWindow)
 {
-    m_ui->setupUi( this );
-    setAttribute( Qt::WA_DeleteOnClose );
-    connect( m_ui->pushButtonClose, SIGNAL(clicked()),
-             SLOT(slotClose()) );
-    connect( m_ui->pushButtonUpdate, SIGNAL(clicked()),
-             SLOT(slotUpdate()) );
-    connect( m_ui->pushButtonSave, SIGNAL(clicked()),
-             SLOT(slotSaveToXml()) );
-    connect( m_ui->pushButtonSaveTotals, SIGNAL(clicked()),
-             SLOT(slotSaveToText()) );
-    connect( m_ui->textBrowser, SIGNAL(anchorClicked(QUrl)),
-             SIGNAL(anchorClicked(QUrl)) );
+    m_ui->setupUi(this);
+    setAttribute(Qt::WA_DeleteOnClose);
+    connect(m_ui->pushButtonClose, SIGNAL(clicked()),
+            SLOT(slotClose()));
+    connect(m_ui->pushButtonUpdate, SIGNAL(clicked()),
+            SLOT(slotUpdate()));
+    connect(m_ui->pushButtonSave, SIGNAL(clicked()),
+            SLOT(slotSaveToXml()));
+    connect(m_ui->pushButtonSaveTotals, SIGNAL(clicked()),
+            SLOT(slotSaveToText()));
+    connect(m_ui->textBrowser, SIGNAL(anchorClicked(QUrl)),
+            SIGNAL(anchorClicked(QUrl)));
 #ifndef QT_NO_PRINTER
-    connect( m_ui->pushButtonPrint, SIGNAL(clicked()),
-             SLOT(slotPrint()) );
+    connect(m_ui->pushButtonPrint, SIGNAL(clicked()),
+            SLOT(slotPrint()));
 #else
     m_ui->pushButtonPrint->setEnabled(false);
 #endif
 
     m_updateTimer.setInterval(60 * 1000);
     m_updateTimer.start();
-    connect( &m_updateTimer, SIGNAL(timeout()),
-             SLOT(slotUpdate()) );
+    connect(&m_updateTimer, SIGNAL(timeout()),
+            SLOT(slotUpdate()));
 
     resize(850, 600);
 }
@@ -66,15 +66,15 @@ ReportPreviewWindow::~ReportPreviewWindow()
 {
 }
 
-void ReportPreviewWindow::setDocument( const QTextDocument* document )
+void ReportPreviewWindow::setDocument(const QTextDocument *document)
 {
-    if ( document != nullptr ) {
+    if (document != nullptr) {
         // we keep a copy, to be able to show different versions of the same document
-        QScopedPointer<QTextDocument> docClone( document->clone() );
-        m_document.swap( docClone );
-        m_ui->textBrowser->setDocument( m_document.data() );
+        QScopedPointer<QTextDocument> docClone(document->clone());
+        m_document.swap(docClone);
+        m_ui->textBrowser->setDocument(m_document.data());
     } else {
-        m_ui->textBrowser->setDocument( nullptr );
+        m_ui->textBrowser->setDocument(nullptr);
         m_document.reset();
     }
 }
@@ -82,34 +82,34 @@ void ReportPreviewWindow::setDocument( const QTextDocument* document )
 QDomDocument ReportPreviewWindow::createReportTemplate() const
 {
     // create XHTML v1.0 structure:
-    QDomDocument doc( QStringLiteral("html") );
+    QDomDocument doc(QStringLiteral("html"));
     // FIXME this is only a rudimentary subset of a valid xhtml 1 document
 
     // html element
-    QDomElement html = doc.createElement( QStringLiteral("html") );
-    html.setAttribute( QStringLiteral("xmlns"), QStringLiteral("http://www.w3.org/1999/xhtml") );
-    doc.appendChild( html );
+    QDomElement html = doc.createElement(QStringLiteral("html"));
+    html.setAttribute(QStringLiteral("xmlns"), QStringLiteral("http://www.w3.org/1999/xhtml"));
+    doc.appendChild(html);
 
     // head and body, children of html
-    QDomElement head = doc.createElement( QStringLiteral("head") );
-    html.appendChild( head );
-    QDomElement body = doc.createElement( QStringLiteral("body") );
-    html.appendChild( body );
+    QDomElement head = doc.createElement(QStringLiteral("head"));
+    html.appendChild(head);
+    QDomElement body = doc.createElement(QStringLiteral("body"));
+    html.appendChild(body);
 
     return doc;
 }
 
-QPushButton* ReportPreviewWindow::saveToXmlButton() const
+QPushButton *ReportPreviewWindow::saveToXmlButton() const
 {
     return m_ui->pushButtonSave;
 }
 
-QPushButton* ReportPreviewWindow::saveToTextButton() const
+QPushButton *ReportPreviewWindow::saveToTextButton() const
 {
     return m_ui->pushButtonSaveTotals;
 }
 
-QPushButton* ReportPreviewWindow::uploadButton() const
+QPushButton *ReportPreviewWindow::uploadButton() const
 {
     return m_ui->pushButtonUpload;
 }
@@ -126,16 +126,17 @@ void ReportPreviewWindow::slotPrint()
 {
 #ifndef QT_NO_PRINTER
     QPrinter printer;
-    QPrintDialog dialog( &printer, this );
+    QPrintDialog dialog(&printer, this);
 
-    if ( dialog.exec() ) {
-        m_document->print( &printer );
-    }
+    if (dialog.exec())
+        m_document->print(&printer);
+
 #endif
 }
 
 void ReportPreviewWindow::slotUpdate()
-{}
+{
+}
 
 void ReportPreviewWindow::slotClose()
 {

@@ -45,12 +45,11 @@ class WeeklyTimesheetConfigurationDialog;
 class MonthlyTimesheetConfigurationDialog;
 class ActivityReportConfigurationDialog;
 
-class TimeTrackingWindow : public CharmWindow,
-                         public CharmDataModelAdapterInterface
+class TimeTrackingWindow : public CharmWindow, public CharmDataModelAdapterInterface
 {
     Q_OBJECT
 public:
-    explicit TimeTrackingWindow( QWidget* parent = nullptr );
+    explicit TimeTrackingWindow(QWidget *parent = nullptr);
     ~TimeTrackingWindow() override;
 
     enum VerboseMode {
@@ -58,33 +57,33 @@ public:
         Silent
     };
     // application:
-    void stateChanged( State previous ) override;
+    void stateChanged(State previous) override;
     void restore() override;
     void quit() override;
 
-    bool event( QEvent* ) override;
-    void showEvent( QShowEvent* ) override;
-    QMenu* menu() const;
+    bool event(QEvent *) override;
+    void showEvent(QShowEvent *) override;
+    QMenu *menu() const;
     // model adapter:
     void resetTasks() override;
-    void taskAboutToBeAdded( TaskId parent, int pos ) override;
-    void taskAdded( TaskId id ) override;
-    void taskModified( TaskId id ) override;
-    void taskParentChanged( TaskId task, TaskId oldParent, TaskId newParent ) override;
-    void taskAboutToBeDeleted( TaskId ) override;
-    void taskDeleted( TaskId id ) override;
+    void taskAboutToBeAdded(TaskId parent, int pos) override;
+    void taskAdded(TaskId id) override;
+    void taskModified(TaskId id) override;
+    void taskParentChanged(TaskId task, TaskId oldParent, TaskId newParent) override;
+    void taskAboutToBeDeleted(TaskId) override;
+    void taskDeleted(TaskId id) override;
     void resetEvents() override;
-    void eventAboutToBeAdded( EventId id ) override;
-    void eventAdded( EventId id ) override;
-    void eventModified( EventId id, Event discardedEvent ) override;
-    void eventAboutToBeDeleted( EventId id ) override;
-    void eventDeleted( EventId id ) override;
-    void eventActivated( EventId id ) override;
-    void eventDeactivated( EventId id ) override;
+    void eventAboutToBeAdded(EventId id) override;
+    void eventAdded(EventId id) override;
+    void eventModified(EventId id, Event discardedEvent) override;
+    void eventAboutToBeDeleted(EventId id) override;
+    void eventDeleted(EventId id) override;
+    void eventActivated(EventId id) override;
+    void eventDeactivated(EventId id) override;
 
 public Q_SLOTS:
     // slots migrated from the old main window:
-    void slotEditPreferences( bool ); // show prefs dialog
+    void slotEditPreferences(bool);   // show prefs dialog
     void slotAboutDialog();
     void slotEnterVacation();
     void slotActivityReport();
@@ -92,14 +91,14 @@ public Q_SLOTS:
     void slotMonthlyTimesheetReport();
     void slotExportToXml();
     void slotImportFromXml();
-    void slotSyncTasks( VerboseMode mode = Verbose );
+    void slotSyncTasks(VerboseMode mode = Verbose);
     void slotImportTasks();
     void slotExportTasks();
-    void maybeIdle( IdleDetector* idleDetector );
-    void slotTasksDownloaded( HttpJob* );
-    void slotUserInfoDownloaded( HttpJob* );
+    void maybeIdle(IdleDetector *idleDetector);
+    void slotTasksDownloaded(HttpJob *);
+    void slotUserInfoDownloaded(HttpJob *);
     void slotCheckForUpdatesManual();
-    void slotStartEvent( TaskId );
+    void slotStartEvent(TaskId);
     void configurationChanged() override;
 
 protected:
@@ -108,35 +107,36 @@ protected:
 private Q_SLOTS:
     void slotStopEvent();
     void slotSelectTasksToShow();
-    void slotWeeklyTimesheetPreview( int result );
-    void slotMonthlyTimesheetPreview( int result );
-    void slotActivityReportPreview( int result );
+    void slotWeeklyTimesheetPreview(int result);
+    void slotMonthlyTimesheetPreview(int result);
+    void slotActivityReportPreview(int result);
     void slotCheckUploadedTimesheets();
-    void slotBillGone( int result );
+    void slotBillGone(int result);
     void slotCheckForUpdatesAutomatic();
-    void slotCheckForUpdates( CheckForUpdatesJob::JobData );
+    void slotCheckForUpdates(CheckForUpdatesJob::JobData);
     void slotSyncTasksAutomatic();
     void slotGetUserInfo();
 
-
 Q_SIGNALS:
-    void emitCommand( CharmCommand* ) override;
-    void emitCommandRollback( CharmCommand* ) override;
-    void showNotification( const QString& title, const QString& message );
+    void emitCommand(CharmCommand *) override;
+    void emitCommandRollback(CharmCommand *) override;
+    void showNotification(const QString &title, const QString &message);
 
 private:
     void resetWeeklyTimesheetDialog();
     void resetMonthlyTimesheetDialog();
-    void showPreview( ReportConfigurationDialog*, int result );
+    void showPreview(ReportConfigurationDialog *, int result);
     //ugly but private:
-    void importTasksFromDeviceOrFile( QIODevice* device, const QString& filename, bool verbose = true );
-    void startCheckForUpdates( VerboseMode mode = Silent );
-    void informUserAboutNewRelease( const QString& releaseVersion, const QUrl& link , const QString& releaseInfoLink );
+    void importTasksFromDeviceOrFile(QIODevice *device, const QString &filename,
+                                     bool verbose = true);
+    void startCheckForUpdates(VerboseMode mode = Silent);
+    void informUserAboutNewRelease(const QString &releaseVersion, const QUrl &link,
+                                   const QString &releaseInfoLink);
 
-    WeeklyTimesheetConfigurationDialog* m_weeklyTimesheetDialog = nullptr;
-    MonthlyTimesheetConfigurationDialog* m_monthlyTimesheetDialog = nullptr;
+    WeeklyTimesheetConfigurationDialog *m_weeklyTimesheetDialog = nullptr;
+    MonthlyTimesheetConfigurationDialog *m_monthlyTimesheetDialog = nullptr;
     ActivityReportConfigurationDialog *m_activityReportDialog = nullptr;
-    TimeTrackingView* m_summaryWidget;
+    TimeTrackingView *m_summaryWidget;
     QVector<WeeklySummary> m_summaries;
     QTimer m_checkUploadedSheetsTimer;
     QTimer m_checkCharmReleaseVersionTimer;

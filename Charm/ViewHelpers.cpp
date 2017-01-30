@@ -28,80 +28,79 @@
 #include <QCollator>
 
 namespace {
-    static QCollator collator()
-    {
-        QCollator c;
-        c.setCaseSensitivity( Qt::CaseInsensitive );
-        c.setNumericMode( true );
-        return c;
-    }
+static QCollator collator()
+{
+    QCollator c;
+    c.setCaseSensitivity(Qt::CaseInsensitive);
+    c.setNumericMode(true);
+    return c;
+}
 }
 
-void Charm::connectControllerAndView( Controller* controller, CharmWindow* view )
+void Charm::connectControllerAndView(Controller *controller, CharmWindow *view)
 {
     // connect view and controller:
     // make controller process commands send by the view:
-    QObject::connect( view, SIGNAL(emitCommand(CharmCommand*)),
-                      controller, SLOT(executeCommand(CharmCommand*)) );
-    QObject::connect( view, SIGNAL(emitCommandRollback(CharmCommand*)),
-                      controller, SLOT(rollbackCommand(CharmCommand*)) );
+    QObject::connect(view, SIGNAL(emitCommand(CharmCommand*)),
+                     controller, SLOT(executeCommand(CharmCommand*)));
+    QObject::connect(view, SIGNAL(emitCommandRollback(CharmCommand*)),
+                     controller, SLOT(rollbackCommand(CharmCommand*)));
     // make view receive done commands from the controller:
-    QObject::connect( controller, SIGNAL(commandCompleted(CharmCommand*)),
-                      view, SLOT(commitCommand(CharmCommand*)) );
+    QObject::connect(controller, SIGNAL(commandCompleted(CharmCommand*)),
+                     view, SLOT(commitCommand(CharmCommand*)));
 }
 
 class EventSorter
 {
 public:
-    EventSorter( const Charm::SortOrderList &orders )
-        : m_orders( orders )
+    EventSorter(const Charm::SortOrderList &orders)
+        : m_orders(orders)
     {
-        Q_ASSERT( !m_orders.contains( Charm::SortOrder::None ) );
-        Q_ASSERT( !m_orders.isEmpty() );
+        Q_ASSERT(!m_orders.contains(Charm::SortOrder::None));
+        Q_ASSERT(!m_orders.isEmpty());
     }
 
-    template <typename T>
-    int compare( const T &left, const T &right ) const
+    template<typename T>
+    int compare(const T &left, const T &right) const
     {
-        if ( left < right )
+        if (left < right) {
             return -1;
-        else if ( left > right )
+        } else if (left > right) {
             return 1;
+        }
         return 0;
     }
 
-    bool operator()( const EventId &leftId, const EventId &rightId ) const
+    bool operator()(const EventId &leftId, const EventId &rightId) const
     {
-        const Event& left = DATAMODEL->eventForId( leftId );
-        const Event& right = DATAMODEL->eventForId( rightId );
+        const Event &left = DATAMODEL->eventForId(leftId);
+        const Event &right = DATAMODEL->eventForId(rightId);
         int result = -1;
 
-        foreach ( const auto order, m_orders ) {
-            switch ( order ) {
-                case Charm::SortOrder::None:
-                    Q_UNREACHABLE();
+        foreach (const auto order, m_orders) {
+            switch (order) {
+            case Charm::SortOrder::None:
+                Q_UNREACHABLE();
 
-                case Charm::SortOrder::StartTime:
-                    result = compare( left.startDateTime(), right.startDateTime() );
-                    break;
+            case Charm::SortOrder::StartTime:
+                result = compare(left.startDateTime(), right.startDateTime());
+                break;
 
-                case Charm::SortOrder::EndTime:
-                    result = compare( left.endDateTime(), right.endDateTime() );
-                    break;
+            case Charm::SortOrder::EndTime:
+                result = compare(left.endDateTime(), right.endDateTime());
+                break;
 
-                case Charm::SortOrder::TaskId:
-                    result = compare( left.taskId(), right.taskId() );
-                    break;
+            case Charm::SortOrder::TaskId:
+                result = compare(left.taskId(), right.taskId());
+                break;
 
-                case Charm::SortOrder::Comment: {
-                    result = Charm::collatorCompare( left.comment(), right.comment() );
-                    break;
-                }
-            }
-
-            if ( result != 0 ) {
+            case Charm::SortOrder::Comment:
+                result = Charm::collatorCompare(left.comment(), right.comment());
                 break;
             }
+
+            if (result != 0)
+                break;
 
             result = -1;
         }
@@ -113,72 +112,74 @@ private:
     const Charm::SortOrderList &m_orders;
 };
 
-int Charm::collatorCompare( const QString &left, const QString &right )
+int Charm::collatorCompare(const QString &left, const QString &right)
 {
-    static const auto collator( ::collator() );
-    return collator.compare( left, right );
+    static const auto collator(::collator());
+    return collator.compare(left, right);
 }
 
-EventIdList Charm::eventIdsSortedBy( EventIdList ids, const Charm::SortOrderList &orders )
+EventIdList Charm::eventIdsSortedBy(EventIdList ids, const Charm::SortOrderList &orders)
 {
-    if ( !orders.isEmpty() ) {
-        qStableSort( ids.begin(), ids.end(), EventSorter( orders ) );
-    }
+    if (!orders.isEmpty())
+        qStableSort(ids.begin(), ids.end(), EventSorter(orders));
 
     return ids;
 }
 
-EventIdList Charm::eventIdsSortedBy( EventIdList ids, SortOrder order )
+EventIdList Charm::eventIdsSortedBy(EventIdList ids, SortOrder order)
 {
-    return eventIdsSortedBy( ids, SortOrderList(1) << order );
+    return eventIdsSortedBy(ids, SortOrderList(1) << order);
 }
 
-EventIdList Charm::filteredBySubtree( EventIdList ids, TaskId parent, bool exclude )
+EventIdList Charm::filteredBySubtree(EventIdList ids, TaskId parent, bool exclude)
 {
     EventIdList result;
     bool isParent = false;
-    Q_FOREACH( EventId id, ids ) {
-        const Event& event = DATAMODEL->eventForId( id );
-        isParent = ( parent == event.taskId() || DATAMODEL->isParentOf( parent, event.taskId() ) );
-        if ( isParent != exclude ) {
+    Q_FOREACH (EventId id, ids) {
+        const Event &event = DATAMODEL->eventForId(id);
+        isParent = (parent == event.taskId() || DATAMODEL->isParentOf(parent, event.taskId()));
+        if (isParent != exclude)
             result << id;
-        }
     }
     return result;
 }
 
-QString Charm::elidedTaskName( const QString& text, const QFont& font, int width )
+QString Charm::elidedTaskName(const QString &text, const QFont &font, int width)
 {
-    QFontMetrics metrics( font );
-    const QString& projectCode =
-            text.section( QLatin1Char(' '), 0, 0, QString::SectionIncludeTrailingSep );
-    const int projectCodeWidth = metrics.width( projectCode );
-    if ( width > projectCodeWidth ) {
-        const QString& taskName = text.section( QLatin1Char(' '), 1 );
+    QFontMetrics metrics(font);
+    const QString &projectCode
+        = text.section(QLatin1Char(' '), 0, 0, QString::SectionIncludeTrailingSep);
+    const int projectCodeWidth = metrics.width(projectCode);
+    if (width > projectCodeWidth) {
+        const QString &taskName = text.section(QLatin1Char(' '), 1);
         const int taskNameWidth = width - projectCodeWidth;
-        const QString& taskNameElided =
-                metrics.elidedText( taskName, Qt::ElideLeft, taskNameWidth );
+        const QString &taskNameElided
+            = metrics.elidedText(taskName, Qt::ElideLeft, taskNameWidth);
         return projectCode + taskNameElided;
     }
 
-    return metrics.elidedText( text, Qt::ElideMiddle, width );
+    return metrics.elidedText(text, Qt::ElideMiddle, width);
 }
 
-QString Charm::reportStylesheet( const QPalette& palette )
+QString Charm::reportStylesheet(const QPalette &palette)
 {
     QString style;
-    QFile stylesheet( QStringLiteral(":/Charm/report_stylesheet.sty") );
-    if ( stylesheet.open( QIODevice::ReadOnly | QIODevice::Text ) ) {
+    QFile stylesheet(QStringLiteral(":/Charm/report_stylesheet.sty"));
+    if (stylesheet.open(QIODevice::ReadOnly | QIODevice::Text)) {
         style = QString::fromUtf8(stylesheet.readAll());
-        style.replace(QLatin1String("@header_row_background_color@"), palette.highlight().color().name());
-        style.replace(QLatin1String("@header_row_foreground_color@"), palette.highlightedText().color().name());
-        style.replace(QLatin1String("@alternate_row_background_color@"), palette.alternateBase().color().name());
-        style.replace(QLatin1String("@event_attributes_row_background_color@"), palette.midlight().color().name());
-        if ( style.isEmpty() ) {
+        style.replace(QLatin1String("@header_row_background_color@"),
+                      palette.highlight().color().name());
+        style.replace(QLatin1String("@header_row_foreground_color@"),
+                      palette.highlightedText().color().name());
+        style.replace(QLatin1String("@alternate_row_background_color@"),
+                      palette.alternateBase().color().name());
+        style.replace(QLatin1String("@event_attributes_row_background_color@"),
+                      palette.midlight().color().name());
+        if (style.isEmpty())
             qWarning() << "reportStylesheet: default style sheet is empty, too bad";
-        }
     } else {
-        qCritical() << "reportStylesheet: cannot load report style sheet:" << stylesheet.errorString();
+        qCritical() << "reportStylesheet: cannot load report style sheet:"
+                    << stylesheet.errorString();
     }
     return style;
 }

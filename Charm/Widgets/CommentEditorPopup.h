@@ -37,11 +37,11 @@ class CommentEditorPopup : public QDialog
     Q_OBJECT
 
 public:
-    explicit CommentEditorPopup( QWidget *parent = nullptr );
+    explicit CommentEditorPopup(QWidget *parent = nullptr);
     ~CommentEditorPopup() override;
 
 public Q_SLOTS:
-    void loadEvent( EventId id );
+    void loadEvent(EventId id);
     void accept() override;
 
 private:

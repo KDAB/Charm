@@ -59,14 +59,14 @@ class ApplicationCore : public QObject
     Q_OBJECT
 
 public:
-    enum class ShowMode{
+    enum class ShowMode {
         Show,
         ShowAndRaise
     };
-    explicit ApplicationCore( TaskId startupTask, QObject* parent = nullptr );
+    explicit ApplicationCore(TaskId startupTask, QObject *parent = nullptr);
     ~ApplicationCore() override;
 
-    static ApplicationCore& instance();
+    static ApplicationCore &instance();
     static bool hasInstance();
 
     // FIXME broken by design?
@@ -77,51 +77,51 @@ public:
     bool configure();
 
     /** Access to the model. */
-    ModelConnector& model();
+    ModelConnector &model();
 
     /** Access to the time spans object. */
-    DateChangeWatcher* dateChangeWatcher() const;
+    DateChangeWatcher *dateChangeWatcher() const;
 
-    IdleDetector* idleDetector();
-    CharmCommandInterface* commandInterface() const;
+    IdleDetector *idleDetector();
+    CharmCommandInterface *commandInterface() const;
     State state() const;
 
-    void createWindowMenu( QMenuBar *menuBar );
-    void createFileMenu( QMenuBar *menuBar );
-    void createHelpMenu( QMenuBar *menuBar );
+    void createWindowMenu(QMenuBar *menuBar);
+    void createFileMenu(QMenuBar *menuBar);
+    void createHelpMenu(QMenuBar *menuBar);
 
     /** The main view is the window responsible for managing state during command execution.
      * It is an internal concept, not a notion for the end user. */
-    CharmWindow& mainView();
+    CharmWindow &mainView();
 
-    TrayIcon& trayIcon();
+    TrayIcon &trayIcon();
 
     void updateTaskList();
 
 public Q_SLOTS:
-    void showMainWindow( ShowMode mode = ShowMode::Show );
+    void showMainWindow(ShowMode mode = ShowMode::Show);
 
-    void setState( State state );
+    void setState(State state);
     void slotStopAllTasks();
     void slotQuitApplication();
     void slotControllerReadyToQuit();
     void slotSaveConfiguration();
     void slotGoToConnectedState();
-    void setHttpActionsVisible( bool visible );
-    void saveState( QSessionManager & manager );
-    void commitData( QSessionManager & manager );
+    void setHttpActionsVisible(bool visible);
+    void saveState(QSessionManager &manager);
+    void commitData(QSessionManager &manager);
 
 private Q_SLOTS:
-    void slotCurrentBackendStatusChanged( const QString& text );
+    void slotCurrentBackendStatusChanged(const QString &text);
     void slotMaybeIdle();
     void slotHandleUniqueApplicationConnection();
     void slotStartTaskMenuAboutToShow();
-    void slotShowNotification( const QString& title, const QString& message );
+    void slotShowNotification(const QString &title, const QString &message);
     void slotShowTasksEditor();
     void slotShowEventEditor();
 
 Q_SIGNALS:
-    void goToState( State state );
+    void goToState(State state);
 
 protected:
     QAction m_actionStopAllTasks;
@@ -129,10 +129,10 @@ protected:
     QAction m_actionQuit;
 
 private:
-    void showCritical( const QString& title, const QString& message );
-    void showInformation( const QString& title, const QString& message );
+    void showCritical(const QString &title, const QString &message);
+    void showInformation(const QString &title, const QString &message);
 
-    QString titleString( const QString& text ) const;
+    QString titleString(const QString &text) const;
     void enterStartingUpState();
     void leaveStartingUpState();
     void enterConfiguringState();
@@ -163,23 +163,23 @@ private:
     QAction m_actionActivityReport;
     QAction m_actionWeeklyTimesheetReport;
     QAction m_actionMonthlyTimesheetReport;
-    QList<QAction*> m_taskActions;
+    QList<QAction *> m_taskActions;
     EventView m_eventView;
     TasksView m_tasksView;
-    QVector<UIStateInterface*> m_uiElements;
-    IdleDetector* m_idleDetector = nullptr;
-    CharmCommandInterface* m_cmdInterface = nullptr;
+    QVector<UIStateInterface *> m_uiElements;
+    IdleDetector *m_idleDetector = nullptr;
+    CharmCommandInterface *m_cmdInterface = nullptr;
     QLocalServer m_uniqueApplicationServer;
     TaskId m_startupTask;
 #ifdef Q_OS_WIN
-    QWinJumpList* m_windowsJumpList = nullptr;
+    QWinJumpList *m_windowsJumpList = nullptr;
 #endif
 
     // All statics are created as members of Application. This is
     // supposed to help on Windows, where constructors for statics
     // do not seem to called correctly.
-    DateChangeWatcher* m_dateChangeWatcher;
-    static ApplicationCore* m_instance;
+    DateChangeWatcher *m_dateChangeWatcher;
+    static ApplicationCore *m_instance;
 };
 
 #endif

@@ -22,22 +22,22 @@
 #ifndef TEMPORARYVALUE_H
 #define TEMPORARYVALUE_H
 
-template <typename T>
+template<typename T>
 struct TemporaryValue {
-    explicit TemporaryValue(T& x, const T& value)
+    explicit TemporaryValue(T &x, const T &value)
         : m_x(x)
         , m_oldValue(x)
     {
         m_x = value;
     }
 
-    ~TemporaryValue() {
+    ~TemporaryValue()
+    {
         m_x = m_oldValue;
     }
 
-    T& m_x;
+    T &m_x;
     const T m_oldValue;
 };
 
 #endif
-

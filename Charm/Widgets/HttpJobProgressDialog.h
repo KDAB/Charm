@@ -32,10 +32,10 @@ class HttpJobProgressDialog : public QProgressDialog
 {
     Q_OBJECT
 public:
-    explicit HttpJobProgressDialog( HttpJob* job, QWidget* parent = nullptr );
+    explicit HttpJobProgressDialog(HttpJob *job, QWidget *parent = nullptr);
 
 private Q_SLOTS:
-    void jobFinished( HttpJob* );
+    void jobFinished(HttpJob *);
     void jobTransferStarted();
     void jobPasswordRequested();
 

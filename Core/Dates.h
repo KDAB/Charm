@@ -28,15 +28,15 @@
 #include <QDate>
 
 namespace Charm {
-    QDate dateByWeekNumberAndWeekDay( int year, int week, int weekday );
-    /**
-     * returns the date for a week day @p dayOfWeek, in the week of date @p date.
-     */
-    QDate weekDayInWeekOf( Qt::DayOfWeek dayOfWeek, const QDate& date );
+QDate dateByWeekNumberAndWeekDay(int year, int week, int weekday);
+/**
+ * returns the date for a week day @p dayOfWeek, in the week of date @p date.
+ */
+QDate weekDayInWeekOf(Qt::DayOfWeek dayOfWeek, const QDate &date);
 
-    int numberOfWeeksInYear( int year );
+int numberOfWeeksInYear(int year);
 
-    int weekDifference( const QDate &from, const QDate &to );
+int weekDifference(const QDate &from, const QDate &to);
 }
 
 #endif // CHARM_DATES_H

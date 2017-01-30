@@ -43,7 +43,7 @@ private Q_SLOTS:
     void cleanupTestCase();
 
 private:
-    CharmDataModel* m_referenceModel = nullptr;
+    CharmDataModel *m_referenceModel = nullptr;
 };
 
 #endif

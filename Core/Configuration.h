@@ -50,23 +50,23 @@ public:
     };
 
     enum DurationFormat {
-        Minutes=0,
+        Minutes = 0,
         Decimal
     };
 
-    bool operator== ( const Configuration& other ) const;
+    bool operator==(const Configuration &other) const;
 
-    static Configuration& instance();
+    static Configuration &instance();
 
-    void writeTo( QSettings& );
+    void writeTo(QSettings &);
     // read the configuration from the settings object
     // this will not modify the settings group etc but just use it
     // returns true if all individual settings have been found (the
     // configuration is complete)
-    bool readFrom( QSettings& );
+    bool readFrom(QSettings &);
 
     // helper method
-    void dump( const QString& why = QString::null );
+    void dump(const QString &why = QString::null);
 
     User user;  // this user's id
     TaskPrefilteringMode taskPrefilteringMode = TaskPrefilter_ShowAll;
@@ -97,12 +97,11 @@ private:
     friend class SqLiteStorageTests;
     friend class ControllerTests;
     // these are all the persisted metadata settings, and the constructor is only used during test runs:
-    Configuration( TaskPrefilteringMode taskPrefilteringMode, TimeTrackerFontSize,
-                   DurationFormat durationFormat, bool detectIdling, Qt::ToolButtonStyle buttonstyle,
-                   bool showStatusBar, bool warnUnuploadedTimesheets, bool _requestEventComment,
-                   bool enableCommandInterface );
+    Configuration(TaskPrefilteringMode taskPrefilteringMode, TimeTrackerFontSize,
+                  DurationFormat durationFormat, bool detectIdling, Qt::ToolButtonStyle buttonstyle,
+                  bool showStatusBar, bool warnUnuploadedTimesheets, bool _requestEventComment,
+                  bool enableCommandInterface);
     Configuration();
 };
-
 
 #endif

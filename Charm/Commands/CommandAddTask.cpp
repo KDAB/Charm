@@ -26,9 +26,9 @@
 #include "Core/ControllerInterface.h"
 #include "Core/CommandEmitterInterface.h"
 
-CommandAddTask::CommandAddTask( const Task& task, QObject* parent )
-    : CharmCommand( tr("Add Task"), parent )
-    , m_task( task )
+CommandAddTask::CommandAddTask(const Task &task, QObject *parent)
+    : CharmCommand(tr("Add Task"), parent)
+    , m_task(task)
 {
 }
 
@@ -41,17 +41,16 @@ bool CommandAddTask::prepare()
     return true;
 }
 
-bool CommandAddTask::execute( ControllerInterface* controller )
+bool CommandAddTask::execute(ControllerInterface *controller)
 {
-    m_success = controller->addTask( m_task );
+    m_success = controller->addTask(m_task);
     return m_success;
 }
 
 bool CommandAddTask::finalize()
 {
-    if ( !m_success ) {
-        showInformation( tr( "Unable to add task" ), tr( "Adding the task failed." ) );
-    }
+    if (!m_success)
+        showInformation(tr("Unable to add task"), tr("Adding the task failed."));
     return m_success;
 }
 

@@ -33,16 +33,16 @@ class CommandDeleteEvent : public CharmCommand
     Q_OBJECT
 
 public:
-    explicit CommandDeleteEvent( const Event&, QObject* parent = nullptr );
+    explicit CommandDeleteEvent(const Event &, QObject *parent = nullptr);
     ~CommandDeleteEvent() override;
 
     bool prepare() override;
-    bool execute( ControllerInterface* ) override;
-    bool rollback( ControllerInterface* ) override;
+    bool execute(ControllerInterface *) override;
+    bool rollback(ControllerInterface *) override;
     bool finalize() override;
 
 public Q_SLOTS:
-    void eventIdChanged(int,int) override;
+    void eventIdChanged(int, int) override;
 
 private:
     Event m_event;

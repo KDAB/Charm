@@ -28,11 +28,15 @@
 
 #include <QSqlDatabase>
 
-class MySqlStorage: public SqlStorage
+class MySqlStorage : public SqlStorage
 {
 public:
     struct Parameters {
-        Parameters() : port( 3309), database( QStringLiteral("Charm") ) {}
+        Parameters() : port(3309)
+            , database(QStringLiteral("Charm"))
+        {
+        }
+
         unsigned int port;
         QString database;
         QString name;
@@ -43,17 +47,17 @@ public:
     MySqlStorage();
     virtual ~MySqlStorage();
 
-    QSqlDatabase& database() override;
+    QSqlDatabase &database() override;
 
     QString description() const override;
-    bool connect(Configuration&) override;
+    bool connect(Configuration &) override;
     bool disconnect() override;
     int installationId() const override;
-    bool createDatabase(Configuration&) override;
+    bool createDatabase(Configuration &) override;
     bool createDatabaseTables() override;
 
     static Parameters parseParameterEnvironmentVariable();
-    void configure( const Parameters& );
+    void configure(const Parameters &);
 protected:
     QString lastInsertRowFunction() const override;
 

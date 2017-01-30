@@ -31,95 +31,93 @@
 #include <QNetworkReply>
 #include <QStringList>
 
-bool Charm::versionLessThan( const QString& lhs, const QString& rhs )
+bool Charm::versionLessThan(const QString &lhs, const QString &rhs)
 {
-    const QStringList lhsSplit = lhs.split( QLatin1Char('.') );
-    const QStringList rhsSplit = rhs.split( QLatin1Char('.') );
-    for ( int i = 0; i < lhsSplit.count() && i < rhsSplit.count(); ++i ) {
+    const QStringList lhsSplit = lhs.split(QLatin1Char('.'));
+    const QStringList rhsSplit = rhs.split(QLatin1Char('.'));
+    for (int i = 0; i < lhsSplit.count() && i < rhsSplit.count(); ++i) {
         const int diff = rhsSplit[i].toInt() - lhsSplit[i].toInt();
-        if ( diff != 0 ) {
+        if (diff != 0)
             return diff > 0;
-        }
     }
 
-    for ( int i = lhsSplit.size(); i < rhsSplit.size(); ++i ) {
-        if ( rhsSplit[i].toInt() > 0 ) {
+    for (int i = lhsSplit.size(); i < rhsSplit.size(); ++i) {
+        if (rhsSplit[i].toInt() > 0)
             return true;
-        }
     }
     return false;
 }
 
-CheckForUpdatesJob::CheckForUpdatesJob( QObject* parent )
-    : QObject( parent )
+CheckForUpdatesJob::CheckForUpdatesJob(QObject *parent)
+    : QObject(parent)
 {
-
 }
 
 CheckForUpdatesJob::~CheckForUpdatesJob()
 {
-
 }
 
 void CheckForUpdatesJob::start()
 {
-    Q_ASSERT( !m_url.toString().isEmpty() );
-    QNetworkAccessManager * manager = new QNetworkAccessManager( this );
+    Q_ASSERT(!m_url.toString().isEmpty());
+    QNetworkAccessManager *manager = new QNetworkAccessManager(this);
     connect(manager, SIGNAL(finished(QNetworkReply*)), SLOT(jobFinished(QNetworkReply*)));
-    manager->get( QNetworkRequest( m_url ) );
+    manager->get(QNetworkRequest(m_url));
 }
 
-void CheckForUpdatesJob::jobFinished( QNetworkReply* reply )
+void CheckForUpdatesJob::jobFinished(QNetworkReply *reply)
 {
-    if ( reply->error() ) {
-        const QString errorString = tr( "Could not download update information from %1: %2" ).arg( m_url.toString(), reply->errorString() );
+    if (reply->error()) {
+        const QString errorString = tr("Could not download update information from %1: %2").arg(
+            m_url.toString(), reply->errorString());
         m_jobData.errorString = errorString;
         m_jobData.error = reply->error();
     } else {
         QByteArray data = reply->readAll();
-        parseXmlData( data );
+        parseXmlData(data);
     }
 
     reply->deleteLater();
-    emit finished( m_jobData );
+    emit finished(m_jobData);
     deleteLater();
 }
 
-void CheckForUpdatesJob::setVerbose( bool verbose )
+void CheckForUpdatesJob::setVerbose(bool verbose)
 {
     m_jobData.verbose = verbose;
 }
 
-void CheckForUpdatesJob::parseXmlData( const QByteArray& data )
+void CheckForUpdatesJob::parseXmlData(const QByteArray &data)
 {
     QBuffer buffer;
-    buffer.setData( data );
-    buffer.open( QIODevice::ReadOnly );
+    buffer.setData(data);
+    buffer.open(QIODevice::ReadOnly);
 
     QDomDocument document;
     QString errorMessage;
     int errorLine = 0;
     int errorColumn = 0;
-    if ( !document.setContent( &buffer, &errorMessage, &errorLine, &errorColumn ) )
-    {
-        m_jobData.errorString = tr( "Invalid XML: [%1:%2] %3" ).arg( QString::number( errorLine ), QString::number( errorColumn ), errorMessage );
+    if (!document.setContent(&buffer, &errorMessage, &errorLine, &errorColumn)) {
+        m_jobData.errorString = tr("Invalid XML: [%1:%2] %3").arg(QString::number(
+                                                                      errorLine),
+                                                                  QString::number(
+                                                                      errorColumn), errorMessage);
         m_jobData.error = 999; // this value is just to have an and does not mean anything - error != 0
         return;
     }
 
     QDomElement element = document.documentElement();
-    QDomElement versionElement = element.firstChildElement( QStringLiteral( "version" ) );
-    QDomElement linkElement = versionElement.nextSiblingElement( QStringLiteral( "link" ) );
+    QDomElement versionElement = element.firstChildElement(QStringLiteral("version"));
+    QDomElement linkElement = versionElement.nextSiblingElement(QStringLiteral("link"));
     const QString releaseVersion = versionElement.text();
     m_jobData.releaseVersion = releaseVersion;
-    QUrl link( linkElement.text() );
+    QUrl link(linkElement.text());
     m_jobData.link = link;
-    QString releaseInfoLink( linkElement.nextSiblingElement( QStringLiteral( "releaseinfolink" ) ).text() );
+    QString releaseInfoLink(linkElement.nextSiblingElement(QStringLiteral("releaseinfolink")).text());
     m_jobData.releaseInformationLink = releaseInfoLink;
-
 }
 
-void CheckForUpdatesJob::setUrl( const QUrl& url )
+void CheckForUpdatesJob::setUrl(const QUrl &url)
 {
     m_url = url;
 }

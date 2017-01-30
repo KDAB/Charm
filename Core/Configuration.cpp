@@ -35,95 +35,95 @@
 #define DEFAULT_CONFIG_GROUP QStringLiteral("debug")
 #endif
 
-Configuration& Configuration::instance()
+Configuration &Configuration::instance()
 {
     static Configuration configuration;
     return configuration;
 }
 
 Configuration::Configuration()
-    : configurationName( DEFAULT_CONFIG_GROUP )
+    : configurationName(DEFAULT_CONFIG_GROUP)
 {
 }
 
-Configuration::Configuration( TaskPrefilteringMode _taskPrefilteringMode,
-                              TimeTrackerFontSize _timeTrackerFontSize,
-                              DurationFormat _durationFormat, bool _detectIdling,
-                              Qt::ToolButtonStyle _buttonstyle, bool _showStatusBar,
-                              bool _warnUnuploadedTimesheets, bool _requestEventComment,
-                              bool _enableCommandInterface )
-    : taskPrefilteringMode( _taskPrefilteringMode )
-    , timeTrackerFontSize( _timeTrackerFontSize )
-    , durationFormat( _durationFormat )
-    , toolButtonStyle( _buttonstyle )
-    , showStatusBar( _showStatusBar )
-    , detectIdling ( _detectIdling )
-    , warnUnuploadedTimesheets( _warnUnuploadedTimesheets )
-    , requestEventComment( _requestEventComment )
-    , enableCommandInterface( _enableCommandInterface )
-    , configurationName( DEFAULT_CONFIG_GROUP )
+Configuration::Configuration(TaskPrefilteringMode _taskPrefilteringMode,
+                             TimeTrackerFontSize _timeTrackerFontSize,
+                             DurationFormat _durationFormat, bool _detectIdling,
+                             Qt::ToolButtonStyle _buttonstyle, bool _showStatusBar,
+                             bool _warnUnuploadedTimesheets, bool _requestEventComment,
+                             bool _enableCommandInterface)
+    : taskPrefilteringMode(_taskPrefilteringMode)
+    , timeTrackerFontSize(_timeTrackerFontSize)
+    , durationFormat(_durationFormat)
+    , toolButtonStyle(_buttonstyle)
+    , showStatusBar(_showStatusBar)
+    , detectIdling(_detectIdling)
+    , warnUnuploadedTimesheets(_warnUnuploadedTimesheets)
+    , requestEventComment(_requestEventComment)
+    , enableCommandInterface(_enableCommandInterface)
+    , configurationName(DEFAULT_CONFIG_GROUP)
 {
 }
 
-bool Configuration::operator==( const Configuration& other ) const
+bool Configuration::operator==(const Configuration &other) const
 {
-    return user == other.user &&
-        taskPrefilteringMode == other.taskPrefilteringMode &&
-        timeTrackerFontSize == other.timeTrackerFontSize &&
-        durationFormat == other.durationFormat &&
-        detectIdling == other.detectIdling &&
-        warnUnuploadedTimesheets == other.warnUnuploadedTimesheets &&
-        requestEventComment == other.requestEventComment &&
-        toolButtonStyle == other.toolButtonStyle &&
-        showStatusBar == other.showStatusBar &&
-        configurationName == other.configurationName &&
-        installationId == other.installationId &&
-        localStorageType == other.localStorageType &&
-        localStorageDatabase == other.localStorageDatabase;
+    return user == other.user
+           && taskPrefilteringMode == other.taskPrefilteringMode
+           && timeTrackerFontSize == other.timeTrackerFontSize
+           && durationFormat == other.durationFormat
+           && detectIdling == other.detectIdling
+           && warnUnuploadedTimesheets == other.warnUnuploadedTimesheets
+           && requestEventComment == other.requestEventComment
+           && toolButtonStyle == other.toolButtonStyle
+           && showStatusBar == other.showStatusBar
+           && configurationName == other.configurationName
+           && installationId == other.installationId
+           && localStorageType == other.localStorageType
+           && localStorageDatabase == other.localStorageDatabase;
 }
 
-void Configuration::writeTo( QSettings& settings )
+void Configuration::writeTo(QSettings &settings)
 {
-    settings.setValue( MetaKey_Key_InstallationId, installationId );
-    settings.setValue( MetaKey_Key_UserId, user.id() );
-    settings.setValue( MetaKey_Key_LocalStorageType, localStorageType );
-    settings.setValue( MetaKey_Key_LocalStorageDatabase, localStorageDatabase );
-    dump( QStringLiteral("(Configuration::writeTo stored configuration)") );
+    settings.setValue(MetaKey_Key_InstallationId, installationId);
+    settings.setValue(MetaKey_Key_UserId, user.id());
+    settings.setValue(MetaKey_Key_LocalStorageType, localStorageType);
+    settings.setValue(MetaKey_Key_LocalStorageDatabase, localStorageDatabase);
+    dump(QStringLiteral("(Configuration::writeTo stored configuration)"));
 }
 
-bool Configuration::readFrom( QSettings& settings )
+bool Configuration::readFrom(QSettings &settings)
 {
     bool complete = true;
-    if ( settings.contains( MetaKey_Key_InstallationId ) ) {
-        installationId = settings.value( MetaKey_Key_InstallationId ).toInt();
+    if (settings.contains(MetaKey_Key_InstallationId)) {
+        installationId = settings.value(MetaKey_Key_InstallationId).toInt();
     } else {
         complete = false;
     }
-    if ( settings.contains( MetaKey_Key_UserId ) ) {
-        user.setId( settings.value( MetaKey_Key_UserId ).toInt() );
+    if (settings.contains(MetaKey_Key_UserId)) {
+        user.setId(settings.value(MetaKey_Key_UserId).toInt());
     } else {
         complete = false;
     }
-    if ( settings.contains( MetaKey_Key_LocalStorageType ) ) {
-        localStorageType = settings.value( MetaKey_Key_LocalStorageType ).toString();
+    if (settings.contains(MetaKey_Key_LocalStorageType)) {
+        localStorageType = settings.value(MetaKey_Key_LocalStorageType).toString();
     } else {
         complete = false;
     }
-    if ( settings.contains( MetaKey_Key_LocalStorageDatabase ) ) {
-        localStorageDatabase = settings.value( MetaKey_Key_LocalStorageDatabase ).toString();
+    if (settings.contains(MetaKey_Key_LocalStorageDatabase)) {
+        localStorageDatabase = settings.value(MetaKey_Key_LocalStorageDatabase).toString();
     } else {
         complete = false;
     }
-    dump( QStringLiteral("(Configuration::readFrom loaded configuration)") );
+    dump(QStringLiteral("(Configuration::readFrom loaded configuration)"));
     return complete;
 }
 
-void Configuration::dump( const QString& why )
+void Configuration::dump(const QString &why)
 {
     // dump configuration:
     return; // disable debug output
     qDebug() << "Configuration: configuration:"
-             << ( why.isEmpty() ? QString() : why )
+             << (why.isEmpty() ? QString() : why)
              << endl
              << "--> installation id:          " << installationId << endl
              << "--> userid:                   " << user.id() << endl

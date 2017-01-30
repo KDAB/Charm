@@ -62,17 +62,17 @@ class CharmCommand : public QObject
     Q_OBJECT
 
 public:
-    explicit CharmCommand( const QString& description, QObject* parent = nullptr );
+    explicit CharmCommand(const QString &description, QObject *parent = nullptr);
     ~CharmCommand() override;
 
     QString description() const;
 
     virtual bool prepare() = 0;
-    virtual bool execute( ControllerInterface* controller ) = 0;
-    virtual bool rollback( ControllerInterface* controller );
+    virtual bool execute(ControllerInterface *controller) = 0;
+    virtual bool rollback(ControllerInterface *controller);
     virtual bool finalize() = 0;
 
-    CommandEmitterInterface* owner() const;
+    CommandEmitterInterface *owner() const;
 
     //used by UndoCharmCommandWrapper to forward signal firing
     //forwards to emitExecute/emitRollback/emitRequestSlotEventIdChanged
@@ -81,21 +81,23 @@ public:
     void requestSlotEventIdChanged(int oldId, int newId);
 
     //notify CharmCommands in a QUndoStack that an event ID has changed
-    virtual void eventIdChanged(int,int){}
+    virtual void eventIdChanged(int, int)
+    {
+    }
 
 Q_SIGNALS:
-    void emitExecute(CharmCommand*);
-    void emitRollback(CharmCommand*);
-    void emitSlotEventIdChanged(int,int);
+    void emitExecute(CharmCommand *);
+    void emitRollback(CharmCommand *);
+    void emitSlotEventIdChanged(int, int);
 
 protected:
-    void showInformation(const QString& title, const QString& message);
-    void showCritical(const QString& title, const QString& message);
+    void showInformation(const QString &title, const QString &message);
+    void showCritical(const QString &title, const QString &message);
 
 private:
-    CharmCommand( const CharmCommand& ); // disallow copying
+    CharmCommand(const CharmCommand &);  // disallow copying
 
-    CommandEmitterInterface* m_owner = nullptr;
+    CommandEmitterInterface *m_owner = nullptr;
     const QString m_description;
 };
 

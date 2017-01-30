@@ -30,58 +30,50 @@
 #include <QDir>
 
 namespace TestHelpers {
+QList<QDomElement> retrieveTestCases(const QString &path, const QString &type)
+{
+    const QString tagName(QStringLiteral("testcase"));
+    QStringList filenamePatterns;
+    filenamePatterns << QStringLiteral("*.xml");
 
-    QList<QDomElement> retrieveTestCases( const QString &path, const QString &type )
-    {
-        const QString tagName( QStringLiteral("testcase") );
-        QStringList filenamePatterns;
-        filenamePatterns << QStringLiteral("*.xml");
+    QDir dataDir(path);
+    if (!dataDir.exists())
+        throw CharmException(QStringLiteral("path to test case data does not exist"));
 
-        QDir dataDir( path );
-        if ( !dataDir.exists() ) {
-            throw CharmException( QStringLiteral("path to test case data does not exist") );
+    QFileInfoList dataSets = dataDir.entryInfoList(filenamePatterns, QDir::Files, QDir::Name);
+
+    QList<QDomElement> result;
+    Q_FOREACH (const QFileInfo &fileinfo, dataSets) {
+        QDomDocument doc(QStringLiteral("charmtests"));
+        QFile file(fileinfo.filePath());
+        if (!file.open(QIODevice::ReadOnly))
+            throw CharmException(QStringLiteral("unable to open input file"));
+
+        if (!doc.setContent(&file))
+            throw CharmException(QStringLiteral("invalid DOM document, cannot load"));
+
+        QDomElement root = doc.firstChildElement();
+        if (root.tagName() != QLatin1String("testcases"))
+            throw CharmException(QStringLiteral("root element (testcases) not found"));
+
+        qDebug() << "Loading test cases from" << file.fileName();
+
+        for (QDomElement child = root.firstChildElement(tagName); !child.isNull();
+             child = child.nextSiblingElement(tagName)) {
+            if (child.attribute(QStringLiteral("type")) == type)
+                result << child;
         }
-
-        QFileInfoList dataSets = dataDir.entryInfoList( filenamePatterns, QDir::Files, QDir::Name );
-
-        QList<QDomElement> result;
-        Q_FOREACH( const QFileInfo& fileinfo, dataSets ) {
-            QDomDocument doc( QStringLiteral("charmtests") );
-            QFile file( fileinfo.filePath() );
-            if ( ! file.open( QIODevice::ReadOnly ) ) {
-                throw CharmException( QStringLiteral("unable to open input file") );
-            }
-
-            if ( !doc.setContent( &file ) ) {
-                throw CharmException( QStringLiteral("invalid DOM document, cannot load") );
-            }
-
-            QDomElement root = doc.firstChildElement();
-            if ( root.tagName() != QLatin1String("testcases") ) {
-                throw CharmException( QStringLiteral("root element (testcases) not found") );
-            }
-
-            qDebug() << "Loading test cases from" << file.fileName();
-
-            for ( QDomElement child = root.firstChildElement( tagName ); !child.isNull();
-                  child = child.nextSiblingElement( tagName ) ) {
-                if ( child.attribute( QStringLiteral("type") ) == type ) {
-                    result << child;
-                }
-            }
-        }
-        return result;
     }
+    return result;
+}
 
-    bool attribute( const QString&, const QDomElement& element )
-    {
-        QString text = element.attribute( QStringLiteral("expectedResult") );
-        if ( text != QLatin1String("false") && text != QLatin1String("true") ) {
-            throw CharmException( QStringLiteral("attribute does not represent a boolean") );
-        }
-        return ( text == QLatin1String("true") );
-    }
-
+bool attribute(const QString &, const QDomElement &element)
+{
+    QString text = element.attribute(QStringLiteral("expectedResult"));
+    if (text != QLatin1String("false") && text != QLatin1String("true"))
+        throw CharmException(QStringLiteral("attribute does not represent a boolean"));
+    return text == QLatin1String("true");
+}
 }
 
 #endif

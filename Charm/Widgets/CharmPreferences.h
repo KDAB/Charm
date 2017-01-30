@@ -34,8 +34,7 @@ class CharmPreferences : public QDialog
     Q_OBJECT
 
 public:
-    explicit CharmPreferences( const Configuration& config,
-                               QWidget* parent = nullptr );
+    explicit CharmPreferences(const Configuration &config, QWidget *parent = nullptr);
     ~CharmPreferences() override;
 
     Configuration::DurationFormat durationFormat() const;

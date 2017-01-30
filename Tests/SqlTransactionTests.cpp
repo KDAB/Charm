@@ -39,24 +39,26 @@ SqlTransactionTests::SqlTransactionTests()
 void SqlTransactionTests::testMySqlDriverRequirements()
 {
     const auto DriverName = QStringLiteral("QMYSQL");
-    QVERIFY( QSqlDatabase::isDriverAvailable( DriverName ) );
-    QSqlDatabase db = QSqlDatabase::addDatabase( DriverName, QStringLiteral("test-mysql.charm.kdab.com") );
+    QVERIFY(QSqlDatabase::isDriverAvailable(DriverName));
+    QSqlDatabase db
+        = QSqlDatabase::addDatabase(DriverName, QStringLiteral("test-mysql.charm.kdab.com"));
 }
 
 void SqlTransactionTests::testSqLiteDriverRequirements()
 {
     const auto DriverName = QStringLiteral("QSQLITE");
-    QVERIFY( QSqlDatabase::isDriverAvailable( DriverName ) );
-    QSqlDatabase db = QSqlDatabase::addDatabase( DriverName, QStringLiteral("test-sqlite.charm.kdab.com") );
-    QSqlDriver* driver  = db.driver();
-    QVERIFY( driver->hasFeature( QSqlDriver::Transactions ) );
+    QVERIFY(QSqlDatabase::isDriverAvailable(DriverName));
+    QSqlDatabase db
+        = QSqlDatabase::addDatabase(DriverName, QStringLiteral("test-sqlite.charm.kdab.com"));
+    QSqlDriver *driver = db.driver();
+    QVERIFY(driver->hasFeature(QSqlDriver::Transactions));
 }
 
 MySqlStorage SqlTransactionTests::prepareMySqlStorage()
 {
     MySqlStorage storage;
     MySqlStorage::Parameters parameters = MySqlStorage::parseParameterEnvironmentVariable();
-    storage.configure( parameters );
+    storage.configure(parameters);
     return storage;
 }
 
@@ -64,47 +66,47 @@ MySqlStorage SqlTransactionTests::prepareMySqlStorage()
 void SqlTransactionTests::testMySqlTransactionRollback()
 {
     MySqlStorage storage = prepareMySqlStorage();
-    QVERIFY( storage.database().open() );
+    QVERIFY(storage.database().open());
 
-    QSqlDriver* driver  = storage.database().driver();
-    QVERIFY( driver->hasFeature( QSqlDriver::Transactions ) );
+    QSqlDriver *driver = storage.database().driver();
+    QVERIFY(driver->hasFeature(QSqlDriver::Transactions));
 
     QList<Task> tasksBefore = storage.getAllTasks();
-    QVERIFY( ! tasksBefore.isEmpty() );
+    QVERIFY(!tasksBefore.isEmpty());
     Task first = tasksBefore.first();
     // test a simple transaction that is completed and committed:
     {
-        SqlRaiiTransactor transactor( storage.database() );
-        QSqlQuery query( storage.database() );
+        SqlRaiiTransactor transactor(storage.database());
+        QSqlQuery query(storage.database());
         query.prepare("DELETE from Tasks where id=:id");
-        query.bindValue( "id", first.id() );
-        QVERIFY( storage.runQuery( query ) );
+        query.bindValue("id", first.id());
+        QVERIFY(storage.runQuery(query));
     } // this transaction was NOT committed
     QList<Task> tasksAfter = storage.getAllTasks();
-    QVERIFY( ! tasksAfter.isEmpty() );
-    QVERIFY( tasksBefore == tasksAfter );
+    QVERIFY(!tasksAfter.isEmpty());
+    QVERIFY(tasksBefore == tasksAfter);
 }
 
 void SqlTransactionTests::testMySqlTransactionCommit()
 {
     MySqlStorage storage = prepareMySqlStorage();
-    QVERIFY( storage.database().open() );
+    QVERIFY(storage.database().open());
 
     QList<Task> tasksBefore = storage.getAllTasks();
-    QVERIFY( ! tasksBefore.isEmpty() );
+    QVERIFY(!tasksBefore.isEmpty());
     Task first = tasksBefore.takeFirst();
     // test a simple transaction that is completed and committed:
     {
-        SqlRaiiTransactor transactor( storage.database() );
-        QSqlQuery query( storage.database() );
+        SqlRaiiTransactor transactor(storage.database());
+        QSqlQuery query(storage.database());
         query.prepare("DELETE from Tasks where id=:id");
-        query.bindValue( "id", first.id() );
-        QVERIFY( storage.runQuery( query ) );
+        query.bindValue("id", first.id());
+        QVERIFY(storage.runQuery(query));
         transactor.commit();
     } // this transaction WAS committed
     QList<Task> tasksAfter = storage.getAllTasks();
-    QVERIFY( ! tasksAfter.isEmpty() );
-    QVERIFY( tasksBefore == tasksAfter );
+    QVERIFY(!tasksAfter.isEmpty());
+    QVERIFY(tasksBefore == tasksAfter);
 }
 
 // this test more or less documents the behaviour of the mysql driver which allows nested transactions, which fail, without
@@ -112,21 +114,21 @@ void SqlTransactionTests::testMySqlTransactionCommit()
 void SqlTransactionTests::testMySqlNestedTransactions()
 {
     MySqlStorage storage = prepareMySqlStorage();
-    QVERIFY( storage.database().open() );
+    QVERIFY(storage.database().open());
 
     QList<Task> tasksBefore = storage.getAllTasks();
-    QVERIFY( ! tasksBefore.isEmpty() );
+    QVERIFY(!tasksBefore.isEmpty());
     Task first = tasksBefore.takeFirst();
     // test a simple transaction that is completed and committed:
     {
-        SqlRaiiTransactor transactor( storage.database() );
-        QSqlQuery query( storage.database() );
+        SqlRaiiTransactor transactor(storage.database());
+        QSqlQuery query(storage.database());
         query.prepare("DELETE from Tasks where id=:id");
-        query.bindValue( "id", first.id() );
-        QVERIFY( storage.runQuery( query ) );
+        query.bindValue("id", first.id());
+        QVERIFY(storage.runQuery(query));
         {   // now before the first transaction is committed and done, a second one is started
             // this should throw an exception
-            SqlRaiiTransactor transactor2( storage.database() );
+            SqlRaiiTransactor transactor2(storage.database());
             QSqlError error = storage.database().lastError();
             // QFAIL( "I should not get here." );
             transactor2.commit();
@@ -134,10 +136,11 @@ void SqlTransactionTests::testMySqlNestedTransactions()
         QSqlError error1 = storage.database().lastError();
         transactor.commit();
         QSqlError error2 = storage.database().lastError();
-        QFAIL( "I should not get here." );
+        QFAIL("I should not get here.");
     }
 }
+
 #endif
-QTEST_MAIN( SqlTransactionTests )
+QTEST_MAIN(SqlTransactionTests)
 
 #include "moc_SqlTransactionTests.cpp"

@@ -37,16 +37,16 @@ public:
     ControllerTests();
 
 public Q_SLOTS: // not test cases
-    void slotCurrentEvents( const EventList& );
+    void slotCurrentEvents(const EventList &);
 
-    void slotDefinedTasks( const TaskList& );
+    void slotDefinedTasks(const TaskList &);
 
-    void slotTaskAdded( const Task& );
-    void slotTaskUpdated( const Task& );
-    void slotTaskDeleted( const Task& );
+    void slotTaskAdded(const Task &);
+    void slotTaskUpdated(const Task &);
+    void slotTaskDeleted(const Task &);
 
 private Q_SLOTS:
-    void initTestCase ();
+    void initTestCase();
 
     void initializeConnectBackendTest();
 
@@ -65,11 +65,10 @@ private Q_SLOTS:
 
     void cleanupTestCase();
 
-
 private:
 
-    ControllerInterface* m_controller = nullptr;
-    Configuration& m_configuration;
+    ControllerInterface *m_controller = nullptr;
+    Configuration &m_configuration;
     QString m_localPath;
     EventList m_currentEvents;
     bool m_eventListReceived = false;

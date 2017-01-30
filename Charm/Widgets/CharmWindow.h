@@ -32,75 +32,76 @@
 class QAction;
 class QShortcut;
 
-class CharmWindow : public QMainWindow,
-                    public ViewInterface
+class CharmWindow : public QMainWindow, public ViewInterface
 {
     Q_OBJECT
 
 public:
-    explicit CharmWindow( const QString& name, QWidget* parent = nullptr );
+    explicit CharmWindow(const QString &name, QWidget *parent = nullptr);
 
-    QAction* showAction();
-    QAction* openCharmAction();
+    QAction *showAction();
+    QAction *openCharmAction();
 
     QString windowName() const;
     QString windowIdentifier() const;
     int windowNumber() const;
 
-    virtual QToolBar* toolBar() const;
+    virtual QToolBar *toolBar() const;
 
 protected:
     /** The window name is the human readable name the application uses to reference the window.
      */
-    void setWindowName( const QString& name );
+    void setWindowName(const QString &name);
     /** The window identifier is used to reference window specific configuration groups, et cetera.
      * It is generally not recommend to change it once the application is in use. */
-    void setWindowIdentifier( const QString& id );
+    void setWindowIdentifier(const QString &id);
     /** The window number is a Mac concept that allows to pull up application windows by entering CMD+<number>.
      */
-    void setWindowNumber( int number );
+    void setWindowNumber(int number);
     /** Insert the Edit menu. Empty by default. */
-    virtual void insertEditMenu() {}
+    virtual void insertEditMenu()
+    {
+    }
 
     void checkVisibility();
 
 public:
-    void stateChanged( State previous ) override;
-    void showEvent( QShowEvent* ) override;
-    void hideEvent( QHideEvent* ) override;
-    void keyPressEvent( QKeyEvent* event ) override;
+    void stateChanged(State previous) override;
+    void showEvent(QShowEvent *) override;
+    void hideEvent(QHideEvent *) override;
+    void keyPressEvent(QKeyEvent *event) override;
 
     void saveGuiState() override;
     void restoreGuiState() override;
 
-    static void showView( QWidget* w );
-    static bool showHideView( QWidget* w );
+    static void showView(QWidget *w);
+    static bool showHideView(QWidget *w);
 
 Q_SIGNALS:
-    void visibilityChanged( bool ) override;
+    void visibilityChanged(bool) override;
     void saveConfiguration() override;
 
 public Q_SLOTS:
-    void sendCommandRollback( CharmCommand* ) override;
-    void sendCommand( CharmCommand* ) override;
-    void commitCommand( CharmCommand* ) override;
+    void sendCommandRollback(CharmCommand *) override;
+    void sendCommand(CharmCommand *) override;
+    void commitCommand(CharmCommand *) override;
     void restore() override;
     void showView();
     void showHideView();
     void configurationChanged() override;
 
 private Q_SLOTS:
-    void handleOpenCharm( bool visible );
-    void handleShow( bool visible );
+    void handleOpenCharm(bool visible);
+    void handleShow(bool visible);
 
 private:
     QString m_windowName;
-    QAction* m_openCharmAction;
-    QAction* m_showAction;
+    QAction *m_openCharmAction;
+    QAction *m_showAction;
     int m_windowNumber = -1; // Mac numerical window number, used for shortcut etc
     QString m_windowIdentifier;
-    QShortcut* m_shortcut = nullptr;
-    QToolBar* m_toolBar;
+    QShortcut *m_shortcut = nullptr;
+    QToolBar *m_toolBar;
     bool m_isVisibility = false;
 };
 

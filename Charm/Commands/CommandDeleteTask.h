@@ -33,11 +33,11 @@ class CommandDeleteTask : public CharmCommand
     Q_OBJECT
 
 public:
-    explicit CommandDeleteTask( const Task&, QObject* parent = nullptr );
+    explicit CommandDeleteTask(const Task &, QObject *parent = nullptr);
     ~CommandDeleteTask() override;
 
     bool prepare() override;
-    bool execute( ControllerInterface* ) override;
+    bool execute(ControllerInterface *) override;
     bool finalize() override;
 
 private:

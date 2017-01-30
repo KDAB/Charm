@@ -39,16 +39,19 @@ typedef QMap< TaskId, QVector<int> > SecondsMap;
 class TimeSheetInfo
 {
 public:
-    explicit TimeSheetInfo( int segments );
+    explicit TimeSheetInfo(int segments);
     int total() const;
     void dump();
 
 public:
-    static TimeSheetInfoList taskWithSubTasks( const CharmDataModel* dataModel, int segments, TaskId id, const SecondsMap& secondsMap, TimeSheetInfo* addTo = 0 );
-    static TimeSheetInfoList filteredTaskWithSubTasks( TimeSheetInfoList timeSheetInfo, bool activeTasksOnly );
+    static TimeSheetInfoList taskWithSubTasks(const CharmDataModel *dataModel, int segments,
+                                              TaskId id, const SecondsMap &secondsMap,
+                                              TimeSheetInfo *addTo = 0);
+    static TimeSheetInfoList filteredTaskWithSubTasks(TimeSheetInfoList timeSheetInfo,
+                                                      bool activeTasksOnly);
 
 public:
-    QString formattedTaskIdAndName( int taskPaddingLength ) const;
+    QString formattedTaskIdAndName(int taskPaddingLength) const;
 
     // the level of indentation, >0 means the numbers are aggregated for the subtasks:
     int indentation = 0;

@@ -31,9 +31,9 @@
 #include <QFile>
 #include <QTextStream>
 
-CommandExportToXml::CommandExportToXml( QString filename, QObject* parent )
-    : CharmCommand( tr("Export to XML"), parent )
-    , m_filename( filename )
+CommandExportToXml::CommandExportToXml(QString filename, QObject *parent)
+    : CharmCommand(tr("Export to XML"), parent)
+    , m_filename(filename)
 {
 }
 
@@ -46,19 +46,20 @@ bool CommandExportToXml::prepare()
     return true;
 }
 
-bool CommandExportToXml::execute( ControllerInterface* controller )
+bool CommandExportToXml::execute(ControllerInterface *controller)
 {
     try {
         QDomDocument document = controller->exportDatabasetoXml();
-        QFile file( m_filename );
-        if ( file.open( QIODevice::WriteOnly ) ) {
-            QTextStream stream( &file );
-            stream << document.toString( 4 );
+        QFile file(m_filename);
+        if (file.open(QIODevice::WriteOnly)) {
+            QTextStream stream(&file);
+            stream << document.toString(4);
         } else {
             m_error = true;
-            m_errorString = tr( "Could not open %1 for writing: %2" ).arg( m_filename, file.errorString() );
+            m_errorString = tr("Could not open %1 for writing: %2").arg(m_filename,
+                                                                        file.errorString());
         }
-    }  catch ( const XmlSerializationException& e ) {
+    }  catch (const XmlSerializationException &e) {
         m_error = true;
         m_errorString = e.what();
     }
@@ -68,9 +69,9 @@ bool CommandExportToXml::execute( ControllerInterface* controller )
 bool CommandExportToXml::finalize()
 {
     // any errors?
-    if ( m_error ) {
-        showCritical( tr( "Error exporting Database to XML" ), tr("The database could not be exported:\n%1" ).arg( m_errorString ) );
-    }
+    if (m_error)
+        showCritical(tr("Error exporting Database to XML"),
+                     tr("The database could not be exported:\n%1").arg(m_errorString));
     return !m_error;
 }
 

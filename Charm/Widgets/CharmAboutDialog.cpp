@@ -26,14 +26,14 @@
 
 #include <CharmCMake.h>
 
-CharmAboutDialog::CharmAboutDialog( QWidget* parent )
-    : QDialog( parent )
-    , m_ui( new Ui::CharmAboutDialog )
+CharmAboutDialog::CharmAboutDialog(QWidget *parent)
+    : QDialog(parent)
+    , m_ui(new Ui::CharmAboutDialog)
 {
-    m_ui->setupUi( this );
+    m_ui->setupUi(this);
     QString versionText = m_ui->versionLabel->text();
-    versionText.replace( QLatin1String("CHARM_VERSION"), QStringLiteral(CHARM_VERSION) );
-    m_ui->versionLabel->setText( versionText );
+    versionText.replace(QLatin1String("CHARM_VERSION"), QStringLiteral(CHARM_VERSION));
+    m_ui->versionLabel->setText(versionText);
 }
 
 CharmAboutDialog::~CharmAboutDialog()

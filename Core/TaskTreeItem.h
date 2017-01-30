@@ -44,26 +44,26 @@
 class TaskTreeItem
 {
 public:
-    typedef QList<const TaskTreeItem*> ConstPointerList;
+    typedef QList<const TaskTreeItem *> ConstPointerList;
     typedef std::map<TaskId, TaskTreeItem> Map;
 
     TaskTreeItem();
 
-    explicit TaskTreeItem( const Task& task, TaskTreeItem* parent = nullptr );
-    TaskTreeItem( const TaskTreeItem& other );
-    TaskTreeItem& operator=( const TaskTreeItem& other );
+    explicit TaskTreeItem(const Task &task, TaskTreeItem *parent = nullptr);
+    TaskTreeItem(const TaskTreeItem &other);
+    TaskTreeItem &operator=(const TaskTreeItem &other);
 
     ~TaskTreeItem();
 
-    void makeChildOf( TaskTreeItem& parent );
+    void makeChildOf(TaskTreeItem &parent);
 
     bool isValid() const;
 
-    Task& task();
+    Task &task();
 
-    const Task& task() const;
+    const Task &task() const;
 
-    const TaskTreeItem& child( int row ) const;
+    const TaskTreeItem &child(int row) const;
 
     int row() const;
 
@@ -76,10 +76,9 @@ public:
     TaskIdList childIds() const;
 
 private:
-    TaskTreeItem* m_parent = nullptr;
+    TaskTreeItem *m_parent = nullptr;
     ConstPointerList m_children;
     Task m_task;
 };
-
 
 #endif

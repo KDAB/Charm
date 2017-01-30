@@ -32,7 +32,7 @@ class CharmLocalCommandServer : public CharmCommandServer
 {
     Q_OBJECT
 public:
-    explicit CharmLocalCommandServer(QObject* parent = nullptr);
+    explicit CharmLocalCommandServer(QObject *parent = nullptr);
     ~CharmLocalCommandServer();
 
     bool listen() override;
@@ -42,7 +42,7 @@ private slots:
     void onNewConnection();
 
 private:
-    QLocalServer* m_server;
+    QLocalServer *m_server;
 };
 
 #endif // CHARM_CI_CHARMLOCALSERVER_H

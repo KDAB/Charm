@@ -28,7 +28,7 @@
 #include <QNetworkRequest>
 #include <QSettings>
 
-GetProjectCodesJob::GetProjectCodesJob(QObject* parent)
+GetProjectCodesJob::GetProjectCodesJob(QObject *parent)
     : HttpJob(parent)
 {
     QSettings s;
@@ -79,12 +79,12 @@ QUrl GetProjectCodesJob::downloadUrl() const
     return m_downloadUrl;
 }
 
-void GetProjectCodesJob::setDownloadUrl(const QUrl& url)
+void GetProjectCodesJob::setDownloadUrl(const QUrl &url)
 {
     m_downloadUrl = url;
 }
 
-void GetProjectCodesJob::setVerbose( bool verbose )
+void GetProjectCodesJob::setVerbose(bool verbose)
 {
     m_verbose = verbose;
 }

@@ -40,22 +40,22 @@ const int InstallationId = 1;
 
 TestApplication::TestApplication(const QString &databasePath, QObject *parent)
     : QObject(parent)
-    , m_configuration( &Configuration::instance() )
-    , m_localPath( databasePath )
+    , m_configuration(&Configuration::instance())
+    , m_localPath(databasePath)
 {
 }
 
-Controller* TestApplication::controller() const
+Controller *TestApplication::controller() const
 {
     return m_controller;
 }
 
-CharmDataModel* TestApplication::model() const
+CharmDataModel *TestApplication::model() const
 {
     return m_model;
 }
 
-Configuration* TestApplication::configuration() const
+Configuration *TestApplication::configuration() const
 {
     return m_configuration;
 }
@@ -67,11 +67,11 @@ QString TestApplication::databasePath() const
 
 void TestApplication::initialize()
 {
-    QFileInfo file( m_localPath );
-    if ( file.exists() ) {
+    QFileInfo file(m_localPath);
+    if (file.exists()) {
         qDebug() << "test database file exists, deleting";
-        QDir dir( file.absoluteDir() );
-        QVERIFY( dir.remove( file.fileName() ) );
+        QDir dir(file.absoluteDir());
+        QVERIFY(dir.remove(file.fileName()));
     }
 
     // well, here it gets a bit more challenging - this is not for
@@ -84,29 +84,31 @@ void TestApplication::initialize()
     // -----
     // ... make the controller:
     m_configuration->installationId = InstallationId;
-    m_configuration->user.setId( UserId );
+    m_configuration->user.setId(UserId);
     m_configuration->localStorageType = CHARM_SQLITE_BACKEND_DESCRIPTOR;
     m_configuration->localStorageDatabase = m_localPath;
     m_configuration->newDatabase = true;
     m_controller = new Controller;
     // ... initialize the backend:
-    QVERIFY( m_controller->initializeBackEnd( CHARM_SQLITE_BACKEND_DESCRIPTOR ) );
-    QVERIFY( m_controller->connectToBackend() );
+    QVERIFY(m_controller->initializeBackEnd(CHARM_SQLITE_BACKEND_DESCRIPTOR));
+    QVERIFY(m_controller->connectToBackend());
     // ... make the data model:
     m_model = new CharmDataModel;
     // ... connect model and controller:
-    connectControllerAndModel( m_controller, m_model );
-    QVERIFY( m_controller->storage() != nullptr );
+    connectControllerAndModel(m_controller, m_model);
+    QVERIFY(m_controller->storage() != nullptr);
 }
 
 void TestApplication::destroy()
 {
-    QVERIFY( controller()->disconnectFromBackend() );
-    delete m_model; m_model = nullptr;
-    delete m_controller; m_controller = nullptr;
-    if ( QDir::home().exists( databasePath() ) ) {
-        const bool result = QDir::home().remove( databasePath() );
-        QVERIFY( result );
+    QVERIFY(controller()->disconnectFromBackend());
+    delete m_model;
+    m_model = nullptr;
+    delete m_controller;
+    m_controller = nullptr;
+    if (QDir::home().exists(databasePath())) {
+        const bool result = QDir::home().remove(databasePath());
+        QVERIFY(result);
     }
 }
 

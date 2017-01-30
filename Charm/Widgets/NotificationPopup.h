@@ -28,7 +28,7 @@
 #include <QScopedPointer>
 
 namespace Ui {
-    class NotificationPopup;
+class NotificationPopup;
 }
 
 class NotificationPopup : public QDialog
@@ -36,19 +36,18 @@ class NotificationPopup : public QDialog
     Q_OBJECT
 
 public:
-    explicit NotificationPopup( QWidget *parent = nullptr );
+    explicit NotificationPopup(QWidget *parent = nullptr);
     ~NotificationPopup() override;
 
-    void showNotification( const QString& title, const QString& message );
+    void showNotification(const QString &title, const QString &message);
 
 private Q_SLOTS:
     void slotCloseNotification();
 
 private:
-    void mousePressEvent( QMouseEvent* event ) override;
+    void mousePressEvent(QMouseEvent *event) override;
 
     QScopedPointer<Ui::NotificationPopup> m_ui;
 };
 
 #endif // NOTIFICATIONPOPUP_H
-

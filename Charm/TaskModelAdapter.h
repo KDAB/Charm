@@ -55,64 +55,72 @@ typedef ViewColumns ViewColumn;
     It is a QAbstractItemModel, and stores the TaskTreeItem pointer of
     the respective address in the model indexes internal pointer.
 */
-class TaskModelAdapter :  public QAbstractItemModel,
-                          public TaskModelInterface,
-                          public CommandEmitterInterface,
-                          public CharmDataModelAdapterInterface
+class TaskModelAdapter : public QAbstractItemModel, public TaskModelInterface,
+    public CommandEmitterInterface, public CharmDataModelAdapterInterface
 {
     Q_OBJECT
 
 public:
-    explicit TaskModelAdapter( CharmDataModel* parent );
+    explicit TaskModelAdapter(CharmDataModel *parent);
     ~TaskModelAdapter() override;
 
     // reimplement QAbstractItemModel:
-    int columnCount( const QModelIndex& parent = QModelIndex() ) const override;
-    int rowCount( const QModelIndex& parent = QModelIndex() ) const override;
-    QVariant data( const QModelIndex& index, int role = Qt::DisplayRole ) const override;
-    QModelIndex index( int row, int column, const QModelIndex & parent = QModelIndex() ) const override;
-    QModelIndex parent( const QModelIndex & index ) const override;
+    int columnCount(const QModelIndex &parent = QModelIndex()) const override;
+    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+    QModelIndex index(int row, int column,
+                      const QModelIndex &parent = QModelIndex()) const override;
+    QModelIndex parent(const QModelIndex &index) const override;
     // QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
-    Qt::ItemFlags flags( const QModelIndex & index ) const override;
-    bool setData( const QModelIndex & index, const QVariant & value, int role = Qt::EditRole ) override;
+    Qt::ItemFlags flags(const QModelIndex &index) const override;
+    bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
 
     // reimplement CharmDataModelAdapterInterface:
     void resetTasks() override;
-    void taskAboutToBeAdded( TaskId parent, int pos ) override;
-    void taskAdded( TaskId id ) override;
-    void taskModified( TaskId id ) override;
-    void taskParentChanged( TaskId task, TaskId oldParent, TaskId newParent ) override;
-    void taskAboutToBeDeleted( TaskId ) override;
-    void taskDeleted( TaskId id ) override;
+    void taskAboutToBeAdded(TaskId parent, int pos) override;
+    void taskAdded(TaskId id) override;
+    void taskModified(TaskId id) override;
+    void taskParentChanged(TaskId task, TaskId oldParent, TaskId newParent) override;
+    void taskAboutToBeDeleted(TaskId) override;
+    void taskDeleted(TaskId id) override;
 
-    void resetEvents() override {}
-    void eventAboutToBeAdded( EventId ) override {}
-    void eventAdded( EventId ) override;
-    void eventModified( EventId, Event ) override;
-    void eventAboutToBeDeleted( EventId ) override {}
-    void eventDeleted( EventId ) override;
+    void resetEvents() override
+    {
+    }
 
-    void eventActivated( EventId id ) override;
-    void eventDeactivated( EventId id ) override;
+    void eventAboutToBeAdded(EventId) override
+    {
+    }
+
+    void eventAdded(EventId) override;
+    void eventModified(EventId, Event) override;
+    void eventAboutToBeDeleted(EventId) override
+    {
+    }
+
+    void eventDeleted(EventId) override;
+
+    void eventActivated(EventId id) override;
+    void eventDeactivated(EventId id) override;
 
     // reimplement TaskModelInterface:
-    Task taskForIndex( const QModelIndex& ) const override;
-    QModelIndex indexForTaskId( TaskId ) const override;
-    bool taskIsActive( const Task& task ) const override;
-    bool taskHasChildren( const Task& task ) const override;
-    bool taskIdExists( TaskId taskId ) const override;
-    TaskList children( const Task& task ) const;
+    Task taskForIndex(const QModelIndex &) const override;
+    QModelIndex indexForTaskId(TaskId) const override;
+    bool taskIsActive(const Task &task) const override;
+    bool taskHasChildren(const Task &task) const override;
+    bool taskIdExists(TaskId taskId) const override;
+    TaskList children(const Task &task) const;
 
     // reimplement CommandEmitterInterface:
-    void commitCommand( CharmCommand* ) override;
+    void commitCommand(CharmCommand *) override;
 
 Q_SIGNALS:
-    void eventActivationNotice( EventId id ) override;
-    void eventDeactivationNotice( EventId id ) override;
+    void eventActivationNotice(EventId id) override;
+    void eventDeactivationNotice(EventId id) override;
 
 private:
-    const TaskTreeItem* itemFor ( const QModelIndex& ) const;
-    QModelIndex indexForTaskTreeItem( const TaskTreeItem& item, int column = 0 ) const;
+    const TaskTreeItem *itemFor(const QModelIndex &) const;
+    QModelIndex indexForTaskTreeItem(const TaskTreeItem &item, int column = 0) const;
 
     QPointer<CharmDataModel> m_dataModel;
 };

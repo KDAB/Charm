@@ -32,27 +32,27 @@
 #include "Task.h"
 
 namespace XmlSerialization {
+QDomDocument createXmlTemplate(const QString &docClass);
 
-    QDomDocument createXmlTemplate(const QString &docClass );
+QDomElement reportElement(const QDomDocument &doc);
 
-    QDomElement reportElement( const QDomDocument& doc );
+QDomElement metadataElement(const QDomDocument &doc);
 
-    QDomElement metadataElement( const QDomDocument& doc );
-
-    QDateTime creationTime( const QDomElement& metaDataElement );
-    QString userName( const QDomElement& metaDataElement );
+QDateTime creationTime(const QDomElement &metaDataElement);
+QString userName(const QDomElement &metaDataElement);
 }
 
-class TaskExport {
+class TaskExport
+{
 public:
     // the only method that deals with writing:
-    static void writeTo( const QString& filename, const TaskList& tasks );
+    static void writeTo(const QString &filename, const TaskList &tasks);
 
-    void readFrom( const QString& filename );
-    void readFrom( QIODevice* device );
+    void readFrom(const QString &filename);
+    void readFrom(QIODevice *device);
 
     TaskList tasks() const;
-    QString metadata( const QString& key ) const;
+    QString metadata(const QString &key) const;
     static QString reportType();
 
     QDateTime exportTime() const;
@@ -60,7 +60,7 @@ public:
 private:
 
     TaskList m_tasks;
-    QHash<QString,QString> m_metadata;
+    QHash<QString, QString> m_metadata;
     QDateTime m_exportTime;
 };
 

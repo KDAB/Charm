@@ -28,7 +28,7 @@
 #include <QUrl>
 
 namespace QKeychain {
-    class Job;
+class Job;
 }
 
 class QNetworkAccessManager;
@@ -45,7 +45,7 @@ public:
     static bool lastAuthenticationFailed();
 
     enum Error {
-        NoError=0,
+        NoError = 0,
         Canceled,
         NotConfigured,
         AuthenticationFailed,
@@ -53,7 +53,7 @@ public:
         HostNotFound
     };
 
-    explicit HttpJob(QObject* parent=nullptr);
+    explicit HttpJob(QObject *parent = nullptr);
     ~HttpJob() override;
 
     QString username() const;
@@ -77,7 +77,7 @@ public:
     void passwordRequestCanceled();
 
 Q_SIGNALS:
-    void finished(HttpJob*);
+    void finished(HttpJob *);
     /**
      * the actual communication was started
      */
@@ -105,11 +105,11 @@ protected:
     virtual bool execute(int state, QNetworkAccessManager *manager);
 
     void emitFinished();
-    void setErrorAndEmitFinished(int code, const QString& errorString);
+    void setErrorAndEmitFinished(int code, const QString &errorString);
     void delayedNext();
     void setErrorFromReplyAndEmitFinished(QNetworkReply *reply);
 
-    static QString extractErrorMessageFromReply(const QByteArray& xml);
+    static QString extractErrorMessageFromReply(const QByteArray &xml);
 
 protected Q_SLOTS:
     virtual bool handle(QNetworkReply *reply);
@@ -118,9 +118,9 @@ private Q_SLOTS:
     void doStart();
     void doCancel();
     void next();
-    void passwordRead(QKeychain::Job*);
+    void passwordRead(QKeychain::Job *);
     void passwordWritten();
-    void authenticationRequired(QNetworkReply *reply , QAuthenticator *authenticator);
+    void authenticationRequired(QNetworkReply *reply, QAuthenticator *authenticator);
 
 private:
     QNetworkAccessManager *m_networkManager;

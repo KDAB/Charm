@@ -35,7 +35,7 @@
 #error Build system error: CHARM_CI_LOCALSERVER should be defined
 #endif
 
-CharmLocalCommandServer::CharmLocalCommandServer(QObject* parent)
+CharmLocalCommandServer::CharmLocalCommandServer(QObject *parent)
     : CharmCommandServer(parent)
     , m_server(new QLocalServer(this))
 {
@@ -71,11 +71,10 @@ void CharmLocalCommandServer::close()
 void CharmLocalCommandServer::onNewConnection()
 {
     while (m_server->hasPendingConnections()) {
-        QLocalSocket* conn = m_server->nextPendingConnection();
+        QLocalSocket *conn = m_server->nextPendingConnection();
         Q_ASSERT(conn);
 
         qDebug("New Local connection, creating command session...");
         spawnSession(conn);
     }
 }
-

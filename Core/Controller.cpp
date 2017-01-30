@@ -37,8 +37,8 @@
 
 #include <QtDebug>
 
-Controller::Controller( QObject* parent_ )
-    : QObject( parent_ )
+Controller::Controller(QObject *parent_)
+    : QObject(parent_)
     , ControllerInterface()
 {
 }
@@ -47,14 +47,14 @@ Controller::~Controller()
 {
 }
 
-Event Controller::makeEvent( const Task& task )
+Event Controller::makeEvent(const Task &task)
 {
     Event event = m_storage->makeEvent();
-    Q_ASSERT( event.isValid() );
+    Q_ASSERT(event.isValid());
 
-    event.setTaskId( task.id() );
-    if ( m_storage->modifyEvent( event ) ) {
-        emit eventAdded( event );
+    event.setTaskId(task.id());
+    if (m_storage->modifyEvent(event)) {
+        emit eventAdded(event);
     } else {
         event = Event();
     }
@@ -64,144 +64,147 @@ Event Controller::makeEvent( const Task& task )
 Event Controller::cloneEvent(const Event &e)
 {
     Event event = m_storage->makeEvent();
-    Q_ASSERT( event.isValid() );
+    Q_ASSERT(event.isValid());
 
     int id = event.id();
     event = e;
     event.setId(id);
-    if ( m_storage->modifyEvent( event ) ) {
-        emit eventAdded( event );
+    if (m_storage->modifyEvent(event)) {
+        emit eventAdded(event);
     } else {
         event = Event();
     }
     return event;
 }
 
-bool Controller::modifyEvent( const Event& e )
+bool Controller::modifyEvent(const Event &e)
 {
-    if ( m_storage->modifyEvent( e ) )
-    {
-        emit eventModified( e );
+    if (m_storage->modifyEvent(e)) {
+        emit eventModified(e);
         return true;
     } else {
         return false;
     }
 }
 
-bool Controller::deleteEvent( const Event& e )
+bool Controller::deleteEvent(const Event &e)
 {
-    if ( m_storage->deleteEvent( e ) ) {
-        emit eventDeleted( e );
+    if (m_storage->deleteEvent(e)) {
+        emit eventDeleted(e);
         return true;
     } else {
         return false;
     }
 }
 
-bool Controller::addTask( const Task& task )
+bool Controller::addTask(const Task &task)
 {
-    if ( m_storage->addTask( task ) ) {
-        updateSubscriptionForTask( task );
-        emit taskAdded( task );
+    if (m_storage->addTask(task)) {
+        updateSubscriptionForTask(task);
+        emit taskAdded(task);
 
         return true;
     } else {
-        Q_ASSERT( false ); // impossible
+        Q_ASSERT(false);   // impossible
         return false;
     }
 }
 
-bool Controller::modifyTask( const Task& task )
+bool Controller::modifyTask(const Task &task)
 {
     // modify the task itself:
-    bool result = m_storage->modifyTask( task );
-    Q_ASSERT( result );
-    if ( ! result ) {
+    bool result = m_storage->modifyTask(task);
+    Q_ASSERT(result);
+    if (!result) {
         qCritical() << Q_FUNC_INFO << "modifyTask failed!";
         return result;
     }
 
-    updateSubscriptionForTask( task );
-    emit( taskUpdated( task ) );
+    updateSubscriptionForTask(task);
+    emit(taskUpdated(task));
 
     return true;
 }
 
-bool Controller::deleteTask( const Task& task )
+bool Controller::deleteTask(const Task &task)
 {
-    if ( m_storage->deleteTask( task ) ) {
-        m_storage->deleteSubscription( CONFIGURATION.user, task );
-        emit taskDeleted( task );
+    if (m_storage->deleteTask(task)) {
+        m_storage->deleteSubscription(CONFIGURATION.user, task);
+        emit taskDeleted(task);
         return true;
     } else {
-        Q_ASSERT( false ); // impossible
+        Q_ASSERT(false);   // impossible
         return false;
     }
 }
 
-bool Controller::setAllTasks( const TaskList& tasks )
+bool Controller::setAllTasks(const TaskList &tasks)
 {
-    if ( m_storage->setAllTasks( CONFIGURATION.user, tasks ) ) {
+    if (m_storage->setAllTasks(CONFIGURATION.user, tasks)) {
         const TaskList newTasks = m_storage->getAllTasks();
         // tell the view about the existing tasks;
-        emit definedTasks( newTasks );
+        emit definedTasks(newTasks);
         return true;
     } else {
         return false;
     }
 }
 
-void Controller::updateSubscriptionForTask( const Task& task )
+void Controller::updateSubscriptionForTask(const Task &task)
 {
-    if ( task.subscribed() ) {
-        bool result = m_storage->addSubscription( CONFIGURATION.user, task );
-        Q_ASSERT( result ); Q_UNUSED( result );
+    if (task.subscribed()) {
+        bool result = m_storage->addSubscription(CONFIGURATION.user, task);
+        Q_ASSERT(result);
+        Q_UNUSED(result);
     } else {
-        bool result = m_storage->deleteSubscription( CONFIGURATION.user, task );
-        Q_ASSERT( result ); Q_UNUSED( result );
+        bool result = m_storage->deleteSubscription(CONFIGURATION.user, task);
+        Q_ASSERT(result);
+        Q_UNUSED(result);
     }
 }
 
-void Controller::stateChanged( State previous, State next )
+void Controller::stateChanged(State previous, State next)
 {
-    Q_UNUSED( previous );
+    Q_UNUSED(previous);
 
-    switch( next ) {
+    switch (next) {
     case Connected:
     {   // yes, it is that simple:
         TaskList tasks = m_storage->getAllTasks();
         // tell the view about the existing tasks;
-        if ( ! Task::checkForUniqueTaskIds( tasks ) ) {
-            throw CharmException( tr( "The Charm database is corrupted, it contains duplicate task ids. "
-                                      "Please have it looked after by a professional." ) );
+        if (!Task::checkForUniqueTaskIds(tasks)) {
+            throw CharmException(tr(
+                                     "The Charm database is corrupted, it contains duplicate task ids. "
+                                     "Please have it looked after by a professional."));
         }
-        if ( ! Task::checkForTreeness( tasks ) ) {
-            throw CharmException( tr( "The Charm database is corrupted, the tasks do not form a tree. "
-                                      "Please have it looked after by a professional." ) );
+        if (!Task::checkForTreeness(tasks)) {
+            throw CharmException(tr(
+                                     "The Charm database is corrupted, the tasks do not form a tree. "
+                                     "Please have it looked after by a professional."));
         }
-        emit definedTasks( tasks );
+        emit definedTasks(tasks);
         EventList events = m_storage->getAllEvents();
-        emit allEvents( events );
+        emit allEvents(events);
+        break;
     }
-    break;
     case Disconnecting:
     {
         emit readyToQuit();
-        if ( m_storage ) {
+        if (m_storage) {
 // this will still leave Qt complaining about a repeated connection
             m_storage->disconnect();
             delete m_storage;
             m_storage = nullptr;
         }
+        break;
     }
-    break;
     default:
         break;
-    };
+    }
 
-    if ( m_storage ) {
-        emit currentBackendStatus( m_storage->description() );
-        m_storage->stateChanged( previous );
+    if (m_storage) {
+        emit currentBackendStatus(m_storage->description());
+        m_storage->stateChanged(previous);
     }
 }
 
@@ -210,94 +213,91 @@ struct Setting {
     QString value;
 };
 
-void Controller::persistMetaData( Configuration& configuration )
+void Controller::persistMetaData(Configuration &configuration)
 {
-    Q_ASSERT_X( m_storage != nullptr, Q_FUNC_INFO, "No storage interface available" );
+    Q_ASSERT_X(m_storage != nullptr, Q_FUNC_INFO, "No storage interface available");
     Setting settings[] = {
         { MetaKey_Key_UserName,
           configuration.user.name() },
         { MetaKey_Key_SubscribedTasksOnly,
-          QString().setNum( configuration.taskPrefilteringMode ) },
+          QString().setNum(configuration.taskPrefilteringMode) },
         { MetaKey_Key_TimeTrackerFontSize,
-          QString().setNum( configuration.timeTrackerFontSize ) },
+          QString().setNum(configuration.timeTrackerFontSize) },
         { MetaKey_Key_DurationFormat,
-          QString::number( configuration.durationFormat ) },
+          QString::number(configuration.durationFormat) },
         { MetaKey_Key_IdleDetection,
-          stringForBool( configuration.detectIdling ) },
+          stringForBool(configuration.detectIdling) },
         { MetaKey_Key_WarnUnuploadedTimesheets,
-          stringForBool( configuration.warnUnuploadedTimesheets ) },
+          stringForBool(configuration.warnUnuploadedTimesheets) },
         { MetaKey_Key_RequestEventComment,
-          stringForBool( configuration.requestEventComment ) },
+          stringForBool(configuration.requestEventComment) },
         { MetaKey_Key_ToolButtonStyle,
-          QString().setNum( configuration.toolButtonStyle ) },
+          QString().setNum(configuration.toolButtonStyle) },
         { MetaKey_Key_ShowStatusBar,
-          stringForBool( configuration.showStatusBar ) },
+          stringForBool(configuration.showStatusBar) },
         { MetaKey_Key_EnableCommandInterface,
-          stringForBool( configuration.enableCommandInterface ) }
+          stringForBool(configuration.enableCommandInterface) }
     };
     int NumberOfSettings = sizeof settings / sizeof settings[0];
 
     bool good = true;
-    for ( int i = 0; i < NumberOfSettings; ++i ) {
-        good = good && m_storage->setMetaData( settings[i].key, settings[i].value );
-    }
-    Q_ASSERT_X( good, Q_FUNC_INFO, "Controller assumes write "
-                "permissions in meta data table if persistMetaData is called" );
+    for (int i = 0; i < NumberOfSettings; ++i)
+        good = good && m_storage->setMetaData(settings[i].key, settings[i].value);
+    Q_ASSERT_X(good, Q_FUNC_INFO, "Controller assumes write "
+                                  "permissions in meta data table if persistMetaData is called");
     CONFIGURATION.dump();
 }
 
 template<class T>
-void Controller::loadConfigValue( const QString& key, T& configValue ) const
+void Controller::loadConfigValue(const QString &key, T &configValue) const
 {
-    const QString storedValue = m_storage->getMetaData( key );
-    if ( storedValue.isNull() )
+    const QString storedValue = m_storage->getMetaData(key);
+    if (storedValue.isNull())
         return;
-    configValue = strToT<T>( storedValue );
+    configValue = strToT<T>(storedValue);
 }
 
-void Controller::provideMetaData( Configuration& configuration)
+void Controller::provideMetaData(Configuration &configuration)
 {
-    Q_ASSERT_X( m_storage != nullptr, Q_FUNC_INFO, "No storage interface available" );
-    configuration.user.setName( m_storage->getMetaData( MetaKey_Key_UserName ) );
+    Q_ASSERT_X(m_storage != nullptr, Q_FUNC_INFO, "No storage interface available");
+    configuration.user.setName(m_storage->getMetaData(MetaKey_Key_UserName));
 
-    loadConfigValue( MetaKey_Key_TimeTrackerFontSize, configuration.timeTrackerFontSize );
-    loadConfigValue( MetaKey_Key_DurationFormat, configuration.durationFormat );
-    loadConfigValue( MetaKey_Key_SubscribedTasksOnly, configuration.taskPrefilteringMode );
-    loadConfigValue( MetaKey_Key_IdleDetection, configuration.detectIdling );
-    loadConfigValue( MetaKey_Key_WarnUnuploadedTimesheets, configuration.warnUnuploadedTimesheets );
-    loadConfigValue( MetaKey_Key_RequestEventComment, configuration.requestEventComment );
-    loadConfigValue( MetaKey_Key_ToolButtonStyle, configuration.toolButtonStyle );
-    loadConfigValue( MetaKey_Key_ShowStatusBar, configuration.showStatusBar );
-    loadConfigValue( MetaKey_Key_EnableCommandInterface, configuration.enableCommandInterface );
+    loadConfigValue(MetaKey_Key_TimeTrackerFontSize, configuration.timeTrackerFontSize);
+    loadConfigValue(MetaKey_Key_DurationFormat, configuration.durationFormat);
+    loadConfigValue(MetaKey_Key_SubscribedTasksOnly, configuration.taskPrefilteringMode);
+    loadConfigValue(MetaKey_Key_IdleDetection, configuration.detectIdling);
+    loadConfigValue(MetaKey_Key_WarnUnuploadedTimesheets, configuration.warnUnuploadedTimesheets);
+    loadConfigValue(MetaKey_Key_RequestEventComment, configuration.requestEventComment);
+    loadConfigValue(MetaKey_Key_ToolButtonStyle, configuration.toolButtonStyle);
+    loadConfigValue(MetaKey_Key_ShowStatusBar, configuration.showStatusBar);
+    loadConfigValue(MetaKey_Key_EnableCommandInterface, configuration.enableCommandInterface);
 
     CONFIGURATION.dump();
 }
 
-bool Controller::initializeBackEnd( const QString& name )
+bool Controller::initializeBackEnd(const QString &name)
 {
     // make storage interface according to configuration
     // this is our local storage backend factory and may have to be
     // factored out into a factory method (now that is some serious
     // refucktoring):
-    if ( name == CHARM_SQLITE_BACKEND_DESCRIPTOR )
-    {
+    if (name == CHARM_SQLITE_BACKEND_DESCRIPTOR) {
         m_storage = new SqLiteStorage;
         return true;
     } else {
-        Q_ASSERT_X( false, Q_FUNC_INFO, "Unknown local storage backend type" );
+        Q_ASSERT_X(false, Q_FUNC_INFO, "Unknown local storage backend type");
         return false;
     }
 }
 
 bool Controller::connectToBackend()
 {
-    bool result = m_storage->connect( CONFIGURATION );
+    bool result = m_storage->connect(CONFIGURATION);
 
     // the user id in the database, and the installation id, do not
     // have to be 1 and 1, as we have guessed --> persist configuration
-    if ( result && ! CONFIGURATION.newDatabase ) {
-        provideMetaData( CONFIGURATION );
-    }
+    if (result && !CONFIGURATION.newDatabase)
+        provideMetaData(CONFIGURATION);
 
     return result;
 }
@@ -307,68 +307,69 @@ bool Controller::disconnectFromBackend()
     return m_storage->disconnect();
 }
 
-void Controller::executeCommand( CharmCommand* command )
+void Controller::executeCommand(CharmCommand *command)
 {
-    command->execute( this );
+    command->execute(this);
     // send it back to the view:
-    emit commandCompleted( command );
+    emit commandCompleted(command);
 }
 
-void Controller::rollbackCommand( CharmCommand* command )
+void Controller::rollbackCommand(CharmCommand *command)
 {
-    command->rollback( this );
+    command->rollback(this);
     // send it back to the view:
-    emit commandCompleted( command );
+    emit commandCompleted(command);
 }
 
-
-StorageInterface* Controller::storage()
+StorageInterface *Controller::storage()
 {
     return m_storage;
 }
 
-const QString MetaDataElement ( QStringLiteral("metadata") );
-const QString ExportRootElement( QStringLiteral("charmdatabase") );
-const QString VersionElement( QStringLiteral("version") );
-const QString TasksElement( QStringLiteral("tasks") );
-const QString EventsElement( QStringLiteral("events") );
+const QString MetaDataElement(QStringLiteral("metadata"));
+const QString ExportRootElement(QStringLiteral("charmdatabase"));
+const QString VersionElement(QStringLiteral("version"));
+const QString TasksElement(QStringLiteral("tasks"));
+const QString EventsElement(QStringLiteral("events"));
 
 QDomDocument Controller::exportDatabasetoXml() const
 {
-    QDomDocument document( QStringLiteral("charmdatabase") );
+    QDomDocument document(QStringLiteral("charmdatabase"));
     // root element:
-    QDomElement root = document.createElement( ExportRootElement );
-    root.setAttribute( VersionElement, CHARM_DATABASE_VERSION );
-    document.appendChild( root );
+    QDomElement root = document.createElement(ExportRootElement);
+    root.setAttribute(VersionElement, CHARM_DATABASE_VERSION);
+    document.appendChild(root);
     // metadata:
-    QDomElement metadata = document.createElement( MetaDataElement );
+    QDomElement metadata = document.createElement(MetaDataElement);
     // I am not so sure what kind of metadata needs to be stored
-    root.appendChild( metadata );
+    root.appendChild(metadata);
     // tasks element:
-    QDomElement tasksElement = document.createElement( TasksElement );
+    QDomElement tasksElement = document.createElement(TasksElement);
     // FIXME there are generic methods for that now, in Task.h
     TaskList tasks = m_storage->getAllTasks();
-    Q_FOREACH( const Task& task, tasks ) {
-        QDomElement element = task.toXml( document );
-        tasksElement.appendChild( element );
+    Q_FOREACH (const Task &task, tasks) {
+        QDomElement element = task.toXml(document);
+        tasksElement.appendChild(element);
     }
-    root.appendChild( tasksElement );
+    root.appendChild(tasksElement);
     // events element:
-    QDomElement eventsElement = document.createElement( EventsElement );
+    QDomElement eventsElement = document.createElement(EventsElement);
     EventList events = m_storage->getAllEvents();
-    Q_FOREACH( const Event& event, events ) {
-        QDomElement element = event.toXml( document );
-        eventsElement.appendChild( element );
+    Q_FOREACH (const Event &event, events) {
+        QDomElement element = event.toXml(document);
+        eventsElement.appendChild(element);
     }
-    root.appendChild( eventsElement );
+    root.appendChild(eventsElement);
     return document;
 }
 
-class MakeSureTheModelIsUpdated {
+class MakeSureTheModelIsUpdated
+{
 public:
-    explicit MakeSureTheModelIsUpdated( Controller* controller )
-        : m_controller( controller )
-    {}
+    explicit MakeSureTheModelIsUpdated(Controller *controller)
+        : m_controller(controller)
+    {
+    }
 
     ~MakeSureTheModelIsUpdated()
     {
@@ -377,12 +378,12 @@ public:
     }
 
 private:
-    Controller* m_controller;
+    Controller *m_controller;
 };
 
-QString Controller::importDatabaseFromXml( const QDomDocument& document )
+QString Controller::importDatabaseFromXml(const QDomDocument &document)
 {
-    MakeSureTheModelIsUpdated m( this );
+    MakeSureTheModelIsUpdated m(this);
 
     // first, parse the XML document, and break if there is an error
     // (not touching the DB contents):
@@ -394,50 +395,52 @@ QString Controller::importDatabaseFromXml( const QDomDocument& document )
     try {
         QDomElement rootElement = document.documentElement();
         bool ok;
-        databaseSchemaVersion = rootElement.attribute( QStringLiteral("version") ).toInt( &ok );
-        if ( !ok ) throw XmlSerializationException( QObject::tr( "Syntax error, no version attribute found." ) );
+        databaseSchemaVersion = rootElement.attribute(QStringLiteral("version")).toInt(&ok);
+        if (!ok) throw XmlSerializationException(QObject::tr(
+                                                     "Syntax error, no version attribute found."));
 
-        QDomElement tasksElement = rootElement.firstChildElement( TasksElement );
-        for ( QDomElement element = tasksElement.firstChildElement( Task::tagName() );
-              !element.isNull(); element = element.nextSiblingElement( Task::tagName() ) ) {
-            Task task = Task::fromXml( element, databaseSchemaVersion );
-            if ( ! task.isValid() ) {
+        QDomElement tasksElement = rootElement.firstChildElement(TasksElement);
+        for (QDomElement element = tasksElement.firstChildElement(Task::tagName());
+             !element.isNull(); element = element.nextSiblingElement(Task::tagName())) {
+            Task task = Task::fromXml(element, databaseSchemaVersion);
+            if (!task.isValid()) {
                 qDebug() << "The following task is invalid and will not be added:";
                 task.dump();
                 // return tr( "The Export file contains at least one invalid task." );
             } else {
-                importedTasks.append( task );
+                importedTasks.append(task);
             }
         }
-        QDomElement eventsElement = rootElement.firstChildElement( EventsElement );
-        for ( QDomElement element = eventsElement.firstChildElement( Event::tagName() );
-              !element.isNull(); element = element.nextSiblingElement( Event::tagName() ) ) {
-            Event event = Event::fromXml( element, databaseSchemaVersion );
-            if ( ! event.isValid() ) {
+        QDomElement eventsElement = rootElement.firstChildElement(EventsElement);
+        for (QDomElement element = eventsElement.firstChildElement(Event::tagName());
+             !element.isNull(); element = element.nextSiblingElement(Event::tagName())) {
+            Event event = Event::fromXml(element, databaseSchemaVersion);
+            if (!event.isValid()) {
                 qDebug() << "The following event is invalid and will not be added:";
                 event.dump();
                 // return tr( "The Export file contains at least one invalid event." );
             } else {
-                importedEvents.append( event );
+                importedEvents.append(event);
             }
         }
-    } catch ( const XmlSerializationException& e ) {
+    } catch (const XmlSerializationException &e) {
         qDebug() << "Controller::importDatabaseFromXml: things fucked up:" << e.what();
-        return tr( "The export file is invalid: %1" ).arg( e.what() );
+        return tr("The export file is invalid: %1").arg(e.what());
     }
 
-    const QString error = m_storage->setAllTasksAndEvents( CONFIGURATION.user, importedTasks, importedEvents );
-    if( !error.isEmpty() ) {
+    const QString error = m_storage->setAllTasksAndEvents(CONFIGURATION.user, importedTasks,
+                                                          importedEvents);
+    if (!error.isEmpty()) {
         // the database should be unchanged, and the model will update on return
-        return tr( "Error importing tasks and events from the file:<br />%1" )
-                .arg( error );
+        return tr("Error importing tasks and events from the file:<br />%1")
+               .arg(error);
     }
 
     // FIXME needed?
 
     // tell the model that the tasks and events have vanished:
-    emit allEvents( EventList() );
-    emit definedTasks( TaskList() );
+    emit allEvents(EventList());
+    emit definedTasks(TaskList());
 
     return QString();
 }
@@ -446,9 +449,9 @@ void Controller::updateModelEventsAndTasks()
 {
     TaskList tasks = m_storage->getAllTasks();
     // tell the view about the existing tasks;
-    emit definedTasks( tasks );
+    emit definedTasks(tasks);
     EventList events = m_storage->getAllEvents();
-    emit allEvents( events );
+    emit allEvents(events);
 }
 
 #include "moc_Controller.cpp"

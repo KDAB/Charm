@@ -34,7 +34,7 @@
 #include <QScopedPointer>
 
 namespace Ui {
-    class ActivityReportConfigurationDialog;
+class ActivityReportConfigurationDialog;
 }
 
 class QUrl;
@@ -57,7 +57,7 @@ public:
         bool groupByTaskIdAndComments = false;
     };
 
-    explicit ActivityReportConfigurationDialog( QWidget* parent );
+    explicit ActivityReportConfigurationDialog(QWidget *parent);
     ~ActivityReportConfigurationDialog() override;
 
     void showReportPreviewDialog() override;
@@ -68,7 +68,7 @@ public Q_SLOTS:
 private Q_SLOTS:
     void slotDelayedInitialization();
     void slotStandardTimeSpansChanged();
-    void slotTimeSpanSelected( int );
+    void slotTimeSpanSelected(int);
     void slotSelectTask();
     void slotExcludeTask();
     void slotRemoveExcludedTask();
@@ -77,7 +77,7 @@ private Q_SLOTS:
     void slotGroupTasksComments(bool checked);
 
 private:
-    bool selectTask(TaskId& task);
+    bool selectTask(TaskId &task);
     QListWidgetItem *addListItem(TaskId id, QListWidget *list) const;
 
     QScopedPointer<Ui::ActivityReportConfigurationDialog> m_ui;
@@ -90,13 +90,13 @@ class ActivityReport : public ReportPreviewWindow
     Q_OBJECT
 
 public:
-    explicit ActivityReport( QWidget* parent = nullptr );
+    explicit ActivityReport(QWidget *parent = nullptr);
     ~ActivityReport() override;
 
     void setReportProperties(const ActivityReportConfigurationDialog::Properties &properties);
 
 private Q_SLOTS:
-    void slotLinkClicked( const QUrl& which );
+    void slotLinkClicked(const QUrl &which);
 
 private:
     void slotUpdate() override;

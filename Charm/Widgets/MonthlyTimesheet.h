@@ -35,16 +35,14 @@ class MonthlyTimeSheetReport : public TimeSheetReport
     Q_OBJECT
 
 public:
-    explicit MonthlyTimeSheetReport( QWidget* parent = nullptr );
+    explicit MonthlyTimeSheetReport(QWidget *parent = nullptr);
     ~MonthlyTimeSheetReport() override;
 
-    void setReportProperties( const QDate& start,
-                              const QDate& end,
-                              TaskId rootTask,
-                              bool activeTasksOnly ) override;
+    void setReportProperties(const QDate &start, const QDate &end, TaskId rootTask,
+                             bool activeTasksOnly) override;
 
 private Q_SLOTS:
-    void slotLinkClicked( const QUrl& which );
+    void slotLinkClicked(const QUrl &which);
 
 private:
     QString suggestedFileName() const override;

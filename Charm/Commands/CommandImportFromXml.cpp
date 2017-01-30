@@ -28,9 +28,9 @@
 #include <QDomDocument>
 #include <QFile>
 
-CommandImportFromXml::CommandImportFromXml( QString filename, QObject* parent )
-    : CharmCommand( tr("Import from XML"), parent )
-    , m_filename( filename )
+CommandImportFromXml::CommandImportFromXml(QString filename, QObject *parent)
+    : CharmCommand(tr("Import from XML"), parent)
+    , m_filename(filename)
 {
 }
 
@@ -43,21 +43,25 @@ bool CommandImportFromXml::prepare()
     return true;
 }
 
-bool CommandImportFromXml::execute( ControllerInterface* controller )
+bool CommandImportFromXml::execute(ControllerInterface *controller)
 {
-    QFile file( m_filename );
-    if ( file.open( QIODevice::ReadOnly ) ) {
+    QFile file(m_filename);
+    if (file.open(QIODevice::ReadOnly)) {
         QDomDocument document;
         QString errorMessage;
         int errorLine = 0;
         int errorColumn = 0;
-        if ( document.setContent( &file, &errorMessage, &errorLine, &errorColumn ) ) {
-            m_error = controller->importDatabaseFromXml( document );
+        if (document.setContent(&file, &errorMessage, &errorLine, &errorColumn)) {
+            m_error = controller->importDatabaseFromXml(document);
         } else {
-            m_error = tr( "Cannot read the XML syntax of the specified file: [%1:%2] %3" ).arg( QString::number( errorLine ), QString::number( errorColumn ), errorMessage );
+            m_error = tr("Cannot read the XML syntax of the specified file: [%1:%2] %3").arg(QString::number(
+                                                                                                 errorLine),
+                                                                                             QString::number(
+                                                                                                 errorColumn),
+            errorMessage);
         }
     } else {
-        m_error = tr( "Cannot open the specified file: %1" ).arg( file.errorString() );
+        m_error = tr("Cannot open the specified file: %1").arg(file.errorString());
     }
     return true;
 }
@@ -65,9 +69,9 @@ bool CommandImportFromXml::execute( ControllerInterface* controller )
 bool CommandImportFromXml::finalize()
 {
     // any errors?
-    if ( ! m_error.isEmpty() ) {
-        showCritical( tr( "Error importing the Database" ), tr("An error has occurred:\n%1" ).arg( m_error ) );
-    }
+    if (!m_error.isEmpty())
+        showCritical(tr("Error importing the Database"),
+                     tr("An error has occurred:\n%1").arg(m_error));
     return true;
 }
 

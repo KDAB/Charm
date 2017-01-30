@@ -38,20 +38,20 @@ class TaskIdDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit TaskIdDialog( TaskModelInterface* model, TasksView* parent );
+    explicit TaskIdDialog(TaskModelInterface *model, TasksView *parent);
     ~TaskIdDialog() override;
 
-    void setSuggestedId( int );
+    void setSuggestedId(int);
     int selectedId() const;
 
     QString taskName() const;
 
 private Q_SLOTS:
-    void on_spinBox_valueChanged( int );
+    void on_spinBox_valueChanged(int);
 
 private:
     Ui::TaskIdDialog m_ui;
-    TaskModelInterface* m_model;
+    TaskModelInterface *m_model;
 };
 
 #endif

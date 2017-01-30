@@ -30,8 +30,9 @@
 #include <QRegExp> // Required for Qt 4
 #include <QSettings>
 
-UploadTimesheetJob::UploadTimesheetJob(QObject* parent)
-    : HttpJob(parent), m_fileName(QStringLiteral("payload"))
+UploadTimesheetJob::UploadTimesheetJob(QObject *parent)
+    : HttpJob(parent)
+    , m_fileName(QStringLiteral("payload"))
 {
     QSettings s;
     s.beginGroup(QStringLiteral("httpconfig"));
@@ -67,7 +68,7 @@ QUrl UploadTimesheetJob::uploadUrl() const
     return m_uploadUrl;
 }
 
-void UploadTimesheetJob::setUploadUrl(const QUrl& url)
+void UploadTimesheetJob::setUploadUrl(const QUrl &url)
 {
     m_uploadUrl = url;
 }
@@ -84,8 +85,9 @@ bool UploadTimesheetJob::execute(int state, QNetworkAccessManager *manager)
     if (!m_fileName.contains(QRegExp(QStringLiteral("^WeeklyTimeSheet-\\d\\d\\d\\d-\\d\\d$")))) {
         qDebug("Invalid filename encountered, using default (\"payload\").");
         uploadName = "payload";
+    } else {
+        uploadName = m_fileName.toUtf8();
     }
-    else uploadName = m_fileName.toUtf8();
 
     /* username */
     data += "--KDAB\r\n"
@@ -95,8 +97,8 @@ bool UploadTimesheetJob::execute(int state, QNetworkAccessManager *manager)
 
     /* payload */
     data += "--KDAB\r\n"
-            "Content-Disposition: form-data; name=\"" + uploadName + "\"; filename=\"" +
-            uploadName + "\"\r\nContent-Type: application/octet-stream\r\n\r\n";
+            "Content-Disposition: form-data; name=\"" + uploadName + "\"; filename=\""
+            +uploadName + "\"\r\nContent-Type: application/octet-stream\r\n\r\n";
     data += m_payload;
     data += "\r\n";
 
@@ -104,7 +106,8 @@ bool UploadTimesheetJob::execute(int state, QNetworkAccessManager *manager)
     data += "--KDAB--\r\n";
 
     QNetworkRequest request(m_uploadUrl);
-    request.setHeader(QNetworkRequest::ContentTypeHeader, QStringLiteral("multipart/form-data; boundary=KDAB"));
+    request.setHeader(QNetworkRequest::ContentTypeHeader,
+                      QStringLiteral("multipart/form-data; boundary=KDAB"));
     request.setHeader(QNetworkRequest::ContentLengthHeader, data.size());
 
     QNetworkReply *reply = manager->post(request, data);

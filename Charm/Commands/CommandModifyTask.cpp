@@ -25,9 +25,9 @@
 #include "CommandModifyTask.h"
 #include "Core/ControllerInterface.h"
 
-CommandModifyTask::CommandModifyTask( const Task& task, QObject* parent )
-    : CharmCommand( tr("Edit Task"), parent )
-    , m_task( task )
+CommandModifyTask::CommandModifyTask(const Task &task, QObject *parent)
+    : CharmCommand(tr("Edit Task"), parent)
+    , m_task(task)
 {
 }
 
@@ -40,17 +40,17 @@ bool CommandModifyTask::prepare()
     return true;
 }
 
-bool CommandModifyTask::execute( ControllerInterface* controller )
+bool CommandModifyTask::execute(ControllerInterface *controller)
 {
-    m_success = controller->modifyTask( m_task );
+    m_success = controller->modifyTask(m_task);
     return m_success;
 }
 
 bool CommandModifyTask::finalize()
 {
-    if ( !m_success ) {
+    if (!m_success) {
         // this might be slightly to little informative:
-        showInformation( tr( "Unable to modify task" ), tr( "Modifying the task failed." ) );
+        showInformation(tr("Unable to modify task"), tr("Modifying the task failed."));
     }
     return m_success;
 }

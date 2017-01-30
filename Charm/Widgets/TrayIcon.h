@@ -31,12 +31,11 @@ class TrayIcon : public QSystemTrayIcon
     Q_OBJECT
 
 public:
-    explicit TrayIcon(QObject* parent = nullptr);
+    explicit TrayIcon(QObject *parent = nullptr);
     ~TrayIcon() override;
 
 private Q_SLOTS:
     void slotActivated(QSystemTrayIcon::ActivationReason);
-
 };
 
 #endif // TRAYICON_H

@@ -38,7 +38,7 @@
 #error Build system error: CHARM_CI_SUPPORT should be defined
 #endif
 
-CharmCommandSession::CharmCommandSession(QObject* parent)
+CharmCommandSession::CharmCommandSession(QObject *parent)
     : QObject(parent)
     , m_device(nullptr)
     , m_state(InvalidState)
@@ -55,12 +55,12 @@ CharmCommandSession::~CharmCommandSession()
     qDebug("Command interface destroyed.");
 }
 
-QIODevice* CharmCommandSession::device() const
+QIODevice *CharmCommandSession::device() const
 {
     return m_device;
 }
 
-void CharmCommandSession::setDevice(QIODevice* device)
+void CharmCommandSession::setDevice(QIODevice *device)
 {
     if (m_device)
         disconnect(m_device, SIGNAL(readyRead()), this, SLOT(onReadyRead()));
@@ -82,50 +82,50 @@ void CharmCommandSession::resetTasks()
     m_device->write("\n");
 }
 
-void CharmCommandSession::taskAdded( TaskId id )
+void CharmCommandSession::taskAdded(TaskId id)
 {
     if (!m_device)
         return;
 
     m_device->write(QString("%1 %2\n")
-        .arg(CHARM_CI_EVENT_TASK_ADDED)
-        .arg(DATAMODEL->taskIdAndSmartNameString(id))
-        .toLatin1());
+                    .arg(CHARM_CI_EVENT_TASK_ADDED)
+                    .arg(DATAMODEL->taskIdAndSmartNameString(id))
+                    .toLatin1());
 }
 
-void CharmCommandSession::taskModified( TaskId id )
+void CharmCommandSession::taskModified(TaskId id)
 {
     if (!m_device)
         return;
 
     m_device->write(QString("%1 %2\n")
-        .arg(CHARM_CI_EVENT_TASK_MODIFIED)
-        .arg(DATAMODEL->taskIdAndSmartNameString(id))
-        .toLatin1());
+                    .arg(CHARM_CI_EVENT_TASK_MODIFIED)
+                    .arg(DATAMODEL->taskIdAndSmartNameString(id))
+                    .toLatin1());
 }
 
-void CharmCommandSession::eventActivated( EventId id )
+void CharmCommandSession::eventActivated(EventId id)
 {
     if (!m_device)
         return;
 
     const Event &event = DATAMODEL->eventForId(id);
     m_device->write(QString("%1 %2\n")
-        .arg(CHARM_CI_EVENT_TASK_ACTIVATED)
-        .arg(DATAMODEL->taskIdAndSmartNameString(event.taskId()))
-        .toLatin1());
+                    .arg(CHARM_CI_EVENT_TASK_ACTIVATED)
+                    .arg(DATAMODEL->taskIdAndSmartNameString(event.taskId()))
+                    .toLatin1());
 }
 
-void CharmCommandSession::eventDeactivated( EventId id )
+void CharmCommandSession::eventDeactivated(EventId id)
 {
     if (!m_device)
         return;
 
     const Event &event = DATAMODEL->eventForId(id);
     m_device->write(QString("%1 %2\n")
-        .arg(CHARM_CI_EVENT_TASK_DEACTIVATED)
-        .arg(DATAMODEL->taskIdAndSmartNameString(event.taskId()))
-        .toLatin1());
+                    .arg(CHARM_CI_EVENT_TASK_DEACTIVATED)
+                    .arg(DATAMODEL->taskIdAndSmartNameString(event.taskId()))
+                    .toLatin1());
 }
 
 void CharmCommandSession::reset()
@@ -154,25 +154,25 @@ void CharmCommandSession::onReadyRead()
 void CharmCommandSession::sendAck(const QString &comment)
 {
     m_device->write(QString("%1 %2\n")
-        .arg(CHARM_CI_SERVER_ACK)
-        .arg(comment)
-        .toLatin1());
+                    .arg(CHARM_CI_SERVER_ACK)
+                    .arg(comment)
+                    .toLatin1());
 }
 
 void CharmCommandSession::sendNak(const QString &comment)
 {
     m_device->write(QString("%1 %2\n")
-        .arg(CHARM_CI_SERVER_NAK)
-        .arg(comment)
-        .toLatin1());
+                    .arg(CHARM_CI_SERVER_NAK)
+                    .arg(comment)
+                    .toLatin1());
 }
 
 void CharmCommandSession::sendComment(const QString &comment)
 {
     m_device->write(QString("%1 %2\n")
-        .arg(CHARM_CI_SERVER_COMMENT)
-        .arg(comment)
-        .toLatin1());
+                    .arg(CHARM_CI_SERVER_COMMENT)
+                    .arg(comment)
+                    .toLatin1());
 }
 
 void CharmCommandSession::startHandshake()
@@ -180,9 +180,9 @@ void CharmCommandSession::startHandshake()
     sendComment("Charm Command Line Interface");
 
     m_device->write(QString("%1 %2\n")
-        .arg(CHARM_CI_HANDSHAKE_SEND)
-        .arg(QString::number(CHARM_CI_VERSION))
-        .toLatin1());
+                    .arg(CHARM_CI_HANDSHAKE_SEND)
+                    .arg(QString::number(CHARM_CI_VERSION))
+                    .toLatin1());
 
     m_state = HandshakeState;
 }
@@ -214,8 +214,7 @@ void CharmCommandSession::handleHandshare(QByteArray payload)
     if (reply.startsWith(CHARM_CI_HANDSHAKE_RECV, Qt::CaseInsensitive)) {
         sendAck("Entering Command Mode");
         startCommand();
-    }
-    else if (reply.startsWith(CHARM_CI_COMMAND_DISCONNECT, Qt::CaseInsensitive)) {
+    } else if (reply.startsWith(CHARM_CI_COMMAND_DISCONNECT, Qt::CaseInsensitive)) {
         qDebug("BYE command received. Closing connection.");
         m_device->close();
     }
@@ -233,8 +232,8 @@ void CharmCommandSession::handleCommand(QByteArray payload)
 
     const QString command = buffer.readLine().trimmed();
 
-    const QStringList segment =
-        command.split(' ', QString::SkipEmptyParts);
+    const QStringList segment
+        = command.split(' ', QString::SkipEmptyParts);
 
     if (segment.isEmpty()) {
         qDebug("Received empty command...");
@@ -245,9 +244,9 @@ void CharmCommandSession::handleCommand(QByteArray payload)
         bool tid_ok;
         TaskId tid;
 
-        if (segment.count() == 2)
+        if (segment.count() == 2) {
             tid = segment[1].toInt(&tid_ok);
-        else {
+        } else {
             EventMap::const_reverse_iterator i = DATAMODEL->eventMap().rbegin();
             tid_ok = (i != DATAMODEL->eventMap().rend());
             tid = i->second.taskId();
@@ -258,46 +257,45 @@ void CharmCommandSession::handleCommand(QByteArray payload)
                 qDebug("START command received. Starting task %d", tid);
                 DATAMODEL->startEventRequested(DATAMODEL->getTask(tid));
             }
+        } else {
+            sendNak("UNKNOWN TASK");
         }
-        else sendNak("UNKNOWN TASK");
-    }
-
-    else if (segment[0].compare(CHARM_CI_COMMAND_STOP, Qt::CaseInsensitive) == 0) {
+    } else if (segment[0].compare(CHARM_CI_COMMAND_STOP, Qt::CaseInsensitive) == 0) {
         bool tid_ok;
         TaskId tid;
 
-        if (segment.count() == 2)
+        if (segment.count() == 2) {
             tid = segment[1].toInt(&tid_ok);
-        else {
-            tid = DATAMODEL->activeEventCount() > 0 ?
-                DATAMODEL->eventForId(DATAMODEL->activeEvents().last()).taskId() : 0;
+        } else {
+            tid = DATAMODEL->activeEventCount() > 0
+                  ? DATAMODEL->eventForId(DATAMODEL->activeEvents().last()).taskId() : 0;
             tid_ok = (tid > 0);
         }
 
         if (tid_ok && DATAMODEL->taskExists(tid) && DATAMODEL->isTaskActive(tid)) {
             qDebug("STOP command received. Stopping task %d", tid);
             DATAMODEL->endEventRequested(DATAMODEL->getTask(tid));
+        } else {
+            sendNak("UNKNOWN TASK");
         }
-        else sendNak("UNKNOWN TASK");
-    }
-
-    else if (segment[0].compare(CHARM_CI_COMMAND_TASK, Qt::CaseInsensitive) == 0) {
+    } else if (segment[0].compare(CHARM_CI_COMMAND_TASK, Qt::CaseInsensitive) == 0) {
         bool tid_ok;
         TaskId tid;
 
-        if (segment.count() == 2)
+        if (segment.count() == 2) {
             tid = segment[1].toInt(&tid_ok);
-        else tid_ok = false;
+        } else {
+            tid_ok = false;
+        }
 
         if (tid_ok && DATAMODEL->taskExists(tid)) {
             qDebug("TASK command received. Task %d requested", tid);
             m_device->write(DATAMODEL->taskIdAndSmartNameString(tid).toLatin1());
             m_device->write("\n");
+        } else {
+            sendNak("UNKNOWN TASK");
         }
-        else sendNak("UNKNOWN TASK");
-    }
-
-    else if (segment[0].compare(CHARM_CI_COMMAND_STATUS, Qt::CaseInsensitive) == 0) {
+    } else if (segment[0].compare(CHARM_CI_COMMAND_STATUS, Qt::CaseInsensitive) == 0) {
         qDebug("STATUS command received.");
 
         const EventIdList activeEvents = DATAMODEL->activeEvents();
@@ -305,14 +303,13 @@ void CharmCommandSession::handleCommand(QByteArray payload)
             foreach (EventId id, activeEvents) {
                 const Event &event = DATAMODEL->eventForId(id);
                 m_device->write(QString("%0 %1\n")
-                    .arg(event.taskId(), 4, 10, QChar('0'))
-                    .arg(event.duration()).toLatin1());
+                                .arg(event.taskId(), 4, 10, QChar('0'))
+                                .arg(event.duration()).toLatin1());
             }
+        } else {
+            sendNak("WORK HARDER");
         }
-        else sendNak("WORK HARDER");
-    }
-
-    else if (segment[0].compare(CHARM_CI_COMMAND_RECENT, Qt::CaseInsensitive) == 0) {
+    } else if (segment[0].compare(CHARM_CI_COMMAND_RECENT, Qt::CaseInsensitive) == 0) {
         bool offset_ok;
         bool count_ok;
         int offset;
@@ -334,7 +331,8 @@ void CharmCommandSession::handleCommand(QByteArray payload)
         }
 
         if (offset_ok && count_ok && offset >= 0 && count >= 1 && recent.size() > offset) {
-            qDebug("RECENT command received. Sending %d entries starting from offset %d", count, offset);
+            qDebug("RECENT command received. Sending %d entries starting from offset %d", count,
+                   offset);
 
             if ((offset + count) > recent.size())
                 count = recent.size() - offset;
@@ -343,16 +341,15 @@ void CharmCommandSession::handleCommand(QByteArray payload)
                 m_device->write(DATAMODEL->taskIdAndSmartNameString(recent[offset + i]).toLatin1());
                 m_device->write("\n");
             }
+        } else {
+            sendNak("INVALID REQUEST");
         }
-        else sendNak("INVALID REQUEST");
-    }
-
-    else if (segment[0].compare(CHARM_CI_COMMAND_DISCONNECT, Qt::CaseInsensitive) == 0) {
+    } else if (segment[0].compare(CHARM_CI_COMMAND_DISCONNECT, Qt::CaseInsensitive) == 0) {
         qDebug("BYE command received. Closing connection.");
         m_device->close();
     }
-
     /* unknown command sent */
-    else sendNak("UNKNOWN COMMAND");
+    else {
+        sendNak("UNKNOWN COMMAND");
+    }
 }
-

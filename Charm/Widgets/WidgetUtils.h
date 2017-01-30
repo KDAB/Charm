@@ -27,12 +27,11 @@
 
 class QWidget;
 
-namespace WidgetUtils
-{
-    void restoreGeometry( QWidget *widget, const QString &metaKey );
-    void saveGeometry( QWidget *widget, const QString &metaKey );
+namespace WidgetUtils {
+void restoreGeometry(QWidget *widget, const QString &metaKey);
+void saveGeometry(QWidget *widget, const QString &metaKey);
 
-    void updateToolButtonStyle(QWidget *widget);
+void updateToolButtonStyle(QWidget *widget);
 }
 
 #endif // WIDGETUTILS_H

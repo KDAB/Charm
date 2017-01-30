@@ -35,10 +35,10 @@ class CharmTCPCommandServer : public CharmCommandServer
 {
     Q_OBJECT
 public:
-    explicit CharmTCPCommandServer(QObject* parent = nullptr);
+    explicit CharmTCPCommandServer(QObject *parent = nullptr);
     ~CharmTCPCommandServer();
 
-    const QHostAddress & address() const;
+    const QHostAddress &address() const;
     void setAddress(const QHostAddress &address);
 
     quint16 port() const;
@@ -57,8 +57,8 @@ private:
     QHostAddress m_address;
     quint16 m_port;
 
-    QTcpServer* m_server;
-    QUdpSocket* m_discovery;
+    QTcpServer *m_server;
+    QUdpSocket *m_discovery;
     int m_discoveryTimer;
 };
 

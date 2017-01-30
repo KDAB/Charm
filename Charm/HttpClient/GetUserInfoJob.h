@@ -34,13 +34,13 @@ class GetUserInfoJob : public HttpJob
     Q_OBJECT
 public:
 
-    explicit GetUserInfoJob(QObject* parent=nullptr, const QString &schema = QStringLiteral(" "));
+    explicit GetUserInfoJob(QObject *parent = nullptr, const QString &schema = QStringLiteral(" "));
     ~GetUserInfoJob() override;
 
     QByteArray userInfo() const;
 
     QUrl downloadUrl() const;
-    void setDownloadUrl(const QUrl& url);
+    void setDownloadUrl(const QUrl &url);
     QString schema() const;
     void setSchema(const QString &schema);
 

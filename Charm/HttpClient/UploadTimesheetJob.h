@@ -33,7 +33,7 @@ class UploadTimesheetJob : public HttpJob
     Q_OBJECT
 public:
 
-    explicit UploadTimesheetJob(QObject* parent=nullptr);
+    explicit UploadTimesheetJob(QObject *parent = nullptr);
     ~UploadTimesheetJob() override;
 
     QByteArray payload() const;
@@ -41,7 +41,7 @@ public:
     QString fileName() const;
     void setFileName(const QString &fileName);
     QUrl uploadUrl() const;
-    void setUploadUrl(const QUrl& url);
+    void setUploadUrl(const QUrl &url);
 
 public Q_SLOTS:
 

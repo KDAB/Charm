@@ -32,11 +32,11 @@ class CommandImportFromXml : public CharmCommand
 {
     Q_OBJECT
 public:
-    explicit CommandImportFromXml( QString filename, QObject* parent );
+    explicit CommandImportFromXml(QString filename, QObject *parent);
     ~CommandImportFromXml() override;
 
     bool prepare() override;
-    bool execute( ControllerInterface* ) override;
+    bool execute(ControllerInterface *) override;
     bool finalize() override;
 
 private:

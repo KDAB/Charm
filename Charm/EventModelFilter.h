@@ -35,40 +35,39 @@
 
 class CharmDataModel;
 
-class EventModelFilter : public QSortFilterProxyModel,
-                         public CommandEmitterInterface,
-                         public EventModelInterface
+class EventModelFilter : public QSortFilterProxyModel, public CommandEmitterInterface,
+    public EventModelInterface
 {
     Q_OBJECT
 
 public:
-    explicit EventModelFilter( CharmDataModel*, QObject* parent = nullptr );
+    explicit EventModelFilter(CharmDataModel *, QObject *parent = nullptr);
     ~EventModelFilter() override;
 
     /** Returns the total number of seconds of all events in the model. */
     int totalDuration() const;
 
     // implement EventModelInterface:
-    const Event& eventForIndex( const QModelIndex& ) const override;
-    QModelIndex indexForEvent( const Event& ) const override;
+    const Event &eventForIndex(const QModelIndex &) const override;
+    QModelIndex indexForEvent(const Event &) const override;
 
-    bool filterAcceptsRow( int srow, const QModelIndex & sparent ) const override;
+    bool filterAcceptsRow(int srow, const QModelIndex &sparent) const override;
 
-    void setFilterStartDate( const QDate& date );
-    void setFilterEndDate( const QDate& date );
-    void setFilterTaskId( TaskId id );
+    void setFilterStartDate(const QDate &date);
+    void setFilterEndDate(const QDate &date);
+    void setFilterTaskId(TaskId id);
 
     // implement CommandEmitterInterface:
-    void commitCommand( CharmCommand* ) override;
+    void commitCommand(CharmCommand *) override;
 
     // implement to sort by event start datetime
-    bool lessThan( const QModelIndex& left, const QModelIndex& right ) const override;
+    bool lessThan(const QModelIndex &left, const QModelIndex &right) const override;
 
     QList<Event> events() const;
 
 Q_SIGNALS:
-    void eventActivationNotice( EventId id );
-    void eventDeactivationNotice( EventId id );
+    void eventActivationNotice(EventId id);
+    void eventDeactivationNotice(EventId id);
 
 private:
     EventModelAdapter m_model;

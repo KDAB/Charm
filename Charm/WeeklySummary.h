@@ -35,7 +35,8 @@ class CharmDataModel;
 class WeeklySummary
 {
 public:
-    static QVector<WeeklySummary> summariesForTimespan( CharmDataModel* dataModel, const TimeSpan& timespan );
+    static QVector<WeeklySummary> summariesForTimespan(CharmDataModel *dataModel,
+                                                       const TimeSpan &timespan);
 
     WeeklySummary();
 

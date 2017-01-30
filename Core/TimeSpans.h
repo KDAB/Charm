@@ -35,7 +35,7 @@
 typedef QPair<QDate, QDate> TimeSpan;
 
 enum TimeSpanType {
-    Day=0,
+    Day = 0,
     Week,
     Month,
     Range,
@@ -45,7 +45,7 @@ enum TimeSpanType {
 struct NamedTimeSpan {
     QString name;
     TimeSpan timespan;
-    bool contains( const QDate& date ) const;
+    bool contains(const QDate &date) const;
     TimeSpanType timeSpanType;
 };
 
@@ -57,7 +57,8 @@ struct NamedTimeSpan {
     TimeSpan only deals with days, not with anything of finer
     granularity.
 */
-class TimeSpans {
+class TimeSpans
+{
     Q_DECLARE_TR_FUNCTIONS(TimeSpans)
 public:
 
@@ -66,7 +67,7 @@ public:
      *
      * @param referenceDate the reference date ("today") to calculate time spans for
      */
-    explicit TimeSpans( const QDate& referenceDate=QDate::currentDate() );
+    explicit TimeSpans(const QDate &referenceDate = QDate::currentDate());
 
     QList<NamedTimeSpan> standardTimeSpans() const;
     QList<NamedTimeSpan> last4Weeks() const;
@@ -103,7 +104,7 @@ class DateChangeWatcher : public QObject
     Q_OBJECT
 
 public:
-    explicit DateChangeWatcher( QObject* parent = nullptr );
+    explicit DateChangeWatcher(QObject *parent = nullptr);
 
 Q_SIGNALS:
     void dateChanged();

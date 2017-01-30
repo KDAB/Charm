@@ -30,8 +30,8 @@
 class TimesheetProcessorException : public std::exception
 {
 public:
-    explicit TimesheetProcessorException(const QString& text = QString::null) :
-        mWhat(text)
+    explicit TimesheetProcessorException(const QString &text = QString::null)
+        : mWhat(text)
     {
     }
 
@@ -39,7 +39,7 @@ public:
     {
     }
 
-    const char* what() const throw()
+    const char *what() const throw()
     {
         return qPrintable(mWhat);
     }
@@ -51,8 +51,8 @@ private:
 class UsageException : public TimesheetProcessorException
 {
 public:
-    explicit UsageException(const QString& text = QString::null) :
-        TimesheetProcessorException(text)
+    explicit UsageException(const QString &text = QString::null)
+        : TimesheetProcessorException(text)
     {
     }
 };

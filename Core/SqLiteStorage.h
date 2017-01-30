@@ -39,16 +39,16 @@ public:
     ~SqLiteStorage();
 
     QString description() const override;
-    bool connect( Configuration& ) override;
+    bool connect(Configuration &) override;
     bool disconnect() override;
 
-    QSqlDatabase& database() override;
+    QSqlDatabase &database() override;
     int installationId() const override;
 
 protected:
-    bool createDatabase( Configuration& ) override;
+    bool createDatabase(Configuration &) override;
     bool createDatabaseTables() override;
-    bool migrateDatabaseDirectory(QDir, const QDir & ) const;
+    bool migrateDatabaseDirectory(QDir, const QDir &) const;
     QString lastInsertRowFunction() const override;
 
 private:

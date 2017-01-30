@@ -28,10 +28,11 @@
 
 #include <QTimer>
 
-class WindowsIdleDetector : public IdleDetector {
+class WindowsIdleDetector : public IdleDetector
+{
     Q_OBJECT
 public:
-    explicit WindowsIdleDetector( QObject* parent );
+    explicit WindowsIdleDetector(QObject *parent);
 
 protected:
     void onIdlenessDurationChanged();

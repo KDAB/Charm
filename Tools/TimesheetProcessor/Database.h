@@ -40,16 +40,16 @@ public:
     Database();
     virtual ~Database();
 
-    void login() throw ( TimesheetProcessorException );
-    void initializeDatabase() throw ( TimesheetProcessorException );
-    void addEvent( const Event& event, const SqlRaiiTransactor& );
-    void deleteEventsForReport ( int userid, int index );
-    void checkUserid( int id ) throw (TimesheetProcessorException );
-    User getOrCreateUserByName( QString name ) throw (TimesheetProcessorException );
-    Task getTask( int taskid ) throw (TimesheetProcessorException );
-    TaskList getAllTasks() throw (TimesheetProcessorException );
+    void login() throw (TimesheetProcessorException);
+    void initializeDatabase() throw (TimesheetProcessorException);
+    void addEvent(const Event &event, const SqlRaiiTransactor &);
+    void deleteEventsForReport(int userid, int index);
+    void checkUserid(int id) throw (TimesheetProcessorException);
+    User getOrCreateUserByName(QString name) throw (TimesheetProcessorException);
+    Task getTask(int taskid) throw (TimesheetProcessorException);
+    TaskList getAllTasks() throw (TimesheetProcessorException);
 
-    QSqlDatabase& database();
+    QSqlDatabase &database();
 
 private:
     MySqlStorage m_storage;

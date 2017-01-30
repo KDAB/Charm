@@ -26,7 +26,7 @@
 #include <QPushButton>
 #include <QDialogButtonBox>
 
-BillDialog::BillDialog( QWidget* parent, Qt::WindowFlags f )
+BillDialog::BillDialog(QWidget *parent, Qt::WindowFlags f)
     : QDialog(parent, f)
 {
     setResult(Later);

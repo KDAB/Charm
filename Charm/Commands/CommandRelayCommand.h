@@ -36,18 +36,18 @@ class CommandRelayCommand : public CharmCommand
     Q_OBJECT
 
 public:
-    explicit CommandRelayCommand( QObject* parent );
+    explicit CommandRelayCommand(QObject *parent);
     ~CommandRelayCommand() override;
 
-    void setCommand( CharmCommand* command );
+    void setCommand(CharmCommand *command);
 
     bool prepare() override;
-    bool execute( ControllerInterface* ) override;
-    bool rollback( ControllerInterface* ) override;
+    bool execute(ControllerInterface *) override;
+    bool rollback(ControllerInterface *) override;
     bool finalize() override;
 
 private:
-    CharmCommand* m_payload = nullptr;
+    CharmCommand *m_payload = nullptr;
 };
 
 #endif

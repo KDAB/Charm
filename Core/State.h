@@ -38,8 +38,8 @@ enum State {
     NumberOfCharmApplicationStates
 };
 
-Q_DECLARE_METATYPE( State )
+Q_DECLARE_METATYPE(State)
 
-extern const char* StateNames[NumberOfCharmApplicationStates];
+extern const char *StateNames[NumberOfCharmApplicationStates];
 
 #endif

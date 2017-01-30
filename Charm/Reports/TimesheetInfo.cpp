@@ -26,55 +26,55 @@
 #include "Core/CharmDataModel.h"
 
 TimeSheetInfo::TimeSheetInfo(int segments)
-    : seconds( segments )
+    : seconds(segments)
 {
-    seconds.fill( 0 );
+    seconds.fill(0);
 }
 
 int TimeSheetInfo::total() const
 {
     int value = 0;
-    for ( int i = 0; i < seconds.size(); ++i )
+    for (int i = 0; i < seconds.size(); ++i)
         value += seconds[i];
     return value;
 }
 
 void TimeSheetInfo::dump()
 {
-    qDebug() << "TimeSheetInfo: (" << indentation << ")" << formattedTaskIdAndName( 6 ) << ":" << seconds << "-" << total() << "total";
+    qDebug() << "TimeSheetInfo: (" << indentation << ")" << formattedTaskIdAndName(6) << ":"
+             << seconds << "-" << total() << "total";
 }
 
-QString TimeSheetInfo::formattedTaskIdAndName( int taskPaddingLength ) const
+QString TimeSheetInfo::formattedTaskIdAndName(int taskPaddingLength) const
 {
-    const QString formattedId = QStringLiteral( "%1" ).arg( taskId, taskPaddingLength, 10, QLatin1Char( '0' ) );
-    return QStringLiteral("%1: %2").arg( formattedId, taskName );
+    const QString formattedId
+        = QStringLiteral("%1").arg(taskId, taskPaddingLength, 10, QLatin1Char('0'));
+    return QStringLiteral("%1: %2").arg(formattedId, taskName);
 }
 
 // make the list, aggregate the seconds in the subtask:
-TimeSheetInfoList TimeSheetInfo::taskWithSubTasks( const CharmDataModel* dataModel, int segments, TaskId id,
-    const SecondsMap& secondsMap,
-    TimeSheetInfo* addTo )
+TimeSheetInfoList TimeSheetInfo::taskWithSubTasks(const CharmDataModel *dataModel, int segments,
+                                                  TaskId id, const SecondsMap &secondsMap,
+                                                  TimeSheetInfo *addTo)
 {
     TimeSheetInfoList result;
     TimeSheetInfoList children;
 
     TimeSheetInfo myInformation(segments);
-    const TaskTreeItem& item = dataModel->taskTreeItem( id );
+    const TaskTreeItem &item = dataModel->taskTreeItem(id);
     // real task or virtual root item
-    Q_ASSERT( item.task().isValid() || id == 0 );
+    Q_ASSERT(item.task().isValid() || id == 0);
 
-    if ( id != 0 ) {
+    if (id != 0) {
         // add totals for task itself:
-        if ( secondsMap.contains( id ) ) {
+        if (secondsMap.contains(id))
             myInformation.seconds = secondsMap.value(id);
-        }
         // add name and id:
         myInformation.taskId = item.task().id();
         myInformation.taskName = item.task().name();
 
-        if ( addTo != 0 ) {
+        if (addTo != 0)
             myInformation.indentation = addTo->indentation + 1;
-        }
         myInformation.taskId = id;
     } else {
         myInformation.indentation = -1;
@@ -82,18 +82,15 @@ TimeSheetInfoList TimeSheetInfo::taskWithSubTasks( const CharmDataModel* dataMod
 
     TaskIdList childIds = item.childIds();
     // sort by task id
-    qSort( childIds );
+    qSort(childIds);
     // recursively add those to myself:
-    Q_FOREACH ( const TaskId i, childIds ) {
-        children << taskWithSubTasks( dataModel, segments, i, secondsMap, &myInformation );
-    }
+    Q_FOREACH (const TaskId i, childIds)
+        children << taskWithSubTasks(dataModel, segments, i, secondsMap, &myInformation);
 
     // add to parent:
-    if ( addTo != 0 ) {
-        for ( int i = 0; i < segments; ++i )
-        {
+    if (addTo != 0) {
+        for (int i = 0; i < segments; ++i)
             addTo->seconds[i] += myInformation.seconds[i];
-        }
         addTo->aggregated = true;
     }
 
@@ -104,17 +101,14 @@ TimeSheetInfoList TimeSheetInfo::taskWithSubTasks( const CharmDataModel* dataMod
 
 // retrieve events that match the settings (active, ...):
 TimeSheetInfoList TimeSheetInfo::filteredTaskWithSubTasks(
-    TimeSheetInfoList timeSheetInfo,
-    bool activeTasksOnly )
+    TimeSheetInfoList timeSheetInfo, bool activeTasksOnly)
 {
-    if ( activeTasksOnly ) {
+    if (activeTasksOnly) {
         TimeSheetInfoList nonZero;
         // FIXME use algorithm (I just hate to lug the fat book around)
-        for ( int i = 0; i < timeSheetInfo.size(); ++i )
-        {
-            if ( timeSheetInfo[i].total() > 0 ) {
+        for (int i = 0; i < timeSheetInfo.size(); ++i) {
+            if (timeSheetInfo[i].total() > 0)
                 nonZero << timeSheetInfo[i];
-            }
         }
         timeSheetInfo = nonZero;
     }

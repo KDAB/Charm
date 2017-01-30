@@ -57,56 +57,55 @@ public:
     CharmDataModel();
     ~CharmDataModel() override;
 
-    void stateChanged( State previous, State next );
+    void stateChanged(State previous, State next);
     /** Register a CharmDataModelAdapterInterface. */
-    void registerAdapter( CharmDataModelAdapterInterface* );
+    void registerAdapter(CharmDataModelAdapterInterface *);
     /** Unregister a CharmDataModelAdapterInterface. */
-    void unregisterAdapter( CharmDataModelAdapterInterface* );
+    void unregisterAdapter(CharmDataModelAdapterInterface *);
 
     /** Retrieve a task for the given task id.
         If called with Zero as the task id, it will return the
         imaginary root that has all top-levels as it's children.
     */
-    const TaskTreeItem& taskTreeItem( TaskId id ) const;
+    const TaskTreeItem &taskTreeItem(TaskId id) const;
     /** Convenience method: retrieve the task directly. */
-    const Task& getTask( TaskId id ) const;
+    const Task &getTask(TaskId id) const;
     /** Get all tasks as a TaskList.
         Warning: this might be slow. */
     TaskList getAllTasks() const;
     /** Retrieve an event for the given event id. */
-    const Event& eventForId( EventId id ) const;
+    const Event &eventForId(EventId id) const;
     /** Constant access to the map of events. */
-    const EventMap& eventMap() const;
+    const EventMap &eventMap() const;
     /**
      * Get all events that start in a given time frame (e.g. a given day, a given week etc.)
      * More precisely, all events that start at or after @p start, and start before @p end (@p end excluded!)
      */
-    EventIdList eventsThatStartInTimeFrame( const QDate& start,
-                                            const QDate& end ) const;
+    EventIdList eventsThatStartInTimeFrame(const QDate &start, const QDate &end) const;
     // convenience overload
-    EventIdList eventsThatStartInTimeFrame( const TimeSpan& timeSpan ) const;
-    const Event& activeEventFor ( TaskId id ) const;
+    EventIdList eventsThatStartInTimeFrame(const TimeSpan &timeSpan) const;
+    const Event &activeEventFor(TaskId id) const;
     EventIdList activeEvents() const;
     int activeEventCount() const;
-    TaskTreeItem& parentItem( const Task& task ); // FIXME const???
-    bool taskExists( TaskId id );
+    TaskTreeItem &parentItem(const Task &task);   // FIXME const???
+    bool taskExists(TaskId id);
     /** True if task is in the subtree below parent.
      * parent is not element of the subtree, and thus not it's own child. */
-    bool isParentOf( TaskId parent, TaskId task ) const;
+    bool isParentOf(TaskId parent, TaskId task) const;
 
     // handling of active events:
     /** Is an event active for the task with this id? */
-    bool isTaskActive( TaskId id ) const;
+    bool isTaskActive(TaskId id) const;
     /** Is this event active? */
-    bool isEventActive( EventId id ) const;
+    bool isEventActive(EventId id) const;
     /** Start a new event with this task. */
-    void startEventRequested( const Task& );
+    void startEventRequested(const Task &);
     /** Stop the active event for this task. */
-    void endEventRequested( const Task& );
+    void endEventRequested(const Task &);
     /** Stop all tasks. */
     void endAllEventsRequested();
     /** Activate this event. */
-    bool activateEvent( const Event& );
+    bool activateEvent(const Event &);
 
     /** Provide a list of the most frequently used tasks.
       * Only tasks that have been used so far will be taken into account, so the list might be empty. */
@@ -116,10 +115,10 @@ public:
     TaskIdList mostRecentlyUsedTasks() const;
 
     /** Create a full task name from the specified TaskId. */
-    QString fullTaskName( const Task& ) const;
+    QString fullTaskName(const Task &) const;
 
     /** Create a "smart" task name (name and shortest path that makes the name unique) from the specified TaskId. */
-    QString smartTaskName( const Task& ) const;
+    QString smartTaskName(const Task &) const;
 
     /** Get the task id and full name as a single string. */
     QString taskIdAndFullNameString(TaskId id) const;
@@ -130,35 +129,35 @@ public:
     /** Get the task id and smart name as a single string. */
     QString taskIdAndSmartNameString(TaskId id) const;
 
-    bool operator==( const CharmDataModel& other ) const;
+    bool operator==(const CharmDataModel &other) const;
 
 Q_SIGNALS:
     // these need to be implemented in the respective application to
     // be able to track time:
-    void makeAndActivateEvent( const Task& );
-    void requestEventModification( const Event&, const Event& );
-    void sysTrayUpdate( const QString&, bool );
+    void makeAndActivateEvent(const Task &);
+    void requestEventModification(const Event &, const Event &);
+    void sysTrayUpdate(const QString &, bool);
     void resetGUIState();
 
 public Q_SLOTS:
-    void setAllTasks( const TaskList& tasks );
-    void addTask( const Task& );
-    void modifyTask( const Task& );
-    void deleteTask( const Task& );
+    void setAllTasks(const TaskList &tasks);
+    void addTask(const Task &);
+    void modifyTask(const Task &);
+    void deleteTask(const Task &);
     void clearTasks();
 
-    void setAllEvents( const EventList& events );
-    void addEvent( const Event& );
-    void modifyEvent( const Event& );
-    void deleteEvent( const Event& );
+    void setAllEvents(const EventList &events);
+    void addEvent(const Event &);
+    void modifyEvent(const Event &);
+    void deleteEvent(const Event &);
     void clearEvents();
 
 private:
     void determineTaskPaddingLength();
-    bool eventExists( EventId id );
+    bool eventExists(EventId id);
 
-    Task& findTask( TaskId id );
-    Event& findEvent( EventId id );
+    Task &findTask(TaskId id);
+    Event &findEvent(EventId id);
 
     int totalDuration() const;
     QString eventsString() const;
@@ -182,6 +181,6 @@ private Q_SLOTS:
 
 private:
     // functions only used for testing:
-    CharmDataModel* clone() const;
+    CharmDataModel *clone() const;
 };
 #endif

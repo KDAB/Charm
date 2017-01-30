@@ -23,7 +23,7 @@
 
 #include "State.h"
 
-const char* StateNames[] = {
+const char *StateNames[] = {
     "Constructed",
     "StartingUp",
     "Configuring",
@@ -33,4 +33,3 @@ const char* StateNames[] = {
     "ShuttingDown",
     "Dead", // bad :-)
 };
-

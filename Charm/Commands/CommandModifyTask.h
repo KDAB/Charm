@@ -33,11 +33,11 @@ class CommandModifyTask : public CharmCommand
     Q_OBJECT
 
 public:
-    explicit CommandModifyTask( const Task&, QObject* parent = nullptr );
+    explicit CommandModifyTask(const Task &, QObject *parent = nullptr);
     ~CommandModifyTask() override;
 
     bool prepare() override;
-    bool execute( ControllerInterface* ) override;
+    bool execute(ControllerInterface *) override;
     bool finalize() override;
 
 private:

@@ -28,7 +28,7 @@
 #include <QScopedPointer>
 
 namespace Ui {
-    class CharmAboutDialog;
+class CharmAboutDialog;
 }
 
 class CharmAboutDialog : public QDialog
@@ -36,7 +36,7 @@ class CharmAboutDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit CharmAboutDialog( QWidget* parent = nullptr );
+    explicit CharmAboutDialog(QWidget *parent = nullptr);
     ~CharmAboutDialog() override;
 
 private:

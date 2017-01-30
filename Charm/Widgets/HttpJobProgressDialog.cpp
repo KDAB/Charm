@@ -25,16 +25,16 @@
 #include <QInputDialog>
 #include <QLineEdit>
 
-HttpJobProgressDialog::HttpJobProgressDialog( HttpJob* job, QWidget* parent )
+HttpJobProgressDialog::HttpJobProgressDialog(HttpJob *job, QWidget *parent)
     : QProgressDialog(parent)
-    , m_job( job )
+    , m_job(job)
 {
-    setLabelText( tr("Wait...") );
+    setLabelText(tr("Wait..."));
 
     Q_ASSERT(job);
-    connect( job, SIGNAL(finished(HttpJob*)), this, SLOT(jobFinished(HttpJob*)) );
-    connect( job, SIGNAL(transferStarted()), this, SLOT(jobTransferStarted()) );
-    connect( job, SIGNAL(passwordRequested()), this, SLOT(jobPasswordRequested()) );
+    connect(job, SIGNAL(finished(HttpJob*)), this, SLOT(jobFinished(HttpJob*)));
+    connect(job, SIGNAL(transferStarted()), this, SLOT(jobTransferStarted()));
+    connect(job, SIGNAL(passwordRequested()), this, SLOT(jobPasswordRequested()));
 }
 
 void HttpJobProgressDialog::jobTransferStarted()
@@ -42,7 +42,7 @@ void HttpJobProgressDialog::jobTransferStarted()
     show();
 }
 
-void HttpJobProgressDialog::jobFinished( HttpJob* )
+void HttpJobProgressDialog::jobFinished(HttpJob *)
 {
     deleteLater();
 }
@@ -50,12 +50,15 @@ void HttpJobProgressDialog::jobFinished( HttpJob* )
 void HttpJobProgressDialog::jobPasswordRequested()
 {
     bool ok;
-    QPointer<QObject> that( this ); //guard against destruction while dialog is open
-    const QString newpass = QInputDialog::getText( parentWidget(), tr("Password"), tr("Please enter your lotsofcake password"), QLineEdit::Password, m_job->password(), &ok );
-    if ( !that )
+    QPointer<QObject> that(this);   //guard against destruction while dialog is open
+    const QString newpass
+        = QInputDialog::getText(parentWidget(), tr("Password"), tr(
+                                    "Please enter your lotsofcake password"), QLineEdit::Password,
+                                m_job->password(), &ok);
+    if (!that)
         return;
-    if ( ok ) {
-        m_job->provideRequestedPassword( newpass );
+    if (ok) {
+        m_job->provideRequestedPassword(newpass);
     } else {
         m_job->passwordRequestCanceled();
     }

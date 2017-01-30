@@ -37,7 +37,7 @@ class X11IdleDetector : public IdleDetector
 {
     Q_OBJECT
 public:
-    explicit X11IdleDetector( QObject* parent );
+    explicit X11IdleDetector(QObject *parent);
     bool idleCheckPossible();
 
 protected:
@@ -50,11 +50,9 @@ private:
     QDateTime m_heartbeat;
     QTimer m_timer;
 #if defined(Q_OS_UNIX) && !defined(Q_OS_OSX)
-    xcb_connection_t* m_connection;
-    xcb_screen_t* m_screen;
+    xcb_connection_t *m_connection;
+    xcb_screen_t *m_screen;
 #endif
 };
 
-
 #endif /* X11IDLEDETECTOR_H */
-
