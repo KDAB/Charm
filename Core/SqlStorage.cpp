@@ -45,7 +45,6 @@
 // SqlStorage class
 
 SqlStorage::SqlStorage()
-    : StorageInterface()
 {
 }
 

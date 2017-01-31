@@ -32,7 +32,7 @@
 #include "Event.h"
 #include "SqLiteStorage.h"
 #include "SqlRaiiTransactor.h"
-#include "StorageInterface.h"
+#include "SqlStorage.h"
 #include "Task.h"
 
 #include <QtDebug>
@@ -320,7 +320,7 @@ void Controller::rollbackCommand(CharmCommand *command)
     emit commandCompleted(command);
 }
 
-StorageInterface *Controller::storage()
+SqlStorage *Controller::storage()
 {
     return m_storage;
 }

@@ -27,7 +27,7 @@
 #include <QObject>
 
 #include "Core/Configuration.h"
-#include "Core/StorageInterface.h"
+#include "Core/SqlStorage.h"
 
 class SqLiteStorageTests : public QObject
 {
@@ -37,7 +37,7 @@ public:
     ~SqLiteStorageTests() override;
 
 private:
-    StorageInterface *m_storage;
+    SqlStorage *m_storage;
     Configuration m_configuration;
     QString m_localPath;
 

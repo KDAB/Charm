@@ -36,7 +36,7 @@
 #include "Core/TimeSpans.h"
 #include "Core/Controller.h"
 #include "Core/Configuration.h"
-#include "Core/StorageInterface.h"
+#include "Core/SqlStorage.h"
 #include "Core/ViewInterface.h"
 
 #include "Widgets/CharmWindow.h"

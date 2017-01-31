@@ -26,7 +26,7 @@
 
 #include "ControllerTests.h"
 
-#include "Core/StorageInterface.h"
+#include "Core/SqlStorage.h"
 #include "Core/CharmConstants.h"
 #include "Core/Controller.h"
 

@@ -24,7 +24,7 @@
 #include "CommandModifyEvent.h"
 
 #include "Core/Controller.h"
-#include "Core/StorageInterface.h"
+#include "Core/SqlStorage.h"
 
 CommandModifyEvent::CommandModifyEvent(const Event &event, const Event &oldEvent, QObject *parent)
     : CharmCommand(tr("Modify Event"), parent)

@@ -28,7 +28,7 @@
 #include "Core/TaskTreeItem.h"
 #include "Core/Configuration.h"
 #include "Core/CharmDataModel.h"
-#include "Core/StorageInterface.h"
+#include "Core/SqlStorage.h"
 
 #include <QDir>
 #include <QFileInfo>

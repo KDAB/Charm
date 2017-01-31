@@ -34,7 +34,7 @@
 
 class CharmCommand;
 class Configuration;
-class StorageInterface;
+class SqlStorage;
 
 class Controller : public QObject
 {
@@ -64,7 +64,7 @@ public:
     bool disconnectFromBackend();
 
     /** The currently used backend. */
-    StorageInterface *storage();
+    SqlStorage *storage();
 
     // FIXME add the add/modify/delete functions will not be slots anymore
 
@@ -153,7 +153,7 @@ private:
     void updateSubscriptionForTask(const Task &);
 
     template<class T> void loadConfigValue(const QString &key, T &configValue) const;
-    StorageInterface *m_storage = nullptr;
+    SqlStorage *m_storage = nullptr;
 };
 
 #endif
