@@ -25,7 +25,7 @@
 #include "CommandExportToXml.h"
 
 #include "Core/CharmExceptions.h"
-#include "Core/ControllerInterface.h"
+#include "Core/Controller.h"
 
 #include <QDomDocument>
 #include <QFile>
@@ -46,7 +46,7 @@ bool CommandExportToXml::prepare()
     return true;
 }
 
-bool CommandExportToXml::execute(ControllerInterface *controller)
+bool CommandExportToXml::execute(Controller *controller)
 {
     try {
         QDomDocument document = controller->exportDatabasetoXml();

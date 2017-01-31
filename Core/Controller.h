@@ -28,62 +28,126 @@
 
 #include <QObject>
 
-#include "Task.h"
 #include "Event.h"
-#include "ControllerInterface.h"
+#include "Task.h"
+#include "State.h"
 
+class CharmCommand;
+class Configuration;
 class StorageInterface;
 
-class Controller : public QObject, public ControllerInterface
+class Controller : public QObject
 {
     Q_OBJECT
 
 public:
     explicit Controller(QObject *parent = nullptr);
-    ~Controller() override;
+    ~Controller();
 
-    void stateChanged(State previous, State next) override;
-    void persistMetaData(Configuration &) override;
-    void provideMetaData(Configuration &) override;
+    // application:
+    // react on application state changes
+    void stateChanged(State previous, State next);
 
-    bool initializeBackEnd(const QString &name) override;
-    bool connectToBackend() override;
-    bool disconnectFromBackend() override;
-    StorageInterface *storage() override;
+    // persist meta data portions of Configuration
+    void persistMetaData(Configuration &);
+
+    // load meta data and store appropriate portions in configuration
+    void provideMetaData(Configuration &);
+
+    /** Create the backend. */
+    bool initializeBackEnd(const QString &name);
+
+    /** Connect to the backend (make it available). */
+    bool connectToBackend();
+
+    /** Disconnect from the backend (shut it down). */
+    bool disconnectFromBackend();
+
+    /** The currently used backend. */
+    StorageInterface *storage();
 
     // FIXME add the add/modify/delete functions will not be slots anymore
-    Event makeEvent(const Task &) override;
-    Event cloneEvent(const Event &) override;
-    bool modifyEvent(const Event &) override;
-    bool deleteEvent(const Event &) override;
 
-    bool addTask(const Task &parent) override;
-    bool modifyTask(const Task &) override;
-    bool deleteTask(const Task &) override;
-    bool setAllTasks(const TaskList &) override;
-    QDomDocument exportDatabasetoXml() const override;
-    QString importDatabaseFromXml(const QDomDocument &) override;
+    /** Add an event.
+        Return a valid event if successful. */
+    Event makeEvent(const Task &);
+
+    /** Add an event, copying data from another event. */
+    Event cloneEvent(const Event &);
+
+    /** Modify an event. */
+    bool modifyEvent(const Event &);
+
+    /** Delete an event. */
+    bool deleteEvent(const Event &);
+
+    /** Add a task, and send the result to the view as a signal. */
+    bool addTask(const Task &parent);
+
+    /** Modify the task, the user has changed it in the view. */
+    bool modifyTask(const Task &);
+
+    /** Delete the task. Send a signal to the view confirming it. */
+    bool deleteTask(const Task &);
+
+    /** Set all tasks. Updates the view, after. */
+    bool setAllTasks(const TaskList &);
+
+    /** Export the database contents into a XML document. */
+    QDomDocument exportDatabasetoXml() const;
+
+    /** Import the content of the Xml document into the currently open database.
+     *  This will modify the database.
+     *  @return An empty string on no error, an human-readable error message otherwise.
+     */
+    QString importDatabaseFromXml(const QDomDocument &);
 
     void updateModelEventsAndTasks();
 
 public Q_SLOTS:
+    /** Receive a command from the view. */
+    void executeCommand(CharmCommand *);
 
-    void executeCommand(CharmCommand *) override;
-    void rollbackCommand(CharmCommand *) override;
+    /** Receive an undo command from the view. */
+    void rollbackCommand(CharmCommand *);
 
 Q_SIGNALS:
-    void eventAdded(const Event &event) override;
-    void eventModified(const Event &event) override;
-    void eventDeleted(const Event &event) override;
+    /** Added an event. */
+    void eventAdded(const Event &event);
+
+    /** Modified an event. */
+    void eventModified(const Event &event);
+
+    /** Deleted an event. */
+    void eventDeleted(const Event &event);
+
     void allEvents(const EventList &);
-    void definedTasks(const TaskList &) override;
-    void taskAdded(const Task &) override;
-    void taskUpdated(const Task &) override;
-    void taskDeleted(const Task &) override;
-    void readyToQuit() override;
+
+    /** This sends out the current task list. */
+    void definedTasks(const TaskList &);
+
+    /** Add a task. */
+    void taskAdded(const Task &);
+
+    /** Update a task in the view. */
+    void taskUpdated(const Task &);
+
+    /** Delete a task from the view completely. */
+    void taskDeleted(const Task &);
+
+    /** This tells the application that the controller is ready to quit.
+        When the user quits the application, the application will tell
+        the controller to end and commit all active events.
+        The controller will emit readyToQuit() when all data is
+        stored.
+        The controller will leave Disconnecting state when it receives
+        the signal. */
+    void readyToQuit();
+
     void currentBackendStatus(const QString &text);
 
-    void commandCompleted(CharmCommand *) override;
+    /** A command has been completed from the controller's point of view. */
+    void commandCompleted(CharmCommand *);
 
 private:
     void updateSubscriptionForTask(const Task &);

@@ -50,7 +50,7 @@ QString CharmCommand::description() const
     return m_description;
 }
 
-bool CharmCommand::rollback(ControllerInterface *)
+bool CharmCommand::rollback(Controller *)
 {
     return false;
 }

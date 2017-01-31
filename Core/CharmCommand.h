@@ -28,7 +28,7 @@
 #include <QObject>
 
 class View;
-class ControllerInterface;
+class Controller;
 class CommandEmitterInterface;
 
 /** CharmCommand encapsulates a command the view sends to the controller.
@@ -68,8 +68,8 @@ public:
     QString description() const;
 
     virtual bool prepare() = 0;
-    virtual bool execute(ControllerInterface *controller) = 0;
-    virtual bool rollback(ControllerInterface *controller);
+    virtual bool execute(Controller *controller) = 0;
+    virtual bool rollback(Controller *controller);
     virtual bool finalize() = 0;
 
     CommandEmitterInterface *owner() const;

@@ -23,7 +23,7 @@
 */
 
 #include "CommandImportFromXml.h"
-#include "Core/ControllerInterface.h"
+#include "Core/Controller.h"
 
 #include <QDomDocument>
 #include <QFile>
@@ -43,7 +43,7 @@ bool CommandImportFromXml::prepare()
     return true;
 }
 
-bool CommandImportFromXml::execute(ControllerInterface *controller)
+bool CommandImportFromXml::execute(Controller *controller)
 {
     QFile file(m_filename);
     if (file.open(QIODevice::ReadOnly)) {

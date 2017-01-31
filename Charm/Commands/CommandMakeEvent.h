@@ -40,8 +40,8 @@ public:
     ~CommandMakeEvent() override;
 
     bool prepare() override;
-    bool execute(ControllerInterface *) override;
-    bool rollback(ControllerInterface *) override;
+    bool execute(Controller *) override;
+    bool rollback(Controller *) override;
     bool finalize() override;
 
 public Q_SLOTS:

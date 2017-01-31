@@ -26,7 +26,7 @@
 #include "ViewHelpers.h"
 
 #include "Core/CharmConstants.h"
-#include "Core/ControllerInterface.h"
+#include "Core/Controller.h"
 
 CommandDeleteTask::CommandDeleteTask(const Task &task, QObject *parent)
     : CharmCommand(tr("Delete Task"), parent)
@@ -43,7 +43,7 @@ bool CommandDeleteTask::prepare()
     return true;
 }
 
-bool CommandDeleteTask::execute(ControllerInterface *controller)
+bool CommandDeleteTask::execute(Controller *controller)
 {
     m_success = controller->deleteTask(m_task);
     return m_success;

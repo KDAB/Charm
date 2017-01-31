@@ -23,7 +23,7 @@
 
 #include "CommandAddTask.h"
 
-#include "Core/ControllerInterface.h"
+#include "Core/Controller.h"
 #include "Core/CommandEmitterInterface.h"
 
 CommandAddTask::CommandAddTask(const Task &task, QObject *parent)
@@ -41,7 +41,7 @@ bool CommandAddTask::prepare()
     return true;
 }
 
-bool CommandAddTask::execute(ControllerInterface *controller)
+bool CommandAddTask::execute(Controller *controller)
 {
     m_success = controller->addTask(m_task);
     return m_success;

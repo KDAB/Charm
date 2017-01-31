@@ -36,7 +36,7 @@ public:
     ~CommandImportFromXml() override;
 
     bool prepare() override;
-    bool execute(ControllerInterface *) override;
+    bool execute(Controller *) override;
     bool finalize() override;
 
 private:

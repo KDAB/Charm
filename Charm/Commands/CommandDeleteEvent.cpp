@@ -22,7 +22,7 @@
 */
 
 #include "CommandDeleteEvent.h"
-#include "Core/ControllerInterface.h"
+#include "Core/Controller.h"
 
 CommandDeleteEvent::CommandDeleteEvent(const Event &event, QObject *parent)
     : CharmCommand(tr("Delete Event"), parent)
@@ -39,12 +39,12 @@ bool CommandDeleteEvent::prepare()
     return true;
 }
 
-bool CommandDeleteEvent::execute(ControllerInterface *controller)
+bool CommandDeleteEvent::execute(Controller *controller)
 {
     return controller->deleteEvent(m_event);
 }
 
-bool CommandDeleteEvent::rollback(ControllerInterface *controller)
+bool CommandDeleteEvent::rollback(Controller *controller)
 {
     int oldId = m_event.id();
     m_event = controller->cloneEvent(m_event);

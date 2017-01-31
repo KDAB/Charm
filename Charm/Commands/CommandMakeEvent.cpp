@@ -23,7 +23,7 @@
 */
 
 #include "CommandMakeEvent.h"
-#include "Core/ControllerInterface.h"
+#include "Core/Controller.h"
 #include "Widgets/EventView.h"
 
 #include <QDateTime>
@@ -49,7 +49,7 @@ bool CommandMakeEvent::prepare()
     return true;
 }
 
-bool CommandMakeEvent::execute(ControllerInterface *controller)
+bool CommandMakeEvent::execute(Controller *controller)
 {
     m_rollback = false;
 
@@ -87,7 +87,7 @@ bool CommandMakeEvent::execute(ControllerInterface *controller)
     }
 }
 
-bool CommandMakeEvent::rollback(ControllerInterface *controller)
+bool CommandMakeEvent::rollback(Controller *controller)
 {
     m_rollback = true;
     return controller->deleteEvent(m_event);

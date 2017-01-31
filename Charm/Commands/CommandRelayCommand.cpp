@@ -51,12 +51,12 @@ bool CommandRelayCommand::prepare()
     return true;
 }
 
-bool CommandRelayCommand::execute(ControllerInterface *controller)
+bool CommandRelayCommand::execute(Controller *controller)
 {
     return m_payload->execute(controller);
 }
 
-bool CommandRelayCommand::rollback(ControllerInterface *controller)
+bool CommandRelayCommand::rollback(Controller *controller)
 {
     return m_payload->rollback(controller);
 }

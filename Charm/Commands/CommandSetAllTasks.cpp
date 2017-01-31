@@ -23,7 +23,7 @@
 */
 
 #include "CommandSetAllTasks.h"
-#include "Core/ControllerInterface.h"
+#include "Core/Controller.h"
 
 CommandSetAllTasks::CommandSetAllTasks(const TaskList &tasks, QObject *parent)
     : CharmCommand(tr("Import Tasks"), parent)
@@ -40,7 +40,7 @@ bool CommandSetAllTasks::prepare()
     return true;
 }
 
-bool CommandSetAllTasks::execute(ControllerInterface *controller)
+bool CommandSetAllTasks::execute(Controller *controller)
 {
     m_success = controller->setAllTasks(m_tasks);
     return m_success;

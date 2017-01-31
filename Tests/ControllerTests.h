@@ -27,7 +27,7 @@
 #include <QObject>
 
 #include "Core/Configuration.h"
-#include "Core/ControllerInterface.h"
+#include "Core/Controller.h"
 
 class ControllerTests : public QObject
 {
@@ -67,7 +67,7 @@ private Q_SLOTS:
 
 private:
 
-    ControllerInterface *m_controller = nullptr;
+    Controller *m_controller = nullptr;
     Configuration &m_configuration;
     QString m_localPath;
     EventList m_currentEvents;

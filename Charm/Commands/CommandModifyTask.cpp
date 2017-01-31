@@ -23,7 +23,7 @@
 */
 
 #include "CommandModifyTask.h"
-#include "Core/ControllerInterface.h"
+#include "Core/Controller.h"
 
 CommandModifyTask::CommandModifyTask(const Task &task, QObject *parent)
     : CharmCommand(tr("Edit Task"), parent)
@@ -40,7 +40,7 @@ bool CommandModifyTask::prepare()
     return true;
 }
 
-bool CommandModifyTask::execute(ControllerInterface *controller)
+bool CommandModifyTask::execute(Controller *controller)
 {
     m_success = controller->modifyTask(m_task);
     return m_success;

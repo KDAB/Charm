@@ -26,7 +26,7 @@
 
 #include "Core/CharmDataModel.h"
 #include "Core/CommandEmitterInterface.h"
-#include "Core/ControllerInterface.h"
+#include "Core/Controller.h"
 
 #include <QDateTime>
 
@@ -45,7 +45,7 @@ bool CommandMakeAndActivateEvent::prepare()
     return true;
 }
 
-bool CommandMakeAndActivateEvent::execute(ControllerInterface *controller)
+bool CommandMakeAndActivateEvent::execute(Controller *controller)
 {
     m_event = controller->makeEvent(m_task);
     if (m_event.isValid()) {

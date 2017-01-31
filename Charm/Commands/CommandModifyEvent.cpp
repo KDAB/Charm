@@ -23,7 +23,7 @@
 
 #include "CommandModifyEvent.h"
 
-#include "Core/ControllerInterface.h"
+#include "Core/Controller.h"
 #include "Core/StorageInterface.h"
 
 CommandModifyEvent::CommandModifyEvent(const Event &event, const Event &oldEvent, QObject *parent)
@@ -42,12 +42,12 @@ bool CommandModifyEvent::prepare()
     return true;
 }
 
-bool CommandModifyEvent::execute(ControllerInterface *controller)
+bool CommandModifyEvent::execute(Controller *controller)
 {
     return controller->modifyEvent(m_event);
 }
 
-bool CommandModifyEvent::rollback(ControllerInterface *controller)
+bool CommandModifyEvent::rollback(Controller *controller)
 {
     return controller->modifyEvent(m_oldEvent);
 }
