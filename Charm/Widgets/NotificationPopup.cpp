@@ -64,5 +64,3 @@ void NotificationPopup::mousePressEvent(QMouseEvent *)
 {
     close();
 }
-
-#include "moc_NotificationPopup.cpp"

@@ -259,5 +259,3 @@ void SelectTaskDialog::setNonValidSelectable()
 {
     m_nonValidSelectable = true;
 }
-
-#include "moc_SelectTaskDialog.cpp"

@@ -186,5 +186,3 @@ void XmlSerializationTests::testTaskExportImport()
 }
 
 QTEST_MAIN(XmlSerializationTests)
-
-#include "moc_XmlSerializationTests.cpp"

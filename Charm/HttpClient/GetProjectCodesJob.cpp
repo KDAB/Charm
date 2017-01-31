@@ -93,5 +93,3 @@ bool GetProjectCodesJob::isVerbose() const
 {
     return m_verbose;
 }
-
-#include "moc_GetProjectCodesJob.cpp"

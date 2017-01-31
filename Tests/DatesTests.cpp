@@ -109,5 +109,3 @@ void DatesTests::testWeekDifference()
 }
 
 QTEST_MAIN(DatesTests)
-
-#include "moc_DatesTests.cpp"

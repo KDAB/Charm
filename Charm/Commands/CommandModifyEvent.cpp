@@ -64,5 +64,3 @@ void CommandModifyEvent::eventIdChanged(int oid, int nid)
         m_oldEvent.setId(nid);
     }
 }
-
-#include "moc_CommandModifyEvent.cpp"

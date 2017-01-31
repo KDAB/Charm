@@ -121,5 +121,3 @@ int TestApplication::testInstallationId() const
 {
     return 1;
 }
-
-#include "moc_TestApplication.cpp"

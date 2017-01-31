@@ -124,5 +124,3 @@ void ImportExportTests::importDatabase(const QString &filename)
 }
 
 QTEST_MAIN(ImportExportTests)
-
-#include "moc_ImportExportTests.cpp"

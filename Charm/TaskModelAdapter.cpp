@@ -379,5 +379,3 @@ void TaskModelAdapter::commitCommand(CharmCommand *command)
     Q_ASSERT(command->owner() == this);
     command->finalize();
 }
-
-#include "moc_TaskModelAdapter.cpp"

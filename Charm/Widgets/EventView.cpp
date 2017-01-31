@@ -569,5 +569,3 @@ void EventView::slotEventChangesCompleted(const Event &event)
     emitCommand(command);
     delete command;
 }
-
-#include "moc_EventView.cpp"

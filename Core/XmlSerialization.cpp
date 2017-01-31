@@ -162,12 +162,13 @@ void TaskExport::readFrom(QIODevice *device)
     QString errorMessage;
     int errorLine = 0;
     int errorColumn = 0;
-    if (!document.setContent(device, &errorMessage, &errorLine, &errorColumn))
+    if (!document.setContent(device, &errorMessage, &errorLine, &errorColumn)) {
         throw XmlSerializationException(QObject::tr("Invalid XML: [%1:%2] %3").arg(QString::number(
                                                                                        errorLine),
                                                                                    QString::number(
                                                                                        errorColumn),
-        errorMessage));
+                                                                                   errorMessage));
+    }
 
     // now read and check for the correct report type
     QDomElement rootElement = document.documentElement();

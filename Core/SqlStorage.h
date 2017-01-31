@@ -99,7 +99,6 @@ public:
     bool deleteAllEvents();
     bool deleteAllEvents(const SqlRaiiTransactor &);
 
-
     // subscription management functions
     // (subscriptions cannot be modified, they are just boolean flags)
     // (subscription status is retrieved with the tasks)
@@ -112,7 +111,6 @@ public:
 
     // database metadata management functions
     QString getMetaData(const QString &);
-
 
     /*! @brief update all tasks and events in a single-transaction during imports
       @return an empty String on success, an error message otherwise

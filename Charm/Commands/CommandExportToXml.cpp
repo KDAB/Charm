@@ -74,5 +74,3 @@ bool CommandExportToXml::finalize()
                      tr("The database could not be exported:\n%1").arg(m_errorString));
     return !m_error;
 }
-
-#include "moc_CommandExportToXml.cpp"

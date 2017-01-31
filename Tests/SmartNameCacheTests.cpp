@@ -50,5 +50,3 @@ void SmartNameCacheTests::testCache()
 }
 
 QTEST_MAIN(SmartNameCacheTests)
-
-#include "moc_SmartNameCacheTests.cpp"

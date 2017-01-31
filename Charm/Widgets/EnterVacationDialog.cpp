@@ -225,5 +225,3 @@ EventList EnterVacationDialog::events() const
 {
     return m_events;
 }
-
-#include "moc_EnterVacationDialog.cpp"

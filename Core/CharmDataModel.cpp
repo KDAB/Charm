@@ -742,5 +742,3 @@ CharmDataModel *CharmDataModel::clone() const
     c->m_activeEventIds = m_activeEventIds;
     return c;
 }
-
-#include "moc_CharmDataModel.cpp"

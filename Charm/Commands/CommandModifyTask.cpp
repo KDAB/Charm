@@ -54,5 +54,3 @@ bool CommandModifyTask::finalize()
     }
     return m_success;
 }
-
-#include "moc_CommandModifyTask.cpp"

@@ -275,5 +275,3 @@ void CharmWindow::restoreGuiState()
         setVisible(visible);
     }
 }
-
-#include "moc_CharmWindow.cpp"

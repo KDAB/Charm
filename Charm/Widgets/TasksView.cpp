@@ -444,5 +444,3 @@ Task TasksView::selectedTask()
         return Task();
     }
 }
-
-#include "moc_TasksView.cpp"

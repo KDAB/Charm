@@ -146,7 +146,7 @@ int main(int argc, char **argv)
              << "   * TimesheetGenerator -h                              <-- get help"
              << endl
              <<
-        "   * TimesheetGenerator -f template-filename -d date    <-- generate timesheets from template for that date"
+            "   * TimesheetGenerator -f template-filename -d date    <-- generate timesheets from template for that date"
              << endl;
         return 1;
     } catch (TimesheetGenerator::Exception &e) {

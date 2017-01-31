@@ -55,5 +55,3 @@ bool CommandDeleteTask::finalize()
         showInformation(tr("Unable to delete task"), tr("Deleting the task failed"));
     return m_success;
 }
-
-#include "moc_CommandDeleteTask.cpp"

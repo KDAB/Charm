@@ -263,15 +263,15 @@ void CommandLine::usage()
          << "   * TimesheetProzessor -a filename -u userid -m comment  <-- add timesheet from file"
          << endl
          <<
-    "   * TimesheetProzessor -r -i index -u userid                      <-- remove timesheet at index"
+        "   * TimesheetProzessor -r -i index -u userid                      <-- remove timesheet at index"
          << endl
          <<
-    "   * TimesheetProzessor -c username                                <-- create user if user does not exist"
+        "   * TimesheetProzessor -c username                                <-- create user if user does not exist"
          << endl
          <<
-    "   * TimesheetProzessor -x filename                                <-- export project codes to XML file"
+        "   * TimesheetProzessor -x filename                                <-- export project codes to XML file"
          << endl
          <<
-    "   * TimesheetProzessor -z                                         <-- initialize database (careful!)"
+        "   * TimesheetProzessor -z                                         <-- initialize database (careful!)"
          << endl;
 }

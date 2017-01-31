@@ -292,5 +292,3 @@ void TimeTrackingTaskSelector::showEvent(QShowEvent *e)
     updateThumbBar();
     QWidget::showEvent(e);
 }
-
-#include "moc_TimeTrackingTaskSelector.cpp"

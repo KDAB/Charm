@@ -153,5 +153,3 @@ void ViewFilter::commitCommand(CharmCommand *command)
 {   // we do not emit signals, we are the relay (since we are a proxy):
     m_model.commitCommand(command);
 }
-
-#include "moc_ViewFilter.cpp"

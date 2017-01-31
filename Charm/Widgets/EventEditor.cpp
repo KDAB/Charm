@@ -267,5 +267,3 @@ void EventEditor::endToNowButtonClicked()
     m_event.setEndDateTime(QDateTime::currentDateTime());
     updateValues();
 }
-
-#include "moc_EventEditor.cpp"

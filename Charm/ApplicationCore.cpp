@@ -868,5 +868,3 @@ void ApplicationCore::slotShowEventEditor()
     m_eventView.raise();
     m_eventView.activateWindow();
 }
-
-#include "moc_ApplicationCore.cpp"

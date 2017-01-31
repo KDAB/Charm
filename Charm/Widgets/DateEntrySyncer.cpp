@@ -81,5 +81,3 @@ void DateEntrySyncer::dateSelectionChanged()
         m_year->blockSignals(false);
     }
 }
-
-#include "moc_DateEntrySyncer.cpp"

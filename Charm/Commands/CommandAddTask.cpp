@@ -53,5 +53,3 @@ bool CommandAddTask::finalize()
         showInformation(tr("Unable to add task"), tr("Adding the task failed."));
     return m_success;
 }
-
-#include "moc_CommandAddTask.cpp"

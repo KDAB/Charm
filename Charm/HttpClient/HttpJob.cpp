@@ -381,5 +381,3 @@ void HttpJob::setErrorFromReplyAndEmitFinished(QNetworkReply *reply)
         break;
     }
 }
-
-#include "moc_HttpJob.cpp"

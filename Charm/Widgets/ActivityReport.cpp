@@ -268,7 +268,7 @@ void ActivityReport::slotUpdate()
     } else {
         matchingEvents = Charm::eventIdsSortedBy(matchingEvents,
                                                  Charm::SortOrderList()
-        << Charm::SortOrder::StartTime);
+                                                 << Charm::SortOrder::StartTime);
     }
 
     // filter unproductive events:
@@ -489,41 +489,41 @@ void ActivityReport::slotLinkClicked(const QUrl &which)
     switch (m_properties.timeSpanSelection.timeSpanType) {
     case Day:
         m_properties.start = which.toString()
-                             == QLatin1String("Previous") ? m_properties.start.addDays(-1) :
-                             m_properties.start.addDays(1);
+                             == QLatin1String("Previous") ? m_properties.start.addDays(-1)
+                             : m_properties.start.addDays(1);
         m_properties.end = which.toString() == QLatin1String("Previous") ? m_properties.end.addDays(
             -1) : m_properties.end.addDays(1);
         break;
     case Week:
         m_properties.start = which.toString()
-                             == QLatin1String("Previous") ? m_properties.start.addDays(-7) :
-                             m_properties.start.addDays(7);
+                             == QLatin1String("Previous") ? m_properties.start.addDays(-7)
+                             : m_properties.start.addDays(7);
         m_properties.end = which.toString() == QLatin1String("Previous") ? m_properties.end.addDays(
             -7) : m_properties.end.addDays(7);
         break;
     case Month:
         m_properties.start = which.toString()
-                             == QLatin1String("Previous") ? m_properties.start.addMonths(-1) :
-                             m_properties.start.
+                             == QLatin1String("Previous") ? m_properties.start.addMonths(-1)
+                             : m_properties.start.
                              addMonths(1);
         m_properties.end = which.toString()
-                           == QLatin1String("Previous") ? m_properties.end.addMonths(-1) :
-                           m_properties.end.addMonths(1);
+                           == QLatin1String("Previous") ? m_properties.end.addMonths(-1)
+                           : m_properties.end.addMonths(1);
     case Year:
         m_properties.start = which.toString()
-                             == QLatin1String("Previous") ? m_properties.start.addYears(-1) :
-                             m_properties.start.addYears(
+                             == QLatin1String("Previous") ? m_properties.start.addYears(-1)
+                             : m_properties.start.addYears(
             1);
         m_properties.end = which.toString()
-                           == QLatin1String("Previous") ? m_properties.end.addYears(-1) :
-                           m_properties.end.addYears(1);
+                           == QLatin1String("Previous") ? m_properties.end.addYears(-1)
+                           : m_properties.end.addYears(1);
         break;
     case Range:
     {
         int spanRange = m_properties.start.daysTo(m_properties.end);
         m_properties.start = which.toString()
-                             == QLatin1String("Previous") ? m_properties.start.addDays(-spanRange) :
-                             m_properties.
+                             == QLatin1String("Previous") ? m_properties.start.addDays(-spanRange)
+                             : m_properties.
                              start.addDays(spanRange);
         m_properties.end = which.toString() == QLatin1String("Previous") ? m_properties.end.addDays(
             -spanRange) : m_properties.end.addDays(spanRange);
@@ -534,5 +534,3 @@ void ActivityReport::slotLinkClicked(const QUrl &which)
     }
     setReportProperties(m_properties);
 }
-
-#include "moc_ActivityReport.cpp"

@@ -196,5 +196,3 @@ void DateChangeWatcher::slotTimeout()
     m_today = today;
     emit dateChanged();
 }
-
-#include "moc_TimeSpans.cpp"

@@ -152,5 +152,3 @@ void FindAndReplaceEventsDialog::selectTask(SelectTaskType type)
 
     searchProjectCode();
 }
-
-#include "moc_FindAndReplaceEventsDialog.cpp"

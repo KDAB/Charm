@@ -431,5 +431,3 @@ bool TimeTrackingView::taskIsValidAndTrackable(int taskId)
     }
     return true;
 }
-
-#include "moc_TimeTrackingView.cpp"

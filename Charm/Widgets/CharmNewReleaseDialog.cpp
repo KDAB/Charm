@@ -69,11 +69,12 @@ void CharmNewReleaseDialog::setReleaseInformationLink(const QString &link)
 
 void CharmNewReleaseDialog::slotLaunchBrowser()
 {
-    if (!QDesktopServices::openUrl(m_link))
+    if (!QDesktopServices::openUrl(m_link)) {
         QMessageBox::warning(this, tr("Warning"),
                              tr(
                                  "Could not open url: %1 in your browser, please go to the Charm download page manually!").arg(
                                  m_link.toString()));
+    }
     accept();
 }
 
@@ -94,5 +95,3 @@ void CharmNewReleaseDialog::slotRemindMe()
 CharmNewReleaseDialog::~CharmNewReleaseDialog()
 {
 }
-
-#include "moc_CharmNewReleaseDialog.cpp"

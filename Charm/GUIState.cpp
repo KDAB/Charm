@@ -87,9 +87,8 @@ void GUIState::saveTo(QSettings &settings)
 
 void GUIState::loadFrom(const QSettings &settings)
 {
-    if (settings.contains(MetaKey_MainWindowGUIStateSelectedTask)) {
+    if (settings.contains(MetaKey_MainWindowGUIStateSelectedTask))
         setSelectedTask(settings.value(MetaKey_MainWindowGUIStateSelectedTask).value<TaskId>());
-    }
     if (settings.contains(MetaKey_MainWindowGUIStateExpandedTasks)) {
         // workaround for not getting QVariant serialization of TaskIdLists to work:
         QList<QVariant> values(settings.value(

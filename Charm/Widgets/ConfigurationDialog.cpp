@@ -80,5 +80,3 @@ void ConfigurationDialog::checkInput()
                     && !m_ui.nameLineEdit->text().isEmpty();
     m_ui.buttonBox->button(QDialogButtonBox::Ok)->setEnabled(ok);
 }
-
-#include "moc_ConfigurationDialog.cpp"

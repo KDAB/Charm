@@ -113,6 +113,7 @@ void TaskListMerger::verifyTaskList(const TaskList &tasks)
     if (!Task::checkForTreeness(tasks))
         throw InvalidTaskListException(QObject::tr(
                                            "task list is not a directed graph, this is seriously bad, go fix it"));
+
 }
 
 TaskList TaskListMerger::addedTasks() const

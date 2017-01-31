@@ -113,5 +113,3 @@ void CommandMakeEvent::eventIdChanged(int oid, int nid)
     if (m_event.id() == oid)
         m_event.setId(nid);
 }
-
-#include "moc_CommandMakeEvent.cpp"

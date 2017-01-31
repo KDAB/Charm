@@ -195,5 +195,3 @@ double EventEditorDelegate::logDuration(int duration) const
         return 0.2 * (1.0 + value);
     }
 }
-
-#include "moc_EventEditorDelegate.cpp"

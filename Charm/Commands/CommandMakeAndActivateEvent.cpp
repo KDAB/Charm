@@ -68,5 +68,3 @@ bool CommandMakeAndActivateEvent::finalize()
         return false;
     }
 }
-
-#include "moc_CommandMakeAndActivateEvent.cpp"

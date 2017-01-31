@@ -822,5 +822,3 @@ void TimeTrackingWindow::slotUserInfoDownloaded(HttpJob *job_)
     settings.setValue(QStringLiteral("weeklyhours"), weeklyHours);
     settings.endGroup();
 }
-
-#include "moc_TimeTrackingWindow.cpp"

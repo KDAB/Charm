@@ -75,6 +75,7 @@ void addTimesheet(const CommandLine &cmd)
     QFile file(cmd.filename());
     if (!file.exists())
         throw TimesheetProcessorException(QObject::tr("File %1 does not exist.").arg(cmd.filename()));
+
     // load the XML into a DOM tree:
     if (!file.open(QIODevice::ReadOnly)) {
         QString msg = QObject::tr("Cannot open file %1 for reading.").arg(cmd.filename());
@@ -203,7 +204,7 @@ void addTimesheet(const CommandLine &cmd)
                     deletequery.exec(QString("DELETE FROM timesheets WHERE id = %1").arg(index));
                     qDebug()
                         << "CRITICAL ERROR: A database transaction did not roll back as expected. "
-                                "Please report this to the administrators. The time sheet with index "
+                        "Please report this to the administrators. The time sheet with index "
                         << index << " needs to be cleand up.";
                 }
             }

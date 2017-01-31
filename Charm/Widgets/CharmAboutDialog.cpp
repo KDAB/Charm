@@ -39,5 +39,3 @@ CharmAboutDialog::CharmAboutDialog(QWidget *parent)
 CharmAboutDialog::~CharmAboutDialog()
 {
 }
-
-#include "moc_CharmAboutDialog.cpp"

@@ -307,5 +307,3 @@ void EventModelFilterTests::checkEventSpanOver2Days()
 }
 
 QTEST_MAIN(EventModelFilterTests)
-
-#include "moc_EventModelFilterTests.cpp"

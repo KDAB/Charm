@@ -88,5 +88,3 @@ void CharmCommand::showCritical(const QString &title, const QString &message)
     Q_ASSERT(parent);
     QMessageBox::critical(parent, title, message);
 }
-
-#include "moc_CharmCommand.cpp"

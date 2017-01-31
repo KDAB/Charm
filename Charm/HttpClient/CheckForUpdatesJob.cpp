@@ -121,5 +121,3 @@ void CheckForUpdatesJob::setUrl(const QUrl &url)
 {
     m_url = url;
 }
-
-#include "moc_CheckForUpdatesJob.cpp"

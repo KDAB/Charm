@@ -217,5 +217,3 @@ void CharmPreferences::slotResetPassword()
     if (ok)
         job->provideRequestedPassword(newpass);
 }
-
-#include "moc_CharmPreferences.cpp"

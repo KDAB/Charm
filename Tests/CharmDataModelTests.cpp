@@ -185,5 +185,3 @@ void CharmDataModelTests::cleanupTestCase()
 }
 
 QTEST_MAIN(CharmDataModelTests)
-
-#include "moc_CharmDataModelTests.cpp"

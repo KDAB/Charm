@@ -67,5 +67,3 @@ bool CommandRelayCommand::finalize()
     m_payload->owner()->commitCommand(m_payload);
     return true;
 }
-
-#include "moc_CommandRelayCommand.cpp"

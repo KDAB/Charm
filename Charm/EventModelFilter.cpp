@@ -141,5 +141,3 @@ QList<Event> EventModelFilter::events() const
     }
     return events;
 }
-
-#include "moc_EventModelFilter.cpp"

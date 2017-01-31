@@ -70,5 +70,3 @@ void IdleCorrectionDialog::updateDuration()
             "Charm detected that the computer became idle for %1 hours, while an event was in progress.")
         .arg(hoursAndMinutes(secs)));
 }
-
-#include "moc_IdleCorrectionDialog.cpp"

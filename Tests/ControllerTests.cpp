@@ -281,5 +281,3 @@ void ControllerTests::cleanupTestCase()
 }
 
 QTEST_MAIN(ControllerTests)
-
-#include "moc_ControllerTests.cpp"

@@ -452,5 +452,3 @@ void Controller::updateModelEventsAndTasks()
     EventList events = m_storage->getAllEvents();
     emit allEvents(events);
 }
-
-#include "moc_Controller.cpp"

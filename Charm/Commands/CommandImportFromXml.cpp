@@ -58,7 +58,7 @@ bool CommandImportFromXml::execute(Controller *controller)
                                                                                                  errorLine),
                                                                                              QString::number(
                                                                                                  errorColumn),
-            errorMessage);
+                                                                                             errorMessage);
         }
     } else {
         m_error = tr("Cannot open the specified file: %1").arg(file.errorString());
@@ -74,5 +74,3 @@ bool CommandImportFromXml::finalize()
                      tr("An error has occurred:\n%1").arg(m_error));
     return true;
 }
-
-#include "moc_CommandImportFromXml.cpp"

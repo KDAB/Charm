@@ -46,5 +46,3 @@ void UpdateCheckerTests::testVersionComparison()
 }
 
 QTEST_MAIN(UpdateCheckerTests)
-
-#include "moc_UpdateCheckerTests.cpp"

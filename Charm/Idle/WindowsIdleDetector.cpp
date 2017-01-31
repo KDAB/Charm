@@ -60,5 +60,3 @@ void WindowsIdleDetector::timeout()
         maybeIdle(IdlePeriod(QDateTime::currentDateTime().addSecs(-idleSecs),
                              QDateTime::currentDateTime()));
 }
-
-#include "moc_WindowsIdleDetector.cpp"

@@ -156,5 +156,3 @@ QModelIndex EventModelAdapter::indexForEvent(const Event &event) const
         return QModelIndex();
     }
 }
-
-#include "moc_EventModelAdapter.cpp"

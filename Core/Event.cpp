@@ -231,7 +231,8 @@ Event Event::fromXml(const QDomElement &element, int databaseSchemaVersion)
     if (element.hasAttribute(EventEndAttribute)) {
         QDateTime end = QDateTime::fromString(element.attribute(EventEndAttribute), Qt::ISODate);
         if (!end.isValid()) throw XmlSerializationException(QObject::tr(
-            "Event::fromXml: invalid end date"));
+                                                                "Event::fromXml: invalid end date"));
+
         end.setTimeSpec(Qt::UTC);
         event.setEndDateTime(end.toLocalTime());
     }

@@ -254,6 +254,7 @@ TaskList Task::readTasksElement(const QDomElement &element, int databaseSchemaVe
             if (child.tagName() != tagName())
                 throw XmlSerializationException(QObject::tr(
                                                     "Task::readTasksElement: parent-child mismatch"));
+
             Task task = fromXml(child, databaseSchemaVersion);
             tasks << task;
         }

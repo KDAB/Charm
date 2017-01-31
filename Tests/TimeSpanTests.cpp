@@ -59,5 +59,3 @@ void TimeSpanTests::testTimeSpans()
 }
 
 QTEST_MAIN(TimeSpanTests)
-
-#include "moc_TimeSpanTests.cpp"
