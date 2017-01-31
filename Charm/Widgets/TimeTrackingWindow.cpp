@@ -159,10 +159,6 @@ void TimeTrackingWindow::restore()
     show();
 }
 
-void TimeTrackingWindow::quit()
-{
-}
-
 // model adapter:
 void TimeTrackingWindow::resetTasks()
 {

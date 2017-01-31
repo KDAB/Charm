@@ -37,7 +37,6 @@
 #include "Core/Controller.h"
 #include "Core/Configuration.h"
 #include "Core/SqlStorage.h"
-#include "Core/ViewInterface.h"
 
 #include "Widgets/CharmWindow.h"
 #include "Widgets/EventView.h"

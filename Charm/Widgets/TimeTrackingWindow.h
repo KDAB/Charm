@@ -26,7 +26,6 @@
 
 #include <QTimer>
 
-#include "Core/ViewInterface.h"
 #include "Core/CharmDataModelAdapterInterface.h"
 
 #include "Charm/HttpClient/CheckForUpdatesJob.h"
@@ -59,7 +58,6 @@ public:
     // application:
     void stateChanged(State previous) override;
     void restore() override;
-    void quit() override;
 
     bool event(QEvent *) override;
     void showEvent(QShowEvent *) override;

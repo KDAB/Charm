@@ -30,7 +30,6 @@
 #include <Core/Event.h>
 #include <Core/State.h>
 #include <Core/CommandEmitterInterface.h>
-#include <Core/ViewInterface.h>
 #include <Core/UIStateInterface.h>
 
 #include <QDialog>

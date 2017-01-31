@@ -26,13 +26,13 @@
 
 #include <QMainWindow>
 
-#include "Core/ViewInterface.h"
+#include "Core/UIStateInterface.h"
 #include "Core/CommandEmitterInterface.h"
 
 class QAction;
 class QShortcut;
 
-class CharmWindow : public QMainWindow, public ViewInterface
+class CharmWindow : public QMainWindow, public UIStateInterface
 {
     Q_OBJECT
 
@@ -78,14 +78,14 @@ public:
     static bool showHideView(QWidget *w);
 
 Q_SIGNALS:
-    void visibilityChanged(bool) override;
-    void saveConfiguration() override;
+    void visibilityChanged(bool);
+    void saveConfiguration();
 
 public Q_SLOTS:
-    void sendCommandRollback(CharmCommand *) override;
-    void sendCommand(CharmCommand *) override;
+    void sendCommandRollback(CharmCommand *);
+    void sendCommand(CharmCommand *);
     void commitCommand(CharmCommand *) override;
-    void restore() override;
+    virtual void restore();
     void showView();
     void showHideView();
     void configurationChanged() override;
