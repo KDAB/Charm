@@ -36,7 +36,7 @@ class SqLiteStorage : public SqlStorage
 {
 public:
     SqLiteStorage();
-    virtual ~SqLiteStorage();
+    ~SqLiteStorage();
 
     QString description() const override;
     bool connect(Configuration &) override;

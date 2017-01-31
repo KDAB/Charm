@@ -43,7 +43,7 @@ class SqlStorage
 {
 public:
     SqlStorage();
-    ~SqlStorage();
+    virtual ~SqlStorage();
 
     // a readable description for the user
     virtual QString description() const = 0;
