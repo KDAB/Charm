@@ -97,8 +97,8 @@ HttpJob::HttpJob(QObject *parent)
     , m_networkManager(new QNetworkAccessManager(this))
 {
     connect(m_networkManager, SIGNAL(finished(QNetworkReply*)), SLOT(handle(QNetworkReply*)));
-    connect(m_networkManager, SIGNAL(authenticationRequired(QNetworkReply *,
-                                                            QAuthenticator *)),
+    connect(m_networkManager, SIGNAL(authenticationRequired(QNetworkReply*,
+                                                            QAuthenticator*)),
             SLOT(authenticationRequired(QNetworkReply*,QAuthenticator*)));
     QSettings settings;
     settings.beginGroup(QStringLiteral("httpconfig"));
