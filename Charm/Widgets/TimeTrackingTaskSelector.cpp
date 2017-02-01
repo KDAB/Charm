@@ -115,6 +115,8 @@ QMenu *TimeTrackingTaskSelector::menu() const
 
 void TimeTrackingTaskSelector::populate(const QVector<WeeklySummary> &summaries)
 {
+    Q_UNUSED(summaries);
+
     // Don't repopulate while the menu is displayed; very ugly and it can wait.
     if (m_menu->isActiveWindow())
         return;
