@@ -38,7 +38,7 @@ public:
     bool listen() override;
     void close() override;
 
-private slots:
+private Q_SLOTS:
     void onNewConnection();
 
 private:

@@ -71,23 +71,23 @@ public: /* CharmDataModelAdapterInterface */
     {
     }
 
-    void eventAboutToBeAdded(EventId id)
+    void eventAboutToBeAdded(EventId)
     {
     }
 
-    void eventAdded(EventId id)
+    void eventAdded(EventId)
     {
     }
 
-    void eventModified(EventId id, Event discardedEvent)
+    void eventModified(EventId, Event)
     {
     }
 
-    void eventAboutToBeDeleted(EventId id)
+    void eventAboutToBeDeleted(EventId)
     {
     }
 
-    void eventDeleted(EventId id)
+    void eventDeleted(EventId)
     {
     }
 
@@ -97,7 +97,7 @@ public: /* CharmDataModelAdapterInterface */
 protected:
     void reset();
 
-private slots:
+private Q_SLOTS:
     void onReadyRead();
 
 private:

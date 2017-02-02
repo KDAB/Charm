@@ -39,7 +39,7 @@ public:
     void start();
     void stop();
 
-public slots:
+public Q_SLOTS:
     void configurationChanged();
 
 private:

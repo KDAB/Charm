@@ -50,7 +50,7 @@ public:
 protected: /* reimpl */
     void timerEvent(QTimerEvent *event);
 
-private slots:
+private Q_SLOTS:
     void onNewConnection();
 
 private:
