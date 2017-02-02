@@ -52,8 +52,9 @@ CharmPreferences::CharmPreferences(const Configuration &config, QWidget *parent_
     m_ui.cbIdleDetection->setChecked(config.detectIdling && m_ui.cbIdleDetection->isEnabled());
     m_ui.cbWarnUnuploadedTimesheets->setChecked(config.warnUnuploadedTimesheets);
     m_ui.cbRequestEventComment->setChecked(config.requestEventComment);
-    m_ui.lbCommandInterface->setEnabled(haveCommandInterface);
+    m_ui.lbCommandInterface->setVisible(haveCommandInterface);
     m_ui.cbEnableCommandInterface->setEnabled(haveCommandInterface);
+    m_ui.cbEnableCommandInterface->setVisible(haveCommandInterface);
     m_ui.cbEnableCommandInterface->setChecked(haveCommandInterface
                                               && config.enableCommandInterface);
 
