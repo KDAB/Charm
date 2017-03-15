@@ -29,6 +29,7 @@
 #include "MacIdleDetector.h"
 #include "WindowsIdleDetector.h"
 #include "X11IdleDetector.h"
+#include "ViewHelpers.h"
 
 #include "Core/Configuration.h"
 
@@ -98,7 +99,7 @@ int IdleDetector::idlenessDuration() const
 
 void IdleDetector::maybeIdle(IdlePeriod period)
 {
-    if (!Configuration::instance().detectIdling)
+    if (!Configuration::instance().detectIdling || DATAMODEL->activeEventCount() == 0)
         return;
 
     qDebug() << "IdleDetector::maybeIdle: Checking for idleness";
