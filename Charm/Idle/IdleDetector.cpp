@@ -137,7 +137,7 @@ void IdleDetector::maybeIdle(IdlePeriod period)
     // notify application
     if (!idlePeriods().isEmpty()) {
         qDebug() << "IdleDetector::maybeIdle: Found idleness";
-        emit maybeIdle();
+        QTimer::singleShot(0, this, [=](){ emit maybeIdle(); });
     }
 }
 
