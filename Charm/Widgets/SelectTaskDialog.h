@@ -62,6 +62,7 @@ public:
     TaskId selectedTask() const;
     void setNonTrackableSelectable();
     void setNonValidSelectable();
+    void selectTask(TaskId);
 
 Q_SIGNALS:
     void saveConfiguration();
@@ -77,6 +78,7 @@ private Q_SLOTS:
     void slotAccepted();
     void slotPrefilteringChanged();
     void slotResetState();
+    void slotSelectTask(const QString &);
 
 private:
     bool isValidAndTrackable(const QModelIndex &index) const;

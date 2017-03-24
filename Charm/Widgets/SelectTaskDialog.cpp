@@ -89,6 +89,8 @@ SelectTaskDialog::SelectTaskDialog(QWidget *parent)
             this, &SelectTaskDialog::slotAccepted);
     connect(MODEL.charmDataModel(), &CharmDataModel::resetGUIState,
             this, &SelectTaskDialog::slotResetState);
+    connect(m_ui->filter, &QLineEdit::textChanged,
+            this, &SelectTaskDialog::slotSelectTask);
 
     QSettings settings;
     settings.beginGroup(QString::fromUtf8(staticMetaObject.className()));
@@ -140,6 +142,16 @@ void SelectTaskDialog::hideEvent(QHideEvent *event)
 TaskId SelectTaskDialog::selectedTask() const
 {
     return m_selectedTask;
+}
+
+void SelectTaskDialog::selectTask(TaskId task)
+{
+    m_selectedTask = task;
+    QModelIndex index(m_proxy.indexForTaskId(m_selectedTask));
+    if (index.isValid())
+        m_ui->treeView->setCurrentIndex(index);
+    else
+        m_ui->treeView->setCurrentIndex(QModelIndex());
 }
 
 void SelectTaskDialog::slotCurrentItemChanged(const QModelIndex &first, const QModelIndex &)
@@ -256,4 +268,18 @@ void SelectTaskDialog::setNonTrackableSelectable()
 void SelectTaskDialog::setNonValidSelectable()
 {
     m_nonValidSelectable = true;
+}
+
+void SelectTaskDialog::slotSelectTask(const QString &filter)
+{
+    const QString filterText = filter.simplified().toUpper().replace(QLatin1Char('*'), QLatin1Char(' '));
+    const int filterTaskId = filterText.toInt();
+    const TaskList tasks = MODEL.charmDataModel()->getAllTasks();
+
+    for (const auto task : tasks) {
+        if (!task.isValid())
+            continue;
+        if (task.name().toUpper().contains(filterText) || task.id() == filterTaskId)
+            selectTask(task.id());
+    }
 }
