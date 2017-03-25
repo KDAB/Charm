@@ -630,6 +630,35 @@ void TimeTrackingWindow::informUserAboutNewRelease(const QString &releaseVersion
     dialog.exec();
 }
 
+void TimeTrackingWindow::handleIdleEvents(IdleDetector *detector, bool restart)
+{
+    EventIdList activeEvents = DATAMODEL->activeEvents();
+    DATAMODEL->endAllEventsRequested();
+    // FIXME with this option, we can only change the events to
+    // the start time of one idle period, I chose to use the last
+    // one:
+    const auto periods = detector->idlePeriods();
+    const IdleDetector::IdlePeriod period = periods.last();
+
+    Q_FOREACH (EventId eventId, activeEvents) {
+        Event event = DATAMODEL->eventForId(eventId);
+        if (event.isValid()) {
+            Event old = event;
+            QDateTime start = period.first;  // initializes a valid QDateTime
+            event.setEndDateTime(qMax(event.startDateTime(), start));
+            Q_ASSERT(event.isValid());
+            auto cmd = new CommandModifyEvent(event, old, this);
+            emit emitCommand(cmd);
+            if (restart) {
+                Task task;
+                task.setId(event.taskId());
+                if (task.isValid())
+                    DATAMODEL->startEventRequested(task);
+            }
+        }
+    }
+}
+
 void TimeTrackingWindow::maybeIdle(IdleDetector *detector)
 {
     Q_ASSERT(detector);
@@ -650,25 +679,12 @@ void TimeTrackingWindow::maybeIdle(IdleDetector *detector)
         break;
     case IdleCorrectionDialog::Idle_EndEvent:
     {
-        EventIdList activeEvents = DATAMODEL->activeEvents();
-        DATAMODEL->endAllEventsRequested();
-        // FIXME with this option, we can only change the events to
-        // the start time of one idle period, I chose to use the last
-        // one:
-        const auto periods = detector->idlePeriods();
-        const IdleDetector::IdlePeriod period = periods.last();
-
-        Q_FOREACH (EventId eventId, activeEvents) {
-            Event event = DATAMODEL->eventForId(eventId);
-            if (event.isValid()) {
-                Event old = event;
-                QDateTime start = period.first;  // initializes a valid QDateTime
-                event.setEndDateTime(qMax(event.startDateTime(), start));
-                Q_ASSERT(event.isValid());
-                auto cmd = new CommandModifyEvent(event, old, this);
-                emit emitCommand(cmd);
-            }
-        }
+        handleIdleEvents(detector, false);
+        break;
+    }
+    case IdleCorrectionDialog::Idle_RestartEvent:
+    {
+        handleIdleEvents(detector, true);
         break;
     }
     default:

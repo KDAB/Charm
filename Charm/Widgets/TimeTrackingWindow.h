@@ -131,6 +131,7 @@ private:
     void startCheckForUpdates(VerboseMode mode = Silent);
     void informUserAboutNewRelease(const QString &releaseVersion, const QUrl &link,
                                    const QString &releaseInfoLink);
+    void handleIdleEvents(IdleDetector *detector, bool restart);
 
     WeeklyTimesheetConfigurationDialog *m_weeklyTimesheetDialog = nullptr;
     MonthlyTimesheetConfigurationDialog *m_monthlyTimesheetDialog = nullptr;

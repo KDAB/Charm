@@ -41,7 +41,8 @@ public:
     enum Result {
         Idle_NoResult,
         Idle_Ignore,
-        Idle_EndEvent
+        Idle_EndEvent,
+        Idle_RestartEvent
     };
 
     explicit IdleCorrectionDialog(const IdleDetector::IdlePeriod &idlePeriod,
