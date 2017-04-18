@@ -274,9 +274,14 @@ void TimeTrackingWindow::slotStartEvent(TaskId id)
     if (item.task().isCurrentlyValid()) {
         DATAMODEL->startEventRequested(item.task());
     } else {
-        QString nm = item.task().name();
-        QMessageBox::critical(this, tr("Invalid task"),
+        QString nm = DATAMODEL->taskIdAndSmartNameString(id);
+        if (item.task().isValid())
+            QMessageBox::critical(this, tr("Invalid task"),
                               tr("Task '%1' is no longer valid, so can't be started").arg(nm));
+        else if (id > 0)
+            QMessageBox::critical(this, tr("Invalid task"),
+                              tr("Task '%1' does not exist").arg(id));
+
     }
     ApplicationCore::instance().updateTaskList();
 }
