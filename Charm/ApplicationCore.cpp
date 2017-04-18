@@ -330,6 +330,7 @@ void ApplicationCore::showMainWindow(ShowMode mode)
     m_timeTracker.show();
     if (mode == ShowMode::ShowAndRaise) {
         m_timeTracker.raise();
+        m_timeTracker.activateWindow();
 #ifdef Q_OS_WIN
         //krazy:cond=captruefalse,null
         int idActive = GetWindowThreadProcessId(GetForegroundWindow(), NULL);
