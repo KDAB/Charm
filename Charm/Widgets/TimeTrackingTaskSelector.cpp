@@ -204,15 +204,15 @@ void TimeTrackingTaskSelector::slotActionSelected()
     const bool trackable = task.trackable();
     if (!trackable || expired) {
         const bool notTrackableAndExpired = (!trackable && expired);
-        const auto id = QString::number(task.id());
-        const QString name = task.name();
-        const QString expirationDate = QLocale::system().toString(
-            task.validUntil(), QLocale::ShortFormat);
-        QString message = notTrackableAndExpired ? tr(
-            "The task %1 (%2) is not trackable and expired since %3").arg(id, name, expirationDate)
-                          : expired ? tr("The task %1 (%2) is expired since %3").arg(id, name,
-                                                                                     expirationDate)
-                          : tr("The task %1 (%2) is not trackable").arg(id, name);
+        const QString expirationDate = QLocale::system().toString(task.validUntil().date(), QLocale::ShortFormat);
+        const auto taskName = DATAMODEL->taskIdAndSmartNameString(task.id());
+
+        const auto reason = notTrackableAndExpired
+                ? tr("The task is not trackable and expired since %1.").arg(expirationDate)
+                : expired ? tr("The task is expired since %1").arg(expirationDate)
+                          : tr("The task is not trackable");
+
+        const auto message = tr("Cannot select task <strong>%1</strong>: %2. Please choose another task.").arg(taskName.toHtmlEscaped(), reason);
 
         QMessageBox::information(this, tr("Please choose another task"), message);
         return;
