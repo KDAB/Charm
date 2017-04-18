@@ -335,7 +335,7 @@ void TimeTrackingWindow::slotActivityReport()
     m_activityReportDialog->setAttribute(Qt::WA_DeleteOnClose);
     connect(m_activityReportDialog, SIGNAL(finished(int)),
             this, SLOT(slotActivityReportPreview(int)));
-    m_activityReportDialog->show();
+    m_activityReportDialog->open();
 }
 
 void TimeTrackingWindow::resetWeeklyTimesheetDialog()
@@ -350,7 +350,7 @@ void TimeTrackingWindow::resetWeeklyTimesheetDialog()
 void TimeTrackingWindow::slotWeeklyTimesheetReport()
 {
     resetWeeklyTimesheetDialog();
-    m_weeklyTimesheetDialog->show();
+    m_weeklyTimesheetDialog->open();
 }
 
 void TimeTrackingWindow::resetMonthlyTimesheetDialog()
@@ -365,7 +365,7 @@ void TimeTrackingWindow::resetMonthlyTimesheetDialog()
 void TimeTrackingWindow::slotMonthlyTimesheetReport()
 {
     resetMonthlyTimesheetDialog();
-    m_monthlyTimesheetDialog->show();
+    m_monthlyTimesheetDialog->open();
 }
 
 void TimeTrackingWindow::slotWeeklyTimesheetPreview(int result)
@@ -560,7 +560,7 @@ void TimeTrackingWindow::slotBillGone(int result)
     case BillDialog::AsYouWish:
         resetWeeklyTimesheetDialog();
         m_weeklyTimesheetDialog->setDefaultWeek(m_billDialog->year(), m_billDialog->week());
-        m_weeklyTimesheetDialog->show();
+        m_weeklyTimesheetDialog->open();
         break;
     case BillDialog::Later:
         break;
