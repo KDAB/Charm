@@ -267,11 +267,21 @@ void CharmWindow::restoreGuiState()
     settings.beginGroup(identifier);
     WidgetUtils::restoreGeometry(this, MetaKey_MainWindowGeometry);
     // restore visibility
-    if (settings.contains(MetaKey_MainWindowVisible)) {
-        // Time Tracking Window should always be visible
-        const bool visible
-            = (identifier == QLatin1String("window_tracking")) ? true : settings.value(
-            MetaKey_MainWindowVisible).toBool();
-        setVisible(visible);
+    bool visible = true;
+    if (m_hideAtStartUp)
+    {
+        visible = false;
     }
+    else
+    {
+        // Time Tracking Window should always be visible, except when Charm is started with --hide-at-start
+        visible = (identifier == QLatin1String("window_tracking")) ? true : settings.value(
+                                                                         MetaKey_MainWindowVisible).toBool();
+    }
+    setVisible(visible);
+}
+
+void CharmWindow::setHideAtStartup(const bool &value)
+{
+    m_hideAtStartUp = value;
 }

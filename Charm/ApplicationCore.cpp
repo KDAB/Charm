@@ -74,7 +74,7 @@ static const QByteArray StartTaskCommand = QByteArrayLiteral("start-task: ");
 
 ApplicationCore *ApplicationCore::m_instance = nullptr;
 
-ApplicationCore::ApplicationCore(TaskId startupTask, QObject *parent)
+ApplicationCore::ApplicationCore(TaskId startupTask, bool hideAtStart, QObject *parent)
     : QObject(parent)
     , m_actionStopAllTasks(this)
     , m_actionQuit(this)
@@ -95,6 +95,8 @@ ApplicationCore::ApplicationCore(TaskId startupTask, QObject *parent)
     &m_timeTracker, &m_tasksView, &m_eventView
 }),
     m_startupTask(startupTask)
+  , m_hideAtStart(hideAtStart)
+
 #ifdef Q_OS_WIN
     , m_windowsJumpList(new QWinJumpList(this))
 #endif
@@ -403,6 +405,7 @@ void ApplicationCore::createHelpMenu(QMenuBar *menuBar)
 
 CharmWindow &ApplicationCore::mainView()
 {
+    m_timeTracker.setHideAtStartup(m_hideAtStart);
     return m_timeTracker;
 }
 

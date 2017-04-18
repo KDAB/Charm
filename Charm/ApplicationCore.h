@@ -62,7 +62,7 @@ public:
         Show,
         ShowAndRaise
     };
-    explicit ApplicationCore(TaskId startupTask, QObject *parent = nullptr);
+    explicit ApplicationCore(TaskId startupTask, bool hideAtStart, QObject *parent = nullptr);
     ~ApplicationCore() override;
 
     static ApplicationCore &instance();
@@ -170,6 +170,7 @@ private:
     CharmCommandInterface *m_cmdInterface = nullptr;
     QLocalServer m_uniqueApplicationServer;
     TaskId m_startupTask;
+    bool m_hideAtStart;
 #ifdef Q_OS_WIN
     QWinJumpList *m_windowsJumpList = nullptr;
 #endif

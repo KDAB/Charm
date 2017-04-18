@@ -121,8 +121,8 @@ void MacApplicationCore::Private::setupCocoaEventHandler() const
      andEventID:kAEReopenApplication];
 }
 
-MacApplicationCore::MacApplicationCore( TaskId startupTask, QObject* parent )
-    : ApplicationCore( startupTask, parent )
+MacApplicationCore::MacApplicationCore( TaskId startupTask, bool hideAtStart, QObject* parent )
+    : ApplicationCore( startupTask, hideAtStart, parent )
     , m_private( new MacApplicationCore::Private() )
 {
     m_private->dockIconClickEventHandler->macApplication = this;

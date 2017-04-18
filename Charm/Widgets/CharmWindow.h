@@ -77,6 +77,8 @@ public:
     static void showView(QWidget *w);
     static bool showHideView(QWidget *w);
 
+    void setHideAtStartup(const bool &);
+
 Q_SIGNALS:
     void visibilityChanged(bool);
     void saveConfiguration();
@@ -103,6 +105,7 @@ private:
     QShortcut *m_shortcut = nullptr;
     QToolBar *m_toolBar;
     bool m_isVisibility = false;
+    bool m_hideAtStartUp = false;
 };
 
 #endif
