@@ -85,6 +85,7 @@ TimeTrackingWindow::TimeTrackingWindow(QWidget *parent)
             SLOT(slotStartEvent(TaskId)));
     connect(m_summaryWidget, SIGNAL(stopEvents()),
             SLOT(slotStopEvent()));
+    connect(m_summaryWidget, SIGNAL(taskMenuChanged()), SIGNAL(taskMenuChanged()));
     connect(&m_checkUploadedSheetsTimer, SIGNAL(timeout()),
             SLOT(slotCheckUploadedTimesheets()));
     connect(m_billDialog, SIGNAL(finished(int)),

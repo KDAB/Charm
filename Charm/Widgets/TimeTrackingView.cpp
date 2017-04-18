@@ -348,6 +348,7 @@ void TimeTrackingView::setSummaries(const QVector<WeeklySummary> &summaries)
     m_taskSelector->populate(m_summaries);
     // FIXME maybe remember last selected task
     handleActiveEvents();
+    emit taskMenuChanged();
 }
 
 bool TimeTrackingView::isTracking() const

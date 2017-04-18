@@ -165,6 +165,8 @@ ApplicationCore::ApplicationCore(TaskId startupTask, bool hideAtStart, QObject *
             SLOT(slotSaveConfiguration()));
     connect(&m_timeTracker, SIGNAL(showNotification(QString,QString)),
             SLOT(slotShowNotification(QString,QString)));
+    connect(&m_timeTracker, SIGNAL(taskMenuChanged()),
+            SLOT(slotPopulateTrayIconMenu()));
 
     // save the configuration (configuration is managed by the application)
     connect(&m_tasksView, SIGNAL(saveConfiguration()),
@@ -181,9 +183,6 @@ ApplicationCore::ApplicationCore(TaskId startupTask, bool hideAtStart, QObject *
     // my own signals:
     connect(this, SIGNAL(goToState(State)), SLOT(setState(State)),
             Qt::QueuedConnection);
-
-    connect(&m_systrayContextMenu, &QMenu::aboutToShow, this,
-            &ApplicationCore::slotStartTaskMenuAboutToShow);
 
     // system tray icon:
     m_actionStopAllTasks.setText(tr("Stop Current Task"));
@@ -291,7 +290,7 @@ ApplicationCore::~ApplicationCore()
     m_instance = nullptr;
 }
 
-void ApplicationCore::slotStartTaskMenuAboutToShow()
+void ApplicationCore::slotPopulateTrayIconMenu()
 {
     const auto newActions = m_timeTracker.menu()->actions();
     if (m_taskActions == newActions)

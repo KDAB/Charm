@@ -85,6 +85,7 @@ public:
 Q_SIGNALS:
     void startEvent(TaskId);
     void stopEvents();
+    void taskMenuChanged();
 
 private Q_SLOTS:
     void slotUpdateSummaries();

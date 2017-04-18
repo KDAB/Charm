@@ -119,6 +119,7 @@ Q_SIGNALS:
     void emitCommand(CharmCommand *) override;
     void emitCommandRollback(CharmCommand *) override;
     void showNotification(const QString &title, const QString &message);
+    void taskMenuChanged();
 
 private:
     void resetWeeklyTimesheetDialog();

@@ -114,7 +114,7 @@ private Q_SLOTS:
     void slotCurrentBackendStatusChanged(const QString &text);
     void slotMaybeIdle();
     void slotHandleUniqueApplicationConnection();
-    void slotStartTaskMenuAboutToShow();
+    void slotPopulateTrayIconMenu();
     void slotShowNotification(const QString &title, const QString &message);
     void slotShowTasksEditor();
     void slotShowEventEditor();
