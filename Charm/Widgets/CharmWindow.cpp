@@ -49,7 +49,6 @@ CharmWindow::CharmWindow(const QString &name, QWidget *parent)
     setWindowName(name);
     connect(m_openCharmAction, SIGNAL(triggered(bool)), SLOT(showView()));
     connect(m_showAction, SIGNAL(triggered(bool)), SLOT(showView()));
-    connect(this, SIGNAL(visibilityChanged(bool)), SLOT(handleOpenCharm(bool)));
     connect(this, SIGNAL(visibilityChanged(bool)), SLOT(handleShow(bool)));
     m_toolBar = addToolBar(QStringLiteral("Toolbar"));
     m_toolBar->setMovable(false);
@@ -181,11 +180,6 @@ void CharmWindow::sendCommandRollback(CharmCommand *cmd)
     auto relay = new CommandRelayCommand(this);
     relay->setCommand(cmd);
     emit emitCommandRollback(relay);
-}
-
-void CharmWindow::handleOpenCharm(bool visible)
-{
-    m_openCharmAction->setEnabled(!visible);
 }
 
 void CharmWindow::handleShow(bool visible)

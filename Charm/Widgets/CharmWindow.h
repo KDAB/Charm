@@ -93,7 +93,6 @@ public Q_SLOTS:
     void configurationChanged() override;
 
 private Q_SLOTS:
-    void handleOpenCharm(bool visible);
     void handleShow(bool visible);
 
 private:
