@@ -83,7 +83,6 @@ public:
     void configurationChanged();
 
 Q_SIGNALS:
-    void maybeShrink();
     void startEvent(TaskId);
     void stopEvents();
 
