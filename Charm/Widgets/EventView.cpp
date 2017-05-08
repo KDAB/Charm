@@ -242,12 +242,12 @@ void EventView::setCurrentEvent(const Event &event)
 void EventView::stageCommand(CharmCommand *command)
 {
     auto undoCommand = new UndoCharmCommandWrapper(command);
-    connect(command, SIGNAL(emitExecute(CharmCommand*)), this,
-            SIGNAL(emitCommand(CharmCommand*)));
-    connect(command, SIGNAL(emitRollback(CharmCommand*)), this,
-            SIGNAL(emitCommandRollback(CharmCommand*)));
-    connect(command, SIGNAL(emitSlotEventIdChanged(int,int)), this, SLOT(slotEventIdChanged(int,
-                                                                                            int)));
+    connect(command, SIGNAL(emitExecute(CharmCommand*)),
+            this, SIGNAL(emitCommand(CharmCommand*)));
+    connect(command, SIGNAL(emitRollback(CharmCommand*)),
+            this, SIGNAL(emitCommandRollback(CharmCommand*)));
+    connect(command, SIGNAL(emitSlotEventIdChanged(int,int)),
+            this, SLOT(slotEventIdChanged(int,int)));
     m_undoStack->push(undoCommand);
 }
 
