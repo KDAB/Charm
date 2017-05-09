@@ -96,9 +96,10 @@ HttpJob::HttpJob(QObject *parent)
     : QObject(parent)
     , m_networkManager(new QNetworkAccessManager(this))
 {
-    connect(m_networkManager, SIGNAL(finished(QNetworkReply*)), SLOT(handle(QNetworkReply*)));
-    connect(m_networkManager, SIGNAL(authenticationRequired(QNetworkReply*,QAuthenticator*)),
-            SLOT(authenticationRequired(QNetworkReply*,QAuthenticator*)));
+    connect(m_networkManager, &QNetworkAccessManager::finished,
+            this, &HttpJob::handle);
+    connect(m_networkManager, &QNetworkAccessManager::authenticationRequired,
+            this, &HttpJob::authenticationRequired);
     QSettings settings;
     settings.beginGroup(QStringLiteral("httpconfig"));
     setUsername(settings.value(QStringLiteral("username")).toString());
@@ -184,8 +185,7 @@ void HttpJob::doStart()
     }
 
     auto readJob = new ReadPasswordJob(QStringLiteral("Charm"), this);
-    connect(readJob, SIGNAL(finished(QKeychain::Job*)), this,
-            SLOT(passwordRead(QKeychain::Job*)));
+    connect(readJob, &Job::finished, this, &HttpJob::passwordRead);
     readJob->setKey(QStringLiteral("lotsofcake"));
     readJob->start();
 }
@@ -217,7 +217,7 @@ void HttpJob::provideRequestedPassword(const QString &password)
 
     if (oldpass != m_password && !m_passwordReadError) {
         auto writeJob = new WritePasswordJob(QStringLiteral("Charm"), this);
-        connect(writeJob, SIGNAL(finished(QKeychain::Job*)), this, SLOT(passwordWritten()));
+        connect(writeJob, &Job::finished, this, &HttpJob::passwordWritten);
         writeJob->setKey(QStringLiteral("lotsofcake"));
         writeJob->setTextData(m_password);
         writeJob->start();
