@@ -90,6 +90,7 @@ public Q_SLOTS:
     void slotExportToXml();
     void slotImportFromXml();
     void slotSyncTasks(VerboseMode mode = Verbose);
+    void slotSyncTasksVerbose();
     void slotImportTasks();
     void slotExportTasks();
     void maybeIdle(IdleDetector *idleDetector);

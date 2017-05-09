@@ -467,6 +467,11 @@ void TimeTrackingWindow::slotSyncTasks(VerboseMode mode)
     client->start();
 }
 
+void TimeTrackingWindow::slotSyncTasksVerbose()
+{
+    slotSyncTasks(Verbose);
+}
+
 void TimeTrackingWindow::slotSyncTasksAutomatic()
 {
     // check if HttpJob is possible

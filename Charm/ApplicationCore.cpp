@@ -154,42 +154,42 @@ ApplicationCore::ApplicationCore(TaskId startupTask, bool hideAtStart, QObject *
     qRegisterMetaType<Event>("Event");
 
     // exit process (app will only exit once controller says it is ready)
-    connect(&m_controller, SIGNAL(readyToQuit()), SLOT(
-                slotControllerReadyToQuit()));
+    connect(&m_controller, &Controller::readyToQuit,
+            this, &ApplicationCore::slotControllerReadyToQuit);
 
     connectControllerAndModel(&m_controller, m_model.charmDataModel());
     Charm::connectControllerAndView(&m_controller, &m_timeTracker);
 
     // save the configuration (configuration is managed by the application)
-    connect(&m_timeTracker, SIGNAL(saveConfiguration()),
-            SLOT(slotSaveConfiguration()));
-    connect(&m_timeTracker, SIGNAL(showNotification(QString,QString)),
-            SLOT(slotShowNotification(QString,QString)));
-    connect(&m_timeTracker, SIGNAL(taskMenuChanged()),
-            SLOT(slotPopulateTrayIconMenu()));
+    connect(&m_timeTracker, &CharmWindow::saveConfiguration,
+            this, &ApplicationCore::slotSaveConfiguration);
+    connect(&m_timeTracker, &TimeTrackingWindow::showNotification,
+            this, &ApplicationCore::slotShowNotification);
+    connect(&m_timeTracker, &TimeTrackingWindow::taskMenuChanged,
+            this, &ApplicationCore::slotPopulateTrayIconMenu);
 
     // save the configuration (configuration is managed by the application)
-    connect(&m_tasksView, SIGNAL(saveConfiguration()),
-            SLOT(slotSaveConfiguration()));
-    connect(&m_tasksView, SIGNAL(emitCommand(CharmCommand*)),
-            &m_timeTracker, SLOT(sendCommand(CharmCommand*)));
-    connect(&m_tasksView, SIGNAL(emitCommandRollback(CharmCommand*)),
-            &m_timeTracker, SLOT(sendCommandRollback(CharmCommand*)));
-    connect(&m_eventView, SIGNAL(emitCommand(CharmCommand*)),
-            &m_timeTracker, SLOT(sendCommand(CharmCommand*)));
-    connect(&m_eventView, SIGNAL(emitCommandRollback(CharmCommand*)),
-            &m_timeTracker, SLOT(sendCommandRollback(CharmCommand*)));
+    connect(&m_tasksView, &TasksView::saveConfiguration,
+            this, &ApplicationCore::slotSaveConfiguration);
+    connect(&m_tasksView, &TasksView::emitCommand,
+            &m_timeTracker, &CharmWindow::sendCommand);
+    connect(&m_tasksView, &TasksView::emitCommandRollback,
+            &m_timeTracker, &CharmWindow::sendCommandRollback);
+    connect(&m_eventView, &EventView::emitCommand,
+            &m_timeTracker, &CharmWindow::sendCommand);
+    connect(&m_eventView, &EventView::emitCommandRollback,
+            &m_timeTracker, &CharmWindow::sendCommandRollback);
 
     // my own signals:
-    connect(this, SIGNAL(goToState(State)), SLOT(setState(State)),
-            Qt::QueuedConnection);
+    connect(this, &ApplicationCore::goToState,
+             this, &ApplicationCore::setState, Qt::QueuedConnection);
 
     // system tray icon:
     m_actionStopAllTasks.setText(tr("Stop Current Task"));
     m_actionStopAllTasks.setShortcut(Qt::Key_Escape);
     m_actionStopAllTasks.setShortcutContext(Qt::ApplicationShortcut);
     mainView().addAction(&m_actionStopAllTasks); // for the shortcut to work
-    connect(&m_actionStopAllTasks, SIGNAL(triggered()), SLOT(slotStopAllTasks()));
+    connect(&m_actionStopAllTasks, &QAction::triggered, this, &ApplicationCore::slotStopAllTasks);
 
     m_systrayContextMenu.addAction(&m_actionStopAllTasks);
     m_systrayContextMenu.addSeparator();
@@ -208,34 +208,35 @@ ApplicationCore::ApplicationCore(TaskId startupTask, bool hideAtStart, QObject *
     m_actionQuit.setShortcut(Qt::CTRL + Qt::Key_Q);
     m_actionQuit.setText(tr("Quit"));
     m_actionQuit.setIcon(Data::quitCharmIcon());
-    connect(&m_actionQuit, SIGNAL(triggered(bool)),
-            SLOT(slotQuitApplication()));
+    connect(&m_actionQuit, &QAction::triggered,
+            this, &ApplicationCore::slotQuitApplication);
 
     m_actionAboutDialog.setText(tr("About Charm"));
-    connect(&m_actionAboutDialog, SIGNAL(triggered()),
-            &mainView(), SLOT(slotAboutDialog()));
+    connect(&m_actionAboutDialog, &QAction::triggered,
+           &m_timeTracker, &TimeTrackingWindow::slotAboutDialog);
 
     m_actionPreferences.setText(tr("Preferences"));
     m_actionPreferences.setIcon(Data::configureIcon());
-    connect(&m_actionPreferences, SIGNAL(triggered(bool)),
-            &mainView(), SLOT(slotEditPreferences(bool)));
+    connect(&m_actionPreferences, &QAction::triggered,
+            &m_timeTracker, &TimeTrackingWindow::slotEditPreferences);
     m_actionPreferences.setEnabled(true);
 
     m_actionImportFromXml.setText(tr("Import Database from Previous Export..."));
-    connect(&m_actionImportFromXml, SIGNAL(triggered()),
-            &mainView(), SLOT(slotImportFromXml()));
+    connect(&m_actionImportFromXml, &QAction::triggered,
+            &m_timeTracker, &TimeTrackingWindow::slotImportFromXml);
     m_actionExportToXml.setText(tr("Export Database..."));
-    connect(&m_actionExportToXml, SIGNAL(triggered()),
-            &mainView(), SLOT(slotExportToXml()));
+    connect(&m_actionExportToXml, &QAction::triggered,
+            &m_timeTracker, &TimeTrackingWindow::slotExportToXml);
     m_actionSyncTasks.setText(tr("Update Task Definitions..."));
-    connect(&m_actionSyncTasks, SIGNAL(triggered()),
-            &mainView(), SLOT(slotSyncTasks()));
+    //the signature of QAction::triggered does not match slotSyncTasks
+    connect(&m_actionSyncTasks,&QAction::triggered,
+            &m_timeTracker, &TimeTrackingWindow::slotSyncTasksVerbose);
     m_actionImportTasks.setText(tr("Import and Merge Task Definitions..."));
-    connect(&m_actionImportTasks, SIGNAL(triggered()),
-            &mainView(), SLOT(slotImportTasks()));
+    connect(&m_actionImportTasks, &QAction::triggered,
+            &m_timeTracker, &TimeTrackingWindow::slotImportTasks);
     m_actionExportTasks.setText(tr("Export Task Definitions..."));
-    connect(&m_actionExportTasks, SIGNAL(triggered()),
-            &mainView(), SLOT(slotExportTasks()));
+    connect(&m_actionExportTasks, &QAction::triggered,
+            &m_timeTracker, &TimeTrackingWindow::slotExportTasks);
     m_actionCheckForUpdates.setText(tr("Check for Updates..."));
 #if 0
     // TODO this role should be set to have the action in the app menu, but that
@@ -243,23 +244,23 @@ ApplicationCore::ApplicationCore(TaskId startupTask, bool hideAtStart, QObject *
     // and Qt doesn't prevent duplicates (#222)
     m_actionCheckForUpdates.setMenuRole(QAction::ApplicationSpecificRole);
 #endif
-    connect(&m_actionCheckForUpdates, SIGNAL(triggered()),
-            &mainView(), SLOT(slotCheckForUpdatesManual()));
+    connect(&m_actionCheckForUpdates, &QAction::triggered,
+            &m_timeTracker, &TimeTrackingWindow::slotCheckForUpdatesManual);
     m_actionEnterVacation.setText(tr("Enter Vacation..."));
-    connect(&m_actionEnterVacation, SIGNAL(triggered()),
-            &mainView(), SLOT(slotEnterVacation()));
+    connect(&m_actionEnterVacation, &QAction::triggered,
+            &m_timeTracker, &TimeTrackingWindow::slotEnterVacation);
     m_actionActivityReport.setText(tr("Activity Report..."));
     m_actionActivityReport.setShortcut(Qt::CTRL + Qt::Key_A);
-    connect(&m_actionActivityReport, SIGNAL(triggered()),
-            &mainView(), SLOT(slotActivityReport()));
+    connect(&m_actionActivityReport, &QAction::triggered,
+            &m_timeTracker, &TimeTrackingWindow::slotActivityReport);
     m_actionWeeklyTimesheetReport.setText(tr("Weekly Timesheet..."));
     m_actionWeeklyTimesheetReport.setShortcut(Qt::CTRL + Qt::Key_R);
-    connect(&m_actionWeeklyTimesheetReport, SIGNAL(triggered()),
-            &mainView(), SLOT(slotWeeklyTimesheetReport()));
+    connect(&m_actionWeeklyTimesheetReport, &QAction::triggered,
+            &m_timeTracker, &TimeTrackingWindow::slotWeeklyTimesheetReport);
     m_actionMonthlyTimesheetReport.setText(tr("Monthly Timesheet..."));
     m_actionMonthlyTimesheetReport.setShortcut(Qt::CTRL + Qt::Key_M);
-    connect(&m_actionMonthlyTimesheetReport, SIGNAL(triggered()),
-            &mainView(), SLOT(slotMonthlyTimesheetReport()));
+    connect(&m_actionMonthlyTimesheetReport, &QAction::triggered,
+            &m_timeTracker, &TimeTrackingWindow::slotMonthlyTimesheetReport);
 
     // set up idle detection
     m_idleDetector = IdleDetector::createIdleDetector(this);
