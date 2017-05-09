@@ -30,7 +30,7 @@
 
 WindowsIdleDetector::WindowsIdleDetector(QObject *parent) : IdleDetector(parent)
 {
-    connect(&m_timer, SIGNAL(timeout()), this, SLOT(timeout()));
+    connect(&m_timer, &QTimer::timeout, this, &WindowsIdleDetector::timeout);
     m_timer.setInterval(idlenessDuration() * 1000 / 2);
     m_timer.setSingleShot(false);
     m_timer.start();
