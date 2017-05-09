@@ -136,10 +136,10 @@ int main(int argc, char **argv)
 #endif
 
         const std::shared_ptr<ApplicationCore> core(StartupOptions::createApplicationCore(startupTask, hideAtStart));
-        QObject::connect(&app, SIGNAL(commitDataRequest(QSessionManager&)), core.get(),
-                         SLOT(commitData(QSessionManager&)));
-        QObject::connect(&app, SIGNAL(saveStateRequest(QSessionManager&)), core.get(),
-                         SLOT(saveState(QSessionManager&)));
+        QObject::connect(&app, &QGuiApplication::commitDataRequest, core.get(),
+                         &ApplicationCore::commitData);
+        QObject::connect(&app, &QGuiApplication::saveStateRequest, core.get(),
+                         &ApplicationCore::saveState);
         return app.exec();
     } catch (const AlreadyRunningException &) {
         using namespace std;

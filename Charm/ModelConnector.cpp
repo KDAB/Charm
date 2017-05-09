@@ -39,12 +39,12 @@ ModelConnector::ModelConnector()
     , m_eventModelFilter(&m_dataModel)
     , m_findEventModelFilter(&m_dataModel)
 {
-    connect(&m_dataModel, SIGNAL(makeAndActivateEvent(Task)),
-            SLOT(slotMakeAndActivateEvent(Task)));
-    connect(&m_dataModel, SIGNAL(requestEventModification(Event,Event)),
-            SLOT(slotRequestEventModification(Event,Event)));
-    connect(&m_dataModel, SIGNAL(sysTrayUpdate(QString,bool)),
-            SLOT(slotSysTrayUpdate(QString,bool)));
+    connect(&m_dataModel, &CharmDataModel::makeAndActivateEvent,
+            this, &ModelConnector::slotMakeAndActivateEvent);
+    connect(&m_dataModel, &CharmDataModel::requestEventModification,
+            this, &ModelConnector::slotRequestEventModification);
+    connect(&m_dataModel, &CharmDataModel::sysTrayUpdate,
+            this, &ModelConnector::slotSysTrayUpdate);
 }
 
 CharmDataModel *ModelConnector::charmDataModel()
