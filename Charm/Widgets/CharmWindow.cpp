@@ -49,7 +49,7 @@ CharmWindow::CharmWindow(const QString &name, QWidget *parent)
     setWindowName(name);
     connect(m_openCharmAction, SIGNAL(triggered(bool)), SLOT(showView()));
     connect(m_showAction, SIGNAL(triggered(bool)), SLOT(showView()));
-    connect(this, SIGNAL(visibilityChanged(bool)), SLOT(handleShow(bool)));
+    connect(this, &CharmWindow::visibilityChanged, this, &CharmWindow::handleShow);
     m_toolBar = addToolBar(QStringLiteral("Toolbar"));
     m_toolBar->setMovable(false);
 

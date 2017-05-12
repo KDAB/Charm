@@ -41,11 +41,11 @@ BillDialog::BillDialog(QWidget *parent, Qt::WindowFlags f)
     setWindowTitle(QStringLiteral("Yeah... about those timesheets..."));
 
     m_asYouWish = new QPushButton(QStringLiteral("As you wish"));
-    connect(m_asYouWish, SIGNAL(clicked()), SLOT(slotAsYouWish()));
+    connect(m_asYouWish, &QPushButton::clicked, this, &BillDialog::slotAsYouWish);
     m_alreadyDone = new QPushButton(QStringLiteral("Already done"));
-    connect(m_alreadyDone, SIGNAL(clicked()), SLOT(slotAlreadyDone()));
+    connect(m_alreadyDone, &QPushButton::clicked, this, &BillDialog::slotAlreadyDone);
     m_later = new QPushButton(QStringLiteral("Later"));
-    connect(m_later, SIGNAL(clicked()), SLOT(slotLater()));
+    connect(m_later,  &QPushButton::clicked, this, &BillDialog::slotLater);
 
     auto layout = new QVBoxLayout(this);
     auto buttonBox = new QDialogButtonBox();

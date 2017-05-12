@@ -55,7 +55,8 @@ MonthlyTimeSheetReport::MonthlyTimeSheetReport(QWidget *parent)
         m_dailyhours = 8;
     }
 
-    connect(this, SIGNAL(anchorClicked(QUrl)), SLOT(slotLinkClicked(QUrl)));
+    connect(this, &MonthlyTimeSheetReport::anchorClicked,
+            this, &MonthlyTimeSheetReport::slotLinkClicked);
 }
 
 MonthlyTimeSheetReport::~MonthlyTimeSheetReport()

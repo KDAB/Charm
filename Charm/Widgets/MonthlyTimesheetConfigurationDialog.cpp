@@ -42,22 +42,23 @@ MonthlyTimesheetConfigurationDialog::MonthlyTimesheetConfigurationDialog(QWidget
     setWindowTitle(tr("Monthly Timesheet"));
 
     m_ui->setupUi(this);
-    connect(m_ui->buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-    connect(m_ui->buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+    connect(m_ui->buttonBox, &QDialogButtonBox::accepted,
+            this, &MonthlyTimesheetConfigurationDialog::accept);
+    connect(m_ui->buttonBox, &QDialogButtonBox::rejected,
+            this, &MonthlyTimesheetConfigurationDialog::reject);
 
     connect(m_ui->comboBoxMonth, SIGNAL(currentIndexChanged(int)),
             SLOT(slotMonthComboItemSelected(int)));
-    connect(m_ui->toolButtonSelectTask, SIGNAL(clicked()),
-            SLOT(slotSelectTask()));
-    connect(m_ui->checkBoxSubTasksOnly, SIGNAL(toggled(bool)),
-            SLOT(slotCheckboxSubtasksOnlyChecked(bool)));
+    connect(m_ui->toolButtonSelectTask, &QToolButton::clicked,
+            this, &MonthlyTimesheetConfigurationDialog::slotSelectTask);
+    connect(m_ui->checkBoxSubTasksOnly, &QCheckBox::toggled,
+            this, &MonthlyTimesheetConfigurationDialog::slotCheckboxSubtasksOnlyChecked);
     m_ui->comboBoxMonth->setCurrentIndex(1);
     slotCheckboxSubtasksOnlyChecked(m_ui->checkBoxSubTasksOnly->isChecked());
 
     slotStandardTimeSpansChanged();
-    connect(ApplicationCore::instance().dateChangeWatcher(),
-            SIGNAL(dateChanged()),
-            SLOT(slotStandardTimeSpansChanged()));
+    connect(ApplicationCore::instance().dateChangeWatcher(), &DateChangeWatcher::dateChanged,
+            this, &MonthlyTimesheetConfigurationDialog::slotStandardTimeSpansChanged);
 
     // set current month and year:
     m_ui->spinBoxMonth->setValue(QDate::currentDate().month());

@@ -32,8 +32,8 @@ TaskIdDialog::TaskIdDialog(TaskModelInterface *model, TasksView *parent)
 {
     m_ui.setupUi(this);
     m_ui.spinBox->setRange(1, 1000*1000*1000);
-    connect(m_ui.buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-    connect(m_ui.buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+    connect(m_ui.buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
+    connect(m_ui.buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
     // resize( minimumSize() );
 }
 

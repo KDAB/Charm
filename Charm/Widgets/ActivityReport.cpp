@@ -53,22 +53,24 @@ ActivityReportConfigurationDialog::ActivityReportConfigurationDialog(QWidget *pa
     m_ui->dateEditStart->calendarWidget()->setFirstDayOfWeek(Qt::Monday);
     m_ui->dateEditStart->calendarWidget()->setVerticalHeaderFormat(QCalendarWidget::ISOWeekNumbers);
     m_ui->tabWidget->setCurrentIndex(0);
-    connect(m_ui->buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-    connect(m_ui->buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
-    connect(m_ui->comboBox, SIGNAL(currentIndexChanged(int)),
-            SLOT(slotTimeSpanSelected(int)));
-    connect(m_ui->addExcludeTaskButton, SIGNAL(clicked()),
-            SLOT(slotExcludeTask()));
-    connect(m_ui->removeExcludeTaskButton, SIGNAL(clicked()),
-            SLOT(slotRemoveExcludedTask()));
-    connect(m_ui->addIncludeTaskButton, SIGNAL(clicked()),
-            SLOT(slotSelectTask()));
-    connect(m_ui->removeIncludeTaskButton, SIGNAL(clicked()),
-            SLOT(slotRemoveIncludeTask()));
-    connect(m_ui->checkBoxGroupTasks, SIGNAL(clicked(bool)),
-            SLOT(slotGroupTasks(bool)));
-    connect(m_ui->checkBoxGroupTasksComments, SIGNAL(clicked(bool)),
-            SLOT(slotGroupTasksComments(bool)));
+    connect(m_ui->buttonBox, &QDialogButtonBox::accepted,
+            this, &ActivityReportConfigurationDialog::accept);
+    connect(m_ui->buttonBox, &QDialogButtonBox::rejected,
+            this, &ActivityReportConfigurationDialog::reject);
+    connect(m_ui->comboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
+            this, &ActivityReportConfigurationDialog::slotTimeSpanSelected );
+    connect(m_ui->addExcludeTaskButton, &QToolButton::clicked,
+            this, &ActivityReportConfigurationDialog::slotExcludeTask);
+    connect(m_ui->removeExcludeTaskButton, &QToolButton::clicked,
+            this, &ActivityReportConfigurationDialog::slotRemoveExcludedTask);
+    connect(m_ui->addIncludeTaskButton,  &QToolButton::clicked,
+            this, &ActivityReportConfigurationDialog::slotSelectTask);
+    connect(m_ui->removeIncludeTaskButton, &QToolButton::clicked,
+             this, &ActivityReportConfigurationDialog::slotRemoveIncludeTask);
+    connect(m_ui->checkBoxGroupTasks, &QCheckBox::clicked,
+            this, &ActivityReportConfigurationDialog::slotGroupTasks);
+    connect(m_ui->checkBoxGroupTasksComments, &QCheckBox::clicked,
+            this, &ActivityReportConfigurationDialog::slotGroupTasksComments);
 
     new DateEntrySyncer(m_ui->spinBoxStartWeek, m_ui->spinBoxStartYear, m_ui->dateEditStart, 1,
                         this);
@@ -85,8 +87,9 @@ void ActivityReportConfigurationDialog::slotDelayedInitialization()
 {
     slotStandardTimeSpansChanged();
     connect(ApplicationCore::instance().dateChangeWatcher(),
-            SIGNAL(dateChanged()),
-            SLOT(slotStandardTimeSpansChanged()));
+            &DateChangeWatcher::dateChanged,
+            this,
+            &ActivityReportConfigurationDialog::slotStandardTimeSpansChanged);
     // FIXME load settings
 }
 
@@ -203,6 +206,11 @@ void ActivityReportConfigurationDialog::accept()
     QDialog::accept();
 }
 
+void ActivityReportConfigurationDialog::reject()
+{
+    QDialog::reject();
+}
+
 void ActivityReportConfigurationDialog::showReportPreviewDialog()
 {
     const int index = m_ui->comboBox->currentIndex();
@@ -229,7 +237,8 @@ ActivityReport::ActivityReport(QWidget *parent)
     saveToXmlButton()->hide();
     saveToTextButton()->hide();
     uploadButton()->hide();
-    connect(this, SIGNAL(anchorClicked(QUrl)), SLOT(slotLinkClicked(QUrl)));
+    connect(this, &ReportPreviewWindow::anchorClicked,
+            this, &ActivityReport::slotLinkClicked);
 }
 
 ActivityReport::~ActivityReport()

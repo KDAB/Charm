@@ -58,10 +58,10 @@ CharmPreferences::CharmPreferences(const Configuration &config, QWidget *parent_
     m_ui.cbEnableCommandInterface->setChecked(haveCommandInterface
                                               && config.enableCommandInterface);
 
-    connect(m_ui.cbWarnUnuploadedTimesheets, SIGNAL(toggled(bool)),
-            SLOT(slotWarnUnuploadedChanged(bool)));
-    connect(m_ui.pbResetPassword, SIGNAL(clicked()),
-            SLOT(slotResetPassword()));
+    connect(m_ui.cbWarnUnuploadedTimesheets, &QCheckBox::toggled,
+            this, &CharmPreferences::slotWarnUnuploadedChanged);
+    connect(m_ui.pbResetPassword, &QPushButton::clicked,
+            this, &CharmPreferences::slotResetPassword);
 
     // this would not need a switch, but i hate casting enums to int:
     switch (config.timeTrackerFontSize) {

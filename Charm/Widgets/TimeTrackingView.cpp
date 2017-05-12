@@ -49,12 +49,12 @@ TimeTrackingView::TimeTrackingView(QWidget *parent)
     m_paintAttributes.initialize(palette());
     for (int i = 0; i < 7; ++i)
         m_shortDayNames[i] = QDate::shortDayName(i + 1);
-    connect(m_taskSelector, SIGNAL(startEvent(TaskId)),
-            SIGNAL(startEvent(TaskId)));
-    connect(m_taskSelector, SIGNAL(stopEvents()),
-            SIGNAL(stopEvents()));
-    connect(m_taskSelector, SIGNAL(updateSummariesPlease()),
-            SLOT(slotUpdateSummaries()));
+    connect(m_taskSelector, &TimeTrackingTaskSelector::startEvent,
+            this, &TimeTrackingView::startEvent);
+    connect(m_taskSelector, &TimeTrackingTaskSelector::stopEvents,
+            this, &TimeTrackingView::stopEvents);
+    connect(m_taskSelector, &TimeTrackingTaskSelector::updateSummariesPlease,
+            this, &TimeTrackingView::slotUpdateSummaries);
 
     setFocusProxy(m_taskSelector);
     setFocusPolicy(Qt::StrongFocus);

@@ -32,8 +32,8 @@
 TasksViewDelegate::TasksViewDelegate(QObject *parent)
     : QItemDelegate(parent)
 {
-    connect(this, SIGNAL(closeEditor(QWidget*,QAbstractItemDelegate::EndEditHint)),
-            SLOT(slotCloseEditor(QWidget*,QAbstractItemDelegate::EndEditHint)));
+    connect(this, &TasksViewDelegate::closeEditor,
+            this, &TasksViewDelegate::slotCloseEditor);
 }
 
 QWidget *TasksViewDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &option,

@@ -113,23 +113,24 @@ WeeklyTimesheetConfigurationDialog::WeeklyTimesheetConfigurationDialog(QWidget *
     m_ui->setupUi(this);
     m_ui->dateEditDay->calendarWidget()->setFirstDayOfWeek(Qt::Monday);
     m_ui->dateEditDay->calendarWidget()->setVerticalHeaderFormat(QCalendarWidget::ISOWeekNumbers);
-    connect(m_ui->buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-    connect(m_ui->buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+    connect(m_ui->buttonBox, &QDialogButtonBox::accepted,
+            this, &WeeklyTimesheetConfigurationDialog::accept);
+    connect(m_ui->buttonBox, &QDialogButtonBox::rejected,
+            this, &WeeklyTimesheetConfigurationDialog::reject);
 
     connect(m_ui->comboBoxWeek, SIGNAL(currentIndexChanged(int)),
             SLOT(slotWeekComboItemSelected(int)));
-    connect(m_ui->toolButtonSelectTask, SIGNAL(clicked()),
-            SLOT(slotSelectTask()));
-    connect(m_ui->checkBoxSubTasksOnly, SIGNAL(toggled(bool)),
-            SLOT(slotCheckboxSubtasksOnlyChecked(bool)));
+    connect(m_ui->toolButtonSelectTask, &QToolButton::clicked,
+            this, &WeeklyTimesheetConfigurationDialog::slotSelectTask);
+    connect(m_ui->checkBoxSubTasksOnly, &QCheckBox::toggled,
+            this, &WeeklyTimesheetConfigurationDialog::slotCheckboxSubtasksOnlyChecked);
     m_ui->comboBoxWeek->setCurrentIndex(1);
     slotCheckboxSubtasksOnlyChecked(m_ui->checkBoxSubTasksOnly->isChecked());
     new DateEntrySyncer(m_ui->spinBoxWeek, m_ui->spinBoxYear, m_ui->dateEditDay, 1, this);
 
     slotStandardTimeSpansChanged();
-    connect(ApplicationCore::instance().dateChangeWatcher(),
-            SIGNAL(dateChanged()),
-            SLOT(slotStandardTimeSpansChanged()));
+    connect(ApplicationCore::instance().dateChangeWatcher(), &DateChangeWatcher::dateChanged,
+            this, &WeeklyTimesheetConfigurationDialog::slotStandardTimeSpansChanged);
 
     // load settings:
     QSettings settings;
@@ -262,8 +263,8 @@ WeeklyTimeSheetReport::WeeklyTimeSheetReport(QWidget *parent)
     : TimeSheetReport(parent)
 {
     QPushButton *upload = uploadButton();
-    connect(upload, SIGNAL(clicked()), SLOT(slotUploadTimesheet()));
-    connect(this, SIGNAL(anchorClicked(QUrl)), SLOT(slotLinkClicked(QUrl)));
+    connect(upload, &QPushButton::clicked, this, &WeeklyTimeSheetReport::slotUploadTimesheet);
+    connect(this, &ReportPreviewWindow::anchorClicked, this, &WeeklyTimeSheetReport::slotLinkClicked);
 
     if (!HttpJob::credentialsAvailable())
         upload->hide();
@@ -285,7 +286,7 @@ void WeeklyTimeSheetReport::slotUploadTimesheet()
     auto client = new UploadTimesheetJob(this);
     auto dialog = new HttpJobProgressDialog(client, this);
     dialog->setWindowTitle(tr("Uploading"));
-    connect(client, SIGNAL(finished(HttpJob*)), this, SLOT(slotTimesheetUploaded(HttpJob*)));
+    connect(client, &HttpJob::finished, this, &WeeklyTimeSheetReport::slotTimesheetUploaded);
     client->setFileName(suggestedFileName());
     client->setPayload(saveToXml());
     client->start();

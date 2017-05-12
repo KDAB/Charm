@@ -75,30 +75,30 @@ TasksView::TasksView(QWidget *parent)
     layout->addWidget(m_treeView);
 
     m_treeView->setItemDelegate(m_delegate);
-    connect(m_delegate, SIGNAL(editingStateChanged()),
-            SLOT(configureUi()));
+    connect(m_delegate, &TasksViewDelegate::editingStateChanged,
+            this, &TasksView::configureUi);
 
     // set up actions
     m_actionNewTask.setText(tr("New &Task"));
     m_actionNewTask.setShortcut(QKeySequence::New);
     m_actionNewTask.setIcon(Data::newTaskIcon());
     m_toolBar->addAction(&m_actionNewTask);
-    connect(&m_actionNewTask, SIGNAL(triggered(bool)),
-            SLOT(actionNewTask()));
+    connect(&m_actionNewTask, &QAction::triggered,
+            this, &TasksView::actionNewTask);
 
     m_actionNewSubTask.setText(tr("New &Subtask"));
     m_actionNewSubTask.setShortcut(Qt::META + Qt::Key_N);
     m_actionNewSubTask.setIcon(Data::newSubtaskIcon());
     m_toolBar->addAction(&m_actionNewSubTask);
-    connect(&m_actionNewSubTask, SIGNAL(triggered(bool)),
-            SLOT(actionNewSubTask()));
+    connect(&m_actionNewSubTask, &QAction::triggered,
+            this, &TasksView::actionNewSubTask);
 
     m_actionEditTask.setText(tr("Edit Task"));
     m_actionEditTask.setShortcut(Qt::CTRL + Qt::Key_E);
     m_actionEditTask.setIcon(Data::editTaskIcon());
     m_toolBar->addAction(&m_actionEditTask);
-    connect(&m_actionEditTask, SIGNAL(triggered(bool)),
-            SLOT(actionEditTask()));
+    connect(&m_actionEditTask, &QAction::triggered,
+            this, &TasksView::actionEditTask);
 
     m_actionDeleteTask.setText(tr("Delete Task"));
     QList<QKeySequence> deleteShortcuts;
@@ -109,36 +109,36 @@ TasksView::TasksView(QWidget *parent)
     m_actionDeleteTask.setShortcuts(deleteShortcuts);
     m_actionDeleteTask.setIcon(Data::deleteTaskIcon());
     m_toolBar->addAction(&m_actionDeleteTask);
-    connect(&m_actionDeleteTask, SIGNAL(triggered(bool)),
-            SLOT(actionDeleteTask()));
+    connect(&m_actionDeleteTask, &QAction::triggered,
+            this, &TasksView::actionDeleteTask);
 
     m_actionExpandTree.setText(tr("Expand All"));
-    connect(&m_actionExpandTree, SIGNAL(triggered(bool)),
-            m_treeView, SLOT(expandAll()));
+    connect(&m_actionExpandTree, &QAction::triggered,
+            m_treeView, &QTreeView::expandAll);
 
     m_actionCollapseTree.setText(tr("Collapse All"));
-    connect(&m_actionCollapseTree, SIGNAL(triggered(bool)),
-            m_treeView, SLOT(collapseAll()));
+    connect(&m_actionCollapseTree, &QAction::triggered,
+            m_treeView, &QTreeView::collapseAll);
 
     // filter setup
     m_showCurrentOnly->setText(tr("Current"));
     m_showCurrentOnly->setCheckable(true);
 
     m_toolBar->addAction(m_showCurrentOnly);
-    connect(m_showCurrentOnly, SIGNAL(triggered(bool)),
-            SLOT(taskPrefilteringChanged()));
+    connect(m_showCurrentOnly, &QAction::triggered,
+            this, &TasksView::taskPrefilteringChanged);
 
     m_showSubscribedOnly->setText(tr("Selected"));
     m_showSubscribedOnly->setCheckable(true);
 
     m_toolBar->addAction(m_showSubscribedOnly);
-    connect(m_showSubscribedOnly, SIGNAL(triggered(bool)),
-            SLOT(taskPrefilteringChanged()));
+    connect(m_showSubscribedOnly, &QAction::triggered,
+            this, &TasksView::taskPrefilteringChanged);
 
     auto searchField = new QLineEdit(this);
 
-    connect(searchField, SIGNAL(textChanged(QString)),
-            SLOT(slotFiltertextChanged(QString)));
+    connect(searchField, &QLineEdit::textChanged,
+            this, &TasksView::slotFiltertextChanged);
     m_toolBar->addWidget(searchField);
 
     m_treeView->setEditTriggers(QAbstractItemView::EditKeyPressed);
@@ -148,8 +148,8 @@ TasksView::TasksView(QWidget *parent)
     m_treeView->setTextElideMode(Qt::ElideNone);
     m_treeView->setRootIsDecorated(true);
     m_treeView->setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(m_treeView, SIGNAL(customContextMenuRequested(QPoint)),
-            SLOT(slotContextMenuRequested(QPoint)));
+    connect(m_treeView, &QTreeView::customContextMenuRequested,
+            this, &TasksView::slotContextMenuRequested);
 
     // A reasonable default depth.
     m_treeView->expandToDepth(0);
@@ -265,16 +265,18 @@ void TasksView::stateChanged(State)
         ViewFilter *filter = ApplicationCore::instance().model().taskModel();
         m_treeView->setModel(filter);
         const QItemSelectionModel *smodel = m_treeView->selectionModel();
-        connect(smodel, SIGNAL(currentChanged(QModelIndex,QModelIndex)), SLOT(configureUi()));
-        connect(smodel, SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
-                SLOT(configureUi()));
-        connect(smodel, SIGNAL(currentColumnChanged(QModelIndex,QModelIndex)), SLOT(configureUi()));
-        connect(filter, SIGNAL(eventActivationNotice(EventId)),
-                SLOT(slotEventActivated(EventId)));
-        connect(filter, SIGNAL(eventDeactivationNotice(EventId)),
-                SLOT(slotEventDeactivated(EventId)));
-        connect(MODEL.charmDataModel(), SIGNAL(resetGUIState()),
-                SLOT(restoreGuiState()));
+        connect(smodel, &QItemSelectionModel::currentChanged,
+                this, &TasksView::configureUi);
+        connect(smodel, &QItemSelectionModel::selectionChanged,
+                this, &TasksView::configureUi);
+        connect(smodel, &QItemSelectionModel::currentColumnChanged,
+                this, &TasksView::configureUi);
+        connect(filter, &ViewFilter::eventActivationNotice,
+                this, &TasksView::slotEventActivated);
+        connect(filter, &ViewFilter::eventDeactivationNotice,
+                this, &TasksView::slotEventDeactivated);
+        connect(MODEL.charmDataModel(), &CharmDataModel::resetGUIState,
+                this, &TasksView::restoreGuiState);
         configurationChanged();
         break;
     }

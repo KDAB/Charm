@@ -81,19 +81,20 @@ TimeTrackingWindow::TimeTrackingWindow(QWidget *parent)
     setWindowNumber(3);
     setWindowIdentifier(QStringLiteral("window_tracking"));
     setCentralWidget(m_summaryWidget);
-    connect(m_summaryWidget, SIGNAL(startEvent(TaskId)),
-            SLOT(slotStartEvent(TaskId)));
-    connect(m_summaryWidget, SIGNAL(stopEvents()),
-            SLOT(slotStopEvent()));
-    connect(m_summaryWidget, SIGNAL(taskMenuChanged()), SIGNAL(taskMenuChanged()));
-    connect(&m_checkUploadedSheetsTimer, SIGNAL(timeout()),
-            SLOT(slotCheckUploadedTimesheets()));
-    connect(m_billDialog, SIGNAL(finished(int)),
-            SLOT(slotBillGone(int)));
-    connect(&m_checkCharmReleaseVersionTimer, SIGNAL(timeout()),
-            SLOT(slotCheckForUpdatesAutomatic()));
-    connect(&m_updateUserInfoAndTasksDefinitionsTimer, SIGNAL(timeout()),
-            SLOT(slotGetUserInfo()));
+    connect(m_summaryWidget, &TimeTrackingView::startEvent,
+            this, &TimeTrackingWindow::slotStartEvent);
+    connect(m_summaryWidget, &TimeTrackingView::stopEvents,
+            this, &TimeTrackingWindow::slotStopEvent);
+    connect(m_summaryWidget, &TimeTrackingView::taskMenuChanged,
+            this, &TimeTrackingWindow::taskMenuChanged);
+    connect(&m_checkUploadedSheetsTimer, &QTimer::timeout,
+            this, &TimeTrackingWindow::slotCheckUploadedTimesheets);
+    connect(m_billDialog, &BillDialog::finished,
+            this, &TimeTrackingWindow::slotBillGone);
+    connect(&m_checkCharmReleaseVersionTimer, &QTimer::timeout,
+            this, &TimeTrackingWindow::slotCheckForUpdatesAutomatic);
+    connect(&m_updateUserInfoAndTasksDefinitionsTimer, &QTimer::timeout,
+            this, &TimeTrackingWindow::slotGetUserInfo);
 
     //Check every 60 minutes if there are timesheets due
     if (CONFIGURATION.warnUnuploadedTimesheets)
@@ -142,8 +143,8 @@ void TimeTrackingWindow::stateChanged(State previous)
     CharmWindow::stateChanged(previous);
     switch (ApplicationCore::instance().state()) {
     case Connecting:
-        connect(ApplicationCore::instance().dateChangeWatcher(), SIGNAL(dateChanged()),
-                SLOT(slotSelectTasksToShow()));
+        connect(ApplicationCore::instance().dateChangeWatcher(), &DateChangeWatcher::dateChanged,
+                this, &TimeTrackingWindow::slotSelectTasksToShow);
         DATAMODEL->registerAdapter(this);
         m_summaryWidget->setSummaries(QVector<WeeklySummary>());
         m_summaryWidget->handleActiveEvents();
@@ -334,8 +335,8 @@ void TimeTrackingWindow::slotActivityReport()
     delete m_activityReportDialog;
     m_activityReportDialog = new ActivityReportConfigurationDialog(this);
     m_activityReportDialog->setAttribute(Qt::WA_DeleteOnClose);
-    connect(m_activityReportDialog, SIGNAL(finished(int)),
-            this, SLOT(slotActivityReportPreview(int)));
+    connect(m_activityReportDialog, &ActivityReportConfigurationDialog::finished,
+            this, &TimeTrackingWindow::slotActivityReportPreview);
     m_activityReportDialog->open();
 }
 
@@ -344,8 +345,8 @@ void TimeTrackingWindow::resetWeeklyTimesheetDialog()
     delete m_weeklyTimesheetDialog;
     m_weeklyTimesheetDialog = new WeeklyTimesheetConfigurationDialog(this);
     m_weeklyTimesheetDialog->setAttribute(Qt::WA_DeleteOnClose);
-    connect(m_weeklyTimesheetDialog, SIGNAL(finished(int)),
-            this, SLOT(slotWeeklyTimesheetPreview(int)));
+    connect(m_weeklyTimesheetDialog, &WeeklyTimesheetConfigurationDialog::finished,
+            this, &TimeTrackingWindow::slotWeeklyTimesheetPreview);
 }
 
 void TimeTrackingWindow::slotWeeklyTimesheetReport()
@@ -359,8 +360,8 @@ void TimeTrackingWindow::resetMonthlyTimesheetDialog()
     delete m_monthlyTimesheetDialog;
     m_monthlyTimesheetDialog = new MonthlyTimesheetConfigurationDialog(this);
     m_monthlyTimesheetDialog->setAttribute(Qt::WA_DeleteOnClose);
-    connect(m_monthlyTimesheetDialog, SIGNAL(finished(int)),
-            this, SLOT(slotMonthlyTimesheetPreview(int)));
+    connect(m_monthlyTimesheetDialog, &MonthlyTimesheetConfigurationDialog::finished,
+            this, &TimeTrackingWindow::slotMonthlyTimesheetPreview);
 }
 
 void TimeTrackingWindow::slotMonthlyTimesheetReport()
@@ -463,7 +464,8 @@ void TimeTrackingWindow::slotSyncTasks(VerboseMode mode)
         client->setVerbose(false);
     }
 
-    connect(client, SIGNAL(finished(HttpJob*)), this, SLOT(slotTasksDownloaded(HttpJob*)));
+    connect(client, &GetProjectCodesJob::finished,
+            this, &TimeTrackingWindow::slotTasksDownloaded);
     client->start();
 }
 
@@ -589,8 +591,8 @@ void TimeTrackingWindow::slotCheckForUpdatesManual()
 void TimeTrackingWindow::startCheckForUpdates(VerboseMode mode)
 {
     CheckForUpdatesJob *checkForUpdates = new CheckForUpdatesJob(this);
-    connect(checkForUpdates, SIGNAL(finished(CheckForUpdatesJob::JobData)), this,
-            SLOT(slotCheckForUpdates(CheckForUpdatesJob::JobData)));
+    connect(checkForUpdates, &CheckForUpdatesJob::finished,
+            this, &TimeTrackingWindow::slotCheckForUpdates);
     const QString urlString = QStringLiteral(UPDATE_CHECK_URL);
     checkForUpdates->setUrl(QUrl(urlString));
     if (mode == Verbose)
@@ -809,7 +811,7 @@ void TimeTrackingWindow::slotGetUserInfo()
 
     GetUserInfoJob *client = new GetUserInfoJob(this, QStringLiteral("users"));
     client->setSchema(userName);
-    connect(client, SIGNAL(finished(HttpJob*)), this, SLOT(slotUserInfoDownloaded(HttpJob*)));
+    connect(client, &GetUserInfoJob::finished, this, &TimeTrackingWindow::slotUserInfoDownloaded);
     client->start();
 }
 

@@ -32,9 +32,9 @@ HttpJobProgressDialog::HttpJobProgressDialog(HttpJob *job, QWidget *parent)
     setLabelText(tr("Wait..."));
 
     Q_ASSERT(job);
-    connect(job, SIGNAL(finished(HttpJob*)), this, SLOT(jobFinished(HttpJob*)));
-    connect(job, SIGNAL(transferStarted()), this, SLOT(jobTransferStarted()));
-    connect(job, SIGNAL(passwordRequested()), this, SLOT(jobPasswordRequested()));
+    connect(job, &HttpJob::finished, this, &HttpJobProgressDialog::jobFinished);
+    connect(job, &HttpJob::transferStarted, this, &HttpJobProgressDialog::jobTransferStarted);
+    connect(job, &HttpJob::passwordRequested, this, &HttpJobProgressDialog::jobPasswordRequested);
 }
 
 void HttpJobProgressDialog::jobTransferStarted()

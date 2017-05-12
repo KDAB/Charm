@@ -37,27 +37,27 @@ ReportPreviewWindow::ReportPreviewWindow(QWidget *parent)
 {
     m_ui->setupUi(this);
     setAttribute(Qt::WA_DeleteOnClose);
-    connect(m_ui->pushButtonClose, SIGNAL(clicked()),
-            SLOT(slotClose()));
-    connect(m_ui->pushButtonUpdate, SIGNAL(clicked()),
-            SLOT(slotUpdate()));
-    connect(m_ui->pushButtonSave, SIGNAL(clicked()),
-            SLOT(slotSaveToXml()));
-    connect(m_ui->pushButtonSaveTotals, SIGNAL(clicked()),
-            SLOT(slotSaveToText()));
-    connect(m_ui->textBrowser, SIGNAL(anchorClicked(QUrl)),
-            SIGNAL(anchorClicked(QUrl)));
+    connect(m_ui->pushButtonClose, &QPushButton::clicked,
+            this, &ReportPreviewWindow::slotClose);
+    connect(m_ui->pushButtonUpdate, &QPushButton::clicked,
+            this, &ReportPreviewWindow::slotUpdate);
+    connect(m_ui->pushButtonSave, &QPushButton::clicked,
+            this, &ReportPreviewWindow::slotSaveToXml);
+    connect(m_ui->pushButtonSaveTotals, &QPushButton::clicked,
+            this, &ReportPreviewWindow::slotSaveToText);
+    connect(m_ui->textBrowser, &QTextBrowser::anchorClicked,
+            this, &ReportPreviewWindow::anchorClicked);
 #ifndef QT_NO_PRINTER
-    connect(m_ui->pushButtonPrint, SIGNAL(clicked()),
-            SLOT(slotPrint()));
+    connect(m_ui->pushButtonPrint, &QPushButton::clicked,
+            this, &ReportPreviewWindow::slotPrint);
 #else
     m_ui->pushButtonPrint->setEnabled(false);
 #endif
 
     m_updateTimer.setInterval(60 * 1000);
     m_updateTimer.start();
-    connect(&m_updateTimer, SIGNAL(timeout()),
-            SLOT(slotUpdate()));
+    connect(&m_updateTimer, &QTimer::timeout,
+            this, &ReportPreviewWindow::slotUpdate);
 
     resize(850, 600);
 }

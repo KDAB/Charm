@@ -64,6 +64,7 @@ public:
 
 public Q_SLOTS:
     void accept() override;
+    void reject() override;
 
 private Q_SLOTS:
     void slotDelayedInitialization();

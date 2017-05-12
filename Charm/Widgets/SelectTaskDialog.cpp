@@ -74,23 +74,21 @@ SelectTaskDialog::SelectTaskDialog(QWidget *parent)
     m_ui->treeView->header()->hide();
     m_ui->buttonBox->button(QDialogButtonBox::Cancel)->setEnabled(true);
     m_ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
-    connect(m_ui->treeView->selectionModel(),
-            SIGNAL(currentChanged(QModelIndex,QModelIndex)),
-            SLOT(slotCurrentItemChanged(QModelIndex,QModelIndex)));
-    connect(m_ui->treeView,
-            SIGNAL(doubleClicked(QModelIndex)),
-            SLOT(slotDoubleClicked(QModelIndex)));
+    connect(m_ui->treeView->selectionModel(), &QItemSelectionModel::currentChanged,
+            this, &SelectTaskDialog::slotCurrentItemChanged);
+    connect(m_ui->treeView, &QTreeView::doubleClicked,
+            this, &SelectTaskDialog::slotDoubleClicked);
 
-    connect(m_ui->filter, SIGNAL(textChanged(QString)),
-            SLOT(slotFilterTextChanged(QString)));
-    connect(m_ui->showExpired, SIGNAL(toggled(bool)),
-            SLOT(slotPrefilteringChanged()));
-    connect(m_ui->showSelected, SIGNAL(toggled(bool)),
-            SLOT(slotPrefilteringChanged()));
-    connect(this, SIGNAL(accepted()),
-            SLOT(slotAccepted()));
-    connect(MODEL.charmDataModel(), SIGNAL(resetGUIState()),
-            SLOT(slotResetState()));
+    connect(m_ui->filter, &QLineEdit::textChanged,
+            this, &SelectTaskDialog::slotFilterTextChanged);
+    connect(m_ui->showExpired, &QCheckBox::toggled,
+            this, &SelectTaskDialog::slotPrefilteringChanged);
+    connect(m_ui->showSelected, &QCheckBox::toggled,
+            this, &SelectTaskDialog::slotPrefilteringChanged);
+    connect(this, &SelectTaskDialog::accepted,
+            this, &SelectTaskDialog::slotAccepted);
+    connect(MODEL.charmDataModel(), &CharmDataModel::resetGUIState,
+            this, &SelectTaskDialog::slotResetState);
 
     QSettings settings;
     settings.beginGroup(QString::fromUtf8(staticMetaObject.className()));

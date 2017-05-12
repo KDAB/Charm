@@ -42,9 +42,10 @@ FindAndReplaceEventsDialog::FindAndReplaceEventsDialog(QWidget *parent)
 
     m_replace = new QPushButton(tr("Replace"));
     m_replace->setEnabled(false);
-    connect(m_replace, SIGNAL(clicked()), SLOT(slotReplaceProjectCode()));
+    connect(m_replace, &QPushButton::clicked,
+            this, &FindAndReplaceEventsDialog::slotReplaceProjectCode);
     m_cancel = new QPushButton(tr("Cancel"));
-    connect(m_cancel, SIGNAL(clicked()), SLOT(reject()));
+    connect(m_cancel, &QPushButton::clicked, this, &QDialog::reject);
     m_ui->buttonBox->addButton(m_cancel, QDialogButtonBox::RejectRole);
     m_ui->buttonBox->addButton(m_replace, QDialogButtonBox::AcceptRole);
 
@@ -60,16 +61,17 @@ FindAndReplaceEventsDialog::FindAndReplaceEventsDialog(QWidget *parent)
     // and we add a day when filtering.
     m_ui->dateEditEnd->setDate(m_timeSpan.second.addDays(-1));
 
-    connect(m_ui->dateEditStart->calendarWidget(), SIGNAL(selectionChanged()),
-            SLOT(slotTimeSpansChanged()));
-    connect(m_ui->dateEditEnd->calendarWidget(), SIGNAL(selectionChanged()),
-            SLOT(slotTimeSpansChanged()));
-    connect(ApplicationCore::instance().dateChangeWatcher(),
-            SIGNAL(dateChanged()),
-            SLOT(slotTimeSpansChanged()));
+    connect(m_ui->dateEditStart->calendarWidget(), &QCalendarWidget::selectionChanged,
+            this, &FindAndReplaceEventsDialog::slotTimeSpansChanged);
+    connect(m_ui->dateEditEnd->calendarWidget(), &QCalendarWidget::selectionChanged,
+            this, &FindAndReplaceEventsDialog::slotTimeSpansChanged);
+    connect(ApplicationCore::instance().dateChangeWatcher(), &DateChangeWatcher::dateChanged,
+            this, &FindAndReplaceEventsDialog::slotTimeSpansChanged);
 
-    connect(m_ui->selectSearchTaskPB, SIGNAL(clicked()), SLOT(slotSelectTaskToSearch()));
-    connect(m_ui->selectReplaceWithTaskPB, SIGNAL(clicked()), SLOT(slotSelectTaskToReplaceWith()));
+    connect(m_ui->selectSearchTaskPB, &QPushButton::clicked,
+            this, &FindAndReplaceEventsDialog::slotSelectTaskToSearch);
+    connect(m_ui->selectReplaceWithTaskPB, &QPushButton::clicked,
+            this, &FindAndReplaceEventsDialog::slotSelectTaskToReplaceWith);
 
     m_model.reset(new EventModelFilter(DATAMODEL));
     m_ui->findAndReplaceLV->setModel(m_model.data());

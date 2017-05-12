@@ -46,16 +46,11 @@ TaskEditor::TaskEditor(QWidget *parent)
     m_ui->dateEditFrom->calendarWidget()->setVerticalHeaderFormat(QCalendarWidget::ISOWeekNumbers);
     m_ui->dateEditTo->calendarWidget()->setFirstDayOfWeek(Qt::Monday);
     m_ui->dateEditTo->calendarWidget()->setVerticalHeaderFormat(QCalendarWidget::ISOWeekNumbers);
-    connect(m_ui->pushButtonParent, SIGNAL(clicked()),
-            SLOT(slotSelectParent()));
-    connect(m_ui->dateEditFrom, SIGNAL(dateChanged(QDate)),
-            SLOT(slotDateChanged(QDate)));
-    connect(m_ui->dateEditTo, SIGNAL(dateChanged(QDate)),
-            SLOT(slotDateChanged(QDate)));
-    connect(m_ui->checkBoxFrom, SIGNAL(clicked(bool)),
-            SLOT(slotCheckBoxChecked(bool)));
-    connect(m_ui->checkBoxUntil, SIGNAL(clicked(bool)),
-            SLOT(slotCheckBoxChecked(bool)));
+    connect(m_ui->pushButtonParent, &QPushButton::clicked, this, &TaskEditor::slotSelectParent);
+    connect(m_ui->dateEditFrom, &QDateEdit::dateChanged, this, &TaskEditor::slotDateChanged);
+    connect(m_ui->dateEditTo, &QDateEdit::dateChanged, this, &TaskEditor::slotDateChanged);
+    connect(m_ui->checkBoxFrom, &QCheckBox::clicked, this, &TaskEditor::slotCheckBoxChecked);
+    connect(m_ui->checkBoxUntil, &QCheckBox::clicked, this, &TaskEditor::slotCheckBoxChecked);
 }
 
 TaskEditor::~TaskEditor()

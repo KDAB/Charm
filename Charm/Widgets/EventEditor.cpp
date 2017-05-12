@@ -55,22 +55,23 @@ EventEditor::EventEditor(const Event &event, QWidget *parent)
             SLOT(durationHoursEdited(int)));
     connect(m_ui->spinBoxMinutes, SIGNAL(valueChanged(int)),
             SLOT(durationMinutesEdited(int)));
-    connect(m_ui->dateEditStart, SIGNAL(dateChanged(QDate)),
-            SLOT(startDateChanged(QDate)));
-    connect(m_ui->timeEditStart, SIGNAL(timeChanged(QTime)),
-            SLOT(startTimeChanged(QTime)));
-    connect(m_ui->dateEditEnd, SIGNAL(dateChanged(QDate)),
-            SLOT(endDateChanged(QDate)));
-    connect(m_ui->timeEditEnd, SIGNAL(timeChanged(QTime)),
-            SLOT(endTimeChanged(QTime)));
-    connect(m_ui->pushButtonSelectTask, SIGNAL(clicked()),
-            SLOT(selectTaskClicked()));
-    connect(m_ui->textEditComment, SIGNAL(textChanged()),
-            SLOT(commentChanged()));
-    connect(m_ui->startToNowButton, SIGNAL(clicked()),
-            SLOT(startToNowButtonClicked()));
-    connect(m_ui->endToNowButton, SIGNAL(clicked()),
-            SLOT(endToNowButtonClicked()));
+    connect(m_ui->dateEditStart, &QDateEdit::dateChanged,
+            this, &EventEditor::startDateChanged);
+    connect(m_ui->timeEditStart, &QTimeEdit::timeChanged,
+            this, &EventEditor::startTimeChanged);
+    connect(m_ui->dateEditEnd, &QDateEdit::dateChanged,
+            this, &EventEditor::endDateChanged);
+    connect(m_ui->timeEditEnd, &QTimeEdit::timeChanged,
+            this, &EventEditor::endTimeChanged);
+    connect(m_ui->pushButtonSelectTask, &QPushButton::clicked,
+            this, &EventEditor::selectTaskClicked);
+    connect(m_ui->textEditComment, &QTextEdit::textChanged,
+            this, &EventEditor::commentChanged);
+    connect(m_ui->startToNowButton, &QPushButton::clicked,
+            this, &EventEditor::startToNowButtonClicked);
+    connect(m_ui->endToNowButton, &QPushButton::clicked,
+            this, &EventEditor::endToNowButtonClicked);
+
     // what a fricking hack - but QDateTimeEdit does not seem to have
     // a simple function to toggle 12h and 24h mode:
     // yeah, I know, this will survive changes in the user prefs, but
