@@ -14,6 +14,7 @@ install:
                                             "QtSDK/Enabled=True",
                                             "QtSDK/Compiler=$env:QTCOMPILER",
                                             "QtSDK/PackageQtSDK=False",
+                                            "Portage/Ignores=dev-util/msys;dev-util/perl",# we use a cache so we don't need those
                                             "CraftDebug/DumpSettings=True",
                                             "PortageVersions/qt-apps/charm=master")
         Start-FileDownload "https://raw.githubusercontent.com/KDE/craft/master/setup/install_craft.ps1"
