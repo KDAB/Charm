@@ -6,7 +6,7 @@ install:
         [string[]]$config = @("--architecture", "$env:ARCHITECTURE", "--compiler", "$env:COMPILER", "--no-short-path",
                                             "--set",,
                                             "Packager/UseCache=True",
-                                            "Packager/RepositoryUrl=https://files.kde.org/craft/unstable/",
+                                            "Packager/RepositoryUrl=http://downloads.kdab.com/kde-emerge/",
                                             "Compile/BuildType=Release",
                                             "ContinuousIntegration/Enabled=True",
                                             "QtSDK/Version=$env:QT_VER",
