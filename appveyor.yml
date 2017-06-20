@@ -27,6 +27,7 @@ install:
     craft craft
     craft -p charm
     craft nsis
+    craft openssl
     craft --install-deps charm
 
 build_script:
