@@ -271,10 +271,11 @@ void TasksView::stateChanged(State)
                 this, &TasksView::configureUi);
         connect(smodel, &QItemSelectionModel::currentColumnChanged,
                 this, &TasksView::configureUi);
-        connect(filter, &ViewFilter::eventActivationNotice,
-                this, &TasksView::slotEventActivated);
-        connect(filter, &ViewFilter::eventDeactivationNotice,
-                this, &TasksView::slotEventDeactivated);
+        // due to multiple inheritence we can't use the new style connects here
+        connect(filter, SIGNAL(eventActivationNotice(EventId)),
+                this, SLOT(slotEventActivated(EventId)));
+        connect(filter, SIGNAL(eventDeactivationNotice(EventId)),
+                this, SLOT(slotEventDeactivated(EventId)));
         connect(MODEL.charmDataModel(), &CharmDataModel::resetGUIState,
                 this, &TasksView::restoreGuiState);
         configurationChanged();

@@ -171,14 +171,15 @@ ApplicationCore::ApplicationCore(TaskId startupTask, bool hideAtStart, QObject *
     // save the configuration (configuration is managed by the application)
     connect(&m_tasksView, &TasksView::saveConfiguration,
             this, &ApplicationCore::slotSaveConfiguration);
-    connect(&m_tasksView, &TasksView::emitCommand,
-            &m_timeTracker, &CharmWindow::sendCommand);
-    connect(&m_tasksView, &TasksView::emitCommandRollback,
-            &m_timeTracker, &CharmWindow::sendCommandRollback);
-    connect(&m_eventView, &EventView::emitCommand,
-            &m_timeTracker, &CharmWindow::sendCommand);
-    connect(&m_eventView, &EventView::emitCommandRollback,
-            &m_timeTracker, &CharmWindow::sendCommandRollback);
+    // due to multiple inheritence we can't use the new style connects here
+    connect(&m_tasksView, SIGNAL(emitCommand(CharmCommand*)),
+            &m_timeTracker, SLOT(sendCommand(CharmCommand*)));
+    connect(&m_tasksView, SIGNAL(emitCommandRollback(CharmCommand*)),
+            &m_timeTracker, SLOT(sendCommandRollback(CharmCommand*)));
+    connect(&m_eventView, SIGNAL(emitCommand(CharmCommand*)),
+            &m_timeTracker, SLOT(sendCommand(CharmCommand*)));
+    connect(&m_eventView, SIGNAL(emitCommandRollback(CharmCommand*)),
+            &m_timeTracker, SLOT(sendCommandRollback(CharmCommand*)));
 
     // my own signals:
     connect(this, &ApplicationCore::goToState,
