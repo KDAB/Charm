@@ -171,7 +171,6 @@ bool SqLiteStorage::createDatabaseTables()
 
 bool SqLiteStorage::connect(Configuration &configuration)
 {   // make sure the database folder exits:
-    m_installationId = configuration.installationId;
     configuration.failure = true;
 
     const QFileInfo fileInfo(configuration.localStorageDatabase);   // this is the full path
@@ -266,11 +265,6 @@ bool SqLiteStorage::disconnect()
     return true; // neither of the two methods return a value
 }
 
-int SqLiteStorage::installationId() const
-{
-    return m_installationId;
-}
-
 QSqlDatabase &SqLiteStorage::database()
 {
     return m_database;
@@ -287,17 +281,6 @@ bool SqLiteStorage::createDatabase(Configuration &configuration)
     if (!configuration.user.isValid()) {
         qDebug() << "SqLiteStorage::createDatabase: cannot store user name";
         return false;
-    }
-
-    // make an installation:
-    // FIXME make a useful name for it
-    QString installationName = QStringLiteral("Unnamed Installation");
-    Installation installation = createInstallation(installationName);
-    if (!installation.isValid()) {
-        qDebug() << "SqLiteStorage::createDatabase: cannot create default installation id";
-        return false;
-    } else {
-        configuration.installationId = installation.id();
     }
 
     return true;

@@ -52,7 +52,6 @@ public:
     QString description() const override;
     bool connect(Configuration &) override;
     bool disconnect() override;
-    int installationId() const override;
     bool createDatabase(Configuration &) override;
     bool createDatabaseTables() override;
 

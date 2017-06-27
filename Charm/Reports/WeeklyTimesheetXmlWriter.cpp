@@ -26,7 +26,8 @@
 #include "CharmCMake.h"
 
 #include "Core/CharmDataModel.h"
-#include <Core/XmlSerialization.h>
+#include "Core/CharmConstants.h"
+#include "Core/XmlSerialization.h"
 
 #include <QDomDocument>
 
@@ -73,6 +74,11 @@ QByteArray WeeklyTimesheetXmlWriter::saveToXml() const
     QDomText charmVersionString = document.createTextNode(QStringLiteral(CHARM_VERSION));
     charmVersion.appendChild(charmVersionString);
     metadata.appendChild(charmVersion);
+    auto installationId = document.createElement(QStringLiteral("installation-id"));
+    const auto installationIdString = document.createTextNode(QString::number(CONFIGURATION.installationId));
+    installationId.appendChild(installationIdString);
+    metadata.appendChild(installationId);
+
     QDomElement report = XmlSerialization::reportElement(document);
     Q_ASSERT(!root.isNull() && !metadata.isNull() && !report.isNull());
 

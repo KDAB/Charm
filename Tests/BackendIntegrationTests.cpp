@@ -51,7 +51,6 @@ void BackendIntegrationTests::initialValuesTest()
     QVERIFY(controller()->storage()->getAllTasks().isEmpty());
     QVERIFY(controller()->storage()->getAllEvents().isEmpty());
     QVERIFY(controller()->storage()->getUser(testUserId()).isValid());
-    QVERIFY(controller()->storage()->getInstallation(testInstallationId()).isValid());
     // model:
     QVERIFY(model()->taskTreeItem(0).childCount() == 0);
 }

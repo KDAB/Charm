@@ -52,7 +52,7 @@ void ConfigurationDialog::on_databaseLocation_textChanged(const QString &)
 
 void ConfigurationDialog::accept()
 {
-    m_config.installationId = 1;
+    m_config.installationId = m_config.createInstallationId();
     m_config.user.setId(1);
     m_config.user.setName(m_ui.nameLineEdit->text());
     m_config.localStorageType = CHARM_SQLITE_BACKEND_DESCRIPTOR;

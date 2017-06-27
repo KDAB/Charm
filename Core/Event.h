@@ -63,10 +63,6 @@ public:
 
     void setReportId(int userId);
 
-    void setInstallationId(int instId);
-
-    int installationId() const;
-
     bool isValid() const;
 
     TaskId taskId() const;
@@ -102,8 +98,6 @@ private:
      * if the event is imported from a report.
      */
     int m_reportid = {};
-    /** The installation-unique id of the event. */
-    int m_installationId = {};
     int m_id = {};
     /** The task this event belongs to. */
     TaskId m_taskId = {};

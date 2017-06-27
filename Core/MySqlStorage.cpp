@@ -174,11 +174,6 @@ bool MySqlStorage::disconnect()
     return false;     // not implemented
 }
 
-int MySqlStorage::installationId() const
-{
-    return -1;     // not implemented
-}
-
 bool MySqlStorage::createDatabase(Configuration &)
 {
     return createDatabaseTables();

@@ -30,7 +30,6 @@
 #include "User.h"
 #include "State.h"
 #include "Event.h"
-#include "Installation.h"
 #include "CharmExceptions.h"
 
 class QSqlDatabase;
@@ -54,20 +53,8 @@ public:
 
     virtual QSqlDatabase &database() = 0;
 
-    // installation id table:
-    // get the id of this installation
-    virtual int installationId() const = 0;
-
     // application:
     void stateChanged(State previous);
-
-    // installation id handling
-    Installation createInstallation(const QString &name);
-
-    // create an installation id
-    Installation getInstallation(int installationId);
-    bool modifyInstallation(const Installation &);
-    bool deleteInstallation(const Installation &);
 
     // user database functions:
     User getUser(int userid);

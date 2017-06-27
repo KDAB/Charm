@@ -68,6 +68,8 @@ public:
     // helper method
     void dump(const QString &why = QString::null);
 
+    quint32 createInstallationId() const;
+
     User user;  // this user's id
     TaskPrefilteringMode taskPrefilteringMode = TaskPrefilter_ShowAll;
     TimeTrackerFontSize timeTrackerFontSize = TimeTrackerFont_Regular;
@@ -81,7 +83,7 @@ public:
 
     // these are stored in QSettings, since we need this information to locate and open the database:
     QString configurationName;
-    int installationId = 0;
+    quint32 installationId = 0;
     QString localStorageType; // SqLite, MySql, ...
     QString localStorageDatabase; // database name (path, with sqlite)
     bool newDatabase = false; // true if the configuration has just been created
