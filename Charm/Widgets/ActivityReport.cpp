@@ -509,6 +509,7 @@ void ActivityReport::slotLinkClicked(const QUrl &which)
         m_properties.end = which.toString()
                            == QLatin1String("Previous") ? m_properties.end.addMonths(-1)
                            : m_properties.end.addMonths(1);
+        break;
     case Year:
         m_properties.start = which.toString()
                              == QLatin1String("Previous") ? m_properties.start.addYears(-1)
