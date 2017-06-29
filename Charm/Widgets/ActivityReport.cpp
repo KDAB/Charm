@@ -495,47 +495,29 @@ void ActivityReport::slotUpdate()
 
 void ActivityReport::slotLinkClicked(const QUrl &which)
 {
+    const int direction = which.toString() == QLatin1String("Previous") ? -1 : 1;
     switch (m_properties.timeSpanSelection.timeSpanType) {
     case Day:
-        m_properties.start = which.toString()
-                             == QLatin1String("Previous") ? m_properties.start.addDays(-1)
-                             : m_properties.start.addDays(1);
-        m_properties.end = which.toString() == QLatin1String("Previous") ? m_properties.end.addDays(
-            -1) : m_properties.end.addDays(1);
+        m_properties.start = m_properties.start.addDays(1 * direction);
+        m_properties.end = m_properties.end.addDays(1 * direction);
         break;
     case Week:
-        m_properties.start = which.toString()
-                             == QLatin1String("Previous") ? m_properties.start.addDays(-7)
-                             : m_properties.start.addDays(7);
-        m_properties.end = which.toString() == QLatin1String("Previous") ? m_properties.end.addDays(
-            -7) : m_properties.end.addDays(7);
+        m_properties.start = m_properties.start.addDays(7 * direction);
+        m_properties.end = m_properties.end.addDays(7 * direction);
         break;
     case Month:
-        m_properties.start = which.toString()
-                             == QLatin1String("Previous") ? m_properties.start.addMonths(-1)
-                             : m_properties.start.
-                             addMonths(1);
-        m_properties.end = which.toString()
-                           == QLatin1String("Previous") ? m_properties.end.addMonths(-1)
-                           : m_properties.end.addMonths(1);
+        m_properties.start = m_properties.start.addMonths(1 * direction);
+        m_properties.end = m_properties.end.addMonths(1 * direction);
+        break;
     case Year:
-        m_properties.start = which.toString()
-                             == QLatin1String("Previous") ? m_properties.start.addYears(-1)
-                             : m_properties.start.addYears(
-            1);
-        m_properties.end = which.toString()
-                           == QLatin1String("Previous") ? m_properties.end.addYears(-1)
-                           : m_properties.end.addYears(1);
+        m_properties.start = m_properties.start.addYears(1 * direction);
+        m_properties.end = m_properties.end.addYears(1 * direction);
         break;
     case Range:
     {
-        int spanRange = m_properties.start.daysTo(m_properties.end);
-        m_properties.start = which.toString()
-                             == QLatin1String("Previous") ? m_properties.start.addDays(-spanRange)
-                             : m_properties.
-                             start.addDays(spanRange);
-        m_properties.end = which.toString() == QLatin1String("Previous") ? m_properties.end.addDays(
-            -spanRange) : m_properties.end.addDays(spanRange);
+        const int spanRange = m_properties.start.daysTo(m_properties.end);
+        m_properties.start = m_properties.start.addDays(spanRange * direction);
+        m_properties.end = m_properties.end.addDays(spanRange * direction);
         break;
     }
     default:
