@@ -1,85 +1,43 @@
 version: '{build}'
+init:
+- ps: |
+    function craft() {
+        & C:\python36\python.exe "C:\CraftMaster\$env:TARGET\craft\bin\craft.py" $args
+    }
+
 install:
 - ps: |
-    $ErrorActionPreference="SilentlyContinue"
-    if (!(test-path -path $env:APPVEYOR_BUILD_FOLDER/work)) {
-        [string[]]$config = @("--architecture", "$env:ARCHITECTURE", "--compiler", "$env:COMPILER", "--no-short-path",
-                                            "--set",,
-                                            "Packager/UseCache=True",
-                                            "Packager/RepositoryUrl=http://downloads.kdab.com/kde-emerge/",
-                                            "Compile/BuildType=Release",
-                                            "ContinuousIntegration/Enabled=True",
-                                            "QtSDK/Version=$env:QT_VER",
-                                            "QtSDK/Path=C:\Qt",
-                                            "QtSDK/Enabled=True",
-                                            "QtSDK/Compiler=$env:QTCOMPILER",
-                                            "QtSDK/PackageQtSDK=False",
-                                            "Portage/Ignores=dev-util/msys;dev-util/perl",# we use a cache so we don't need those
-                                            "CraftDebug/DumpSettings=True",
-                                            "PortageVersions/qt-apps/charm=master")
-        Start-FileDownload "https://raw.githubusercontent.com/KDE/craft/master/setup/install_craft.ps1"
-        ./install_craft.ps1 -root $env:APPVEYOR_BUILD_FOLDER\work -python "C:\python36\python.exe" -branch "master" -settings $config
-    }
-    function craft() {
-        #kdeenv.ps1 calls cls which won't work on appweyor so run things in a new powershell
-        powershell "$env:APPVEYOR_BUILD_FOLDER\work\craft\kdeenv.ps1" "craft" $args
-    }
+    $ErrorActionPreference="Continue"
+    mkdir C:\CraftMaster
+    & git clone https://github.com/TheOneRing/CraftMaster.git C:\CraftMaster\CraftMaster
+    & C:\python36\python.exe C:\CraftMaster\CraftMaster\CraftMaster.py --config $env:APPVEYOR_BUILD_FOLDER\appveyor.ini --target $env:TARGET
     $ErrorActionPreference="Stop"
-    craft craft
-    craft -p charm
-    craft nsis
-    craft openssl
-    craft --install-deps charm
+
 
 build_script:
 - ps: |
-    function craft() {
-        #kdeenv.ps1 calls cls which won't work on appweyor so run things in a new powershell
-        powershell "$env:APPVEYOR_BUILD_FOLDER\work\craft\kdeenv.ps1" "craft" $args
-    }
-    $ErrorActionPreference="Stop"
     craft --no-cache --src-dir $env:APPVEYOR_BUILD_FOLDER charm
 
 test_script:
 - ps: |
-    function craft() {
-        #kdeenv.ps1 calls cls which won't work on appweyor so run things in a new powershell
-        powershell "$env:APPVEYOR_BUILD_FOLDER\work\craft\kdeenv.ps1" "craft" $args
-    }
     craft --src-dir $env:APPVEYOR_BUILD_FOLDER --test charm
 
 
 on_success:
 - ps: |
-    function craft() {
-        #kdeenv.ps1 calls cls which won't work on appweyor so run things in a new powershell
-        powershell "$env:APPVEYOR_BUILD_FOLDER\work\craft\kdeenv.ps1" "craft" $args
-    }
     craft --src-dir $env:APPVEYOR_BUILD_FOLDER --package charm
-    Get-ChildItem $env:APPVEYOR_BUILD_FOLDER\work\build\qt-apps\charm\work\$env:COMPILER-Release-master\Charm-*.exe | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
+    Get-ChildItem C:\CraftMaster\$env:TARGET\tmp\* | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
 
 on_finish:
 - ps: |
     Get-ChildItem $env:USERPROFILE\.craft\* | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
-    Push-AppveyorArtifact $env:APPVEYOR_BUILD_FOLDER\work\etc\kdesettings.ini.dump
+    Push-AppveyorArtifact C:\CraftMaster\$env:TARGET\etc\kdesettings.ini.dump
+
 
 
 
 environment:
-    QT_VER: 5.9
-
     matrix:
-    #msvc
-    - QTCOMPILER: msvc2015_64
-      ARCHITECTURE: x64
-      COMPILER: msvc2015
-
-    - QTCOMPILER: msvc2015
-      ARCHITECTURE: x86
-      COMPILER: msvc2015
-
-    #mingw
-    - QTCOMPILER: mingw53_32
-      ARCHITECTURE: x86
-      COMPILER: Mingw-w64
-
+    - TARGET: msvc2015x64
+    - TARGET: msvc2015x86
+    - TARGET: mingw
