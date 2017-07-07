@@ -45,8 +45,6 @@ CharmPreferences::CharmPreferences(const Configuration &config, QWidget *parent_
 
     m_ui.lbWarnUnuploadedTimesheets->setVisible(httpJobPossible);
     m_ui.cbWarnUnuploadedTimesheets->setVisible(httpJobPossible);
-    m_ui.lbResetPassword->setVisible(httpJobPossible);
-    m_ui.pbResetPassword->setVisible(httpJobPossible);
     m_ui.cbIdleDetection->setEnabled(haveIdleDetection);
     m_ui.lbIdleDetection->setEnabled(haveIdleDetection);
     m_ui.cbIdleDetection->setChecked(config.detectIdling && m_ui.cbIdleDetection->isEnabled());
@@ -60,8 +58,6 @@ CharmPreferences::CharmPreferences(const Configuration &config, QWidget *parent_
 
     connect(m_ui.cbWarnUnuploadedTimesheets, &QCheckBox::toggled,
             this, &CharmPreferences::slotWarnUnuploadedChanged);
-    connect(m_ui.pbResetPassword, &QPushButton::clicked,
-            this, &CharmPreferences::slotResetPassword);
 
     // this would not need a switch, but i hate casting enums to int:
     switch (config.timeTrackerFontSize) {
@@ -202,19 +198,4 @@ void CharmPreferences::slotWarnUnuploadedChanged(bool enabled)
         if (response == QMessageBox::Yes)
             m_ui.cbWarnUnuploadedTimesheets->setCheckState(Qt::Checked);
     }
-}
-
-void CharmPreferences::slotResetPassword()
-{
-    HttpJob *job = new HttpJob(this);
-    bool ok;
-    QPointer<QObject> that(this);   //guard against destruction while dialog is open
-    const QString newpass
-        = QInputDialog::getText(this, tr("Password"), tr(
-                                    "Please enter your lotsofcake password"), QLineEdit::Password,
-                                QLatin1String(""), &ok);
-    if (!that)
-        return;
-    if (ok)
-        job->provideRequestedPassword(newpass);
 }

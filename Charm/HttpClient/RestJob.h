@@ -1,5 +1,5 @@
 /*
-  GetUserInfoJob.h
+  RestJob.h
 
   This file is part of Charm, a task-based time tracking application.
 
@@ -29,36 +29,27 @@
 #include <QVariant>
 #include <QVariantMap>
 
-class GetUserInfoJob : public HttpJob
+class RestJob : public HttpJob
 {
     Q_OBJECT
 public:
 
-    explicit GetUserInfoJob(QObject *parent = nullptr, const QString &schema = QStringLiteral(" "));
-    ~GetUserInfoJob() override;
+    explicit RestJob(QObject *parent = nullptr);
+    ~RestJob() override;
 
-    QByteArray userInfo() const;
+    QByteArray resultData() const;
 
-    QUrl downloadUrl() const;
-    void setDownloadUrl(const QUrl &url);
-    QString schema() const;
-    void setSchema(const QString &schema);
+    QUrl url() const;
+    void setUrl(const QUrl &url);
 
 public Q_SLOTS:
 
-    bool execute(int state, QNetworkAccessManager *manager) override;
-    bool handle(QNetworkReply *reply) override;
-
-protected:
-
-    enum State {
-        GetProjectCodes = HttpJob::Base
-    };
+    void executeRequest(QNetworkAccessManager *manager) override;
+    void handleResult();
 
 private:
-    QByteArray m_userInfo;
-    QUrl m_downloadUrl;
-    QString m_schema;
+    QByteArray m_resultData;
+    QUrl m_url;
 };
 
 #endif // GETUSERINFOJOB_H

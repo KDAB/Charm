@@ -45,14 +45,8 @@ public:
 
 public Q_SLOTS:
 
-    bool execute(int state, QNetworkAccessManager *manager) override;
-    bool handle(QNetworkReply *reply) override;
-
-protected:
-
-    enum State {
-        UploadTimesheet = HttpJob::Base
-    };
+    void executeRequest(QNetworkAccessManager *manager) override;
+    void handleResult();
 
 private:
     QByteArray m_payload;

@@ -52,7 +52,7 @@
 #include "Core/XmlSerialization.h"
 
 #include "HttpClient/GetProjectCodesJob.h"
-#include "HttpClient/GetUserInfoJob.h"
+#include "HttpClient/RestJob.h"
 
 #include "Idle/IdleDetector.h"
 
@@ -68,6 +68,7 @@
 #include <QMessageBox>
 #include <QSettings>
 #include <QToolBar>
+#include <QUrlQuery>
 #include <QtAlgorithms>
 
 #include <algorithm>
@@ -477,7 +478,7 @@ void TimeTrackingWindow::slotSyncTasksVerbose()
 void TimeTrackingWindow::slotSyncTasksAutomatic()
 {
     // check if HttpJob is possible
-    if (HttpJob::credentialsAvailable() && !HttpJob::lastAuthenticationFailed())
+    if (HttpJob::credentialsAvailable())
         slotSyncTasks(Silent);
 }
 
@@ -762,14 +763,14 @@ void TimeTrackingWindow::importTasksFromDeviceOrFile(QIODevice *device, const QS
                           exporter.metadata(QStringLiteral("timesheet-upload-url")));
         setValueIfNotNull(&settings, QStringLiteral("projectCodeDownloadUrl"),
                           exporter.metadata(QStringLiteral("project-code-download-url")));
+        setValueIfNotNull(&settings, QStringLiteral("restUrl"), exporter.metadata(QStringLiteral("rest-url")));
+
         settings.endGroup();
         settings.beginGroup(QStringLiteral("users"));
         setValueIfNotNull(&settings, QStringLiteral("portalUrl"),
                           exporter.metadata(QStringLiteral("portal-url")));
         setValueIfNotNull(&settings, QStringLiteral("loginUrl"),
                           exporter.metadata(QStringLiteral("login-url")));
-        settings.setValue(QStringLiteral("userInfoDownloadUrl"),
-                          QLatin1String("https://lotsofcake.kdab.com/KdabHome/rest/user"));
         settings.endGroup();
 
         ApplicationCore::instance().setHttpActionsVisible(true);
@@ -800,19 +801,18 @@ void TimeTrackingWindow::slotGetUserInfo()
 
     QSettings settings;
     settings.beginGroup(QStringLiteral("httpconfig"));
-    const QString userName = settings.value(QStringLiteral("username")).toString();
-    settings.endGroup();
+    const auto restUrl = settings.value(QStringLiteral("restUrl")).toString();
+    const auto userName = settings.value(QStringLiteral("username")).toString();
 
-    settings.beginGroup(QStringLiteral("users"));
-    settings.setValue(QStringLiteral("userInfoDownloadUrl"),
-                      QStringLiteral("https://lotsofcake.kdab.com/KdabHome/rest/user?user=%1").arg(
-                          userName));
-    settings.endGroup();
-
-    GetUserInfoJob *client = new GetUserInfoJob(this, QStringLiteral("users"));
-    client->setSchema(userName);
-    connect(client, &GetUserInfoJob::finished, this, &TimeTrackingWindow::slotUserInfoDownloaded);
-    client->start();
+    auto url = QUrl(restUrl);
+    url.setPath(url.path() + QLatin1String("user"));
+    QUrlQuery query;
+    query.addQueryItem(QLatin1String("user"), userName);
+    url.setQuery(query);
+    auto job = new RestJob(this);
+    job->setUrl(url);
+    connect(job, &RestJob::finished, this, &TimeTrackingWindow::slotUserInfoDownloaded);
+    job->start();
 }
 
 void TimeTrackingWindow::slotUserInfoDownloaded(HttpJob *job_)
@@ -820,7 +820,7 @@ void TimeTrackingWindow::slotUserInfoDownloaded(HttpJob *job_)
     // getUserInfo done -> sync task
     slotSyncTasksAutomatic();
 
-    auto job = qobject_cast<GetUserInfoJob *>(job_);
+    auto job = qobject_cast<RestJob*>(job_);
     Q_ASSERT(job);
     if (job->error() == HttpJob::Canceled)
         return;
@@ -831,7 +831,7 @@ void TimeTrackingWindow::slotUserInfoDownloaded(HttpJob *job_)
         return;
     }
 
-    const auto readData = job->userInfo();
+    const auto readData = job->resultData();
 
     QJsonParseError parseError;
     const auto doc = QJsonDocument::fromJson(readData, &parseError);

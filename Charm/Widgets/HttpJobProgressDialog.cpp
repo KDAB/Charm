@@ -47,14 +47,15 @@ void HttpJobProgressDialog::jobFinished(HttpJob *)
     deleteLater();
 }
 
-void HttpJobProgressDialog::jobPasswordRequested()
+void HttpJobProgressDialog::jobPasswordRequested(HttpJob::PasswordRequestReason reason)
 {
     bool ok;
     QPointer<QObject> that(this);   //guard against destruction while dialog is open
-    const QString newpass
-        = QInputDialog::getText(parentWidget(), tr("Password"), tr(
-                                    "Please enter your lotsofcake password"), QLineEdit::Password,
-                                m_job->password(), &ok);
+
+    const auto title = reason == HttpJob::PasswordIncorrect ? tr("Authentication Failed") : tr("Password");
+    const auto message = reason == HttpJob::PasswordIncorrect ? tr("Please re-enter your lotsofcake password") : tr("Please enter your lotsofcake password");
+    const auto newpass = QInputDialog::getText(parentWidget(), title, message, QLineEdit::Password, m_job->password(), &ok);
+
     if (!that)
         return;
     if (ok) {

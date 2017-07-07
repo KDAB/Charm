@@ -27,16 +27,14 @@
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QNetworkRequest>
-#include <QRegExp> // Required for Qt 4
-#include <QSettings>
+
+#include <QJsonDocument>
+#include <QJsonObject>
 
 UploadTimesheetJob::UploadTimesheetJob(QObject *parent)
     : HttpJob(parent)
     , m_fileName(QStringLiteral("payload"))
 {
-    QSettings s;
-    s.beginGroup(QStringLiteral("httpconfig"));
-    setUploadUrl(s.value(QStringLiteral("timesheetUploadUrl")).toUrl());
 }
 
 UploadTimesheetJob::~UploadTimesheetJob()
@@ -73,12 +71,8 @@ void UploadTimesheetJob::setUploadUrl(const QUrl &url)
     m_uploadUrl = url;
 }
 
-bool UploadTimesheetJob::execute(int state, QNetworkAccessManager *manager)
+void UploadTimesheetJob::executeRequest(QNetworkAccessManager *manager)
 {
-    if (state != UploadTimesheet)
-        return HttpJob::execute(state, manager);
-
-    QByteArray data;
     QByteArray uploadName;
 
     /* validate filename */
@@ -89,6 +83,7 @@ bool UploadTimesheetJob::execute(int state, QNetworkAccessManager *manager)
         uploadName = m_fileName.toUtf8();
     }
 
+    QByteArray data;
     /* username */
     data += "--KDAB\r\n"
             "Content-Disposition: form-data; name=\"user\"\r\n\r\n";
@@ -111,32 +106,28 @@ bool UploadTimesheetJob::execute(int state, QNetworkAccessManager *manager)
     request.setHeader(QNetworkRequest::ContentLengthHeader, data.size());
 
     QNetworkReply *reply = manager->post(request, data);
-
-    if (reply->error() != QNetworkReply::NoError)
-        setErrorFromReplyAndEmitFinished(reply);
-    return true;
+    connect(reply, &QNetworkReply::finished, this, &UploadTimesheetJob::handleResult);
 }
 
-bool UploadTimesheetJob::handle(QNetworkReply *reply)
+void UploadTimesheetJob::handleResult()
 {
-    /* check for failure */
+    auto reply = qobject_cast<QNetworkReply*>(sender());
+    reply->deleteLater();
+
+    if (reply->error() == QNetworkReply::ProtocolInvalidOperationError) {
+        const auto doc = QJsonDocument::fromJson(reply->readAll());
+        const auto errorMessage = doc.object().value(QLatin1String("message")).toString();
+
+        setErrorAndEmitFinishedOrRestart(SomethingWentWrong, !errorMessage.isEmpty()
+                                         ? errorMessage
+                                         : tr("An error occurred, could not extract details"));
+        return;
+    }
+
     if (reply->error() != QNetworkReply::NoError) {
-        setErrorFromReplyAndEmitFinished(reply);
-        return false;
+        setErrorFromReplyAndEmitFinishedOrRestart(reply);
+        return;
     }
 
-    if (state() != UploadTimesheet)
-        return HttpJob::handle(reply);
-
-    const QByteArray answer = reply->readAll();
-
-    if (answer.contains("SuccessResultMessage")) {
-        delayedNext();
-    } else {
-        const QString errorMessage = extractErrorMessageFromReply(answer);
-        setErrorAndEmitFinished(SomethingWentWrong, !errorMessage.isEmpty()
-                                ? errorMessage
-                                : tr("An error occurred, could not extract details"));
-    }
-    return true;
+    emitFinishedOrRestart();
 }

@@ -42,7 +42,6 @@ class HttpJob : public QObject
 public:
 
     static bool credentialsAvailable();
-    static bool lastAuthenticationFailed();
 
     enum Error {
         NoError = 0,
@@ -53,6 +52,11 @@ public:
         HostNotFound
     };
 
+    enum PasswordRequestReason {
+        NoPasswordFound,
+        PasswordIncorrect
+    };
+
     explicit HttpJob(QObject *parent = nullptr);
     ~HttpJob() override;
 
@@ -61,12 +65,6 @@ public:
 
     QString password() const;
     void setPassword(const QString &value);
-
-    QUrl portalUrl() const;
-    void setPortalUrl(const QUrl &value);
-
-    QUrl loginUrl() const;
-    void setLoginUrl(const QUrl &value);
 
     QString errorString() const;
     int error() const;
@@ -88,36 +86,19 @@ Q_SIGNALS:
      *
      * Must be replied to via provideRequestedPassword() or passwordRequestCanceled() to continue.
      */
-    void passwordRequested();
-
-protected:
-
-    enum State {
-        Ready = 0,
-        Init,
-        Login,
-        Portal,
-        Base
-    };
-
-    int state() const;
-
-    virtual bool execute(int state, QNetworkAccessManager *manager);
-
-    void emitFinished();
-    void setErrorAndEmitFinished(int code, const QString &errorString);
-    void delayedNext();
-    void setErrorFromReplyAndEmitFinished(QNetworkReply *reply);
-
-    static QString extractErrorMessageFromReply(const QByteArray &xml);
+    void passwordRequested(PasswordRequestReason);
 
 protected Q_SLOTS:
-    virtual bool handle(QNetworkReply *reply);
+    virtual void executeRequest(QNetworkAccessManager *) = 0;
+
+protected:
+    void emitFinishedOrRestart();
+    void setErrorAndEmitFinishedOrRestart(int code, const QString &errorString);
+    void setErrorFromReplyAndEmitFinishedOrRestart(QNetworkReply *reply);
 
 private Q_SLOTS:
     void doStart();
     void doCancel();
-    void next();
     void passwordRead(QKeychain::Job *);
     void passwordWritten();
     void authenticationRequired(QNetworkReply *reply, QAuthenticator *authenticator);
@@ -126,12 +107,9 @@ private:
     QNetworkAccessManager *m_networkManager;
     QString m_username;
     QString m_password;
-    int m_currentState = Ready;
     int m_errorCode = NoError;
     QString m_errorString;
-    QUrl m_loginUrl;
-    QUrl m_portalUrl;
-    bool m_lastAuthenticationFailed = true;
+    bool m_lastAuthenticationFailed = false;
     bool m_authenticationDoneAlready = false;
     bool m_passwordReadError = false;
 };

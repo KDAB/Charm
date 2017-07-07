@@ -283,7 +283,13 @@ void WeeklyTimeSheetReport::setReportProperties(
 
 void WeeklyTimeSheetReport::slotUploadTimesheet()
 {
+    QSettings s;
+    s.beginGroup(QStringLiteral("httpconfig"));
+    QUrl url = s.value(QStringLiteral("timesheetUploadUrl")).toUrl();
+    url.setPath(QLatin1String("/KdabHome/apps/timesheets/rest/upload")); // TODO don't use hardcoded path
+
     auto client = new UploadTimesheetJob(this);
+    client->setUploadUrl(url);
     auto dialog = new HttpJobProgressDialog(client, this);
     dialog->setWindowTitle(tr("Uploading"));
     connect(client, &HttpJob::finished, this, &WeeklyTimeSheetReport::slotTimesheetUploaded);

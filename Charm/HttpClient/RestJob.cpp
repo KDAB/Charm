@@ -1,11 +1,11 @@
 /*
-  GetProjectCodesJob.cpp
+  RestJob.cpp
 
   This file is part of Charm, a task-based time tracking application.
 
-  Copyright (C) 2011-2017 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2015-2017 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
 
-  Author: Frank Osterfeld <frank.osterfeld@kdab.com>
+  Author: Pál Tóth <pal.toth@kdab.com>
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -21,71 +21,56 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "GetProjectCodesJob.h"
-
+#include "RestJob.h"
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QNetworkRequest>
-#include <QSettings>
 
-GetProjectCodesJob::GetProjectCodesJob(QObject *parent)
+RestJob::RestJob(QObject *parent)
     : HttpJob(parent)
 {
-    QSettings s;
-    s.beginGroup(QStringLiteral("httpconfig"));
-    setDownloadUrl(s.value(QStringLiteral("projectCodeDownloadUrl")).toUrl());
 }
 
-GetProjectCodesJob::~GetProjectCodesJob()
+RestJob::~RestJob()
 {
 }
 
-QByteArray GetProjectCodesJob::payload() const
+QByteArray RestJob::resultData() const
 {
-    return m_payload;
+    return m_resultData;
 }
 
-void GetProjectCodesJob::executeRequest(QNetworkAccessManager *manager)
+void RestJob::executeRequest(QNetworkAccessManager *manager)
 {
-    QNetworkRequest request(m_downloadUrl);
+    QNetworkRequest request(m_url);
 
     QNetworkReply *reply = manager->get(request);
-    connect(reply, &QNetworkReply::finished, this, &GetProjectCodesJob::handleResult);
+    connect(reply, &QNetworkReply::finished, this, &RestJob::handleResult);
 
     if (reply->error() != QNetworkReply::NoError)
         setErrorFromReplyAndEmitFinishedOrRestart(reply);
 }
 
-void GetProjectCodesJob::handleResult()
+void RestJob::handleResult()
 {
     auto reply = qobject_cast<QNetworkReply*>(sender());
     reply->deleteLater();
-    /* check for failure */
+
     if (reply->error() != QNetworkReply::NoError) {
         setErrorFromReplyAndEmitFinishedOrRestart(reply);
         return;
     }
 
-    m_payload = reply->readAll();
+    m_resultData = reply->readAll();
     emitFinishedOrRestart();
 }
 
-QUrl GetProjectCodesJob::downloadUrl() const
+QUrl RestJob::url() const
 {
-    return m_downloadUrl;
+    return m_url;
 }
 
-void GetProjectCodesJob::setDownloadUrl(const QUrl &url)
+void RestJob::setUrl(const QUrl &url)
 {
-    m_downloadUrl = url;
-}
-
-void GetProjectCodesJob::setVerbose(bool verbose)
-{
-    m_verbose = verbose;
-}
-
-bool GetProjectCodesJob::isVerbose() const
-{
-    return m_verbose;
+    m_url = url;
 }

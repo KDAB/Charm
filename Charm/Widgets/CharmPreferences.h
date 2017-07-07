@@ -48,7 +48,6 @@ public:
     Configuration::TimeTrackerFontSize timeTrackerFontSize() const;
 private Q_SLOTS:
     void slotWarnUnuploadedChanged(bool);
-    void slotResetPassword();
 
 private:
     Ui::CharmPreferences m_ui;

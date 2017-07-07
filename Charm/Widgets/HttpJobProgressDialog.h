@@ -37,7 +37,7 @@ public:
 private Q_SLOTS:
     void jobFinished(HttpJob *);
     void jobTransferStarted();
-    void jobPasswordRequested();
+    void jobPasswordRequested(HttpJob::PasswordRequestReason reason);
 
 private:
     QPointer<HttpJob> m_job;

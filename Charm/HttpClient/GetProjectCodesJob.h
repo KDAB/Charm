@@ -43,16 +43,11 @@ public:
     void setVerbose(bool verbose);
     bool isVerbose() const;
 
-public Q_SLOTS:
-
-    bool execute(int state, QNetworkAccessManager *manager) override;
-    bool handle(QNetworkReply *reply) override;
-
 protected:
+    void executeRequest(QNetworkAccessManager *) override;
 
-    enum State {
-        GetProjectCodes = HttpJob::Base
-    };
+private:
+    void handleResult();
 
 private:
     QByteArray m_payload;
