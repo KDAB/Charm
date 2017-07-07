@@ -30,6 +30,7 @@
 
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QUrlQuery>
 
 UploadTimesheetJob::UploadTimesheetJob(QObject *parent)
     : HttpJob(parent)
@@ -71,6 +72,16 @@ void UploadTimesheetJob::setUploadUrl(const QUrl &url)
     m_uploadUrl = url;
 }
 
+UploadTimesheetJob::Status UploadTimesheetJob::status() const
+{
+    return m_status;
+}
+
+void UploadTimesheetJob::setStatus(Status status)
+{
+    m_status = status;
+}
+
 void UploadTimesheetJob::executeRequest(QNetworkAccessManager *manager)
 {
     QByteArray uploadName;
@@ -100,7 +111,14 @@ void UploadTimesheetJob::executeRequest(QNetworkAccessManager *manager)
     /* eot */
     data += "--KDAB--\r\n";
 
-    QNetworkRequest request(m_uploadUrl);
+    QUrl url = m_uploadUrl;
+    if (m_status == Staged) {
+        QUrlQuery query;
+        query.addQueryItem(QLatin1String("status"), QLatin1String("staged"));
+        url.setQuery(query);
+    }
+
+    QNetworkRequest request(url);
     request.setHeader(QNetworkRequest::ContentTypeHeader,
                       QStringLiteral("multipart/form-data; boundary=KDAB"));
     request.setHeader(QNetworkRequest::ContentLengthHeader, data.size());
