@@ -98,8 +98,9 @@ bool Configuration::readFrom(QSettings &settings)
         bool ok;
         installationId = settings.value(MetaKey_Key_InstallationId).toUInt(&ok);
         if (!ok || installationId == 1) {
-            qDebug() << "Migrating installationId" << installationId;
-            installationId = createInstallationId();
+            const auto newId = createInstallationId();
+            qDebug() << "Migrating installationId" << installationId << "to" << newId;
+            installationId = newId;
         }
     } else {
         complete = false;
