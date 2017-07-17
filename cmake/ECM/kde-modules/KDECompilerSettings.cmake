@@ -100,7 +100,7 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     else()
         _kde_compiler_min_version("4.5")
     endif()
-elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+elseif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     _kde_compiler_min_version("3.1")
 else()
     message(WARNING "${CMAKE_CXX_COMPILER_ID} is not a supported C++ compiler.")
@@ -189,12 +189,12 @@ endif()
 # Pick sensible versions of the C and C++ standards.
 # Note that MSVC does not have equivalent flags; the features are either
 # supported or they are not.
-if (CMAKE_C_COMPILER_ID STREQUAL "GNU" OR CMAKE_C_COMPILER_ID STREQUAL "Clang")
+if (CMAKE_C_COMPILER_ID STREQUAL "GNU" OR CMAKE_C_COMPILER_ID MATCHES "Clang")
     # We use the C89 standard because that is what is common to all our
     # compilers (in particular, MSVC 2010 does not support C99)
     set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS} -std=iso9899:1990")
 endif()
-if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Intel" AND NOT WIN32)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
@@ -206,9 +206,17 @@ endif()
 # See https://www.ibm.com/developerworks/community/blogs/zTPF/entry/benefits_of_the_fnocommon_compile_option_peter_lemieszewski?lang=en
 # Note that this only applies to C code; C++ already behaves like this.
 if (CMAKE_C_COMPILER_ID STREQUAL "GNU" OR
-        CMAKE_C_COMPILER_ID STREQUAL "Clang" OR
+        CMAKE_C_COMPILER_ID MATCHES "Clang" OR
         (CMAKE_C_COMPILER_ID STREQUAL "Intel" AND NOT WIN32))
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fno-common")
+endif()
+
+# Do not treat the operator name keywords and, bitand, bitor, compl, not, or and xor as synonyms as keywords.
+# They're not supported under Visual Studio out of the box thus using them limits the portability of code
+if (CMAKE_C_COMPILER_ID STREQUAL "GNU" OR
+        CMAKE_C_COMPILER_ID MATCHES "Clang" OR
+        (CMAKE_C_COMPILER_ID STREQUAL "Intel" AND NOT WIN32))
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-operator-names")
 endif()
 
 # Default to hidden visibility for symbols
@@ -255,7 +263,7 @@ endif()
 # Turn off exceptions by default
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-exceptions")
-elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-exceptions")
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Intel" AND NOT WIN32)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-exceptions")
@@ -277,7 +285,7 @@ macro(_kdecompilersettings_append_exception_flag VAR)
         endif()
     elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
         set(${VAR} "${${VAR}} -fexceptions")
-    elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
         set(${VAR} "${${VAR}} -fexceptions")
     endif()
     string(STRIP "${${VAR}}" ${VAR})
@@ -306,7 +314,7 @@ function(KDE_TARGET_ENABLE_EXCEPTIONS target mode)
         target_compile_options(${target} ${mode} "$<$<CXX_COMPILER_ID:Intel>:-fexceptions>")
     endif()
     target_compile_options(${target} ${mode}
-        "$<$<OR:$<CXX_COMPILER_ID:GNU>,$<CXX_COMPILER_ID:Clang>>:-fexceptions>")
+        "$<$<OR:$<CXX_COMPILER_ID:GNU>,$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>>:-fexceptions>")
 endfunction()
 
 function(KDE_ENABLE_EXCEPTIONS)
@@ -332,7 +340,7 @@ endfunction()
 # Better diagnostics (warnings, errors)
 ############################################################
 
-if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR
+if ((CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND NOT APPLE) OR
         (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND NOT APPLE) OR
         (CMAKE_CXX_COMPILER_ID STREQUAL "Intel" AND NOT WIN32))
     # Linker warnings should be treated as errors
@@ -345,15 +353,35 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR
 endif()
 
 set(_KDE_GCC_COMMON_WARNING_FLAGS "-Wall -Wextra -Wcast-align -Wchar-subscripts -Wformat-security -Wno-long-long -Wpointer-arith -Wundef")
-if(CMAKE_C_COMPILER_ID STREQUAL "GNU" OR CMAKE_C_COMPILER_ID STREQUAL "Clang")
+if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    # -Wgnu-zero-variadic-macro-arguments (part of -pedantic) is triggered by every qCDebug() call and therefore results
+    # in a lot of noise. This warning is only notifying us that clang is emulating the GCC behaviour
+    # instead of the exact standard wording so we can safely ignore it
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-gnu-zero-variadic-macro-arguments")
+endif()
+if(CMAKE_C_COMPILER_ID STREQUAL "GNU" OR CMAKE_C_COMPILER_ID MATCHES "Clang")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${_KDE_GCC_COMMON_WARNING_FLAGS} -Wmissing-format-attribute -Wwrite-strings")
     # Make some warnings errors
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Werror=implicit-function-declaration")
 endif()
-if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${_KDE_GCC_COMMON_WARNING_FLAGS} -Wnon-virtual-dtor -Woverloaded-virtual")
     # Make some warnings errors
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror=return-type")
+endif()
+if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR
+    (CMAKE_CXX_COMPILER_ID MATCHES "Clang" AND NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS 3.5))
+    # -Wvla: use of variable-length arrays (an extension to C++)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wvla")
+endif()
+if ((CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS 5.0) OR
+    (CMAKE_CXX_COMPILER_ID MATCHES "Clang" AND NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS 3.5))
+    include(CheckCXXCompilerFlag)
+    check_cxx_compiler_flag(-Wdate-time HAVE_DATE_TIME)
+    if (HAVE_DATE_TIME)
+        # -Wdate-time: warn if we use __DATE__ or __TIME__ (we want to be able to reproduce the exact same binary)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wdate-time")
+    endif()
 endif()
 
 # -w1 turns on warnings and errors
@@ -456,6 +484,14 @@ if (MINGW AND CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     # FIXME: do our export macros not deal with this properly?
     set (CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--export-all-symbols")
     set (CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -Wl,--export-all-symbols")
+endif()
+
+if (CMAKE_GENERATOR STREQUAL "Ninja" AND
+    ((CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.9) OR
+     (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS 3.5)))
+    # Force colored warnings in Ninja's output, if the compiler has -fdiagnostics-color support.
+    # Rationale in https://github.com/ninja-build/ninja/issues/814
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fdiagnostics-color=always")
 endif()
 
 include("${ECM_MODULE_DIR}/ECMEnableSanitizers.cmake")

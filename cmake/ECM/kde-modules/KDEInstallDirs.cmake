@@ -90,7 +90,7 @@
 #     desktop wallpaper images (``DATAROOTDIR/wallpapers``)
 #     [``WALLPAPER_INSTALL_DIR``]
 # ``APPDIR``
-#     application desktop files (``DATAROOTDIR/applications``)
+#     application desktop files (``DATAROOTDIR/applications``) Since 1.1.0.
 #     [``XDG_APPS_INSTALL_DIR``]
 # ``DESKTOPDIR``
 #     desktop directories (``DATAROOTDIR/desktop-directories``)
@@ -100,6 +100,10 @@
 #     [``XDG_MIME_INSTALL_DIR``]
 # ``METAINFODIR``
 #     AppStream component metadata files (``DATAROOTDIR/metainfo``)
+# ``QTQCHDIR``
+#     documentation bundles in QCH format for Qt-extending libraries (``DATAROOTDIR/doc/qch``) Since 5.36.0.
+# ``QCHDIR``
+#     documentation bundles in QCH format (``DATAROOTDIR/doc/qch``) Since 5.36.0.
 # ``MANDIR``
 #     man documentation (``DATAROOTDIR/man``) [``MAN_INSTALL_DIR``]
 # ``INFODIR``
@@ -174,8 +178,8 @@
 #
 # Since pre-1.0.0.
 #
-# NB: The variables starting ``KDE_INSTALL_`` are only available since 1.6.0.
-# The ``APPDIR`` install variable is available since 1.1.0.
+# NB: The variables starting ``KDE_INSTALL_`` are available since 1.6.0,
+# unless otherwise noted with the variable.
 
 #=============================================================================
 # Copyright 2014-2015 Alex Merry <alex.merry@kde.org>
@@ -448,7 +452,7 @@ if(NOT DEFINED KDE_INSTALL_USE_QT_SYS_PATHS)
     endif()
 endif()
 
-option (KDE_INSTALL_USE_QT_SYS_PATHS "Install mkspecs files, Plugins and Imports to the Qt 5 install dir" "${_default_KDE_INSTALL_USE_QT_SYS_PATHS}")
+option (KDE_INSTALL_USE_QT_SYS_PATHS "Install mkspecs files, QCH files for Qt-based libs, Plugins and Imports to the Qt 5 install dir" "${_default_KDE_INSTALL_USE_QT_SYS_PATHS}")
 if(KDE_INSTALL_USE_QT_SYS_PATHS)
     # Qt-specific vars
     query_qmake(qt_plugins_dir QT_INSTALL_PLUGINS)
@@ -520,6 +524,18 @@ if(NOT KDE_INSTALL_DIRS_NO_DEPRECATED)
     set(KF5_DATA_INSTALL_DIR "${CMAKE_INSTALL_DATADIR_KF5}")
 endif()
 
+# Qt-specific data vars
+if(KDE_INSTALL_USE_QT_SYS_PATHS)
+    query_qmake(qt_docs_dir QT_INSTALL_DOCS)
+
+    _define_absolute(QTQCHDIR ${qt_docs_dir}
+        "documentation bundles in QCH format for Qt-extending libraries")
+else()
+    _define_relative(QTQCHDIR DATAROOTDIR "doc/qch"
+        "documentation bundles in QCH format for Qt-extending libraries")
+endif()
+
+
 # KDE Framework-specific things
 _define_relative(DOCBUNDLEDIR DATAROOTDIR "doc/HTML"
     "documentation bundles generated using kdoctools"
@@ -572,6 +588,8 @@ _define_relative(MIMEDIR DATAROOTDIR "mime/packages"
     XDG_MIME_INSTALL_DIR)
 _define_relative(METAINFODIR DATAROOTDIR "metainfo"
     "AppStream component metadata")
+_define_relative(QCHDIR DATAROOTDIR "doc/qch"
+    "documentation bundles in QCH format")
 _define_relative(MANDIR DATAROOTDIR "man"
     "man documentation"
     MAN_INSTALL_DIR)
