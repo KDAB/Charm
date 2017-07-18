@@ -229,7 +229,7 @@ if (POLICY CMP0063)
     cmake_policy(SET CMP0063 NEW)
 endif()
 
-if (UNIX AND NOT APPLE)
+if (UNIX AND NOT APPLE AND NOT CYGWIN)
     # Enable adding DT_RUNPATH, which means that LD_LIBRARY_PATH takes precedence
     # over the built-in rPath
     set(CMAKE_SHARED_LINKER_FLAGS "-Wl,--enable-new-dtags ${CMAKE_SHARED_LINKER_FLAGS}")
