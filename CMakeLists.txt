@@ -1,5 +1,5 @@
-PROJECT( Charm )
 CMAKE_MINIMUM_REQUIRED( VERSION 2.8.12 )
+PROJECT( Charm CXX )
 
 include(FeatureSummary)
 
