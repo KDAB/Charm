@@ -3,6 +3,7 @@ init:
 - ps: |
     function craft() {
         & C:\python36\python.exe "C:\CraftMaster\$env:TARGET\craft\bin\craft.py" $args
+        if($LASTEXITCODE -ne 0) {exit $LASTEXITCODE}
     }
 
 install:
@@ -34,9 +35,6 @@ on_finish:
 - ps: |
     Get-ChildItem $env:USERPROFILE\.craft\* | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
     Push-AppveyorArtifact C:\CraftMaster\$env:TARGET\etc\kdesettings.ini.dump
-
-
-
 
 environment:
     matrix:
