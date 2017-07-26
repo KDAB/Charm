@@ -33,6 +33,7 @@ SET(
     Reports/TimesheetInfo.cpp
     Reports/MonthlyTimesheetXmlWriter.cpp
     Reports/WeeklyTimesheetXmlWriter.cpp
+    Reports/TimesheetXmlWriter.cpp
     Widgets/ActivityReport.cpp
     Widgets/BillDialog.cpp
     Widgets/CharmPreferences.cpp

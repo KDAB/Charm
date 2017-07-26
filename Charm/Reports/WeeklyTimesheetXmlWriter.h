@@ -24,32 +24,23 @@
 #ifndef WEEKLYTIMESHEETXMLWRITER_H
 #define WEEKLYTIMESHEETXMLWRITER_H
 
-#include "Core/Event.h"
-#include "Core/Task.h"
+#include "TimesheetXmlWriter.h"
 
-class QByteArray;
-class CharmDataModel;
-
-class WeeklyTimesheetXmlWriter
+class WeeklyTimesheetXmlWriter : public TimesheetXmlWriter
 {
 public:
     WeeklyTimesheetXmlWriter();
-    /**
-     * @throws XmlSerializationException
-     */
-    QByteArray saveToXml() const;
 
-    void setDataModel(const CharmDataModel *model);
     void setYear(int year);
     void setWeekNumber(int weekNumber);
-    void setEvents(const EventList &events);
-    void setRootTask(TaskId rootTask);
+
+protected:
+    void writeMetadata(QDomDocument &document, QDomElement &metadata) const override;
+    QList<TimeSheetInfo> createTimeSheetInfo() const override;
+
 private:
-    const CharmDataModel *m_dataModel = nullptr;
     int m_year = 0;
     int m_weekNumber = 0;
-    TaskId m_rootTask = {};
-    EventList m_events;
 };
 
 #endif
