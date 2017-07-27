@@ -66,7 +66,7 @@ void TimeSheetReport::slotSaveToXml()
     if (fileinfo.suffix().isEmpty())
         filename += QLatin1String(".charmreport");
 
-    QByteArray payload = saveToXml();
+    QByteArray payload = saveToXml(IncludeTaskList);
     if (payload.isEmpty())
         return; // Error should have been already displayed by saveToXml()
 

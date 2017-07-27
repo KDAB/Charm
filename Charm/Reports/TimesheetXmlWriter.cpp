@@ -70,6 +70,16 @@ void TimesheetXmlWriter::setRootTask(TaskId rootTask)
     m_rootTask = rootTask;
 }
 
+bool TimesheetXmlWriter::includeTaskList() const
+{
+    return m_includeTaskList;
+}
+
+void TimesheetXmlWriter::setIncludeTaskList(bool includeTaskList)
+{
+    m_includeTaskList = includeTaskList;
+}
+
 QByteArray TimesheetXmlWriter::saveToXml() const
 {
     // now create the report:
@@ -94,7 +104,8 @@ QByteArray TimesheetXmlWriter::saveToXml() const
 
     TimeSheetInfoList timeSheetInfo = createTimeSheetInfo();
     // extend report tag: add tasks and effort structure
-    {   // tasks
+
+    if (m_includeTaskList) {   // tasks
         QDomElement tasks = document.createElement(QStringLiteral("tasks"));
         report.appendChild(tasks);
         Q_FOREACH (const TimeSheetInfo &info, timeSheetInfo) {

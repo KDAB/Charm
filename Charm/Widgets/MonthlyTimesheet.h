@@ -48,7 +48,7 @@ private:
     QString suggestedFileName() const override;
     void update() override;
     QByteArray saveToText() override;
-    QByteArray saveToXml() override;
+    QByteArray saveToXml(SaveToXmlMode mode) override;
 
 private:
     // properties of the report:
