@@ -380,7 +380,7 @@ void ApplicationCore::createFileMenu(QMenuBar *menuBar)
     menu->addAction(&m_actionExportTasks);
 
 #ifdef Q_OS_OSX
-    if (!QString::fromLatin1(UPDATE_CHECK_URL).isEmpty()) {
+    if (!CharmUpdateCheckUrl().isEmpty()) {
         menu->addSeparator();
         menu->addAction(&m_actionCheckForUpdates);
     }
