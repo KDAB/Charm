@@ -167,6 +167,8 @@ EventView::EventView(QWidget *parent)
 
 EventView::~EventView()
 {
+    // Prevents a crash on exit, with the stack emitting undoTextChanged on destruction
+    m_undoStack->disconnect(this);
 }
 
 void EventView::delayedInitialization()
