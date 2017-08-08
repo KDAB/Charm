@@ -28,7 +28,7 @@
 
 #include "Core/Configuration.h"
 #include "Idle/IdleDetector.h"
-#include "HttpClient/HttpJob.h"
+#include "Lotsofcake/Configuration.h"
 
 #include <QCheckBox>
 #include <QMessageBox>
@@ -41,7 +41,7 @@ CharmPreferences::CharmPreferences(const Configuration &config, QWidget *parent_
     m_ui.setupUi(this);
     const bool haveIdleDetection = ApplicationCore::instance().idleDetector()->available();
     const bool haveCommandInterface = (ApplicationCore::instance().commandInterface() != nullptr);
-    const bool httpJobPossible = HttpJob::credentialsAvailable();
+    const bool httpJobPossible = Lotsofcake::Configuration().isConfigured();
 
     m_ui.lbWarnUnuploadedTimesheets->setVisible(httpJobPossible);
     m_ui.cbWarnUnuploadedTimesheets->setVisible(httpJobPossible);
@@ -184,7 +184,7 @@ Qt::ToolButtonStyle CharmPreferences::toolButtonStyle() const
 
 void CharmPreferences::slotWarnUnuploadedChanged(bool enabled)
 {
-    if (!HttpJob::credentialsAvailable())
+    if (!Lotsofcake::Configuration().isConfigured())
         return;
 
     if (!enabled) {

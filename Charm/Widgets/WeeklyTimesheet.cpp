@@ -34,6 +34,7 @@
 
 #include "DateEntrySyncer.h"
 #include "HttpClient/UploadTimesheetJob.h"
+#include "Lotsofcake/Configuration.h"
 #include "Widgets/HttpJobProgressDialog.h"
 
 #include "SelectTaskDialog.h"
@@ -266,7 +267,7 @@ WeeklyTimeSheetReport::WeeklyTimeSheetReport(QWidget *parent)
     connect(upload, &QPushButton::clicked, this, &WeeklyTimeSheetReport::slotUploadTimesheet);
     connect(this, &ReportPreviewWindow::anchorClicked, this, &WeeklyTimeSheetReport::slotLinkClicked);
 
-    if (!HttpJob::credentialsAvailable())
+    if (!Lotsofcake::Configuration().isConfigured())
         upload->hide();
 }
 
@@ -283,12 +284,12 @@ void WeeklyTimeSheetReport::setReportProperties(
 
 void WeeklyTimeSheetReport::slotUploadTimesheet()
 {
-    QSettings s;
-    s.beginGroup(QStringLiteral("httpconfig"));
-    QUrl url = s.value(QStringLiteral("timesheetUploadUrl")).toUrl();
+    Lotsofcake::Configuration configuration;
+    auto url = configuration.timesheetUploadUrl();
     url.setPath(QLatin1String("/KdabHome/apps/timesheets/rest/upload")); // TODO don't use hardcoded path
 
     auto client = new UploadTimesheetJob(this);
+    client->setUsername(configuration.username());
     client->setUploadUrl(url);
     auto dialog = new HttpJobProgressDialog(client, this);
     dialog->setWindowTitle(tr("Uploading"));

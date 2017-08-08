@@ -56,6 +56,8 @@
 
 #include "Idle/IdleDetector.h"
 
+#include "Lotsofcake/Configuration.h"
+
 #include "Widgets/HttpJobProgressDialog.h"
 
 #include <QBuffer>
@@ -457,7 +459,12 @@ void TimeTrackingWindow::slotSyncTasks(VerboseMode mode)
 {
     if (ApplicationCore::instance().state() != Connected)
         return;
-    GetProjectCodesJob *client = new GetProjectCodesJob(this);
+    Lotsofcake::Configuration configuration;
+
+    auto client = new GetProjectCodesJob(this);
+    client->setUsername(configuration.username());
+    client->setDownloadUrl(configuration.projectCodeDownloadUrl());
+
     if (mode == Verbose) {
         HttpJobProgressDialog *dialog = new HttpJobProgressDialog(client, this);
         dialog->setWindowTitle(tr("Downloading"));
@@ -477,8 +484,7 @@ void TimeTrackingWindow::slotSyncTasksVerbose()
 
 void TimeTrackingWindow::slotSyncTasksAutomatic()
 {
-    // check if HttpJob is possible
-    if (HttpJob::credentialsAvailable())
+    if (Lotsofcake::Configuration().isConfigured())
         slotSyncTasks(Silent);
 }
 
@@ -700,15 +706,6 @@ void TimeTrackingWindow::maybeIdle(IdleDetector *detector)
     detector->clear();
 }
 
-static void setValueIfNotNull(QSettings *s, const QString &key, const QString &value)
-{
-    if (!value.isNull()) {
-        s->setValue(key, value);
-    } else {
-        s->remove(key);
-    }
-}
-
 void TimeTrackingWindow::importTasksFromDeviceOrFile(QIODevice *device, const QString &filename,
                                                      bool verbose)
 {
@@ -748,34 +745,17 @@ void TimeTrackingWindow::importTasksFromDeviceOrFile(QIODevice *device, const QS
             }
         }
 
-        QSettings settings;
-        settings.beginGroup(QStringLiteral("httpconfig"));
-        const QString userName = settings.value(QStringLiteral("username")).toString();
-        setValueIfNotNull(&settings, QStringLiteral("username"),
-                          exporter.metadata(QStringLiteral("username")));
-        const QString currentUserName = settings.value(QStringLiteral("username")).toString();
-        setValueIfNotNull(&settings, QStringLiteral("portalUrl"),
-                          exporter.metadata(QStringLiteral("portal-url")));
-        setValueIfNotNull(&settings, QStringLiteral("loginUrl"),
-                          exporter.metadata(QStringLiteral("login-url")));
-        setValueIfNotNull(&settings, QStringLiteral("timesheetUploadUrl"),
-                          exporter.metadata(QStringLiteral("timesheet-upload-url")));
-        setValueIfNotNull(&settings, QStringLiteral("projectCodeDownloadUrl"),
-                          exporter.metadata(QStringLiteral("project-code-download-url")));
-        setValueIfNotNull(&settings, QStringLiteral("restUrl"), exporter.metadata(QStringLiteral("rest-url")));
+        Lotsofcake::Configuration lotsofcakeConfig;
+        const auto oldUserName = lotsofcakeConfig.username();
 
-        settings.endGroup();
-        settings.beginGroup(QStringLiteral("users"));
-        setValueIfNotNull(&settings, QStringLiteral("portalUrl"),
-                          exporter.metadata(QStringLiteral("portal-url")));
-        setValueIfNotNull(&settings, QStringLiteral("loginUrl"),
-                          exporter.metadata(QStringLiteral("login-url")));
-        settings.endGroup();
+        lotsofcakeConfig.importFromTaskExport(exporter);
 
-        ApplicationCore::instance().setHttpActionsVisible(true);
+        const auto newUserName = lotsofcakeConfig.username();
+
+        ApplicationCore::instance().setHttpActionsVisible(lotsofcakeConfig.isConfigured());
 
         // update user info in case the user name has changed
-        if (!currentUserName.isEmpty() && (currentUserName != userName))
+        if (!oldUserName.isEmpty() && oldUserName != newUserName)
             slotGetUserInfo();
     } catch (const CharmException &e) {
         const QString title = tr("Invalid Task Definitions");
@@ -795,13 +775,12 @@ void TimeTrackingWindow::importTasksFromDeviceOrFile(QIODevice *device, const QS
 
 void TimeTrackingWindow::slotGetUserInfo()
 {
-    if (!HttpJob::credentialsAvailable())
+    Lotsofcake::Configuration configuration;
+    if (!configuration.isConfigured())
         return;
 
-    QSettings settings;
-    settings.beginGroup(QStringLiteral("httpconfig"));
-    const auto restUrl = settings.value(QStringLiteral("restUrl")).toString();
-    const auto userName = settings.value(QStringLiteral("username")).toString();
+    const auto restUrl = configuration.restUrl();
+    const auto userName = configuration.username();
 
     auto url = QUrl(restUrl);
     url.setPath(url.path() + QLatin1String("user"));
@@ -809,6 +788,7 @@ void TimeTrackingWindow::slotGetUserInfo()
     query.addQueryItem(QLatin1String("user"), userName);
     url.setQuery(query);
     auto job = new RestJob(this);
+    job->setUsername(userName);
     job->setUrl(url);
     connect(job, &RestJob::finished, this, &TimeTrackingWindow::slotUserInfoDownloaded);
     job->start();

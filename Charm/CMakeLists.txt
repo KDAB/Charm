@@ -30,6 +30,7 @@ SET(
     HttpClient/RestJob.cpp
     HttpClient/UploadTimesheetJob.cpp
     Idle/IdleDetector.cpp
+    Lotsofcake/Configuration.cpp
     Reports/TimesheetInfo.cpp
     Reports/MonthlyTimesheetXmlWriter.cpp
     Reports/WeeklyTimesheetXmlWriter.cpp

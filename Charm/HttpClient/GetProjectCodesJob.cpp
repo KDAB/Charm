@@ -31,9 +31,6 @@
 GetProjectCodesJob::GetProjectCodesJob(QObject *parent)
     : HttpJob(parent)
 {
-    QSettings s;
-    s.beginGroup(QStringLiteral("httpconfig"));
-    setDownloadUrl(s.value(QStringLiteral("projectCodeDownloadUrl")).toUrl());
 }
 
 GetProjectCodesJob::~GetProjectCodesJob()

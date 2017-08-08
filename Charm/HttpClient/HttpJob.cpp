@@ -35,22 +35,12 @@
 
 #include <QUrlQuery>
 
-bool HttpJob::credentialsAvailable()
-{
-    QSettings settings;
-    settings.beginGroup(QStringLiteral("httpconfig"));
-    return !settings.value(QStringLiteral("username")).toString().isEmpty();
-}
-
 HttpJob::HttpJob(QObject *parent)
     : QObject(parent)
     , m_networkManager(new QNetworkAccessManager(this))
 {
     connect(m_networkManager, &QNetworkAccessManager::authenticationRequired,
             this, &HttpJob::authenticationRequired);
-    QSettings settings;
-    settings.beginGroup(QStringLiteral("httpconfig"));
-    setUsername(settings.value(QStringLiteral("username")).toString());
 }
 
 HttpJob::~HttpJob()

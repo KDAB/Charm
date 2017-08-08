@@ -31,8 +31,8 @@
 #include "Core/CharmExceptions.h"
 #include "Core/SqLiteStorage.h"
 
-#include "HttpClient/HttpJob.h"
 #include "Idle/IdleDetector.h"
+#include "Lotsofcake/Configuration.h"
 #include "Widgets/ConfigurationDialog.h"
 #include "Widgets/NotificationPopup.h"
 #include "Widgets/TasksView.h"
@@ -268,7 +268,7 @@ ApplicationCore::ApplicationCore(TaskId startupTask, bool hideAtStart, QObject *
     Q_ASSERT(m_idleDetector);
     connect(m_idleDetector, SIGNAL(maybeIdle()), SLOT(slotMaybeIdle()));
 
-    setHttpActionsVisible(HttpJob::credentialsAvailable());
+    setHttpActionsVisible(Lotsofcake::Configuration().isConfigured());
     // add default plugin path for deployment
     QCoreApplication::addLibraryPath(QCoreApplication::applicationDirPath()
                                      + QStringLiteral("/plugins"));
