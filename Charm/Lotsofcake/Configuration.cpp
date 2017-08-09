@@ -32,6 +32,7 @@ static const char *s_keyUsername = "username";
 static const char *s_keyTimesheetUploadUrl = "timesheetUploadUrl";
 static const char *s_keyProjectCodeDownloadUrl = "projectCodeDownloadUrl";
 static const char *s_keyRestUrl = "restUrl";
+static const char *s_keyLastStagedTimesheetUpload = "lastStagedTimesheetUpload";
 
 static void setValueIfNotNull(QSettings *s, const QString &key, const QString &value)
 {
@@ -71,7 +72,9 @@ QUrl Lotsofcake::Configuration::timesheetUploadUrl() const
 {
     QSettings settings;
     settings.beginGroup(QLatin1String(s_group));
-    return settings.value(QLatin1String(s_keyTimesheetUploadUrl)).toUrl();
+    QUrl url = settings.value(QLatin1String(s_keyTimesheetUploadUrl)).toUrl();
+    url.setPath(QLatin1String("/KdabHome/apps/timesheets/rest/upload")); // TODO don't use hardcoded path
+    return url;
 }
 
 QUrl Lotsofcake::Configuration::projectCodeDownloadUrl() const
@@ -88,3 +91,23 @@ QUrl Lotsofcake::Configuration::restUrl() const
     return settings.value(QLatin1String(s_keyRestUrl)).toUrl();
 }
 
+QDate Lotsofcake::Configuration::lastStagedTimesheetUpload() const
+{
+    if (!m_lastStagedTimesheetUpload.set) {
+        QSettings settings;
+        settings.beginGroup(QLatin1String(s_group));
+        m_lastStagedTimesheetUpload.date = settings.value(QLatin1String(s_keyLastStagedTimesheetUpload)).toDate();
+        m_lastStagedTimesheetUpload.set = true;
+    }
+
+    return m_lastStagedTimesheetUpload.date;
+}
+
+void Lotsofcake::Configuration::setLastStagedTimesheetUpload(const QDate &date)
+{
+    QSettings settings;
+    settings.beginGroup(QLatin1String(s_group));
+    settings.setValue(QLatin1String(s_keyLastStagedTimesheetUpload), date);
+    m_lastStagedTimesheetUpload.date = date;
+    m_lastStagedTimesheetUpload.set = true;
+}

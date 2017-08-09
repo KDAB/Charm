@@ -284,13 +284,10 @@ void WeeklyTimeSheetReport::setReportProperties(
 
 void WeeklyTimeSheetReport::slotUploadTimesheet()
 {
-    Lotsofcake::Configuration configuration;
-    auto url = configuration.timesheetUploadUrl();
-    url.setPath(QLatin1String("/KdabHome/apps/timesheets/rest/upload")); // TODO don't use hardcoded path
-
+    const Lotsofcake::Configuration configuration;
     auto client = new UploadTimesheetJob(this);
     client->setUsername(configuration.username());
-    client->setUploadUrl(url);
+    client->setUploadUrl(configuration.timesheetUploadUrl());
     auto dialog = new HttpJobProgressDialog(client, this);
     dialog->setWindowTitle(tr("Uploading"));
     connect(client, &HttpJob::finished, this, &WeeklyTimeSheetReport::slotTimesheetUploaded);

@@ -123,6 +123,7 @@ Q_SIGNALS:
     void taskMenuChanged();
 
 private:
+    void uploadStagedTimesheet();
     void resetWeeklyTimesheetDialog();
     void resetMonthlyTimesheetDialog();
     void showPreview(ReportConfigurationDialog *, int result);
@@ -144,6 +145,7 @@ private:
     QTimer m_updateUserInfoAndTasksDefinitionsTimer;
     BillDialog *m_billDialog;
     bool m_idleCorrectionDialogVisible = false;
+    bool m_uploadingStagedTimesheet = false;
 };
 
 #endif

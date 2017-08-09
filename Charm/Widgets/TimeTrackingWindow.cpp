@@ -53,11 +53,13 @@
 
 #include "HttpClient/GetProjectCodesJob.h"
 #include "HttpClient/RestJob.h"
+#include "HttpClient/UploadTimesheetJob.h"
 
 #include "Idle/IdleDetector.h"
 
 #include "Lotsofcake/Configuration.h"
 
+#include "Reports/WeeklyTimesheetXmlWriter.h"
 #include "Widgets/HttpJobProgressDialog.h"
 
 #include <QBuffer>
@@ -289,6 +291,7 @@ void TimeTrackingWindow::slotStartEvent(TaskId id)
 
     }
     ApplicationCore::instance().updateTaskList();
+    uploadStagedTimesheet();
 }
 
 void TimeTrackingWindow::slotStopEvent()
@@ -770,6 +773,64 @@ void TimeTrackingWindow::importTasksFromDeviceOrFile(QIODevice *device, const QS
             emit showNotification(title, message);
         }
         return;
+    }
+}
+
+void TimeTrackingWindow::uploadStagedTimesheet()
+{
+    try {
+        if (m_uploadingStagedTimesheet)
+            return;
+
+        const Lotsofcake::Configuration configuration;
+        if (!configuration.isConfigured())
+            return;
+
+        const auto today = QDate::currentDate();
+        const auto lastUpload = configuration.lastStagedTimesheetUpload();
+
+        if (lastUpload.isValid() && lastUpload >= today)
+            return;
+
+        const auto thisWeek = TimeSpans().thisWeek();
+        const auto weekStart = thisWeek.timespan.first;
+        const auto yesterday = TimeSpans().yesterday().timespan.second;
+
+        if (yesterday < weekStart)
+            return;
+
+        int year = 0;
+        const auto weekNumber = today.weekNumber(&year);
+        WeeklyTimesheetXmlWriter timesheet;
+        timesheet.setDataModel(DATAMODEL);
+        timesheet.setYear(year);
+        timesheet.setWeekNumber(weekNumber);
+        timesheet.setIncludeTaskList(false);
+
+        const auto matchingEventIds = DATAMODEL->eventsThatStartInTimeFrame(weekStart, yesterday);
+        EventList events;
+        events.reserve(matchingEventIds.size());
+        Q_FOREACH (const EventId &id, matchingEventIds)
+            events.append(DATAMODEL->eventForId(id));
+        timesheet.setEvents(events);
+
+        QScopedPointer<UploadTimesheetJob> job(new UploadTimesheetJob);
+        connect(job.data(), &HttpJob::finished, this, [this](HttpJob *job) {
+            m_uploadingStagedTimesheet = false;
+            if (job->error() == HttpJob::NoError) {
+                Lotsofcake::Configuration configuration;
+                configuration.setLastStagedTimesheetUpload(QDate::currentDate());
+            }
+        });
+
+        job->setUsername(configuration.username());
+        job->setUploadUrl(configuration.timesheetUploadUrl());
+        job->setStatus(UploadTimesheetJob::Staged);
+        job->setPayload(timesheet.saveToXml());
+        job.take()->start();
+        m_uploadingStagedTimesheet = true;
+    } catch (const XmlSerializationException &e) {
+        QMessageBox::critical(this, tr("Error generating the staged timesheet"), e.what());
     }
 }
 
