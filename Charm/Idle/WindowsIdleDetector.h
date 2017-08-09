@@ -35,7 +35,7 @@ public:
     explicit WindowsIdleDetector(QObject *parent);
 
 protected:
-    void onIdlenessDurationChanged();
+    void onIdlenessDurationChanged() override;
 
 private Q_SLOTS:
     void timeout();

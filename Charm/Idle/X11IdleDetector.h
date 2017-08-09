@@ -41,7 +41,7 @@ public:
     bool idleCheckPossible();
 
 protected:
-    void onIdlenessDurationChanged();
+    void onIdlenessDurationChanged() override;
 
 private Q_SLOTS:
     void checkIdleness();
