@@ -1,13 +1,5 @@
 version: '{build}-{branch}'
 
-branches:
-  # whitelist
-  only:
-    - master
-
-clone_depth: 50
-
-
 init:
 - ps: |
     function craft() {
