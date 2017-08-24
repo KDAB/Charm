@@ -108,17 +108,15 @@ void UploadTimesheetJob::executeRequest(QNetworkAccessManager *manager)
     data += m_payload;
     data += "\r\n";
 
-    /* eot */
-    data += "--KDAB--\r\n";
-
-    QUrl url = m_uploadUrl;
     if (m_status == Staged) {
-        QUrlQuery query;
-        query.addQueryItem(QLatin1String("status"), QLatin1String("staged"));
-        url.setQuery(query);
+        data += "--KDAB\r\n";
+        data += "Content-Disposition: form-data; name=\"status\"\r\n\r\n";
+        data += "STAGED\r\n";
     }
 
-    QNetworkRequest request(url);
+    data += "--KDAB--\r\n";
+
+    QNetworkRequest request(m_uploadUrl);
     request.setHeader(QNetworkRequest::ContentTypeHeader,
                       QStringLiteral("multipart/form-data; boundary=KDAB"));
     request.setHeader(QNetworkRequest::ContentLengthHeader, data.size());
