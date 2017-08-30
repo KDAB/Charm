@@ -175,7 +175,7 @@ CommandLine::CommandLine(int argc, char **argv)
         QString msg;
         for (int index = optind; index < argc; index++) {
             msg += QObject::tr("Unknown extra argument \"%1\"\n").arg(
-                argv[index]);
+                QString::fromLatin1(argv[index]));
         }
         throw UsageException(msg);
     }

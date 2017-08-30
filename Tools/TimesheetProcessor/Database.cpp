@@ -49,30 +49,29 @@ void Database::checkUserid(int id) throw (TimesheetProcessorException)
 {
     User user = m_storage.getUser(id);
     if (!user.isValid())
-        throw TimesheetProcessorException("No such user");
+        throw TimesheetProcessorException(QStringLiteral("No such user"));
 }
 
 User Database::getOrCreateUserByName(QString name) throw (TimesheetProcessorException)
 {
     User user;
     QSqlQuery query(database());
-    const char *statement = "SELECT user_id from Users WHERE name = :user_name;";
-    query.prepare(statement);
-    query.bindValue(":user_name", name);
+    query.prepare(QStringLiteral("SELECT user_id from Users WHERE name = :user_name;"));
+    query.bindValue(QStringLiteral(":user_name"), name);
     bool result = query.exec();
     if (result) {
         if (query.next()) {
-            int userIdPosition = query.record().indexOf("user_id");
+            int userIdPosition = query.record().indexOf(QStringLiteral("user_id"));
             Q_ASSERT(userIdPosition != -1);
             int userId = query.value(userIdPosition).toInt();
             user = m_storage.getUser(userId);
         } else {         // user with this name does not exist:
             user = m_storage.makeUser(name);               // that should work
             if (!user.isValid())
-                throw TimesheetProcessorException("Cannot create the new user");
+                throw TimesheetProcessorException(QStringLiteral("Cannot create the new user"));
         }
     } else {
-        throw TimesheetProcessorException("Cannot execute query for user name");
+        throw TimesheetProcessorException(QStringLiteral("Cannot execute query for user name"));
     }
     return user;
 }
@@ -128,12 +127,12 @@ void Database::initializeDatabase() throw (TimesheetProcessorException)
     try {
         QStringList tables = m_storage.database().tables();
         if (!tables.empty()) {
-            throw TimesheetProcessorException("The database is not empty. Only "
-                                              "empty databases can be automatically initialized.");
+            throw TimesheetProcessorException(QStringLiteral("The database is not empty. Only "
+                                              "empty databases can be automatically initialized."));
         }
         if (!m_storage.createDatabaseTables())
-            throw TimesheetProcessorException(
-                      "Cannot create database contents, please double-check permissions.");
+            throw TimesheetProcessorException(QStringLiteral(
+                      "Cannot create database contents, please double-check permissions."));
     } catch (UnsupportedDatabaseVersionException &e) {
         throw TimesheetProcessorException(e.what());
     }
@@ -146,7 +145,7 @@ void Database::addEvent(const Event &event, const SqlRaiiTransactor &t)
     newEvent = event;
     newEvent.setId(id);
     if (!m_storage.modifyEvent(newEvent, t))
-        throw TimesheetProcessorException("Cannot add event");
+        throw TimesheetProcessorException(QStringLiteral("Cannot add event"));
 }
 
 void Database::deleteEventsForReport(int userid, int index)
@@ -156,9 +155,9 @@ void Database::deleteEventsForReport(int userid, int index)
         "DELETE FROM Events WHERE report_id = :index and user_id = :userid");
     QSqlQuery query(m_storage.database());
     query.prepare(statement);
-    query.bindValue(":index", index);
-    query.bindValue(":userid", userid);
+    query.bindValue(QStringLiteral(":index"), index);
+    query.bindValue(QStringLiteral(":userid"), userid);
     bool result = query.exec();
     if (!result)
-        throw TimesheetProcessorException("Failed to delete report");
+        throw TimesheetProcessorException(QStringLiteral("Failed to delete report"));
 }

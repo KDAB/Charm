@@ -64,7 +64,7 @@ Options::Options(int argc, char **argv)
         case 'd':
         {
             const QString text = QString::fromLocal8Bit(optarg);
-            QDate date = QDate::fromString(text, "yyyy-MM-dd");
+            QDate date = QDate::fromString(text, QStringLiteral("yyyy-MM-dd"));
             if (date.isValid()) {
                 mDate = date;
             } else {
