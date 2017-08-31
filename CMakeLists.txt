@@ -40,8 +40,6 @@ ENDIF()
 
 MESSAGE( STATUS "Building Charm ${Charm_VERSION} in ${CMAKE_BUILD_TYPE} mode" )
 
-add_definitions(-DCHARM_VERSION="${Charm_VERSION}")
-
 find_package( Qt5Core REQUIRED)
 
 find_package(Qt5Widgets REQUIRED)
