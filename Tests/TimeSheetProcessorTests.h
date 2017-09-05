@@ -33,7 +33,7 @@ class TimeSheetProcessorTests : public QObject
 public:
     explicit TimeSheetProcessorTests();
 
-private slots:
+private Q_SLOTS:
     void testAddRemoveTimeSheet();
 
 private:

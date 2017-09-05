@@ -64,7 +64,7 @@ int main(int argc, char **argv)
         for (QDomElement child = docElem.firstChildElement(timesheetTagName);
              !child.isNull();
              child = child.nextSiblingElement(timesheetTagName)) {
-            const QString userIdString = child.attributes().namedItem("userid").nodeValue();
+            const QString userIdString = child.attributes().namedItem(QStringLiteral("userid")).nodeValue();
             bool ok;
             const int userId = userIdString.toInt(&ok);
             if (!ok)
@@ -86,7 +86,7 @@ int main(int argc, char **argv)
                 }
             }
             // now create the time sheet:
-            QDomDocument document = XmlSerialization::createXmlTemplate("weekly-timesheet");
+            QDomDocument document = XmlSerialization::createXmlTemplate(QStringLiteral("weekly-timesheet"));
 
             // find metadata and report element:
             QDomElement root = document.documentElement();
@@ -101,12 +101,12 @@ int main(int argc, char **argv)
             const int week = start.date().weekNumber(&year);
 
             {
-                QDomElement yearElement = document.createElement("year");
+                QDomElement yearElement = document.createElement(QStringLiteral("year"));
                 metadata.appendChild(yearElement);
                 QDomText text = document.createTextNode(QString::number(year));
                 yearElement.appendChild(text);
-                QDomElement weekElement = document.createElement("serial-number");
-                weekElement.setAttribute("semantics", "week-number");
+                QDomElement weekElement = document.createElement(QStringLiteral("serial-number"));
+                weekElement.setAttribute(QStringLiteral("semantics"), QStringLiteral("week-number"));
                 metadata.appendChild(weekElement);
                 QDomText weektext = document.createTextNode(QString::number(week));
                 weekElement.appendChild(weektext);
@@ -114,7 +114,7 @@ int main(int argc, char **argv)
 
             {   // effort
                 // make effort element:
-                QDomElement effort = document.createElement("effort");
+                QDomElement effort = document.createElement(QStringLiteral("effort"));
                 report.appendChild(effort);
                 // create elements:
                 Q_FOREACH (Event event, events) {

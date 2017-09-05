@@ -1,5 +1,8 @@
 #ifndef CHARM_CMAKE_H
 #define CHARM_CMAKE_H
+
+#define CHARM_VERSION "@Charm_VERSION@"
+
 #include <QString>
 /* Define to the version from CMake */
 static inline QString CharmVersion() {

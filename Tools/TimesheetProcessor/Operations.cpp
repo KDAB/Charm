@@ -81,7 +81,7 @@ void addTimesheet(const CommandLine &cmd)
         QString msg = QObject::tr("Cannot open file %1 for reading.").arg(cmd.filename());
         throw TimesheetProcessorException(msg);
     }
-    QDomDocument doc("timesheet");
+    QDomDocument doc(QStringLiteral("timesheet"));
     if (!doc.setContent(&file)) {
         QString msg = QObject::tr("Cannot read file %1.").arg(cmd.filename());
         throw TimesheetProcessorException(msg);
@@ -89,14 +89,14 @@ void addTimesheet(const CommandLine &cmd)
     // add it to the database:
     // 1) make a list of all the events:
     EventList events;
-    QDomElement charmReportElement = doc.firstChildElement("charmreport");
-    QDomElement metadataElement = charmReportElement.firstChildElement("metadata");
-    QDomElement yearElement = metadataElement.firstChildElement("year");
+    QDomElement charmReportElement = doc.firstChildElement(QStringLiteral("charmreport"));
+    QDomElement metadataElement = charmReportElement.firstChildElement(QStringLiteral("metadata"));
+    QDomElement yearElement = metadataElement.firstChildElement(QStringLiteral("year"));
     QString year = yearElement.text().simplified();
-    QDomElement weekElement = metadataElement.firstChildElement("serial-number");
+    QDomElement weekElement = metadataElement.firstChildElement(QStringLiteral("serial-number"));
     QString week = weekElement.text().simplified();
-    QDomElement reportElement = charmReportElement.firstChildElement("report");
-    QDomElement effortElement = reportElement.firstChildElement("effort");
+    QDomElement reportElement = charmReportElement.firstChildElement(QStringLiteral("report"));
+    QDomElement effortElement = reportElement.firstChildElement(QStringLiteral("effort"));
     if (effortElement.isNull()) {
         QString msg = QObject::tr("Invalid structure in file %1.").arg(cmd.filename());
         throw TimesheetProcessorException(msg);
@@ -133,14 +133,14 @@ void addTimesheet(const CommandLine &cmd)
         // add time sheet to time sheets list
         {
             QSqlQuery query(database.database());
-            query.prepare(
-                "INSERT into timesheets VALUES( 0, :filename, :original_filename, :year, :week, :total, :userid, 0, :date_time_uploaded)");
+            query.prepare(QStringLiteral(
+                "INSERT into timesheets VALUES( 0, :filename, :original_filename, :year, :week, :total, :userid, 0, :date_time_uploaded)"));
             query.bindValue(QString::fromLatin1(":filename"), cmd.filename());
             query.bindValue(QString::fromLatin1(":original_filename"), cmd.userComment());
             query.bindValue(QString::fromLatin1(":year"), year);
             query.bindValue(QString::fromLatin1(":week"), week);
             query.bindValue(QString::fromLatin1(":total"), totalSeconds);
-            query.bindValue(":userid", cmd.userid());
+            query.bindValue(QString::fromLatin1(":userid"), cmd.userid());
             query.bindValue(QString::fromLatin1(":date_time_uploaded"), dateTimeUploaded);
             if (!query.exec()) {
                 QString msg = QObject::tr("Error adding time sheet %1.").arg(cmd.filename());
@@ -151,14 +151,14 @@ void addTimesheet(const CommandLine &cmd)
         // retrieve index
         {
             QSqlQuery query(database.database());
-            if (!query.exec("SELECT id from timesheets WHERE id = last_insert_id()")) {
+            if (!query.exec(QStringLiteral("SELECT id from timesheets WHERE id = last_insert_id()"))) {
                 QString msg = QObject::tr("SQL error retrieving index for time sheet %1.").arg(
                     cmd.filename());
                 throw TimesheetProcessorException(msg);
             }
 
             if (query.next()) {
-                const int idField = query.record().indexOf("id");
+                const int idField = query.record().indexOf(QStringLiteral("id"));
                 index = query.value(idField).toInt();
             } else {
                 QString msg = QObject::tr("Error retrieving index for time sheet %1.").arg(
@@ -198,10 +198,10 @@ void addTimesheet(const CommandLine &cmd)
             // the transction should be rollback() and there should be no item with id=index in the
             // Charm/timesheets table any longer...
             QSqlQuery query(database.database());
-            if (query.exec(QString("SELECT id from timesheets WHERE id = %1").arg(index))) {
+            if (query.exec(QStringLiteral("SELECT id from timesheets WHERE id = %1").arg(index))) {
                 if (query.next()) {   //WTF, if that happens that something went wrong with the transaction
                     QSqlQuery deletequery(database.database());
-                    deletequery.exec(QString("DELETE FROM timesheets WHERE id = %1").arg(index));
+                    deletequery.exec(QStringLiteral("DELETE FROM timesheets WHERE id = %1").arg(index));
                     qDebug()
                         << "CRITICAL ERROR: A database transaction did not roll back as expected. "
                         "Please report this to the administrators. The time sheet with index "
@@ -225,7 +225,7 @@ void removeTimesheet(const CommandLine &cmd)
 
     {
         QSqlQuery query(database.database());
-        if (!query.prepare("DELETE from timesheets WHERE id = :index")) {
+        if (!query.prepare(QStringLiteral("DELETE from timesheets WHERE id = :index"))) {
             QString msg = QObject::tr("Error prepare to remove timesheet %1.").arg(cmd.index());
             throw TimesheetProcessorException(msg);
         }
