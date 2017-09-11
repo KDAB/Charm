@@ -310,10 +310,10 @@ void ApplicationCore::slotHandleUniqueApplicationConnection()
         if (!socket->canReadLine())
             return;
         while (socket->canReadLine()) {
-            QByteArray data = socket->readLine().trimmed();
+            const QByteArray data = socket->readLine().trimmed();
             if (data.startsWith(StartTaskCommand)) {
                 bool ok = true;
-                TaskId id = data.mid(StartTaskCommand.length()).toInt(&ok);
+                const TaskId id = data.mid(StartTaskCommand.length()).toInt(&ok);
                 if (ok) {
                     m_timeTracker.slotStartEvent(id);
                 } else {

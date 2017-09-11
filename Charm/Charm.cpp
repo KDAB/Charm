@@ -109,11 +109,11 @@ int main(int argc, char **argv)
 #if QT_VERSION >= QT_VERSION_CHECK(5, 2, 0)
         //Now we can use more command line arguments:
         //charmtimetracker --hide-at-start --start-task 8714
-        QCommandLineOption startTaskOption(QLatin1String("start-task"),
-                                           QLatin1String("Start up the task with <task-id>"),
-                                           QLatin1String("task-id"));
-        QCommandLineOption hideAtStartOption(QLatin1String("hide-at-start"),
-                                           QLatin1String("Hide Timetracker window at start"));
+        const QCommandLineOption startTaskOption(QLatin1String("start-task"),
+                                                 QLatin1String("Start up the task with <task-id>"),
+                                                 QLatin1String("task-id"));
+        const QCommandLineOption hideAtStartOption(QLatin1String("hide-at-start"),
+                                                   QLatin1String("Hide Timetracker window at start"));
 
         QCommandLineParser parser;
         parser.addHelpOption();
