@@ -127,7 +127,7 @@ int main(int argc, char **argv)
         if (parser.isSet(startTaskOption)) {
             startupTask = parser.value(startTaskOption).toInt(&ok);
             if (!ok || startupTask < 0) {
-                std::cerr << "Invalid task id passed: " << startupTask;
+                std::cerr << "Invalid task id passed: " << startupTask << std::endl;
                 return 1;
             }
         }
