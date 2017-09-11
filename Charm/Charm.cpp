@@ -125,9 +125,10 @@ int main(int argc, char **argv)
 
         bool ok = true;
         if (parser.isSet(startTaskOption)) {
-            startupTask = parser.value(startTaskOption).toInt(&ok);
+            const QString value = parser.value(startTaskOption);
+            startupTask = value.toInt(&ok);
             if (!ok || startupTask < 0) {
-                std::cerr << "Invalid task id passed: " << startupTask << std::endl;
+                std::cerr << "Invalid task id passed: " << qPrintable(value) << std::endl;
                 return 1;
             }
         }
