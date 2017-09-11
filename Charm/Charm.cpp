@@ -95,6 +95,7 @@ int main(int argc, char **argv)
     }
 
     try {
+#ifdef Q_OS_WIN
         // High DPI support
 #if QT_VERSION >= QT_VERSION_CHECK(5, 1, 0)
         QGuiApplication::setAttribute(Qt::AA_UseHighDpiPixmaps, true);
@@ -104,6 +105,8 @@ int main(int argc, char **argv)
         QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
         QGuiApplication::setAttribute(Qt::AA_UseHighDpiPixmaps, true);
 #endif
+#endif // Q_OS_WIN
+
         QApplication app(argc, argv);
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 2, 0)
