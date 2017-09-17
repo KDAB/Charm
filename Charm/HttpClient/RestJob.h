@@ -21,8 +21,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef GETUSERINFOJOB_H
-#define GETUSERINFOJOB_H
+#ifndef RESTJOB_H
+#define RESTJOB_H
 
 #include "HttpJob.h"
 #include <QUrl>
@@ -52,4 +52,4 @@ private:
     QUrl m_url;
 };
 
-#endif // GETUSERINFOJOB_H
+#endif // RESTJOB_H
