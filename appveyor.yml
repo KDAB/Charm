@@ -1,5 +1,13 @@
 version: '{build}-{branch}'
 
+branches:
+  # whitelist
+  only:
+    - master
+
+clone_depth: 50
+
+
 init:
 - ps: |
     function craft() {
@@ -9,14 +17,12 @@ init:
 
 install:
 - ps: |
-    mkdir C:\CraftMaster | Out-Null
     #use cmd to silence powershell behaviour for stderr
     & cmd /C "git clone -q --branch v0.2.2 --depth=1 git://anongit.kde.org/craftmaster.git C:\CraftMaster\CraftMaster 2>&1"
-    & C:\python36\python.exe C:\CraftMaster\CraftMaster\CraftMaster.py --config $env:APPVEYOR_BUILD_FOLDER\appveyor.ini --target $env:TARGET
+    & C:\python36\python.exe C:\CraftMaster\CraftMaster\CraftMaster.py --config "$env:APPVEYOR_BUILD_FOLDER\appveyor.ini" --variables "APPVEYOR_BUILD_FOLDER=$env:APPVEYOR_BUILD_FOLDER" --target $env:TARGET
     craft -p charm
     craft nsis
     craft --install-deps charm
-
 
 build_script:
 - ps: |
@@ -26,20 +32,17 @@ test_script:
 - ps: |
     craft --src-dir $env:APPVEYOR_BUILD_FOLDER --test charm
 
-
 on_success:
 - ps: |
     craft --src-dir $env:APPVEYOR_BUILD_FOLDER --package charm
-    Get-ChildItem C:\CraftMaster\$env:TARGET\tmp\* | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
 
 on_finish:
 - ps: |
     Get-ChildItem $env:USERPROFILE\.craft\* | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
-    Push-AppveyorArtifact C:\CraftMaster\$env:TARGET\etc\kdesettings.ini.dump
 
 environment:
     matrix:
-    - TARGET: msvc2015x64
-    - TARGET: msvc2015x86
-    - TARGET: mingw
-
+    - TARGET: windows-msvc2015_32-cl
+    - TARGET: windows-mingw_32-gcc
+    - TARGET: windows-msvc2017_64-cl
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
