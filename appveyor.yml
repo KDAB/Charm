@@ -29,13 +29,13 @@ build_script:
 - ps: |
     craft --no-cache --src-dir $env:APPVEYOR_BUILD_FOLDER charm
 
+after_build:
+- ps: |
+    craft --src-dir $env:APPVEYOR_BUILD_FOLDER --package charm
+
 test_script:
 - ps: |
     craft --src-dir $env:APPVEYOR_BUILD_FOLDER --test charm
-
-on_success:
-- ps: |
-    craft --src-dir $env:APPVEYOR_BUILD_FOLDER --package charm
 
 on_finish:
 - ps: |
