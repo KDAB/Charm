@@ -47,3 +47,6 @@ environment:
     - TARGET: windows-mingw_32-gcc
     - TARGET: windows-msvc2017_64-cl
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+
+artifacts:
+  - path: binaries/*
