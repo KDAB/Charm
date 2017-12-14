@@ -120,8 +120,8 @@ macro (_KDE_ADD_PLATFORM_DEFINITIONS)
     set(CMAKE_REQUIRED_DEFINITIONS ${CMAKE_REQUIRED_DEFINITIONS} ${ARGV})
 endmacro()
 
-include(CheckSymbolExists)
-check_symbol_exists("__GLIBC__" "stdlib.h" LIBC_IS_GLIBC)
+include(CheckCXXSymbolExists)
+check_cxx_symbol_exists("__GLIBC__" "stdlib.h" LIBC_IS_GLIBC)
 if (LIBC_IS_GLIBC)
     # Enable everything in GNU libc.  Any code using non-portable features
     # needs to perform feature tests, but this ensures that any such features
