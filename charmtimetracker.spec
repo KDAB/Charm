@@ -46,7 +46,7 @@ Authors:
 %{__tar} -zxf %{SOURCE0} --strip-components=1
 
 %build
-cmake . -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DCharm_VERSION=%{version}
+cmake . -DCMAKE_INSTALL_PREFIX=/usr -DCharm_VERSION=%{version}
 %__make %{?_smp_mflags}
 
 %install
