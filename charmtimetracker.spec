@@ -41,12 +41,14 @@ Authors:
 --------
      Mirko Boehm <mirko.boehm@kdab.com>
 
+%define debug_package %{nil}
+%global __debug_install_post %{nil}
 %prep
 %setup -T -c
 %{__tar} -zxf %{SOURCE0} --strip-components=1
 
 %build
-cmake . -DCMAKE_INSTALL_PREFIX=/usr -DCharm_VERSION=%{version}
+cmake . -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DCharm_VERSION=%{version}
 %__make %{?_smp_mflags}
 
 %install
@@ -67,9 +69,9 @@ cmake . -DCMAKE_INSTALL_PREFIX=/usr -DCharm_VERSION=%{version}
 %{_prefix}/bin/charmtimetracker
 
 %changelog
-* Wed Nov 01 2016 Steffen Hansen <steffen.hansen@kdab.com> 1.11.4
+* Tue Nov 01 2016 Steffen Hansen <steffen.hansen@kdab.com> 1.11.4
 - 1.11.4 release
-* Wed Nov 01 2016 Steffen Hansen <steffen.hansen@kdab.com> 1.11.3
+* Tue Nov 01 2016 Steffen Hansen <steffen.hansen@kdab.com> 1.11.3
 - 1.11.3 release
 * Sat Apr 30 2016 Allen Winter <allen.winter@kdab.com> 1.11.1
 - 1.11.1 release
