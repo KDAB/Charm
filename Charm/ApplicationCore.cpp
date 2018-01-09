@@ -70,6 +70,7 @@
 
 namespace {
 static const QByteArray StartTaskCommand = QByteArrayLiteral("start-task: ");
+static const QByteArray RaiseWindowCommand = QByteArrayLiteral("raise-window");
 }
 
 ApplicationCore *ApplicationCore::m_instance = nullptr;
@@ -124,16 +125,20 @@ ApplicationCore::ApplicationCore(TaskId startupTask, bool hideAtStart, QObject *
 #endif
     uniqueApplicationSocket.connectToServer(serverName, QIODevice::ReadWrite);
     if (uniqueApplicationSocket.waitForConnected(1000)) {
+        QByteArray command;
         if (startupTask != -1) {
-            QByteArray data(StartTaskCommand + QByteArray::number(startupTask) + '\n');
-            qint64 written = uniqueApplicationSocket.write(data);
-            if (written == -1 || written != data.length()) {
-                qWarning() << "Failed to pass " << data << " to running charm instance, error: "
-                           << uniqueApplicationSocket.errorString();
-            }
-            uniqueApplicationSocket.flush();
-            uniqueApplicationSocket.waitForBytesWritten();
+            command = StartTaskCommand + QByteArray::number(startupTask);
+        } else {
+            command = RaiseWindowCommand;
         }
+        command += '\n';
+        qint64 written = uniqueApplicationSocket.write(command);
+        if (written == -1 || written != command.length()) {
+            qWarning() << "Failed to pass " << command << " to running charm instance, error: "
+                        << uniqueApplicationSocket.errorString();
+        }
+        uniqueApplicationSocket.flush();
+        uniqueApplicationSocket.waitForBytesWritten();
         throw AlreadyRunningException();
     }
 
@@ -319,6 +324,8 @@ void ApplicationCore::slotHandleUniqueApplicationConnection()
                 } else {
                     qWarning() << "Received invalid argument:" << data;
                 }
+            } else if (data.startsWith(RaiseWindowCommand)) {
+                // nothing to do, see below
             }
         }
         socket->deleteLater();
