@@ -211,6 +211,7 @@ void CharmWindow::keyPressEvent(QKeyEvent *event)
 void CharmWindow::showView(QWidget *w)
 {
     w->show();
+    w->setWindowState(w->windowState() & ~Qt::WindowMinimized);
     w->raise();
     w->activateWindow();
 }

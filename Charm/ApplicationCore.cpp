@@ -329,6 +329,7 @@ void ApplicationCore::slotHandleUniqueApplicationConnection()
 void ApplicationCore::showMainWindow(ShowMode mode)
 {
     m_timeTracker.show();
+    m_timeTracker.setWindowState(m_timeTracker.windowState() & ~Qt::WindowMinimized);
     if (mode == ShowMode::ShowAndRaise) {
         m_timeTracker.raise();
         m_timeTracker.activateWindow();
@@ -862,14 +863,10 @@ void ApplicationCore::slotShowNotification(const QString &title, const QString &
 
 void ApplicationCore::slotShowTasksEditor()
 {
-    m_tasksView.show();
-    m_tasksView.raise();
-    m_tasksView.activateWindow();
+    CharmWindow::showView(&m_tasksView);
 }
 
 void ApplicationCore::slotShowEventEditor()
 {
-    m_eventView.show();
-    m_eventView.raise();
-    m_eventView.activateWindow();
+    CharmWindow::showView(&m_eventView);
 }
