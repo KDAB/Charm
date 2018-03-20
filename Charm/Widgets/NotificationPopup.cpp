@@ -27,6 +27,7 @@
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QTimer>
+#include <QStyle>
 
 NotificationPopup::NotificationPopup(QWidget *parent)
     : QDialog(parent)
