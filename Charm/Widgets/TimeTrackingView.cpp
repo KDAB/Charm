@@ -375,6 +375,10 @@ void TimeTrackingView::configurationChanged()
         break;
     }
 
+    // re-populate menu:
+    m_taskSelector->populate(m_summaries);
+    emit taskMenuChanged();
+
     m_narrowFont = font(); // stay with the desktop
     m_narrowFont.setPointSize(m_fixedFont.pointSize());
 

@@ -312,6 +312,7 @@ void TimeTrackingWindow::slotEditPreferences(bool)
         CONFIGURATION.warnUnuploadedTimesheets = dialog.warnUnuploadedTimesheets();
         CONFIGURATION.requestEventComment = dialog.requestEventComment();
         CONFIGURATION.enableCommandInterface = dialog.enableCommandInterface();
+        CONFIGURATION.numberOfTaskSelectorEntries = dialog.numberOfTaskSelectorEntries();
         emit saveConfiguration();
     }
 }

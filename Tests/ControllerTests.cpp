@@ -81,15 +81,15 @@ void ControllerTests:: persistProvideMetaDataTest()
     Configuration configs[] = {
         Configuration(Configuration::TaskPrefilter_ShowAll, Configuration::TimeTrackerFont_Small,
                       Configuration::Minutes, true, Qt::ToolButtonIconOnly, true, true, true,
-                      false),
+                      false, 5),
         Configuration(Configuration::TaskPrefilter_CurrentOnly,
                       Configuration::TimeTrackerFont_Regular,
                       Configuration::Minutes, false, Qt::ToolButtonTextOnly, false, false, false,
-                      false),
+                      false, 5),
         Configuration(Configuration::TaskPrefilter_SubscribedAndCurrentOnly,
                       Configuration::TimeTrackerFont_Large,
                       Configuration::Minutes, true, Qt::ToolButtonTextBesideIcon, true, true, true,
-                      false),
+                      false, 5),
     };
     const int NumberOfConfigurations = sizeof configs / sizeof configs[0];
 

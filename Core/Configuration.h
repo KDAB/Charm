@@ -80,6 +80,7 @@ public:
     bool warnUnuploadedTimesheets = true;
     bool requestEventComment = false;
     bool enableCommandInterface = false;
+    int numberOfTaskSelectorEntries = 5;
 
     // these are stored in QSettings, since we need this information to locate and open the database:
     QString configurationName;
@@ -102,7 +103,7 @@ private:
     Configuration(TaskPrefilteringMode taskPrefilteringMode, TimeTrackerFontSize,
                   DurationFormat durationFormat, bool detectIdling, Qt::ToolButtonStyle buttonstyle,
                   bool showStatusBar, bool warnUnuploadedTimesheets, bool _requestEventComment,
-                  bool enableCommandInterface);
+                  bool enableCommandInterface, int _numberOfTaskSelectorEntries);
     Configuration();
 };
 

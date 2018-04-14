@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>455</width>
-    <height>302</height>
+    <width>505</width>
+    <height>311</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -233,6 +233,29 @@
        </property>
        <property name="buddy">
         <cstring>cbToolButtonStyle</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="0" alignment="Qt::AlignRight">
+      <widget class="QLabel" name="lbNumberOfTaskSelectorEntries">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Limit recently used tasks to</string>
+       </property>
+       <property name="buddy">
+        <cstring>sbNumberOfTaskSelectorEntries</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="2">
+      <widget class="QSpinBox" name="sbNumberOfTaskSelectorEntries">
+       <property name="value">
+        <number>5</number>
        </property>
       </widget>
      </item>

@@ -98,6 +98,9 @@ CharmPreferences::CharmPreferences(const Configuration &config, QWidget *parent_
         m_ui.cbToolButtonStyle->setCurrentIndex(4);
         break;
     }
+
+    m_ui.sbNumberOfTaskSelectorEntries->setValue(config.numberOfTaskSelectorEntries);
+
     // resize( minimumSize() );
 }
 
@@ -123,6 +126,11 @@ bool CharmPreferences::requestEventComment() const
 bool CharmPreferences::enableCommandInterface() const
 {
     return m_ui.cbEnableCommandInterface->isChecked();
+}
+
+int CharmPreferences::numberOfTaskSelectorEntries() const
+{
+    return m_ui.sbNumberOfTaskSelectorEntries->value();
 }
 
 Configuration::DurationFormat CharmPreferences::durationFormat() const

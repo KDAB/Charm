@@ -28,6 +28,7 @@
 #include "SelectTaskDialog.h"
 #include "ViewHelpers.h"
 
+#include "Core/Configuration.h"
 #include "Core/Event.h"
 #include "Core/Task.h"
 
@@ -139,7 +140,9 @@ void TimeTrackingTaskSelector::populate(const QVector<WeeklySummary> &summaries)
 
     const TaskIdList interestingTasksToAdd = DATAMODEL->mostRecentlyUsedTasks();
 
-    for (int i = 0; i < 5 && i < interestingTasksToAdd.size(); ++i)
+    const int maxEntries = qMin(interestingTasksToAdd.size(),
+                                CONFIGURATION.numberOfTaskSelectorEntries);
+    for (int i = 0; i < maxEntries; ++i)
         m_menu->addAction(createTaskAction(interestingTasksToAdd.at(i)));
     m_menu->addSeparator();
     m_menu->addAction(m_startOtherTaskAction);

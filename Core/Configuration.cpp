@@ -51,7 +51,7 @@ Configuration::Configuration(TaskPrefilteringMode _taskPrefilteringMode,
                              DurationFormat _durationFormat, bool _detectIdling,
                              Qt::ToolButtonStyle _buttonstyle, bool _showStatusBar,
                              bool _warnUnuploadedTimesheets, bool _requestEventComment,
-                             bool _enableCommandInterface)
+                             bool _enableCommandInterface, int _numberOfTaskSelectorEntries)
     : taskPrefilteringMode(_taskPrefilteringMode)
     , timeTrackerFontSize(_timeTrackerFontSize)
     , durationFormat(_durationFormat)
@@ -61,6 +61,7 @@ Configuration::Configuration(TaskPrefilteringMode _taskPrefilteringMode,
     , warnUnuploadedTimesheets(_warnUnuploadedTimesheets)
     , requestEventComment(_requestEventComment)
     , enableCommandInterface(_enableCommandInterface)
+    , numberOfTaskSelectorEntries(_numberOfTaskSelectorEntries)
     , configurationName(DEFAULT_CONFIG_GROUP)
 {
 }
@@ -79,7 +80,8 @@ bool Configuration::operator==(const Configuration &other) const
            && configurationName == other.configurationName
            && installationId == other.installationId
            && localStorageType == other.localStorageType
-           && localStorageDatabase == other.localStorageDatabase;
+           && localStorageDatabase == other.localStorageDatabase
+           && numberOfTaskSelectorEntries == other.numberOfTaskSelectorEntries;
 }
 
 void Configuration::writeTo(QSettings &settings)
@@ -148,7 +150,8 @@ void Configuration::dump(const QString &why)
              << "--> showStatusBar:            " << showStatusBar << endl
              << "--> warnUnuploadedTimesheets: " << warnUnuploadedTimesheets << endl
              << "--> requestEventComment:      " << requestEventComment << endl
-             << "--> enableCommandInterface:   " << enableCommandInterface;
+             << "--> enableCommandInterface:   " << enableCommandInterface
+             << "--> numberOfTaskSelectorEntries: " << numberOfTaskSelectorEntries;
 }
 
 quint32 Configuration::createInstallationId() const

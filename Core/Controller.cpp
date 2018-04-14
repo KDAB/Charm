@@ -235,7 +235,9 @@ void Controller::persistMetaData(Configuration &configuration)
         { MetaKey_Key_ShowStatusBar,
           stringForBool(configuration.showStatusBar) },
         { MetaKey_Key_EnableCommandInterface,
-          stringForBool(configuration.enableCommandInterface) }
+          stringForBool(configuration.enableCommandInterface) },
+        { MetaKey_Key_NumberOfTaskSelectorEntries,
+          QString::number(configuration.numberOfTaskSelectorEntries) }
     };
     int NumberOfSettings = sizeof settings / sizeof settings[0];
 
@@ -270,6 +272,8 @@ void Controller::provideMetaData(Configuration &configuration)
     loadConfigValue(MetaKey_Key_ToolButtonStyle, configuration.toolButtonStyle);
     loadConfigValue(MetaKey_Key_ShowStatusBar, configuration.showStatusBar);
     loadConfigValue(MetaKey_Key_EnableCommandInterface, configuration.enableCommandInterface);
+    loadConfigValue(MetaKey_Key_NumberOfTaskSelectorEntries, configuration.numberOfTaskSelectorEntries);
+    configuration.numberOfTaskSelectorEntries = qMax(0, configuration.numberOfTaskSelectorEntries);
 
     CONFIGURATION.dump();
 }
