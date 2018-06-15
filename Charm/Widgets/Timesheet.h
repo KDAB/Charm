@@ -3,7 +3,7 @@
 
   This file is part of Charm, a task-based time tracking application.
 
-  Copyright (C) 2014-2017 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2014-2018 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
 
   Author: Frank Osterfeld <frank.osterfeld@kdab.com>
 
@@ -41,11 +41,15 @@ public:
                                      bool activeTasksOnly);
 
 protected:
+    enum SaveToXmlMode {
+        IncludeTaskList,
+        ExcludeTaskList
+    };
 
     virtual QString suggestedFileName() const = 0;
     virtual void update() = 0;
     virtual QByteArray saveToText() = 0;
-    virtual QByteArray saveToXml() = 0;
+    virtual QByteArray saveToXml(SaveToXmlMode mode) = 0;
 
 protected:
 

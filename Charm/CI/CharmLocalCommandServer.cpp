@@ -3,7 +3,7 @@
 
   This file is part of Charm, a task-based time tracking application.
 
-  Copyright (C) 2015-2017 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2015-2018 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
 
   Author: Guillermo A. Amaral <gamaral@kdab.com>
 
@@ -47,7 +47,7 @@ CharmLocalCommandServer::~CharmLocalCommandServer()
 
 bool CharmLocalCommandServer::listen()
 {
-    const QString name(QDir::tempPath() + '/' + "charm.sock");
+    const QString name(QDir::tempPath().append(QStringLiteral("/charm.sock")));
 
 #ifdef Q_OS_UNIX
     QFile::remove(name); // Try to clean up stale socket if possible

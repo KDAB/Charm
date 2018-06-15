@@ -3,7 +3,7 @@
 
   This file is part of Charm, a task-based time tracking application.
 
-  Copyright (C) 2009-2017 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2009-2018 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
 
   Author: Mirko Boehm <mirko.boehm@kdab.com>
 
@@ -64,7 +64,7 @@ Options::Options(int argc, char **argv)
         case 'd':
         {
             const QString text = QString::fromLocal8Bit(optarg);
-            QDate date = QDate::fromString(text, "yyyy-MM-dd");
+            QDate date = QDate::fromString(text, QStringLiteral("yyyy-MM-dd"));
             if (date.isValid()) {
                 mDate = date;
             } else {

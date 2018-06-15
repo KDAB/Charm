@@ -3,7 +3,7 @@
 
   This file is part of Charm, a task-based time tracking application.
 
-  Copyright (C) 2007-2017 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2007-2018 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
 
   Author: Mirko Boehm <mirko.boehm@kdab.com>
   Author: Mike McQuaid <mike.mcquaid@kdab.com>
@@ -43,7 +43,6 @@ public:
     bool disconnect() override;
 
     QSqlDatabase &database() override;
-    int installationId() const override;
 
 protected:
     bool createDatabase(Configuration &) override;
@@ -53,7 +52,6 @@ protected:
 
 private:
     QSqlDatabase m_database;
-    int m_installationId = 0;
 };
 
 #endif

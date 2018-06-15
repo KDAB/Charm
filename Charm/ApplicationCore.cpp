@@ -3,7 +3,7 @@
 
   This file is part of Charm, a task-based time tracking application.
 
-  Copyright (C) 2014-2017 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2014-2018 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
 
   Author: Mirko Boehm <mirko.boehm@kdab.com>
   Author: Frank Osterfeld <frank.osterfeld@kdab.com>
@@ -31,8 +31,8 @@
 #include "Core/CharmExceptions.h"
 #include "Core/SqLiteStorage.h"
 
-#include "HttpClient/HttpJob.h"
 #include "Idle/IdleDetector.h"
+#include "Lotsofcake/Configuration.h"
 #include "Widgets/ConfigurationDialog.h"
 #include "Widgets/NotificationPopup.h"
 #include "Widgets/TasksView.h"
@@ -70,11 +70,12 @@
 
 namespace {
 static const QByteArray StartTaskCommand = QByteArrayLiteral("start-task: ");
+static const QByteArray RaiseWindowCommand = QByteArrayLiteral("raise-window");
 }
 
 ApplicationCore *ApplicationCore::m_instance = nullptr;
 
-ApplicationCore::ApplicationCore(TaskId startupTask, QObject *parent)
+ApplicationCore::ApplicationCore(TaskId startupTask, bool hideAtStart, QObject *parent)
     : QObject(parent)
     , m_actionStopAllTasks(this)
     , m_actionQuit(this)
@@ -95,6 +96,8 @@ ApplicationCore::ApplicationCore(TaskId startupTask, QObject *parent)
     &m_timeTracker, &m_tasksView, &m_eventView
 }),
     m_startupTask(startupTask)
+  , m_hideAtStart(hideAtStart)
+
 #ifdef Q_OS_WIN
     , m_windowsJumpList(new QWinJumpList(this))
 #endif
@@ -107,7 +110,7 @@ ApplicationCore::ApplicationCore(TaskId startupTask, QObject *parent)
     QCoreApplication::setOrganizationName(QStringLiteral("KDAB"));
     QCoreApplication::setOrganizationDomain(QStringLiteral("kdab.com"));
     QCoreApplication::setApplicationName(QStringLiteral("Charm"));
-    QCoreApplication::setApplicationVersion(QStringLiteral(CHARM_VERSION));
+    QCoreApplication::setApplicationVersion(CharmVersion());
 
     QLocalSocket uniqueApplicationSocket;
     QString serverName(QStringLiteral("com.kdab.charm"));
@@ -122,16 +125,20 @@ ApplicationCore::ApplicationCore(TaskId startupTask, QObject *parent)
 #endif
     uniqueApplicationSocket.connectToServer(serverName, QIODevice::ReadWrite);
     if (uniqueApplicationSocket.waitForConnected(1000)) {
+        QByteArray command;
         if (startupTask != -1) {
-            QByteArray data(StartTaskCommand + QByteArray::number(startupTask) + '\n');
-            qint64 written = uniqueApplicationSocket.write(data);
-            if (written == -1 || written != data.length()) {
-                qWarning() << "Failed to pass " << data << " to running charm instance, error: "
-                           << uniqueApplicationSocket.errorString();
-            }
-            uniqueApplicationSocket.flush();
-            uniqueApplicationSocket.waitForBytesWritten();
+            command = StartTaskCommand + QByteArray::number(startupTask);
+        } else {
+            command = RaiseWindowCommand;
         }
+        command += '\n';
+        qint64 written = uniqueApplicationSocket.write(command);
+        if (written == -1 || written != command.length()) {
+            qWarning() << "Failed to pass " << command << " to running charm instance, error: "
+                        << uniqueApplicationSocket.errorString();
+        }
+        uniqueApplicationSocket.flush();
+        uniqueApplicationSocket.waitForBytesWritten();
         throw AlreadyRunningException();
     }
 
@@ -152,21 +159,24 @@ ApplicationCore::ApplicationCore(TaskId startupTask, QObject *parent)
     qRegisterMetaType<Event>("Event");
 
     // exit process (app will only exit once controller says it is ready)
-    connect(&m_controller, SIGNAL(readyToQuit()), SLOT(
-                slotControllerReadyToQuit()));
+    connect(&m_controller, &Controller::readyToQuit,
+            this, &ApplicationCore::slotControllerReadyToQuit);
 
     connectControllerAndModel(&m_controller, m_model.charmDataModel());
     Charm::connectControllerAndView(&m_controller, &m_timeTracker);
 
     // save the configuration (configuration is managed by the application)
-    connect(&m_timeTracker, SIGNAL(saveConfiguration()),
-            SLOT(slotSaveConfiguration()));
-    connect(&m_timeTracker, SIGNAL(showNotification(QString,QString)),
-            SLOT(slotShowNotification(QString,QString)));
+    connect(&m_timeTracker, &CharmWindow::saveConfiguration,
+            this, &ApplicationCore::slotSaveConfiguration);
+    connect(&m_timeTracker, &TimeTrackingWindow::showNotification,
+            this, &ApplicationCore::slotShowNotification);
+    connect(&m_timeTracker, &TimeTrackingWindow::taskMenuChanged,
+            this, &ApplicationCore::slotPopulateTrayIconMenu);
 
     // save the configuration (configuration is managed by the application)
-    connect(&m_tasksView, SIGNAL(saveConfiguration()),
-            SLOT(slotSaveConfiguration()));
+    connect(&m_tasksView, &TasksView::saveConfiguration,
+            this, &ApplicationCore::slotSaveConfiguration);
+    // due to multiple inheritence we can't use the new style connects here
     connect(&m_tasksView, SIGNAL(emitCommand(CharmCommand*)),
             &m_timeTracker, SLOT(sendCommand(CharmCommand*)));
     connect(&m_tasksView, SIGNAL(emitCommandRollback(CharmCommand*)),
@@ -177,18 +187,15 @@ ApplicationCore::ApplicationCore(TaskId startupTask, QObject *parent)
             &m_timeTracker, SLOT(sendCommandRollback(CharmCommand*)));
 
     // my own signals:
-    connect(this, SIGNAL(goToState(State)), SLOT(setState(State)),
-            Qt::QueuedConnection);
-
-    connect(&m_systrayContextMenu, &QMenu::aboutToShow, this,
-            &ApplicationCore::slotStartTaskMenuAboutToShow);
+    connect(this, &ApplicationCore::goToState,
+             this, &ApplicationCore::setState, Qt::QueuedConnection);
 
     // system tray icon:
     m_actionStopAllTasks.setText(tr("Stop Current Task"));
     m_actionStopAllTasks.setShortcut(Qt::Key_Escape);
     m_actionStopAllTasks.setShortcutContext(Qt::ApplicationShortcut);
     mainView().addAction(&m_actionStopAllTasks); // for the shortcut to work
-    connect(&m_actionStopAllTasks, SIGNAL(triggered()), SLOT(slotStopAllTasks()));
+    connect(&m_actionStopAllTasks, &QAction::triggered, this, &ApplicationCore::slotStopAllTasks);
 
     m_systrayContextMenu.addAction(&m_actionStopAllTasks);
     m_systrayContextMenu.addSeparator();
@@ -207,34 +214,35 @@ ApplicationCore::ApplicationCore(TaskId startupTask, QObject *parent)
     m_actionQuit.setShortcut(Qt::CTRL + Qt::Key_Q);
     m_actionQuit.setText(tr("Quit"));
     m_actionQuit.setIcon(Data::quitCharmIcon());
-    connect(&m_actionQuit, SIGNAL(triggered(bool)),
-            SLOT(slotQuitApplication()));
+    connect(&m_actionQuit, &QAction::triggered,
+            this, &ApplicationCore::slotQuitApplication);
 
     m_actionAboutDialog.setText(tr("About Charm"));
-    connect(&m_actionAboutDialog, SIGNAL(triggered()),
-            &mainView(), SLOT(slotAboutDialog()));
+    connect(&m_actionAboutDialog, &QAction::triggered,
+           &m_timeTracker, &TimeTrackingWindow::slotAboutDialog);
 
     m_actionPreferences.setText(tr("Preferences"));
     m_actionPreferences.setIcon(Data::configureIcon());
-    connect(&m_actionPreferences, SIGNAL(triggered(bool)),
-            &mainView(), SLOT(slotEditPreferences(bool)));
+    connect(&m_actionPreferences, &QAction::triggered,
+            &m_timeTracker, &TimeTrackingWindow::slotEditPreferences);
     m_actionPreferences.setEnabled(true);
 
     m_actionImportFromXml.setText(tr("Import Database from Previous Export..."));
-    connect(&m_actionImportFromXml, SIGNAL(triggered()),
-            &mainView(), SLOT(slotImportFromXml()));
+    connect(&m_actionImportFromXml, &QAction::triggered,
+            &m_timeTracker, &TimeTrackingWindow::slotImportFromXml);
     m_actionExportToXml.setText(tr("Export Database..."));
-    connect(&m_actionExportToXml, SIGNAL(triggered()),
-            &mainView(), SLOT(slotExportToXml()));
+    connect(&m_actionExportToXml, &QAction::triggered,
+            &m_timeTracker, &TimeTrackingWindow::slotExportToXml);
     m_actionSyncTasks.setText(tr("Update Task Definitions..."));
-    connect(&m_actionSyncTasks, SIGNAL(triggered()),
-            &mainView(), SLOT(slotSyncTasks()));
+    //the signature of QAction::triggered does not match slotSyncTasks
+    connect(&m_actionSyncTasks,&QAction::triggered,
+            &m_timeTracker, &TimeTrackingWindow::slotSyncTasksVerbose);
     m_actionImportTasks.setText(tr("Import and Merge Task Definitions..."));
-    connect(&m_actionImportTasks, SIGNAL(triggered()),
-            &mainView(), SLOT(slotImportTasks()));
+    connect(&m_actionImportTasks, &QAction::triggered,
+            &m_timeTracker, &TimeTrackingWindow::slotImportTasks);
     m_actionExportTasks.setText(tr("Export Task Definitions..."));
-    connect(&m_actionExportTasks, SIGNAL(triggered()),
-            &mainView(), SLOT(slotExportTasks()));
+    connect(&m_actionExportTasks, &QAction::triggered,
+            &m_timeTracker, &TimeTrackingWindow::slotExportTasks);
     m_actionCheckForUpdates.setText(tr("Check for Updates..."));
 #if 0
     // TODO this role should be set to have the action in the app menu, but that
@@ -242,30 +250,30 @@ ApplicationCore::ApplicationCore(TaskId startupTask, QObject *parent)
     // and Qt doesn't prevent duplicates (#222)
     m_actionCheckForUpdates.setMenuRole(QAction::ApplicationSpecificRole);
 #endif
-    connect(&m_actionCheckForUpdates, SIGNAL(triggered()),
-            &mainView(), SLOT(slotCheckForUpdatesManual()));
+    connect(&m_actionCheckForUpdates, &QAction::triggered,
+            &m_timeTracker, &TimeTrackingWindow::slotCheckForUpdatesManual);
     m_actionEnterVacation.setText(tr("Enter Vacation..."));
-    connect(&m_actionEnterVacation, SIGNAL(triggered()),
-            &mainView(), SLOT(slotEnterVacation()));
+    connect(&m_actionEnterVacation, &QAction::triggered,
+            &m_timeTracker, &TimeTrackingWindow::slotEnterVacation);
     m_actionActivityReport.setText(tr("Activity Report..."));
     m_actionActivityReport.setShortcut(Qt::CTRL + Qt::Key_A);
-    connect(&m_actionActivityReport, SIGNAL(triggered()),
-            &mainView(), SLOT(slotActivityReport()));
+    connect(&m_actionActivityReport, &QAction::triggered,
+            &m_timeTracker, &TimeTrackingWindow::slotActivityReport);
     m_actionWeeklyTimesheetReport.setText(tr("Weekly Timesheet..."));
     m_actionWeeklyTimesheetReport.setShortcut(Qt::CTRL + Qt::Key_R);
-    connect(&m_actionWeeklyTimesheetReport, SIGNAL(triggered()),
-            &mainView(), SLOT(slotWeeklyTimesheetReport()));
+    connect(&m_actionWeeklyTimesheetReport, &QAction::triggered,
+            &m_timeTracker, &TimeTrackingWindow::slotWeeklyTimesheetReport);
     m_actionMonthlyTimesheetReport.setText(tr("Monthly Timesheet..."));
     m_actionMonthlyTimesheetReport.setShortcut(Qt::CTRL + Qt::Key_M);
-    connect(&m_actionMonthlyTimesheetReport, SIGNAL(triggered()),
-            &mainView(), SLOT(slotMonthlyTimesheetReport()));
+    connect(&m_actionMonthlyTimesheetReport, &QAction::triggered,
+            &m_timeTracker, &TimeTrackingWindow::slotMonthlyTimesheetReport);
 
     // set up idle detection
     m_idleDetector = IdleDetector::createIdleDetector(this);
     Q_ASSERT(m_idleDetector);
     connect(m_idleDetector, SIGNAL(maybeIdle()), SLOT(slotMaybeIdle()));
 
-    setHttpActionsVisible(HttpJob::credentialsAvailable());
+    setHttpActionsVisible(Lotsofcake::Configuration().isConfigured());
     // add default plugin path for deployment
     QCoreApplication::addLibraryPath(QCoreApplication::applicationDirPath()
                                      + QStringLiteral("/plugins"));
@@ -289,7 +297,7 @@ ApplicationCore::~ApplicationCore()
     m_instance = nullptr;
 }
 
-void ApplicationCore::slotStartTaskMenuAboutToShow()
+void ApplicationCore::slotPopulateTrayIconMenu()
 {
     const auto newActions = m_timeTracker.menu()->actions();
     if (m_taskActions == newActions)
@@ -307,15 +315,17 @@ void ApplicationCore::slotHandleUniqueApplicationConnection()
         if (!socket->canReadLine())
             return;
         while (socket->canReadLine()) {
-            QByteArray data = socket->readLine().trimmed();
+            const QByteArray data = socket->readLine().trimmed();
             if (data.startsWith(StartTaskCommand)) {
                 bool ok = true;
-                TaskId id = data.mid(StartTaskCommand.length()).toInt(&ok);
+                const TaskId id = data.mid(StartTaskCommand.length()).toInt(&ok);
                 if (ok) {
                     m_timeTracker.slotStartEvent(id);
                 } else {
                     qWarning() << "Received invalid argument:" << data;
                 }
+            } else if (data.startsWith(RaiseWindowCommand)) {
+                // nothing to do, see below
             }
         }
         socket->deleteLater();
@@ -326,8 +336,10 @@ void ApplicationCore::slotHandleUniqueApplicationConnection()
 void ApplicationCore::showMainWindow(ShowMode mode)
 {
     m_timeTracker.show();
+    m_timeTracker.setWindowState(m_timeTracker.windowState() & ~Qt::WindowMinimized);
     if (mode == ShowMode::ShowAndRaise) {
         m_timeTracker.raise();
+        m_timeTracker.activateWindow();
 #ifdef Q_OS_WIN
         //krazy:cond=captruefalse,null
         int idActive = GetWindowThreadProcessId(GetForegroundWindow(), NULL);
@@ -376,7 +388,7 @@ void ApplicationCore::createFileMenu(QMenuBar *menuBar)
     menu->addAction(&m_actionExportTasks);
 
 #ifdef Q_OS_OSX
-    if (!QString::fromLatin1(UPDATE_CHECK_URL).isEmpty()) {
+    if (!CharmUpdateCheckUrl().isEmpty()) {
         menu->addSeparator();
         menu->addAction(&m_actionCheckForUpdates);
     }
@@ -394,7 +406,7 @@ void ApplicationCore::createHelpMenu(QMenuBar *menuBar)
     menu->setTitle(tr("Help"));
     menu->addAction(&m_actionAboutDialog);
 #ifdef Q_OS_WIN
-    if (!QString::fromLatin1(UPDATE_CHECK_URL).isEmpty())
+    if (!CharmUpdateCheckUrl().isEmpty())
         menu->addAction(&m_actionCheckForUpdates);
 
 #endif
@@ -403,6 +415,7 @@ void ApplicationCore::createHelpMenu(QMenuBar *menuBar)
 
 CharmWindow &ApplicationCore::mainView()
 {
+    m_timeTracker.setHideAtStartup(m_hideAtStart);
     return m_timeTracker;
 }
 
@@ -857,14 +870,10 @@ void ApplicationCore::slotShowNotification(const QString &title, const QString &
 
 void ApplicationCore::slotShowTasksEditor()
 {
-    m_tasksView.show();
-    m_tasksView.raise();
-    m_tasksView.activateWindow();
+    CharmWindow::showView(&m_tasksView);
 }
 
 void ApplicationCore::slotShowEventEditor()
 {
-    m_eventView.show();
-    m_eventView.raise();
-    m_eventView.activateWindow();
+    CharmWindow::showView(&m_eventView);
 }

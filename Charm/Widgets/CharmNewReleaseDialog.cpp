@@ -3,7 +3,7 @@
 
   This file is part of Charm, a task-based time tracking application.
 
-  Copyright (C) 2015-2017 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2015-2018 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
 
   Author: Michel Boyer de la Giroday <michel.giroday@kdab.com>
 
@@ -35,11 +35,11 @@ CharmNewReleaseDialog::CharmNewReleaseDialog(QWidget *parent)
 {
     m_ui->setupUi(this);
     m_skipUpdate = new QPushButton(tr("Skip Update"));
-    connect(m_skipUpdate, SIGNAL(clicked()), SLOT(slotSkipVersion()));
+    connect(m_skipUpdate, &QPushButton::clicked, this, &CharmNewReleaseDialog::slotSkipVersion);
     m_remindMeLater = new QPushButton(tr("Remind Me Later"));
-    connect(m_remindMeLater, SIGNAL(clicked()), SLOT(slotRemindMe()));
+    connect(m_remindMeLater, &QPushButton::clicked, this, &CharmNewReleaseDialog::slotRemindMe);
     m_update = new QPushButton(tr("Update"));
-    connect(m_update, SIGNAL(clicked()), SLOT(slotLaunchBrowser()));
+    connect(m_update, &QPushButton::clicked, this, &CharmNewReleaseDialog::slotLaunchBrowser);
 
     m_ui->buttonBox->addButton(m_skipUpdate, QDialogButtonBox::NoRole);
     m_ui->buttonBox->addButton(m_remindMeLater, QDialogButtonBox::RejectRole);

@@ -3,7 +3,7 @@
 
   This file is part of Charm, a task-based time tracking application.
 
-  Copyright (C) 2014-2017 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2014-2018 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
 
   Author: Frank Osterfeld <frank.osterfeld@kdab.com>
 
@@ -55,6 +55,8 @@ IdleCorrectionDialog::Result IdleCorrectionDialog::result() const
         return Idle_Ignore;
     } else if (m_ui->endEvent->isChecked()) {
         return Idle_EndEvent;
+    } else if (m_ui->restartEvent->isChecked()) {
+        return Idle_RestartEvent;
     } else {
         Q_ASSERT(false);   // unhandled whatever?
     }

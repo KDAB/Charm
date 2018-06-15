@@ -3,7 +3,7 @@
 
   This file is part of Charm, a task-based time tracking application.
 
-  Copyright (C) 2014-2017 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2014-2018 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
 
   Author: Frank Osterfeld <frank.osterfeld@kdab.com>
 
@@ -90,6 +90,7 @@ public Q_SLOTS:
     void slotExportToXml();
     void slotImportFromXml();
     void slotSyncTasks(VerboseMode mode = Verbose);
+    void slotSyncTasksVerbose();
     void slotImportTasks();
     void slotExportTasks();
     void maybeIdle(IdleDetector *idleDetector);
@@ -119,8 +120,10 @@ Q_SIGNALS:
     void emitCommand(CharmCommand *) override;
     void emitCommandRollback(CharmCommand *) override;
     void showNotification(const QString &title, const QString &message);
+    void taskMenuChanged();
 
 private:
+    void uploadStagedTimesheet();
     void resetWeeklyTimesheetDialog();
     void resetMonthlyTimesheetDialog();
     void showPreview(ReportConfigurationDialog *, int result);
@@ -130,6 +133,7 @@ private:
     void startCheckForUpdates(VerboseMode mode = Silent);
     void informUserAboutNewRelease(const QString &releaseVersion, const QUrl &link,
                                    const QString &releaseInfoLink);
+    void handleIdleEvents(IdleDetector *detector, bool restart);
 
     WeeklyTimesheetConfigurationDialog *m_weeklyTimesheetDialog = nullptr;
     MonthlyTimesheetConfigurationDialog *m_monthlyTimesheetDialog = nullptr;
@@ -141,6 +145,7 @@ private:
     QTimer m_updateUserInfoAndTasksDefinitionsTimer;
     BillDialog *m_billDialog;
     bool m_idleCorrectionDialogVisible = false;
+    bool m_uploadingStagedTimesheet = false;
 };
 
 #endif

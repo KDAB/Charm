@@ -3,7 +3,7 @@
 
   This file is part of Charm, a task-based time tracking application.
 
-  Copyright (C) 2007-2017 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2007-2018 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
 
   Author: Mirko Boehm <mirko.boehm@kdab.com>
   Author: Frank Osterfeld <frank.osterfeld@kdab.com>
@@ -67,6 +67,7 @@ const QString MetaKey_Key_RequestEventComment = QStringLiteral("RequestEventComm
 const QString MetaKey_Key_ToolButtonStyle = QStringLiteral("ToolButtonStyle");
 const QString MetaKey_Key_ShowStatusBar = QStringLiteral("ShowStatusBar");
 const QString MetaKey_Key_EnableCommandInterface = QStringLiteral("EnableCommandInterface");
+const QString MetaKey_Key_NumberOfTaskSelectorEntries = QStringLiteral("NumberOfTaskSelectorEntries");
 
 const QString TrueString(QStringLiteral("true"));
 const QString FalseString(QStringLiteral("false"));

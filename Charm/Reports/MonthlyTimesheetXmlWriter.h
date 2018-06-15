@@ -3,7 +3,7 @@
 
   This file is part of Charm, a task-based time tracking application.
 
-  Copyright (C) 2014-2017 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2014-2018 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
 
   Author: Frank Osterfeld <frank.osterfeld@kdab.com>
 
@@ -24,35 +24,25 @@
 #ifndef MONTHLYTIMESHEETXMLWRITER_H
 #define MONTHLYTIMESHEETXMLWRITER_H
 
-#include "Core/Event.h"
-#include "Core/Task.h"
+#include "TimesheetXmlWriter.h"
 
-class QByteArray;
-class CharmDataModel;
-
-class MonthlyTimesheetXmlWriter
+class MonthlyTimesheetXmlWriter : public TimesheetXmlWriter
 {
 public:
     MonthlyTimesheetXmlWriter();
-    /**
-     * @throws XmlSerializationException
-     */
-    QByteArray saveToXml() const;
 
-    void setDataModel(const CharmDataModel *dataModel);
     void setYearOfMonth(int yearOfMonth);
     void setMonthNumber(int monthNumber);
     void setNumberOfWeeks(int numberOfWeeks);
-    void setEvents(const EventList &events);
-    void setRootTask(TaskId rootTask);
+
+protected:
+    void writeMetadata(QDomDocument &document, QDomElement &metadata) const override;
+    QList<TimeSheetInfo> createTimeSheetInfo() const override;
 
 private:
-    const CharmDataModel *m_dataModel = nullptr;
     int m_yearOfMonth = 0;
     int m_monthNumber = 0;
     int m_numberOfWeeks = 0;
-    TaskId m_rootTask = {};
-    EventList m_events;
 };
 
 #endif

@@ -3,7 +3,7 @@
 
   This file is part of Charm, a task-based time tracking application.
 
-  Copyright (C) 2014-2017 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2014-2018 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
 
   Author: Frank Osterfeld <frank.osterfeld@kdab.com>
 
@@ -49,12 +49,12 @@ TimeTrackingView::TimeTrackingView(QWidget *parent)
     m_paintAttributes.initialize(palette());
     for (int i = 0; i < 7; ++i)
         m_shortDayNames[i] = QDate::shortDayName(i + 1);
-    connect(m_taskSelector, SIGNAL(startEvent(TaskId)),
-            SIGNAL(startEvent(TaskId)));
-    connect(m_taskSelector, SIGNAL(stopEvents()),
-            SIGNAL(stopEvents()));
-    connect(m_taskSelector, SIGNAL(updateSummariesPlease()),
-            SLOT(slotUpdateSummaries()));
+    connect(m_taskSelector, &TimeTrackingTaskSelector::startEvent,
+            this, &TimeTrackingView::startEvent);
+    connect(m_taskSelector, &TimeTrackingTaskSelector::stopEvents,
+            this, &TimeTrackingView::stopEvents);
+    connect(m_taskSelector, &TimeTrackingTaskSelector::updateSummariesPlease,
+            this, &TimeTrackingView::slotUpdateSummaries);
 
     setFocusProxy(m_taskSelector);
     setFocusPolicy(Qt::StrongFocus);
@@ -348,6 +348,7 @@ void TimeTrackingView::setSummaries(const QVector<WeeklySummary> &summaries)
     m_taskSelector->populate(m_summaries);
     // FIXME maybe remember last selected task
     handleActiveEvents();
+    emit taskMenuChanged();
 }
 
 bool TimeTrackingView::isTracking() const
@@ -373,6 +374,10 @@ void TimeTrackingView::configurationChanged()
         m_fixedFont.setPointSizeF(1.2 * m_fixedFont.pointSize());
         break;
     }
+
+    // re-populate menu:
+    m_taskSelector->populate(m_summaries);
+    emit taskMenuChanged();
 
     m_narrowFont = font(); // stay with the desktop
     m_narrowFont.setPointSize(m_fixedFont.pointSize());

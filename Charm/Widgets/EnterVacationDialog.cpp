@@ -3,7 +3,7 @@
 
   This file is part of Charm, a task-based time tracking application.
 
-  Copyright (C) 2014-2017 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2014-2018 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
 
   Author: Frank Osterfeld <frank.osterfeld@kdab.com>
 
@@ -98,11 +98,11 @@ EnterVacationDialog::EnterVacationDialog(QWidget *parent)
     const QDate referenceDate = QDate::currentDate().addDays(7);
     m_ui->startDate->setDate(Charm::weekDayInWeekOf(Qt::Monday, referenceDate));
     m_ui->endDate->setDate(Charm::weekDayInWeekOf(Qt::Friday, referenceDate));
-    connect(m_ui->startDate, SIGNAL(dateChanged(QDate)), this, SLOT(updateButtonStates()));
-    connect(m_ui->endDate, SIGNAL(dateChanged(QDate)), this, SLOT(updateButtonStates()));
-    connect(m_ui->buttonBox, SIGNAL(accepted()), this, SLOT(okClicked()));
-    connect(m_ui->buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
-    connect(m_ui->selectTaskButton, SIGNAL(clicked()), this, SLOT(selectTask()));
+    connect(m_ui->startDate, &QDateEdit::dateChanged, this, &EnterVacationDialog::updateButtonStates);
+    connect(m_ui->endDate, &QDateEdit::dateChanged, this, &EnterVacationDialog::updateButtonStates);
+    connect(m_ui->buttonBox, &QDialogButtonBox::accepted, this, &EnterVacationDialog::okClicked);
+    connect(m_ui->buttonBox, &QDialogButtonBox::rejected, this, &EnterVacationDialog::reject);
+    connect(m_ui->selectTaskButton, &QPushButton::clicked, this, &EnterVacationDialog::selectTask);
     QSettings settings;
     settings.beginGroup(QStringLiteral("EnterVacation"));
     m_ui->hoursSpinBox->setValue(settings.value(QStringLiteral("workHours"), 8).toInt());
@@ -137,8 +137,8 @@ void EnterVacationDialog::createEvents()
     auto box = new QDialogButtonBox;
     box->setStandardButtons(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
     box->button(QDialogButtonBox::Ok)->setText(tr("Create"));
-    connect(box, SIGNAL(accepted()), &confirmationDialog, SLOT(accept()));
-    connect(box, SIGNAL(rejected()), &confirmationDialog, SLOT(reject()));
+    connect(box, &QDialogButtonBox::accepted, &confirmationDialog, &QDialog::accept);
+    connect(box, &QDialogButtonBox::rejected, &confirmationDialog, &QDialog::reject);
     layout->addWidget(box);
 
     const QString startDate = m_ui->startDate->date().toString(Qt::TextDate);

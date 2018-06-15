@@ -3,7 +3,7 @@
 
   This file is part of Charm, a task-based time tracking application.
 
-  Copyright (C) 2014-2017 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2014-2018 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
 
   Author: Frank Osterfeld <frank.osterfeld@kdab.com>
   Author: Montel Laurent <laurent.montel@kdab.com>
@@ -28,6 +28,7 @@
 #include "SelectTaskDialog.h"
 #include "ViewHelpers.h"
 
+#include "Core/Configuration.h"
 #include "Core/Event.h"
 #include "Core/Task.h"
 
@@ -81,15 +82,16 @@ TimeTrackingTaskSelector::TimeTrackingTaskSelector(QWidget *parent)
     m_stopGoAction->setIcon(Data::goIcon());
     m_stopGoAction->setShortcut(QKeySequence(Qt::Key_Space));
     m_stopGoAction->setCheckable(true);
-    connect(m_stopGoAction, SIGNAL(triggered(bool)), SLOT(slotGoStopToggled(bool)));
+    connect(m_stopGoAction, &QAction::triggered,
+            this, &TimeTrackingTaskSelector::slotGoStopToggled);
     m_stopGoButton->setDefaultAction(m_stopGoAction);
 
     m_editCommentAction->setText(tr("Edit Comment"));
     m_editCommentAction->setIcon(Data::editEventIcon());
     m_editCommentAction->setShortcut(Qt::Key_E);
     m_editCommentAction->setToolTip(m_editCommentAction->text());
-    connect(m_editCommentAction, SIGNAL(triggered(bool)),
-            SLOT(slotEditCommentClicked()));
+    connect(m_editCommentAction, &QAction::triggered,
+            this, &TimeTrackingTaskSelector::slotEditCommentClicked);
     m_editCommentButton->setDefaultAction(m_editCommentAction);
 
     m_taskSelectorButton->setPopupMode(QToolButton::InstantPopup);
@@ -97,8 +99,8 @@ TimeTrackingTaskSelector::TimeTrackingTaskSelector(QWidget *parent)
     m_taskSelectorButton->setText(tr("Select Task"));
 
     m_startOtherTaskAction->setShortcut(Qt::Key_T);
-    connect(m_startOtherTaskAction, SIGNAL(triggered()),
-            SLOT(slotManuallySelectTask()));
+    connect(m_startOtherTaskAction, &QAction::triggered,
+            this, &TimeTrackingTaskSelector::slotManuallySelectTask);
 }
 
 void TimeTrackingTaskSelector::populateEditMenu(QMenu *menu)
@@ -115,6 +117,8 @@ QMenu *TimeTrackingTaskSelector::menu() const
 
 void TimeTrackingTaskSelector::populate(const QVector<WeeklySummary> &summaries)
 {
+    Q_UNUSED(summaries);
+
     // Don't repopulate while the menu is displayed; very ugly and it can wait.
     if (m_menu->isActiveWindow())
         return;
@@ -136,7 +140,9 @@ void TimeTrackingTaskSelector::populate(const QVector<WeeklySummary> &summaries)
 
     const TaskIdList interestingTasksToAdd = DATAMODEL->mostRecentlyUsedTasks();
 
-    for (int i = 0; i < 5 && i < interestingTasksToAdd.size(); ++i)
+    const int maxEntries = qMin(interestingTasksToAdd.size(),
+                                CONFIGURATION.numberOfTaskSelectorEntries);
+    for (int i = 0; i < maxEntries; ++i)
         m_menu->addAction(createTaskAction(interestingTasksToAdd.at(i)));
     m_menu->addSeparator();
     m_menu->addAction(m_startOtherTaskAction);
@@ -202,15 +208,15 @@ void TimeTrackingTaskSelector::slotActionSelected()
     const bool trackable = task.trackable();
     if (!trackable || expired) {
         const bool notTrackableAndExpired = (!trackable && expired);
-        const auto id = QString::number(task.id());
-        const QString name = task.name();
-        const QString expirationDate = QLocale::system().toString(
-            task.validUntil(), QLocale::ShortFormat);
-        QString message = notTrackableAndExpired ? tr(
-            "The task %1 (%2) is not trackable and expired since %3").arg(id, name, expirationDate)
-                          : expired ? tr("The task %1 (%2) is expired since %3").arg(id, name,
-                                                                                     expirationDate)
-                          : tr("The task %1 (%2) is not trackable").arg(id, name);
+        const QString expirationDate = QLocale::system().toString(task.validUntil().date(), QLocale::ShortFormat);
+        const auto taskName = DATAMODEL->taskIdAndSmartNameString(task.id());
+
+        const auto reason = notTrackableAndExpired
+                ? tr("The task is not trackable and expired since %1.").arg(expirationDate)
+                : expired ? tr("The task is expired since %1").arg(expirationDate)
+                          : tr("The task is not trackable");
+
+        const auto message = tr("Cannot select task <strong>%1</strong>: %2. Please choose another task.").arg(taskName.toHtmlEscaped(), reason);
 
         QMessageBox::information(this, tr("Please choose another task"), message);
         return;

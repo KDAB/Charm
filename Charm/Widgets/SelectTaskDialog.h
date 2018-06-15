@@ -3,7 +3,7 @@
 
   This file is part of Charm, a task-based time tracking application.
 
-  Copyright (C) 2014-2017 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2014-2018 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
 
   Author: Frank Osterfeld <frank.osterfeld@kdab.com>
 
@@ -62,6 +62,7 @@ public:
     TaskId selectedTask() const;
     void setNonTrackableSelectable();
     void setNonValidSelectable();
+    void selectTask(TaskId);
 
 Q_SIGNALS:
     void saveConfiguration();
@@ -77,6 +78,7 @@ private Q_SLOTS:
     void slotAccepted();
     void slotPrefilteringChanged();
     void slotResetState();
+    void slotSelectTask(const QString &);
 
 private:
     bool isValidAndTrackable(const QModelIndex &index) const;

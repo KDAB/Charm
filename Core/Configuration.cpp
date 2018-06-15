@@ -3,7 +3,7 @@
 
   This file is part of Charm, a task-based time tracking application.
 
-  Copyright (C) 2007-2017 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2007-2018 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
 
   Author: Mirko Boehm <mirko.boehm@kdab.com>
   Author: Frank Osterfeld <frank.osterfeld@kdab.com>
@@ -51,7 +51,7 @@ Configuration::Configuration(TaskPrefilteringMode _taskPrefilteringMode,
                              DurationFormat _durationFormat, bool _detectIdling,
                              Qt::ToolButtonStyle _buttonstyle, bool _showStatusBar,
                              bool _warnUnuploadedTimesheets, bool _requestEventComment,
-                             bool _enableCommandInterface)
+                             bool _enableCommandInterface, int _numberOfTaskSelectorEntries)
     : taskPrefilteringMode(_taskPrefilteringMode)
     , timeTrackerFontSize(_timeTrackerFontSize)
     , durationFormat(_durationFormat)
@@ -61,6 +61,7 @@ Configuration::Configuration(TaskPrefilteringMode _taskPrefilteringMode,
     , warnUnuploadedTimesheets(_warnUnuploadedTimesheets)
     , requestEventComment(_requestEventComment)
     , enableCommandInterface(_enableCommandInterface)
+    , numberOfTaskSelectorEntries(_numberOfTaskSelectorEntries)
     , configurationName(DEFAULT_CONFIG_GROUP)
 {
 }
@@ -79,7 +80,8 @@ bool Configuration::operator==(const Configuration &other) const
            && configurationName == other.configurationName
            && installationId == other.installationId
            && localStorageType == other.localStorageType
-           && localStorageDatabase == other.localStorageDatabase;
+           && localStorageDatabase == other.localStorageDatabase
+           && numberOfTaskSelectorEntries == other.numberOfTaskSelectorEntries;
 }
 
 void Configuration::writeTo(QSettings &settings)
@@ -94,8 +96,16 @@ void Configuration::writeTo(QSettings &settings)
 bool Configuration::readFrom(QSettings &settings)
 {
     bool complete = true;
+    bool dirty = false;
     if (settings.contains(MetaKey_Key_InstallationId)) {
-        installationId = settings.value(MetaKey_Key_InstallationId).toInt();
+        bool ok;
+        installationId = settings.value(MetaKey_Key_InstallationId).toUInt(&ok);
+        if (!ok || installationId == 1) {
+            const auto newId = createInstallationId();
+            qDebug() << "Migrating installationId" << installationId << "to" << newId;
+            installationId = newId;
+            dirty = true;
+        }
     } else {
         complete = false;
     }
@@ -115,6 +125,9 @@ bool Configuration::readFrom(QSettings &settings)
         complete = false;
     }
     dump(QStringLiteral("(Configuration::readFrom loaded configuration)"));
+    if (dirty && complete) {
+        writeTo(settings);
+    }
     return complete;
 }
 
@@ -137,5 +150,12 @@ void Configuration::dump(const QString &why)
              << "--> showStatusBar:            " << showStatusBar << endl
              << "--> warnUnuploadedTimesheets: " << warnUnuploadedTimesheets << endl
              << "--> requestEventComment:      " << requestEventComment << endl
-             << "--> enableCommandInterface:   " << enableCommandInterface;
+             << "--> enableCommandInterface:   " << enableCommandInterface
+             << "--> numberOfTaskSelectorEntries: " << numberOfTaskSelectorEntries;
+}
+
+quint32 Configuration::createInstallationId() const
+{
+    qsrand(QDateTime::currentMSecsSinceEpoch());
+    return qrand() + 2;
 }

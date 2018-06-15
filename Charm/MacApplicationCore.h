@@ -3,7 +3,7 @@
 
   This file is part of Charm, a task-based time tracking application.
 
-  Copyright (C) 2014-2017 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2014-2018 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
 
   Author: Frank Osterfeld <frank.osterfeld@kdab.com>
 
@@ -30,7 +30,7 @@ class MacApplicationCore : public ApplicationCore
 {
     Q_OBJECT
 public:
-    explicit MacApplicationCore(TaskId startupTask, QObject *parent = nullptr);
+    explicit MacApplicationCore(TaskId startupTask, bool hideAtStart, QObject *parent = nullptr);
     ~MacApplicationCore();
     // This method to be public due to lack of friend classes in Objective-C and
     // the lack inheritance of Objective-C classes from C++ ones.

@@ -3,7 +3,7 @@
 
   This file is part of Charm, a task-based time tracking application.
 
-  Copyright (C) 2014-2017 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2014-2018 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
 
   Author: Frank Osterfeld <frank.osterfeld@kdab.com>
 
@@ -55,7 +55,8 @@ MonthlyTimeSheetReport::MonthlyTimeSheetReport(QWidget *parent)
         m_dailyhours = 8;
     }
 
-    connect(this, SIGNAL(anchorClicked(QUrl)), SLOT(slotLinkClicked(QUrl)));
+    connect(this, &MonthlyTimeSheetReport::anchorClicked,
+            this, &MonthlyTimeSheetReport::slotLinkClicked);
 }
 
 MonthlyTimeSheetReport::~MonthlyTimeSheetReport()
@@ -110,7 +111,7 @@ QByteArray MonthlyTimeSheetReport::saveToText()
     return output;
 }
 
-QByteArray MonthlyTimeSheetReport::saveToXml()
+QByteArray MonthlyTimeSheetReport::saveToXml(SaveToXmlMode mode)
 {
     try {
         MonthlyTimesheetXmlWriter timesheet;
@@ -119,6 +120,7 @@ QByteArray MonthlyTimeSheetReport::saveToXml()
         timesheet.setYearOfMonth(m_yearOfMonth);
         timesheet.setNumberOfWeeks(m_numberOfWeeks);
         timesheet.setRootTask(rootTask());
+        timesheet.setIncludeTaskList(mode == IncludeTaskList);
         const EventIdList matchingEventIds = DATAMODEL->eventsThatStartInTimeFrame(
             startDate(), endDate());
         EventList events;

@@ -3,7 +3,7 @@
 
   This file is part of Charm, a task-based time tracking application.
 
-  Copyright (C) 2014-2017 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2014-2018 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
 
   Author: Frank Osterfeld <frank.osterfeld@kdab.com>
 
@@ -78,18 +78,16 @@ EventView::EventView(QWidget *parent)
 
     m_listView->setAlternatingRowColors(true);
     m_listView->setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(m_listView,
-            SIGNAL(customContextMenuRequested(QPoint)),
-            SLOT(slotContextMenuRequested(QPoint)));
-    connect(m_listView,
-            SIGNAL(doubleClicked(QModelIndex)),
-            SLOT(slotEventDoubleClicked(QModelIndex)));
-    connect(&m_actionNewEvent, SIGNAL(triggered()),
-            SLOT(slotNewEvent()));
+    connect(m_listView, &QListView::customContextMenuRequested,
+            this, &EventView::slotContextMenuRequested);
+    connect(m_listView, &QListView::doubleClicked,
+            this, &EventView::slotEventDoubleClicked);
+    connect(&m_actionNewEvent, &QAction::triggered,
+            this, &EventView::slotNewEvent);
     connect(&m_actionEditEvent, SIGNAL(triggered()),
             SLOT(slotEditEvent()));
-    connect(&m_actionDeleteEvent, SIGNAL(triggered()),
-            SLOT(slotDeleteEvent()));
+    connect(&m_actionDeleteEvent,  &QAction::triggered,
+             this, &EventView::slotDeleteEvent);
 //     connect( &m_commitTimer, SIGNAL(timeout()),
 //              SLOT(slotCommitTimeout()) );
 //     m_commitTimer.setSingleShot( true );
@@ -105,15 +103,15 @@ EventView::EventView(QWidget *parent)
     m_actionRedo.setEnabled(false);
 
     m_undoStack = new QUndoStack(this);
-    connect(m_undoStack, SIGNAL(canUndoChanged(bool)), &m_actionUndo, SLOT(setEnabled(bool)));
-    connect(m_undoStack, SIGNAL(undoTextChanged(QString)), this,
-            SLOT(slotUndoTextChanged(QString)));
-    connect(&m_actionUndo, SIGNAL(triggered()), m_undoStack, SLOT(undo()));
+    connect(m_undoStack, &QUndoStack::canUndoChanged,
+            &m_actionUndo, &QAction::setEnabled);
+    connect(m_undoStack, &QUndoStack::undoTextChanged,
+            this, &EventView::slotUndoTextChanged);
+    connect(&m_actionUndo, &QAction::triggered, m_undoStack, &QUndoStack::undo);
 
-    connect(m_undoStack, SIGNAL(canRedoChanged(bool)), &m_actionRedo, SLOT(setEnabled(bool)));
-    connect(m_undoStack, SIGNAL(redoTextChanged(QString)), this,
-            SLOT(slotRedoTextChanged(QString)));
-    connect(&m_actionRedo, SIGNAL(triggered()), m_undoStack, SLOT(redo()));
+    connect(m_undoStack, &QUndoStack::canRedoChanged, &m_actionRedo, &QAction::setEnabled);
+    connect(m_undoStack, &QUndoStack::redoTextChanged, this, &EventView::slotRedoTextChanged);
+    connect(&m_actionRedo, &QAction::triggered, m_undoStack, &QUndoStack::redo);
 
     m_actionNewEvent.setText(tr("New Event..."));
     m_actionNewEvent.setToolTip(tr("Create a new Event"));
@@ -131,7 +129,7 @@ EventView::EventView(QWidget *parent)
     m_actionFindAndReplace.setIcon(Data::searchIcon());
     m_toolBar->addAction(&m_actionFindAndReplace);
 
-    connect(&m_actionFindAndReplace, SIGNAL(triggered()), SLOT(slotFindAndReplace()));
+    connect(&m_actionFindAndReplace, &QAction::triggered, this, &EventView::slotFindAndReplace);
 
     m_actionDeleteEvent.setText(tr("Delete Event..."));
     QList<QKeySequence> deleteShortcuts;
@@ -169,14 +167,15 @@ EventView::EventView(QWidget *parent)
 
 EventView::~EventView()
 {
+    // Prevents a crash on exit, with the stack emitting undoTextChanged on destruction
+    m_undoStack->disconnect(this);
 }
 
 void EventView::delayedInitialization()
 {
     timeSpansChanged();
-    connect(ApplicationCore::instance().dateChangeWatcher(),
-            SIGNAL(dateChanged()),
-            SLOT(timeSpansChanged()));
+    connect(ApplicationCore::instance().dateChangeWatcher(), &DateChangeWatcher::dateChanged,
+            this, &EventView::timeSpansChanged);
 }
 
 void EventView::populateEditMenu(QMenu *menu)
@@ -242,12 +241,9 @@ void EventView::setCurrentEvent(const Event &event)
 void EventView::stageCommand(CharmCommand *command)
 {
     auto undoCommand = new UndoCharmCommandWrapper(command);
-    connect(command, SIGNAL(emitExecute(CharmCommand*)), this,
-            SIGNAL(emitCommand(CharmCommand*)));
-    connect(command, SIGNAL(emitRollback(CharmCommand*)), this,
-            SIGNAL(emitCommandRollback(CharmCommand*)));
-    connect(command, SIGNAL(emitSlotEventIdChanged(int,int)), this, SLOT(slotEventIdChanged(int,
-                                                                                            int)));
+    connect(command, &CharmCommand::emitExecute, this, &EventView::emitCommand);
+    connect(command, &CharmCommand::emitRollback, this, &EventView::emitCommandRollback);
+    connect(command, &CharmCommand::emitSlotEventIdChanged, this, &EventView::slotEventIdChanged);
     m_undoStack->push(undoCommand);
 }
 
@@ -459,8 +455,8 @@ void EventView::stateChanged(State)
     switch (ApplicationCore::instance().state()) {
     case Connecting:
         setModel(&MODEL);
-        connect(MODEL.charmDataModel(), SIGNAL(resetGUIState()),
-                SLOT(restoreGuiState()));
+        connect(MODEL.charmDataModel(), &CharmDataModel::resetGUIState,
+                this, &EventView::restoreGuiState);
         break;
     case Connected:
         //the model is populated when entering Connected, so delay state restore
@@ -498,29 +494,28 @@ void EventView::setModel(ModelConnector *connector)
     m_listView->setSelectionBehavior(QAbstractItemView::SelectRows);
     m_listView->setSelectionMode(QAbstractItemView::SingleSelection);
 
-    connect(m_listView->selectionModel(),
-            SIGNAL(currentChanged(QModelIndex,QModelIndex)),
-            SLOT(slotCurrentItemChanged(QModelIndex,QModelIndex)));
+    connect(m_listView->selectionModel(),&QItemSelectionModel::currentChanged,
+            this, &EventView::slotCurrentItemChanged);
 
-    connect(model, SIGNAL(eventActivationNotice(EventId)),
-            SLOT(slotEventActivated(EventId)));
-    connect(model, SIGNAL(eventDeactivationNotice(EventId)),
-            SLOT(slotEventDeactivated(EventId)));
+    connect(model, &EventModelFilter::eventActivationNotice,
+            this, &EventView::slotEventActivated);
+    connect(model, &EventModelFilter::eventDeactivationNotice,
+            this, &EventView::slotEventDeactivated);
 
-    connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)),
-            SLOT(slotUpdateCurrent()));
-    connect(model, SIGNAL(rowsInserted(QModelIndex,int,int)),
-            SLOT(slotUpdateTotal()));
-    connect(model, SIGNAL(rowsRemoved(QModelIndex,int,int)),
-            SLOT(slotUpdateTotal()));
-    connect(model, SIGNAL(rowsInserted(QModelIndex,int,int)),
-            SLOT(slotConfigureUi()));
-    connect(model, SIGNAL(rowsRemoved(QModelIndex,int,int)),
-            SLOT(slotConfigureUi()));
-    connect(model, SIGNAL(layoutChanged()),
-            SLOT(slotUpdateCurrent()));
-    connect(model, SIGNAL(modelReset()),
-            SLOT(slotUpdateTotal()));
+    connect(model, &EventModelFilter::dataChanged,
+            this, &EventView::slotUpdateCurrent);
+    connect(model, &EventModelFilter::rowsInserted,
+            this, &EventView::slotUpdateTotal);
+    connect(model, &EventModelFilter::rowsRemoved,
+            this, &EventView::slotUpdateTotal);
+    connect(model, &EventModelFilter::rowsInserted,
+            this, &EventView::slotConfigureUi);
+    connect(model, &EventModelFilter::rowsRemoved,
+            this, &EventView::slotConfigureUi);
+    connect(model, &EventModelFilter::layoutChanged,
+            this, &EventView::slotUpdateCurrent);
+    connect(model, &EventModelFilter::modelReset,
+            this, &EventView::slotUpdateTotal);
 
     m_model = model;
     // normally, the model is set only once, so this should be no problem:
@@ -549,8 +544,8 @@ void EventView::slotEditEvent(const Event &event)
         if (!newEvent.isValid()) {
             auto command
                 = new CommandMakeEvent(newEvent, this);
-            connect(command, SIGNAL(finishedOk(Event)),
-                    this, SLOT(slotEventChangesCompleted(Event)),
+            connect(command, &CommandMakeEvent::finishedOk,
+                    this, &EventView::slotEventChangesCompleted,
                     Qt::QueuedConnection);
             stageCommand(command);
             return;

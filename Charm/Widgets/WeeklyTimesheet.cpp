@@ -3,7 +3,7 @@
 
   This file is part of Charm, a task-based time tracking application.
 
-  Copyright (C) 2014-2017 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2014-2018 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
 
   Author: Frank Osterfeld <frank.osterfeld@kdab.com>
 
@@ -34,6 +34,7 @@
 
 #include "DateEntrySyncer.h"
 #include "HttpClient/UploadTimesheetJob.h"
+#include "Lotsofcake/Configuration.h"
 #include "Widgets/HttpJobProgressDialog.h"
 
 #include "SelectTaskDialog.h"
@@ -113,23 +114,24 @@ WeeklyTimesheetConfigurationDialog::WeeklyTimesheetConfigurationDialog(QWidget *
     m_ui->setupUi(this);
     m_ui->dateEditDay->calendarWidget()->setFirstDayOfWeek(Qt::Monday);
     m_ui->dateEditDay->calendarWidget()->setVerticalHeaderFormat(QCalendarWidget::ISOWeekNumbers);
-    connect(m_ui->buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-    connect(m_ui->buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+    connect(m_ui->buttonBox, &QDialogButtonBox::accepted,
+            this, &WeeklyTimesheetConfigurationDialog::accept);
+    connect(m_ui->buttonBox, &QDialogButtonBox::rejected,
+            this, &WeeklyTimesheetConfigurationDialog::reject);
 
     connect(m_ui->comboBoxWeek, SIGNAL(currentIndexChanged(int)),
             SLOT(slotWeekComboItemSelected(int)));
-    connect(m_ui->toolButtonSelectTask, SIGNAL(clicked()),
-            SLOT(slotSelectTask()));
-    connect(m_ui->checkBoxSubTasksOnly, SIGNAL(toggled(bool)),
-            SLOT(slotCheckboxSubtasksOnlyChecked(bool)));
+    connect(m_ui->toolButtonSelectTask, &QToolButton::clicked,
+            this, &WeeklyTimesheetConfigurationDialog::slotSelectTask);
+    connect(m_ui->checkBoxSubTasksOnly, &QCheckBox::toggled,
+            this, &WeeklyTimesheetConfigurationDialog::slotCheckboxSubtasksOnlyChecked);
     m_ui->comboBoxWeek->setCurrentIndex(1);
     slotCheckboxSubtasksOnlyChecked(m_ui->checkBoxSubTasksOnly->isChecked());
     new DateEntrySyncer(m_ui->spinBoxWeek, m_ui->spinBoxYear, m_ui->dateEditDay, 1, this);
 
     slotStandardTimeSpansChanged();
-    connect(ApplicationCore::instance().dateChangeWatcher(),
-            SIGNAL(dateChanged()),
-            SLOT(slotStandardTimeSpansChanged()));
+    connect(ApplicationCore::instance().dateChangeWatcher(), &DateChangeWatcher::dateChanged,
+            this, &WeeklyTimesheetConfigurationDialog::slotStandardTimeSpansChanged);
 
     // load settings:
     QSettings settings;
@@ -262,10 +264,10 @@ WeeklyTimeSheetReport::WeeklyTimeSheetReport(QWidget *parent)
     : TimeSheetReport(parent)
 {
     QPushButton *upload = uploadButton();
-    connect(upload, SIGNAL(clicked()), SLOT(slotUploadTimesheet()));
-    connect(this, SIGNAL(anchorClicked(QUrl)), SLOT(slotLinkClicked(QUrl)));
+    connect(upload, &QPushButton::clicked, this, &WeeklyTimeSheetReport::slotUploadTimesheet);
+    connect(this, &ReportPreviewWindow::anchorClicked, this, &WeeklyTimeSheetReport::slotLinkClicked);
 
-    if (!HttpJob::credentialsAvailable())
+    if (!Lotsofcake::Configuration().isConfigured())
         upload->hide();
 }
 
@@ -282,12 +284,15 @@ void WeeklyTimeSheetReport::setReportProperties(
 
 void WeeklyTimeSheetReport::slotUploadTimesheet()
 {
+    const Lotsofcake::Configuration configuration;
     auto client = new UploadTimesheetJob(this);
+    client->setUsername(configuration.username());
+    client->setUploadUrl(configuration.timesheetUploadUrl());
     auto dialog = new HttpJobProgressDialog(client, this);
     dialog->setWindowTitle(tr("Uploading"));
-    connect(client, SIGNAL(finished(HttpJob*)), this, SLOT(slotTimesheetUploaded(HttpJob*)));
+    connect(client, &HttpJob::finished, this, &WeeklyTimeSheetReport::slotTimesheetUploaded);
     client->setFileName(suggestedFileName());
-    client->setPayload(saveToXml());
+    client->setPayload(saveToXml(ExcludeTaskList));
     client->start();
     uploadButton()->setEnabled(false);
 }
@@ -508,7 +513,7 @@ void WeeklyTimeSheetReport::update()
     uploadButton()->setEnabled(true);
 }
 
-QByteArray WeeklyTimeSheetReport::saveToXml()
+QByteArray WeeklyTimeSheetReport::saveToXml(SaveToXmlMode mode)
 {
     try {
         WeeklyTimesheetXmlWriter timesheet;
@@ -516,6 +521,7 @@ QByteArray WeeklyTimeSheetReport::saveToXml()
         timesheet.setYear(m_yearOfWeek);
         timesheet.setWeekNumber(m_weekNumber);
         timesheet.setRootTask(rootTask());
+        timesheet.setIncludeTaskList(mode == IncludeTaskList);
         const EventIdList matchingEventIds = DATAMODEL->eventsThatStartInTimeFrame(
             startDate(), endDate());
         EventList events;

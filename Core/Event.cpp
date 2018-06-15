@@ -3,7 +3,7 @@
 
   This file is part of Charm, a task-based time tracking application.
 
-  Copyright (C) 2007-2017 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2007-2018 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
 
   Author: Mirko Boehm <mirko.boehm@kdab.com>
 
@@ -34,7 +34,6 @@ Event::Event()
 bool Event::operator ==(const Event &other) const
 {
     return other.id() == id()
-           && other.installationId() == installationId()
            && other.taskId() == taskId()
            && other.comment() == comment()
            && other.startDateTime() == startDateTime()
@@ -73,19 +72,9 @@ void Event::setReportId(int reportId)
     m_reportid = reportId;
 }
 
-void Event::setInstallationId(int instId)
-{
-    m_installationId = instId;
-}
-
-int Event::installationId() const
-{
-    return m_installationId;
-}
-
 bool Event::isValid() const
 {   // negative values are allowed and indicate calculated values
-    return id() != 0 && m_installationId != 0;
+    return id() != 0;
 }
 
 TaskId Event::taskId() const
@@ -163,7 +152,6 @@ void dumpEvents(const EventList &events)
 
 const QString EventElement(QStringLiteral("event"));
 const QString EventIdAttribute(QStringLiteral("eventid"));
-const QString EventInstallationIdAttribute(QStringLiteral("installationid"));
 const QString EventTaskIdAttribute(QStringLiteral("taskid"));
 const QString EventUserIdAttribute(QStringLiteral("userid"));
 const QString EventReportIdAttribute(QStringLiteral("reportid"));
@@ -174,7 +162,6 @@ QDomElement Event::toXml(QDomDocument document) const
 {
     QDomElement element = document.createElement(EventElement);
     element.setAttribute(EventIdAttribute, QString().setNum(id()));
-    element.setAttribute(EventInstallationIdAttribute, QString().setNum(installationId()));
     element.setAttribute(EventTaskIdAttribute, QString().setNum(taskId()));
     element.setAttribute(EventUserIdAttribute, QString().setNum(userId()));
     element.setAttribute(EventReportIdAttribute, QString().setNum(reportId()));
@@ -204,8 +191,6 @@ Event Event::fromXml(const QDomElement &element, int databaseSchemaVersion)
     event.setComment(element.text());
     event.setId(element.attribute(EventIdAttribute).toInt(&ok));
     if (!ok) throw XmlSerializationException(QObject::tr("Event::fromXml: invalid event id"));
-    event.setInstallationId(element.attribute(EventInstallationIdAttribute).toInt(&ok));
-    if (!ok) throw XmlSerializationException(QObject::tr("Event::fromXml: invalid installation id"));
 
     event.setTaskId(element.attribute(EventTaskIdAttribute).toInt(&ok));
     if (!ok) throw XmlSerializationException(QObject::tr("Event::fromXml: invalid task id"));

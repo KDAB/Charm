@@ -3,7 +3,7 @@
 
   This file is part of Charm, a task-based time tracking application.
 
-  Copyright (C) 2014-2017 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2014-2018 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
 
   Author: Frank Osterfeld <frank.osterfeld@kdab.com>
 
@@ -74,23 +74,23 @@ SelectTaskDialog::SelectTaskDialog(QWidget *parent)
     m_ui->treeView->header()->hide();
     m_ui->buttonBox->button(QDialogButtonBox::Cancel)->setEnabled(true);
     m_ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
-    connect(m_ui->treeView->selectionModel(),
-            SIGNAL(currentChanged(QModelIndex,QModelIndex)),
-            SLOT(slotCurrentItemChanged(QModelIndex,QModelIndex)));
-    connect(m_ui->treeView,
-            SIGNAL(doubleClicked(QModelIndex)),
-            SLOT(slotDoubleClicked(QModelIndex)));
+    connect(m_ui->treeView->selectionModel(), &QItemSelectionModel::currentChanged,
+            this, &SelectTaskDialog::slotCurrentItemChanged);
+    connect(m_ui->treeView, &QTreeView::doubleClicked,
+            this, &SelectTaskDialog::slotDoubleClicked);
 
-    connect(m_ui->filter, SIGNAL(textChanged(QString)),
-            SLOT(slotFilterTextChanged(QString)));
-    connect(m_ui->showExpired, SIGNAL(toggled(bool)),
-            SLOT(slotPrefilteringChanged()));
-    connect(m_ui->showSelected, SIGNAL(toggled(bool)),
-            SLOT(slotPrefilteringChanged()));
-    connect(this, SIGNAL(accepted()),
-            SLOT(slotAccepted()));
-    connect(MODEL.charmDataModel(), SIGNAL(resetGUIState()),
-            SLOT(slotResetState()));
+    connect(m_ui->filter, &QLineEdit::textChanged,
+            this, &SelectTaskDialog::slotFilterTextChanged);
+    connect(m_ui->showExpired, &QCheckBox::toggled,
+            this, &SelectTaskDialog::slotPrefilteringChanged);
+    connect(m_ui->showSelected, &QCheckBox::toggled,
+            this, &SelectTaskDialog::slotPrefilteringChanged);
+    connect(this, &SelectTaskDialog::accepted,
+            this, &SelectTaskDialog::slotAccepted);
+    connect(MODEL.charmDataModel(), &CharmDataModel::resetGUIState,
+            this, &SelectTaskDialog::slotResetState);
+    connect(m_ui->filter, &QLineEdit::textChanged,
+            this, &SelectTaskDialog::slotSelectTask);
 
     QSettings settings;
     settings.beginGroup(QString::fromUtf8(staticMetaObject.className()));
@@ -142,6 +142,16 @@ void SelectTaskDialog::hideEvent(QHideEvent *event)
 TaskId SelectTaskDialog::selectedTask() const
 {
     return m_selectedTask;
+}
+
+void SelectTaskDialog::selectTask(TaskId task)
+{
+    m_selectedTask = task;
+    QModelIndex index(m_proxy.indexForTaskId(m_selectedTask));
+    if (index.isValid())
+        m_ui->treeView->setCurrentIndex(index);
+    else
+        m_ui->treeView->setCurrentIndex(QModelIndex());
 }
 
 void SelectTaskDialog::slotCurrentItemChanged(const QModelIndex &first, const QModelIndex &)
@@ -258,4 +268,18 @@ void SelectTaskDialog::setNonTrackableSelectable()
 void SelectTaskDialog::setNonValidSelectable()
 {
     m_nonValidSelectable = true;
+}
+
+void SelectTaskDialog::slotSelectTask(const QString &filter)
+{
+    const QString filterText = filter.simplified().toUpper().replace(QLatin1Char('*'), QLatin1Char(' '));
+    const int filterTaskId = filterText.toInt();
+    const TaskList tasks = MODEL.charmDataModel()->getAllTasks();
+
+    for (const auto task : tasks) {
+        if (!task.isValid())
+            continue;
+        if (task.name().toUpper().contains(filterText) || task.id() == filterTaskId)
+            selectTask(task.id());
+    }
 }

@@ -3,7 +3,7 @@
 
   This file is part of Charm, a task-based time tracking application.
 
-  Copyright (C) 2007-2017 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2007-2018 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
 
   Author: Mirko Boehm <mirko.boehm@kdab.com>
 
@@ -25,7 +25,6 @@
 
 #include "Core/User.h"
 #include "Core/CharmConstants.h"
-#include "Core/Installation.h"
 #include "Core/SqLiteStorage.h"
 
 #include <QDir>
@@ -65,41 +64,6 @@ void SqLiteStorageTests::connectAndCreateDatabaseTest()
 {
     bool result = m_storage->connect(m_configuration);
     QVERIFY(result);
-}
-
-void SqLiteStorageTests::makeModifyDeleteInstallationTest()
-{
-    int userId = 42;
-    // make two installation ids:
-    QString name1 = QStringLiteral("Installation-1");
-    Installation installation1 = m_storage->createInstallation(name1);
-    installation1.setUserId(userId);
-    QVERIFY(installation1.isValid());
-    QVERIFY(installation1.name() == name1);
-    QString name2 = QStringLiteral("Installation-2");
-    Installation installation2 = m_storage->createInstallation(name2);
-    installation1.setUserId(userId);
-    QVERIFY(installation2.isValid());
-    QVERIFY(installation2.name() == name2);
-    // modify installation 1:
-    QString newName = QStringLiteral("1-Installation");
-    installation1.setName(newName);
-    QVERIFY(m_storage->modifyInstallation(installation1));
-
-    // verify installation 1 database entry:
-    Installation installation1_1 = m_storage->getInstallation(installation1.id());
-    QVERIFY(installation1.id() == installation1_1.id());
-    QVERIFY(installation1.userId() == installation1_1.userId());
-    QVERIFY(installation1_1.name() == newName);
-
-    // delete installation 1
-    QVERIFY(m_storage->deleteInstallation(installation1));
-    // verify installation 1 is gone
-    installation1 = m_storage->getInstallation(installation1.id());
-    QVERIFY(!installation1.isValid());
-    // verify installation 2 is still there
-    installation2 = m_storage->getInstallation(installation2.id());
-    QVERIFY(installation2.isValid());
 }
 
 void SqLiteStorageTests::makeModifyDeleteUserTest()

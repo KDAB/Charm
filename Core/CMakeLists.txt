@@ -23,6 +23,7 @@ SET(
     CharmCommand.cpp
     SmartNameCache.cpp
     XmlSerialization.cpp
+    CharmQtCompat.cpp
 )
 
 ADD_LIBRARY( CharmCore STATIC ${CharmCore_SRCS} )

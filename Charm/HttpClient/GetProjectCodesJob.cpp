@@ -3,7 +3,7 @@
 
   This file is part of Charm, a task-based time tracking application.
 
-  Copyright (C) 2011-2017 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2011-2018 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
 
   Author: Frank Osterfeld <frank.osterfeld@kdab.com>
 
@@ -31,9 +31,6 @@
 GetProjectCodesJob::GetProjectCodesJob(QObject *parent)
     : HttpJob(parent)
 {
-    QSettings s;
-    s.beginGroup(QStringLiteral("httpconfig"));
-    setDownloadUrl(s.value(QStringLiteral("projectCodeDownloadUrl")).toUrl());
 }
 
 GetProjectCodesJob::~GetProjectCodesJob()
@@ -45,33 +42,29 @@ QByteArray GetProjectCodesJob::payload() const
     return m_payload;
 }
 
-bool GetProjectCodesJob::execute(int state, QNetworkAccessManager *manager)
+void GetProjectCodesJob::executeRequest(QNetworkAccessManager *manager)
 {
-    if (state != GetProjectCodes)
-        return HttpJob::execute(state, manager);
     QNetworkRequest request(m_downloadUrl);
 
     QNetworkReply *reply = manager->get(request);
+    connect(reply, &QNetworkReply::finished, this, &GetProjectCodesJob::handleResult);
 
     if (reply->error() != QNetworkReply::NoError)
-        setErrorFromReplyAndEmitFinished(reply);
-    return true;
+        setErrorFromReplyAndEmitFinishedOrRestart(reply);
 }
 
-bool GetProjectCodesJob::handle(QNetworkReply *reply)
+void GetProjectCodesJob::handleResult()
 {
+    auto reply = qobject_cast<QNetworkReply*>(sender());
+    reply->deleteLater();
     /* check for failure */
     if (reply->error() != QNetworkReply::NoError) {
-        setErrorFromReplyAndEmitFinished(reply);
-        return false;
+        setErrorFromReplyAndEmitFinishedOrRestart(reply);
+        return;
     }
 
-    if (state() != GetProjectCodes)
-        return HttpJob::handle(reply);
-
     m_payload = reply->readAll();
-    delayedNext();
-    return true;
+    emitFinishedOrRestart();
 }
 
 QUrl GetProjectCodesJob::downloadUrl() const

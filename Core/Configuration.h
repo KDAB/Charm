@@ -3,7 +3,7 @@
 
   This file is part of Charm, a task-based time tracking application.
 
-  Copyright (C) 2007-2017 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2007-2018 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
 
   Author: Mirko Boehm <mirko.boehm@kdab.com>
   Author: Frank Osterfeld <frank.osterfeld@kdab.com>
@@ -68,6 +68,8 @@ public:
     // helper method
     void dump(const QString &why = QString::null);
 
+    quint32 createInstallationId() const;
+
     User user;  // this user's id
     TaskPrefilteringMode taskPrefilteringMode = TaskPrefilter_ShowAll;
     TimeTrackerFontSize timeTrackerFontSize = TimeTrackerFont_Regular;
@@ -78,10 +80,11 @@ public:
     bool warnUnuploadedTimesheets = true;
     bool requestEventComment = false;
     bool enableCommandInterface = false;
+    int numberOfTaskSelectorEntries = 5;
 
     // these are stored in QSettings, since we need this information to locate and open the database:
     QString configurationName;
-    int installationId = 0;
+    quint32 installationId = 0;
     QString localStorageType; // SqLite, MySql, ...
     QString localStorageDatabase; // database name (path, with sqlite)
     bool newDatabase = false; // true if the configuration has just been created
@@ -100,7 +103,7 @@ private:
     Configuration(TaskPrefilteringMode taskPrefilteringMode, TimeTrackerFontSize,
                   DurationFormat durationFormat, bool detectIdling, Qt::ToolButtonStyle buttonstyle,
                   bool showStatusBar, bool warnUnuploadedTimesheets, bool _requestEventComment,
-                  bool enableCommandInterface);
+                  bool enableCommandInterface, int _numberOfTaskSelectorEntries);
     Configuration();
 };
 

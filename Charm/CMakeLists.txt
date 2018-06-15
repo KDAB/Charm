@@ -24,15 +24,17 @@ SET(
     Commands/CommandExportToXml.cpp
     Commands/CommandImportFromXml.cpp
     Commands/CommandMakeAndActivateEvent.cpp
-    HttpClient/HttpJob.cpp
-    HttpClient/GetProjectCodesJob.cpp
-    HttpClient/UploadTimesheetJob.cpp
-    HttpClient/GetUserInfoJob.cpp
     HttpClient/CheckForUpdatesJob.cpp
+    HttpClient/GetProjectCodesJob.cpp
+    HttpClient/HttpJob.cpp
+    HttpClient/RestJob.cpp
+    HttpClient/UploadTimesheetJob.cpp
     Idle/IdleDetector.cpp
+    Lotsofcake/Configuration.cpp
     Reports/TimesheetInfo.cpp
     Reports/MonthlyTimesheetXmlWriter.cpp
     Reports/WeeklyTimesheetXmlWriter.cpp
+    Reports/TimesheetXmlWriter.cpp
     Widgets/ActivityReport.cpp
     Widgets/BillDialog.cpp
     Widgets/CharmPreferences.cpp

@@ -3,7 +3,7 @@
 
   This file is part of Charm, a task-based time tracking application.
 
-  Copyright (C) 2008-2017 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2008-2018 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
 
   Author: Jesper Pedersen <jesper.pedersen@kdab.com>
   Author: Frank Osterfeld <frank.osterfeld@kdab.com>
@@ -41,7 +41,7 @@ public:
     bool idleCheckPossible();
 
 protected:
-    void onIdlenessDurationChanged();
+    void onIdlenessDurationChanged() override;
 
 private Q_SLOTS:
     void checkIdleness();

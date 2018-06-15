@@ -3,7 +3,7 @@
 
   This file is part of Charm, a task-based time tracking application.
 
-  Copyright (C) 2014-2017 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2014-2018 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
 
   Author: Frank Osterfeld <frank.osterfeld@kdab.com>
 
@@ -41,11 +41,11 @@ BillDialog::BillDialog(QWidget *parent, Qt::WindowFlags f)
     setWindowTitle(QStringLiteral("Yeah... about those timesheets..."));
 
     m_asYouWish = new QPushButton(QStringLiteral("As you wish"));
-    connect(m_asYouWish, SIGNAL(clicked()), SLOT(slotAsYouWish()));
+    connect(m_asYouWish, &QPushButton::clicked, this, &BillDialog::slotAsYouWish);
     m_alreadyDone = new QPushButton(QStringLiteral("Already done"));
-    connect(m_alreadyDone, SIGNAL(clicked()), SLOT(slotAlreadyDone()));
+    connect(m_alreadyDone, &QPushButton::clicked, this, &BillDialog::slotAlreadyDone);
     m_later = new QPushButton(QStringLiteral("Later"));
-    connect(m_later, SIGNAL(clicked()), SLOT(slotLater()));
+    connect(m_later,  &QPushButton::clicked, this, &BillDialog::slotLater);
 
     auto layout = new QVBoxLayout(this);
     auto buttonBox = new QDialogButtonBox();

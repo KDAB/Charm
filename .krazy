@@ -1,7 +1,7 @@
 CHECKSETS qt4,c++,foss
 
 #exclude intrusive checks to investigate later
-EXCLUDE foreach,nullstrassign
+EXCLUDE nullstrassign
 
 #KDAB-specific checks
 EXTRA kdabcopyright

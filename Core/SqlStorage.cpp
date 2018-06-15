@@ -3,7 +3,7 @@
 
   This file is part of Charm, a task-based time tracking application.
 
-  Copyright (C) 2007-2017 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2007-2018 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
 
   Author: Mirko Boehm <mirko.boehm@kdab.com>
   Author: Frank Osterfeld <frank.osterfeld@kdab.com>
@@ -229,7 +229,6 @@ Event SqlStorage::makeEventFromRecord(const QSqlRecord &record)
     Event event;
 
     int idField = record.indexOf(QStringLiteral("event_id"));
-    int instIdField = record.indexOf(QStringLiteral("installation_id"));
     int userIdField = record.indexOf(QStringLiteral("user_id"));
     int reportIdField = record.indexOf(QStringLiteral("report_id"));
     int taskField = record.indexOf(QStringLiteral("task"));
@@ -240,7 +239,6 @@ Event SqlStorage::makeEventFromRecord(const QSqlRecord &record)
     event.setId(record.field(idField).value().toInt());
     event.setUserId(record.field(userIdField).value().toInt());
     event.setReportId(record.field(reportIdField).value().toInt());
-    event.setInstallationId(record.field(instIdField).value().toInt());
     event.setTaskId(record.field(taskField).value().toInt());
     event.setComment(record.field(commentField).value().toString());
     if (!record.field(startField).isNull()) {
@@ -298,7 +296,6 @@ Event SqlStorage::makeEvent(const SqlRaiiTransactor &)
         if (result && query.next()) {
             int indexField = query.record().indexOf(QStringLiteral("id"));
             event.setId(query.value(indexField).toInt());
-            event.setInstallationId(installationId());
             Q_ASSERT(event.id() > 0);
         } else {
             Q_ASSERT_X(false, Q_FUNC_INFO,
@@ -312,7 +309,7 @@ Event SqlStorage::makeEvent(const SqlRaiiTransactor &)
         query.prepare(QLatin1String("UPDATE Events SET event_id = :event_id, "
                                     "installation_id = :installation_id, report_id = :report_id WHERE id = :id;"));
         query.bindValue(QStringLiteral(":event_id"), event.id());
-        query.bindValue(QStringLiteral(":installation_id"), event.installationId());
+        query.bindValue(QStringLiteral(":installation_id"), 1);
         query.bindValue(QStringLiteral(":report_id"), event.reportId());
         query.bindValue(QStringLiteral(":id"), event.id());
         result = runQuery(query);
@@ -573,99 +570,6 @@ bool SqlStorage::deleteSubscription(User user, Task task)
                       "DELETE from Subscriptions WHERE user_id = :user_id AND task = :task;"));
     query.bindValue(QStringLiteral(":user_id"), user.id());
     query.bindValue(QStringLiteral(":task"), task.id());
-    return runQuery(query);
-}
-
-Installation SqlStorage::createInstallation(const QString &name)
-{
-    SqlRaiiTransactor transactor(database());
-    bool result;
-
-    Installation installation;
-    { // insert a new record in the database
-        QSqlQuery query(database());
-        query.prepare(QStringLiteral(
-                          "INSERT into Installations values ( NULL, NULL, NULL, :name );"));
-        query.bindValue(QStringLiteral(":name"), name);
-        result = runQuery(query);
-        Q_ASSERT(result);
-        Q_UNUSED(result); // this has to succeed
-    }
-    if (result) {
-        // retrieve the AUTOINCREMENT id value of it
-        const QString statement = QStringLiteral("SELECT * from Installations WHERE id = %1();")
-                                  .arg(lastInsertRowFunction());
-        QSqlQuery query(database());
-        query.prepare(statement);
-        result = runQuery(query);
-        if (result && query.next()) {
-            int indexField = query.record().indexOf(QStringLiteral("id"));
-            int nameField = query.record().indexOf(QStringLiteral("name"));
-            installation.setId(query.value(indexField).toInt());
-            installation.setName(query.value(nameField).toString());
-            Q_ASSERT(installation.id() > 0);
-        } else {
-            Q_ASSERT_X(false, Q_FUNC_INFO,
-                       "database implementation error (SELECT)");
-        }
-    }
-    if (result) {
-        // modify the created record to make sure event_id is unique
-        // within the installation:
-        QSqlQuery query(database());
-        query.prepare(QStringLiteral("UPDATE Installations SET inst_id = :inst_id WHERE id = :id;"));
-        query.bindValue(QStringLiteral(":inst_id"), installation.id());
-        query.bindValue(QStringLiteral(":id"), installation.id());
-        result = runQuery(query);
-        Q_ASSERT_X(result, Q_FUNC_INFO,
-                   "database implementation error (UPDATE)");
-        Q_UNUSED(result);
-    }
-
-    if (result)
-        transactor.commit();
-
-    return installation;
-}
-
-Installation SqlStorage::getInstallation(int installationId)
-{
-    QSqlQuery query(database());
-    query.prepare(QStringLiteral("SELECT * FROM Installations WHERE inst_id = :id;"));
-    query.bindValue(QStringLiteral(":id"), installationId);
-
-    if (runQuery(query) && query.next()) {
-        Installation installation;
-        int idField = query.record().indexOf(QStringLiteral("inst_id"));
-        int nameField = query.record().indexOf(QStringLiteral("name"));
-        int userIdField = query.record().indexOf(QStringLiteral("user_id"));
-        installation.setId(query.value(idField).toInt());
-        installation.setName(query.value(nameField).toString());
-        installation.setUserId(query.value(userIdField).toInt());
-        Q_ASSERT(installation.isValid());
-        return installation;
-    } else {
-        return Installation();
-    }
-}
-
-bool SqlStorage::modifyInstallation(const Installation &installation)
-{
-    QSqlQuery query(database());
-    query.prepare(QStringLiteral(
-                      "UPDATE Installations SET name = :name, user_id = :user WHERE inst_id = :id;"));
-    query.bindValue(QStringLiteral(":name"), installation.name());
-    query.bindValue(QStringLiteral(":user"), installation.userId());
-    query.bindValue(QStringLiteral(":id"), installation.id());
-
-    return runQuery(query);
-}
-
-bool SqlStorage::deleteInstallation(const Installation &installation)
-{
-    QSqlQuery query(database());
-    query.prepare(QStringLiteral("DELETE from Installations WHERE inst_id = :id;"));
-    query.bindValue(QStringLiteral(":id"), installation.id());
     return runQuery(query);
 }
 

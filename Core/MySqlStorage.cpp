@@ -3,7 +3,7 @@
 
   This file is part of Charm, a task-based time tracking application.
 
-  Copyright (C) 2008-2017 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2008-2018 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
 
   Author: Mirko Boehm <mirko.boehm@kdab.com>
   Author: Frank Osterfeld <frank.osterfeld@kdab.com>
@@ -172,11 +172,6 @@ bool MySqlStorage::connect(Configuration &)
 bool MySqlStorage::disconnect()
 {
     return false;     // not implemented
-}
-
-int MySqlStorage::installationId() const
-{
-    return -1;     // not implemented
 }
 
 bool MySqlStorage::createDatabase(Configuration &)

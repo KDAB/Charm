@@ -3,7 +3,7 @@
 
   This file is part of Charm, a task-based time tracking application.
 
-  Copyright (C) 2011-2017 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2011-2018 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
 
   Author: Michel Boyer de la Giroday <michel.giroday@kdab.com>
 
@@ -61,7 +61,7 @@ void CheckForUpdatesJob::start()
 {
     Q_ASSERT(!m_url.toString().isEmpty());
     QNetworkAccessManager *manager = new QNetworkAccessManager(this);
-    connect(manager, SIGNAL(finished(QNetworkReply*)), SLOT(jobFinished(QNetworkReply*)));
+    connect(manager, &QNetworkAccessManager::finished, this, &CheckForUpdatesJob::jobFinished);
     manager->get(QNetworkRequest(m_url));
 }
 

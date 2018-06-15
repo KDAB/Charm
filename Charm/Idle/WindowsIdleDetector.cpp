@@ -3,7 +3,7 @@
 
   This file is part of Charm, a task-based time tracking application.
 
-  Copyright (C) 2010-2017 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2010-2018 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
 
   Author: Frank Osterfeld <frank.osterfeld@kdab.com>
   Author: Mike McQuaid <mike.mcquaid@kdab.com>
@@ -30,7 +30,7 @@
 
 WindowsIdleDetector::WindowsIdleDetector(QObject *parent) : IdleDetector(parent)
 {
-    connect(&m_timer, SIGNAL(timeout()), this, SLOT(timeout()));
+    connect(&m_timer, &QTimer::timeout, this, &WindowsIdleDetector::timeout);
     m_timer.setInterval(idlenessDuration() * 1000 / 2);
     m_timer.setSingleShot(false);
     m_timer.start();

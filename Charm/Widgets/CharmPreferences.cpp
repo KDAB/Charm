@@ -3,7 +3,7 @@
 
   This file is part of Charm, a task-based time tracking application.
 
-  Copyright (C) 2014-2017 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2014-2018 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
 
   Author: Frank Osterfeld <frank.osterfeld@kdab.com>
   Author: Mathias Hasselmann <mathias.hasselmann@kdab.com>
@@ -28,7 +28,7 @@
 
 #include "Core/Configuration.h"
 #include "Idle/IdleDetector.h"
-#include "HttpClient/HttpJob.h"
+#include "Lotsofcake/Configuration.h"
 
 #include <QCheckBox>
 #include <QMessageBox>
@@ -41,26 +41,23 @@ CharmPreferences::CharmPreferences(const Configuration &config, QWidget *parent_
     m_ui.setupUi(this);
     const bool haveIdleDetection = ApplicationCore::instance().idleDetector()->available();
     const bool haveCommandInterface = (ApplicationCore::instance().commandInterface() != nullptr);
-    const bool httpJobPossible = HttpJob::credentialsAvailable();
+    const bool httpJobPossible = Lotsofcake::Configuration().isConfigured();
 
     m_ui.lbWarnUnuploadedTimesheets->setVisible(httpJobPossible);
     m_ui.cbWarnUnuploadedTimesheets->setVisible(httpJobPossible);
-    m_ui.lbResetPassword->setVisible(httpJobPossible);
-    m_ui.pbResetPassword->setVisible(httpJobPossible);
     m_ui.cbIdleDetection->setEnabled(haveIdleDetection);
     m_ui.lbIdleDetection->setEnabled(haveIdleDetection);
     m_ui.cbIdleDetection->setChecked(config.detectIdling && m_ui.cbIdleDetection->isEnabled());
     m_ui.cbWarnUnuploadedTimesheets->setChecked(config.warnUnuploadedTimesheets);
     m_ui.cbRequestEventComment->setChecked(config.requestEventComment);
-    m_ui.lbCommandInterface->setEnabled(haveCommandInterface);
+    m_ui.lbCommandInterface->setVisible(haveCommandInterface);
     m_ui.cbEnableCommandInterface->setEnabled(haveCommandInterface);
+    m_ui.cbEnableCommandInterface->setVisible(haveCommandInterface);
     m_ui.cbEnableCommandInterface->setChecked(haveCommandInterface
                                               && config.enableCommandInterface);
 
-    connect(m_ui.cbWarnUnuploadedTimesheets, SIGNAL(toggled(bool)),
-            SLOT(slotWarnUnuploadedChanged(bool)));
-    connect(m_ui.pbResetPassword, SIGNAL(clicked()),
-            SLOT(slotResetPassword()));
+    connect(m_ui.cbWarnUnuploadedTimesheets, &QCheckBox::toggled,
+            this, &CharmPreferences::slotWarnUnuploadedChanged);
 
     // this would not need a switch, but i hate casting enums to int:
     switch (config.timeTrackerFontSize) {
@@ -101,6 +98,9 @@ CharmPreferences::CharmPreferences(const Configuration &config, QWidget *parent_
         m_ui.cbToolButtonStyle->setCurrentIndex(4);
         break;
     }
+
+    m_ui.sbNumberOfTaskSelectorEntries->setValue(config.numberOfTaskSelectorEntries);
+
     // resize( minimumSize() );
 }
 
@@ -126,6 +126,11 @@ bool CharmPreferences::requestEventComment() const
 bool CharmPreferences::enableCommandInterface() const
 {
     return m_ui.cbEnableCommandInterface->isChecked();
+}
+
+int CharmPreferences::numberOfTaskSelectorEntries() const
+{
+    return m_ui.sbNumberOfTaskSelectorEntries->value();
 }
 
 Configuration::DurationFormat CharmPreferences::durationFormat() const
@@ -187,7 +192,7 @@ Qt::ToolButtonStyle CharmPreferences::toolButtonStyle() const
 
 void CharmPreferences::slotWarnUnuploadedChanged(bool enabled)
 {
-    if (!HttpJob::credentialsAvailable())
+    if (!Lotsofcake::Configuration().isConfigured())
         return;
 
     if (!enabled) {
@@ -201,19 +206,4 @@ void CharmPreferences::slotWarnUnuploadedChanged(bool enabled)
         if (response == QMessageBox::Yes)
             m_ui.cbWarnUnuploadedTimesheets->setCheckState(Qt::Checked);
     }
-}
-
-void CharmPreferences::slotResetPassword()
-{
-    HttpJob *job = new HttpJob(this);
-    bool ok;
-    QPointer<QObject> that(this);   //guard against destruction while dialog is open
-    const QString newpass
-        = QInputDialog::getText(this, tr("Password"), tr(
-                                    "Please enter your lotsofcake password"), QLineEdit::Password,
-                                QLatin1String(""), &ok);
-    if (!that)
-        return;
-    if (ok)
-        job->provideRequestedPassword(newpass);
 }

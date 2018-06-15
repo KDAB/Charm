@@ -3,7 +3,7 @@
 
   This file is part of Charm, a task-based time tracking application.
 
-  Copyright (C) 2007-2017 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2007-2018 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
 
   Author: Mirko Boehm <mirko.boehm@kdab.com>
 
@@ -51,7 +51,6 @@ void BackendIntegrationTests::initialValuesTest()
     QVERIFY(controller()->storage()->getAllTasks().isEmpty());
     QVERIFY(controller()->storage()->getAllEvents().isEmpty());
     QVERIFY(controller()->storage()->getUser(testUserId()).isValid());
-    QVERIFY(controller()->storage()->getInstallation(testInstallationId()).isValid());
     // model:
     QVERIFY(model()->taskTreeItem(0).childCount() == 0);
 }

@@ -3,7 +3,7 @@
 
   This file is part of Charm, a task-based time tracking application.
 
-  Copyright (C) 2014-2017 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2014-2018 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
 
   Author: Frank Osterfeld <frank.osterfeld@kdab.com>
 
@@ -49,8 +49,7 @@ CharmWindow::CharmWindow(const QString &name, QWidget *parent)
     setWindowName(name);
     connect(m_openCharmAction, SIGNAL(triggered(bool)), SLOT(showView()));
     connect(m_showAction, SIGNAL(triggered(bool)), SLOT(showView()));
-    connect(this, SIGNAL(visibilityChanged(bool)), SLOT(handleOpenCharm(bool)));
-    connect(this, SIGNAL(visibilityChanged(bool)), SLOT(handleShow(bool)));
+    connect(this, &CharmWindow::visibilityChanged, this, &CharmWindow::handleShow);
     m_toolBar = addToolBar(QStringLiteral("Toolbar"));
     m_toolBar->setMovable(false);
 
@@ -183,11 +182,6 @@ void CharmWindow::sendCommandRollback(CharmCommand *cmd)
     emit emitCommandRollback(relay);
 }
 
-void CharmWindow::handleOpenCharm(bool visible)
-{
-    m_openCharmAction->setEnabled(!visible);
-}
-
 void CharmWindow::handleShow(bool visible)
 {
     const QString text = tr("Show %1").arg(m_windowName);
@@ -217,6 +211,7 @@ void CharmWindow::keyPressEvent(QKeyEvent *event)
 void CharmWindow::showView(QWidget *w)
 {
     w->show();
+    w->setWindowState(w->windowState() & ~Qt::WindowMinimized);
     w->raise();
     w->activateWindow();
 }
@@ -267,11 +262,21 @@ void CharmWindow::restoreGuiState()
     settings.beginGroup(identifier);
     WidgetUtils::restoreGeometry(this, MetaKey_MainWindowGeometry);
     // restore visibility
-    if (settings.contains(MetaKey_MainWindowVisible)) {
-        // Time Tracking Window should always be visible
-        const bool visible
-            = (identifier == QLatin1String("window_tracking")) ? true : settings.value(
-            MetaKey_MainWindowVisible).toBool();
-        setVisible(visible);
+    bool visible = true;
+    if (m_hideAtStartUp)
+    {
+        visible = false;
     }
+    else
+    {
+        // Time Tracking Window should always be visible, except when Charm is started with --hide-at-start
+        visible = (identifier == QLatin1String("window_tracking")) ? true : settings.value(
+                                                                         MetaKey_MainWindowVisible).toBool();
+    }
+    setVisible(visible);
+}
+
+void CharmWindow::setHideAtStartup(const bool &value)
+{
+    m_hideAtStartUp = value;
 }

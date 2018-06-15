@@ -3,7 +3,7 @@
 
   This file is part of Charm, a task-based time tracking application.
 
-  Copyright (C) 2007-2017 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2007-2018 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
 
   Author: Mirko Boehm <mirko.boehm@kdab.com>
 
@@ -30,7 +30,6 @@
 #include "User.h"
 #include "State.h"
 #include "Event.h"
-#include "Installation.h"
 #include "CharmExceptions.h"
 
 class QSqlDatabase;
@@ -54,20 +53,8 @@ public:
 
     virtual QSqlDatabase &database() = 0;
 
-    // installation id table:
-    // get the id of this installation
-    virtual int installationId() const = 0;
-
     // application:
     void stateChanged(State previous);
-
-    // installation id handling
-    Installation createInstallation(const QString &name);
-
-    // create an installation id
-    Installation getInstallation(int installationId);
-    bool modifyInstallation(const Installation &);
-    bool deleteInstallation(const Installation &);
 
     // user database functions:
     User getUser(int userid);

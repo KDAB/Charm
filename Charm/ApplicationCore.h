@@ -3,7 +3,7 @@
 
   This file is part of Charm, a task-based time tracking application.
 
-  Copyright (C) 2014-2017 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2014-2018 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
 
   Author: Mirko Boehm <mirko.boehm@kdab.com>
   Author: Frank Osterfeld <frank.osterfeld@kdab.com>
@@ -62,7 +62,7 @@ public:
         Show,
         ShowAndRaise
     };
-    explicit ApplicationCore(TaskId startupTask, QObject *parent = nullptr);
+    explicit ApplicationCore(TaskId startupTask, bool hideAtStart, QObject *parent = nullptr);
     ~ApplicationCore() override;
 
     static ApplicationCore &instance();
@@ -114,7 +114,7 @@ private Q_SLOTS:
     void slotCurrentBackendStatusChanged(const QString &text);
     void slotMaybeIdle();
     void slotHandleUniqueApplicationConnection();
-    void slotStartTaskMenuAboutToShow();
+    void slotPopulateTrayIconMenu();
     void slotShowNotification(const QString &title, const QString &message);
     void slotShowTasksEditor();
     void slotShowEventEditor();
@@ -170,6 +170,7 @@ private:
     CharmCommandInterface *m_cmdInterface = nullptr;
     QLocalServer m_uniqueApplicationServer;
     TaskId m_startupTask;
+    bool m_hideAtStart;
 #ifdef Q_OS_WIN
     QWinJumpList *m_windowsJumpList = nullptr;
 #endif

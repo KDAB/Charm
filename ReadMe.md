@@ -1,4 +1,4 @@
-Charm - the Cross-Platform Time Tracker
+Charm - the Cross-Platform Time Tracker [![Windows Build status](https://ci.appveyor.com/api/projects/status/cxr8oijfuya778c8/branch/master?svg=true)](https://ci.appveyor.com/project/KDAB/charm/branch/master)
 ======================================
 Whether you are a busy professional who needs to keep track time spent on
 projects or a student who wants to plan their studies: knowing how your

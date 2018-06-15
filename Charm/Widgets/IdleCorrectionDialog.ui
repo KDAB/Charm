@@ -42,6 +42,13 @@
     </widget>
    </item>
    <item>
+    <widget class="QRadioButton" name="restartEvent">
+     <property name="text">
+      <string>End event(s) at idle time and restart it from now on</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>

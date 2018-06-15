@@ -3,7 +3,7 @@
 
   This file is part of Charm, a task-based time tracking application.
 
-  Copyright (C) 2008-2017 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2008-2018 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
 
   Author: Mirko Boehm <mirko.boehm@kdab.com>
   Author: Mike McQuaid <mike.mcquaid@kdab.com>
@@ -29,6 +29,7 @@
 #include "MacIdleDetector.h"
 #include "WindowsIdleDetector.h"
 #include "X11IdleDetector.h"
+#include "ViewHelpers.h"
 
 #include "Core/Configuration.h"
 
@@ -37,7 +38,7 @@
 
 IdleDetector::IdleDetector(QObject *parent)
     : QObject(parent)
-    , m_idlenessDuration(CHARM_IDLE_TIME)   // from CharmCMake.h
+    , m_idlenessDuration(CharmIdleTime)   // from CharmCMake.h
 {
 }
 
@@ -98,7 +99,7 @@ int IdleDetector::idlenessDuration() const
 
 void IdleDetector::maybeIdle(IdlePeriod period)
 {
-    if (!Configuration::instance().detectIdling)
+    if (!Configuration::instance().detectIdling || DATAMODEL->activeEventCount() == 0)
         return;
 
     qDebug() << "IdleDetector::maybeIdle: Checking for idleness";
@@ -136,7 +137,7 @@ void IdleDetector::maybeIdle(IdlePeriod period)
     // notify application
     if (!idlePeriods().isEmpty()) {
         qDebug() << "IdleDetector::maybeIdle: Found idleness";
-        emit maybeIdle();
+        QTimer::singleShot(0, this, [=](){ emit maybeIdle(); });
     }
 }
 

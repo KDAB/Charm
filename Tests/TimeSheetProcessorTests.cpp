@@ -3,7 +3,7 @@
 
   This file is part of Charm, a task-based time tracking application.
 
-  Copyright (C) 2015-2017 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2015-2018 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
 
   Author: Franck Arrecot <franck.arrecot@kdab.com>
 
@@ -37,7 +37,7 @@
 TimeSheetProcessorTests::TimeSheetProcessorTests()
     : m_idTimeSheet(0)
     , m_adminId(43)
-    , m_reportPath(":/timeSheetProcessorTest/Data/test-timesheet-report.charmreport")
+    , m_reportPath(QStringLiteral(":/timeSheetProcessorTest/Data/test-timesheet-report.charmreport"))
 {
 }
 
@@ -60,16 +60,16 @@ void TimeSheetProcessorTests::testAddRemoveTimeSheet()
     QVERIFY(storage.database().open());
 
     QSqlQuery query(storage.database());
-    query.prepare(
-        "SELECT id, date_time_uploaded from timesheets where filename=:file AND userid=:user");
-    query.bindValue("file", m_reportPath);
-    query.bindValue("user", m_adminId);
+    query.prepare(QStringLiteral(
+        "SELECT id, date_time_uploaded from timesheets where filename=:file AND userid=:user"));
+    query.bindValue(QStringLiteral("file"), m_reportPath);
+    query.bindValue(QStringLiteral("user"), m_adminId);
     QVERIFY(storage.runQuery(query));
     QVERIFY(query.next());
 
     QSqlRecord record = query.record();
-    m_idTimeSheet = record.value(record.indexOf("id")).toInt();
-    uint dateTimeUploaded = record.value(record.indexOf("date_time_uploaded")).toInt();
+    m_idTimeSheet = record.value(record.indexOf(QStringLiteral("id"))).toInt();
+    uint dateTimeUploaded = record.value(record.indexOf(QStringLiteral("date_time_uploaded"))).toInt();
     uint nowTimeStamp = (QDateTime::currentMSecsSinceEpoch()/1000);// seconds since 1970-01-01
 
     QVERIFY(m_idTimeSheet > 0);
@@ -89,10 +89,10 @@ void TimeSheetProcessorTests::testAddRemoveTimeSheet()
     QVERIFY(storageRemove.database().open());
 
     QSqlQuery queryRemove(storageRemove.database());
-    queryRemove.prepare(
-        "SELECT id, date_time_uploaded from timesheets where filename=:file AND userid=:user");
-    queryRemove.bindValue("file", m_reportPath);
-    queryRemove.bindValue("user", m_adminId);
+    queryRemove.prepare(QStringLiteral(
+        "SELECT id, date_time_uploaded from timesheets where filename=:file AND userid=:user"));
+    queryRemove.bindValue(QStringLiteral("file"), m_reportPath);
+    queryRemove.bindValue(QStringLiteral("user"), m_adminId);
     QVERIFY(storageRemove.runQuery(queryRemove));
     QVERIFY(!queryRemove.next());   // not retrievable since it was deleted, must return false
 }

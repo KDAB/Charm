@@ -3,7 +3,7 @@
 
   This file is part of Charm, a task-based time tracking application.
 
-  Copyright (C) 2014-2017 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2014-2018 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
 
   Author: Frank Osterfeld <frank.osterfeld@kdab.com>
 
@@ -33,8 +33,8 @@ ConfigurationDialog::ConfigurationDialog(const Configuration &config, QWidget *p
     m_ui.setupUi(this);
     m_ui.nameLineEdit->setText(config.user.name());
     m_ui.databaseLocation->setText(config.localStorageDatabase);
-    connect(m_ui.buttonBox, SIGNAL(rejected()), SLOT(reject()));
-    connect(m_ui.buttonBox, SIGNAL(accepted()), SLOT(accept()));
+    connect(m_ui.buttonBox, &QDialogButtonBox::rejected, this, &ConfigurationDialog::reject);
+    connect(m_ui.buttonBox, &QDialogButtonBox::accepted, this, &ConfigurationDialog::accept);
 #ifdef Q_OS_ANDROID
     setWindowState(windowState() | Qt::WindowMaximized);
 #endif
@@ -52,7 +52,7 @@ void ConfigurationDialog::on_databaseLocation_textChanged(const QString &)
 
 void ConfigurationDialog::accept()
 {
-    m_config.installationId = 1;
+    m_config.installationId = m_config.createInstallationId();
     m_config.user.setId(1);
     m_config.user.setName(m_ui.nameLineEdit->text());
     m_config.localStorageType = CHARM_SQLITE_BACKEND_DESCRIPTOR;

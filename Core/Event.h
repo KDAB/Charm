@@ -3,7 +3,7 @@
 
   This file is part of Charm, a task-based time tracking application.
 
-  Copyright (C) 2007-2017 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2007-2018 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
 
   Author: Mirko Boehm <mirko.boehm@kdab.com>
 
@@ -63,10 +63,6 @@ public:
 
     void setReportId(int userId);
 
-    void setInstallationId(int instId);
-
-    int installationId() const;
-
     bool isValid() const;
 
     TaskId taskId() const;
@@ -102,8 +98,6 @@ private:
      * if the event is imported from a report.
      */
     int m_reportid = {};
-    /** The installation-unique id of the event. */
-    int m_installationId = {};
     int m_id = {};
     /** The task this event belongs to. */
     TaskId m_taskId = {};

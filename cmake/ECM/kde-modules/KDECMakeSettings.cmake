@@ -15,10 +15,11 @@
 #
 # The default runtime path (used on Unix systems to search for
 # dynamically-linked libraries) is set to include the location that libraries
-# will be installed to (as set in LIB_INSTALL_DIR), and also the linker search
-# path.
+# will be installed to (as set in LIB_INSTALL_DIR or, if the former is not set,
+# KDE_INSTALL_LIBDIR), and also the linker search path.
 #
-# Note that ``LIB_INSTALL_DIR`` needs to be set before including this module.
+# Note that ``LIB_INSTALL_DIR`` or alternatively ``KDE_INSTALL_LIBDIR`` needs
+# to be set before including this module.
 # Typically, this is done by including the :kde-module:`KDEInstallDirs` module.
 #
 # This section can be disabled by setting ``KDE_SKIP_RPATH_SETTINGS`` to TRUE
@@ -63,13 +64,26 @@
 # warnings on Qt-related code.
 #
 # If clang is not being used, this won't have an effect.
-# See https://quickgit.kde.org/?p=clazy.git&a=blob&f=README&o=plain
+# See https://commits.kde.org/clazy?path=README.md
 #
 # Since 5.17.0
 #
 # - Uninstall target functionality since 1.7.0.
 # - ``APPLE_FORCE_X11`` option since 5.14.0 (detecting X11 was previously the default behavior)
 # - ``APPLE_SUPPRESS_X11_WARNING`` option since 5.14.0
+#
+# Translations
+# ~~~~~~~~~~~~
+# A fetch-translations target will be set up that will download translations
+# for projects using l10n.kde.org.
+#
+# ``KDE_L10N_BRANCH`` will be responsible for choosing which l10n branch to use
+# for the translations.
+#
+# ``KDE_L10N_AUTO_TRANSLATIONS`` (OFF by default) will indicate whether translations
+# should be downloaded when building the project.
+#
+# Since 5.34.0
 
 #=============================================================================
 # Copyright 2014      Alex Merry <alex.merry@kde.org>
@@ -109,11 +123,17 @@ if(NOT KDE_SKIP_RPATH_SETTINGS)
    # Set the default RPATH to point to useful locations, namely where the
    # libraries will be installed and the linker search path
 
+   # First look for the old LIB_INSTALL_DIR, then fallback to newer KDE_INSTALL_LIBDIR
    if(NOT LIB_INSTALL_DIR)
-      message(FATAL_ERROR "LIB_INSTALL_DIR not set. This is necessary for using the RPATH settings.")
+      if(NOT KDE_INSTALL_LIBDIR)
+         message(FATAL_ERROR "Neither KDE_INSTALL_LIBDIR nor LIB_INSTALL_DIR is set. Setting one is necessary for using the RPATH settings.")
+      else()
+         set(_abs_LIB_INSTALL_DIR "${KDE_INSTALL_LIBDIR}")
+      endif()
+   else()
+      set(_abs_LIB_INSTALL_DIR "${LIB_INSTALL_DIR}")
    endif()
 
-   set(_abs_LIB_INSTALL_DIR "${LIB_INSTALL_DIR}")
    if (NOT IS_ABSOLUTE "${_abs_LIB_INSTALL_DIR}")
       set(_abs_LIB_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}")
    endif()
@@ -144,9 +164,9 @@ endif()
 
 find_program(APPSTREAMCLI appstreamcli)
 function(appstreamtest)
-    if(APPSTREAMCLI AND NOT _done)
-        set(_done TRUE)
-        add_test(NAME appstreamtest COMMAND cmake -DAPPSTREAMCLI=${APPSTREAMCLI} -DINSTALL_FILES=${CMAKE_BINARY_DIR}/install_manifest.txt -P ${CMAKE_CURRENT_LIST_DIR}/appstreamtest.cmake)
+    if(APPSTREAMCLI AND NOT appstreamtest_added)
+        set(appstreamtest_added TRUE PARENT_SCOPE)
+        add_test(NAME appstreamtest COMMAND ${CMAKE_COMMAND} -DAPPSTREAMCLI=${APPSTREAMCLI} -DINSTALL_FILES=${CMAKE_BINARY_DIR}/install_manifest.txt -P ${CMAKE_CURRENT_LIST_DIR}/appstreamtest.cmake)
     else()
         message(STATUS "Could not set up the appstream test. appstreamcli is missing.")
     endif()
@@ -230,22 +250,23 @@ if(NOT KDE_SKIP_BUILD_SETTINGS)
       set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
    endif()
 
-   # Disable detection of X11 and related package on OS X because when using
-   # brew or macports, X11 can be installed and thus is detected.
-   option(APPLE_FORCE_X11 "Force enable X11 related detection on OS X" OFF)
-   option(APPLE_SUPPRESS_X11_WARNING "Suppress X11 and related technologies search disabling warning on OS X" OFF)
+   if (APPLE)
+       # Disable detection of X11 and related package on OS X because when using
+       # brew or macports, X11 can be installed and thus is detected.
+       option(APPLE_FORCE_X11 "Force enable X11 related detection on OS X" OFF)
+       option(APPLE_SUPPRESS_X11_WARNING "Suppress X11 and related technologies search disabling warning on OS X" OFF)
 
-   if(APPLE AND NOT APPLE_FORCE_X11)
-      if (NOT APPLE_SUPPRESS_X11_WARNING)
-         message(WARNING "Searching for X11 and related technologies is disabled on Apple systems. Set APPLE_FORCE_X11 to ON to change this behaviour. Set APPLE_SUPPRESS_X11_WARNING to ON to hide this warning.")
-      endif()
+       if(NOT APPLE_FORCE_X11)
+           if (NOT APPLE_SUPPRESS_X11_WARNING)
+               message(WARNING "Searching for X11 and related technologies is disabled on Apple systems. Set APPLE_FORCE_X11 to ON to change this behaviour. Set APPLE_SUPPRESS_X11_WARNING to ON to hide this warning.")
+           endif()
+           set(CMAKE_DISABLE_FIND_PACKAGE_X11 true)
+           set(CMAKE_DISABLE_FIND_PACKAGE_XCB true)
+           set(CMAKE_DISABLE_FIND_PACKAGE_Qt5X11Extras true)
+       endif()
+    endif()
 
-      set(CMAKE_DISABLE_FIND_PACKAGE_X11 true)
-      set(CMAKE_DISABLE_FIND_PACKAGE_XCB true)
-      set(CMAKE_DISABLE_FIND_PACKAGE_Qt5X11Extras true)
-   endif()
-
-   option(KDE_SKIP_UNINSTALL_TARGET "Prevent an \"uninstall\" target from being generated." OFF)
+    option(KDE_SKIP_UNINSTALL_TARGET "Prevent an \"uninstall\" target from being generated." OFF)
    if(NOT KDE_SKIP_UNINSTALL_TARGET)
        include("${ECM_MODULE_DIR}/ECMUninstallTarget.cmake")
    endif()
@@ -256,8 +277,68 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     option(ENABLE_CLAZY "Enable Clazy warnings" OFF)
 
     if(ENABLE_CLAZY)
-        set(CMAKE_CXX_COMPILE_OBJECT "${CMAKE_CXX_COMPILE_OBJECT} -Xclang -load -Xclang ClangLazy.so -Xclang -add-plugin -Xclang clang-lazy")
+        set(CMAKE_CXX_COMPILE_OBJECT "${CMAKE_CXX_COMPILE_OBJECT} -Xclang -load -Xclang ClangLazy${CMAKE_SHARED_LIBRARY_SUFFIX} -Xclang -add-plugin -Xclang clang-lazy")
     endif()
 endif()
 
 ###################################################################
+# Download translations
+
+function(_repository_name reponame dir)
+    execute_process(COMMAND git config --get remote.origin.url
+        OUTPUT_VARIABLE giturl
+        RESULT_VARIABLE exitCode
+        WORKING_DIRECTORY "${dir}")
+
+    if(exitCode EQUAL 0)
+        string(REGEX MATCHALL ".+[:\\/]([-A-Za-z\\d]+)(.git)?\\s*" "" ${giturl})
+        set(${reponame} ${CMAKE_MATCH_1})
+    endif()
+
+    if(NOT ${reponame})
+        set(${reponame} ${CMAKE_PROJECT_NAME})
+    endif()
+    set(${reponame} ${${reponame}} PARENT_SCOPE)
+endfunction()
+
+if(NOT EXISTS ${CMAKE_SOURCE_DIR}/po AND NOT TARGET fetch-translations)
+    option(KDE_L10N_AUTO_TRANSLATIONS "Automatically 'make fetch-translations`" OFF)
+    set(KDE_L10N_BRANCH "trunk" CACHE STRING "Branch from l10n.kde.org to fetch from: trunk | stable | lts | trunk_kde4 | stable_kde4")
+
+    if(KDE_L10N_AUTO_TRANSLATIONS)
+        set(_EXTRA_ARGS "ALL")
+    else()
+        set(_EXTRA_ARGS)
+    endif()
+
+    set(_reponame "")
+    _repository_name(_reponame "${CMAKE_SOURCE_DIR}")
+
+    add_custom_command(
+        OUTPUT "${CMAKE_BINARY_DIR}/releaseme"
+        COMMAND git clone --depth 1 "https://anongit.kde.org/releaseme.git"
+        COMMENT "Fetching releaseme scripts to download translations..."
+    )
+
+    set(_l10n_po_dir "${CMAKE_BINARY_DIR}/po")
+    set(_l10n_poqm_dir "${CMAKE_BINARY_DIR}/poqm")
+
+    if(CMAKE_VERSION VERSION_GREATER 3.2)
+        set(extra BYPRODUCTS ${_l10n_po_dir} ${_l10n_poqm_dir})
+    endif()
+
+    add_custom_target(fetch-translations ${_EXTRA_ARGS}
+        COMMENT "Downloading translations for ${_reponame} branch ${KDE_L10N_BRANCH}..."
+        COMMAND git -C "${CMAKE_BINARY_DIR}/releaseme" pull
+        COMMAND cmake -E remove_directory ${_l10n_po_dir}
+        COMMAND cmake -E remove_directory ${_l10n_poqm_dir}
+        COMMAND ruby "${CMAKE_BINARY_DIR}/releaseme/fetchpo.rb"
+            --origin ${KDE_L10N_BRANCH}
+            --project "${_reponame}"
+            --output-dir "${_l10n_po_dir}"
+            --output-poqm-dir "${_l10n_poqm_dir}"
+            "${CMAKE_CURRENT_SOURCE_DIR}"
+        ${extra}
+        DEPENDS "${CMAKE_BINARY_DIR}/releaseme"
+    )
+endif()
