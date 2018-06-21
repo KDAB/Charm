@@ -1,9 +1,5 @@
 version: '{build}-{branch}'
-
-branches:
-  # whitelist
-  only:
-    - master
+image: Visual Studio 2017
 
 # don't enable for charm
 #clone_depth: 50
@@ -38,10 +34,8 @@ test_script:
 
 environment:
     matrix:
-    - TARGET: windows-msvc2015_32-cl
-    - TARGET: windows-mingw_32-gcc
+    - TARGET: windows-msvc2017_32-cl
     - TARGET: windows-msvc2017_64-cl
-      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
 
 artifacts:
   - path: cache\**\.*
