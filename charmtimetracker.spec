@@ -1,5 +1,5 @@
 Name:           charmtimetracker
-Version:        1.12.0
+Version:        1.12.0rc2
 Release:        0
 Summary:        Time Tracking Application
 Source:         %{name}-%{version}.tar.gz
@@ -10,19 +10,18 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 Vendor:         Klaralvdalens Datakonsult AB (KDAB)
 Packager:       Klaralvdalens Datakonsult AB (KDAB) <info@kdab.com>
 
+BuildRequires: cmake extra-cmake-modules desktop-file-utils
+
 %if %{defined suse_version}
-BuildRequires:  libqt4-devel cmake update-desktop-files
-Requires:       libqt4-sql-sqlite
+BuildRequires:  libqt5-qtbase-devel qtkeychain-qt5-devel
 %endif
 
 %if %{defined fedora}
-BuildRequires:  gcc-c++ qt-devel cmake desktop-file-utils
-Requires:       qt4-sqlite
+BuildRequires:  qt5-qtbase-devel qtkeychain-qt5-devel
 %endif
 
 %if %{defined rhel}
-BuildRequires:  gcc-c++ qt-devel cmake desktop-file-utils
-Requires:       qt4-sqlite
+BuildRequires:  qt5-qtbase-devel qtkeychain-qt5-devel
 %endif
 
 %description
@@ -55,7 +54,7 @@ cmake . -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DCharm_VERSION=%
 %make_install
 
 %if %{defined suse_version}
-%suse_update_desktop_file charmtimetracker Utility TimeUtility
+%suse_update_desktop_file -r charmtimetracker Utility TimeUtility
 %endif
 
 %clean
@@ -63,12 +62,16 @@ cmake . -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DCharm_VERSION=%
 
 %files
 %defattr(-,root,root)
-%{_prefix}/share/doc/charmtimetracker
+%dir %{_prefix}/share/doc/HTML
+%dir %{_prefix}/share/doc/HTML/charmtimetracker
+%{_prefix}/share/doc/HTML/charmtimetracker/*
 %{_prefix}/share/icons/hicolor
 %{_prefix}/share/applications/charmtimetracker.desktop
 %{_prefix}/bin/charmtimetracker
 
 %changelog
+* Sat Jul 07 2018 Allen Winter <allen.winter@kdab.com> 1.12.0rc2
+- 1.12.0 RC2
 * Tue Nov 01 2016 Steffen Hansen <steffen.hansen@kdab.com> 1.11.4
 - 1.11.4 release
 * Tue Nov 01 2016 Steffen Hansen <steffen.hansen@kdab.com> 1.11.3

@@ -25,6 +25,8 @@ IF( NOT Charm_VERSION )
             MESSAGE( FATAL_ERROR "Cannot get 'git describe' version!" )
         ENDIF()
     ENDIF()
+ELSE()
+message(FATAL_ERROR "BOO")
 ENDIF()
 
 STRING( REGEX MATCH "^([0-9]+)\\.([0-9]+)\\.(.*)$" Charm_VERSION "${Charm_VERSION}")
