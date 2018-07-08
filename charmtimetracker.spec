@@ -13,7 +13,7 @@ Packager:       Klaralvdalens Datakonsult AB (KDAB) <info@kdab.com>
 BuildRequires: cmake extra-cmake-modules desktop-file-utils
 
 %if %{defined suse_version}
-BuildRequires:  libqt5-qtbase-devel qtkeychain-qt5-devel
+BuildRequires:  update-desktop-files libqt5-qtbase-devel qtkeychain-qt5-devel
 %endif
 
 %if %{defined fedora}
@@ -38,10 +38,12 @@ wednesday and a total of five hours.
 
 Authors:
 --------
-     Mirko Boehm <mirko.boehm@kdab.com>
+     Klaralvdalens Datakonsult AB (KDAB) <info@kdab.com>
+
 
 %define debug_package %{nil}
 %global __debug_install_post %{nil}
+
 %prep
 %setup -T -c
 %{__tar} -zxf %{SOURCE0} --strip-components=1
@@ -54,7 +56,7 @@ cmake . -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DCharm_VERSION=%
 %make_install
 
 %if %{defined suse_version}
-%suse_update_desktop_file -r charmtimetracker Utility TimeUtility
+%suse_update_desktop_file -r charmtimetracker Utility DesktopUtility
 %endif
 
 %clean
