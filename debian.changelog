@@ -1,3 +1,9 @@
+charmtimetracker (1.12.0rc2) UNRELEASED; urgency=low
+
+  * 1.12.0 RC2
+
+ -- Allen Winter <allen.winter@kdab.com>  Sat, 07 Jul 2018 14:00:00 -0500
+
 charmtimetracker (1.11.4) stable; urgency=medium
 
   * 1.11.4 release
