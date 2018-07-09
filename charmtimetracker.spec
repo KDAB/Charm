@@ -1,5 +1,5 @@
 Name:           charmtimetracker
-Version:        1.12.0rc2
+Version:        1.12.0
 Release:        0
 Summary:        Time Tracking Application
 Source:         %{name}-%{version}.tar.gz
@@ -72,6 +72,8 @@ cmake . -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DCharm_VERSION=%
 %{_prefix}/bin/charmtimetracker
 
 %changelog
+* Mon Jul 09 2018 Allen Winter <allen.winter@kdab.com> 1.12.0
+- 1.12.0
 * Sat Jul 07 2018 Allen Winter <allen.winter@kdab.com> 1.12.0rc2
 - 1.12.0 RC2
 * Tue Nov 01 2016 Steffen Hansen <steffen.hansen@kdab.com> 1.11.4
