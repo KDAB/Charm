@@ -39,6 +39,7 @@ HttpJob::HttpJob(QObject *parent)
     : QObject(parent)
     , m_networkManager(new QNetworkAccessManager(this))
 {
+    m_networkManager->setRedirectPolicy(QNetworkRequest::NoLessSafeRedirectPolicy);
     connect(m_networkManager, &QNetworkAccessManager::authenticationRequired,
             this, &HttpJob::authenticationRequired);
 }

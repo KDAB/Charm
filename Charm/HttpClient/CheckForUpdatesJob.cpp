@@ -61,6 +61,7 @@ void CheckForUpdatesJob::start()
 {
     Q_ASSERT(!m_url.toString().isEmpty());
     QNetworkAccessManager *manager = new QNetworkAccessManager(this);
+    manager->setRedirectPolicy(QNetworkRequest::NoLessSafeRedirectPolicy);
     connect(manager, &QNetworkAccessManager::finished, this, &CheckForUpdatesJob::jobFinished);
     manager->get(QNetworkRequest(m_url));
 }
