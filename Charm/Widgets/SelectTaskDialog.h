@@ -70,6 +70,7 @@ Q_SIGNALS:
 protected:
     void showEvent(QShowEvent *event) override;
     void hideEvent(QHideEvent *event) override;
+    bool eventFilter(QObject *obj, QEvent *event) override;
 
 private Q_SLOTS:
     void slotCurrentItemChanged(const QModelIndex &, const QModelIndex &);

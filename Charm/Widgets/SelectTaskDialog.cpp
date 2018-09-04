@@ -28,6 +28,7 @@
 
 #include <QPushButton>
 #include <QSettings>
+#include <QKeyEvent>
 
 #include "ui_SelectTaskDialog.h"
 
@@ -91,6 +92,8 @@ SelectTaskDialog::SelectTaskDialog(QWidget *parent)
             this, &SelectTaskDialog::slotResetState);
     connect(m_ui->filter, &QLineEdit::textChanged,
             this, &SelectTaskDialog::slotSelectTask);
+
+    m_ui->filter->installEventFilter(this);
 
     QSettings settings;
     settings.beginGroup(QString::fromUtf8(staticMetaObject.className()));
@@ -282,4 +285,41 @@ void SelectTaskDialog::slotSelectTask(const QString &filter)
         if (task.name().toUpper().contains(filterText) || task.id() == filterTaskId)
             selectTask(task.id());
     }
+}
+
+
+/**
+ * eventFilter implementation
+ * Pressing vertical arrowkeys in filter LineEdit will instead send those arrow
+ * key events to treeview box.
+ * @param  obj   [description]
+ * @param  event [description]
+ * @return       [description]
+ */
+bool SelectTaskDialog::eventFilter(QObject *obj, QEvent *event)
+{
+    if (obj == m_ui->filter && event->type() == QEvent::KeyPress) {
+        QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
+
+        if (keyEvent->key() == Qt::Key_Up || keyEvent->key() == Qt::Key_Down)
+        {
+            QWidget * nextWidget = m_ui->treeView;
+
+            if (nextWidget != NULL)
+            {
+                QEvent * duplicateEvent = new QKeyEvent(
+                    QEvent::KeyPress,
+                    keyEvent->key(),
+                    keyEvent->modifiers(),
+                    0,
+                    (int)(keyEvent->isAutoRepeat()),
+                    keyEvent->count()
+                );
+                QCoreApplication::postEvent(nextWidget, duplicateEvent);
+                return true;
+            }
+        }
+    }
+    // standard event processing
+    return QDialog::eventFilter(obj, event);
 }
