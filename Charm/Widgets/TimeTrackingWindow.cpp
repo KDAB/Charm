@@ -80,7 +80,7 @@
 TimeTrackingWindow::TimeTrackingWindow(QWidget *parent)
     : CharmWindow(tr("Time Tracker"), parent)
     , m_summaryWidget(new TimeTrackingView(this))
-    , m_billDialog(new BillDialog(this))
+    , m_billDialog(nullptr)
 {
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     setWindowNumber(3);
@@ -94,8 +94,6 @@ TimeTrackingWindow::TimeTrackingWindow(QWidget *parent)
             this, &TimeTrackingWindow::taskMenuChanged);
     connect(&m_checkUploadedSheetsTimer, &QTimer::timeout,
             this, &TimeTrackingWindow::slotCheckUploadedTimesheets);
-    connect(m_billDialog, &BillDialog::finished,
-            this, &TimeTrackingWindow::slotBillGone);
     connect(&m_checkCharmReleaseVersionTimer, &QTimer::timeout,
             this, &TimeTrackingWindow::slotCheckForUpdatesAutomatic);
     connect(&m_updateUserInfoAndTasksDefinitionsTimer, &QTimer::timeout,
@@ -564,6 +562,10 @@ void TimeTrackingWindow::slotCheckUploadedTimesheets()
     Q_ASSERT(!missing.begin().value().isEmpty());
     int year = missing.begin().key();
     int week = missing.begin().value().first();
+    delete m_billDialog;
+    m_billDialog = new BillDialog(this);
+    connect(m_billDialog, &BillDialog::finished,
+            this, &TimeTrackingWindow::slotBillGone);
     m_billDialog->setReport(year, week);
     m_billDialog->show();
     m_billDialog->raise();
@@ -586,6 +588,8 @@ void TimeTrackingWindow::slotBillGone(int result)
     }
     if (CONFIGURATION.warnUnuploadedTimesheets)
         m_checkUploadedSheetsTimer.start();
+    m_billDialog->deleteLater();
+    m_billDialog = nullptr;
 }
 
 void TimeTrackingWindow::slotCheckForUpdatesAutomatic()
