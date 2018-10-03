@@ -136,7 +136,7 @@ void TimeTrackingTaskSelector::populate(const QVector<WeeklySummary> &summaries)
         return;
     }
 
-    m_menu->clear();
+    m_menu->clear(); // this doesn't delete the actions yet, since they are in the systray as well
 
     const TaskIdList interestingTasksToAdd = DATAMODEL->mostRecentlyUsedTasks();
 

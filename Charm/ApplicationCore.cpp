@@ -302,8 +302,11 @@ void ApplicationCore::slotPopulateTrayIconMenu()
     const auto newActions = m_timeTracker.menu()->actions();
     if (m_taskActions == newActions)
         return;
-    for (const auto action : m_taskActions)
+    for (const auto action : m_taskActions) {
         m_systrayContextMenu.removeAction(action);
+        if (action->associatedWidgets().isEmpty())
+            delete action;
+    }
     m_taskActions = newActions;
     m_systrayContextMenu.insertActions(m_systrayContextMenu.actions().first(), m_taskActions);
 }
