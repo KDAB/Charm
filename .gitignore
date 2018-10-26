@@ -18,3 +18,4 @@ Thumbs.db
 *.qrc.depends
 qrc_*.cxx
 Charm.pro.user
+build/
