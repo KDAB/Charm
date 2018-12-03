@@ -52,6 +52,8 @@ protected:
     /** The window name is the human readable name the application uses to reference the window.
      */
     void setWindowName(const QString &name);
+    const QString & getWindowName();
+
     /** The window identifier is used to reference window specific configuration groups, et cetera.
      * It is generally not recommend to change it once the application is in use. */
     void setWindowIdentifier(const QString &id);
