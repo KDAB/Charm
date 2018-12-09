@@ -140,7 +140,10 @@ void EventEditor::startDateChanged(const QDate &date)
     m_event.setStartDateTime(start);
     if (!m_endDateChanged)
         m_event.setEndDateTime(start.addSecs(delta));
+
+    QDateTimeEdit::Section section = m_ui->dateEditStart->currentSection();
     updateValues();
+    m_ui->dateEditStart->setCurrentSection(section);
 }
 
 void EventEditor::startTimeChanged(const QTime &time)
@@ -148,7 +151,10 @@ void EventEditor::startTimeChanged(const QTime &time)
     QDateTime start = m_event.startDateTime();
     start.setTime(time);
     m_event.setStartDateTime(start);
+
+    QDateTimeEdit::Section section = m_ui->timeEditStart->currentSection();
     updateValues();
+    m_ui->timeEditStart->setCurrentSection(section);
 }
 
 void EventEditor::endDateChanged(const QDate &date)
@@ -156,7 +162,11 @@ void EventEditor::endDateChanged(const QDate &date)
     QDateTime end = m_event.endDateTime();
     end.setDate(date);
     m_event.setEndDateTime(end);
+
+    QDateTimeEdit::Section section = m_ui->dateEditEnd->currentSection();
     updateValues();
+    m_ui->dateEditEnd->setCurrentSection(section);
+
     if (!m_updating)
         m_endDateChanged = true;
 }
@@ -166,7 +176,10 @@ void EventEditor::endTimeChanged(const QTime &time)
     QDateTime end = m_event.endDateTime();
     end.setTime(time);
     m_event.setEndDateTime(end);
+
+    QDateTimeEdit::Section section = m_ui->timeEditEnd->currentSection();
     updateValues();
+    m_ui->timeEditEnd->setCurrentSection(section);
 }
 
 void EventEditor::selectTaskClicked()
