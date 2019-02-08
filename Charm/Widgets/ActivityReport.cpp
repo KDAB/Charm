@@ -183,6 +183,7 @@ bool ActivityReportConfigurationDialog::selectTask(TaskId &task)
 {
     SelectTaskDialog dialog(this);
     dialog.setNonTrackableSelectable();
+    dialog.setNonValidSelectable();
     const bool taskSelected = dialog.exec();
     if (taskSelected)
         task = dialog.selectedTask();

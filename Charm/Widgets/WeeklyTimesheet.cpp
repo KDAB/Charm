@@ -247,6 +247,7 @@ void WeeklyTimesheetConfigurationDialog::slotSelectTask()
 {
     SelectTaskDialog dialog(this);
     dialog.setNonTrackableSelectable();
+    dialog.setNonValidSelectable();
     if (dialog.exec()) {
         m_rootTask = dialog.selectedTask();
         const TaskTreeItem &item = DATAMODEL->taskTreeItem(m_rootTask);
