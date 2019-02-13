@@ -3,7 +3,7 @@
 
   This file is part of Charm, a task-based time tracking application.
 
-  Copyright (C) 2014-2018 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2014-2019 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
 
   Author: Frank Osterfeld <frank.osterfeld@kdab.com>
 
@@ -183,6 +183,7 @@ bool ActivityReportConfigurationDialog::selectTask(TaskId &task)
 {
     SelectTaskDialog dialog(this);
     dialog.setNonTrackableSelectable();
+    dialog.setNonValidSelectable();
     const bool taskSelected = dialog.exec();
     if (taskSelected)
         task = dialog.selectedTask();

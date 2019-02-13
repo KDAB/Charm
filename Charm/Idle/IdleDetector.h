@@ -3,7 +3,7 @@
 
   This file is part of Charm, a task-based time tracking application.
 
-  Copyright (C) 2008-2018 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2008-2019 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
 
   Author: Mirko Boehm <mirko.boehm@kdab.com>
   Author: Frank Osterfeld <frank.osterfeld@kdab.com>
@@ -31,7 +31,7 @@
 #include <QDateTime>
 
 /** IdleDetector implements idle detection (duh).
- * Idle detection is (as of now) platform dependant. The factory
+ * Idle detection is (as of now) platform dependent. The factory
  * function createIdleDetector returns an implementation that
  * implements idle detection for the current platform. If idle
  * detection is not supported, a dummy object is returned,
