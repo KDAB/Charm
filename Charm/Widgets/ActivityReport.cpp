@@ -466,11 +466,11 @@ void ActivityReport::slotUpdate()
             QDomElement cell2 = doc.createElement(QStringLiteral("td"));
             cell2.setAttribute(QStringLiteral("class"), QStringLiteral("event_description"));
             cell2.setAttribute(QStringLiteral("align"), QStringLiteral("left"));
-            QDomElement preElement = doc.createElement(QStringLiteral("pre"));
-            QDomText preText = doc.createTextNode(
+            QDomElement commentElement = doc.createElement(QStringLiteral("p"));
+            QDomText commentText = doc.createTextNode(
                 m_properties.groupByTaskId ? QString() : event.comment());
-            preElement.appendChild(preText);
-            cell2.appendChild(preElement);
+            commentElement.appendChild(commentText);
+            cell2.appendChild(commentElement);
             row2.appendChild(cell2);
 
             tableBody.appendChild(row1);
