@@ -86,7 +86,7 @@ public:
 private Q_SLOTS:
     void slotUploadTimesheet();
     void slotTimesheetUploaded(HttpJob *);
-    void slotLinkClicked(const QUrl &which);
+    void updateRange(int deltaDays);
 
 private:
     QString suggestedFileName() const override;

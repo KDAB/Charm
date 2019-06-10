@@ -55,8 +55,12 @@ MonthlyTimeSheetReport::MonthlyTimeSheetReport(QWidget *parent)
         m_dailyhours = 8;
     }
 
-    connect(this, &MonthlyTimeSheetReport::anchorClicked,
-            this, &MonthlyTimeSheetReport::slotLinkClicked);
+    connect(this, &ReportPreviewWindow::nextClicked, this, [this] () {
+        updateRange(1);
+    });
+    connect(this, &ReportPreviewWindow::previousClicked, this, [this] () {
+        updateRange(-1);
+    });
 }
 
 MonthlyTimeSheetReport::~MonthlyTimeSheetReport()
@@ -178,6 +182,9 @@ void MonthlyTimeSheetReport::update()
         // store in minute map:
         m_secondsMap[event.taskId()] = seconds;
     }
+
+    setTimeSpanTypeName(tr("Month"));
+
     // now the reporting:
     // headline first:
     QTextDocument report;
@@ -204,16 +211,6 @@ void MonthlyTimeSheetReport::update()
         QDomText text = doc.createTextNode(content);
         headline.appendChild(text);
         body.appendChild(headline);
-        QDomElement previousLink = doc.createElement(QStringLiteral("a"));
-        previousLink.setAttribute(QStringLiteral("href"), QStringLiteral("Previous"));
-        QDomText previousLinkText = doc.createTextNode(tr("<Previous Month>"));
-        previousLink.appendChild(previousLinkText);
-        body.appendChild(previousLink);
-        QDomElement nextLink = doc.createElement(QStringLiteral("a"));
-        nextLink.setAttribute(QStringLiteral("href"), QStringLiteral("Next"));
-        QDomText nextLinkText = doc.createTextNode(tr("<Next Month>"));
-        nextLink.appendChild(nextLinkText);
-        body.appendChild(nextLink);
         QDomElement paragraph = doc.createElement(QStringLiteral("br"));
         body.appendChild(paragraph);
     }
@@ -306,11 +303,9 @@ void MonthlyTimeSheetReport::update()
     uploadButton()->setEnabled(false);
 }
 
-void MonthlyTimeSheetReport::slotLinkClicked(const QUrl &which)
+void MonthlyTimeSheetReport::updateRange(int deltaMonths)
 {
-    QDate start = which.toString()
-                  == QLatin1String("Previous") ? startDate().addMonths(-1) : startDate().addMonths(1);
-    QDate end = which.toString()
-                == QLatin1String("Previous") ? endDate().addMonths(-1) : endDate().addMonths(1);
+    QDate start = startDate().addMonths(deltaMonths);
+    QDate end = endDate().addMonths(deltaMonths);
     setReportProperties(start, end, rootTask(), activeTasksOnly());
 }

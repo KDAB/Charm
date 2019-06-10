@@ -238,8 +238,14 @@ ActivityReport::ActivityReport(QWidget *parent)
     saveToXmlButton()->hide();
     saveToTextButton()->hide();
     uploadButton()->hide();
-    connect(this, &ReportPreviewWindow::anchorClicked,
-            this, &ActivityReport::slotLinkClicked);
+    connect(this, &ReportPreviewWindow::nextClicked,
+            this, [this]() {
+                updateRange(1);
+            });
+    connect(this, &ReportPreviewWindow::previousClicked,
+            this, [this]() {
+                updateRange(-1);
+            });
 }
 
 ActivityReport::~ActivityReport()
@@ -315,6 +321,7 @@ void ActivityReport::slotUpdate()
         Q_ASSERT(false);   // should not happen
     }
 
+    setTimeSpanTypeName(timeSpanTypeName);
     auto report = new QTextDocument(this);
     QDomDocument doc = createReportTemplate();
     QDomElement root = doc.documentElement();
@@ -336,16 +343,6 @@ void ActivityReport::slotUpdate()
         QDomText text = doc.createTextNode(content);
         headline.appendChild(text);
         body.appendChild(headline);
-        QDomElement previousLink = doc.createElement(QStringLiteral("a"));
-        previousLink.setAttribute(QStringLiteral("href"), QStringLiteral("Previous"));
-        QDomText previousLinkText = doc.createTextNode(tr("<Previous %1>").arg(timeSpanTypeName));
-        previousLink.appendChild(previousLinkText);
-        body.appendChild(previousLink);
-        QDomElement nextLink = doc.createElement(QStringLiteral("a"));
-        nextLink.setAttribute(QStringLiteral("href"), QStringLiteral("Next"));
-        QDomText nextLinkText = doc.createTextNode(tr("<Next %1>").arg(timeSpanTypeName));
-        nextLink.appendChild(nextLinkText);
-        body.appendChild(nextLink);
         {
             QDomElement paragraph = doc.createElement(QStringLiteral("h4"));
             QString totalsText = tr("Total: %1").arg(hoursAndMinutes(totalSeconds));
@@ -494,9 +491,8 @@ void ActivityReport::slotUpdate()
     setDocument(report);
 }
 
-void ActivityReport::slotLinkClicked(const QUrl &which)
+void ActivityReport::updateRange(int direction)
 {
-    const int direction = which.toString() == QLatin1String("Previous") ? -1 : 1;
     switch (m_properties.timeSpanSelection.timeSpanType) {
     case Day:
         m_properties.start = m_properties.start.addDays(1 * direction);

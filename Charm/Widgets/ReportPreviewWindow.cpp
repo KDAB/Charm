@@ -47,6 +47,10 @@ ReportPreviewWindow::ReportPreviewWindow(QWidget *parent)
             this, &ReportPreviewWindow::slotSaveToText);
     connect(m_ui->textBrowser, &QTextBrowser::anchorClicked,
             this, &ReportPreviewWindow::anchorClicked);
+    connect(m_ui->pushButtonNext, &QPushButton::clicked,
+            this, &ReportPreviewWindow::nextClicked);
+    connect(m_ui->pushButtonPrevious, &QPushButton::clicked,
+            this, &ReportPreviewWindow::previousClicked);
 #ifndef QT_NO_PRINTER
     connect(m_ui->pushButtonPrint, &QPushButton::clicked,
             this, &ReportPreviewWindow::slotPrint);
@@ -77,6 +81,12 @@ void ReportPreviewWindow::setDocument(const QTextDocument *document)
         m_ui->textBrowser->setDocument(nullptr);
         m_document.reset();
     }
+}
+
+void ReportPreviewWindow::setTimeSpanTypeName(const QString &name)
+{
+    m_ui->pushButtonPrevious->setText(tr("Previous %1").arg(name));
+    m_ui->pushButtonNext->setText(tr("Next %1").arg(name));
 }
 
 QDomDocument ReportPreviewWindow::createReportTemplate() const
