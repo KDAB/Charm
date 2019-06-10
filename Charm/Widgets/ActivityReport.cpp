@@ -332,7 +332,7 @@ void ActivityReport::slotUpdate()
         QString content = tr("Report for %1, from %2 to %3")
                           .arg(CONFIGURATION.user.name(),
                                m_properties.start.toString(Qt::TextDate),
-                               m_properties.end.toString(Qt::TextDate));
+                               m_properties.end.addDays(-1).toString(Qt::TextDate));
         QDomText text = doc.createTextNode(content);
         headline.appendChild(text);
         body.appendChild(headline);
