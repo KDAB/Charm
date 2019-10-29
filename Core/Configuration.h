@@ -66,7 +66,7 @@ public:
     bool readFrom(QSettings &);
 
     // helper method
-    void dump(const QString &why = QString::null);
+    void dump(const QString &why = QString());
 
     quint32 createInstallationId() const;
 

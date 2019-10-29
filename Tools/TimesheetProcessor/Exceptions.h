@@ -30,7 +30,7 @@
 class TimesheetProcessorException : public std::exception
 {
 public:
-    explicit TimesheetProcessorException(const QString &text = QString::null)
+    explicit TimesheetProcessorException(const QString &text = QString())
         : mWhat(text)
     {
     }
@@ -51,7 +51,7 @@ private:
 class UsageException : public TimesheetProcessorException
 {
 public:
-    explicit UsageException(const QString &text = QString::null)
+    explicit UsageException(const QString &text = QString())
         : TimesheetProcessorException(text)
     {
     }
