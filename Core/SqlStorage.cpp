@@ -60,7 +60,7 @@ bool SqlStorage::verifyDatabase()
     // check database metadata, throw an exception in case the version does not match:
     int version = 1;
     QString versionString = getMetaData(CHARM_DATABASE_VERSION_DESCRIPTOR);
-    if (versionString != QString::null) {
+    if (versionString != QString()) {
         int value;
         bool ok;
         value = versionString.toInt(&ok);
@@ -628,7 +628,7 @@ QString SqlStorage::getMetaData(const QString &key)
         int valueField = query.record().indexOf(QStringLiteral("value"));
         return query.value(valueField).toString();
     } else {
-        return QString::null;
+        return QString();
     }
 }
 

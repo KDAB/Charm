@@ -45,7 +45,7 @@ struct Field
 
 typedef Field Fields;
 const Field LastField =
-{ QString::null, QString::null};
+{ QString(), QString()};
 
 static const Fields MetaData_Fields[] = {
     { QStringLiteral("id"), QStringLiteral("INTEGER AUTO_INCREMENT PRIMARY KEY") },
@@ -126,12 +126,12 @@ bool MySqlStorage::createDatabaseTables()
 
             stream << "CREATE table  `" << Tables[i] << "` (";
             const Field *field = Database_Fields[i];
-            while (field->name != QString::null)
+            while (field->name != QString())
             {
                 stream << " `" << field->name << "` "
                        << field->type;
                 ++field;
-                if (field->name != QString::null) stream << ", ";
+                if (field->name != QString()) stream << ", ";
             }
             stream << ");";
 
