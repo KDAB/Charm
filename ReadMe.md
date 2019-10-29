@@ -62,8 +62,7 @@ For Windows and OS X, [find installers here](https://github.com/KDAB/Charm/relea
 Authors and License
 -------------------
 Charm has been developed by Mirko Boehm (mirko@kde.org), as a work of fun and
-experimentation. The current maintainers are Frank Osterfeld and Guillermo A.
-Amaral B.
+experimentation. The current maintainer is Frank Osterfeld.
 
 Charm is Free Software, developed under the terms
 of the GPL. While we hope it is of good use, there is no guaranty of
