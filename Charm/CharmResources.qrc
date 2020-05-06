@@ -2,24 +2,37 @@
     <qresource prefix="/Charm">
         <file alias="bill.jpg">bill.jpg</file>
         <file alias="configure.png">Icons/configure.png</file>
+        <file alias="configure@2x.png">Icons/configure@2x.png</file>
         <file alias="report_stylesheet.sty">Widgets/report_stylesheet.sty</file>
         <file alias="active.png">Icons/arrow-right.png</file>
+        <file alias="active@2x.png">Icons/arrow-right@2x.png</file>
         <file alias="editor_locked.png">Icons/document-encrypt.png</file>
+        <file alias="editor_locked@2x.png">Icons/document-encrypt@2x.png</file>
         <file alias="newtask.png">Icons/document-new.png</file>
+        <file alias="newtask@2x.png">Icons/document-new@2x.png</file>
         <file alias="newsubtask.png">Icons/document-properties.png</file>
+        <file alias="newsubtask@2x.png">Icons/document-properties@2x.png</file>
         <file alias="quitcharm.png">Icons/application-exit.png</file>
+        <file alias="quitcharm@2x.png">Icons/application-exit@2x.png</file>
         <file alias="editor_dirty.png">Icons/favorites.png</file>
+        <file alias="editor_dirty@2x.png">Icons/favorites@2x.png</file>
         <file alias="charmicon.png">Icons/256-apps-Charm.png</file>
         <file alias="deletetask.png">Icons/document-close.png</file>
+        <file alias="deletetask@2x.png">Icons/document-close@2x.png</file>
         <file alias="edit.png">Icons/document-edit.png</file>
+        <file alias="edit@2x.png">Icons/document-edit@2x.png</file>
         <file alias="go.png">Icons/media-playback-start.png</file>
+        <file alias="go@2x.png">Icons/media-playback-start@2x.png</file>
         <file alias="stop.png">Icons/media-playback-stop.png</file>
+        <file alias="stop@2x.png">Icons/media-playback-stop@2x.png</file>
         <file alias="charmabout.png">Icons/128-apps-Charm.png</file>
         <file alias="charmtray_mac.png">Icons/tray/charmtray_mac.png</file>
         <file alias="charmtrayactive_mac.png">Icons/tray/charmtrayactive_mac.png</file>
         <file alias="charmtray22.png">Icons/tray/charmtray22.png</file>
         <file alias="charmtrayactive22.png">Icons/tray/charmtrayactive22.png</file>
         <file alias="createreport.png">Icons/document-export.png</file>
+        <file alias="createreport@2x.png">Icons/document-export@2x.png</file>
         <file alias="search.png">Icons/edit-find-replace.png</file>
+        <file alias="search@2x.png">Icons/edit-find-replace@2x.png</file>
     </qresource>
 </RCC>
