@@ -35,6 +35,9 @@
 
 #include <QtAlgorithms>
 #include <QDebug>
+#ifdef CHARM_IDLE_DETECTION_AVAILABLE
+#include <QX11Info>
+#endif
 
 IdleDetector::IdleDetector(QObject *parent)
     : QObject(parent)
@@ -54,9 +57,11 @@ IdleDetector *IdleDetector::createIdleDetector(QObject *parent)
 #endif
 
 #ifdef CHARM_IDLE_DETECTION_AVAILABLE
-    X11IdleDetector *detector = new X11IdleDetector(parent);
-    detector->setAvailable(detector->idleCheckPossible());
-    return detector;
+    if (QX11Info::isPlatformX11()) {
+        X11IdleDetector *detector = new X11IdleDetector(parent);
+        detector->setAvailable(detector->idleCheckPossible());
+        return detector;
+    }
 #endif
 #endif
 
