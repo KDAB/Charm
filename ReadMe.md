@@ -1,3 +1,5 @@
+## NOTE: This Project is no longer supported or maintained by KDAB. The code is kept here for historical reasons in the hopes that it proves useful to others
+
 Charm - the Cross-Platform Time Tracker [![Windows Build status](https://ci.appveyor.com/api/projects/status/cxr8oijfuya778c8/branch/master?svg=true)](https://ci.appveyor.com/project/KDAB/charm/branch/master)
 ======================================
 Whether you are a busy professional who needs to keep track time spent on
