@@ -45,24 +45,22 @@ IdleDetector::IdleDetector(QObject *parent)
 IdleDetector *IdleDetector::createIdleDetector(QObject *parent)
 {
 #ifdef CHARM_IDLE_DETECTION
-#ifdef Q_OS_OSX
+#if (defined Q_OS_OSX)
     return new MacIdleDetector(parent);
-#endif
-
-#ifdef Q_OS_WIN
+#elif (defined Q_OS_WIN)
     return new WindowsIdleDetector(parent);
-#endif
-
-#ifdef CHARM_IDLE_DETECTION_AVAILABLE
-    X11IdleDetector *detector = new X11IdleDetector(parent);
-    detector->setAvailable(detector->idleCheckPossible());
-    return detector;
-#endif
-#endif
-
-    IdleDetector *unavailable = new IdleDetector(parent);
+#elif (defined CHARM_IDLE_DETECTION_AVAILABLE)
+    return new X11IdleDetector(parent);
+#else
+    auto unavailable = new IdleDetector(parent);
     unavailable->setAvailable(false);
     return unavailable;
+#endif
+#else
+    auto unavailable = new IdleDetector(parent);
+    unavailable->setAvailable(false);
+    return unavailable;
+#endif
 }
 
 bool IdleDetector::available() const

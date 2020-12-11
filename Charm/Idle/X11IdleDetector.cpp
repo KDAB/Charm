@@ -32,18 +32,20 @@
 X11IdleDetector::X11IdleDetector(QObject *parent)
     : IdleDetector(parent)
 {
+    setAvailable(false);
+    m_connection = xcb_connect(NULL, NULL); // krazy:exclude=null
+    m_screen = xcb_setup_roots_iterator(xcb_get_setup(m_connection)).data;
+    if (!m_screen)
+        return;
+    auto query = xcb_get_extension_data(m_connection, &xcb_screensaver_id);
+    Q_ASSERT(query);
+    if (!query->present)
+        return;
+
     connect(&m_timer, &QTimer::timeout, this, &X11IdleDetector::checkIdleness);
     m_timer.start(idlenessDuration() * 1000 / 5);
     m_heartbeat = QDateTime::currentDateTime();
-}
-
-bool X11IdleDetector::idleCheckPossible()
-{
-    m_connection = xcb_connect(NULL, NULL); //krazy:exclude=null
-    m_screen = xcb_setup_roots_iterator(xcb_get_setup(m_connection)).data;
-    if (m_screen)
-        return true;
-    return false;
+    setAvailable(true);
 }
 
 void X11IdleDetector::onIdlenessDurationChanged()
