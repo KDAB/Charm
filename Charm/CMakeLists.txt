@@ -142,8 +142,7 @@ IF( CHARM_IDLE_DETECTION )
     ENDIF()
 ENDIF()
 
-QT5_WRAP_UI(
-    UiGenerated_SRCS
+set(CharmUi_SRCS
     Widgets/CommentEditorPopup.ui
     Widgets/ConfigurationDialog.ui
     Widgets/CharmPreferences.ui
@@ -167,7 +166,7 @@ QT5_ADD_RESOURCES( Resources_SRCS CharmResources.qrc )
 
 ADD_LIBRARY(
     CharmApplication STATIC
-    ${CharmApplication_SRCS} ${UiGenerated_SRCS}
+    ${CharmApplication_SRCS} ${CharmUi_SRCS}
 )
 
 kde_target_enable_exceptions( CharmApplication PUBLIC )

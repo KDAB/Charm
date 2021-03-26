@@ -223,6 +223,7 @@ if(NOT KDE_SKIP_BUILD_SETTINGS)
    # Enable automoc in cmake
    # Since CMake 2.8.6
    set(CMAKE_AUTOMOC ON)
+   set(CMAKE_AUTOUIC ON)
 
    # By default, create 'GUI' executables. This can be reverted on a per-target basis
    # using ECMMarkNonGuiExecutable
