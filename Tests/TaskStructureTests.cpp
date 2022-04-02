@@ -118,7 +118,7 @@ void TaskStructureTests::mergeTaskListsTest_data()
                 newFound = true;
             } else if (arg == QLatin1String("merged")) {
                 merged = tasks;
-                qSort(merged.begin(), merged.end(), Task::lowerTaskId);
+                std::sort(merged.begin(), merged.end(), Task::lowerTaskId);
                 mergedFound = true;
             } else {
                 QFAIL("invalid XML structure in input data");
@@ -144,7 +144,7 @@ void TaskStructureTests::mergeTaskListsTest()
     merger.setNewTasks(newTasks);
 
     TaskList result = merger.mergedTaskList();
-    qSort(result.begin(), result.end(), Task::lowerTaskId);
+    std::sort(result.begin(), result.end(), Task::lowerTaskId);
     if (result != merged) {
         qDebug() << "Test failed";
         qDebug() << "Merge Result:";

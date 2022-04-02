@@ -30,7 +30,7 @@ static void saveChildExpandStates(const QModelIndex &idx, QTreeView *tv, QHash<T
 {
     const int rc = idx.model()->rowCount(idx);
     for (int i = 0; i < rc; ++i) {
-        const QModelIndex c = idx.child(i, 0);
+        const QModelIndex c = idx.model()->index(i, 0, idx);;
         if (c.model()->rowCount(c) > 0) {
             const TaskId id = c.data(TasksViewRole_TaskId).toInt();
             const bool expanded = tv->isExpanded(c);
@@ -46,7 +46,7 @@ static void restoreChildExpandStates(const QModelIndex &idx, QTreeView *tv,
 {
     const int rc = idx.model()->rowCount(idx);
     for (int i = 0; i < rc; ++i) {
-        const QModelIndex c = idx.child(i, 0);
+        const QModelIndex c = idx.model()->index(i, 0, idx);
         if (c.model()->rowCount(c) > 0) {
             const TaskId id = c.data(TasksViewRole_TaskId).toInt();
             const bool expanded = map->value(id);

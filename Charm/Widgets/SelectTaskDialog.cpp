@@ -276,7 +276,7 @@ void SelectTaskDialog::slotSelectTask(const QString &filter)
     const int filterTaskId = filterText.toInt();
     const TaskList tasks = MODEL.charmDataModel()->getAllTasks();
 
-    for (const auto task : tasks) {
+    for (const auto &task : tasks) {
         if (!task.isValid())
             continue;
         if (task.name().toUpper().contains(filterText) || task.id() == filterTaskId)

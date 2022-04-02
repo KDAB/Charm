@@ -261,9 +261,12 @@ void ActivityReport::slotUpdate()
 
     if (!m_properties.rootTasks.isEmpty()) {
         QSet<EventId> filteredEvents;
-        Q_FOREACH (TaskId include, m_properties.rootTasks)
-            filteredEvents |= Charm::filteredBySubtree(matchingEvents, include).toSet();
-        matchingEvents = filteredEvents.toList();
+        Q_FOREACH (TaskId include, m_properties.rootTasks) {
+            auto list = Charm::filteredBySubtree(matchingEvents, include);
+            filteredEvents |= QSet<EventId>(list.begin(), list.end());
+        }
+
+        matchingEvents = filteredEvents.values();
     }
 
     if (m_properties.groupByTaskId) {

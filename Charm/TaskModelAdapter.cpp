@@ -165,7 +165,7 @@ QModelIndex TaskModelAdapter::parent(const QModelIndex &index) const
 
 Qt::ItemFlags TaskModelAdapter::flags(const QModelIndex &index) const
 {
-    Qt::ItemFlags flags = 0;
+    Qt::ItemFlags flags = Qt::NoItemFlags;
 
     if (index.isValid()) {
         const TaskTreeItem *item = itemFor(index);

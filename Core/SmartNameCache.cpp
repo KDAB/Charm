@@ -40,7 +40,7 @@ void SmartNameCache::setAllTasks(const TaskList &taskList)
 
 void SmartNameCache::sortTasks()
 {
-    qSort(m_tasks.begin(), m_tasks.end(), IdLessThan());
+    std::sort(m_tasks.begin(), m_tasks.end(), IdLessThan());
 }
 
 //single add/modify/delete rebuild the cache each time.
@@ -50,7 +50,7 @@ void SmartNameCache::sortTasks()
 void SmartNameCache::modifyTask(const Task &task)
 {
     const TaskList::Iterator it
-        = qBinaryFind(m_tasks.begin(), m_tasks.end(), Task(task.id(), QString()), IdLessThan());
+        = std::equal_range(m_tasks.begin(), m_tasks.end(), Task(task.id(), QString()), IdLessThan()).first;
     if (it != m_tasks.end())
         *it = task;
     sortTasks();
@@ -59,8 +59,8 @@ void SmartNameCache::modifyTask(const Task &task)
 
 void SmartNameCache::deleteTask(const Task &task)
 {
-    const auto it = qBinaryFind(m_tasks.begin(), m_tasks.end(), Task(task.id(),
-                                                                     QString()), IdLessThan());
+    const auto it = std::equal_range(m_tasks.begin(), m_tasks.end(), Task(task.id(),
+                                                                     QString()), IdLessThan()).first;
     if (it != m_tasks.end()) {
         m_tasks.erase(it);
         regenerateSmartNames();
@@ -75,8 +75,8 @@ void SmartNameCache::clearTasks()
 
 Task SmartNameCache::findTask(TaskId id) const
 {
-    const auto it = qBinaryFind(m_tasks.begin(), m_tasks.end(), Task(id, QString()), IdLessThan());
-    if (it != m_tasks.constEnd()) {
+    const auto it = std::equal_range(m_tasks.constBegin(), m_tasks.constEnd(), Task(id, QString()), IdLessThan()).first;
+    if (it != m_tasks.end()) {
         return *it;
     } else {
         return Task();

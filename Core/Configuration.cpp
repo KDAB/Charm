@@ -28,6 +28,7 @@
 
 #include <QtDebug>
 #include <QSettings>
+#include <QRandomGenerator>
 
 #ifdef NDEBUG
 #define DEFAULT_CONFIG_GROUP QStringLiteral("default")
@@ -137,25 +138,24 @@ void Configuration::dump(const QString &why)
     return; // disable debug output
     qDebug() << "Configuration: configuration:"
              << (why.isEmpty() ? QString() : why)
-             << endl
-             << "--> installation id:          " << installationId << endl
-             << "--> userid:                   " << user.id() << endl
-             << "--> local storage type:       " << localStorageType << endl
-             << "--> local storage database:   " << localStorageDatabase << endl
-             << "--> task prefiltering mode:   " << taskPrefilteringMode << endl
-             << "--> task tracker font size:   " << timeTrackerFontSize << endl
-             << "--> duration format:          " << durationFormat << endl
-             << "--> Idle Detection:           " << detectIdling << endl
-             << "--> toolButtonStyle:          " << toolButtonStyle << endl
-             << "--> showStatusBar:            " << showStatusBar << endl
-             << "--> warnUnuploadedTimesheets: " << warnUnuploadedTimesheets << endl
-             << "--> requestEventComment:      " << requestEventComment << endl
+             << Qt::endl
+             << "--> installation id:          " << installationId << Qt::endl
+             << "--> userid:                   " << user.id() << Qt::endl
+             << "--> local storage type:       " << localStorageType << Qt::endl
+             << "--> local storage database:   " << localStorageDatabase << Qt::endl
+             << "--> task prefiltering mode:   " << taskPrefilteringMode << Qt::endl
+             << "--> task tracker font size:   " << timeTrackerFontSize << Qt::endl
+             << "--> duration format:          " << durationFormat << Qt::endl
+             << "--> Idle Detection:           " << detectIdling << Qt::endl
+             << "--> toolButtonStyle:          " << toolButtonStyle << Qt::endl
+             << "--> showStatusBar:            " << showStatusBar << Qt::endl
+             << "--> warnUnuploadedTimesheets: " << warnUnuploadedTimesheets << Qt::endl
+             << "--> requestEventComment:      " << requestEventComment << Qt::endl
              << "--> enableCommandInterface:   " << enableCommandInterface
              << "--> numberOfTaskSelectorEntries: " << numberOfTaskSelectorEntries;
 }
 
 quint32 Configuration::createInstallationId() const
 {
-    qsrand(QDateTime::currentMSecsSinceEpoch());
-    return qrand() + 2;
+    return QRandomGenerator::global()->generate() + 2;
 }

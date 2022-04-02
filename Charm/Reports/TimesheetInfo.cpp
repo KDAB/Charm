@@ -82,7 +82,7 @@ TimeSheetInfoList TimeSheetInfo::taskWithSubTasks(const CharmDataModel *dataMode
 
     TaskIdList childIds = item.childIds();
     // sort by task id
-    qSort(childIds);
+    std::sort(childIds.begin(), childIds.end());
     // recursively add those to myself:
     Q_FOREACH (const TaskId i, childIds)
         children << taskWithSubTasks(dataModel, segments, i, secondsMap, &myInformation);

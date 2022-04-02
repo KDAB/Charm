@@ -34,7 +34,7 @@ void TaskListMerger::setOldTasks(const TaskList &tasks)
     m_oldTasks = tasks;
     for (TaskList::iterator it = m_oldTasks.begin(); it != m_oldTasks.end(); ++it)
         (*it).setSubscribed(false);
-    qSort(m_oldTasks.begin(), m_oldTasks.end(), Task::lowerTaskId);
+    std::sort(m_oldTasks.begin(), m_oldTasks.end(), Task::lowerTaskId);
     m_resultsValid = false;
 }
 
@@ -44,7 +44,7 @@ void TaskListMerger::setNewTasks(const TaskList &tasks)
     m_newTasks = tasks;
     for (TaskList::iterator it = m_newTasks.begin(); it != m_newTasks.end(); ++it)
         (*it).setSubscribed(false);
-    qSort(m_newTasks.begin(), m_newTasks.end(), Task::lowerTaskId);
+    std::sort(m_newTasks.begin(), m_newTasks.end(), Task::lowerTaskId);
     m_resultsValid = false;
 }
 
