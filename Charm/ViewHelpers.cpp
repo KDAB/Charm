@@ -121,7 +121,7 @@ int Charm::collatorCompare(const QString &left, const QString &right)
 EventIdList Charm::eventIdsSortedBy(EventIdList ids, const Charm::SortOrderList &orders)
 {
     if (!orders.isEmpty())
-        qStableSort(ids.begin(), ids.end(), EventSorter(orders));
+        std::stable_sort(ids.begin(), ids.end(), EventSorter(orders));
 
     return ids;
 }
@@ -149,7 +149,7 @@ QString Charm::elidedTaskName(const QString &text, const QFont &font, int width)
     QFontMetrics metrics(font);
     const QString &projectCode
         = text.section(QLatin1Char(' '), 0, 0, QString::SectionIncludeTrailingSep);
-    const int projectCodeWidth = metrics.width(projectCode);
+    const int projectCodeWidth = metrics.horizontalAdvance(projectCode);
     if (width > projectCodeWidth) {
         const QString &taskName = text.section(QLatin1Char(' '), 1);
         const int taskNameWidth = width - projectCodeWidth;

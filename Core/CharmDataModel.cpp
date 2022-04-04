@@ -697,7 +697,7 @@ TaskIdList CharmDataModel::mostRecentlyUsedTasks() const
         return a > b;
     };
     std::map<QDateTime, TaskId, decltype( comp )> mru( comp );
-    for ( const auto kv : mruMap ) {
+    for ( const auto &kv : mruMap ) {
         mru[kv.second] = kv.first;
     }
     TaskIdList out;

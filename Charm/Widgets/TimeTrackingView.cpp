@@ -46,9 +46,11 @@ TimeTrackingView::TimeTrackingView(QWidget *parent)
 {
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     // plumbing
+    QLocale locale;
     m_paintAttributes.initialize(palette());
     for (int i = 0; i < 7; ++i)
-        m_shortDayNames[i] = QDate::shortDayName(i + 1);
+        m_shortDayNames[i] = locale.standaloneDayName(i+1, QLocale::ShortFormat);
+
     connect(m_taskSelector, &TimeTrackingTaskSelector::startEvent,
             this, &TimeTrackingView::startEvent);
     connect(m_taskSelector, &TimeTrackingTaskSelector::stopEvents,
@@ -102,7 +104,7 @@ QSize TimeTrackingView::minimumSizeHint() const
         const QRect totalsColumnFieldRect(
             fixedFontMetrics.boundingRect(QStringLiteral("100:00"))
             .adjusted(0, 0, 2 * Margin, 2 * Margin));
-        const int dayWidth = fixedFontMetrics.width(QStringLiteral("00:00")) + 2 * Margin;
+        const int dayWidth = fixedFontMetrics.horizontalAdvance(QStringLiteral("00:00")) + 2 * Margin;
         const int fieldHeight = qMax(fixedFontMetrics.lineSpacing(),
                                      narrowFontMetrics.lineSpacing())
                                 + 2 * Margin;

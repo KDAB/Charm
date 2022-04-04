@@ -162,7 +162,7 @@ void TasksViewDelegate::updateEditorGeometry(QWidget *editor, const QStyleOption
     const QVariant decorationVariant = index.data(Qt::DecorationRole);
     const QPixmap decorationPixmap = decoration(option, decorationVariant);
     const QString runningTime = index.data(TasksViewRole_RunningTime).toString();
-    const int left = decorationPixmap.width() + option.fontMetrics.width(runningTime);
+    const int left = decorationPixmap.width() + option.fontMetrics.horizontalAdvance(runningTime);
     QRect r = option.rect.translated(left + 5, 0);
     r.setRight(cbRect.left());
     r.setTop(r.top() + firstLineHeight);

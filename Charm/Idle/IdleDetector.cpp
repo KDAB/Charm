@@ -112,7 +112,7 @@ void IdleDetector::maybeIdle(IdlePeriod period)
 //         periods << i2 << i3;
 //     }
 
-    qSort(periods);
+    std::sort(periods.begin(), periods.end());
     m_idlePeriods.clear();
     while (!periods.isEmpty()) {
         IdlePeriod first = periods.first();

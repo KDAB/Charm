@@ -413,15 +413,16 @@ void WeeklyTimeSheetReport::update()
         headerDayRow.setAttribute(QStringLiteral("class"), QStringLiteral("header_row"));
         table.appendChild(headerDayRow);
 
+        QLocale locale;
         const QString Headlines[NumberOfColumns] = {
             tr("Task"),
-            QDate::shortDayName(1),
-            QDate::shortDayName(2),
-            QDate::shortDayName(3),
-            QDate::shortDayName(4),
-            QDate::shortDayName(5),
-            QDate::shortDayName(6),
-            QDate::shortDayName(7),
+            locale.standaloneDayName(1, QLocale::ShortFormat),
+            locale.standaloneDayName(2, QLocale::ShortFormat),
+            locale.standaloneDayName(3, QLocale::ShortFormat),
+            locale.standaloneDayName(4, QLocale::ShortFormat),
+            locale.standaloneDayName(5, QLocale::ShortFormat),
+            locale.standaloneDayName(6, QLocale::ShortFormat),
+            locale.standaloneDayName(7, QLocale::ShortFormat),
             tr("Total")
         };
         const QString DayHeadlines[NumberOfColumns] = {

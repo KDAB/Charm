@@ -46,7 +46,7 @@ QVector<WeeklySummary> WeeklySummary::summariesForTimespan(CharmDataModel *dataM
         events << event;
         taskIds << event.taskId();
     }
-    qSort(taskIds);
+    std::sort(taskIds.begin(), taskIds.end());
     std::unique_copy(taskIds.begin(), taskIds.end(), std::back_inserter(uniqueTaskIds));
     Q_ASSERT(events.size() == eventIds.size());
     // retrieve task information

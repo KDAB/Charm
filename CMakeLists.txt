@@ -40,14 +40,7 @@ ENDIF()
 
 MESSAGE( STATUS "Building Charm ${Charm_VERSION} in ${CMAKE_BUILD_TYPE} mode" )
 
-find_package( Qt5Core REQUIRED)
-
-find_package(Qt5Widgets REQUIRED)
-find_package(Qt5Xml REQUIRED)
-find_package(Qt5Network REQUIRED)
-find_package(Qt5Sql REQUIRED)
-find_package(Qt5Test REQUIRED)
-find_package(Qt5PrintSupport)
+find_package(Qt5 5.15 COMPONENTS Core Widgets Xml Network Sql Test PrintSupport REQUIRED)
 
 if(WIN32)
     find_package(Qt5WinExtras REQUIRED)

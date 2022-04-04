@@ -252,7 +252,7 @@ void ControllerTests::toAndFromXmlTest()
     } else {
         TaskList tasksAfter = m_controller->storage()->getAllTasks();
         if (tasksBefore != tasksAfter) {
-            qDebug() << "XML Document created during failed test:" << endl
+            qDebug() << "XML Document created during failed test:" << Qt::endl
                      << document.toString();
             Q_FOREACH (const Task &task, tasksBefore)
                 task.dump();
