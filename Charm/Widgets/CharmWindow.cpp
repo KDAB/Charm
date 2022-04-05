@@ -89,6 +89,11 @@ void CharmWindow::setWindowName(const QString &text)
     setWindowTitle(text);
 }
 
+const QString & CharmWindow::getWindowName()
+{
+    return m_windowName;
+}
+
 QString CharmWindow::windowName() const
 {
     return m_windowName;
@@ -114,9 +119,7 @@ void CharmWindow::setWindowNumber(int number)
     m_shortcut->setKey(sequence);
 #endif
     m_shortcut->setContext(Qt::ApplicationShortcut);
-    m_showAction->setShortcut(sequence);
     connect(m_shortcut, SIGNAL(activated()), SLOT(showHideView()));
-    connect(m_shortcut, SIGNAL(activated()), SLOT(showView()));
 }
 
 int CharmWindow::windowNumber() const
@@ -198,11 +201,16 @@ void CharmWindow::keyPressEvent(QKeyEvent *event)
 {
     if (event->type() == QEvent::KeyPress) {
         QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
-        if (keyEvent->modifiers() & Qt::ControlModifier
-            && keyEvent->key() == Qt::Key_W
-            && isVisible()) {
-            showHideView();
-            return;
+
+        if (keyEvent->modifiers() & Qt::ControlModifier) {
+            if (isVisible()) {
+                if (keyEvent->key() == Qt::Key_W
+                ||  keyEvent->key() == (Qt::Key_0 +  m_windowNumber))
+                {
+                    this->hide();
+                    return;
+                }
+            }
         }
     }
     QMainWindow::keyPressEvent(event);
