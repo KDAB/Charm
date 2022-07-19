@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>386</width>
-    <height>296</height>
+    <width>643</width>
+    <height>407</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -168,7 +168,7 @@
            <string>(events that start before...)</string>
           </property>
           <property name="text">
-           <string>End date</string>
+           <string>End date (excluded)</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>

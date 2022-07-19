@@ -46,9 +46,12 @@ public:
 
 Q_SIGNALS:
     void anchorClicked(const QUrl &which);
+    void nextClicked();
+    void previousClicked();
 
 protected:
     void setDocument(const QTextDocument *document);
+    void setTimeSpanTypeName(const QString &name);
     QDomDocument createReportTemplate() const;
     QPushButton *saveToXmlButton() const;
     QPushButton *saveToTextButton() const;
@@ -66,6 +69,7 @@ private Q_SLOTS:
 private:
     QScopedPointer<Ui::ReportPreviewWindow> m_ui;
     QScopedPointer<QTextDocument> m_document;
+    QString m_timeSpanTypeName;
 };
 
 #endif

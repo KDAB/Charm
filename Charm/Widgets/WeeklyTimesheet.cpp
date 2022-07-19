@@ -266,7 +266,12 @@ WeeklyTimeSheetReport::WeeklyTimeSheetReport(QWidget *parent)
 {
     QPushButton *upload = uploadButton();
     connect(upload, &QPushButton::clicked, this, &WeeklyTimeSheetReport::slotUploadTimesheet);
-    connect(this, &ReportPreviewWindow::anchorClicked, this, &WeeklyTimeSheetReport::slotLinkClicked);
+    connect(this, &ReportPreviewWindow::nextClicked, this, [this] () {
+        updateRange(7);
+    });
+    connect(this, &ReportPreviewWindow::previousClicked, this, [this] () {
+        updateRange(-7);
+    });
 
     if (!Lotsofcake::Configuration().isConfigured())
         upload->hide();
@@ -347,6 +352,9 @@ void WeeklyTimeSheetReport::update()
         // store in minute map:
         m_secondsMap[event.taskId()] = seconds;
     }
+
+    setTimeSpanTypeName(tr("Week"));
+
     // now the reporting:
     // headline first:
     QTextDocument report;
@@ -371,16 +379,7 @@ void WeeklyTimeSheetReport::update()
         QDomText text = doc.createTextNode(content);
         headline.appendChild(text);
         body.appendChild(headline);
-        QDomElement previousLink = doc.createElement(QStringLiteral("a"));
-        previousLink.setAttribute(QStringLiteral("href"), QStringLiteral("Previous"));
-        QDomText previousLinkText = doc.createTextNode(tr("<Previous Week>"));
-        previousLink.appendChild(previousLinkText);
-        body.appendChild(previousLink);
-        QDomElement nextLink = doc.createElement(QStringLiteral("a"));
-        nextLink.setAttribute(QStringLiteral("href"), QStringLiteral("Next"));
-        QDomText nextLinkText = doc.createTextNode(tr("<Next Week>"));
-        nextLink.appendChild(nextLinkText);
-        body.appendChild(nextLink);
+
         QDomElement paragraph = doc.createElement(QStringLiteral("br"));
         body.appendChild(paragraph);
     }
@@ -572,11 +571,9 @@ QByteArray WeeklyTimeSheetReport::saveToText()
     return output;
 }
 
-void WeeklyTimeSheetReport::slotLinkClicked(const QUrl &which)
+void WeeklyTimeSheetReport::updateRange(int deltaDays)
 {
-    QDate start = which.toString()
-                  == QLatin1String("Previous") ? startDate().addDays(-7) : startDate().addDays(7);
-    QDate end = which.toString()
-                == QLatin1String("Previous") ? endDate().addDays(-7) : endDate().addDays(7);
+    QDate start = startDate().addDays(deltaDays);
+    QDate end = endDate().addDays(deltaDays);
     setReportProperties(start, end, rootTask(), activeTasksOnly());
 }

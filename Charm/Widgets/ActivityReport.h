@@ -97,7 +97,7 @@ public:
     void setReportProperties(const ActivityReportConfigurationDialog::Properties &properties);
 
 private Q_SLOTS:
-    void slotLinkClicked(const QUrl &which);
+    void updateRange(int direction);
 
 private:
     void slotUpdate() override;

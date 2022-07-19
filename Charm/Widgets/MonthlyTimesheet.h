@@ -42,7 +42,7 @@ public:
                              bool activeTasksOnly) override;
 
 private Q_SLOTS:
-    void slotLinkClicked(const QUrl &which);
+    void updateRange(int deltaMonths);
 
 private:
     QString suggestedFileName() const override;

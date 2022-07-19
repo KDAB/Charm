@@ -261,7 +261,11 @@ void Controller::loadConfigValue(const QString &key, T &configValue) const
 void Controller::provideMetaData(Configuration &configuration)
 {
     Q_ASSERT_X(m_storage != nullptr, Q_FUNC_INFO, "No storage interface available");
-    configuration.user.setName(m_storage->getMetaData(MetaKey_Key_UserName));
+
+    const QString userName = m_storage->getMetaData(MetaKey_Key_UserName);
+    if (!userName.isEmpty()) {
+        configuration.user.setName(userName);
+    }
 
     loadConfigValue(MetaKey_Key_TimeTrackerFontSize, configuration.timeTrackerFontSize);
     loadConfigValue(MetaKey_Key_DurationFormat, configuration.durationFormat);

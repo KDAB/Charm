@@ -238,8 +238,14 @@ ActivityReport::ActivityReport(QWidget *parent)
     saveToXmlButton()->hide();
     saveToTextButton()->hide();
     uploadButton()->hide();
-    connect(this, &ReportPreviewWindow::anchorClicked,
-            this, &ActivityReport::slotLinkClicked);
+    connect(this, &ReportPreviewWindow::nextClicked,
+            this, [this]() {
+                updateRange(1);
+            });
+    connect(this, &ReportPreviewWindow::previousClicked,
+            this, [this]() {
+                updateRange(-1);
+            });
 }
 
 ActivityReport::~ActivityReport()
@@ -318,6 +324,7 @@ void ActivityReport::slotUpdate()
         Q_ASSERT(false);   // should not happen
     }
 
+    setTimeSpanTypeName(timeSpanTypeName);
     auto report = new QTextDocument(this);
     QDomDocument doc = createReportTemplate();
     QDomElement root = doc.documentElement();
@@ -335,20 +342,10 @@ void ActivityReport::slotUpdate()
         QString content = tr("Report for %1, from %2 to %3")
                           .arg(CONFIGURATION.user.name(),
                                m_properties.start.toString(Qt::TextDate),
-                               m_properties.end.toString(Qt::TextDate));
+                               m_properties.end.addDays(-1).toString(Qt::TextDate));
         QDomText text = doc.createTextNode(content);
         headline.appendChild(text);
         body.appendChild(headline);
-        QDomElement previousLink = doc.createElement(QStringLiteral("a"));
-        previousLink.setAttribute(QStringLiteral("href"), QStringLiteral("Previous"));
-        QDomText previousLinkText = doc.createTextNode(tr("<Previous %1>").arg(timeSpanTypeName));
-        previousLink.appendChild(previousLinkText);
-        body.appendChild(previousLink);
-        QDomElement nextLink = doc.createElement(QStringLiteral("a"));
-        nextLink.setAttribute(QStringLiteral("href"), QStringLiteral("Next"));
-        QDomText nextLinkText = doc.createTextNode(tr("<Next %1>").arg(timeSpanTypeName));
-        nextLink.appendChild(nextLinkText);
-        body.appendChild(nextLink);
         {
             QDomElement paragraph = doc.createElement(QStringLiteral("h4"));
             QString totalsText = tr("Total: %1").arg(hoursAndMinutes(totalSeconds));
@@ -472,11 +469,11 @@ void ActivityReport::slotUpdate()
             QDomElement cell2 = doc.createElement(QStringLiteral("td"));
             cell2.setAttribute(QStringLiteral("class"), QStringLiteral("event_description"));
             cell2.setAttribute(QStringLiteral("align"), QStringLiteral("left"));
-            QDomElement preElement = doc.createElement(QStringLiteral("pre"));
-            QDomText preText = doc.createTextNode(
+            QDomElement commentElement = doc.createElement(QStringLiteral("p"));
+            QDomText commentText = doc.createTextNode(
                 m_properties.groupByTaskId ? QString() : event.comment());
-            preElement.appendChild(preText);
-            cell2.appendChild(preElement);
+            commentElement.appendChild(commentText);
+            cell2.appendChild(commentElement);
             row2.appendChild(cell2);
 
             tableBody.appendChild(row1);
@@ -497,9 +494,8 @@ void ActivityReport::slotUpdate()
     setDocument(report);
 }
 
-void ActivityReport::slotLinkClicked(const QUrl &which)
+void ActivityReport::updateRange(int direction)
 {
-    const int direction = which.toString() == QLatin1String("Previous") ? -1 : 1;
     switch (m_properties.timeSpanSelection.timeSpanType) {
     case Day:
         m_properties.start = m_properties.start.addDays(1 * direction);
